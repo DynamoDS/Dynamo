@@ -1,0 +1,4 @@
+BEGIN 5804 Fri Jun 24 16:46:39 2011 "RPC API" The RPC API is contacting the RPC ACM.  
+
+LOG 5804 Fri Jun 24 16:46:39 2011 "RPC API" revoke licenses  
+
