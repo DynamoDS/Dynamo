@@ -15,38 +15,14 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_1000B9CD668C00C8CE8FBAA51DD6D1FB"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1000B9CD668C00C8CE8FBAA51DD6D1FB"
+        "MsmKey" = "8:_2417AD473F8C3CCF479C901BF10CF775"
         "OwnerKey" = "8:_FA2F21CD9F5E42C4B533C0C84F966602"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_401A0E24FE1877CF8E84E2E77661998C"
-        "OwnerKey" = "8:_D7FA98C4C1624F86A2881246AB859BF0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_401A0E24FE1877CF8E84E2E77661998C"
-        "OwnerKey" = "8:_53087366D14DEC8F4C484FD80E027156"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_53087366D14DEC8F4C484FD80E027156"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_53087366D14DEC8F4C484FD80E027156"
-        "OwnerKey" = "8:_FA2F21CD9F5E42C4B533C0C84F966602"
+        "MsmKey" = "8:_4232F286F10540DCADD6EA2A1047FA45"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -70,12 +46,6 @@
         "Entry"
         {
         "MsmKey" = "8:_60305E554E8DA2D47526C50EB3CF3805"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_60305E554E8DA2D47526C50EB3CF3805"
         "OwnerKey" = "8:_CF9492E19B304DAF029C3A02365FF591"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -83,6 +53,12 @@
         {
         "MsmKey" = "8:_60305E554E8DA2D47526C50EB3CF3805"
         "OwnerKey" = "8:_80ADC1C270BCCFA9C86600926CF8A700"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_719F798C68B13E8120F63758C3C3DE7D"
+        "OwnerKey" = "8:_FA2F21CD9F5E42C4B533C0C84F966602"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -95,12 +71,6 @@
         {
         "MsmKey" = "8:_7281EE89D19BE929D10F620192B18472"
         "OwnerKey" = "8:_FA2F21CD9F5E42C4B533C0C84F966602"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7281EE89D19BE929D10F620192B18472"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -130,13 +100,7 @@
         "Entry"
         {
         "MsmKey" = "8:_80ADC1C270BCCFA9C86600926CF8A700"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_80ADC1C270BCCFA9C86600926CF8A700"
-        "OwnerKey" = "8:_53087366D14DEC8F4C484FD80E027156"
+        "OwnerKey" = "8:_719F798C68B13E8120F63758C3C3DE7D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -154,12 +118,6 @@
         "Entry"
         {
         "MsmKey" = "8:_9DD5739319D45680F229EEC7B7197B4A"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9DD5739319D45680F229EEC7B7197B4A"
         "OwnerKey" = "8:_CF9492E19B304DAF029C3A02365FF591"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -167,6 +125,18 @@
         {
         "MsmKey" = "8:_9DD5739319D45680F229EEC7B7197B4A"
         "OwnerKey" = "8:_D7FA98C4C1624F86A2881246AB859BF0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A0FA37E7A407CBB91053BC5FE9021C4A"
+        "OwnerKey" = "8:_D7FA98C4C1624F86A2881246AB859BF0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A0FA37E7A407CBB91053BC5FE9021C4A"
+        "OwnerKey" = "8:_719F798C68B13E8120F63758C3C3DE7D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -179,12 +149,6 @@
         {
         "MsmKey" = "8:_AD7E22976C3943D2E244ED789C92845A"
         "OwnerKey" = "8:_FA2F21CD9F5E42C4B533C0C84F966602"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_AD7E22976C3943D2E244ED789C92845A"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -220,13 +184,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B6D05D06BC066B0CE4F469824FEC46E8"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B6D05D06BC066B0CE4F469824FEC46E8"
-        "OwnerKey" = "8:_53087366D14DEC8F4C484FD80E027156"
+        "OwnerKey" = "8:_719F798C68B13E8120F63758C3C3DE7D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -245,12 +203,6 @@
         {
         "MsmKey" = "8:_CF9492E19B304DAF029C3A02365FF591"
         "OwnerKey" = "8:_FA2F21CD9F5E42C4B533C0C84F966602"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CF9492E19B304DAF029C3A02365FF591"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -267,20 +219,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_DE230212ACB04B598B70625AD3D00904"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_FA2F21CD9F5E42C4B533C0C84F966602"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DE230212ACB04B598B70625AD3D00904"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -292,13 +232,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_53087366D14DEC8F4C484FD80E027156"
+        "OwnerKey" = "8:_4232F286F10540DCADD6EA2A1047FA45"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1000B9CD668C00C8CE8FBAA51DD6D1FB"
+        "OwnerKey" = "8:_719F798C68B13E8120F63758C3C3DE7D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2417AD473F8C3CCF479C901BF10CF775"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -352,7 +298,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_401A0E24FE1877CF8E84E2E77661998C"
+        "OwnerKey" = "8:_A0FA37E7A407CBB91053BC5FE9021C4A"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -460,82 +406,20 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1000B9CD668C00C8CE8FBAA51DD6D1FB"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2417AD473F8C3CCF479C901BF10CF775"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DragCanvas, Version=0.1.4309.34394, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:DragCanvas, Version=0.1.4313.29760, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1000B9CD668C00C8CE8FBAA51DD6D1FB"
+                    "_2417AD473F8C3CCF479C901BF10CF775"
                     {
                     "Name" = "8:DragCanvas.dll"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:DragCanvas.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_401A0E24FE1877CF8E84E2E77661998C"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DragCanvas, Version=0.1.4309.34394, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_401A0E24FE1877CF8E84E2E77661998C"
-                    {
-                    "Name" = "8:DragCanvas.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:DragCanvas.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_53087366D14DEC8F4C484FD80E027156"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DynamoElements, Version=0.1.4309.38338, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_53087366D14DEC8F4C484FD80E027156"
-                    {
-                    "Name" = "8:DynamoElements.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:DynamoElements.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
@@ -587,6 +471,37 @@
                     }
                 }
             "SourcePath" = "8:AdWindows.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_719F798C68B13E8120F63758C3C3DE7D"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:DynamoElements, Version=0.1.4313.29761, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_719F798C68B13E8120F63758C3C3DE7D"
+                    {
+                    "Name" = "8:DynamoElements.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:DynamoElements.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
@@ -680,6 +595,37 @@
                     }
                 }
             "SourcePath" = "8:ManagedMC3.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A0FA37E7A407CBB91053BC5FE9021C4A"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:DragCanvas, Version=0.1.4313.29760, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_A0FA37E7A407CBB91053BC5FE9021C4A"
+                    {
+                    "Name" = "8:DragCanvas.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:DragCanvas.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
@@ -858,15 +804,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:dynamo"
-        "ProductCode" = "8:{DC6C45BC-6701-497F-844E-961A32249E65}"
-        "PackageCode" = "8:{5EFB5B84-514E-4AAB-94DF-A61D607F1191}"
+        "ProductCode" = "8:{2AB737D0-5F76-444D-9293-E5B478C7FE11}"
+        "PackageCode" = "8:{54A48811-5A00-4BD7-9A30-295F43AED085}"
         "UpgradeCode" = "8:{766C8CC7-EB05-40C0-ABEE-2D7C9DD96B62}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.1.12"
+        "ProductVersion" = "8:0.1.13"
         "Manufacturer" = "8:goBuild"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1378,9 +1324,37 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4232F286F10540DCADD6EA2A1047FA45"
+            {
+            "SourcePath" = "8:..\\DragCanvas\\obj\\Release\\DragCanvas.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{F9B766BE-A5A3-4680-840F-649462340EE7}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D7FA98C4C1624F86A2881246AB859BF0"
             {
-            "SourcePath" = "8:..\\Dynamo\\obj\\Debug\\DynamoElements.dll"
+            "SourcePath" = "8:..\\Dynamo\\obj\\Release\\DynamoElements.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
@@ -1406,37 +1380,9 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DE230212ACB04B598B70625AD3D00904"
-            {
-            "SourcePath" = "8:..\\DynamoRevit\\obj\\Debug\\DynamoRevit.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{FD56AE51-739E-4893-8DE4-925D60C7097C}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FA2F21CD9F5E42C4B533C0C84F966602"
             {
-            "SourcePath" = "8:..\\DynamoRevit\\obj\\Debug\\DynamoRevit.dll"
+            "SourcePath" = "8:..\\DynamoRevit\\obj\\Release\\DynamoRevit.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_60A4A3F32DE543B79C46EC2A56EDAD6A"
