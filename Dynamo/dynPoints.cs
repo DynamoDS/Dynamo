@@ -203,40 +203,40 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("PtOnEdge")]
-    [ElementDescription("Create an element which owns a reference point on a selected edge.")]
-    [RequiresTransaction(true)]
-    public class dynPointOnEdge : dynElement, IDynamic
-    {
-        public dynPointOnEdge(string nickName)
-            : base(nickName)
-        {
-            InPortData.Add(new PortData(null, "cv", "ModelCurve", typeof(ModelCurve)));
-            InPortData.Add(new PortData(null, "t", "Parameter on edge.", typeof(double)));
-            OutPortData.Add(new PortData(null, "pt", "PointOnEdge", typeof(dynPointOnEdge)));
+    //[ElementName("PtOnEdge")]
+    //[ElementDescription("Create an element which owns a reference point on a selected edge.")]
+    //[RequiresTransaction(true)]
+    //public class dynPointOnEdge : dynElement, IDynamic
+    //{
+    //    public dynPointOnEdge(string nickName)
+    //        : base(nickName)
+    //    {
+    //        InPortData.Add(new PortData(null, "cv", "ModelCurve", typeof(ModelCurve)));
+    //        InPortData.Add(new PortData(null, "t", "Parameter on edge.", typeof(double)));
+    //        OutPortData.Add(new PortData(null, "pt", "PointOnEdge", typeof(dynPointOnEdge)));
 
-            base.RegisterInputsAndOutputs();
-        }
+    //        base.RegisterInputsAndOutputs();
+    //    }
 
-        public override void Draw()
-        {
-            if (CheckInputs())
-            {
+    //    public override void Draw()
+    //    {
+    //        if (CheckInputs())
+    //        {
 
-                Reference r = (InPortData[0].Object as ModelCurve).GeometryCurve.Reference;
-                OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewPointOnEdge(r, (double)InPortData[1].Object);
+    //            Reference r = (InPortData[0].Object as ModelCurve).GeometryCurve.Reference;
+    //            OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewPointOnEdge(r, (double)InPortData[1].Object);
 
-            }
-        }
+    //        }
+    //    }
 
-        public override void Destroy()
-        {
-            base.Destroy();
-        }
+    //    public override void Destroy()
+    //    {
+    //        base.Destroy();
+    //    }
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
+    //    public override void Update()
+    //    {
+    //        OnDynElementReadyToBuild(EventArgs.Empty);
+    //    }
+    //}
 }

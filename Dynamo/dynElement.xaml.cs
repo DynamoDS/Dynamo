@@ -43,11 +43,18 @@ namespace Dynamo.Elements
     /// </summary
     public enum ElementState { DEAD, ACTIVE, SELECTED, ERROR };
     
-
     public partial class dynElement : UserControl, IDynamic
     {
-        #region private members
+        #region delegates
+        public delegate void dynElementUpdatedHandler(object sender, EventArgs e);
+        public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
+        public delegate void dynElementReadyToBuildHandler(object sender, EventArgs e);
+        public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
+        public delegate void dynElementSelectedHandler(object sender, EventArgs e);
+        public delegate void dynElementDeselectedHandler(object sender, EventArgs e);
+        #endregion
 
+        #region private members
         List<dynPort> inPorts;
         List<dynPort> outPorts;
         List<dynPort> statePorts;
@@ -58,16 +65,16 @@ namespace Dynamo.Elements
         ElementArray elements;
         Guid guid;
         bool isSelected = false;
-        ElementState state = ElementState.DEAD;
-        ElementState prevState = ElementState.DEAD;
+        ElementState state;
         DataTree dataTree;
         bool elementsHaveBeenDeleted = false;
+        SetStateDelegate stateSetter;
         #endregion
 
         public delegate void SetToolTipDelegate(string message);
         public delegate void MarkConnectionStateDelegate(bool bad);
-        public delegate void SetStateDelegate(dynElement el, ElementState state);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
+        public delegate void SetStateDelegate(dynElement el, ElementState state);
 
         #region public members
         public string ToolTipText
@@ -160,6 +167,8 @@ namespace Dynamo.Elements
         public event dynElementDestroyedHandler dynElementDestroyed;
         public event dynElementReadyToBuildHandler dynElementReadyToBuild;
         public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
+        public event dynElementSelectedHandler dynElementSelected;
+        public event dynElementDeselectedHandler dynElementDeselected;
         #endregion
 
         #region constructors
@@ -172,8 +181,6 @@ namespace Dynamo.Elements
         {
             InitializeComponent();
 
-            //inputs = new List<dynElement>();
-            //outputs = new List<dynElement>();
             inPorts = new List<dynPort>();
             inPortData = new List<PortData>();
             outPortData = new List<PortData>();
@@ -188,17 +195,13 @@ namespace Dynamo.Elements
             this.nickName = nickName;
             this.nickNameBlock.Text = nickName;
 
-            //this.workBench = settings.WorkBench;
-
-            SetStateDelegate ssd = new SetStateDelegate(SetState);
-            Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.DEAD });
-            //this.State = ElementState.DEAD;
+            stateSetter = new SetStateDelegate(SetState);
+            Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.DEAD });
 
             //set the z index to 2
             Canvas.SetZIndex(this, 1);
 
             //generate a guid for the component
-
             dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
         }
 
@@ -219,14 +222,12 @@ namespace Dynamo.Elements
 
             dataTree = new DataTree();
 
-            //this.settings = settings;
             this.nickName = nickName;
             this.nickNameBlock.Text = nickName;
-            //this.workBench = settings.WorkBench;
+            
 
-            SetStateDelegate ssd = new SetStateDelegate(SetState);
-            Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.DEAD });
-            //this.State = ElementState.DEAD;
+            stateSetter = new SetStateDelegate(SetState);
+            Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.DEAD });
 
             //set the z index to 2
             Canvas.SetZIndex(this, 1);
@@ -235,6 +236,7 @@ namespace Dynamo.Elements
 
             dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
         }
+
 
         public dynElement(dynElementSettings settings)
         {
@@ -246,11 +248,6 @@ namespace Dynamo.Elements
         }
 
         #endregion
-
-        void SetState(dynElement el, ElementState state)
-        {
-            el.State = state;
-        }
 
         protected virtual void OnDynElementUpdated(EventArgs e)
         {
@@ -281,6 +278,22 @@ namespace Dynamo.Elements
             if (dynElementReadyToDestroy != null)
             {
                 dynElementReadyToDestroy(this, e);
+            }
+        }
+
+        protected virtual void OnDynElementSelected(EventArgs e)
+        {
+            if (dynElementSelected != null)
+            {
+                dynElementSelected(this, e);
+            }
+        }
+
+        protected virtual void OnDynElementDeselected(EventArgs e)
+        {
+            if (dynElementDeselected != null)
+            {
+                dynElementDeselected(this, e);
             }
         }
         
@@ -592,33 +605,30 @@ namespace Dynamo.Elements
                 }
             }
 
-           
-            SetStateDelegate ssd = new SetStateDelegate(SetState);
-            
             if (flag)
             {
-                Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.DEAD });
+                Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.DEAD });
             }
             else
             {
-                Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.ACTIVE });
+                Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ACTIVE });
             }
-            
-
         }
 
         void MarkConnectionState(bool bad)
         {
-            SetStateDelegate ssd = new SetStateDelegate(SetState);
-            if (bad)
+            //don't change the color of the object
+            //if it's selected
+            if (state != ElementState.SELECTED)
             {
-                Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.ERROR });
-                //this.State = ElementState.ERROR;
-            }
-            else
-            {
-                Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.ACTIVE });
-                //this.State = ElementState.ACTIVE;
+                if (bad)
+                {
+                    Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ERROR });
+                }
+                else
+                {
+                    Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ACTIVE });
+                }
             }
         }
 
@@ -880,13 +890,10 @@ namespace Dynamo.Elements
                 {
                     Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
                         new object[] { true });
-                    //MarkConnectionState(true);
-
 
                     SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
                     Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
                         new object[] { "One or more connections is null." });
-                    //this.ToolTip = "One or more connections is null.";
 
                     return false;
                 }
@@ -895,61 +902,28 @@ namespace Dynamo.Elements
             
             Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
                 new object[] { false });
-            //MarkConnectionState(false);
 
             return true;
         }
 
-        public void ToggleSelectionState()
+        public void Select()
         {
-            //set the selected mode
-            if (isSelected)
-            {
-                isSelected = false;
-            }
-            else
-            {
-                isSelected = true;
-
-                SetStateDelegate ssd = new SetStateDelegate(SetState);
-                Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.SELECTED });
-                //state = ElementState.SELECTED;
-            }
+            Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.SELECTED });
         }
         
-        public void SetSelectionState(bool selected)
+        public void Deselect()
         {
-            isSelected = selected;
+            Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ACTIVE });
+        }
+        
+        void SetState(dynElement el, ElementState state)
+        {
+            el.State = state;
         }
 
         private void topControl_Loaded(object sender, RoutedEventArgs e)
         {
 
-        }
-
-        private void elementRectangle_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (this.state != ElementState.SELECTED)
-            {
-                prevState = this.state;
-
-                SetStateDelegate ssd = new SetStateDelegate(SetState);
-                Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.SELECTED });
-                //this.State = ElementState.SELECTED;
-
-                //set all other items to their previous state.
-                foreach (dynElement el in dynElementSettings.SharedInstance.Bench.Elements)
-                {
-                    if (el.Equals(this)) continue;
-
-                    Dispatcher.Invoke(ssd, System.Windows.Threading.DispatcherPriority.Background, new object[] {el, el.prevState});
-                    //el.State = el.prevState ;
-                }
-            }
-            else
-            {
-                this.State = prevState;
-            }
         }
 
     }

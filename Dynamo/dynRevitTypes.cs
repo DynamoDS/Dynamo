@@ -53,8 +53,6 @@ namespace Dynamo.Elements
             : base(nickName)
         {
             OutPortData.Add(new PortData(0.0, "", "dbl", typeof(dynDouble)));
-
-            
         }
 
         public override void Draw()
@@ -656,57 +654,16 @@ namespace Dynamo.Elements
 
     }
 
-    [ElementName("Move")]
-    [ElementDescription("Create an element which moves other elements by a fixed distance in each step.")]
-    [RequiresTransaction(true)]
-    public class dynMove : dynAction, IDynamic
-    {
-        public dynMove(string nickName)
-            : base(nickName)
-        {
-            InPortData.Add(new PortData(null, "XYZ", "Movement vector.", typeof(dynXYZ)));
-            InPortData.Add(new PortData(null, "El", "The element to move.", typeof(dynElement)));
-
-            base.RegisterInputsAndOutputs();
-        }
-
-        /// <summary>
-        /// Called by dynLoop elements to create iterative behaviors
-        /// </summary>
-        public override void PerformAction()
-        {
-            dynElementSettings.SharedInstance.Doc.Document.Move(InPortData[1].Object as Element, InPortData[0].Object as XYZ);
-        }
-
-        public override void Draw()
-        {
-            OutPortData[0].Object = this;
-        }
-
-        public override void Destroy()
-        {
-            base.Destroy();
-        }
-
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
-
-    //[ElementName("Grow")]
-    //[ElementDescription("Create an element to grow a value over a fixed number of steps.")]
-    //[RequiresTransaction(false)]
-    //public class dynDoubleGrow : dynAction, IDynamic
+    //[ElementName("Move")]
+    //[ElementDescription("Create an element which moves other elements by a fixed distance in each step.")]
+    //[RequiresTransaction(true)]
+    //public class dynMove : dynAction, IDynamic
     //{
-    //    double growValue;
-
-    //    public dynDoubleGrow(string nickName)
+    //    public dynMove(string nickName)
     //        : base(nickName)
     //    {
-    //        InPortData.Add(new PortData(0.0, "D", "Value to grow.", typeof(dynDouble)));
-    //        InPortData.Add(new PortData(.1, "D", "Step.", typeof(dynDouble)));
-    //        OutPortData.Add(new PortData(null, "D", "Larger value.", typeof(dynDouble)));
+    //        InPortData.Add(new PortData(null, "XYZ", "Movement vector.", typeof(dynXYZ)));
+    //        InPortData.Add(new PortData(null, "El", "The element to move.", typeof(dynElement)));
 
     //        base.RegisterInputsAndOutputs();
     //    }
@@ -716,7 +673,7 @@ namespace Dynamo.Elements
     //    /// </summary>
     //    public override void PerformAction()
     //    {
-    //        OutPortData[1].Object = (double)OutPortData[1].Object + (double)InPortData[1].Object;
+    //        dynElementSettings.SharedInstance.Doc.Document.Move(InPortData[1].Object as Element, InPortData[0].Object as XYZ);
     //    }
 
     //    public override void Draw()
@@ -732,116 +689,6 @@ namespace Dynamo.Elements
     //    public override void Update()
     //    {
     //        OnDynElementReadyToBuild(EventArgs.Empty);
-    //    }
-    //}
-
-    //[ElementName("Loop")]
-    //[ElementDescription("Create an element to loop through an operation a fixed number of times.")]
-    //[RequiresTransaction(false)]
-    //public class dynLoop : dynElement, IDynamic
-    //{
-    //    public dynLoop(string nickName)
-    //        : base(nickName)
-    //    {
-    //        InPortData.Add(new PortData(null, "int", "Iterations", typeof(dynInt)));
-    //        OutPortData.Add(new PortData(null, "n", "The loop.", typeof(dynLoop)));
-
-    //        base.RegisterInputsAndOutputs();
-    //    }
-
-    //    public override void Draw()
-    //    {
-    //        //if (CheckInputs())
-    //        //{
-    //        //    for (int i = 0; i < (int)InPortData[0].Object; i++)
-    //        //    {
-    //        //        //do whatever it is you came here to do
-    //        //        (OutPortData[0].Object as dynAction).PerformAction();
-
-    //        //        //update the graphics
-    //        //        //Settings.Doc.Document.Regenerate();
-    //        //        dynElementSettings.SharedInstance.Doc.RefreshActiveView();
-    //        //    }
-    //        //}
-    //    }
-
-    //    public override void Destroy()
-    //    {
-    //        base.Destroy();
-    //    }
-
-    //    public override void Update()
-    //    {
-    //        for (int i = 0; i < (int)InPortData[0].Object; i++)
-    //        {
-    //            OnDynElementReadyToBuild(EventArgs.Empty);
-    //        }
-    //    }
-    //}
-
-    //[ElementName("Cycle")]
-    //[ElementDescription("Create an element for continuously looping through an operation.")]
-    //[RequiresTransaction(false)]
-    //public class dynCycle : dynElement, IDynamic
-    //{
-    //    bool isRunning = false;
-    //    System.Windows.Controls.Button startCycleButt;
-    //    double t = 0.0;
-
-    //    public dynCycle(string nickName)
-    //        : base(nickName)
-    //    {
-    //        InPortData.Add(new PortData(null, "Act", "Action to perform.", typeof(dynAction)));
-
-    //        startCycleButt = new System.Windows.Controls.Button();
-    //        this.inputGrid.Children.Add(startCycleButt);
-    //        startCycleButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-    //        startCycleButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-    //        startCycleButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-    //        startCycleButt.Click += new System.Windows.RoutedEventHandler(startCycle_click);
-    //        startCycleButt.Content = "Start";
-
-    //        base.RegisterInputsAndOutputs();
-
-    //    }
-
-    //    public override void Draw()
-    //    {
-    //        if (CheckInputs())
-    //        {
-    //            if (isRunning)
-    //            {
-    //                (InPortData[0].Object as dynAction).PerformAction();
-
-    //                dynElementSettings.SharedInstance.Doc.RefreshActiveView();
-    //            }
-
-    //        }
-    //    }
-
-    //    public override void Destroy()
-    //    {
-    //        base.Destroy();
-    //    }
-
-    //    public override void Update()
-    //    {
-    //        OnDynElementReadyToBuild(EventArgs.Empty);
-    //    }
-
-    //    void startCycle_click(object sender, System.Windows.RoutedEventArgs e)
-    //    {
-    //        if (!isRunning)
-    //        {
-    //            startCycleButt.Content = "Stop";
-    //            isRunning = true;
-    //            (InPortData[0].Object as dynAction).PerformAction();
-    //        }
-    //        else
-    //        {
-    //            isRunning = false;
-    //            startCycleButt.Content = "Start";
-    //        }
     //    }
     //}
 
@@ -953,12 +800,7 @@ namespace Dynamo.Elements
 
     #endregion
 
-    #region delegates
-    public delegate void dynElementUpdatedHandler(object sender, EventArgs e);
-    public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
-    public delegate void dynElementReadyToBuildHandler(object sender, EventArgs e);
-    public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
-    #endregion
+    
 
     #region class attributes
     [AttributeUsage(AttributeTargets.All)]

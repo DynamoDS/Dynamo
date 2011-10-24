@@ -13,3 +13,11 @@ C:\Code\ikeo_dynamo\Dynamo\DragCanvas\obj\Debug\GenerateResource.read.1.tlog
 C:\Code\ikeo_dynamo\Dynamo\DragCanvas\obj\Debug\GenerateResource.write.1.tlog
 C:\Code\ikeo_dynamo\Dynamo\DragCanvas\obj\Debug\DragCanvas.dll
 C:\Code\ikeo_dynamo\Dynamo\DragCanvas\obj\Debug\DragCanvas.pdb
+C:\Code\dynamo\DragCanvas\bin\Debug\DragCanvas.dll
+C:\Code\dynamo\DragCanvas\bin\Debug\DragCanvas.pdb
+C:\Code\dynamo\DragCanvas\obj\Debug\ResolveAssemblyReference.cache
+C:\Code\dynamo\DragCanvas\obj\Debug\DragCanvas.Properties.Resources.resources
+C:\Code\dynamo\DragCanvas\obj\Debug\GenerateResource.read.1.tlog
+C:\Code\dynamo\DragCanvas\obj\Debug\GenerateResource.write.1.tlog
+C:\Code\dynamo\DragCanvas\obj\Debug\DragCanvas.dll
+C:\Code\dynamo\DragCanvas\obj\Debug\DragCanvas.pdb

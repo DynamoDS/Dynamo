@@ -36,8 +36,7 @@
                        RadiusY="10"
                        Stroke="black"
                        StrokeThickness="2"
-                       Canvas.ZIndex="90"
-                       PreviewMouseDown="elementRectangle_PreviewMouseDown">
+                       Canvas.ZIndex="90">
                 <Rectangle.Fill>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
                         <GradientStop Color="Yellow" Offset="0.0" />
@@ -53,8 +52,7 @@
                        Name="elementShine" 
                        RadiusX="10" 
                        RadiusY="10"
-                       Canvas.ZIndex="91"
-                       PreviewMouseDown="elementRectangle_PreviewMouseDown">
+                       Canvas.ZIndex="91">
                 <Rectangle.Fill>
                     <SolidColorBrush Opacity=".25" Color="white" />
                 </Rectangle.Fill>

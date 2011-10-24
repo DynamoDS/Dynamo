@@ -36,6 +36,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Xml;
 using Dynamo.Utilities;
+using System.Collections.ObjectModel;
 
 namespace Dynamo.Controls
 {
@@ -44,6 +45,7 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class dynBench : Window, INotifyPropertyChanged
     {
+
         double zoom = 1.0;
         double currentX;
         double currentY;
@@ -53,7 +55,7 @@ namespace Dynamo.Controls
         double oldX = 0.0;
         List<dynElement> elements;
         List<dynConnector> connectors;
-        //dynElementSettings settings;
+        dynSelection selectedElements;
         bool isConnecting = false;
         dynConnector activeConnector;
         List<DependencyObject> hitResultsList = new List<DependencyObject>();
@@ -71,7 +73,6 @@ namespace Dynamo.Controls
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
         }
-
         public string LogText
         {
             get { return logText; }
@@ -113,7 +114,11 @@ namespace Dynamo.Controls
             get{return elements;}
             set{elements = value;}
         }
-
+        public dynSelection SelectedElements
+        {
+            get { return selectedElements; }
+            set { selectedElements = value; }
+        }
         public dynBench()
         {
 
@@ -145,11 +150,13 @@ namespace Dynamo.Controls
 
             elements = new List<dynElement>();
             connectors = new List<dynConnector>();
+            selectedElements = new dynSelection();
+
             DrawGrid();
 
             //create the stringWriter for logging
             sw = new StringWriter();
-            Log("Hello Dynamo!...");
+            Log("Welcome to Dynamo!...");
         }
 
         /// <summary>
@@ -293,10 +300,7 @@ namespace Dynamo.Controls
                     if (dc != null)
                     {
                         Debug.WriteLine("Canvas clicked");
-                        foreach(dynElement el in elements)
-                        {
-                            el.SetSelectionState(false);
-                        }
+                        ClearSelection();
                         break;
                     }
                 }
@@ -317,13 +321,39 @@ namespace Dynamo.Controls
                     element = ElementClicked(depObj, typeof(dynElement)) as dynElement;
                     if (element != null)
                     {
-                        element.ToggleSelectionState();
+                        SelectElement(element);
                         break;
                     }
                 }
             }
             #endregion
 
+        }
+
+        public void SelectElement(dynElement sel)
+        {
+            if (!selectedElements.Contains(sel))
+            {
+                //set all other items to the unselected state
+                foreach (dynElement el in selectedElements)
+                {
+                    el.Deselect();
+                }
+
+                selectedElements.Clear();
+                selectedElements.Add(sel);
+                sel.Select();
+            }
+        }
+
+        public void ClearSelection()
+        {
+            //set all other items to the unselected state
+            foreach (dynElement el in selectedElements)
+            {
+                el.Deselect();
+            }
+            selectedElements.Clear();
         }
 
         void OnMouseRightButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
@@ -920,11 +950,39 @@ namespace Dynamo.Controls
 
                 Canvas.SetLeft(toolFinder, 100);
                 Canvas.SetTop(toolFinder, 100);
-
-
+            }
+            else if (e.Key == Key.Delete || e.Key == Key.Back)
+            {
+                for (int i = selectedElements.Count - 1; i >= 0; i--)
+                {
+                    DeleteElement(selectedElements[i]);
+                }
             }
         }
 
+        private void DeleteElement(dynElement el)
+        {
+            foreach (dynPort p in el.OutPorts)
+            {
+                for(int i=p.Connectors.Count-1; i>=0; i--)
+                {
+                    p.Connectors[i].Kill();
+                }
+            }
+            foreach (dynPort p in el.InPorts)
+            {
+                for (int i = p.Connectors.Count - 1; i >= 0; i--)
+                {
+                    p.Connectors[i].Kill();
+                }
+            }
+
+            selectedElements.Remove(el);
+            elements.Remove(el);
+            dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
+            el = null;
+            
+        }
         void toolFinder_ToolFinderFinished(object sender, EventArgs e)
         {
             dynElementSettings.SharedInstance.Workbench.Children.Remove(toolFinder);
@@ -941,5 +999,14 @@ namespace Dynamo.Controls
             CleanWorkbench();
         }
 
+    }
+
+    public class dynSelection : ObservableCollection<dynElement>
+    {
+        public dynSelection()
+            : base()
+        {
+
+        }
     }
 }

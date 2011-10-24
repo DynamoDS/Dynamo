@@ -338,16 +338,12 @@ namespace Dynamo.Connectors
             }
             if (pEnd!= null && pEnd.Connectors.Contains(this))
             {
-                //remove this connector from the ports 
-                //connectors list
-                //pEnd.Connectors.Remove(this);
                 pEnd.Disconnect(this);
                 //remove the reference to the
                 //dynElement attached to port A
                 pEnd.Owner.InPortData[pEnd.Index].Object = null;
 
             }
-
 
             pStart = null;
             pEnd = null;
@@ -413,7 +409,7 @@ namespace Dynamo.Connectors
     public class InvalidPortException : ApplicationException
     {
         private string message;
-        public string Message
+        public override string Message
         {
             get { return message; }
         }

@@ -1,0 +1,9 @@
+C:\Code\dynamo\DynamoRevit\bin\Release\DynamoRevit.dll
+C:\Code\dynamo\DynamoRevit\bin\Release\DynamoRevit.pdb
+C:\Code\dynamo\DynamoRevit\bin\Release\DynamoElements.dll
+C:\Code\dynamo\DynamoRevit\bin\Release\DragCanvas.dll
+C:\Code\dynamo\DynamoRevit\bin\Release\DynamoElements.pdb
+C:\Code\dynamo\DynamoRevit\bin\Release\DragCanvas.pdb
+C:\Code\dynamo\DynamoRevit\obj\Release\ResolveAssemblyReference.cache
+C:\Code\dynamo\DynamoRevit\obj\Release\DynamoRevit.dll
+C:\Code\dynamo\DynamoRevit\obj\Release\DynamoRevit.pdb
