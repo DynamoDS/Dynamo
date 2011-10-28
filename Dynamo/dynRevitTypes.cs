@@ -297,6 +297,73 @@ namespace Dynamo.Elements
         }
     }
 
+    //MDJ - added by Matt Jezyk 10.27.2011
+    [ElementName("Double Slider")]
+    [ElementDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
+    [RequiresTransaction(false)]
+    public class dynDoubleSliderInput : dynDouble
+    {
+        Slider tb_slider;
+
+        public dynDoubleSliderInput(string nickName)
+            : base(nickName)
+        {
+
+            //add a slider control to the input grid of the control
+            tb_slider = new System.Windows.Controls.Slider();
+            tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb_slider);
+            System.Windows.Controls.Grid.SetColumn(tb_slider, 0);
+            System.Windows.Controls.Grid.SetRow(tb_slider, 0);
+            tb_slider.Value = 0.0;
+            tb_slider.Maximum = 100.0;
+            tb_slider.Minimum = 0.0;
+            tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
+            tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
+            tb_slider.ValueChanged += new System.Windows.RoutedPropertyChangedEventHandler<double>(tb_slider_ValueChanged);
+            //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+
+            InPortData.Add(new PortData(null, "Lower", "Lower", typeof(dynDouble)));
+            InPortData.Add(new PortData(null, "Upper", "Upper", typeof(dynDouble)));
+
+            OutPortData[0].Object = 0.0;
+
+            base.RegisterInputsAndOutputs();
+        }
+
+
+        void tb_slider_ValueChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            try
+            {
+                OutPortData[0].Object = tb_slider.Value;
+
+                //trigger the ready to build event here
+                //because there are no inputs
+                OnDynElementReadyToBuild(EventArgs.Empty);
+            }
+            catch
+            {
+                OutPortData[0].Object = 0.0;
+            }
+        }
+
+        public override void Update()
+        {
+            if (CheckInputs())
+            {
+                //set the bounds
+                tb_slider.Minimum = (double)InPortData[0].Object;
+                tb_slider.Maximum = (double)InPortData[1].Object;
+            }
+
+            tb_slider.Value = (double) OutPortData[0].Object;
+
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+    }
+
     [ElementName("BooleanSwitch")]
     [ElementDescription("An element which allows selection between a true and false.")]
     [RequiresTransaction(false)]
