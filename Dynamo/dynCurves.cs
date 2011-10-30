@@ -43,8 +43,7 @@ namespace Dynamo.Elements
     public class dynModelCurve : dynElement, IDynamic
     {
 
-        public dynModelCurve(string nickName)
-            : base(nickName)
+        public dynModelCurve()
         {
             InPortData.Add(new PortData(null, "c", "A curve.", typeof(dynCurve)));
             InPortData.Add(new PortData(null, "sp", "The sketch plane.", typeof(dynSketchPlane)));
@@ -84,8 +83,7 @@ namespace Dynamo.Elements
     {
         List<SketchPlane> sps = new List<SketchPlane>();
 
-        public dynModelCurveByPoints(string nickName)
-            : base(nickName)
+        public dynModelCurveByPoints()
         {
             InPortData.Add(new PortData(null, "pt", "The points from which to create the curve", typeof(dynReferencePoint)));
 

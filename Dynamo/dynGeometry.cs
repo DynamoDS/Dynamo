@@ -44,8 +44,7 @@ namespace Dynamo.Elements
     {
         XYZ pt;
 
-        public dynXYZ(string nickName)
-            : base(nickName)
+        public dynXYZ()
         {
             InPortData.Add(new PortData(null, "X", "X", typeof(dynDouble)));
             InPortData.Add(new PortData(null, "Y", "Y", typeof(dynDouble)));
@@ -88,8 +87,7 @@ namespace Dynamo.Elements
     [RequiresTransaction(true)]
     public class dynPlane : dynElement, IDynamic
     {
-        public dynPlane(string nickName)
-            : base(nickName)
+        public dynPlane()
         {
             InPortData.Add(new PortData(null, "XYZ", "Normal", typeof(dynXYZ)));
             InPortData.Add(new PortData(null, "XYZ", "Origin", typeof(dynXYZ)));
@@ -123,8 +121,7 @@ namespace Dynamo.Elements
     [RequiresTransaction(true)]
     public class dynSketchPlane : dynElement, IDynamic
     {
-        public dynSketchPlane(string nickName)
-            : base(nickName)
+        public dynSketchPlane()
         {
             InPortData.Add(new PortData(null, "P", "The plane in which to define the sketch.", typeof(dynPlane)));
             OutPortData.Add(new PortData(null, "SP", "SketchPlane", typeof(dynSketchPlane)));
@@ -156,8 +153,7 @@ namespace Dynamo.Elements
     [RequiresTransaction(true)]
     public class dynLineBound : dynCurve, IDynamic
     {
-        public dynLineBound(string nickName)
-            : base(nickName)
+        public dynLineBound()
         {
             InPortData.Add(new PortData(null, "xyz", "Start", typeof(dynXYZ)));
             InPortData.Add(new PortData(null, "xyz", "End", typeof(dynXYZ)));

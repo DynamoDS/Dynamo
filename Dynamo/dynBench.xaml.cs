@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,6 @@ using System.Windows.Shapes;
 using Dynamo.Connectors;
 using Dynamo.Elements;
 using System.Windows.Forms;
-//using WPF.JoshSmith.Controls;
 using System.Diagnostics;
 using System.Xml.Serialization;
 using System.IO;
@@ -54,7 +54,7 @@ namespace Dynamo.Controls
         double oldY = 0.0;
         double oldX = 0.0;
         List<dynElement> elements;
-        List<dynConnector> connectors;
+        //List<dynConnector> connectors;
         dynSelection selectedElements;
         bool isConnecting = false;
         dynConnector activeConnector;
@@ -62,9 +62,11 @@ namespace Dynamo.Controls
         bool isPanning = false;
         StringWriter sw;
         string logText;
-        Type[] loadedTypes;
+        
         public dynToolFinder toolFinder;
         public event PropertyChangedEventHandler PropertyChanged;
+        Hashtable userTypes = new Hashtable();
+        Hashtable builtinTypes = new Hashtable();
 
         private void NotifyPropertyChanged(String info)
         {
@@ -124,24 +126,9 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            //setup the menu with all the types by reflecting
-            //the DynamoElements.dll
-            Assembly elementsAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-            loadedTypes = elementsAssembly.GetTypes();
-            foreach (Type t in loadedTypes)
-            {
-                //only load types that are in the right namespace, are not abstract
-                //and have the elementname attribute
-                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+            LoadBuiltinTypes();
 
-                if (t.Namespace == "Dynamo.Elements" && !t.IsAbstract && attribs.Length>0)
-                {
-                    System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
-                    mi.Header = (attribs[0] as ElementNameAttribute).ElementName;
-                    mi.Click += new RoutedEventHandler(AddElement_Click);
-                    AddMenu.Items.Add(mi);
-                }
-            }
+            LoadUserTypes();
 
             //pass in the drawing canvas
             //this is where everything will be drawn
@@ -149,7 +136,7 @@ namespace Dynamo.Controls
             dynElementSettings.SharedInstance.Bench = this;
 
             elements = new List<dynElement>();
-            connectors = new List<dynConnector>();
+            //connectors = new List<dynConnector>();
             selectedElements = new dynSelection();
 
             DrawGrid();
@@ -158,176 +145,166 @@ namespace Dynamo.Controls
             sw = new StringWriter();
             Log("Welcome to Dynamo!...");
         }
+    
+        private void LoadBuiltinTypes()
+        {
+            //setup the menu with all the types by reflecting
+            //the DynamoElements.dll
+            Assembly elementsAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+            Type[] loadedTypes = elementsAssembly.GetTypes();
+            foreach (Type t in loadedTypes)
+            {
+                //only load types that are in the right namespace, are not abstract
+                //and have the elementname attribute
+                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+
+                if (t.Namespace == "Dynamo.Elements" && 
+                    !t.IsAbstract && 
+                    attribs.Length>0 &&
+                    t.IsSubclassOf(typeof(dynElement)))
+                {
+                    string typeName = (attribs[0] as ElementNameAttribute).ElementName;
+                    System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
+                    mi.Header = typeName;
+                    mi.Click += new RoutedEventHandler(AddElement_Click);
+                    AddMenu.Items.Add(mi);
+
+                    builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
+                }
+            }
+        }
+
+        public void LoadUserTypes()
+        {
+            string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string pluginsPath = System.IO.Path.Combine(directory, "plugins");
+            if (System.IO.Directory.Exists(pluginsPath))
+            {
+                string[] filePaths = Directory.GetFiles(pluginsPath, "*.dll");
+                for (int i = 0; i < filePaths.Length; i++)
+                {
+                    Assembly currAss = Assembly.LoadFrom(filePaths[i]);
+                    Type[] loadedTypes = currAss.GetTypes();
+                    foreach (Type t in loadedTypes)
+                    {
+                        //only load types that are in the right namespace, are not abstract
+                        //and have the elementname attribute
+                        object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+
+                        if (t.Namespace == "Dynamo.Elements" && 
+                            !t.IsAbstract && 
+                            attribs.Length > 0 &&
+                            t.IsSubclassOf(typeof(dynElement)))
+                        {
+                            string typeName = (attribs[0] as ElementNameAttribute).ElementName;
+                            System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
+                            mi.Header = typeName;
+                            mi.Click += new RoutedEventHandler(AddElement_Click);
+                            AddMenu.Items.Add(mi);
+
+                            userTypes.Add(typeName, new TypeLoadData(currAss, t));
+                        }
+                    }
+                }
+            }
+        }
 
         /// <summary>
-        /// This method adds dynElements when opening a saved workbench.
+        /// This method adds dynElements when selected in the menu
         /// </summary>
         /// <param name="elementType"></param>
         /// <param name="nickName"></param>
         /// <param name="guid"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public dynElement AddDynElement(Type elementType, string nickName, Guid guid, double x, double y)
+        public dynElement AddDynElement(Type elementType, Assembly assem, string nickName, Guid guid, double x, double y)
         {
-            //create a new object from a type
-            //that is passed in
-            dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] {nickName});
-            el.GUID = guid;
-            
-            //store the element in the elements list
-            elements.Add(el);
+            try
+            {
+                //http://msdn.microsoft.com/en-us/library/ms173139.aspx
+                //http://stackoverflow.com/questions/4993098/wpf-control-throwing-resource-identified-by-the-uri-missing-exception
+                //http://www.matthidinger.com/archive/2008/10/12/managed-addin-framework-system.addin-with-wpf.aspx
 
-            workBench.Children.Add(el);
+                //create a new object from a type
+                //that is passed in
+                //dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] { nickName });
+                System.Runtime.Remoting.ObjectHandle obj = Activator.CreateInstanceFrom(assem.Location, elementType.FullName);
+                dynElement el = (dynElement)obj.Unwrap();
 
-            Canvas.SetLeft(el, x);
-            Canvas.SetTop(el, y);
+                el.GUID = guid;
 
-            //create an event on the element itself
-            //to update the elements ports and connectors
-            el.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
+                //store the element in the elements list
+                elements.Add(el);
+                
+                workBench.Children.Add(el);
 
-            return el;
+                Canvas.SetLeft(el, x);
+                Canvas.SetTop(el, y);
 
+                //create an event on the element itself
+                //to update the elements ports and connectors
+                el.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
+
+                return el;
+            }
+            catch (Exception e)
+            {
+                dynElementSettings.SharedInstance.Bench.Log(e.Message);
+                return null;
+            }
         }
 
-        void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        /// <summary>
+        /// This method adds dynElements when opening from a file
+        /// </summary>
+        /// <param name="elementType"></param>
+        /// <param name="nickName"></param>
+        /// <param name="guid"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public dynElement AddDynElement(Type elementType, string nickName, Guid guid, double x, double y)
         {
-            hitResultsList.Clear();
-            TestClick(e.GetPosition(workBench));
-
-            #region test for a port
-            dynPort p = null;
-            if (hitResultsList.Count > 0)
+            try
             {
-                foreach (DependencyObject depObj in hitResultsList)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get a port
-                    p = ElementClicked(depObj, typeof(dynPort)) as dynPort;
-                    if (p != null)
-                    {
-                        break;
-                    }
-                }
-            }
-            
+                //create a new object from a type
+                //that is passed in
+                //dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] { nickName });
+                dynElement el = (dynElement)Activator.CreateInstance(elementType);
 
-            if (p != null)
-            {
-                if (!isConnecting)
+                if (!string.IsNullOrEmpty(nickName))
                 {
-                    //test if port already has a connection if so grab it
-                    //and begin connecting to somewhere else
-                    //don't allow the grabbing of the start connector
-                    if (p.Connectors.Count > 0 && p.Connectors[0].Start != p)
-                    {
-                        activeConnector = p.Connectors[0];
-                        activeConnector.Disconnect(p);
-                        isConnecting = true;
-                        workBench.isConnecting = true;
-                    }
-                    else
-                    {
-
-                        try
-                        {
-                            
-                            //you've begun creating a connector
-                            dynConnector c = new dynConnector(p, workBench, e.GetPosition(workBench));
-                            activeConnector = c;
-                            isConnecting = true;
-                            workBench.isConnecting = true;
-                        }
-                        catch(Exception ex)
-                        {
-                            Debug.WriteLine(ex.Message);
-                        }
-                    }
-                    
+                    el.NickName = nickName;
                 }
                 else
                 {
-                    //attempt a connection between the port
-                    //and the connector
-                    if (!activeConnector.Connect(p))
+                    ElementNameAttribute elNameAttrib = this.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true)[0] as ElementNameAttribute;
+                    if (elNameAttrib != null)
                     {
-                        activeConnector.Kill();
-                        isConnecting = false;
-                        workBench.isConnecting = false;
-                        activeConnector = null;
-                        
-                    }
-                    else
-                    {
-                        //you've already started connecting
-                        //now you're going to stop
-                        isConnecting = false;
-                        workBench.isConnecting = false;
-                        activeConnector = null;
+                        el.NickName = elNameAttrib.ElementName;
                     }
                 }
+                el.GUID = guid;
 
-                //set the handled flag so that the element doesn't get dragged
-                e.Handled = true;
+                //store the element in the elements list
+                elements.Add(el);
+
+                workBench.Children.Add(el);
+
+                Canvas.SetLeft(el, x);
+                Canvas.SetTop(el, y);
+
+                //create an event on the element itself
+                //to update the elements ports and connectors
+                el.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
+
+                return el;
             }
-            else
+            catch (Exception e)
             {
-                //if you click on the canvas and you're connecting
-                //then drop the connector, otherwise do nothing
-                if (activeConnector != null)
-                {
-                    activeConnector.Kill();
-                    isConnecting = false;
-                    workBench.isConnecting = false;
-                    activeConnector = null;
-                }
-
+                dynElementSettings.SharedInstance.Bench.Log("Could not create an instance of the selected type.");
+                return null;
             }
-            #endregion
-
-            #region test for canvas
-            hitResultsList.Clear();
-            TestClick(e.GetPosition(workBench));
-
-            DragCanvas dc = null;
-            if (hitResultsList.Count > 0)
-            {
-                foreach (DependencyObject depObj in hitResultsList)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get a port
-                    dc = ElementClicked(depObj, typeof(DragCanvas)) as DragCanvas;
-                    if (dc != null)
-                    {
-                        Debug.WriteLine("Canvas clicked");
-                        ClearSelection();
-                        break;
-                    }
-                }
-            }
-            #endregion
-
-            #region test for dyn element
-            hitResultsList.Clear();
-            TestClick(e.GetPosition(workBench));
-
-            dynElement element = null;
-            if (hitResultsList.Count > 0)
-            {
-                foreach (DependencyObject depObj in hitResultsList)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get an element
-                    element = ElementClicked(depObj, typeof(dynElement)) as dynElement;
-                    if (element != null)
-                    {
-                        SelectElement(element);
-                        break;
-                    }
-                }
-            }
-            #endregion
-
         }
 
         public void SelectElement(dynElement sel)
@@ -343,6 +320,7 @@ namespace Dynamo.Controls
                 selectedElements.Clear();
                 selectedElements.Add(sel);
                 sel.Select();
+
             }
         }
 
@@ -354,35 +332,6 @@ namespace Dynamo.Controls
                 el.Deselect();
             }
             selectedElements.Clear();
-        }
-
-        void OnMouseRightButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            hitResultsList.Clear();
-            TestClick(e.GetPosition(workBench));
-
-            dynElement dynEl = null;
-            if (hitResultsList.Count > 0)
-            {
-                foreach (DependencyObject depObj in hitResultsList)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get a port
-                    dynEl = ElementClicked(depObj, typeof(dynElement)) as dynElement;
-                    if (dynEl != null)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            if (dynEl != null)
-            {
-                //this.statusText.Text = "DynElement selected...";
-
-                workBench.elementBeingDragged = dynEl;
-                workBench.DragElement();
-            }
         }
 
         void OnMouseWheel(object sender, MouseWheelEventArgs e)
@@ -632,18 +581,25 @@ namespace Dynamo.Controls
         {
             System.Windows.Controls.MenuItem mi = e.Source as System.Windows.Controls.MenuItem;
 
-            foreach (Type t in loadedTypes)
+            TypeLoadData tld = builtinTypes[mi.Header.ToString()] as TypeLoadData;
+            if(tld!=null)
             {
-                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
-                if (attribs.Length > 0)
+                dynElement newEl = AddDynElement(tld.t, tld.assembly, mi.Header.ToString(), Guid.NewGuid(), 0.0, 0.0);
+                if (newEl != null)
                 {
-                    if ((attribs[0] as ElementNameAttribute).ElementName == mi.Header.ToString())
-                    {
+                    newEl.CheckInputs();
+                    return;
+                }
+            }
 
-                        dynElement newEl = AddDynElement(t, (attribs[0] as ElementNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0);
-                        newEl.CheckInputs();
-                        break;
-                    }
+            tld = userTypes[mi.Header.ToString()] as TypeLoadData;
+            if(tld!=null)
+            {
+                dynElement newEl = AddDynElement(tld.t,tld.assembly,mi.Header.ToString(), Guid.NewGuid(), 0.0, 0.0);
+                if (newEl != null)
+                {
+                    newEl.CheckInputs();
+                    return;
                 }
             }
         }
@@ -734,6 +690,15 @@ namespace Dynamo.Controls
             }
 
             return true;
+        }
+
+        void SerializeWorkbench(string xmlPath)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<dynElement>));
+            TextWriter tw = new StreamWriter(xmlPath);
+            serializer.Serialize(tw, this.elements);
+            tw.Close(); 
+
         }
 
         bool OpenWorkbench(string xmlPath)
@@ -842,7 +807,7 @@ namespace Dynamo.Controls
                             dynConnector newConnector = new dynConnector(start, end, startIndex,
                                 endIndex, portType);
 
-                            connectors.Add(newConnector);
+                            //connectors.Add(newConnector);
                         }
                     
 
@@ -868,25 +833,34 @@ namespace Dynamo.Controls
             #region clear the existing workflow
             foreach (dynElement el in elements)
             {
+                foreach (dynPort p in el.InPorts)
+                {
+                    for(int i=p.Connectors.Count-1;i>=0;i--)
+                    {
+                        p.Connectors[i].Kill();
+                    }
+                }
+                foreach (dynPort p in el.OutPorts)
+                {
+                    for (int i = p.Connectors.Count - 1; i >= 0; i--)
+                    {
+                        p.Connectors[i].Kill();
+                    }
+                }
+                foreach (dynPort p in el.StatePorts)
+                {
+                    for (int i = p.Connectors.Count - 1; i >= 0; i--)
+                    {
+                        p.Connectors[i].Kill();
+                    }
+                }
+
                 //remove the element from the workbench
                 dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
             }
-            foreach (dynConnector c in connectors)
-            {
-                c.Kill();
-            }
 
-            for (int i = 0; i < elements.Count; i++)
-            {
-                elements[i] = null;
-            }
             elements.Clear();
 
-            for (int i = 0; i < connectors.Count; i++)
-            {
-                connectors[i] = null;
-            }
-            connectors.Clear();
             #endregion
         }
 
@@ -936,12 +910,203 @@ namespace Dynamo.Controls
             dynElementSettings.SharedInstance.Writer.WriteLine(message);
         }
 
+        void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            //Keyboard.Focus(this);
+
+            hitResultsList.Clear();
+            TestClick(e.GetPosition(workBench));
+
+            #region test for a port
+            dynPort p = null;
+            if (hitResultsList.Count > 0)
+            {
+                foreach (DependencyObject depObj in hitResultsList)
+                {
+                    //traverse the tree through all the
+                    //hit elements to see if you get a port
+                    p = ElementClicked(depObj, typeof(dynPort)) as dynPort;
+                    if (p != null)
+                    {
+                        break;
+                    }
+                }
+            }
+
+
+            if (p != null)
+            {
+                if (!isConnecting)
+                {
+                    //test if port already has a connection if so grab it
+                    //and begin connecting to somewhere else
+                    //don't allow the grabbing of the start connector
+                    if (p.Connectors.Count > 0 && p.Connectors[0].Start != p)
+                    {
+                        activeConnector = p.Connectors[0];
+                        activeConnector.Disconnect(p);
+                        isConnecting = true;
+                        workBench.isConnecting = true;
+                    }
+                    else
+                    {
+
+                        try
+                        {
+
+                            //you've begun creating a connector
+                            dynConnector c = new dynConnector(p, workBench, e.GetPosition(workBench));
+                            activeConnector = c;
+                            isConnecting = true;
+                            workBench.isConnecting = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
+                    }
+
+                }
+                else
+                {
+                    //attempt a connection between the port
+                    //and the connector
+                    if (!activeConnector.Connect(p))
+                    {
+                        activeConnector.Kill();
+                        isConnecting = false;
+                        workBench.isConnecting = false;
+                        activeConnector = null;
+
+                    }
+                    else
+                    {
+                        //you've already started connecting
+                        //now you're going to stop
+                        isConnecting = false;
+                        workBench.isConnecting = false;
+                        activeConnector = null;
+                    }
+                }
+
+                //set the handled flag so that the element doesn't get dragged
+                e.Handled = true;
+            }
+            else
+            {
+                //if you click on the canvas and you're connecting
+                //then drop the connector, otherwise do nothing
+                if (activeConnector != null)
+                {
+                    activeConnector.Kill();
+                    isConnecting = false;
+                    workBench.isConnecting = false;
+                    activeConnector = null;
+                }
+
+            }
+            #endregion
+
+            #region test for canvas
+            hitResultsList.Clear();
+            TestClick(e.GetPosition(workBench));
+
+            DragCanvas dc = null;
+            if (hitResultsList.Count > 0)
+            {
+                foreach (DependencyObject depObj in hitResultsList)
+                {
+                    //traverse the tree through all the
+                    //hit elements to see if you get a port
+                    dc = ElementClicked(depObj, typeof(DragCanvas)) as DragCanvas;
+                    if (dc != null)
+                    {
+                        Debug.WriteLine("Canvas clicked");
+                        ClearSelection();
+                        break;
+                    }
+                }
+            }
+            #endregion
+
+            #region test for dyn element
+            hitResultsList.Clear();
+            TestClick(e.GetPosition(workBench));
+
+            dynElement element = null;
+            if (hitResultsList.Count > 0)
+            {
+                foreach (DependencyObject depObj in hitResultsList)
+                {
+                    //traverse the tree through all the
+                    //hit elements to see if you get an element
+                    element = ElementClicked(depObj, typeof(dynElement)) as dynElement;
+                    if (element != null)
+                    {
+                        SelectElement(element);
+                        break;
+                    }
+                }
+            }
+            #endregion
+
+        }
+
+        void OnMouseRightButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            hitResultsList.Clear();
+            TestClick(e.GetPosition(workBench));
+
+            dynElement dynEl = null;
+            if (hitResultsList.Count > 0)
+            {
+                foreach (DependencyObject depObj in hitResultsList)
+                {
+                    //traverse the tree through all the
+                    //hit elements to see if you get a port
+                    dynEl = ElementClicked(depObj, typeof(dynElement)) as dynElement;
+                    if (dynEl != null)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (dynEl != null)
+            {
+                //this.statusText.Text = "DynElement selected...";
+
+                workBench.elementBeingDragged = dynEl;
+                workBench.DragElement();
+            }
+
+        }
+
+        //bubbling
+        //from element up to root
         private void OnKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            //if the key down is 'b' open the build window
-            if (e.Key == Key.B)
-            {
+            
+           
+        }
 
+        //tunneling
+        //from root down to element
+        private void OnPreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            
+        }
+
+        private void OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            //handle key presses for the bench in the bubbling event
+            //if no other element has already handled this event it will 
+            //start at the bench and move up to root, not raising the event
+            //on any other elements
+
+            //if the key down is 'b' open the build window
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.B))
+            {
                 //get the mouse position
 
                 toolFinder = new dynToolFinder();
@@ -950,14 +1115,25 @@ namespace Dynamo.Controls
 
                 Canvas.SetLeft(toolFinder, 100);
                 Canvas.SetTop(toolFinder, 100);
+                e.Handled = true;
             }
-            else if (e.Key == Key.Delete || e.Key == Key.Back)
+            //changed the delete key combination so as not to interfere with
+            //keyboard events
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Back) ||
+                Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Delete))
             {
+                //don't do this if an input element has focus
+                //this keeps us from deleting nodes when the
+                //user is deleting text
+
                 for (int i = selectedElements.Count - 1; i >= 0; i--)
                 {
                     DeleteElement(selectedElements[i]);
                 }
+                e.Handled = true;
             }
+
+            
         }
 
         private void DeleteElement(dynElement el)
@@ -983,15 +1159,11 @@ namespace Dynamo.Controls
             el = null;
             
         }
+        
         void toolFinder_ToolFinderFinished(object sender, EventArgs e)
         {
             dynElementSettings.SharedInstance.Workbench.Children.Remove(toolFinder);
             toolFinder = null;
-        }
-
-        private void _this_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
         }
 
         private void New_Click(object sender, RoutedEventArgs e)
@@ -1009,4 +1181,18 @@ namespace Dynamo.Controls
 
         }
     }
+
+    public class TypeLoadData
+    {
+        public Assembly assembly;
+        public Type t;
+
+        public TypeLoadData(Assembly assemblyIn, Type typeIn)
+        {
+            assembly = assemblyIn;
+            t = typeIn;
+
+        }
+    }
+
 }

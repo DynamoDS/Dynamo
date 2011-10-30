@@ -11,6 +11,8 @@
         MouseDown="OnMouseDown"
         MouseUp="OnMouseUp"
         KeyUp="OnKeyUp"
+        PreviewKeyUp="OnPreviewKeyUp"
+        PreviewKeyDown="OnPreviewKeyDown"
         Closed="WindowClosed">
     <Grid>
         <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Name="menu1">

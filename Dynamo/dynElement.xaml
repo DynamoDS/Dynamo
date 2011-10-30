@@ -2,8 +2,16 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dropShadow="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-    Height="300" Width="160" Name="topControl" Loaded="topControl_Loaded">
+    Height="300" Width="160" Name="topControl" Loaded="topControl_Loaded" KeyUp="OnKeyUp" PreviewKeyUp="OnPreviewKeyUp">
     <Grid Name="grid">
+        <Grid.ContextMenu>
+            <ContextMenu Name="MainContextMenu">
+                <MenuItem Name="longestList_cm" IsCheckable="True" Header="Longest List" Click="longestList_cm_Click" IsChecked="False"/>
+                <MenuItem Name="shortestList_cm" IsCheckable="True" Header="Shortest List" Click="shortestList_cm_Click" IsChecked="True"/>
+                <MenuItem Name="fullLace_cm" IsCheckable="True" Header="Full Lace" Click="fullLace_cm_Click" IsChecked="False"/>
+                <Separator Name="separator1_cm"/>
+            </ContextMenu>
+        </Grid.ContextMenu>
         <Grid Name="gridLeft" 
               HorizontalAlignment="Left" 
               VerticalAlignment="Stretch"
@@ -57,10 +65,8 @@
                     <SolidColorBrush Opacity=".25" Color="white" />
                 </Rectangle.Fill>
             </Rectangle>
-            <TextBlock Width ="{Binding ElementName=topControl, Path=Width}" 
-                       Height="18" 
+            <!--<TextBlock Height="18" 
                        Name="nickNameBlock" 
-                       HorizontalAlignment="Center"  
                        VerticalAlignment="Center" 
                        Text="nickName" 
                        Margin="0,-18,0,0" 
@@ -69,8 +75,28 @@
                        FontWeight="Normal" 
                        TextAlignment="Center" 
                        IsHitTestVisible="False" 
-                       Canvas.ZIndex="99"/>
-                
+                       Canvas.ZIndex="99"
+                       Canvas.Left="0" 
+                       Width="160" />-->
+            <TextBox Height="24" 
+                       Name="nickNameBlock" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Left"
+                       Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                       Margin="0,-24,0,0" 
+                       FontFamily="Calibri"
+                       FontSize="14" 
+                       FontWeight="Normal" 
+                       TextAlignment="Center" 
+                       IsHitTestVisible="True" 
+                       Canvas.ZIndex="99" 
+                       Width="{Binding ElementName=grid, Path=ActualWidth}"
+                       MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
+                       BorderThickness="0">
+                <TextBox.Background>
+                    <SolidColorBrush />
+                </TextBox.Background>
+            </TextBox>
         </Canvas>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Name="portNamesLeft" Margin="25,5,0,35" Width="20" IsHitTestVisible="True" Background="Transparent"/>
         <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="portNamesRight" Margin="5,5,25,35" Width="20" IsHitTestVisible="True" Background="Transparent"/>

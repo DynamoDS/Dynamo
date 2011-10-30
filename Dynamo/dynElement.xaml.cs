@@ -42,8 +42,9 @@ namespace Dynamo.Elements
     /// Interaction logic for dynControl.xaml
     /// </summary
     public enum ElementState { DEAD, ACTIVE, SELECTED, ERROR };
-    
-    public partial class dynElement : UserControl, IDynamic
+    public enum LacingType { SHORTEST, LONGEST, FULL };
+
+    public partial class dynElement : UserControl, IDynamic, INotifyPropertyChanged
     {
         #region delegates
         public delegate void dynElementUpdatedHandler(object sender, EventArgs e);
@@ -54,6 +55,16 @@ namespace Dynamo.Elements
         public delegate void dynElementDeselectedHandler(object sender, EventArgs e);
         #endregion
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
         #region private members
         List<dynPort> inPorts;
         List<dynPort> outPorts;
@@ -61,7 +72,7 @@ namespace Dynamo.Elements
         List<PortData> inPortData;
         List<PortData> outPortData;
         List<PortData> statePortData;
-        string nickName = "dE";
+        string nickName;
         ElementArray elements;
         Guid guid;
         bool isSelected = false;
@@ -69,6 +80,7 @@ namespace Dynamo.Elements
         DataTree dataTree;
         bool elementsHaveBeenDeleted = false;
         SetStateDelegate stateSetter;
+        LacingType lacingType = LacingType.SHORTEST;
         #endregion
 
         public delegate void SetToolTipDelegate(string message);
@@ -114,6 +126,11 @@ namespace Dynamo.Elements
         public string NickName
         {
             get { return nickName; }
+            set
+            {
+                nickName = value;
+                NotifyPropertyChanged("NickName");
+            }
         }
         public Guid GUID
         {
@@ -160,6 +177,11 @@ namespace Dynamo.Elements
             get { return elementsHaveBeenDeleted; }
             set { elementsHaveBeenDeleted = value; }
         }
+        public LacingType LacingType
+        {
+            get { return lacingType; }
+            set { lacingType = value; }
+        }
         #endregion
 
         #region events
@@ -177,9 +199,16 @@ namespace Dynamo.Elements
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="nickName"></param>
-        public dynElement(string nickName)
+        public dynElement()
         {
             InitializeComponent();
+            //System.Uri resourceLocater = new System.Uri("/DynamoElements;component/dynElement.xaml", UriKind.Relative);
+            //System.Uri resourceLocater = new System.Uri("/dynElement.xaml", UriKind.Relative);
+            //System.Windows.Application.LoadComponent(this, resourceLocater);
+
+            //set the main grid's data context to 
+            //this element
+            nickNameBlock.DataContext = this;
 
             inPorts = new List<dynPort>();
             inPortData = new List<PortData>();
@@ -188,19 +217,19 @@ namespace Dynamo.Elements
             statePorts = new List<dynPort>();
             statePortData = new List<PortData>();
             elements = new ElementArray();
-
             dataTree = new DataTree();
-
-            //this.settings = settings;
-            this.nickName = nickName;
-            this.nickNameBlock.Text = nickName;
-
             stateSetter = new SetStateDelegate(SetState);
             Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] {this, ElementState.DEAD });
 
+            ElementNameAttribute elNameAttrib = this.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true)[0] as ElementNameAttribute;
+            if (elNameAttrib != null)
+            {
+                NickName = elNameAttrib.ElementName;
+            }
+
             //set the z index to 2
             Canvas.SetZIndex(this, 1);
-
+            
             //generate a guid for the component
             dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
         }
@@ -211,41 +240,40 @@ namespace Dynamo.Elements
         /// <param name="settings"></param>
         /// <param name="nickName"></param>
         /// <param name="guid"></param>
-        public dynElement(dynElementSettings settings, string nickName, Guid guid)
-        {
-            InitializeComponent();
+        //public dynElement(dynElementSettings settings, string nickName, Guid guid)
+        //{
+        //    InitializeComponent();
 
-            inPorts = new List<dynPort>();
-            inPortData = new List<PortData>();
-            outPortData = new List<PortData>();
-            outPorts = new List<dynPort>();
+        //    inPorts = new List<dynPort>();
+        //    inPortData = new List<PortData>();
+        //    outPortData = new List<PortData>();
+        //    outPorts = new List<dynPort>();
 
-            dataTree = new DataTree();
+        //    dataTree = new DataTree();
 
-            this.nickName = nickName;
-            this.nickNameBlock.Text = nickName;
+        //    this.nickName = nickName;
+        //    this.nickNameBlock.Text = nickName;
             
 
-            stateSetter = new SetStateDelegate(SetState);
-            Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.DEAD });
+        //    stateSetter = new SetStateDelegate(SetState);
+        //    Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.DEAD });
 
-            //set the z index to 2
-            Canvas.SetZIndex(this, 1);
+        //    //set the z index to 2
+        //    Canvas.SetZIndex(this, 1);
 
-            this.guid = guid;
+        //    this.guid = guid;
 
-            dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
-        }
+        //    dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
+        //}
 
+        //public dynElement(dynElementSettings settings)
+        //{
+        //    //this.settings = settings;
+        //    this.guid = Guid.NewGuid();
 
-        public dynElement(dynElementSettings settings)
-        {
-            //this.settings = settings;
-            this.guid = Guid.NewGuid();
-
-            //empty constructor to create non-GUI types
-            dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
-        }
+        //    //empty constructor to create non-GUI types
+        //    dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
+        //}
 
         #endregion
 
@@ -299,6 +327,8 @@ namespace Dynamo.Elements
         
         public void RegisterInputsAndOutputs()
         {
+            
+
             ResizeElementForInputs();
             SetupPortGrids();
             RegisterInputs();
@@ -925,6 +955,55 @@ namespace Dynamo.Elements
         {
 
         }
+
+        //for information about routed events see:
+        //http://msdn.microsoft.com/en-us/library/ms742806.aspx
+        
+        //tunneling event
+        //from MSDN "...Tunneling routed events are often used or handled as part of the compositing for a 
+        //control, such that events from composite parts can be deliberately suppressed or replaced by 
+        //events that are specific to the complete control.
+        //starts at parent and climbs down children to element
+        private void OnPreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            //e.Handled = true;
+        }
+
+        //bubbling event
+        //from MSDN "...Bubbling routed events are generally used to report input or state changes 
+        //from distinct controls or other UI elements."
+        //starts at element and climbs up parents to root
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            //set handled to avoid triggering key press
+            //events on the workbench
+            //e.Handled = true;
+        }
+
+        private void longestList_cm_Click(object sender, RoutedEventArgs e)
+        {
+            lacingType = LacingType.LONGEST;
+            fullLace_cm.IsChecked = false;
+            shortestList_cm.IsChecked = false;
+            longestList_cm.IsChecked = true;
+        }
+
+        private void shortestList_cm_Click(object sender, RoutedEventArgs e)
+        {
+            lacingType = LacingType.SHORTEST;
+            fullLace_cm.IsChecked = false;
+            shortestList_cm.IsChecked = true;
+            longestList_cm.IsChecked = false;
+        }
+
+        private void fullLace_cm_Click(object sender, RoutedEventArgs e)
+        {
+            lacingType = LacingType.FULL;
+            fullLace_cm.IsChecked = true;
+            shortestList_cm.IsChecked = false;
+            longestList_cm.IsChecked = false;
+        }
+
 
     }
 }

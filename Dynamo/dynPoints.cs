@@ -39,8 +39,7 @@ namespace Dynamo.Elements
 {
     public abstract class dynReferencePoint:dynElement,IDynamic
     {
-        public dynReferencePoint(string nickName)
-            : base(nickName)
+        public dynReferencePoint()
         {
 
             OutPortData.Add(new PortData(null, "pt", "The Reference Point(s) created from this operation.", typeof(dynReferencePoint)));
@@ -71,8 +70,7 @@ namespace Dynamo.Elements
     [RequiresTransaction(true)]
     public class dynReferencePointByXYZ : dynReferencePoint, IDynamic
     {
-        public dynReferencePointByXYZ(string nickName)
-            : base(nickName)
+        public dynReferencePointByXYZ()
         {
             InPortData.Add(new PortData(null, "xyz", "The point(s) from which to create reference points.", typeof(dynXYZ)));
 
@@ -117,8 +115,7 @@ namespace Dynamo.Elements
     [RequiresTransaction(true)]
     public class dynReferencePtGrid : dynReferencePoint, IDynamic
     {
-        public dynReferencePtGrid(string nickName)
-            : base(nickName)
+        public dynReferencePtGrid()
         {
             InPortData.Add(new PortData(null, "xi", "Number in the X direction.", typeof(dynInt)));
             InPortData.Add(new PortData(null, "yi", "Number in the Y direction.", typeof(dynInt)));

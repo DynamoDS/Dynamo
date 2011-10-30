@@ -300,7 +300,9 @@ namespace Dynamo.Utilities
 	
 	            Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 	
-	            c = curveRef.Element as ModelCurve;
+	            //c = curveRef.Element as ModelCurve;
+                c = dynElementSettings.SharedInstance.Revit.ActiveUIDocument.Document.GetElement(curveRef) as ModelCurve;
+
 	            if (c != null)
 	            {
 	                cv = c.GeometryCurve;
@@ -337,7 +339,9 @@ namespace Dynamo.Utilities
 	
 	            if (faceRef != null)
 	            {
+                    //the suggested new method didn't exist in API?
 	                f = faceRef.GeometryObject as Face;
+
 	                GeometryElement geom = faceRef.Element.get_Geometry(opts);
 	                foreach (GeometryObject geob in geom.Objects)
 	                {

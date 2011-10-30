@@ -52,8 +52,7 @@ namespace Dynamo.Elements
             get { return fs; }
         }
 
-        public dynFamilyTypeSelector(string nickName)
-            : base(nickName)
+        public dynFamilyTypeSelector()
         {
 
             //widen the control
@@ -136,8 +135,7 @@ namespace Dynamo.Elements
             get { return parameterMap; }
         }
 
-        public dynInstanceParameterMapper(string nickName)
-            : base(nickName)
+        public dynInstanceParameterMapper()
         {
 
             this.topControl.Width = 300;
@@ -309,8 +307,7 @@ namespace Dynamo.Elements
     public class dynFamilyInstanceCreator : dynElement, IDynamic
     {
 
-        public dynFamilyInstanceCreator(string nickName)
-            : base(nickName)
+        public dynFamilyInstanceCreator()
         {
 
             InPortData.Add(new PortData(null, "pt", "Reference points.", typeof(dynReferencePoint)));
@@ -430,8 +427,7 @@ namespace Dynamo.Elements
     public class dynFamilyInstanceParameterEvaluation: dynElement, IDynamic
     {
 
-        public dynFamilyInstanceParameterEvaluation(string nickName)
-            : base(nickName)
+        public dynFamilyInstanceParameterEvaluation()
         {
 
             InPortData.Add(new PortData(null, "fi", "Family instances.", typeof(dynFamilyInstanceCreator)));

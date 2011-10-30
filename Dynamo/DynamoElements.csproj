@@ -133,7 +133,7 @@
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynRevitTypes.cs" />
+    <Compile Include="dynBaseTypes.cs" />
     <Compile Include="dynUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

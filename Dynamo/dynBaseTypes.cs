@@ -49,8 +49,7 @@ namespace Dynamo.Elements
 
     public abstract class dynDouble : dynElement
     {
-        public dynDouble(string nickName)
-            : base(nickName)
+        public dynDouble()
         {
             OutPortData.Add(new PortData(0.0, "", "dbl", typeof(dynDouble)));
         }
@@ -76,8 +75,7 @@ namespace Dynamo.Elements
 
     public abstract class dynBool : dynElement, IDynamic
     {
-        public dynBool(string nickName)
-            : base(nickName)
+        public dynBool()
         {
             OutPortData.Add(new PortData(false, "", "Boolean", typeof(dynBool)));
 
@@ -105,12 +103,9 @@ namespace Dynamo.Elements
    
     public abstract class dynInt : dynElement
     {
-        public dynInt(string nickName)
-            : base(nickName)
+        public dynInt()
         {
-            OutPortData.Add(new PortData(0, "", "int", typeof(dynInt)));
-
-            
+            OutPortData.Add(new PortData(0, "", "int", typeof(dynInt)));  
         }
 
         public override void Draw()
@@ -134,8 +129,7 @@ namespace Dynamo.Elements
 
     public abstract class dynString : dynElement, IDynamic
     {
-        public dynString(string nickName)
-            : base(nickName)
+        public dynString()
         {
             OutPortData.Add(new PortData(0, "", "st", typeof(dynString)));
 
@@ -163,8 +157,7 @@ namespace Dynamo.Elements
 
     public abstract class dynCurve : dynElement
     {
-        public dynCurve(string nickName)
-            : base(nickName)
+        public dynCurve()
         {
             OutPortData.Add(new PortData(null, "Cv", "Cv", typeof(dynCurve)));
 
@@ -192,8 +185,7 @@ namespace Dynamo.Elements
 
     public class dynAction : dynElement, IDynamic
     {
-        public dynAction(string nickName)
-            : base(nickName)
+        public dynAction()
         {
             InPortData.Add(new PortData(null, "act", "The action to perform.", typeof(dynAction)));
         }
@@ -229,8 +221,7 @@ namespace Dynamo.Elements
     {
         TextBox tb;
 
-        public dynDoubleInput(string nickName)
-            : base(nickName)
+        public dynDoubleInput()
         {
 
             //add a text box to the input grid of the control
@@ -242,7 +233,7 @@ namespace Dynamo.Elements
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "0.0";
             tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-            //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+            tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
             OutPortData[0].Object = 0.0;
 
@@ -305,8 +296,7 @@ namespace Dynamo.Elements
         System.Windows.Controls.RadioButton rbTrue;
         System.Windows.Controls.RadioButton rbFalse;
 
-        public dynBoolSelector(string nickName)
-            : base(nickName)
+        public dynBoolSelector()
         {
             //inputGrid.Margin = new System.Windows.Thickness(5,5,20,5);
 
@@ -376,8 +366,7 @@ namespace Dynamo.Elements
     {
         TextBox tb;
 
-        public dynIntInput(string nickName)
-            : base(nickName)
+        public dynIntInput()
         {
 
             //add a text box to the input grid of the control
@@ -446,6 +435,8 @@ namespace Dynamo.Elements
 
     #region element types
 
+    public enum COMPort { COM3, COM4 };
+
     [ElementName("Arduino")]
     [ElementDescription("An element which allows you to read from an Arduino microcontroller.")]
     [RequiresTransaction(false)]
@@ -453,8 +444,11 @@ namespace Dynamo.Elements
     {
         SerialPort port;
         string lastData = "";
+        COMPort portState;
+        System.Windows.Controls.MenuItem com4Item;
+        System.Windows.Controls.MenuItem com3Item;
 
-        public dynArduino(string nickName): base(nickName)
+        public dynArduino()
         {
             //InPortData.Add(new PortData(null, "loop", "The loop to execute.", typeof(dynLoop)));
             InPortData.Add(new PortData(null, "i/o", "Switch Arduino on?", typeof(dynBool)));
@@ -469,6 +463,37 @@ namespace Dynamo.Elements
             port.NewLine = "\r\n";
             port.DtrEnable = true;
             //port.DataReceived += new SerialDataReceivedEventHandler(serialPort1_DataReceived);
+
+            com3Item = new System.Windows.Controls.MenuItem();
+            com3Item.Header = "COM3";
+            com3Item.IsCheckable = true;
+            com3Item.IsChecked = true;
+            com3Item.Checked += new System.Windows.RoutedEventHandler(com3Item_Checked);
+
+            com4Item = new System.Windows.Controls.MenuItem();
+            com4Item.Header = "COM4";
+            com4Item.IsCheckable = true;
+            com4Item.IsChecked = false;
+            com4Item.Checked += new System.Windows.RoutedEventHandler(com4Item_Checked);
+
+            this.MainContextMenu.Items.Add(com3Item);
+            this.MainContextMenu.Items.Add(com4Item);
+            portState = COMPort.COM3;
+            port.PortName = "COM3";
+        }
+
+        void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            portState = COMPort.COM4;
+            com4Item.IsChecked = true;
+            com3Item.IsChecked = false;
+        }
+
+        void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            portState = COMPort.COM3;
+            com4Item.IsChecked = false;
+            com3Item.IsChecked = true;
         }
 
         public override void Draw()
@@ -487,6 +512,11 @@ namespace Dynamo.Elements
                     {
                         if (!port.IsOpen)
                         {
+                            if (portState == COMPort.COM3)
+                                port.PortName = "COM3";
+                            else
+                                port.PortName = "COM4";
+
                             port.Open();
                         }
 
@@ -583,8 +613,7 @@ namespace Dynamo.Elements
         Stopwatch sw;
         bool timing = false;
 
-        public dynTimer(string nickName)
-            : base(nickName)
+        public dynTimer()
         {
             InPortData.Add(new PortData(null, "n", "How often to receive updates in milliseconds.", typeof(dynInt)));
             InPortData.Add(new PortData(null, "i/o", "Turn the timer on or off", typeof(dynBool)));
@@ -723,8 +752,7 @@ namespace Dynamo.Elements
             }
         }
 
-        public dynWatch(string nickName)
-            : base(nickName)
+        public dynWatch()
         {
             
 
@@ -799,8 +827,6 @@ namespace Dynamo.Elements
     }
 
     #endregion
-
-    
 
     #region class attributes
     [AttributeUsage(AttributeTargets.All)]
