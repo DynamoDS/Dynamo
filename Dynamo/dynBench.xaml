@@ -55,7 +55,7 @@
                       VerticalAlignment="Bottom" 
                       HorizontalScrollBarVisibility="Auto"
                       Background="DarkGray" Opacity=".5">
-                <TextBlock Margin="0,0,0,0"
+                <TextBlock Margin="5"
                            Text="{Binding ElementName=_this, Path=LogText}" 
                            Foreground="White" TextWrapping="Wrap"/>
         </ScrollViewer>

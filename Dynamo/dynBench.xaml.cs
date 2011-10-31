@@ -143,7 +143,9 @@ namespace Dynamo.Controls
 
             //create the stringWriter for logging
             sw = new StringWriter();
-            Log("Welcome to Dynamo!...");
+            Log("Welcome to Dynamo!");
+            Log(String.Format("You are using build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+            Log("Be sure to check the blog for more information on the newest changes.");
         }
     
         private void LoadBuiltinTypes()
