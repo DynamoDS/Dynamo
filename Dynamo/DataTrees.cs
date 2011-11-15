@@ -61,12 +61,11 @@ namespace Dynamo.Elements
             trunk.Clear();
         }
 
-        public string Graph()
+        public override string ToString()
         {
+            //return base.ToString();
             string graph = "";
-
-            this.trunk.Graph(0,ref graph);
-
+            this.trunk.Graph(0, ref graph);
             return graph;
         }
     }
@@ -108,31 +107,22 @@ namespace Dynamo.Elements
             leaves.Clear();
         }
 
-        public void Graph(int branchIndex, ref string graph)
+        public void Graph(int index, ref string message)
         {
-            //n
-            graph += branchIndex.ToString();
-
             int leafCount = 0;
             foreach (object o in this.Leaves)
             {
-                //n:n--xxx
-                graph += ":" + leafCount.ToString();
-                if(o != null)
-                    graph += "--" + o.ToString() + "\n";
+                message +=  index.ToString()  + ":"  + leafCount.ToString() + ":{" + o.ToString() + "}\n";
+
                 leafCount++;
             }
 
-            int branchCount = 0;
-            foreach (DataTreeBranch b1 in this.Branches)
+            foreach (DataTreeBranch branch in Branches)
             {
-                //n:n:n
-                b1.Graph(branchCount, ref graph);
-                branchCount++;
+                branch.Graph(index + 1, ref message);
             }
 
-            graph += "\n";
+            
         }
-
     }
 }

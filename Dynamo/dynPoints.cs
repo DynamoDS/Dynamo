@@ -83,15 +83,15 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
-                DataTreeBranch b = new DataTreeBranch();
-                this.Tree.Trunk.Branches.Add(b);
+                //DataTreeBranch b = new DataTreeBranch();
+                //this.Tree.Trunk.Branches.Add(b);
 
                 XYZ pt = InPortData[0].Object as XYZ;
                 if (pt != null)
                 {
                     ReferencePoint rp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(pt);
-                    b.Leaves.Add(rp);
-
+                    //b.Leaves.Add(rp);
+                    this.Tree.Trunk.Leaves.Add(rp);
                     //add the element to the collection
                     Elements.Append(rp);
                 }
@@ -200,6 +200,89 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Distance to Ref. Pt.")]
+    [ElementDescription("An element which measures a distance between reference point(s).")]
+    [RequiresTransaction(false)]
+    public class dynDistanceBetweenPoints : dynElement, IDynamic
+    {
+
+        public dynDistanceBetweenPoints()
+        {
+            InPortData.Add(new PortData(null, "pts.", "A group of Reference point(s).", typeof(dynReferencePoint)));
+            InPortData.Add(new PortData(null, "pt.", "A Reference point.", typeof(dynReferencePoint)));
+
+            OutPortData.Add(new PortData(null, "Distance", "Distance(s) between points.", typeof(dynDouble)));
+            OutPortData[0].Object = this.Tree;
+
+            base.RegisterInputsAndOutputs();
+
+        }
+
+        public override void Draw()
+        {
+            if (CheckInputs())
+            {
+                DataTree treeA = InPortData[0].Object as DataTree;
+                DataTree treeB = InPortData[1].Object as DataTree;
+
+                if (treeB != null && treeB.Trunk.Leaves.Count > 0)
+                {
+                    //we're only using the first point in the tree right now.
+                    if (treeB.Trunk.Leaves.Count > 0)
+                    {
+                        ReferencePoint pt = treeB.Trunk.Leaves[0] as ReferencePoint;
+
+
+                        if (treeA != null && pt != null)
+                        {
+                            Process(treeA.Trunk, this.Tree.Trunk);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
+        {
+            DataTree dt = InPortData[1].Object as DataTree;
+            ReferencePoint attractor = dt.Trunk.Leaves[0] as ReferencePoint;
+
+            //use each XYZ leaf on the input
+            //to define a new origin
+            foreach (object o in bIn.Leaves)
+            {
+                ReferencePoint rp = o as ReferencePoint;
+
+                if (rp != null)
+                {
+                    //get the distance betweent the points
+                    
+                    double dist = rp.Position.DistanceTo(attractor.Position);
+                    currentBranch.Leaves.Add(dist);
+                }
+            }
+
+            foreach (DataTreeBranch b1 in bIn.Branches)
+            {
+                DataTreeBranch newBranch = new DataTreeBranch();
+                currentBranch.Branches.Add(newBranch);
+
+                Process(b1, newBranch);
+            }
+
+        }
+
+        public override void Destroy()
+        {
+            //base destroys all elements in the collection
+            base.Destroy();
+        }
+
+        public override void Update()
+        {
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+    }
     //[ElementName("PtOnEdge")]
     //[ElementDescription("Create an element which owns a reference point on a selected edge.")]
     //[RequiresTransaction(true)]

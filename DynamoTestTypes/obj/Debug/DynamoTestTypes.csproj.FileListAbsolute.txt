@@ -1,0 +1,6 @@
+C:\Code\dynamo\DynamoTestTypes\bin\Debug\DynamoTestTypes.dll
+C:\Code\dynamo\DynamoTestTypes\bin\Debug\DynamoTestTypes.pdb
+C:\Code\dynamo\DynamoTestTypes\bin\Debug\DynamoElements.dll
+C:\Code\dynamo\DynamoTestTypes\bin\Debug\DragCanvas.dll
+C:\Code\dynamo\DynamoTestTypes\bin\Debug\DynamoElements.pdb
+C:\Code\dynamo\DynamoTestTypes\bin\Debug\DragCanvas.pdb

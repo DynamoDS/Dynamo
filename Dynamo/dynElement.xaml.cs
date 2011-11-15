@@ -332,7 +332,7 @@ namespace Dynamo.Elements
             ResizeElementForInputs();
             SetupPortGrids();
             RegisterInputs();
-            RegisterStatePorts();
+            //RegisterStatePorts();
             RegisterOutputs();
             SetToolTips();
             ValidateConnections();
@@ -346,24 +346,24 @@ namespace Dynamo.Elements
             //HACK
             //We don't want to remove these grids for the Instance Parameter mapper
             //because it will need them later
-            if (statePortData.Count == 0 && this.GetType() != typeof(dynInstanceParameterMapper))
+            if (this.GetType() != typeof(dynInstanceParameterMapper))
             {
 
                 //size the height of the controller based on the 
                 //whichever is larger the inport or the outport list
                 this.topControl.Height = Math.Max(inPortData.Count, outPortData.Count) * 20 + 10; //spacing for inputs + title space + bottom space
-                grid.Children.Remove(gridBottom);
-                grid.Children.Remove(portNamesBottom);
+                //grid.Children.Remove(gridBottom);
+                //grid.Children.Remove(portNamesBottom);
                 
                 Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
                 gridLeft.Margin = leftGridThick;
-                Thickness leftNamesThick = new Thickness(portNamesLeft.Margin.Left, portNamesLeft.Margin.Top, portNamesLeft.Margin.Right, 5);
-                portNamesLeft.Margin = leftNamesThick;
+                //Thickness leftNamesThick = new Thickness(portNamesLeft.Margin.Left, portNamesLeft.Margin.Top, portNamesLeft.Margin.Right, 5);
+                //portNamesLeft.Margin = leftNamesThick;
 
                 Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
                 gridRight.Margin = rightGridThick;
-                Thickness rightNamesThick = new Thickness(portNamesRight.Margin.Left, portNamesRight.Margin.Top, portNamesRight.Margin.Right, 5);
-                portNamesRight.Margin = rightNamesThick;
+                //Thickness rightNamesThick = new Thickness(portNamesRight.Margin.Left, portNamesRight.Margin.Top, portNamesRight.Margin.Right, 5);
+                //portNamesRight.Margin = rightNamesThick;
 
                 Thickness inputGridThick = new Thickness(inputGrid.Margin.Left, inputGrid.Margin.Top, inputGrid.Margin.Right, 5);
                 inputGrid.Margin = inputGridThick;
@@ -373,7 +373,7 @@ namespace Dynamo.Elements
             }
             else
             {
-                this.topControl.Height = Math.Max(inPortData.Count, outPortData.Count) * 20 +40+ 10; //spacing for inputs + title space + bottom space  
+                this.topControl.Height = Math.Max(inPortData.Count, outPortData.Count) * 20 + 10; //spacing for inputs + title space 
             }
 
             this.elementShine.Height = this.topControl.Height / 2;
@@ -383,9 +383,10 @@ namespace Dynamo.Elements
                 //decrease the width of the node because
                 //there's nothing in the middle grid
                 this.topControl.Width = 100;
+
             }
             else
-                this.topControl.Width = Math.Max(200,StatePortData.Count * 20) + 10;
+                this.topControl.Width = Math.Max(200, StatePortData.Count * 20) + 10;
             
         }
 
@@ -395,39 +396,39 @@ namespace Dynamo.Elements
         public void SetupPortGrids()
         {
             //add one column for inputs
-            ColumnDefinition cdIn = new ColumnDefinition();
-            cdIn.Width = GridLength.Auto;
-            gridLeft.ColumnDefinitions.Add(cdIn);
+            //ColumnDefinition cdIn = new ColumnDefinition();
+            //cdIn.Width = GridLength.Auto;
+            //gridLeft.ColumnDefinitions.Add(cdIn);
 
-            ColumnDefinition namesIn = new ColumnDefinition();
-            namesIn.Width = GridLength.Auto;
-            portNamesLeft.ColumnDefinitions.Add(namesIn);
+            //ColumnDefinition namesIn = new ColumnDefinition();
+            //namesIn.Width = GridLength.Auto;
+            //portNamesLeft.ColumnDefinitions.Add(namesIn);
 
-            //add one column for outputs
-            ColumnDefinition cdOut = new ColumnDefinition();
-            cdOut.Width = GridLength.Auto;
-            gridLeft.ColumnDefinitions.Add(cdOut);
+            ////add one column for outputs
+            //ColumnDefinition cdOut = new ColumnDefinition();
+            //cdOut.Width = GridLength.Auto;
+            //gridLeft.ColumnDefinitions.Add(cdOut);
 
-            ColumnDefinition namesOut = new ColumnDefinition();
-            namesOut.Width = GridLength.Auto;
-            portNamesRight.ColumnDefinitions.Add(namesOut);
+            //ColumnDefinition namesOut = new ColumnDefinition();
+            //namesOut.Width = GridLength.Auto;
+            //portNamesRight.ColumnDefinitions.Add(namesOut);
 
-            //add one row for state ports
-            RowDefinition rdState = new RowDefinition();
-            rdState.Height = GridLength.Auto;
-            gridBottom.RowDefinitions.Add(rdState);
+            ////add one row for state ports
+            //RowDefinition rdState = new RowDefinition();
+            //rdState.Height = GridLength.Auto;
+            //gridBottom.RowDefinitions.Add(rdState);
 
-            RowDefinition namesState = new RowDefinition();
-            namesState.Height = GridLength.Auto;
-            portNamesBottom.RowDefinitions.Add(namesState);
+            //RowDefinition namesState = new RowDefinition();
+            //namesState.Height = GridLength.Auto;
+            //portNamesBottom.RowDefinitions.Add(namesState);
 
             foreach (object input in InPortData)
             {
                 RowDefinition rd = new RowDefinition();
                 gridLeft.RowDefinitions.Add(rd);
 
-                RowDefinition nameRd = new RowDefinition();
-                portNamesLeft.RowDefinitions.Add(nameRd);
+                //RowDefinition nameRd = new RowDefinition();
+                //portNamesLeft.RowDefinitions.Add(nameRd);
             }
 
             foreach (object output in OutPortData)
@@ -435,18 +436,18 @@ namespace Dynamo.Elements
                 RowDefinition rd = new RowDefinition();
                 gridRight.RowDefinitions.Add(rd);
 
-                RowDefinition nameRd = new RowDefinition();
-                portNamesRight.RowDefinitions.Add(nameRd);
+                //RowDefinition nameRd = new RowDefinition();
+                //portNamesRight.RowDefinitions.Add(nameRd);
             }
 
-            foreach(object state in StatePortData)
-            {
-                ColumnDefinition cd = new ColumnDefinition();
-                gridBottom.ColumnDefinitions.Add(cd);
+            //foreach(object state in StatePortData)
+            //{
+            //    ColumnDefinition cd = new ColumnDefinition();
+            //    gridBottom.ColumnDefinitions.Add(cd);
 
-                ColumnDefinition nameCd = new ColumnDefinition();
-                portNamesBottom.ColumnDefinitions.Add(nameCd);
-            }
+            //    ColumnDefinition nameCd = new ColumnDefinition();
+            //    portNamesBottom.ColumnDefinitions.Add(nameCd);
+            //}
 
 
         }
@@ -559,8 +560,9 @@ namespace Dynamo.Elements
                 Grid.SetColumn(p, 0);
                 Grid.SetRow(p, index);
 
-                portNamesLeft.Children.Add(tb);
-                Grid.SetColumn(tb, 0);
+                //portNamesLeft.Children.Add(tb);
+                gridLeft.Children.Add(tb);
+                Grid.SetColumn(tb, 1);
                 Grid.SetRow(tb, index);
                 
             }
@@ -572,28 +574,29 @@ namespace Dynamo.Elements
                 p.PortType = PortType.OUTPUT;
                 outPorts.Add(p);
                 gridRight.Children.Add(p);
-                Grid.SetColumn(p, 0);
+                Grid.SetColumn(p, 1);
                 Grid.SetRow(p, index);
 
-                portNamesRight.Children.Add(tb);
+                //portNamesRight.Children.Add(tb);
+                gridRight.Children.Add(tb);
                 Grid.SetColumn(tb, 0);
                 Grid.SetRow(tb, index);
                 
             }
-            else if (portType == PortType.STATE)
-            {
-                tb.HorizontalAlignment = HorizontalAlignment.Center;
+            //else if (portType == PortType.STATE)
+            //{
+            //    tb.HorizontalAlignment = HorizontalAlignment.Center;
 
-                p.PortType = PortType.STATE;
-                statePorts.Add(p);
-                gridBottom.Children.Add(p);
-                Grid.SetColumn(p, index);
-                Grid.SetRow(p, 0);
+            //    p.PortType = PortType.STATE;
+            //    statePorts.Add(p);
+            //    gridBottom.Children.Add(p);
+            //    Grid.SetColumn(p, index);
+            //    Grid.SetRow(p, 0);
 
-                portNamesBottom.Children.Add(tb);
-                Grid.SetColumn(tb, index);
-                Grid.SetRow(tb, 0);
-            }
+            //    portNamesBottom.Children.Add(tb);
+            //    Grid.SetColumn(tb, index);
+            //    Grid.SetRow(tb, 0);
+            //}
 
             p.Owner = this;
             

@@ -20,3 +20,5 @@ C:\Code\dynamo\Dynamo\obj\Release\GenerateResource.read.1.tlog
 C:\Code\dynamo\Dynamo\obj\Release\GenerateResource.write.1.tlog
 C:\Code\dynamo\Dynamo\obj\Release\DynamoElements.dll
 C:\Code\dynamo\Dynamo\obj\Release\DynamoElements.pdb
+C:\Code\dynamo\Dynamo\bin\Release\Coding4Fun.Kinect.Wpf.dll
+C:\Code\dynamo\Dynamo\bin\Release\Microsoft.Expression.Drawing.dll

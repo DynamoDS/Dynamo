@@ -164,130 +164,159 @@ namespace Dynamo.Elements
             //read from the state objects
             if (CheckInputs())
             {
-                //if (OutPorts[0].Connectors.Count > 0)
-                //{
-                    //read the end of this connector
-                    //DataTree treeIn = OutPorts[0].Connectors[0].End.Owner.Tree;
-                    DataTree treeIn = InPortData[0].Object as DataTree;
-                    if (treeIn != null)
-                    {
-                        Process(treeIn.Trunk);
-                    }
-                //}
-            }
-        }
+                CleanupOldPorts();
 
-        void Process(DataTreeBranch currentBranch)
-        {
-            foreach (object o in currentBranch.Leaves)
-            {
-                FamilyInstance fi = o as FamilyInstance;
-
-                //do not check all inputs here as we don't care
-                //they're going to get dropped anyway
-                //only check the first inport.
-                if (fi != null)
+                DataTree treeIn = InPortData[0].Object as DataTree;
+                if (treeIn != null)
                 {
-                    parameterMap.Clear();
-
-                    #region cleanup the old ports
-                    //clear all the inputs but the first one
-                    //which is the family instance
-                    //first kill all the connectors
-                    for (int i = 1; i < InPortData.Count; i++)
+                    if (treeIn.Trunk.Branches.Count > 0)
                     {
-                        dynPort p = InPorts[i];
-
-                        //must remove the connectors iteratively
-                        //do not use a foreach here!
-                        while (p.Connectors.Count > 0)
+                        if (treeIn.Trunk.Branches[0].Leaves.Count > 0)
                         {
-                            dynConnector c = p.Connectors[p.Connectors.Count - 1] as dynConnector;
-                            c.Kill();
-                        }
-                    }
-
-                    //then remove all the ports
-                    while (InPorts.Count > 1)
-                    {
-                        InPorts.RemoveAt(InPorts.Count - 1);
-                        InPortData.RemoveAt(InPortData.Count - 1);
-                    }
-
-                    while (gridLeft.RowDefinitions.Count > 1)
-                    {
-                        //remove the port from the children list
-                        gridLeft.Children.RemoveAt(gridLeft.RowDefinitions.Count - 1);
-                        portNamesLeft.Children.RemoveAt(portNamesLeft.RowDefinitions.Count - 1);
-
-                        gridLeft.RowDefinitions.RemoveAt(gridLeft.RowDefinitions.Count - 1);
-                        portNamesLeft.RowDefinitions.RemoveAt(portNamesLeft.RowDefinitions.Count - 1);
-                    }
-                    #endregion
-
-                    foreach (Parameter p in fi.Parameters)
-                    {
-                        if (!p.IsReadOnly)  //don't want it if it is read only
-                        {
-                            if (p.StorageType == StorageType.Double)
+                            FamilyInstance fi = treeIn.Trunk.Branches[0].Leaves[0] as FamilyInstance;
+                            if (fi != null)
                             {
-                                string paramName = p.Definition.Name;
-
-                                PortData pd = new PortData(null, p.Definition.Name[0].ToString(), paramName, typeof(dynDouble));
-                                InPortData.Add(pd);
-                                parameterMap.Add(paramName, pd.Object);
+                                MapPorts(fi);
                             }
                         }
                     }
-
-                    //add back new ports
-                    for (int i = 1; i < InPortData.Count; i++)
-                    {
-                        dynElement el = InPortData[i].Object as dynElement;
-
-                        RowDefinition rd = new RowDefinition();
-                        gridLeft.RowDefinitions.Add(rd);
-
-                        RowDefinition nameRd = new RowDefinition();
-                        portNamesLeft.RowDefinitions.Add(nameRd);
-
-                        //add a port for each input
-                        //distribute the ports along the 
-                        //edges of the icon
-                        AddPort(el, PortType.INPUT, InPortData[i].NickName, i);
-                    }
-
-                    //resize this thing
-                    base.ResizeElementForInputs();
-
-                    base.SetToolTips();
-
-                    //OnDynElementReadyToBuild(EventArgs.Empty);
                 }
 
-                //we only want to process the first thing
-                break;
+
             }
-            foreach (DataTreeBranch childBranch in currentBranch.Branches)
+        }
+
+        private void MapPorts(FamilyInstance fi)
+        {
+            parameterMap.Clear();
+
+            foreach (Parameter p in fi.Parameters)
             {
-                Process(childBranch);
+                if (!p.IsReadOnly)  //don't want it if it is read only
+                {
+                    if (p.StorageType == StorageType.Double)
+                    {
+                        string paramName = p.Definition.Name;
+
+                        PortData pd = new PortData(null, 
+                            p.Definition.Name[0].ToString(), 
+                            paramName, 
+                            typeof(dynDouble));
+                        InPortData.Add(pd);
+                        parameterMap.Add(paramName, pd.Object);
+                    }
+                }
             }
+
+            //add back new ports
+            for (int i = 1; i < InPortData.Count; i++)
+            {
+                dynElement el = InPortData[i].Object as dynElement;
+
+                RowDefinition rd = new RowDefinition();
+                gridLeft.RowDefinitions.Add(rd);
+
+                //add a port for each input
+                //distribute the ports along the 
+                //edges of the icon
+                AddPort(el, PortType.INPUT, InPortData[i].NickName, i);
+            }
+
+            //resize this thing
+            base.ResizeElementForInputs();
+
+            base.SetToolTips();
+        }
+
+        private void CleanupOldPorts()
+        {
+
+            //clear all the inputs but the first one
+            //which is the family instance
+            //first kill all the connectors
+            for (int i = 1; i < InPortData.Count; i++)
+            {
+                dynPort p = InPorts[i];
+
+                //must remove the connectors iteratively
+                //do not use a foreach here!
+                while (p.Connectors.Count > 0)
+                {
+                    dynConnector c = p.Connectors[p.Connectors.Count - 1] as dynConnector;
+                    c.Kill();
+                }
+            }
+
+            //then remove all the ports
+            while (InPorts.Count > 1)
+            {
+                InPorts.RemoveAt(InPorts.Count - 1);
+                InPortData.RemoveAt(InPortData.Count - 1);
+            }
+
+            while (gridLeft.RowDefinitions.Count > 1)
+            {
+                //remove the port from the children list
+                gridLeft.Children.RemoveAt(gridLeft.RowDefinitions.Count - 1);
+                gridLeft.RowDefinitions.RemoveAt(gridLeft.RowDefinitions.Count - 1);
+
+            }
+
         }
 
         public override void Draw()
         {
-            //get the input value and map and map it
-            //to the parameter value
-            //if (CheckInputs())
-            //{
-                foreach(PortData pd in InPortData)
+
+            //skip the first port data because it's the family instances
+            for(int i=1; i<InPortData.Count; i++)
+            {
+                PortData pd = InPortData[i];
+                //parameter value keys are the tooltip - the name 
+                //of the parameter
+                //set the objects on the parameter map
+                parameterMap[pd.ToolTipString] = pd.Object;
+
+                DataTree familyInstTree = InPortData[0].Object as DataTree;
+                DataTree doubleTree = pd.Object as DataTree;
+
+                if (familyInstTree != null && doubleTree != null)
                 {
-                    //parameter value keys are the tooltip - the name 
-                    //of the parameter
-                    parameterMap[pd.ToolTipString] = pd.Object;
+                    //get the parameter represented by the port data
+                    Process(familyInstTree.Trunk, doubleTree.Trunk, pd.ToolTipString);
                 }
-                //OnDynElementReadyToBuild(EventArgs.Empty);
-            //}
+
+            }
+
+        }
+
+        public void Process(DataTreeBranch familyBranch, DataTreeBranch doubleBranch, string paramName)
+        {
+            int leafCount = 0;
+            foreach(object o in familyBranch.Leaves)
+            {
+                FamilyInstance fi = o as FamilyInstance;
+                if (fi != null)
+                {
+                    Parameter p = fi.get_Parameter(paramName);
+                    if(p!= null)
+                    {
+                        p.Set(Convert.ToDouble(doubleBranch.Leaves[leafCount]));
+                    }
+                }
+                leafCount++;
+            }
+
+            int subBranchCount = 0;
+            foreach (DataTreeBranch nextBranch in familyBranch.Branches)
+            {
+                //don't do this if the double tree doesn't
+                //have a member in the same location
+                if (doubleBranch.Branches.Count-1 >= subBranchCount)
+                {
+                    Process(nextBranch, doubleBranch.Branches[subBranchCount], paramName);
+                }
+                subBranchCount++;
+            }
         }
 
         public override void Update()

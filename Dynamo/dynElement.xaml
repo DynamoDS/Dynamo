@@ -15,20 +15,28 @@
         <Grid Name="gridLeft" 
               HorizontalAlignment="Left" 
               VerticalAlignment="Stretch"
-              Margin="5,5,0,35" 
-              Width="20" 
+              Margin="5,5,0,5" 
+              Width="Auto" 
               IsHitTestVisible="True" 
               Background="Transparent"
               Canvas.ZIndex="99">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="Auto"/>           
+            </Grid.ColumnDefinitions>
         </Grid>
         <Grid Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
-              Margin="0,5,5,35" 
-              Width="20" 
+              Margin="0,5,5,5" 
+              Width="Auto" 
               IsHitTestVisible="True" 
               Background="Transparent"
               Canvas.ZIndex="99">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
         </Grid>
         <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
@@ -98,15 +106,18 @@
                 </TextBox.Background>
             </TextBox>
         </Canvas>
-        <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Name="portNamesLeft" Margin="25,5,0,35" Width="20" IsHitTestVisible="True" Background="Transparent"/>
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="portNamesRight" Margin="5,5,25,35" Width="20" IsHitTestVisible="True" Background="Transparent"/>
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Name="portNamesBottom" Margin="5,5,5,15" Height="20" IsHitTestVisible="True" Background="Transparent"/>
+        <!--<Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Name="portNamesLeft" Margin="25,5,0,35" Width="Auto" IsHitTestVisible="True" Background="Transparent"/>
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="portNamesRight" Margin="5,5,25,35" Width="Auto" IsHitTestVisible="True" Background="Transparent"/>-->
+        <!--<Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Name="portNamesBottom" Margin="5,5,5,15" Height="20" IsHitTestVisible="True" Background="Transparent"/>-->
         <Grid Name="inputGrid"
               VerticalAlignment="Stretch"
-              Margin="45,5,45,35"/>
-        <Grid Name="gridBottom"
+              HorizontalAlignment="Stretch"
+              Height="Auto"
+              Width="Auto"
+              Margin="45,5,45,5"/>
+        <!--<Grid Name="gridBottom"
               VerticalAlignment="Bottom"
               Height="10"
-              Margin="5,5"/>
+              Margin="5,5"/>-->
     </Grid>
 </UserControl>

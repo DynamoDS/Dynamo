@@ -1,6 +1,8 @@
 C:\Code\dynamo\Dynamo\bin\Debug\DynamoElements.dll
 C:\Code\dynamo\Dynamo\bin\Debug\DynamoElements.pdb
+C:\Code\dynamo\Dynamo\bin\Debug\Coding4Fun.Kinect.Wpf.dll
 C:\Code\dynamo\Dynamo\bin\Debug\DragCanvas.dll
+C:\Code\dynamo\Dynamo\bin\Debug\Microsoft.Expression.Drawing.dll
 C:\Code\dynamo\Dynamo\bin\Debug\DragCanvas.pdb
 C:\Code\dynamo\Dynamo\obj\Debug\ResolveAssemblyReference.cache
 C:\Code\dynamo\Dynamo\obj\Debug\DynamoSplash.baml
