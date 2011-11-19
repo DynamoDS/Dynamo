@@ -25,8 +25,8 @@
                 </ContextMenu>
             </Ellipse.ContextMenu>
         </Ellipse>
-        <Ellipse Height="4" 
-                 Width="4" 
+        <Ellipse Height="5" 
+                 Width="5" 
                  Name="ellipse1Dot" 
                  HorizontalAlignment="Center" 
                  VerticalAlignment="Center" 

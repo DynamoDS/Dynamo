@@ -700,7 +700,7 @@ namespace Dynamo.Elements
                 Canvas.SetTop(rightHandEllipse, relativePoint.Y);
 
                 //add the right hand point at the base of the tree
-                this.Tree.Trunk.Leaves.Add(rightHandPt);
+                this.Tree.Trunk.Leaves[0]=rightHandPt;
             }
 
             if (CheckInputs())
@@ -963,13 +963,16 @@ namespace Dynamo.Elements
 
         public dynWatch()
         {
-            
 
             //add a list box
-            //label = new System.Windows.Controls.Label();
             System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
 
             WatchValue = "Ready to watch!";
             
@@ -1007,22 +1010,6 @@ namespace Dynamo.Elements
                 UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                 Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
-                //DataTree tree = InPortData[0].Object as DataTree;
-
-                //if (tree != null)
-                //{
-                //    WatchValue = tree.ToString();
-
-                //    UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-                //    Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-                //}
-                //else
-                //{
-                //    //find the object as a string
-                //    WatchValue = InPortData[0].Object.ToString();
-                //    UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-                //    Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-                //}
             }
         }
 
