@@ -842,11 +842,35 @@ namespace Dynamo.Elements
         {
             foreach (dynPort p in outPorts)
             {
+                //send the messages without updating
                 foreach (dynConnector c in p.Connectors)
                 {
                     c.SendMessage();
                 }
             }
+
+            //aggregate the unique output nodes
+            //this avoids multiple updates of the same node
+            //if a node has the same node connected to several of its outputs
+            List<dynElement> uniqueNodes = new List<dynElement>();
+            foreach (dynPort p in outPorts)
+            {
+                foreach (dynConnector c in p.Connectors)
+                {
+                    if (!uniqueNodes.Contains(c.End.Owner))
+                    {
+                        uniqueNodes.Add(c.End.Owner);
+                    }
+                }
+            }
+
+            //update the unique nodes
+            foreach (dynElement el in uniqueNodes)
+            {
+                el.Update();
+            }
+
+            uniqueNodes = null;
         }
 
         public void FindDownstreamElements(ref List<dynElement>downStream)

@@ -220,7 +220,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Double")]
-    [ElementDescription("An element which creates an unsigned floating point number.")]
+    [ElementDescription("An element which creates an signed floating point number.")]
     [RequiresTransaction(false)]
     public class dynDoubleInput : dynDouble
     {
@@ -292,9 +292,9 @@ namespace Dynamo.Elements
 
         public override void Update()
         {
-            tb.Text = OutPortData[0].Object.ToString();
+            //tb.Text = OutPortData[0].Object.ToString();
 
-            OnDynElementReadyToBuild(EventArgs.Empty);
+            //OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }
 
@@ -700,7 +700,7 @@ namespace Dynamo.Elements
                 Canvas.SetTop(rightHandEllipse, relativePoint.Y);
 
                 //add the right hand point at the base of the tree
-                this.Tree.Trunk.Leaves[0]=rightHandPt;
+                this.Tree.Trunk.Leaves.Add(rightHandPt);
             }
 
             if (CheckInputs())
@@ -980,17 +980,14 @@ namespace Dynamo.Elements
 
             System.Windows.Data.Binding b = new System.Windows.Data.Binding("WatchValue");
             b.Source = this;
-            //label.SetBinding(System.Windows.Controls.Label.ContentProperty, b);
+
             tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, b);
 
-            //this.inputGrid.Children.Add(label);
             this.inputGrid.Children.Add(tb);
             tb.TextWrapping = System.Windows.TextWrapping.Wrap;
             tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            //tb.AcceptsReturn = true;
 
             InPortData.Add(new PortData(null, "", "The Element to watch", typeof(dynElement)));
-
 
             base.RegisterInputsAndOutputs();
 
@@ -999,7 +996,7 @@ namespace Dynamo.Elements
             this.topControl.Width = 300;
             UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
             Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this }); 
-            //this.UpdateLayout();
+
         }
 
         public override void Draw()

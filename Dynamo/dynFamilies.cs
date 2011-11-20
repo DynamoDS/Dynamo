@@ -359,10 +359,6 @@ namespace Dynamo.Elements
                 if (treeIn != null)
                 {
                     Process(treeIn.Trunk, this.Tree.Trunk);
-
-                    //Hashtable parameterMap = StatePortData[0].Object as Hashtable;
-                    //if(parameterMap != null)
-                    //    ProcessState(this.Tree.Trunk, parameterMap);
                 }
             }
 
@@ -386,19 +382,6 @@ namespace Dynamo.Elements
                     Elements.Append(fi);
                     currentBranch.Leaves.Add(fi);
 
-                    //Hashtable parameterMap = StatePortData[0].Object as Hashtable;
-                    //if (parameterMap != null)
-                    //{
-                    //    foreach (DictionaryEntry de in parameterMap)
-                    //    {
-                    //        //find the parameter on the family instance
-                    //        Parameter p = fi.Symbol.get_Parameter(de.Key.ToString());
-                    //        if (p != null)
-                    //        {
-                    //            p.Set((double)de.Value);
-                    //        }
-                    //    }
-                    //}
                 }
             }
 

@@ -45,7 +45,6 @@ namespace Dynamo.Elements
             OutPortData.Add(new PortData(null, "pt", "The Reference Point(s) created from this operation.", typeof(dynReferencePoint)));
             OutPortData[0].Object = this.Tree;
 
-            //base.RegisterInputsAndOutputs();
         }
 
         public override void Draw()
@@ -74,8 +73,6 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData(null, "xyz", "The point(s) from which to create reference points.", typeof(dynXYZ)));
 
-            //outport already added in parent
-
             base.RegisterInputsAndOutputs();
         }
 
@@ -83,21 +80,36 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
-                //DataTreeBranch b = new DataTreeBranch();
-                //this.Tree.Trunk.Branches.Add(b);
-
-                XYZ pt = InPortData[0].Object as XYZ;
-                if (pt != null)
+                DataTree a = InPortData[0].Object as DataTree;
+                if (a != null)
                 {
-                    ReferencePoint rp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(pt);
-                    //b.Leaves.Add(rp);
-                    this.Tree.Trunk.Leaves.Add(rp);
-                    //add the element to the collection
-                    Elements.Append(rp);
+                    Process(this.Tree.Trunk, a.Trunk);
                 }
+
             }
         }
 
+        public void Process(DataTreeBranch currBranch, DataTreeBranch a)
+        {
+            foreach (object o in a.Leaves)
+            {
+                XYZ pt = o as XYZ;
+                if (pt != null)
+                {
+                    ReferencePoint rp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(pt);
+                    currBranch.Leaves.Add(rp);
+                    Elements.Append(rp);
+                }
+            }
+
+            foreach (DataTreeBranch aChild in a.Branches)
+            {
+                DataTreeBranch subBranch = new DataTreeBranch();
+                currBranch.Branches.Add(subBranch);
+
+                Process(subBranch, aChild);
+            }
+        }
         public override void Destroy()
         {
             //base destroys all elements in the collection

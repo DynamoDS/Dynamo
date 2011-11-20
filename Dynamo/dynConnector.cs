@@ -226,7 +226,7 @@ namespace Dynamo.Connectors
                         pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData[pStart.Index].Object;
                     
                     //tell the end port's ownder to update
-                    pEnd.Owner.Update();
+                    //pEnd.Owner.Update();
                 }
             }
 
