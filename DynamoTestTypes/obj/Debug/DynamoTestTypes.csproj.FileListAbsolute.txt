@@ -4,3 +4,8 @@ C:\Code\dynamo\DynamoTestTypes\bin\Debug\DynamoElements.dll
 C:\Code\dynamo\DynamoTestTypes\bin\Debug\DragCanvas.dll
 C:\Code\dynamo\DynamoTestTypes\bin\Debug\DynamoElements.pdb
 C:\Code\dynamo\DynamoTestTypes\bin\Debug\DragCanvas.pdb
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\plugins\DynamoTestTypes.dll
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\plugins\DynamoTestTypes.pdb
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoTestTypes\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoTestTypes\obj\Debug\DynamoTestTypes.dll
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoTestTypes\obj\Debug\DynamoTestTypes.pdb

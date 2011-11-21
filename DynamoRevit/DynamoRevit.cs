@@ -62,7 +62,7 @@ namespace Dynamo.Applications
 
                 // Set the large image shown on button using a resource from DynamoRevit.resx (namespace is Dynamo.Applications.DynamoRevitResources)
 
-                System.Drawing.Bitmap dynamoIcon = DynamoRevitResources.Nodes_32_32;
+                System.Drawing.Bitmap dynamoIcon = Dynamo.Applications.DynamoRevitResources.Nodes_32_32;
 
                 BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                          dynamoIcon.GetHbitmap(),
