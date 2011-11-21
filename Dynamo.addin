@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
+
+  <AddIn Type="Application">
+    <Name>Damn Application</Name>
+    <Assembly>>C:\xfer\dev\dynamo_git\test\DynamoRevit\bin\Debug\DynamoRevit.dll</Assembly>
+    <AddInId>604B1052-F742-4951-8576-C261D1993107</AddInId>
+    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>
+    <VendorId>GOBD</VendorId>
+    <VendorDescription>GoBuild, www.goBuild.com</VendorDescription>
+  </AddIn>
+  
   <AddIn Type="Command">
-    <Assembly>C:\Program Files\goBuild\dynamo\DynamoRevit.dll</Assembly>
+    <Assembly>C:\xfer\dev\dynamo_git\test\DynamoRevit\bin\Debug\DynamoRevit.dll</Assembly>
     <AddInId>dc09be67-aa31-4ea7-86c9-d06c080cd3e9</AddInId>
     <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>
     <Text>Dynamo</Text>

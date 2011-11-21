@@ -20,6 +20,8 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Windows.Media.Imaging;
+
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit;
 using Autodesk.Revit.UI;
@@ -30,8 +32,62 @@ using Dynamo.Controls;
 using System.Xml.Serialization;
 using Dynamo.Utilities;
 
+
 namespace Dynamo.Applications
 {
+
+    //MDJ - Added by Matt Jezyk - 10.27.2011
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
+    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
+
+    public class DynamoRevitApp : IExternalApplication 
+    {
+
+        static private string m_AssemblyName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+        static private string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
+
+
+        public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
+        {
+            try
+            {
+                // Create new ribbon panel
+                RibbonPanel ribbonPanel = application.CreateRibbonPanel("Visual Programming"); //MDJ todo - move hard-coded strings out to resource files
+                
+                //Create a push button in the ribbon panel 
+
+                PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
+                    "Dynamo", m_AssemblyName, "Dynamo.Applications.DynamoRevit")) as PushButton;
+
+
+                // Set the large image shown on button using a resource from DynamoRevit.resx (namespace is Dynamo.Applications.DynamoRevitResources)
+
+                System.Drawing.Bitmap dynamoIcon = DynamoRevitResources.Nodes_32_32;
+
+                BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                         dynamoIcon.GetHbitmap(),
+                         IntPtr.Zero,
+                         System.Windows.Int32Rect.Empty,
+                         System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+                pushButton.LargeImage = bitmapSource;
+                pushButton.Image = bitmapSource;
+
+                return Result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return Result.Failed;
+            }
+        }
+        public Result OnShutdown(UIControlledApplication application)
+        {
+            return Result.Succeeded;
+        }
+    }
+    //MDJ - End of chunk added by Matt Jezyk
+
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
     class DynamoRevit : IExternalCommand
@@ -137,6 +193,9 @@ namespace Dynamo.Applications
 
         }
 
+
+        
+
         //public Result OnStartup(Autodesk.Revit.UI.UIControlledApplication application)
         //{
         //    ElementUpdater updater = new ElementUpdater(application.ActiveAddInId);
@@ -189,6 +248,8 @@ namespace Dynamo.Applications
             }
         }
     }
+
+    
 
 
 }
