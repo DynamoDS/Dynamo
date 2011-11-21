@@ -1119,6 +1119,7 @@ namespace Dynamo.Elements
         System.Windows.Controls.TextBox tb;
 
         string watchValue;
+        double sumValue= 0.0;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1137,6 +1138,17 @@ namespace Dynamo.Elements
             {
                 watchValue = value;
                 NotifyPropertyChanged("WatchValue");
+            }
+        }
+
+
+        public double SumValue
+        {
+            get { return sumValue; }
+            set
+            {
+                sumValue = value;
+                NotifyPropertyChanged("SumValue");
             }
         }
 
@@ -1166,7 +1178,13 @@ namespace Dynamo.Elements
             tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
             //tb.AcceptsReturn = true;
 
-            InPortData.Add(new PortData(null, "", "The solar radiation data", typeof(dynElement)));
+            InPortData.Add(new PortData(null, "", "The solar radiation data file", typeof(dynElement)));
+
+            OutPortData.Add(new PortData(null, "", "The solar radiation computed data", typeof(double)));
+            this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+            this.Tree.Trunk.Branches[0].Leaves.Add(SumValue); //MDJ TODO - cleanup input tree and output tree
+            //OutPortData[0].Object = this.Tree;
+            OutPortData[0].Object = SumValue;
 
 
             base.RegisterInputsAndOutputs();
@@ -1196,22 +1214,42 @@ namespace Dynamo.Elements
             //1,153823.9528125,7.23744587802689,-32.6932900007427,70.7843137254902,0.2871833,-0.2871833,0.9138116
             //2,159066.52853125,4.74177488560379,-30.1976190083196,72.3529411764706,0.2871833,-0.2871833,0.9138116
 
+            //DataTree treeIn = InPortData[0].Object as DataTree;
+            //    if (treeIn != null)
+            //    {
+
             foreach (object o in bIn.Leaves)
             {
+
                 line = o.ToString();
 
-
-                string[] values = line.Split(',');
-                index = Convert.ToInt32(line[0]);
-
-                if (index != null) // then we know we are passed the header lines and into data
+                try
                 {
-                    doubleSRValue = line[1];
-                } 
+                    string[] values = line.Split(',');                
+                    //index = int.Parse(values[0]); // seems a little hacky
 
-                
-                i++;
+                    if (int.TryParse(values[0], out index)) // test the first value, if the first value is an int, then we know we are passed the header lines and into data
+                    {
+
+                       // string stringSRValue = values[1];
+
+                        doubleSRValue = double.Parse(values[1]); // the 2nd value is the one we want
+
+                        SumValue = SumValue + doubleSRValue; // compute the sum but adding current value with previous values
+
+                    }
+
+
+
+                    i++;
+                }
+
+                catch (Exception e)
+                {
+                   // TaskDialog.Show("error", e.ToString());// index is out of range exception thrown from tryparse
+                }
             }
+        
 
             foreach (DataTreeBranch nextBranch in bIn.Branches)
             {
@@ -1227,8 +1265,12 @@ namespace Dynamo.Elements
 
                 if (tree != null)
                 {
-                    Process(tree.Trunk.Branches[0]);
-                    WatchValue = tree.ToString(); // MDJ presume data is in a data tree, one line in each datatree leaf
+                    SumValue = 0.0;
+                    Process(tree.Trunk.Branches[0]); // add em back up
+                    WatchValue = "Computed Sum of SR Values: " + SumValue.ToString() + "\n";
+                    //WatchValue = WatchValue + tree.ToString(); // MDJ presume data is in a data tree, one line in each datatree leaf
+                    //this.Tree.Clear();
+                    this.Tree.Trunk.Branches[1].Leaves.Add(SumValue);
 
                     UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                     Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
@@ -1362,6 +1404,7 @@ namespace Dynamo.Elements
             myStackPanel.Height = 300;
 
             //InPortData.Add(new PortData(null, "", "The Element to watch", typeof(dynElement)));
+            InPortData.Add(new PortData(null, "Watch", "Watch File?", typeof(dynBool)));
 
             OutPortData.Add(new PortData(null, "", "downstream data", typeof(dynDataFromFile)));
             this.Tree.Trunk.Branches.Add(new DataTreeBranch());
@@ -1410,6 +1453,7 @@ namespace Dynamo.Elements
         void readFile(string filePath)
         {
             List<string> txtFileList = new List<string>();
+            string txtFileString = "";
 
             this.Tree.Clear();
             //add one branch
@@ -1420,8 +1464,11 @@ namespace Dynamo.Elements
 
             //this.AddFileWatch(txtPath);
             DataFromFileString = ""; //clear old data
-            using (StreamReader reader = new StreamReader(filePath))
-            {
+
+            FileStream fs = new FileStream(@filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            StreamReader reader = new StreamReader(fs);
+           // using (StreamReader reader = new StreamReader(File.OpenRead(filePath)))
+           // {
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -1429,13 +1476,18 @@ namespace Dynamo.Elements
                     // this.Tree.Trunk.Leaves.Add(line);
                     this.Tree.Trunk.Branches[0].Leaves.Add(line);///mdj ask if there is a better way here.
                     txtFileList.Add(line); // Add to list.
+                    txtFileString = txtFileString + line;
                     dynElementSettings.SharedInstance.Writer.WriteLine("Reading: " + line);
                 }
-            }
-            DataFromFileString = this.Tree.ToString();
+                reader.Close();
+                reader.Dispose();
+
+            //}
+           // DataFromFileString = this.Tree.ToString();
+            DataFromFileString = txtFileString;
             FilePath = filePath;
 
-            OutPortData[0].Object = this.Tree; // trying to figure out how to get this to be passed out at right time.
+            OutPortData[0].Object = this.Tree; 
 
 
 
@@ -1499,7 +1551,13 @@ namespace Dynamo.Elements
         {
             try
             {
-                readFile(FilePath);
+                
+                bool boolWatch = Convert.ToBoolean(InPortData[0].Object);
+
+                if ((boolWatch == true) && (File.Exists(FilePath)))
+                {
+                    readFile(FilePath);
+                }
 
                 // OutPortData[0].Object = this.Tree;//Hack - seems like overkill to put in the draw loop
                 //OnDynElementUpdated(EventArgs.Empty);
