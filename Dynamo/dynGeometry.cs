@@ -51,6 +51,7 @@ namespace Dynamo.Elements
             InPortData.Add(new PortData(null, "Z", "Z", typeof(dynDouble)));
 
             OutPortData.Add(new PortData(null, "xyz", "XYZ", typeof(dynXYZ)));
+            OutPortData[0].Object = this.Tree; // MDJ 11-14-11 map data tree
 
             base.RegisterInputsAndOutputs();
 
@@ -60,13 +61,18 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
+                DataTreeBranch b = new DataTreeBranch(); // MDJ 11-14-11 map data tree
+                this.Tree.Trunk.Branches.Add(b);// MDJ 11-14-11 map data tree
 
                 //create the xyz
                 pt = new XYZ((double)InPortData[0].Object,
                     (double)InPortData[1].Object,
                     (double)InPortData[2].Object);
 
-                OutPortData[0].Object = pt;
+                b.Leaves.Add(pt);// MDJ 11-14-11 map data tree
+
+                //OutPortData[0].Object = pt; // MDJ 11-14-11
+                OutPortData[0].Object = this.Tree;
             }
         }
 

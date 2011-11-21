@@ -330,6 +330,157 @@ namespace Dynamo.Elements
         }
     }
 
+    // MDJ added 11-14-11 
+    // created new class dynFamilyInstanceCreatorXYZ by copying dynFamilyInstanceCreator, would be nice if there was a way to pass in either XYZ or RefPoints to previous class.
+    // Hack: blind copy paste to change this to take XYZ instead
+    // goal is to make family instances placeable in the project env
+    // right now refpoints cannot be placed so the previous family instance creator fail
+    //
+    //
+
+    [ElementName("Family Instance Creator by XYZ")]
+    [ElementDescription("An element which allows you to create family instances from a set of XYZ coordinates.")]
+    [RequiresTransaction(true)]
+    public class dynFamilyInstanceCreatorXYZ : dynElement, IDynamic
+    {
+
+        public dynFamilyInstanceCreatorXYZ()
+        {
+
+            InPortData.Add(new PortData(null, "xyz", "xyz", typeof(dynXYZ)));
+            InPortData.Add(new PortData(null, "typ", "The Family Symbol to use for instantiation.", typeof(dynFamilyTypeSelector)));
+
+            //StatePortData.Add(new PortData(null, "map", "Instance parameter map.", typeof(dynInstanceParameterMapper)));
+
+            OutPortData.Add(new PortData(null, "fi", "Family instances created by this operation.", typeof(dynFamilyInstanceCreator)));
+            OutPortData[0].Object = this.Tree;
+
+            base.RegisterInputsAndOutputs();
+
+        }
+
+        public override void Draw()
+        {
+            if (CheckInputs())
+            {
+                DataTree treeIn = InPortData[0].Object as DataTree;
+                if (treeIn != null)
+                {
+                    Process(treeIn.Trunk, this.Tree.Trunk);
+
+                    //Hashtable parameterMap = StatePortData[0].Object as Hashtable;
+                    //if(parameterMap != null)
+                    //    ProcessState(this.Tree.Trunk, parameterMap);
+                }
+            }
+
+            base.Draw();
+        }
+
+        public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
+        {
+
+            foreach (object o in bIn.Leaves)
+            {
+               // ReferencePoint rp = o as ReferencePoint; //MDJ 11-14-11 
+                XYZ pointXYZ = o as XYZ;
+
+                if (pointXYZ != null)
+                {
+                    //get the location of the point
+                    //XYZ pos = rp.Position;//MDJ 11-14-11 
+
+                    try //MDJ 11-14-11
+                    {
+                        //MDJ 11-14-11 FamilyCreate vs Create (family vs project newfamilyinstance)
+                        FamilySymbol fs = InPortData[1].Object as FamilySymbol;
+                        if (dynElementSettings.SharedInstance.Doc.Document.IsFamilyDocument == true)  //Autodesk.Revit.DB.Document.IsFamilyDocument
+                        {
+                            FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
+                            Elements.Append(fi);
+                            currentBranch.Leaves.Add(fi);
+                        }
+                        else
+                        {
+                            FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.Create.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
+                            Elements.Append(fi);
+                            currentBranch.Leaves.Add(fi);
+                        }
+
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        TaskDialog.Show("Error", e.ToString());
+
+                    } //MDJ 11-14-11
+
+                    //Hashtable parameterMap = StatePortData[0].Object as Hashtable;
+                    //if (parameterMap != null)
+                    //{
+                    //    foreach (DictionaryEntry de in parameterMap)
+                    //    {
+                    //        //find the parameter on the family instance
+                    //        Parameter p = fi.Symbol.get_Parameter(de.Key.ToString());
+                    //        if (p != null)
+                    //        {
+                    //            p.Set((double)de.Value);
+                    //        }
+                    //    }
+                    //}
+                }
+            }
+
+            foreach (DataTreeBranch b1 in bIn.Branches)
+            {
+                DataTreeBranch newBranch = new DataTreeBranch();
+                this.Tree.Trunk.Branches.Add(newBranch);
+                Process(b1, newBranch);
+            }
+        }
+
+        public void ProcessState(DataTreeBranch bIn, Hashtable parameterMap)
+        {
+            foreach (object o in bIn.Leaves)
+            {
+                FamilyInstance fi = o as FamilyInstance;
+                if (fi != null)
+                {
+                    foreach (DictionaryEntry de in parameterMap)
+                    {
+                        if (de.Value != null)
+                        {
+                            //find the parameter on the family instance
+                            Parameter p = fi.get_Parameter(de.Key.ToString());
+                            if (p != null)
+                            {
+                                if (de.Value != null)
+                                    p.Set((double)de.Value);
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (DataTreeBranch nextBranch in bIn.Branches)
+            {
+                ProcessState(nextBranch, parameterMap);
+            }
+        }
+
+        public override void Update()
+        {
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+        }
+    }
+
+
     [ElementName("Family Instance Creator")]
     [ElementDescription("An element which allows you to create family instances from a set of points.")]
     [RequiresTransaction(true)]
