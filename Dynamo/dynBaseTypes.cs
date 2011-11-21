@@ -1179,73 +1179,22 @@ namespace Dynamo.Elements
             //this.UpdateLayout();
         }
 
-        public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
-        {
-
-            foreach (object o in bIn.Leaves)
-            {
-                // ReferencePoint rp = o as ReferencePoint; //MDJ 11-14-11 
-                XYZ pointXYZ = o as XYZ;
-
-                if (pointXYZ != null)
-                {
-                    //get the location of the point
-                    //XYZ pos = rp.Position;//MDJ 11-14-11 
-
-                    try //MDJ 11-14-11
-                    {
-                        //MDJ 11-14-11 FamilyCreate vs Create (family vs project newfamilyinstance)
-                        FamilySymbol fs = InPortData[1].Object as FamilySymbol;
-                        if (dynElementSettings.SharedInstance.Doc.Document.IsFamilyDocument == true)  //Autodesk.Revit.DB.Document.IsFamilyDocument
-                        {
-                            FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
-                            Elements.Append(fi);
-                            currentBranch.Leaves.Add(fi);
-                        }
-                        else
-                        {
-                            FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.Create.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
-                            Elements.Append(fi);
-                            currentBranch.Leaves.Add(fi);
-                        }
-
-
-
-                    }
-                    catch (Exception e)
-                    {
-                        TaskDialog.Show("Error", e.ToString());
-
-                    } //MDJ 11-14-11
-
-                    //Hashtable parameterMap = StatePortData[0].Object as Hashtable;
-                    //if (parameterMap != null)
-                    //{
-                    //    foreach (DictionaryEntry de in parameterMap)
-                    //    {
-                    //        //find the parameter on the family instance
-                    //        Parameter p = fi.Symbol.get_Parameter(de.Key.ToString());
-                    //        if (p != null)
-                    //        {
-                    //            p.Set((double)de.Value);
-                    //        }
-                    //    }
-                    //}
-                }
-            }
-
-            foreach (DataTreeBranch b1 in bIn.Branches)
-            {
-                DataTreeBranch newBranch = new DataTreeBranch();
-                this.Tree.Trunk.Branches.Add(newBranch);
-                Process(b1, newBranch);
-            }
-        }
 
         public void Process(DataTreeBranch bIn)
         {
             string line = "";
             int i = 0;
+            int index = 0;
+            double doubleSRValue = 0;
+
+
+            // SR export schema:
+            //Source,Date,Time,Model,Type,Study Date Range,Study Time Range,Longitude,Latitude,Unit
+            //Vasari v1.0,11/19/2011,2:33 PM,insolationProjectMockUp.rvt,Cumulative,"1/1/2010,12/31/2010","10:00 AM,4:00 PM",-71.0329971313477,42.2130012512207,BTU/ft²
+            //
+            //Analysis point index,Insolation value,point x,point y,point z,normal x,normal y,normal z
+            //1,153823.9528125,7.23744587802689,-32.6932900007427,70.7843137254902,0.2871833,-0.2871833,0.9138116
+            //2,159066.52853125,4.74177488560379,-30.1976190083196,72.3529411764706,0.2871833,-0.2871833,0.9138116
 
             foreach (object o in bIn.Leaves)
             {
@@ -1253,11 +1202,14 @@ namespace Dynamo.Elements
 
 
                 string[] values = line.Split(',');
-                foreach (string value in values)
-                {
-                    Console.WriteLine(value);
-                }
+                index = Convert.ToInt32(line[0]);
 
+                if (index != null) // then we know we are passed the header lines and into data
+                {
+                    doubleSRValue = line[1];
+                } 
+
+                
                 i++;
             }
 
