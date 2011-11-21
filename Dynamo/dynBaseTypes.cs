@@ -1110,7 +1110,7 @@ namespace Dynamo.Elements
 
 
     [ElementName("Extract Solar Radiation Value")]
-    [ElementDescription("Create an element for extracting and computing the average, max or min solar radiation value based on a csv file.")]
+    [ElementDescription("Create an element for extracting and computing the average solar radiation value based on a csv file.")]
     [RequiresTransaction(false)]
     public class dynComputeSolarRadiationValue : dynElement, IDynamic, INotifyPropertyChanged
     {
@@ -1180,7 +1180,7 @@ namespace Dynamo.Elements
 
             InPortData.Add(new PortData(null, "", "The solar radiation data file", typeof(dynElement)));
 
-            OutPortData.Add(new PortData(null, "", "The solar radiation computed data", typeof(double)));
+            OutPortData.Add(new PortData(null, "", "The solar radiation computed data", typeof(dynDouble)));
             this.Tree.Trunk.Branches.Add(new DataTreeBranch());
             this.Tree.Trunk.Branches[0].Leaves.Add(SumValue); //MDJ TODO - cleanup input tree and output tree
             //OutPortData[0].Object = this.Tree;
@@ -1265,12 +1265,20 @@ namespace Dynamo.Elements
 
                 if (tree != null)
                 {
-                    SumValue = 0.0;
+                    SumValue = 0.0; // reset to ensue we don't count on refresh
                     Process(tree.Trunk.Branches[0]); // add em back up
                     WatchValue = "Computed Sum of SR Values: " + SumValue.ToString() + "\n";
                     //WatchValue = WatchValue + tree.ToString(); // MDJ presume data is in a data tree, one line in each datatree leaf
                     //this.Tree.Clear();
-                    this.Tree.Trunk.Branches[1].Leaves.Add(SumValue);
+                   // this.Tree.Trunk.Branches[0].Leaves.Add(SumValue);
+                    try
+                    {
+                        OutPortData[0].Object = SumValue;
+                    }
+                    catch (Exception e)
+                    {
+                        TaskDialog.Show("Error", e.ToString());
+                    }
 
                     UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                     Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
@@ -1302,8 +1310,8 @@ namespace Dynamo.Elements
 
     //MDJ - dynDataFromFile
 
-    [ElementName("dynDataFromFile")]
-    [ElementDescription("Create an element for watching data from a file on disk.")]
+    [ElementName("Read and Watch Data from File")]
+    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
     [RequiresTransaction(false)]
     public class dynDataFromFile : dynElement, IDynamic, INotifyPropertyChanged ///MDJ - do I need INotifyPropertyChanged?
     {

@@ -38,8 +38,6 @@ C:\xfer\dev\dynamo_tatlin3\DynamoRevit\obj\Debug\ResolveAssemblyReference.cache
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\obj\Debug\Dynamo.Applications.DynamoRevitApp.resources
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\obj\Debug\GenerateResource.read.1.tlog
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\obj\Debug\GenerateResource.write.1.tlog
-C:\xfer\dev\dynamo_tatlin3\DynamoRevit\obj\Debug\DynamoRevit.dll
-C:\xfer\dev\dynamo_tatlin3\DynamoRevit\obj\Debug\DynamoRevit.pdb
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DynamoRevit.dll
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DynamoRevit.pdb
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DynamoElements.dll
@@ -58,3 +56,5 @@ C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\RevitAPI.xml
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\RevitAPIUI.xml
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DragCanvas.pdb
 C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\en-US\AdWindows.resources.dll
+C:\xfer\dev\dynamo_tatlin3\DynamoRevit\obj\Debug\DynamoRevit.dll
+C:\xfer\dev\dynamo_tatlin3\DynamoRevit\obj\Debug\DynamoRevit.pdb
