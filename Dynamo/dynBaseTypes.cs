@@ -1106,6 +1106,397 @@ namespace Dynamo.Elements
         }
     }
 
+    //MDJ - dynDataFromFile
+
+
+    [ElementName("Compute Insolation Value")]
+    [ElementDescription("Create an element for computing the everage, max or min solar radiation value based on a csv file.")]
+    [RequiresTransaction(false)]
+    public class dynComputeSolarRadiationValue : dynElement, IDynamic, INotifyPropertyChanged
+    {
+        //System.Windows.Controls.Label label;
+        //System.Windows.Controls.ListBox listBox;
+        System.Windows.Controls.TextBox tb;
+
+        string watchValue;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+        public string WatchValue
+        {
+            get { return watchValue; }
+            set
+            {
+                watchValue = value;
+                NotifyPropertyChanged("WatchValue");
+            }
+        }
+
+        public dynComputeSolarRadiationValue()
+            
+        {
+
+
+            //add a list box
+            //label = new System.Windows.Controls.Label();
+            System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+
+            WatchValue = "Ready to compute solar radiation value!";
+
+            //http://learnwpf.com/post/2006/06/12/How-can-I-create-a-data-binding-in-code-using-WPF.aspx
+
+            System.Windows.Data.Binding b = new System.Windows.Data.Binding("WatchValue");
+            b.Source = this;
+            //label.SetBinding(System.Windows.Controls.Label.ContentProperty, b);
+            tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, b);
+
+            //this.inputGrid.Children.Add(label);
+            this.inputGrid.Children.Add(tb);
+            tb.TextWrapping = System.Windows.TextWrapping.Wrap;
+            tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            //tb.AcceptsReturn = true;
+
+            InPortData.Add(new PortData(null, "", "The solar radiation data", typeof(dynElement)));
+
+
+            base.RegisterInputsAndOutputs();
+
+            //resize the panel
+            this.topControl.Height = 100;
+            this.topControl.Width = 300;
+            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+            //this.UpdateLayout();
+        }
+
+        public override void Draw()
+        {
+            if (CheckInputs())
+            {
+                DataTree tree = InPortData[0].Object as DataTree;
+
+                if (tree != null)
+                {
+                    WatchValue = tree.ToString(); // MDJ presume data is in a data tree, one line in each datatree leaf
+
+                    UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+                    Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+                }
+                else
+                {
+                    TaskDialog.Show("Error", "Please use this element for computing and showing solar radiation data");
+                    //find the object as a string
+                    WatchValue = InPortData[0].Object.ToString();
+                    UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+                    Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+                }
+            }
+        }
+
+
+        public override void Destroy()
+        {
+            base.Destroy();
+        }
+
+        public override void Update()
+        {
+            //this.topControl.Height = 400;
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+    }
+
+
+    //MDJ - dynDataFromFile
+
+    [ElementName("dynDataFromFile")]
+    [ElementDescription("Create an element for watching data from a file on disk.")]
+    [RequiresTransaction(false)]
+    public class dynDataFromFile : dynElement, IDynamic, INotifyPropertyChanged ///MDJ - do I need INotifyPropertyChanged?
+    {
+        //System.Windows.Controls.Label label;
+        //System.Windows.Controls.ListBox listBox;
+        System.Windows.Controls.TextBox tb;
+
+        string dataFromFileString;
+        string filePath = "";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+        public string DataFromFileString
+        {
+            get { return dataFromFileString; }
+            set
+            {
+                dataFromFileString = value;
+                NotifyPropertyChanged("DataFromFileString");
+            }
+        }
+
+        public string FilePath
+        {
+            get { return filePath; }
+            set
+            {
+                filePath = value;
+                NotifyPropertyChanged("FilePath");
+            }
+        }
+
+        public dynDataFromFile()
+            
+        {
+
+
+
+            StackPanel myStackPanel;
+
+            //Define a StackPanel
+            myStackPanel = new StackPanel();
+            myStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
+            System.Windows.Controls.Grid.SetRow(myStackPanel, 1);
+
+            this.inputGrid.Children.Add(myStackPanel);
+
+            //add a button to the inputGrid on the dynElement
+            System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
+
+            System.Windows.Controls.Grid.SetColumn(readFileButton, 0); // trying to get this button to be on top... grrr.
+            System.Windows.Controls.Grid.SetRow(readFileButton, 0);
+            readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
+            readFileButton.Content = "Read File";
+            readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+            myStackPanel.Children.Add(readFileButton);
+
+
+            //add a list box
+            //label = new System.Windows.Controls.Label();
+            System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
+            //tb.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            //tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+
+            DataFromFileString = "Ready to read file!";
+
+            //http://learnwpf.com/post/2006/06/12/How-can-I-create-a-data-binding-in-code-using-WPF.aspx
+
+
+            //this.inputGrid.Children.Add(label);
+            //this.inputGrid.Children.Add(tb);
+            //tb.Visibility = System.Windows.Visibility.Hidden;
+            //System.Windows.Controls.Grid.SetColumn(tb, 0);
+            //System.Windows.Controls.Grid.SetRow(tb, 1);
+            tb.TextWrapping = System.Windows.TextWrapping.Wrap;
+            tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            tb.Height = 200;
+            //tb.AcceptsReturn = true;
+
+            System.Windows.Data.Binding b = new System.Windows.Data.Binding("DataFromFileString");
+            b.Source = this;
+            tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, b);
+
+            myStackPanel.Children.Add(tb);
+            myStackPanel.Height = 300;
+
+            //InPortData.Add(new PortData(null, "", "The Element to watch", typeof(dynElement)));
+
+            OutPortData.Add(new PortData(null, "", "downstream data", typeof(dynDataFromFile)));
+            this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+            this.Tree.Trunk.Branches[0].Leaves.Add(DataFromFileString);
+            OutPortData[0].Object = this.Tree;
+
+            base.RegisterInputsAndOutputs();
+
+            //resize the panel
+            this.topControl.Height = 300;
+            this.topControl.Width = 400;
+            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+            //this.UpdateLayout();
+        }
+
+
+        void readFileButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // string txtPath = "C:\\xfer\\dev\\dynamo_git\\test\\text_files\test.txt";
+            string txtPath = "";
+
+            System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog();
+
+            if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtPath = openDialog.FileName;
+                DataFromFileString = txtPath;
+                readFile(txtPath);
+                OnDynElementReadyToBuild(EventArgs.Empty);
+
+            }
+
+
+            if (string.IsNullOrEmpty(DataFromFileString))
+            {
+                string fileError = "Data file could not be opened.";
+                TaskDialog.Show("Error", fileError);
+                dynElementSettings.SharedInstance.Writer.WriteLine(fileError);
+                dynElementSettings.SharedInstance.Writer.WriteLine(txtPath);
+
+            }
+
+        }
+
+        void readFile(string filePath)
+        {
+            List<string> txtFileList = new List<string>();
+
+            this.Tree.Clear();
+            //add one branch
+            this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+            this.Tree.Trunk.Branches[0].Leaves.Add("test");
+
+
+
+            //this.AddFileWatch(txtPath);
+            DataFromFileString = ""; //clear old data
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    //DataFromFileString = DataFromFileString + line;
+                    // this.Tree.Trunk.Leaves.Add(line);
+                    this.Tree.Trunk.Branches[0].Leaves.Add(line);
+                    txtFileList.Add(line); // Add to list.
+                    dynElementSettings.SharedInstance.Writer.WriteLine("Reading: " + line);
+                }
+            }
+            DataFromFileString = this.Tree.ToString();
+            FilePath = filePath;
+
+            OutPortData[0].Object = this.Tree; // trying to figure out how to get this to be passed out at right time.
+
+
+
+
+        }
+
+        public void AddFileWatch(string filePath)
+        {
+
+            // Create a new FileSystemWatcher and set its properties.
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = filePath;
+
+            try
+            {
+
+                //MDJ hard crash - threading / context issue?
+
+                /* Watch for changes in LastAccess and LastWrite times, and
+                   the renaming of files or directories. */
+                watcher.NotifyFilter = NotifyFilters.LastAccess; //| NotifyFilters.LastWrite
+                // | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+                // Only watch text files.
+                watcher.Filter = "*.csv";
+
+                // Add event handlers.
+                watcher.Changed += new FileSystemEventHandler(OnChanged);
+                // watcher.Created += new FileSystemEventHandler(OnChanged);
+                // watcher.Deleted += new FileSystemEventHandler(OnChanged);
+                // watcher.Renamed += new RenamedEventHandler(OnRenamed);
+
+                // Begin watching.
+                watcher.EnableRaisingEvents = true;
+
+            }
+
+            catch (Exception e)
+            {
+                TaskDialog.Show("Error", e.ToString());
+            }
+
+
+        }
+
+        // mdj to do - figure out how to dispose of this FileSystemWatcher
+        // Define the event handlers.
+        private static void OnChanged(object source, FileSystemEventArgs e)
+        {
+            // Specify what is done when a file is changed, created, or deleted.
+            TaskDialog.Show("File Changed", "File: " + e.FullPath + " " + e.ChangeType);
+        }
+
+        private static void OnRenamed(object source, RenamedEventArgs e)
+        {
+            // Specify what is done when a file is renamed.
+            TaskDialog.Show("File Renamed", "File: +e.OldFullPath + renamed to + e.FullPath");
+
+        }
+
+        public override void Draw()
+        {
+            try
+            {
+                readFile(FilePath);
+
+                // OutPortData[0].Object = this.Tree;//Hack - seems like overkill to put in the draw loop
+                //OnDynElementUpdated(EventArgs.Empty);
+                //OnDynElementReadyToBuild(EventArgs.Empty);
+
+                //this.UpdateOutputs();
+                //OnDynElementReadyToBuild(EventArgs.Empty);
+
+                UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+                Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+            }
+            catch (Exception e)
+            {
+                TaskDialog.Show("Exception", e.ToString());
+
+            }
+
+        }
+
+
+
+        public override void Destroy()
+        {
+            base.Destroy();
+        }
+
+        public override void Update()
+        {
+            //this.topControl.Height = 400;
+            //OutPortData[0].Object = this.Tree; // does not seem like this gets called, how to trigger it?
+            //OnDynElementUpdated(EventArgs.Empty);
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+    }
+
+
+    //MDJ
+
     #endregion
 
     #region class attributes

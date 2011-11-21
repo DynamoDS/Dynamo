@@ -9,6 +9,11 @@ C:\Code\dynamo\DynamoRevit\bin\Debug\DragCanvas.pdb
 C:\Code\dynamo\DynamoRevit\obj\Debug\ResolveAssemblyReference.cache
 C:\Code\dynamo\DynamoRevit\obj\Debug\DynamoRevit.dll
 C:\Code\dynamo\DynamoRevit\obj\Debug\DynamoRevit.pdb
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\Dynamo.Applications.DynamoRevitApp.resources
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\DynamoRevit.DynamoRevitResources.resources
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\GenerateResource.read.1.tlog
+C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\GenerateResource.write.1.tlog
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\DynamoRevit.dll
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\DynamoRevit.pdb
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\DynamoElements.dll
@@ -27,10 +32,5 @@ C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\RevitAPI.xml
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\RevitAPIUI.xml
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\DragCanvas.pdb
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\en-US\AdWindows.resources.dll
-C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\Dynamo.Applications.DynamoRevitApp.resources
-C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\DynamoRevit.DynamoRevitResources.resources
-C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\GenerateResource.read.1.tlog
-C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\GenerateResource.write.1.tlog
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\DynamoRevit.dll
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\obj\Debug\DynamoRevit.pdb
