@@ -1106,11 +1106,11 @@ namespace Dynamo.Elements
         }
     }
 
-    //MDJ - dynDataFromFile
+    //MDJ - dynComputeSolarRadationValues
 
 
-    [ElementName("Compute Insolation Value")]
-    [ElementDescription("Create an element for computing the everage, max or min solar radiation value based on a csv file.")]
+    [ElementName("Extract Solar Radiation Value")]
+    [ElementDescription("Create an element for extracting and computing the average, max or min solar radiation value based on a csv file.")]
     [RequiresTransaction(false)]
     public class dynComputeSolarRadiationValue : dynElement, IDynamic, INotifyPropertyChanged
     {
@@ -1179,6 +1179,94 @@ namespace Dynamo.Elements
             //this.UpdateLayout();
         }
 
+        public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
+        {
+
+            foreach (object o in bIn.Leaves)
+            {
+                // ReferencePoint rp = o as ReferencePoint; //MDJ 11-14-11 
+                XYZ pointXYZ = o as XYZ;
+
+                if (pointXYZ != null)
+                {
+                    //get the location of the point
+                    //XYZ pos = rp.Position;//MDJ 11-14-11 
+
+                    try //MDJ 11-14-11
+                    {
+                        //MDJ 11-14-11 FamilyCreate vs Create (family vs project newfamilyinstance)
+                        FamilySymbol fs = InPortData[1].Object as FamilySymbol;
+                        if (dynElementSettings.SharedInstance.Doc.Document.IsFamilyDocument == true)  //Autodesk.Revit.DB.Document.IsFamilyDocument
+                        {
+                            FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
+                            Elements.Append(fi);
+                            currentBranch.Leaves.Add(fi);
+                        }
+                        else
+                        {
+                            FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.Create.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
+                            Elements.Append(fi);
+                            currentBranch.Leaves.Add(fi);
+                        }
+
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        TaskDialog.Show("Error", e.ToString());
+
+                    } //MDJ 11-14-11
+
+                    //Hashtable parameterMap = StatePortData[0].Object as Hashtable;
+                    //if (parameterMap != null)
+                    //{
+                    //    foreach (DictionaryEntry de in parameterMap)
+                    //    {
+                    //        //find the parameter on the family instance
+                    //        Parameter p = fi.Symbol.get_Parameter(de.Key.ToString());
+                    //        if (p != null)
+                    //        {
+                    //            p.Set((double)de.Value);
+                    //        }
+                    //    }
+                    //}
+                }
+            }
+
+            foreach (DataTreeBranch b1 in bIn.Branches)
+            {
+                DataTreeBranch newBranch = new DataTreeBranch();
+                this.Tree.Trunk.Branches.Add(newBranch);
+                Process(b1, newBranch);
+            }
+        }
+
+        public void Process(DataTreeBranch bIn)
+        {
+            string line = "";
+            int i = 0;
+
+            foreach (object o in bIn.Leaves)
+            {
+                line = o.ToString();
+
+
+                string[] values = line.Split(',');
+                foreach (string value in values)
+                {
+                    Console.WriteLine(value);
+                }
+
+                i++;
+            }
+
+            foreach (DataTreeBranch nextBranch in bIn.Branches)
+            {
+                Process(nextBranch);
+            }
+        }
+
         public override void Draw()
         {
             if (CheckInputs())
@@ -1187,6 +1275,7 @@ namespace Dynamo.Elements
 
                 if (tree != null)
                 {
+                    Process(tree.Trunk.Branches[0]);
                     WatchValue = tree.ToString(); // MDJ presume data is in a data tree, one line in each datatree leaf
 
                     UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
@@ -1373,7 +1462,7 @@ namespace Dynamo.Elements
             this.Tree.Clear();
             //add one branch
             this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-            this.Tree.Trunk.Branches[0].Leaves.Add("test");
+            //this.Tree.Trunk.Branches[0].Leaves.Add("test");
 
 
 
@@ -1386,7 +1475,7 @@ namespace Dynamo.Elements
                 {
                     //DataFromFileString = DataFromFileString + line;
                     // this.Tree.Trunk.Leaves.Add(line);
-                    this.Tree.Trunk.Branches[0].Leaves.Add(line);
+                    this.Tree.Trunk.Branches[0].Leaves.Add(line);///mdj ask if there is a better way here.
                     txtFileList.Add(line); // Add to list.
                     dynElementSettings.SharedInstance.Writer.WriteLine("Reading: " + line);
                 }

@@ -9,3 +9,8 @@ C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\plugins\DynamoTe
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoRevit\bin\Debug\plugins\DynamoTestTypes.pdb
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoTestTypes\obj\Debug\DynamoTestTypes.dll
 C:\Users\Administrator\dev\dynamo_tatlin2\DynamoTestTypes\obj\Debug\DynamoTestTypes.pdb
+C:\xfer\dev\dynamo_tatlin3\DynamoTestTypes\obj\Debug\ResolveAssemblyReference.cache
+C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\plugins\DynamoTestTypes.dll
+C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\plugins\DynamoTestTypes.pdb
+C:\xfer\dev\dynamo_tatlin3\DynamoTestTypes\obj\Debug\DynamoTestTypes.dll
+C:\xfer\dev\dynamo_tatlin3\DynamoTestTypes\obj\Debug\DynamoTestTypes.pdb
