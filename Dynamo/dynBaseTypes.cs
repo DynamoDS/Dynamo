@@ -298,6 +298,103 @@ namespace Dynamo.Elements
         }
     }
 
+    //MDJ dynOptimizer added 11/22-11 (or dynEvaluate?)
+
+    [ElementName("Optimizer")]
+    [ElementDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
+    [RequiresTransaction(false)]
+    public class dynOptimizer : dynDouble
+    {
+        TextBox tb;
+
+        public dynOptimizer()
+        {
+
+            //add a text box to the input grid of the control
+            tb = new System.Windows.Controls.TextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Text = "0.0";
+            tb.IsReadOnly = true;
+
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+
+            InPortData.Add(new PortData(null, "N", "New Value", typeof(dynDouble)));
+            //InPortData.Add(new PortData(null, "I", "Initial Value", typeof(dynDouble)));
+            
+
+            //outport declared in the abstract
+           
+            OutPortData[0].Object = currentValue;
+
+            base.RegisterInputsAndOutputs();
+
+            
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+
+
+        public double currentValue = 0.0;// instead of initialValue for now
+
+        public double CurrentValue
+        {
+            get { return currentValue; }
+            set
+            {
+                currentValue = value;
+                NotifyPropertyChanged("CurrentValue");
+            }
+        }
+
+        public override void Draw()
+        {
+            Process();
+            base.Draw();
+        }
+
+        void Process()
+        {
+
+
+            if (CheckInputs())
+            {
+                double newValue = (double)InPortData[0].Object; // new value is port 0
+                // double initialValue = (double)InPortData[1].Object; // init is port 1
+
+                if (newValue > CurrentValue) // if 
+                {
+                    CurrentValue = newValue; // hill climber
+                    OutPortData[0].Object = CurrentValue;
+                    tb.Text = currentValue.ToString();
+                }
+            }
+        }
+
+
+        public override void Update()
+        {
+            tb.Text = CurrentValue.ToString();
+
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+    }
+
     //MDJ - added by Matt Jezyk 10.27.2011
     [ElementName("Double Slider")]
     [ElementDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]

@@ -496,7 +496,7 @@ namespace Dynamo.Elements
 
             //InPortData.Add(new PortData(null, "xyz", "xyz", typeof(dynXYZ)));
             //InPortData.Add(new PortData(null, "typ", "The Family Symbol to use for instantiation.", typeof(dynFamilyTypeSelector)));
-
+            
             //StatePortData.Add(new PortData(null, "map", "Instance parameter map.", typeof(dynInstanceParameterMapper)));
 
             OutPortData.Add(new PortData(null, "fi", "Family instances created by this operation.", typeof(dynFamilyInstanceCreator)));
@@ -528,7 +528,7 @@ namespace Dynamo.Elements
 
         public FamilyInstance pickedFamilyInstance;
 
-        private FamilyInstance PickedFamilyInstance
+        public FamilyInstance PickedFamilyInstance
         {
             get { return pickedFamilyInstance; }
             set
@@ -558,6 +558,7 @@ namespace Dynamo.Elements
 
             if (PickedFamilyInstance != null)
                 {
+                    FamilyInstanceID = PickedFamilyInstance.Id;
                     Process(); // don't need to pass in anything because family instances and tree already have accesors.
                 }
             //}
@@ -578,10 +579,14 @@ namespace Dynamo.Elements
         {
             if (PickedFamilyInstance != null)
             {
-                this.Tree.Clear(); // clean out old refs
-                this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-                this.Tree.Trunk.Branches[0].Leaves.Add(PickedFamilyInstance);
-                OutPortData[0].Object = this.Tree;
+                if (PickedFamilyInstance.Id.IntegerValue == FamilyInstanceID.IntegerValue) // sanity check
+                {
+                    //need to put a watcher on this to ensure deletion works 
+                    this.Tree.Clear(); // clean out old refs
+                    this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+                    this.Tree.Trunk.Branches[0].Leaves.Add(PickedFamilyInstance);
+                    OutPortData[0].Object = this.Tree;
+                }
 
             }
 
