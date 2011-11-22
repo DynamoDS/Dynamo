@@ -516,28 +516,37 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
 
         }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
 
         public FamilyInstance pickedFamilyInstance;
 
-        public FamilyInstance PickedFamilyInstance
+        private FamilyInstance PickedFamilyInstance
         {
             get { return pickedFamilyInstance; }
             set
             {
                 pickedFamilyInstance = value;
-                // NotifyPropertyChanged("FamilyInstanceID");
+                NotifyPropertyChanged("PickedFamilyInstance");
             }
         }
 
-        public ElementId familyInstanceID = null;
+        private ElementId familyInstanceID;
 
-        public ElementId FamilyInstanceID
+        private ElementId FamilyInstanceID
         {
             get { return familyInstanceID; }
             set
             {
                 familyInstanceID = value;
-               // NotifyPropertyChanged("FamilyInstanceID");
+                NotifyPropertyChanged("FamilyInstanceID");
             }
         }
         void familyInstanceButt_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -549,59 +558,34 @@ namespace Dynamo.Elements
 
             if (PickedFamilyInstance != null)
                 {
-                    Elements.Append(PickedFamilyInstance);
-                    OutPortData[0].Object = PickedFamilyInstance;
-                    FamilyInstanceID = PickedFamilyInstance.Id;
-                    //currentBranch.Leaves.Add(fi);
+                    Process(); // don't need to pass in anything because family instances and tree already have accesors.
                 }
-                else
-                {
-                    FamilyInstanceID = null;
-                }
-                
-                   
-                   ////MDJ 11-14-11 FamilyCreate vs Create (family vs project newfamilyinstance)
-                    //    FamilySymbol fs = InPortData[1].Object as FamilySymbol;
-                    //    if (dynElementSettings.SharedInstance.Doc.Document.IsFamilyDocument == true)  //Autodesk.Revit.DB.Document.IsFamilyDocument
-                    //    {
-                    //        FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
-                    //        Elements.Append(fi);
-                    //        currentBranch.Leaves.Add(fi);
-                    //    }
-                    //    else
-                    //    {
-                    //        FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.Create.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
-                    //        Elements.Append(fi);
-                    //        currentBranch
-
-
             //}
         }
         
 
         public override void Draw()
         {
-            if (PickedFamilyInstance != null)
-            {
-                Elements.Append(PickedFamilyInstance);
-                OutPortData[0].Object = PickedFamilyInstance;
-                FamilyInstanceID = PickedFamilyInstance.Id;
-                //currentBranch.Leaves.Add(fi);
-            }
-            else
-            {
-                FamilyInstanceID = null;
-            }
-                
 
+                // watch?
+                //currentBranch.Leaves.Add(fi);
+
+            Process(); // don't need to pass in anything because family instances and tree already have accesors.
             base.Draw();
         }
 
-        public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
+        public void Process()
         {
+            if (PickedFamilyInstance != null)
+            {
+                this.Tree.Clear(); // clean out old refs
+                this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+                this.Tree.Trunk.Branches[0].Leaves.Add(PickedFamilyInstance);
+                OutPortData[0].Object = this.Tree;
 
-           
-           
+            }
+
+
         }
 
        
@@ -612,7 +596,7 @@ namespace Dynamo.Elements
 
         public override void Destroy()
         {
-            base.Destroy();
+            //base.Destroy();
         }
     }
 

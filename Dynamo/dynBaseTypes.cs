@@ -1401,7 +1401,7 @@ namespace Dynamo.Elements
             //System.Windows.Controls.Grid.SetRow(tb, 1);
             tb.TextWrapping = System.Windows.TextWrapping.Wrap;
             tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            tb.Height = 200;
+            tb.Height = 100;
             //tb.AcceptsReturn = true;
 
             System.Windows.Data.Binding b = new System.Windows.Data.Binding("DataFromFileString");
@@ -1409,11 +1409,11 @@ namespace Dynamo.Elements
             tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, b);
 
             myStackPanel.Children.Add(tb);
-            myStackPanel.Height = 300;
+            myStackPanel.Height = 200;
 
             //InPortData.Add(new PortData(null, "", "The Element to watch", typeof(dynElement)));
             InPortData.Add(new PortData(null, "F", "Watch File?", typeof(dynBool)));
-            InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(dynTimer)));
+            //InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(dynTimer)));
 
             OutPortData.Add(new PortData(null, "", "downstream data", typeof(dynDataFromFile)));
             this.Tree.Trunk.Branches.Add(new DataTreeBranch());
@@ -1423,8 +1423,8 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
 
             //resize the panel
-            this.topControl.Height = 300;
-            this.topControl.Width = 400;
+            this.topControl.Height = 200;
+            this.topControl.Width = 300;
             UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
             Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
             //this.UpdateLayout();
