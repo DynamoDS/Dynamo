@@ -1412,7 +1412,8 @@ namespace Dynamo.Elements
             myStackPanel.Height = 300;
 
             //InPortData.Add(new PortData(null, "", "The Element to watch", typeof(dynElement)));
-            InPortData.Add(new PortData(null, "Watch", "Watch File?", typeof(dynBool)));
+            InPortData.Add(new PortData(null, "F", "Watch File?", typeof(dynBool)));
+            InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(dynTimer)));
 
             OutPortData.Add(new PortData(null, "", "downstream data", typeof(dynDataFromFile)));
             this.Tree.Trunk.Branches.Add(new DataTreeBranch());
@@ -1473,7 +1474,9 @@ namespace Dynamo.Elements
             //this.AddFileWatch(txtPath);
             DataFromFileString = ""; //clear old data
 
-            FileStream fs = new FileStream(@filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            FileStream fs = new FileStream(@filePath, FileMode.Open, FileAccess.Read, FileShare.Read); 
+            
+            // MDJ hack - probably should not create a fs and streamwriter object in a loop, just make them earlier somewhere
             StreamReader reader = new StreamReader(fs);
            // using (StreamReader reader = new StreamReader(File.OpenRead(filePath)))
            // {
@@ -1487,8 +1490,8 @@ namespace Dynamo.Elements
                     txtFileString = txtFileString + line;
                     dynElementSettings.SharedInstance.Writer.WriteLine("Reading: " + line);
                 }
-                reader.Close();
-                reader.Dispose();
+                //reader.Close();
+                //reader.Dispose();
 
             //}
            // DataFromFileString = this.Tree.ToString();

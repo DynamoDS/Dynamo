@@ -370,7 +370,7 @@ namespace Dynamo.Utilities
 	           
 	    }
 	
-	    public static FamilySymbol RequestFamilyInstanceSelection(UIDocument doc, string message, 
+	    public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message, 
 	        dynElementSettings settings, ref FamilyInstance fi)
 	    {
 	        try
@@ -404,6 +404,41 @@ namespace Dynamo.Utilities
 	            return null;
 	        }
 	    }
+
+        public static FamilyInstance RequestFamilyInstanceSelection(UIDocument doc, string message,
+            dynElementSettings settings)
+        {
+            try
+            {
+                FamilyInstance fi = null;
+
+                Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+                //MessageBox.Show(message);
+                settings.Bench.Log(message);
+
+                Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (fsRef != null)
+                {
+                    fi = doc.Document.get_Element(fsRef.ElementId) as FamilyInstance;
+
+                    if (fi != null)
+                    {
+                        return fi;
+                    }
+                    else return null;
+                }
+                else return null;
+            }
+            catch (Exception ex)
+            {
+                settings.Bench.Log(ex.Message);
+                return null;
+            }
+        }
 	}
 	
 }

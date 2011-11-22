@@ -480,6 +480,142 @@ namespace Dynamo.Elements
         }
     }
 
+    // MDJ added 11-21-11 
+    // created new class dynFamilyInstanceCreatorBySelection by copying dynFamilyInstanceCreator, 
+    //
+    //
+
+    [ElementName("Family Instance Creator by Selection")]
+    [ElementDescription("An element which allows you to select a family instancs from the document and reference it in Dynamo.")]
+    [RequiresTransaction(true)]
+    public class dynFamilyInstanceCreatorSelection : dynElement, IDynamic, INotifyPropertyChanged
+    {
+
+        public dynFamilyInstanceCreatorSelection()
+        {
+
+            //InPortData.Add(new PortData(null, "xyz", "xyz", typeof(dynXYZ)));
+            //InPortData.Add(new PortData(null, "typ", "The Family Symbol to use for instantiation.", typeof(dynFamilyTypeSelector)));
+
+            //StatePortData.Add(new PortData(null, "map", "Instance parameter map.", typeof(dynInstanceParameterMapper)));
+
+            OutPortData.Add(new PortData(null, "fi", "Family instances created by this operation.", typeof(dynFamilyInstanceCreator)));
+            OutPortData[0].Object = this.Tree;
+
+            //add a button to the inputGrid on the dynElement
+            System.Windows.Controls.Button familyInstanceButt = new System.Windows.Controls.Button();
+            this.inputGrid.Children.Add(familyInstanceButt);
+            familyInstanceButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            familyInstanceButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            familyInstanceButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            familyInstanceButt.Click += new System.Windows.RoutedEventHandler(familyInstanceButt_Click);
+            familyInstanceButt.Content = "Select Inst.";
+            familyInstanceButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            familyInstanceButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+            base.RegisterInputsAndOutputs();
+
+        }
+
+        public FamilyInstance pickedFamilyInstance;
+
+        public FamilyInstance PickedFamilyInstance
+        {
+            get { return pickedFamilyInstance; }
+            set
+            {
+                pickedFamilyInstance = value;
+                // NotifyPropertyChanged("FamilyInstanceID");
+            }
+        }
+
+        public ElementId familyInstanceID = null;
+
+        public ElementId FamilyInstanceID
+        {
+            get { return familyInstanceID; }
+            set
+            {
+                familyInstanceID = value;
+               // NotifyPropertyChanged("FamilyInstanceID");
+            }
+        }
+        void familyInstanceButt_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //read from the state objects
+            //if (CheckInputs())
+            //{
+            PickedFamilyInstance = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(dynElementSettings.SharedInstance.Doc, "test", dynElementSettings.SharedInstance);
+
+            if (PickedFamilyInstance != null)
+                {
+                    Elements.Append(PickedFamilyInstance);
+                    OutPortData[0].Object = PickedFamilyInstance;
+                    FamilyInstanceID = PickedFamilyInstance.Id;
+                    //currentBranch.Leaves.Add(fi);
+                }
+                else
+                {
+                    FamilyInstanceID = null;
+                }
+                
+                   
+                   ////MDJ 11-14-11 FamilyCreate vs Create (family vs project newfamilyinstance)
+                    //    FamilySymbol fs = InPortData[1].Object as FamilySymbol;
+                    //    if (dynElementSettings.SharedInstance.Doc.Document.IsFamilyDocument == true)  //Autodesk.Revit.DB.Document.IsFamilyDocument
+                    //    {
+                    //        FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
+                    //        Elements.Append(fi);
+                    //        currentBranch.Leaves.Add(fi);
+                    //    }
+                    //    else
+                    //    {
+                    //        FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.Create.NewFamilyInstance(pointXYZ, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);//MDJ 11-14-11 
+                    //        Elements.Append(fi);
+                    //        currentBranch
+
+
+            //}
+        }
+        
+
+        public override void Draw()
+        {
+            if (PickedFamilyInstance != null)
+            {
+                Elements.Append(PickedFamilyInstance);
+                OutPortData[0].Object = PickedFamilyInstance;
+                FamilyInstanceID = PickedFamilyInstance.Id;
+                //currentBranch.Leaves.Add(fi);
+            }
+            else
+            {
+                FamilyInstanceID = null;
+            }
+                
+
+            base.Draw();
+        }
+
+        public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
+        {
+
+           
+           
+        }
+
+       
+        public override void Update()
+        {
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+        }
+    }
+
 
     [ElementName("Family Instance Creator")]
     [ElementDescription("An element which allows you to create family instances from a set of points.")]
