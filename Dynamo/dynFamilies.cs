@@ -194,7 +194,7 @@ namespace Dynamo.Elements
             {
                 if (!p.IsReadOnly)  //don't want it if it is read only
                 {
-                    if (p.StorageType == StorageType.Double)
+                    if (p.StorageType == StorageType.Double) //MDJ 11-23-11 - ian just had doubles but we need to add Ints, should convert to a switch case if we need more
                     {
                         string paramName = p.Definition.Name;
 
@@ -202,6 +202,28 @@ namespace Dynamo.Elements
                             p.Definition.Name[0].ToString(), 
                             paramName, 
                             typeof(dynDouble));
+                        InPortData.Add(pd);
+                        parameterMap.Add(paramName, pd.Object);
+                    }
+                    else if (p.StorageType == StorageType.Integer)
+                    {
+                        string paramName = p.Definition.Name;
+
+                        PortData pd = new PortData(null,
+                            p.Definition.Name[0].ToString(),
+                            paramName,
+                            typeof(dynInt));
+                        InPortData.Add(pd);
+                        parameterMap.Add(paramName, pd.Object);
+                    }
+                    else if (p.StorageType == StorageType.String)
+                    {
+                        string paramName = p.Definition.Name;
+
+                        PortData pd = new PortData(null,
+                            p.Definition.Name[0].ToString(),
+                            paramName,
+                            typeof(dynString));
                         InPortData.Add(pd);
                         parameterMap.Add(paramName, pd.Object);
                     }
