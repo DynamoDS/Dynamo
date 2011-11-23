@@ -40,6 +40,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Coding4Fun.Kinect.Wpf;
 using System.Windows.Media;
+using System.Threading;
 
 namespace Dynamo.Elements
 {
@@ -394,6 +395,130 @@ namespace Dynamo.Elements
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }
+
+
+    //MDJ dynIncrementer added 11/22-11 
+
+    [ElementName("Incrementer")]
+    [ElementDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
+    [RequiresTransaction(false)]
+    public class dynIncrementer : dynInt
+    {
+        TextBox tb;
+
+        public dynIncrementer()
+        {
+
+            //add a text box to the input grid of the control
+            tb = new System.Windows.Controls.TextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Text = "0";
+            tb.IsReadOnly = true;
+
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+
+            InPortData.Add(new PortData(null, "m", "Max Iterations", typeof(dynInt)));
+            InPortData.Add(new PortData(null, "v", "Value", typeof(dynDouble)));
+          
+           
+            OutPortData.Add(new PortData(null, "v", "Value", typeof(dynDouble)));
+         
+
+            base.RegisterInputsAndOutputs();
+
+            
+            OutPortData[0].Object = numIterations;
+            OutPortData[1].Object = currentValue;
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+
+        public double currentValue = 0.0;// instead of initialValue for now
+
+        public double CurrentValue
+        {
+            get { return currentValue; }
+            set
+            {
+                currentValue = value;
+                NotifyPropertyChanged("CurrentValue");
+            }
+        }
+
+
+        public int numIterations = 0;
+
+        public int NumIterations
+        {
+            get { return numIterations; }
+            set
+            {
+                numIterations = value;
+                NotifyPropertyChanged("NumIterations");
+            }
+        }
+
+
+        public override void Draw()
+        {
+            Process();
+            base.Draw();
+        }
+
+        void Process()
+        {
+
+
+            if (CheckInputs())
+            {
+                int maxIterations = (int)InPortData[0].Object; // max iterations is port 0
+                double newValue = (double)InPortData[1].Object; // new value is port 1
+
+                if (NumIterations < maxIterations)// march up unto; max
+                {
+                    if (newValue != CurrentValue) // if they vary at all, count that as a change and incretemnt counter.
+                    {
+                        CurrentValue = newValue;
+                        NumIterations++;//main thing we want is to increment
+
+                        OutPortData[0].Object = NumIterations;//pass out counter
+                        OutPortData[1].Object = CurrentValue;//pass through
+                        tb.Text = NumIterations.ToString(); //show the counter value
+                    }
+                    return;
+                }
+                return;
+            }
+        }
+
+
+
+        public override void Update()
+        {
+            tb.Text = OutPortData[0].Object.ToString();
+
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+    }
+
+
 
     //MDJ - added by Matt Jezyk 10.27.2011
     [ElementName("Double Slider")]
@@ -1298,8 +1423,6 @@ namespace Dynamo.Elements
         public void Process(DataTreeBranch bIn)
         {
             string line = "";
-            int i = 0;
-            int index = 0;
             double doubleSRValue = 0;
 
 
@@ -1320,12 +1443,16 @@ namespace Dynamo.Elements
 
                 line = o.ToString();
 
-                try
+                try // MDJ TODO - remove the try catch block
                 {
                     string[] values = line.Split(',');                
                     //index = int.Parse(values[0]); // seems a little hacky
 
-                    if (int.TryParse(values[0], out index)) // test the first value, if the first value is an int, then we know we are passed the header lines and into data
+                    //int i = 0;
+                    int intTest = 0;// used in TryParse below. returns 0 if not an int and >0 if an int.
+
+
+                    if (int.TryParse(values[0], out intTest)) // test the first value. if the first value is an int, then we know we are passed the header lines and into data
                     {
 
                        // string stringSRValue = values[1];
@@ -1338,7 +1465,7 @@ namespace Dynamo.Elements
 
 
 
-                    i++;
+                    //i++;
                 }
 
                 catch (Exception e)
@@ -1509,7 +1636,7 @@ namespace Dynamo.Elements
             myStackPanel.Height = 200;
 
             //InPortData.Add(new PortData(null, "", "The Element to watch", typeof(dynElement)));
-            InPortData.Add(new PortData(null, "F", "Watch File?", typeof(dynBool)));
+            InPortData.Add(new PortData(null, "F", "Watch File?", typeof(dynElement)));
             //InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(dynTimer)));
 
             OutPortData.Add(new PortData(null, "", "downstream data", typeof(dynDataFromFile)));
@@ -1566,17 +1693,18 @@ namespace Dynamo.Elements
             this.Tree.Trunk.Branches.Add(new DataTreeBranch());
             //this.Tree.Trunk.Branches[0].Leaves.Add("test");
 
+            try
+            {
 
+                //this.AddFileWatch(txtPath);
+                DataFromFileString = ""; //clear old data
 
-            //this.AddFileWatch(txtPath);
-            DataFromFileString = ""; //clear old data
+                FileStream fs = new FileStream(@filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-            FileStream fs = new FileStream(@filePath, FileMode.Open, FileAccess.Read, FileShare.Read); 
-            
-            // MDJ hack - probably should not create a fs and streamwriter object in a loop, just make them earlier somewhere
-            StreamReader reader = new StreamReader(fs);
-           // using (StreamReader reader = new StreamReader(File.OpenRead(filePath)))
-           // {
+                // MDJ hack - probably should not create a fs and streamwriter object in a loop, just make them earlier somewhere
+                StreamReader reader = new StreamReader(fs);
+                // using (StreamReader reader = new StreamReader(File.OpenRead(filePath)))
+                // {
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -1590,13 +1718,19 @@ namespace Dynamo.Elements
                 //reader.Close();
                 //reader.Dispose();
 
-            //}
-           // DataFromFileString = this.Tree.ToString();
-            DataFromFileString = txtFileString;
-            FilePath = filePath;
+                //}
+                // DataFromFileString = this.Tree.ToString();
+                DataFromFileString = txtFileString;
+                FilePath = filePath;
 
-            OutPortData[0].Object = this.Tree; 
+                OutPortData[0].Object = this.Tree;
 
+            }
+
+            catch (Exception e)
+            {
+                Thread.Sleep(1000); // watch out for potential file contentions
+            }
 
 
 
@@ -1660,10 +1794,11 @@ namespace Dynamo.Elements
             try
             {
                 
-                bool boolWatch = Convert.ToBoolean(InPortData[0].Object);
+                //bool boolWatch = Convert.ToBoolean(InPortData[0].Object);
 
-                if ((boolWatch == true) && (File.Exists(FilePath)))
+                if ( CheckInputs() && (File.Exists(FilePath))) // (boolWatch == true)
                 {
+                    
                     readFile(FilePath);
                 }
 
