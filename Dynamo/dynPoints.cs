@@ -83,10 +83,10 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
-                //DataTreeBranch b = new DataTreeBranch();
-                //this.Tree.Trunk.Branches.Add(b);
+                DataTree xyzTree = InPortData[0].Object as DataTree;  // MDJ TODO, add a nice clead Process here instead of this
+                XYZ pt = xyzTree.Trunk.Branches[0].Leaves[0] as XYZ;  // MDJ  TODO, add a nice clead Process here instead of this
+                //XYZ pt = InPortData[0].Object as XYZ; //mdj broke this when convertes xyz to dump out a datatree
 
-                XYZ pt = InPortData[0].Object as XYZ;
                 if (pt != null)
                 {
                     ReferencePoint rp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(pt);
