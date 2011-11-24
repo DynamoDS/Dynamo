@@ -319,7 +319,9 @@ namespace Dynamo.Elements
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "0.0";
-            tb.IsReadOnly = true;
+            //tb.IsReadOnly = true;
+            tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+            tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
             //turn off the border
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -388,6 +390,48 @@ namespace Dynamo.Elements
         }
 
 
+        void tb_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            try
+            {
+                CurrentValue = Convert.ToDouble(tb.Text);
+
+                //trigger the ready to build event here
+                //because there are no inputs
+                OnDynElementReadyToBuild(EventArgs.Empty);
+            }
+            catch
+            {
+                CurrentValue = 0.0;
+                OutPortData[0].Object = CurrentValue;
+            }
+        }
+
+        void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            //if enter is pressed, update the value
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                TextBox tb = sender as TextBox;
+
+                try
+                {
+                    CurrentValue = Convert.ToDouble(tb.Text);
+
+                    //trigger the ready to build event here
+                    //because there are no inputs
+                    OnDynElementReadyToBuild(EventArgs.Empty);
+                }
+                catch
+                {
+                    CurrentValue = 0.0;
+                    OutPortData[0].Object = CurrentValue;
+                }
+
+            }
+
+        }
+
         public override void Update()
         {
             tb.Text = CurrentValue.ToString();
@@ -417,7 +461,9 @@ namespace Dynamo.Elements
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "0";
-            tb.IsReadOnly = true;
+            //tb.IsReadOnly = true;
+            tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+            tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
             //turn off the border
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -498,8 +544,8 @@ namespace Dynamo.Elements
                         CurrentValue = newValue;
                         NumIterations++;//main thing we want is to increment
 
-                        OutPortData[0].Object = NumIterations;//pass out counter
-                        OutPortData[1].Object = CurrentValue;//pass through
+                        OutPortData[0].Object = NumIterations;//pass out num iterations to port 0
+                        OutPortData[1].Object = CurrentValue;//pass through value
                         tb.Text = NumIterations.ToString(); //show the counter value
                     }
                     return;
@@ -509,10 +555,53 @@ namespace Dynamo.Elements
         }
 
 
+        void tb_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            try
+            {
+                NumIterations = Convert.ToInt32(tb.Text);
+
+                //trigger the ready to build event here
+                //because there are no inputs
+                OnDynElementReadyToBuild(EventArgs.Empty);
+            }
+            catch
+            {
+                NumIterations = 0;
+                OutPortData[0].Object = NumIterations;
+            }
+        }
+
+        void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            //if enter is pressed, update the value
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                TextBox tb = sender as TextBox;
+
+                try
+                {
+                    NumIterations = Convert.ToInt32(tb.Text);
+
+                    //trigger the ready to build event here
+                    //because there are no inputs
+                    OnDynElementReadyToBuild(EventArgs.Empty);
+                }
+                catch
+                {
+                    NumIterations = 0;
+                    OutPortData[0].Object = NumIterations;
+                }
+
+            }
+
+        }
+
+
 
         public override void Update()
         {
-            tb.Text = OutPortData[0].Object.ToString();
+            tb.Text = NumIterations.ToString();
 
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
@@ -1699,6 +1788,8 @@ namespace Dynamo.Elements
                 //this.AddFileWatch(txtPath);
                 DataFromFileString = ""; //clear old data
 
+                //Thread.Sleep(5000); // watch out for potential file contentions
+
                 FileStream fs = new FileStream(@filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                 // MDJ hack - probably should not create a fs and streamwriter object in a loop, just make them earlier somewhere
@@ -1715,7 +1806,7 @@ namespace Dynamo.Elements
                     txtFileString = txtFileString + line;
                     dynElementSettings.SharedInstance.Writer.WriteLine("Reading: " + line);
                 }
-                //reader.Close();
+                reader.Close();
                 //reader.Dispose();
 
                 //}

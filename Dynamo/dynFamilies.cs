@@ -796,7 +796,19 @@ namespace Dynamo.Elements
                             if (p != null)
                             {
                                 if (de.Value != null)
-                                    p.Set((double)de.Value);
+
+                                    if (p.StorageType == StorageType.Double)
+                                    {
+                                        p.Set((double)de.Value);
+                                    }
+                                    else if (p.StorageType == StorageType.Integer)
+                                    {
+                                        p.Set((int)de.Value);
+                                    }
+                                    else if (p.StorageType == StorageType.String)
+                                    {
+                                        p.Set((string)de.Value);
+                                    }
                             }
                         }
                     }
