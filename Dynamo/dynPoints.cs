@@ -83,8 +83,8 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
-                DataTree xyzTree = InPortData[0].Object as DataTree;  // MDJ TODO, add a nice clead Process here instead of this
-                XYZ pt = xyzTree.Trunk.Branches[0].Leaves[0] as XYZ;  // MDJ  TODO, add a nice clead Process here instead of this
+                DataTree xyzTree = InPortData[0].Object as DataTree;  // MDJ TODO, add a nice clean Process() here instead of this
+                XYZ pt = xyzTree.Trunk.Branches[0].Leaves[0] as XYZ;  
                 //XYZ pt = InPortData[0].Object as XYZ; //mdj broke this when convertes xyz to dump out a datatree
 
                 if (pt != null)

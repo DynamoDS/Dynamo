@@ -46,6 +46,8 @@ Source: plugins\DynamoTestTypes.dll; DestDir: {app}\plugins; Flags: ignoreversio
 Source: Coding4Fun.Kinect.Wpf.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly
 Source: Microsoft.Research.Kinect.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly
 
+Source: ..\README; DestDir: “{app}”; Flags: isreadme
+
 ; Common files
 ; Source: ParameterValuesFromImage2012.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly
 
@@ -85,4 +87,6 @@ begin
 
   end;
 end;
+
+
 

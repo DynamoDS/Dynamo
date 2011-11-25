@@ -26,6 +26,8 @@ using Autodesk.Revit;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI.Events;
+using Autodesk.Revit.DB.Events;  //MDJ - i think this is needed for DMU stuff
+using Autodesk.Revit.DB.Analysis; //MDJ  - added for spatialfeildmanager access
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -606,6 +608,144 @@ namespace Dynamo.Elements
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }
+
+    [ElementName("Analysis Results by Selection")]
+    [ElementDescription("An element which allows you to select an analysis result object from the document and reference it in Dynamo.")]
+    [RequiresTransaction(true)]
+    public class dynAnalysisResultsBySelection : dynElement, IDynamic, INotifyPropertyChanged
+    {
+
+        public dynAnalysisResultsBySelection()
+        {
+
+
+            OutPortData.Add(new PortData(null, "ar", "Analysis Results referenced by this operation.", typeof(dynAnalysisResultsBySelection)));
+            OutPortData[0].Object = this.Tree;
+
+            //add a button to the inputGrid on the dynElement
+            System.Windows.Controls.Button analysisResultButt = new System.Windows.Controls.Button();
+            this.inputGrid.Children.Add(analysisResultButt);
+            analysisResultButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            analysisResultButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            analysisResultButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            analysisResultButt.Click += new System.Windows.RoutedEventHandler(analysisResultButt_Click);
+            analysisResultButt.Content = "Select AR";
+            analysisResultButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            analysisResultButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+            base.RegisterInputsAndOutputs();
+
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+        public Element pickedAnalysisResult;
+
+        public Element PickedAnalysisResult
+        {
+            get { return pickedAnalysisResult; }
+            set
+            {
+                pickedAnalysisResult = value;
+                NotifyPropertyChanged("PickedAnalysisResult");
+            }
+        }
+
+        private ElementId analysisResultID;
+
+        private ElementId AnalysisResultID
+        {
+            get { return analysisResultID; }
+            set
+            {
+                analysisResultID = value;
+                NotifyPropertyChanged("AnalysisResultID");
+            }
+        }
+        void analysisResultButt_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //read from the state objects
+            //if (CheckInputs())
+            //{
+            PickedAnalysisResult = Dynamo.Utilities.SelectionHelper.RequestAnalysisResultInstanceSelection(dynElementSettings.SharedInstance.Doc, "test AR", dynElementSettings.SharedInstance);
+
+            if (PickedAnalysisResult != null)
+            {
+                AnalysisResultID = PickedAnalysisResult.Id;
+                Process(); // don't need to pass in anything because analysis rssult and tree already have accesors.
+            }
+            //}
+        }
+
+
+        public override void Draw()
+        {
+
+            // watch?
+            //currentBranch.Leaves.Add(fi);
+
+            Process(); // don't need to pass in anything because analysis rssult and tree already have accesors.
+            base.Draw();
+        }
+
+        public void Process()
+        {
+            if (PickedAnalysisResult != null)
+            {
+                if (PickedAnalysisResult.Id.IntegerValue == AnalysisResultID.IntegerValue) // sanity check
+                {
+                    //need to put a watcher on this to ensure deletion works 
+                    this.Tree.Clear(); // clean out old refs
+                    this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+                    this.Tree.Trunk.Branches[0].Leaves.Add(PickedAnalysisResult);
+
+
+                    //let's look a the collection of AR data!
+                    this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+                    
+                    
+                    SpatialFieldManager avf = PickedAnalysisResult as SpatialFieldManager;
+                    IList<int>resultsList = new List<int>();
+
+
+                    resultsList = avf.GetRegisteredResults();
+                    int numMeasurements = avf.NumberOfMeasurements;
+                    this.Tree.Trunk.Branches[1].Leaves.Add(numMeasurements);
+
+                    //avf.
+
+                    foreach (int value in resultsList)
+                    {
+                        this.Tree.Trunk.Branches[1].Leaves.Add(value);
+                    }
+                    
+                    OutPortData[0].Object = this.Tree;
+                }
+
+            }
+
+
+        }
+
+
+        public override void Update()
+        {
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+
+        public override void Destroy()
+        {
+            //base.Destroy();
+        }
+    }
+
 
 
 
