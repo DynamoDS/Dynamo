@@ -707,24 +707,24 @@ namespace Dynamo.Elements
                     this.Tree.Trunk.Branches[0].Leaves.Add(PickedAnalysisResult);
 
 
-                    //let's look a the collection of AR data!
-                    this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+                    ////let's look a the collection of AR data!
+                    //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
                     
                     
-                    SpatialFieldManager avf = PickedAnalysisResult as SpatialFieldManager;
-                    IList<int>resultsList = new List<int>();
+                    //SpatialFieldManager avf = PickedAnalysisResult as SpatialFieldManager;
+                    //IList<int>resultsList = new List<int>();
 
 
-                    resultsList = avf.GetRegisteredResults();
-                    int numMeasurements = avf.NumberOfMeasurements;
-                    this.Tree.Trunk.Branches[1].Leaves.Add(numMeasurements);
+                    //resultsList = avf.GetRegisteredResults();
+                    //int numMeasurements = avf.NumberOfMeasurements;
+                    //this.Tree.Trunk.Branches[1].Leaves.Add(numMeasurements);
 
-                    //avf.
+                    ////avf.
 
-                    foreach (int value in resultsList)
-                    {
-                        this.Tree.Trunk.Branches[1].Leaves.Add(value);
-                    }
+                    //foreach (int value in resultsList)
+                    //{
+                    //    this.Tree.Trunk.Branches[1].Leaves.Add(value);
+                    //}
                     
                     OutPortData[0].Object = this.Tree;
                 }

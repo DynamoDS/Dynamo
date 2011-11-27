@@ -95,12 +95,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)\DynamoRevit.dll" "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\DynamoRevit.dll"
-copy "$(TargetPath)\DynamoElements.dll" "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\DynamoElements.dll"
-copy "$(TargetPath)\DragCanvas.dll" "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstallDragCanvas.dll"
-copy "$(TargetPath)\plugins\DynamoTestTypes.dll" "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\plugins\DynamoTestTypes.dll"
-iscc.exe "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\DynamoForVasari_2-1.iss"
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

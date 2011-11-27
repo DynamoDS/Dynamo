@@ -27,6 +27,9 @@ using Autodesk.Revit;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI.Events;
+using Autodesk.Revit.DB.Events;
+using Autodesk.Revit.DB.Analysis;//MDJ needed for spatialfeildmanager
+
 using Dynamo.Elements;
 using Dynamo.Controls;
 using System.Xml.Serialization;
@@ -40,7 +43,7 @@ namespace Dynamo.Applications
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
     [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
 
-    public class DynamoRevitApp : IExternalApplication 
+    public class DynamoRevitApp : IExternalApplication
     {
 
         static private string m_AssemblyName = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -51,9 +54,22 @@ namespace Dynamo.Applications
         {
             try
             {
+
+
+                // MDJ = element level events and dyanmic model update
+
+                // Register wall updater with Revit
+                DynamoUpdater updater = new DynamoUpdater(application.ActiveAddInId);
+                UpdaterRegistry.RegisterUpdater(updater);
+                // Change Scope = any spatial field element
+                ElementClassFilter SpatialFeildFilter = new ElementClassFilter(typeof(SpatialFieldManager));
+                // Change type = element addition
+                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), SpatialFeildFilter,
+                Element.GetChangeTypeElementAddition());
+
                 // Create new ribbon panel
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel("Visual Programming"); //MDJ todo - move hard-coded strings out to resource files
-                
+
                 //Create a push button in the ribbon panel 
 
                 PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
@@ -73,6 +89,10 @@ namespace Dynamo.Applications
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
 
+
+
+
+
                 return Result.Succeeded;
             }
             catch (Exception ex)
@@ -83,10 +103,78 @@ namespace Dynamo.Applications
         }
         public Result OnShutdown(UIControlledApplication application)
         {
+
+            DynamoUpdater updater = new DynamoUpdater(application.ActiveAddInId);
+            UpdaterRegistry.UnregisterUpdater(updater.GetUpdaterId());
+
             return Result.Succeeded;
         }
+
+        public class DynamoUpdater : IUpdater
+        {
+            static AddInId m_appId;
+            static UpdaterId m_updaterId;
+            SpatialFieldManager m_sfm = null;
+            // constructor takes the AddInId for the add-in associated with this updater
+            public DynamoUpdater(AddInId id)
+            {
+                m_appId = id;
+                m_updaterId = new UpdaterId(m_appId, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
+            }
+            public void Execute(UpdaterData data)
+            {
+                Document doc = data.GetDocument();
+                // Cache the spatial field manager if ther is one
+                if (m_sfm == null)
+                {
+                    FilteredElementCollector collector = new FilteredElementCollector(doc);
+                    collector.OfClass(typeof(SpatialFieldManager));
+                    var sfm = from element in collector
+                                    select element;
+                    if (sfm.Count<Element>() > 0) // if we actually found an SFM
+                    {
+                        m_sfm = sfm.Cast<SpatialFieldManager>().ElementAt<SpatialFieldManager>(0);
+                        TaskDialog.Show("ah hah", "found spatial field manager adding to cache");
+                    }
+                    else
+                    {
+                        TaskDialog.Show("ah hah", "no spatial field manager yet, please run sr tool");
+                    }
+                }
+                if (m_sfm != null)
+                {
+                    // if we find an sfm has been updated and it matches what  already have one cached, send it to dyanmo
+                    foreach (ElementId addedElemId in data.GetAddedElementIds())
+                    {
+                        SpatialFieldManager sfm = doc.get_Element(addedElemId) as SpatialFieldManager;
+                        if (sfm != null)
+                        {
+                            TaskDialog.Show("ah hah", "found spatial field manager yet, passing to dyanmo");
+                        }
+                    }
+                }
+            }
+
+
+            public string GetAdditionalInformation()
+            {
+                return "Watch for changes to Analysis Results object (Spatial Field Manager) and pass this to Dynamo";
+            }
+            public ChangePriority GetChangePriority()
+            {
+                return ChangePriority.FloorsRoofsStructuralWalls;
+            }
+            public UpdaterId GetUpdaterId()
+            {
+                return m_updaterId;
+            }
+            public string GetUpdaterName()
+            {
+                return "Dyanmo Analysis Results Watcher";
+            }
+        }
     }
-    //MDJ - End of chunk added by Matt Jezyk
+	//MDJ - End of chunk added by Matt Jezyk
 
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
