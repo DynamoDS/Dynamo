@@ -80,18 +80,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamoRevit.cs" />
-    <Compile Include="DynamoRevit.Designer.cs">
-      <DependentUpon>DynamoRevit.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DynamoRevit.resx">
-      <DependentUpon>DynamoRevit.cs</DependentUpon>
-    </EmbeddedResource>
+    <None Include="Resources\Nodes_32_32.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Nodes_32_32.png" />
+    <None Include="Resources\Nodes_32_32_2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -34,6 +34,7 @@ using Dynamo.Elements;
 using Dynamo.Controls;
 using System.Xml.Serialization;
 using Dynamo.Utilities;
+//using DynamoResources;
 
 
 namespace Dynamo.Applications
@@ -52,42 +53,48 @@ namespace Dynamo.Applications
 
         public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
         {
+
+            // MDJ = element level events and dyanmic model update
+
+            // Register wall updater with Revit
+            DynamoUpdater updater = new DynamoUpdater(application.ActiveAddInId);
+            UpdaterRegistry.RegisterUpdater(updater);
+            // Change Scope = any spatial field element
+            ElementClassFilter SpatialFeildFilter = new ElementClassFilter(typeof(SpatialFieldManager));
+            // Change type = element addition
+            UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), SpatialFeildFilter,
+            Element.GetChangeTypeElementAddition());
+
+
             try
             {
 
-
-                // MDJ = element level events and dyanmic model update
-
-                // Register wall updater with Revit
-                DynamoUpdater updater = new DynamoUpdater(application.ActiveAddInId);
-                UpdaterRegistry.RegisterUpdater(updater);
-                // Change Scope = any spatial field element
-                ElementClassFilter SpatialFeildFilter = new ElementClassFilter(typeof(SpatialFieldManager));
-                // Change type = element addition
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), SpatialFeildFilter,
-                Element.GetChangeTypeElementAddition());
 
                 // Create new ribbon panel
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel("Visual Programming"); //MDJ todo - move hard-coded strings out to resource files
 
                 //Create a push button in the ribbon panel 
 
-                PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
-                    "Dynamo", m_AssemblyName, "Dynamo.Applications.DynamoRevit")) as PushButton;
+                //PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
+                //    "Dynamo", m_AssemblyName, "Dynamo.Applications.DynamoRevit")) as PushButton;
 
+                //// Creates the ResourceManager.
+                //System.Resources.ResourceManager DynamoResourceManager = new
+                //   System.Resources.ResourceManager("DynamResources.ResourceTest", typeof(DynamoResources.ResourceTest).Assembly);
 
-                // Set the large image shown on button using a resource from DynamoRevit.resx (namespace is Dynamo.Applications.DynamoRevitResources)
+                //// Set the large image shown on button using a resource from DynamoRevit.resx (namespace is Dynamo.Applications.DynamoRevitResources)
 
-                System.Drawing.Bitmap dynamoIcon = Dynamo.Applications.DynamoRevitResources.Nodes_32_32;
+                //System.Drawing.Bitmap dynamoIcon = DynamoResourceManager.GetObject("Nodes_32_32_3") as System.Drawing.Bitmap;
+                ////System.Drawing.Bitmap dynamoIcon = 
 
-                BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                         dynamoIcon.GetHbitmap(),
-                         IntPtr.Zero,
-                         System.Windows.Int32Rect.Empty,
-                         System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                //BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                //         dynamoIcon.GetHbitmap(),
+                //         IntPtr.Zero,
+                //         System.Windows.Int32Rect.Empty,
+                //         System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
 
-                pushButton.LargeImage = bitmapSource;
-                pushButton.Image = bitmapSource;
+                //pushButton.LargeImage = bitmapSource;
+                //pushButton.Image = bitmapSource;
 
 
 
