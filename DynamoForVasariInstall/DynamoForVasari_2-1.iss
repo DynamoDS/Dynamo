@@ -2,12 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=DynamoForVasari2.1
-AppVerName=DynamoForVasari .04
-AppPublisher= GoBuild
+AppName=Dynamo For Vasari 2.1 Addin (WIP)
+AppVerName=Dynamo For Vasari .04
+AppPublisher= dynamo 
 AppID={{F5A1912F-A0A6-4FF2-B065-319EF5E6779D}
 AppCopyright=
-AppPublisherURL=
+AppPublisherURL= http;//github.com/ikeough/dynamo
 AppSupportURL=
 AppUpdatesURL=
 AppVersion=2012
@@ -29,11 +29,13 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\Nodes_32_32.ico
-UninstallDisplayName=Dynamo For Vasari 2.1 Add-In
+UninstallDisplayName=Dynamo For Vasari 2.1 Add-In (WIP)
 PrivilegesRequired=admin
      
 [Dirs]
 Name: "{app}\plugins"
+Name: "{app}\datasets"     
+; we should look at what directory this should be.
 
 [Files]
 
@@ -45,8 +47,10 @@ Source: Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly
 Source: plugins\DynamoTestTypes.dll; DestDir: {app}\plugins; Flags: ignoreversion overwritereadonly
 Source: Coding4Fun.Kinect.Wpf.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly
 Source: Microsoft.Research.Kinect.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly
+Source: readme.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly
+Source: InsolationAnalysis.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly
+Source: datasets\*.*; DestDir: {app}\datasets; Flags: ignoreversion overwritereadonly
 
-Source: ..\README; DestDir: “{app}”; Flags: isreadme
 
 ; Common files
 ; Source: ParameterValuesFromImage2012.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly
@@ -73,17 +77,43 @@ begin
 	{ CREATE NEW ADDIN FILE }
 	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
 	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
+  AddInFileContents := AddInFileContents + '    <Name>Dynamo For Vasari</Name>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevit.dll</Assembly>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <AddInId>188B9080-EEBE-40C3-865A-8FC31DEEC12F</AddInId>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <VendorId>GOBD</VendorId>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <VendorDescription>dyanmo, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
+	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Command">' + #13#10;
 	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevit.dll</Assembly>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <AddInId>dc09be67-aa31-4ea7-86c9-d06c080cd3e9</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorId>GOBD</VendorId>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorDescription>dyanmo, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <VendorDescription>dynamo, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
   AddInFileContents := AddInFileContents + '    <Text>DynamoForVasari</Text>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <Description>Visual programming using the Revit API.</Description>' + #13#10;
 	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
-	AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
+  AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
 	SaveStringToFile(AddInFilePath, AddInFileContents, False);
+
+  	{ GET LOCATION OF USER AppData (Roaming) }
+	AddInFilePath := ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\TP2.1\Autodesk.SolarRadiation.addin');
+
+	
+  	{ CREATE NEW SOLAR RADIATION ADDIN FILE }
+  AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
+	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
+  AddInFileContents := AddInFileContents + '    <Name>Solar Radiation Plug-in</Name>' + #13#10;
+  AddInFileContents := AddInFileContents + '      <Assembly>'  + ExpandConstant('{app}') + '\InsolationAnalysis.dll</Assembly>' + #13#10;
+	AddInFileContents := AddInFileContents + '        <ClientId>13D454CA-4AED-4f7f-A9E9-CE76AC5EAC61</ClientId>' + #13#10;
+	AddInFileContents := AddInFileContents + '        <FullClassName>InsolationAnalysis.ExtComCall</FullClassName>' + #13#10;
+	AddInFileContents := AddInFileContents + '        <VendorId>ADSK</VendorId>' + #13#10;
+	AddInFileContents := AddInFileContents + '        <VendorDescription>Autodesk, labs.autodesk.com</VendorDescription>' + #13#10;
+ 	AddInFileContents := AddInFileContents + '    </AddIn>' + #13#10;
+	AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
+  SaveStringToFile(AddInFilePath, AddInFileContents, False);
 
   end;
 end;

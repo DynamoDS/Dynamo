@@ -727,6 +727,7 @@ namespace Dynamo.Elements
                     //}
                     
                     OutPortData[0].Object = this.Tree;
+                    OnDynElementReadyToBuild(EventArgs.Empty);//kick it
                 }
 
             }

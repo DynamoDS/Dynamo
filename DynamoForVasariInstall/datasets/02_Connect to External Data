@@ -1,0 +1,21 @@
+<Dynamo.Controls.dynBench>
+  <dynElements>
+    <Dynamo.Elements.dynFamilyInstanceCreatorSelection type="Dynamo.Elements.dynFamilyInstanceCreatorSelection" guid="fa9a58f9-f447-4af7-9dfc-c11d5b28d136" nickname="Family Instance Creator by Selection" x="271" y="49" />
+    <Dynamo.Elements.dynInstanceParameterMapper type="Dynamo.Elements.dynInstanceParameterMapper" guid="d4ce3779-e960-4e4b-891d-6dee43c530e3" nickname="Instance Parameter Mapper" x="537" y="91" />
+    <Dynamo.Elements.dynFamilyInstanceParameterEvaluation type="Dynamo.Elements.dynFamilyInstanceParameterEvaluation" guid="dd4cf174-9d9b-4a49-8a6f-8504e6e4c87c" nickname="Family Instance Parameter Evaluation" x="815" y="44" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="4cc32c3b-d54f-4b0b-a335-51ceab526576" nickname="Double" x="259" y="162">
+      <System.Double value="0" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynDataFromFile type="Dynamo.Elements.dynDataFromFile" guid="5698dfe3-be77-4d4e-8ead-ffeee040e16a" nickname="Read and Watch Data from File" x="263" y="371" />
+    <Dynamo.Elements.dynComputeSolarRadiationValue type="Dynamo.Elements.dynComputeSolarRadiationValue" guid="607e3954-557c-4ba2-9a97-de95c11d27fb" nickname="Extract Solar Radiation Value" x="602" y="412">
+      <System.Double value="697.921777436256" />
+    </Dynamo.Elements.dynComputeSolarRadiationValue>
+    <Dynamo.Elements.dynBoolSelector type="Dynamo.Elements.dynBoolSelector" guid="6a33289d-4b9a-4280-b826-eaf1239287eb" nickname="BooleanSwitch" x="0" y="336" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="fa9a58f9-f447-4af7-9dfc-c11d5b28d136" start_index="0" end="dd4cf174-9d9b-4a49-8a6f-8504e6e4c87c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d4ce3779-e960-4e4b-891d-6dee43c530e3" start_index="0" end="dd4cf174-9d9b-4a49-8a6f-8504e6e4c87c" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="5698dfe3-be77-4d4e-8ead-ffeee040e16a" start_index="0" end="607e3954-557c-4ba2-9a97-de95c11d27fb" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="6a33289d-4b9a-4280-b826-eaf1239287eb" start_index="0" end="5698dfe3-be77-4d4e-8ead-ffeee040e16a" end_index="0" portType="0" />
+  </dynConnectors>
+</Dynamo.Controls.dynBench>

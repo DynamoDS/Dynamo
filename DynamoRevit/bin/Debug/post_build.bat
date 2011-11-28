@@ -1,0 +1,5 @@
+copy "C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DynamoRevit.dll" "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\DynamoRevit.dll"
+copy "C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DynamoElements.dll" "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\DynamoElements.dll"
+copy "C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DragCanvas.dll" "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\DragCanvas.dll"
+copy "C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\plugins\DynamoTestTypes.dll" "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\plugins\DynamoTestTypes.dll"
+iscc.exe "C:\xfer\dev\dynamo_tatlin3\DynamoForVasariInstall\DynamoForVasari_2-1.iss"
