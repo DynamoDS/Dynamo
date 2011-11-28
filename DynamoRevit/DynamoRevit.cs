@@ -172,8 +172,8 @@ namespace Dynamo.Applications
                             //if (sfm != null)
                             //{
                                // TaskDialog.Show("ah hah", "found spatial field manager yet, passing to dynamo");
-
-                        //Dynamo.Elements.
+                        dynElementSettings.SharedInstance.SpatialFieldManagerUpdated = sfm;
+                        //Dynamo.Elements.OnDynElementReadyToBuild(EventArgs.Empty);//kick it
                             //}
                         //}
                     }
