@@ -674,7 +674,7 @@ namespace Dynamo.Elements
             //read from the state objects
             //if (CheckInputs())
             //{
-            PickedAnalysisResult = Dynamo.Utilities.SelectionHelper.RequestAnalysisResultInstanceSelection(dynElementSettings.SharedInstance.Doc, "test AR", dynElementSettings.SharedInstance);
+            PickedAnalysisResult = Dynamo.Utilities.SelectionHelper.RequestAnalysisResultInstanceSelection(dynElementSettings.SharedInstance.Doc, "Select Analysis Result Object", dynElementSettings.SharedInstance);
 
             if (PickedAnalysisResult != null)
             {
@@ -701,6 +701,13 @@ namespace Dynamo.Elements
             {
                 if (PickedAnalysisResult.Id.IntegerValue == AnalysisResultID.IntegerValue) // sanity check
                 {
+
+                    SpatialFieldManager dmu_sfm = dynElementSettings.SharedInstance.SpatialFieldManagerUpdated as SpatialFieldManager;
+
+                    if (pickedAnalysisResult.Id.IntegerValue == dmu_sfm.Id.IntegerValue)
+                    {
+                        TaskDialog.Show("ah hah", "picked sfm equals saved one from dmu");
+                    }
                     //need to put a watcher on this to ensure deletion works 
                     this.Tree.Clear(); // clean out old refs
                     this.Tree.Trunk.Branches.Add(new DataTreeBranch());

@@ -91,6 +91,7 @@ namespace Dynamo.Utilities
 	    dynCollection dynColl;
 	    Transaction trans;
         TextWriter tw;
+        Element spatialFieldManagerUpdated;
 
         private static dynElementSettings sharedInstance;
 
@@ -109,6 +110,16 @@ namespace Dynamo.Utilities
         System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(238, 180, 34);
         System.Windows.Media.Color colorGray1 = System.Windows.Media.Color.FromRgb(220, 220, 220);
         System.Windows.Media.Color colorGray2 = System.Windows.Media.Color.FromRgb(192, 192, 192);
+
+        
+        public Element SpatialFieldManagerUpdated
+        {
+            get { return spatialFieldManagerUpdated; }
+            set
+            {
+                spatialFieldManagerUpdated = value;
+            }
+        }
 
 	    public Autodesk.Revit.UI.UIApplication Revit
 	    {

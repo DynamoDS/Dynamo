@@ -576,7 +576,7 @@ namespace Dynamo.Elements
             //read from the state objects
             //if (CheckInputs())
             //{
-            PickedFamilyInstance = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(dynElementSettings.SharedInstance.Doc, "test", dynElementSettings.SharedInstance);
+            PickedFamilyInstance = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(dynElementSettings.SharedInstance.Doc, "Selec Massing Family Instance", dynElementSettings.SharedInstance);
 
             if (PickedFamilyInstance != null)
                 {

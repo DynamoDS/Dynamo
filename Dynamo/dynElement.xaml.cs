@@ -90,15 +90,7 @@ namespace Dynamo.Elements
 
         #region public members
 
-        public Element spatialFieldManagerUpdated;
-        public Element SpatialFieldManagerUpdated
-        {
-            get { return spatialFieldManagerUpdated; }
-            set
-            {
-                spatialFieldManagerUpdated = value;
-            }
-        }
+        
 
         public string ToolTipText
         {
