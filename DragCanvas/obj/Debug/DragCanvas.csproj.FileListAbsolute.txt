@@ -21,14 +21,6 @@ C:\Code\dynamo\DragCanvas\obj\Debug\GenerateResource.read.1.tlog
 C:\Code\dynamo\DragCanvas\obj\Debug\GenerateResource.write.1.tlog
 C:\Code\dynamo\DragCanvas\obj\Debug\DragCanvas.dll
 C:\Code\dynamo\DragCanvas\obj\Debug\DragCanvas.pdb
-C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\bin\Debug\DragCanvas.dll
-C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\bin\Debug\DragCanvas.pdb
-C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\DragCanvas.Properties.Resources.resources
-C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\GenerateResource.read.1.tlog
-C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\GenerateResource.write.1.tlog
-C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\DragCanvas.dll
-C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\DragCanvas.pdb
 C:\xfer\dev\dynamo_tatlin3\DragCanvas\bin\Debug\DragCanvas.dll
 C:\xfer\dev\dynamo_tatlin3\DragCanvas\bin\Debug\DragCanvas.pdb
 C:\xfer\dev\dynamo_tatlin3\DragCanvas\obj\Debug\ResolveAssemblyReference.cache
@@ -37,3 +29,11 @@ C:\xfer\dev\dynamo_tatlin3\DragCanvas\obj\Debug\GenerateResource.read.1.tlog
 C:\xfer\dev\dynamo_tatlin3\DragCanvas\obj\Debug\GenerateResource.write.1.tlog
 C:\xfer\dev\dynamo_tatlin3\DragCanvas\obj\Debug\DragCanvas.dll
 C:\xfer\dev\dynamo_tatlin3\DragCanvas\obj\Debug\DragCanvas.pdb
+C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\bin\Debug\DragCanvas.dll
+C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\bin\Debug\DragCanvas.pdb
+C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\DragCanvas.Properties.Resources.resources
+C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\GenerateResource.read.1.tlog
+C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\GenerateResource.write.1.tlog
+C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\DragCanvas.dll
+C:\Users\Administrator\dev\dynamo_tatlin2\DragCanvas\obj\Debug\DragCanvas.pdb
