@@ -26,13 +26,6 @@
             <Border Margin="0,0,0,0" BorderBrush="Black" BorderThickness="1" Name="border">
             <!--outer canvas clips the inner canvas-->
             <Canvas Name="outerCanvas" Margin="0,20,0,0" ClipToBounds="True">
-                <Canvas.Background>
-                    <!--<LinearGradientBrush>
-                        <GradientStop Color="#EEE8CD" Offset="0.0" />
-                        <GradientStop Color="#CDC8B1" Offset="1.0" />
-                    </LinearGradientBrush>-->
-                    <SolidColorBrush Color="#EEE8CD"/>
-                </Canvas.Background>
                 <dynCtrl:DragCanvas x:Name="workBench" 
                                     Width="100000" 
                                     Height="100000" >
@@ -48,6 +41,12 @@
                         </TransformGroup>
                     </Canvas.RenderTransform>
                 </dynCtrl:DragCanvas>
+                <Canvas.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF3B3B3B" Offset="1" />
+                        <GradientStop Color="#FF9A9A9A" Offset="0" />
+                    </LinearGradientBrush>
+                </Canvas.Background>
             </Canvas>
         </Border>
         <ScrollViewer Name="LogScroller" Height="100" 

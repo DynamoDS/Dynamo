@@ -34,8 +34,6 @@ using Dynamo.Elements;
 using Dynamo.Controls;
 using System.Xml.Serialization;
 using Dynamo.Utilities;
-using Dynamo.Elements;
-
 
 namespace Dynamo.Applications
 {

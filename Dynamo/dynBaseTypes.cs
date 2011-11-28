@@ -1492,10 +1492,14 @@ namespace Dynamo.Elements
             
 
             //add a list box
-            //label = new System.Windows.Controls.Label();
             System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
 
             WatchValue = "Ready to watch!";
             
@@ -1631,7 +1635,6 @@ namespace Dynamo.Elements
             //label.SetBinding(System.Windows.Controls.Label.ContentProperty, b);
             tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, b);
 
-            //this.inputGrid.Children.Add(label);
             this.inputGrid.Children.Add(tb);
             tb.TextWrapping = System.Windows.TextWrapping.Wrap;
             tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
@@ -2069,8 +2072,6 @@ namespace Dynamo.Elements
         public override void Update()
         {
             //this.topControl.Height = 400;
-            //OutPortData[0].Object = this.Tree; // does not seem like this gets called, how to trigger it?
-            //OnDynElementUpdated(EventArgs.Empty);
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }

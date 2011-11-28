@@ -45,6 +45,8 @@ namespace Dynamo.Connectors
                 Connected(this, e);
         }
 
+        const int STROKE_THICKNESS = 1;
+
         dynPort pStart;
         dynPort pEnd;
 
@@ -90,7 +92,9 @@ namespace Dynamo.Connectors
                 //Create a Bezier;
                 connector = new Path();
                 connector.Stroke = Brushes.Black;
-                connector.StrokeThickness = 1;
+                connector.StrokeThickness = STROKE_THICKNESS;
+                connector.Opacity = .8;
+
                 DoubleCollection dashArray = new DoubleCollection();
                 dashArray.Add(5); dashArray.Add(2);
                 connector.StrokeDashArray = dashArray;
@@ -154,7 +158,9 @@ namespace Dynamo.Connectors
                 #region bezier creation
                 connector = new Path();
                 connector.Stroke = Brushes.Black;
-                connector.StrokeThickness = 1;
+                connector.StrokeThickness = STROKE_THICKNESS;
+                connector.Opacity = .8;
+
                 DoubleCollection dashArray = new DoubleCollection();
                 dashArray.Add(5); dashArray.Add(2);
                 connector.StrokeDashArray = dashArray;
@@ -162,11 +168,6 @@ namespace Dynamo.Connectors
                 PathGeometry connectorGeometry = new PathGeometry();
                 connectorPoints = new PathFigure();
                 connectorCurve = new BezierSegment();
-
-                //if (pStart.Owner.Settings.WorkBench != settings.WorkBench)
-                //{
-                //    Debug.WriteLine("Workbenches are not the same.");
-                //}
 
                 connectorPoints.StartPoint = new Point(pStart.Center.X, pStart.Center.Y);
                 connectorCurve.Point1 = connectorPoints.StartPoint;
@@ -225,7 +226,7 @@ namespace Dynamo.Connectors
                         pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData[pStart.Index].Object;
                     
                     //tell the end port's ownder to update
-                    pEnd.Owner.Update();
+                    //pEnd.Owner.Update();
                 }
             }
 

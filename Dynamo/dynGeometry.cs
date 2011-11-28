@@ -51,7 +51,7 @@ namespace Dynamo.Elements
             InPortData.Add(new PortData(null, "Z", "Z", typeof(dynDouble)));
 
             OutPortData.Add(new PortData(null, "xyz", "XYZ", typeof(dynXYZ)));
-            OutPortData[0].Object = this.Tree; // MDJ 11-14-11 map data tree
+            OutPortData[0].Object = this.Tree;
 
             base.RegisterInputsAndOutputs();
 
@@ -61,18 +61,14 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
-                DataTreeBranch b = new DataTreeBranch(); // MDJ 11-14-11 map data tree
-                this.Tree.Trunk.Branches.Add(b);// MDJ 11-14-11 map data tree
 
                 //create the xyz
                 pt = new XYZ((double)InPortData[0].Object,
                     (double)InPortData[1].Object,
                     (double)InPortData[2].Object);
 
-                b.Leaves.Add(pt);// MDJ 11-14-11 map data tree
-
-                //OutPortData[0].Object = pt; // MDJ 11-14-11
-                OutPortData[0].Object = this.Tree;
+                //OutPortData[0].Object = pt;
+                this.Tree.Trunk.Leaves.Add(pt);
             }
         }
 
@@ -98,6 +94,7 @@ namespace Dynamo.Elements
             InPortData.Add(new PortData(null, "XYZ", "Normal", typeof(dynXYZ)));
             InPortData.Add(new PortData(null, "XYZ", "Origin", typeof(dynXYZ)));
             OutPortData.Add(new PortData(null, "P", "Plane", typeof(dynPlane)));
+            OutPortData[0].Object = this.Tree;
 
             base.RegisterInputsAndOutputs();
         }
@@ -106,8 +103,47 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
-                OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewPlane(InPortData[0].Object as XYZ,
-                    InPortData[1].Object as XYZ);
+
+                DataTree a = InPortData[0].Object as DataTree;
+                DataTree b = InPortData[1].Object as DataTree;
+
+                if (a != null && b != null)
+                {
+                    Process(this.Tree.Trunk, a.Trunk, b.Trunk);
+                }
+
+            }
+        }
+
+        void Process(DataTreeBranch currBranch, DataTreeBranch a, DataTreeBranch b)
+        {
+            foreach (object o in a.Leaves)
+            {
+
+                if (b.Leaves.Count > a.Leaves.IndexOf(o))
+                {
+                    XYZ ptA = o as XYZ;
+                    XYZ ptB = b.Leaves[a.Leaves.IndexOf(o)] as XYZ;
+
+                    if (ptA != null && ptB != null)
+                    {
+                        this.Tree.Trunk.Leaves.Add(dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewPlane(ptA, ptB));
+                    }
+                }
+                
+            }
+
+            foreach (DataTreeBranch aChild in a.Branches)
+            {
+                DataTreeBranch subBranch = new DataTreeBranch();
+                currBranch.Branches.Add(subBranch);
+
+                int idx = a.Branches.IndexOf(aChild);
+
+                if (b.Branches.Count > idx)
+                {
+                    Process(subBranch, aChild, b.Branches[idx]);
+                }
             }
         }
 
@@ -131,6 +167,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData(null, "P", "The plane in which to define the sketch.", typeof(dynPlane)));
             OutPortData.Add(new PortData(null, "SP", "SketchPlane", typeof(dynSketchPlane)));
+            OutPortData[0].Object = this.Tree;
 
             base.RegisterInputsAndOutputs();
         }
@@ -139,8 +176,35 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
-                OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(InPortData[0].Object as Plane);
+                //OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(InPortData[0].Object as Plane);
+
+                DataTree a = InPortData[0].Object as DataTree;
+                if(a != null)
+                {
+                    Process(this.Tree.Trunk, a.Trunk);
+                }
             }
+        }
+
+        void Process(DataTreeBranch currBranch, DataTreeBranch a)
+        {
+            foreach (object o in a.Leaves)
+            {
+                Plane p = o as Plane;
+                if (p != null)
+                {
+                    currBranch.Leaves.Add(dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(p));
+                }
+            }
+
+            foreach (DataTreeBranch aChild in a.Branches)
+            {
+                DataTreeBranch subBranch = new DataTreeBranch();
+                currBranch.Branches.Add(subBranch);
+
+                Process(subBranch, aChild);
+            }
+
         }
 
         public override void Destroy()
@@ -164,6 +228,7 @@ namespace Dynamo.Elements
             InPortData.Add(new PortData(null, "xyz", "Start", typeof(dynXYZ)));
             InPortData.Add(new PortData(null, "xyz", "End", typeof(dynXYZ)));
             OutPortData.Add(new PortData(null, "C", "Line", typeof(dynCurve)));
+            OutPortData[0].Object = this.Tree;
 
             base.RegisterInputsAndOutputs();
         }
@@ -172,10 +237,46 @@ namespace Dynamo.Elements
         {
             if (CheckInputs())
             {
-                Curve c = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewLineBound(InPortData[0].Object as XYZ,
-                    InPortData[1].Object as XYZ);
+                
+                DataTree a = InPortData[0].Object as DataTree;
+                DataTree b = InPortData[1].Object as DataTree;
 
-                OutPortData[0].Object = c;
+                if (a != null && b != null)
+                {
+                    Process(this.Tree.Trunk, a.Trunk, b.Trunk);
+                }
+            }
+        }
+
+        void Process(DataTreeBranch currBranch, DataTreeBranch a, DataTreeBranch b)
+        {
+
+            foreach (object o in a.Leaves)
+            {
+                if (b.Leaves.Count > a.Leaves.IndexOf(o))
+                {
+                    XYZ ptA = o as XYZ;
+                    XYZ ptB = b.Leaves[a.Leaves.IndexOf(o)] as XYZ;
+
+                    if (ptA != null && ptB != null)
+                    {
+                        Curve c = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewLineBound(ptA, ptB);
+                        currBranch.Leaves.Add(c);
+                    }
+                }
+            }
+
+            foreach (DataTreeBranch aChild in a.Branches)
+            {
+                DataTreeBranch subBranch = new DataTreeBranch();
+                currBranch.Branches.Add(subBranch);
+
+                int idx = a.Branches.IndexOf(aChild);
+
+                if(b.Branches.Count > idx)
+                {
+                    Process(subBranch, aChild, b.Branches[idx]);
+                }
             }
         }
 

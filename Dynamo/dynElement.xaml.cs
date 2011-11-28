@@ -89,9 +89,6 @@ namespace Dynamo.Elements
         public delegate void SetStateDelegate(dynElement el, ElementState state);
 
         #region public members
-
-        
-
         public string ToolTipText
         {
             get { return outPortData[0].ToolTipString; }
@@ -188,7 +185,7 @@ namespace Dynamo.Elements
         #endregion
 
         #region events
-        public event dynElementUpdatedHandler dynElementUpdated;
+        //public event dynElementUpdatedHandler dynElementUpdated;
         public event dynElementDestroyedHandler dynElementDestroyed;
         public event dynElementReadyToBuildHandler dynElementReadyToBuild;
         public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
@@ -280,13 +277,13 @@ namespace Dynamo.Elements
 
         #endregion
 
-        protected virtual void OnDynElementUpdated(EventArgs e)
-        {
-            if (dynElementUpdated != null)
-            {
-                dynElementUpdated(this, e);
-            }
-        }
+        //protected virtual void OnDynElementUpdated(EventArgs e)
+        //{
+        //    if (dynElementUpdated != null)
+        //    {
+        //        dynElementUpdated(this, e);
+        //    }
+        //}
         
         protected virtual void OnDynElementDestroyed(EventArgs e)
         {
@@ -551,7 +548,7 @@ namespace Dynamo.Elements
             tb.Text = name;
 
             //set the z order to the back
-            //Canvas.SetZIndex(this, 1);
+            //Canvas.SetZIndex(p, 1);
 
             if (portType == PortType.INPUT)
             {
@@ -700,22 +697,11 @@ namespace Dynamo.Elements
                     failOpt.SetFailuresPreprocessor(dynElementSettings.SharedInstance.WarningSwallower);
                     t.SetFailureHandlingOptions(failOpt);
 
-                    /*if (!elementsHaveBeenDeleted)
-                    {
-                        //find the end node and delete in reverse
-                        //this strips away all the downstream geometry in reverse build order
-                        List<dynElement> downStream = new List<dynElement>();
-                        el.FindDownstreamElements(ref downStream);
-                        downStream.Reverse();
-                        foreach (dynElement delEl in downStream)
-                            delEl.Destroy();
-                    }*/
                     el.Destroy();
                     el.Draw();
 
                     UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                     Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { el }); 
-                    //el.UpdateLayout();
 
                     elementsHaveBeenDeleted = false;
 
@@ -731,12 +717,9 @@ namespace Dynamo.Elements
                     Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
                         new object[] { ex.Message});
 
-                    //this.ToolTip = ex.Message;
-
                     MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
                     Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
                         new object[] { true });
-                    //MarkConnectionState(true);
 
                     if (ts == TransactionStatus.Committed)
                     {
@@ -776,24 +759,14 @@ namespace Dynamo.Elements
             {
                 try
                 {
-                    /*
-                    if (!elementsHaveBeenDeleted)
-                    {
-                        //find the end node and delete in reverse
-                        //this strips away all the downstream geometry in reverse build order
-                        List<dynElement> downStream = new List<dynElement>();
-                        el.FindDownstreamElements(ref downStream);
-                        downStream.Reverse();
-                        foreach (dynElement delEl in downStream)
-                            delEl.Destroy();
-                    }*/
+
                     el.Destroy();
 
                     el.Draw();
 
                     UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                     Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { el }); 
-                    //el.UpdateLayout();
+
                     elementsHaveBeenDeleted = false;
                 }
                 catch (Exception ex)
@@ -804,7 +777,6 @@ namespace Dynamo.Elements
                     SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
                     Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
                         new object[] { ex.Message });
-                    //this.ToolTip = ex.Message;
 
                     MarkConnectionState(true);
 
@@ -828,8 +800,6 @@ namespace Dynamo.Elements
                 }
             }
             #endregion
-
-            //settings.Doc.Document.Regenerate();
 
         }
 
@@ -872,11 +842,35 @@ namespace Dynamo.Elements
         {
             foreach (dynPort p in outPorts)
             {
+                //send the messages without updating
                 foreach (dynConnector c in p.Connectors)
                 {
                     c.SendMessage();
                 }
             }
+
+            //aggregate the unique output nodes
+            //this avoids multiple updates of the same node
+            //if a node has the same node connected to several of its outputs
+            List<dynElement> uniqueNodes = new List<dynElement>();
+            foreach (dynPort p in outPorts)
+            {
+                foreach (dynConnector c in p.Connectors)
+                {
+                    if (!uniqueNodes.Contains(c.End.Owner))
+                    {
+                        uniqueNodes.Add(c.End.Owner);
+                    }
+                }
+            }
+
+            //update the unique nodes
+            foreach (dynElement el in uniqueNodes)
+            {
+                el.Update();
+            }
+
+            uniqueNodes = null;
         }
 
         public void FindDownstreamElements(ref List<dynElement>downStream)

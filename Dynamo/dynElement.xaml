@@ -21,7 +21,7 @@
               Background="Transparent"
               Canvas.ZIndex="99">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="14"/>
                 <ColumnDefinition Width="Auto"/>           
             </Grid.ColumnDefinitions>
         </Grid>
@@ -35,13 +35,16 @@
               Canvas.ZIndex="99">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="14"/>
             </Grid.ColumnDefinitions>
         </Grid>
         <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
                 Name="elementCanvas" 
                 Margin="0,0,0,0">
+            <Canvas.BitmapEffect>
+                <DropShadowBitmapEffect Color="Black" Direction="320" ShadowDepth="10" Softness="1" Opacity=".35"/>
+            </Canvas.BitmapEffect>
             <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"

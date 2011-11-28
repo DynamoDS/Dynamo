@@ -194,6 +194,7 @@ namespace Dynamo.Elements
             {
                 if (!p.IsReadOnly)  //don't want it if it is read only
                 {
+                    if (p.StorageType == StorageType.Double)
                     if (p.StorageType == StorageType.Double) //MDJ 11-23-11 - ian just had doubles but we need to add Ints, should convert to a switch case if we need more
                     {
                         string paramName = p.Definition.Name;
@@ -657,10 +658,6 @@ namespace Dynamo.Elements
                 if (treeIn != null)
                 {
                     Process(treeIn.Trunk, this.Tree.Trunk);
-
-                    //Hashtable parameterMap = StatePortData[0].Object as Hashtable;
-                    //if(parameterMap != null)
-                    //    ProcessState(this.Tree.Trunk, parameterMap);
                 }
             }
 
@@ -684,19 +681,6 @@ namespace Dynamo.Elements
                     Elements.Append(fi);
                     currentBranch.Leaves.Add(fi);
 
-                    //Hashtable parameterMap = StatePortData[0].Object as Hashtable;
-                    //if (parameterMap != null)
-                    //{
-                    //    foreach (DictionaryEntry de in parameterMap)
-                    //    {
-                    //        //find the parameter on the family instance
-                    //        Parameter p = fi.Symbol.get_Parameter(de.Key.ToString());
-                    //        if (p != null)
-                    //        {
-                    //            p.Set((double)de.Value);
-                    //        }
-                    //    }
-                    //}
                 }
             }
 

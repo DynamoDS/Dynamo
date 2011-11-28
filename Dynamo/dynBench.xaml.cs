@@ -139,7 +139,7 @@ namespace Dynamo.Controls
             //connectors = new List<dynConnector>();
             selectedElements = new dynSelection();
 
-            DrawGrid();
+            //DrawGrid();
 
             //create the stringWriter for logging
             sw = new StringWriter();

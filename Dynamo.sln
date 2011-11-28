@@ -22,9 +22,6 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DynamoInstall_32bit", "Dyna
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoTestTypes", "DynamoTestTypes\DynamoTestTypes.csproj", "{25694257-EFDD-400E-A2FE-B7C0EA10728B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7858FA8C-475F-4B8E-B468-1F8200778CF8} = {7858FA8C-475F-4B8E-B468-1F8200778CF8}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
