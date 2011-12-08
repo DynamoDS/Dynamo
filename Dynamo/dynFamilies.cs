@@ -125,18 +125,25 @@ namespace Dynamo.Elements
 
     [ElementName("Instance Parameter Mapper")]
     [ElementDescription("An element which maps the parameters of a Family Type.")]
-    [RequiresTransaction(false)]
+    [RequiresTransaction(true)]
     public class dynInstanceParameterMapper : dynElement, IDynamic
     {
-        Hashtable parameterMap = new Hashtable();
+        //Hashtable parameterMap = new Hashtable();
+        SortedDictionary<string, object> parameterMap = new SortedDictionary<string, object>();
 
-        public Hashtable ParameterMap
+        //public Hashtable ParameterMap
+        //{
+        //    get { return parameterMap; }
+        //}
+
+        public SortedDictionary<string, object> ParameterMap
         {
             get { return parameterMap; }
         }
 
         public dynInstanceParameterMapper()
         {
+
 
             this.topControl.Width = 300;
 
@@ -161,7 +168,6 @@ namespace Dynamo.Elements
 
         void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            //read from the state objects
             if (CheckInputs())
             {
                 CleanupOldPorts();
@@ -169,20 +175,17 @@ namespace Dynamo.Elements
                 DataTree treeIn = InPortData[0].Object as DataTree;
                 if (treeIn != null)
                 {
-                    if (treeIn.Trunk.Branches.Count > 0)
+                    object o = treeIn.Trunk.FindFirst();
+
+                    if (o != null)
                     {
-                        if (treeIn.Trunk.Branches[0].Leaves.Count > 0)
+                        FamilyInstance fi = o as FamilyInstance;
+                        if (fi != null)
                         {
-                            FamilyInstance fi = treeIn.Trunk.Branches[0].Leaves[0] as FamilyInstance;
-                            if (fi != null)
-                            {
-                                MapPorts(fi);
-                            }
+                            MapPorts(fi);
                         }
                     }
                 }
-
-
             }
         }
 
@@ -254,12 +257,16 @@ namespace Dynamo.Elements
                 InPortData.RemoveAt(InPortData.Count - 1);
             }
 
-            while (gridLeft.RowDefinitions.Count > 1)
+            while (gridLeft.Children.Count > 2)
             {
                 //remove the port from the children list
-                gridLeft.Children.RemoveAt(gridLeft.RowDefinitions.Count - 1);
-                gridLeft.RowDefinitions.RemoveAt(gridLeft.RowDefinitions.Count - 1);
+                gridLeft.Children.RemoveAt(gridLeft.Children.Count - 1);
+            }
 
+            while (gridLeft.RowDefinitions.Count > 1)
+            {
+                gridLeft.RowDefinitions.RemoveAt(gridLeft.RowDefinitions.Count - 1);
+                
             }
 
         }
@@ -271,18 +278,30 @@ namespace Dynamo.Elements
             for(int i=1; i<InPortData.Count; i++)
             {
                 PortData pd = InPortData[i];
-                //parameter value keys are the tooltip - the name 
-                //of the parameter
-                //set the objects on the parameter map
-                parameterMap[pd.ToolTipString] = pd.Object;
 
-                DataTree familyInstTree = InPortData[0].Object as DataTree;
-                DataTree doubleTree = pd.Object as DataTree;
-
-                if (familyInstTree != null && doubleTree != null)
+                if (pd.Object != null)
                 {
-                    //get the parameter represented by the port data
-                    Process(familyInstTree.Trunk, doubleTree.Trunk, pd.ToolTipString);
+                    //parameter value keys are the tooltip - the name 
+                    //of the parameter
+                    //set the objects on the parameter map
+                    parameterMap[pd.ToolTipString] = pd.Object;
+
+                    DataTree familyInstTree = InPortData[0].Object as DataTree;
+
+                    if (familyInstTree != null)
+                    {
+                        if (pd.Object.GetType() == typeof(DataTree))
+                        {
+                            DataTree doubleTree = pd.Object as DataTree;
+                            //get the parameter represented by the port data
+                            Process(familyInstTree.Trunk, doubleTree.Trunk, pd.ToolTipString);
+                        }
+                        else
+                        {
+                            double d = Convert.ToDouble(pd.Object);
+                            Process(familyInstTree.Trunk, d, pd.ToolTipString);
+                        }
+                    }
                 }
 
             }
@@ -301,6 +320,7 @@ namespace Dynamo.Elements
                     if(p!= null)
                     {
                         p.Set(Convert.ToDouble(doubleBranch.Leaves[leafCount]));
+                        dynElementSettings.SharedInstance.Doc.RefreshActiveView();
                     }
                 }
                 leafCount++;
@@ -316,6 +336,33 @@ namespace Dynamo.Elements
                     Process(nextBranch, doubleBranch.Branches[subBranchCount], paramName);
                 }
                 subBranchCount++;
+            }
+        }
+
+        public void Process(DataTreeBranch familyBranch, double d, string paramName)
+        {
+            int leafCount = 0;
+            foreach (object o in familyBranch.Leaves)
+            {
+                FamilyInstance fi = o as FamilyInstance;
+                if (fi != null)
+                {
+                    Parameter p = fi.get_Parameter(paramName);
+                    if (p != null)
+                    {
+                        p.Set(d);
+                        dynElementSettings.SharedInstance.Doc.RefreshActiveView();
+                    }
+                }
+                leafCount++;
+            }
+
+            foreach (DataTreeBranch nextBranch in familyBranch.Branches)
+            {
+                //don't do this if the double tree doesn't
+                //have a member in the same location
+
+                Process(nextBranch, d, paramName);
             }
         }
 
@@ -456,7 +503,10 @@ namespace Dynamo.Elements
                 DataTree treeIn = InPortData[0].Object as DataTree;
                 if (treeIn != null)
                 {
-                    Hashtable parameterMap = InPortData[1].Object as Hashtable;
+                    //Hashtable parameterMap = InPortData[1].Object as Hashtable;
+
+                    SortedDictionary<string, object> parameterMap = InPortData[1].Object as SortedDictionary<string, object>;
+
                     if (parameterMap != null)
                         ProcessState(treeIn.Trunk, parameterMap);
                 }
@@ -465,14 +515,15 @@ namespace Dynamo.Elements
             base.Draw();
         }
 
-        private void ProcessState(DataTreeBranch bIn, Hashtable parameterMap)
+        private void ProcessState(DataTreeBranch bIn, SortedDictionary<string,object> parameterMap)
         {
             foreach (object o in bIn.Leaves)
             {
                 FamilyInstance fi = o as FamilyInstance;
                 if (fi != null)
                 {
-                    foreach (DictionaryEntry de in parameterMap)
+                    //foreach (DictionaryEntry de in parameterMap)
+                    foreach (KeyValuePair<string,object> de in parameterMap)
                     {
                         if (de.Value != null)
                         {

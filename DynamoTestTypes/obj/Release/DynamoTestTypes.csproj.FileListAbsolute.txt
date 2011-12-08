@@ -1,5 +1,0 @@
-C:\Code\dynamo\DynamoTestTypes\obj\Release\ResolveAssemblyReference.cache
-C:\Code\dynamo\DynamoTestTypes\bin\Release\DynamoTestTypes.dll
-C:\Code\dynamo\DynamoTestTypes\bin\Release\DynamoTestTypes.pdb
-C:\Code\dynamo\DynamoTestTypes\obj\Release\DynamoTestTypes.dll
-C:\Code\dynamo\DynamoTestTypes\obj\Release\DynamoTestTypes.pdb

@@ -1,8 +1,0 @@
-C:\Code\dynamo\DragCanvas\bin\Release\DragCanvas.dll
-C:\Code\dynamo\DragCanvas\bin\Release\DragCanvas.pdb
-C:\Code\dynamo\DragCanvas\obj\Release\ResolveAssemblyReference.cache
-C:\Code\dynamo\DragCanvas\obj\Release\DragCanvas.Properties.Resources.resources
-C:\Code\dynamo\DragCanvas\obj\Release\GenerateResource.read.1.tlog
-C:\Code\dynamo\DragCanvas\obj\Release\GenerateResource.write.1.tlog
-C:\Code\dynamo\DragCanvas\obj\Release\DragCanvas.dll
-C:\Code\dynamo\DragCanvas\obj\Release\DragCanvas.pdb

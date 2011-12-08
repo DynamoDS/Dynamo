@@ -66,7 +66,8 @@ namespace Dynamo.Controls
         public dynToolFinder toolFinder;
         public event PropertyChangedEventHandler PropertyChanged;
         Hashtable userTypes = new Hashtable();
-        Hashtable builtinTypes = new Hashtable();
+        //Hashtable builtinTypes = new Hashtable();
+        SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
         private void NotifyPropertyChanged(String info)
         {
@@ -154,6 +155,7 @@ namespace Dynamo.Controls
             //the DynamoElements.dll
             Assembly elementsAssembly = System.Reflection.Assembly.GetExecutingAssembly();
             Type[] loadedTypes = elementsAssembly.GetTypes();
+
             foreach (Type t in loadedTypes)
             {
                 //only load types that are in the right namespace, are not abstract
@@ -166,13 +168,16 @@ namespace Dynamo.Controls
                     t.IsSubclassOf(typeof(dynElement)))
                 {
                     string typeName = (attribs[0] as ElementNameAttribute).ElementName;
-                    System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
-                    mi.Header = typeName;
-                    mi.Click += new RoutedEventHandler(AddElement_Click);
-                    AddMenu.Items.Add(mi);
-
                     builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
                 }
+            }
+
+            foreach (KeyValuePair<string,TypeLoadData> kvp in builtinTypes)
+            {
+                System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
+                mi.Header = kvp.Key;
+                mi.Click += new RoutedEventHandler(AddElement_Click);
+                AddMenu.Items.Add(mi);
             }
         }
 

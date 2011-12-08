@@ -68,6 +68,7 @@ namespace Dynamo.Elements
             this.trunk.Graph(0, ref graph);
             return graph;
         }
+
     }
 
     /// <summary>
@@ -123,6 +124,20 @@ namespace Dynamo.Elements
             }
 
             
+        }
+
+        public object FindFirst()
+        {
+            foreach (object o in leaves)
+            {
+                return o;
+            }
+            foreach (DataTreeBranch branch in branches)
+            {
+                return branch.FindFirst();
+            }
+
+            return null;
         }
     }
 }

@@ -238,8 +238,8 @@ namespace Dynamo.Elements
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "0.0";
             tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-            tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
-
+            //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+            
             //turn off the border
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
             tb.Background = backgroundBrush;
