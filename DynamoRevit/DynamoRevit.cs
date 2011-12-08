@@ -47,6 +47,8 @@ namespace Dynamo.Applications
             try
             {
 
+                //test of branch
+
                 //create a log file
                 string tempPath = System.IO.Path.GetTempPath();
                 string logPath = Path.Combine(tempPath, "dynamoLog.txt");
