@@ -1,4 +1,4 @@
-﻿//Copyright 2011 Ian Keough
+//Copyright 2011 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -72,6 +72,8 @@ namespace Dynamo.Elements
         public dynReferencePointByXYZ()
         {
             InPortData.Add(new PortData(null, "xyz", "The point(s) from which to create reference points.", typeof(dynXYZ)));
+
+            //outport already added in parent
 
             base.RegisterInputsAndOutputs();
         }
@@ -332,3 +334,4 @@ namespace Dynamo.Elements
     //    }
     //}
 }
+

@@ -2,6 +2,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
-    <StartProgram>C:\Program Files\Autodesk\Revit Architecture 2012\Program\Revit.exe</StartProgram>
+    <StartProgram>c:\Program Files\Autodesk\Revit Architecture 2012\Program\revit.exe</StartProgram>
   </PropertyGroup>
 </Project>

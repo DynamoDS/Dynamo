@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+   <AddIn Type="Application">
+      <Name>Solar Radiation Plug-in</Name>
+      <Assembly>InsolationAnalysis.dll</Assembly>
+      <ClientId>13D454CA-4AED-4f7f-A9E9-CE76AC5EAC61</ClientId>
+      <FullClassName>InsolationAnalysis.ExtComCall</FullClassName>
+      <VendorId>ADSK</VendorId>
+      <VendorDescription>Autodesk, labs.autodesk.com</VendorDescription>
+   </AddIn>
+</RevitAddIns>

@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
+
+  <AddIn Type="Application">
+    <Name>DamnApplication</Name>
+    <Assembly>C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DynamoRevit.dll</Assembly>
+    <AddInId>188B9080-EEBE-40C3-865A-8FC31DEEC12F</AddInId>
+    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>
+    <VendorId>GOBD</VendorId>
+    <VendorDescription>GoBuild, www.goBuild.com</VendorDescription>
+  </AddIn>
+
   <AddIn Type="Command">
-    <Assembly>C:\Program Files\goBuild\dynamo\DynamoRevit.dll</Assembly>
+    <Assembly>C:\xfer\dev\dynamo_tatlin3\DynamoRevit\bin\Debug\DynamoRevit.dll</Assembly>
     <AddInId>dc09be67-aa31-4ea7-86c9-d06c080cd3e9</AddInId>
     <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>
     <Text>Dynamo</Text>
     <Description>Visual programming using the Revit API.</Description>
     <VendorId>GOBD</VendorId>
   </AddIn>
+  
 </RevitAddIns>

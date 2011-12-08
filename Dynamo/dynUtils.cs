@@ -20,6 +20,8 @@ using System.Windows.Media;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using Autodesk.Revit.DB.Events;  //MDJ - i think this is needed for DMU stuff
+using Autodesk.Revit.DB.Analysis; //MDJ  - added for spatialfeildmanager access
 using Dynamo.Elements;
 using Dynamo.Controls;
 using System.IO;
@@ -89,6 +91,7 @@ namespace Dynamo.Utilities
 	    dynCollection dynColl;
 	    Transaction trans;
         TextWriter tw;
+        Element spatialFieldManagerUpdated;
 
         private static dynElementSettings sharedInstance;
 
@@ -107,6 +110,16 @@ namespace Dynamo.Utilities
         System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(238, 180, 34);
         System.Windows.Media.Color colorGray1 = System.Windows.Media.Color.FromRgb(220, 220, 220);
         System.Windows.Media.Color colorGray2 = System.Windows.Media.Color.FromRgb(192, 192, 192);
+
+        
+        public Element SpatialFieldManagerUpdated
+        {
+            get { return spatialFieldManagerUpdated; }
+            set
+            {
+                spatialFieldManagerUpdated = value;
+            }
+        }
 
 	    public Autodesk.Revit.UI.UIApplication Revit
 	    {
@@ -370,7 +383,7 @@ namespace Dynamo.Utilities
 	           
 	    }
 	
-	    public static FamilySymbol RequestFamilyInstanceSelection(UIDocument doc, string message, 
+	    public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message, 
 	        dynElementSettings settings, ref FamilyInstance fi)
 	    {
 	        try
@@ -404,6 +417,88 @@ namespace Dynamo.Utilities
 	            return null;
 	        }
 	    }
+
+        public static FamilyInstance RequestFamilyInstanceSelection(UIDocument doc, string message,
+            dynElementSettings settings)
+        {
+            try
+            {
+                FamilyInstance fi = null;
+
+                Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+                //MessageBox.Show(message);
+                settings.Bench.Log(message);
+
+                Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (fsRef != null)
+                {
+                    fi = doc.Document.get_Element(fsRef.ElementId) as FamilyInstance;
+
+                    if (fi != null)
+                    {
+                        return fi;
+                    }
+                    else return null;
+                }
+                else return null;
+            }
+            catch (Exception ex)
+            {
+                settings.Bench.Log(ex.Message);
+                return null;
+            }
+        }
+
+
+        public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message,
+    dynElementSettings settings)
+        {
+            try
+            {
+
+                View view = doc.ActiveView as View;
+
+                SpatialFieldManager sfm = SpatialFieldManager.GetSpatialFieldManager(view);
+                Element AnalysisResult;
+
+                if (sfm != null)
+                {
+                    sfm.GetRegisteredResults();
+
+                    Selection choices = doc.Selection;
+
+                    choices.Elements.Clear();
+
+                    //MessageBox.Show(message);
+                    settings.Bench.Log(message);
+
+                    Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+                    if (fsRef != null)
+                    {
+                        AnalysisResult = doc.Document.get_Element(fsRef.ElementId) as Element;
+
+                        if (AnalysisResult != null)
+                        {
+                            return AnalysisResult;
+                        }
+                        else return null;
+                    }
+                    else return null;
+                }
+                else return null;
+            }
+            catch (Exception ex)
+            {
+                settings.Bench.Log(ex.Message);
+                return null;
+            }
+        }
+        
 	}
 	
 }
