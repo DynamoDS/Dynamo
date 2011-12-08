@@ -125,7 +125,7 @@ namespace Dynamo.Elements
 
     [ElementName("Instance Parameter Mapper")]
     [ElementDescription("An element which maps the parameters of a Family Type.")]
-    [RequiresTransaction(false)]
+    [RequiresTransaction(true)]
     public class dynInstanceParameterMapper : dynElement, IDynamic
     {
         Hashtable parameterMap = new Hashtable();
