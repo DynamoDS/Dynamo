@@ -146,7 +146,9 @@ namespace Dynamo.Controls
             sw = new StringWriter();
             Log("Welcome to Dynamo!");
             Log(String.Format("You are using build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-            Log("Be sure to check the blog for more information on the newest changes.");
+            Log("*****NEW IN THIS RELEASE*****");
+            Log("-Nodes are now dragged using the left mouse button.");
+            Log("-Added Matt's wicked button and logo :).");
         }
     
         private void LoadBuiltinTypes()

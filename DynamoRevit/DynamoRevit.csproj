@@ -37,9 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamoElements, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DynamoElements, Version=0.1.4385.17598, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dynamo\bin\Debug\DynamoElements.dll</HintPath>
+      <HintPath>..\Dynamo\bin\Release\DynamoElements.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -48,10 +48,12 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
