@@ -233,58 +233,8 @@ namespace Dynamo.Elements
             //generate a guid for the component
             dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
         }
-
-        /// <summary>
-        /// dynElement constructor for use when reconstructing dynElements from file
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="nickName"></param>
-        /// <param name="guid"></param>
-        //public dynElement(dynElementSettings settings, string nickName, Guid guid)
-        //{
-        //    InitializeComponent();
-
-        //    inPorts = new List<dynPort>();
-        //    inPortData = new List<PortData>();
-        //    outPortData = new List<PortData>();
-        //    outPorts = new List<dynPort>();
-
-        //    dataTree = new DataTree();
-
-        //    this.nickName = nickName;
-        //    this.nickNameBlock.Text = nickName;
-            
-
-        //    stateSetter = new SetStateDelegate(SetState);
-        //    Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.DEAD });
-
-        //    //set the z index to 2
-        //    Canvas.SetZIndex(this, 1);
-
-        //    this.guid = guid;
-
-        //    dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
-        //}
-
-        //public dynElement(dynElementSettings settings)
-        //{
-        //    //this.settings = settings;
-        //    this.guid = Guid.NewGuid();
-
-        //    //empty constructor to create non-GUI types
-        //    dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
-        //}
-
         #endregion
 
-        //protected virtual void OnDynElementUpdated(EventArgs e)
-        //{
-        //    if (dynElementUpdated != null)
-        //    {
-        //        dynElementUpdated(this, e);
-        //    }
-        //}
-        
         protected virtual void OnDynElementDestroyed(EventArgs e)
         {
             if (dynElementDestroyed != null)
@@ -1002,6 +952,11 @@ namespace Dynamo.Elements
             fullLace_cm.IsChecked = true;
             shortestList_cm.IsChecked = false;
             longestList_cm.IsChecked = false;
+        }
+
+        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+
         }
 
 

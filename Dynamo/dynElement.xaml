@@ -5,7 +5,7 @@
     Height="300" Width="160" Name="topControl" Loaded="topControl_Loaded" KeyUp="OnKeyUp" PreviewKeyUp="OnPreviewKeyUp">
     <Grid Name="grid">
         <Grid.ContextMenu>
-            <ContextMenu Name="MainContextMenu">
+            <ContextMenu Name="MainContextMenu" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
                 <MenuItem Name="longestList_cm" IsCheckable="True" Header="Longest List" Click="longestList_cm_Click" IsChecked="False"/>
                 <MenuItem Name="shortestList_cm" IsCheckable="True" Header="Shortest List" Click="shortestList_cm_Click" IsChecked="True"/>
                 <MenuItem Name="fullLace_cm" IsCheckable="True" Header="Full Lace" Click="fullLace_cm_Click" IsChecked="False"/>
@@ -15,7 +15,7 @@
         <Grid Name="gridLeft" 
               HorizontalAlignment="Left" 
               VerticalAlignment="Stretch"
-              Margin="5,5,0,5" 
+              Margin="-5,5,0,5" 
               Width="Auto" 
               IsHitTestVisible="True" 
               Background="Transparent"
@@ -28,7 +28,7 @@
         <Grid Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
-              Margin="0,5,5,5" 
+              Margin="0,5,-5,5" 
               Width="Auto" 
               IsHitTestVisible="True" 
               Background="Transparent"
@@ -42,9 +42,9 @@
                 Canvas.Top="0" 
                 Name="elementCanvas" 
                 Margin="0,0,0,0">
-            <Canvas.BitmapEffect>
+            <!--<Canvas.BitmapEffect>
                 <DropShadowBitmapEffect Color="Black" Direction="320" ShadowDepth="10" Softness="1" Opacity=".35"/>
-            </Canvas.BitmapEffect>
+            </Canvas.BitmapEffect>-->
             <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"

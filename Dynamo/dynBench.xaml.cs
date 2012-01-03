@@ -917,15 +917,20 @@ namespace Dynamo.Controls
             dynElementSettings.SharedInstance.Writer.WriteLine(message);
         }
 
-        void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        void OnPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //Keyboard.Focus(this);
 
             hitResultsList.Clear();
             TestClick(e.GetPosition(workBench));
 
-            #region test for a port
             dynPort p = null;
+            DragCanvas dc = null;
+            dynElement element = null;
+
+            //figure out which element is hit
+            //HACK: put the tests with break in highest to
+            //lowest z order 
             if (hitResultsList.Count > 0)
             {
                 foreach (DependencyObject depObj in hitResultsList)
@@ -937,12 +942,31 @@ namespace Dynamo.Controls
                     {
                         break;
                     }
+
+                    //traverse the tree through all the
+                    //hit elements to see if you get an element
+                    element = ElementClicked(depObj, typeof(dynElement)) as dynElement;
+                    if (element != null)
+                    {
+                        break;
+                    }
+
+                    //traverse the tree through all the
+                    //hit elements to see if you get a port
+                    dc = ElementClicked(depObj, typeof(DragCanvas)) as DragCanvas;
+                    if (dc != null)
+                    {
+                        break;
+                    }
                 }
+
             }
 
-
+            #region test for a port
             if (p != null)
             {
+                Debug.WriteLine("Port clicked");
+
                 if (!isConnecting)
                 {
                     //test if port already has a connection if so grab it
@@ -1014,80 +1038,52 @@ namespace Dynamo.Controls
             }
             #endregion
 
-            #region test for canvas
-            hitResultsList.Clear();
-            TestClick(e.GetPosition(workBench));
-
-            DragCanvas dc = null;
-            if (hitResultsList.Count > 0)
+            if (element != null)
             {
-                foreach (DependencyObject depObj in hitResultsList)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get a port
-                    dc = ElementClicked(depObj, typeof(DragCanvas)) as DragCanvas;
-                    if (dc != null)
-                    {
-                        Debug.WriteLine("Canvas clicked");
-                        ClearSelection();
-                        break;
-                    }
-                }
+                Debug.WriteLine("Element clicked");
+                SelectElement(element);
             }
-            #endregion
 
-            #region test for dyn element
-            hitResultsList.Clear();
-            TestClick(e.GetPosition(workBench));
-
-            dynElement element = null;
-            if (hitResultsList.Count > 0)
+            if (dc != null)
             {
-                foreach (DependencyObject depObj in hitResultsList)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get an element
-                    element = ElementClicked(depObj, typeof(dynElement)) as dynElement;
-                    if (element != null)
-                    {
-                        SelectElement(element);
-                        break;
-                    }
-                }
+                Debug.WriteLine("Canvas clicked");
+                ClearSelection();
             }
-            #endregion
+
 
         }
 
-        void OnMouseRightButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            hitResultsList.Clear();
-            TestClick(e.GetPosition(workBench));
+        //void OnMouseRightButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        //{
+        //    hitResultsList.Clear();
+        //    TestClick(e.GetPosition(workBench));
 
-            dynElement dynEl = null;
-            if (hitResultsList.Count > 0)
-            {
-                foreach (DependencyObject depObj in hitResultsList)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get a port
-                    dynEl = ElementClicked(depObj, typeof(dynElement)) as dynElement;
-                    if (dynEl != null)
-                    {
-                        break;
-                    }
-                }
-            }
+        //    dynElement dynEl = null;
+        //    if (hitResultsList.Count > 0)
+        //    {
+        //        foreach (DependencyObject depObj in hitResultsList)
+        //        {
+        //            //traverse the tree through all the
+        //            //hit elements to see if you get a port
+        //            dynEl = ElementClicked(depObj, typeof(dynElement)) as dynElement;
+        //            if (dynEl != null)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //    }
 
-            if (dynEl != null)
-            {
-                //this.statusText.Text = "DynElement selected...";
+        //    //start dragging the element
+        //    if (dynEl != null)
+        //    {
+        //        //this.statusText.Text = "DynElement selected...";
+        //        //hold off on setting the isDragInProcess
+        //        workBench.isDragInProgress = true;
+        //        workBench.elementBeingDragged = dynEl;
+        //        workBench.DragElement();
+        //    }
 
-                workBench.elementBeingDragged = dynEl;
-                workBench.DragElement();
-            }
-
-        }
+        //}
 
         //bubbling
         //from element up to root

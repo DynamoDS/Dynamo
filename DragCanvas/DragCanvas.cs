@@ -250,14 +250,14 @@ namespace Dynamo.Controls
 
 		#region Overrides
 
-		#region OnPreviewMouseLeftButtonDown
+		#region OnMouseLeftButtonDown
 
-        protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
 
             if (!isConnecting)
             {
-                base.OnPreviewMouseRightButtonDown(e);
+                base.OnMouseLeftButtonDown(e);
 
                 this.isDragInProgress = false;
 
@@ -393,22 +393,32 @@ namespace Dynamo.Controls
 				Canvas.SetBottom( this.ElementBeingDragged, newVerticalOffset );
 
 			#endregion // Move Drag Element
+
 		}
 
 		#endregion // OnPreviewMouseMove
 
 		#region OnHostPreviewMouseUp
 
-		protected override void OnPreviewMouseUp( MouseButtonEventArgs e )
-		{
-			base.OnPreviewMouseUp( e );
+        //protected override void OnPreviewMouseUp( MouseButtonEventArgs e )
+        //{
+        //    base.OnPreviewMouseUp( e );
 
-			// Reset the field whether the left or right mouse button was 
-			// released, in case a context menu was opened on the drag element.
-			this.ElementBeingDragged = null;
+        //    // Reset the field whether the left or right mouse button was 
+        //    // released, in case a context menu was opened on the drag element.
+        //    this.ElementBeingDragged = null;
+        //    this.isDragInProgress = false;
+        //}
 
-		}
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseUp(e);
 
+            // Reset the field whether the left or right mouse button was 
+            // released, in case a context menu was opened on the drag element.
+            this.ElementBeingDragged = null;
+            this.isDragInProgress = false;
+        }
 		#endregion // OnHostPreviewMouseUp
 
 		#endregion // Host Event Handlers
