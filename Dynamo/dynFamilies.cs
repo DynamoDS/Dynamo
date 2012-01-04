@@ -1,4 +1,4 @@
-//Copyright 2011 Ian Keough
+//Copyright 2012 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -140,7 +140,7 @@ namespace Dynamo.Elements
 
             this.topControl.Width = 300;
 
-            InPortData.Add(new PortData(null, "fi", "The family instance(s) to map.", typeof(dynFamilyInstanceCreator)));
+            InPortData.Add(new PortData(null, "fi", "The family instance(s) to map.", typeof(dynElement)));
             OutPortData.Add(new PortData(null, "", "A map of parameter values on the instance.", typeof(dynInstanceParameterMapper)));
             OutPortData[0].Object = parameterMap;
 
@@ -169,20 +169,15 @@ namespace Dynamo.Elements
                 DataTree treeIn = InPortData[0].Object as DataTree;
                 if (treeIn != null)
                 {
-                    if (treeIn.Trunk.Branches.Count > 0)
+                    //find the first family instance in the tree
+                    //and map it
+                    FamilyInstance fi = treeIn.Trunk.FindFirst() as FamilyInstance;
+                    if (fi != null)
                     {
-                        if (treeIn.Trunk.Branches[0].Leaves.Count > 0)
-                        {
-                            FamilyInstance fi = treeIn.Trunk.Branches[0].Leaves[0] as FamilyInstance;
-                            if (fi != null)
-                            {
-                                MapPorts(fi);
-                            }
-                        }
+                        MapPorts(fi);
                     }
+
                 }
-
-
             }
         }
 
@@ -194,13 +189,12 @@ namespace Dynamo.Elements
             {
                 if (!p.IsReadOnly)  //don't want it if it is read only
                 {
-                    if (p.StorageType == StorageType.Double)
                     if (p.StorageType == StorageType.Double) //MDJ 11-23-11 - ian just had doubles but we need to add Ints, should convert to a switch case if we need more
                     {
                         string paramName = p.Definition.Name;
 
                         PortData pd = new PortData(null, 
-                            p.Definition.Name[0].ToString(), 
+                            p.Definition.Name.Substring(0,Math.Min(p.Definition.Name.Length,3)), 
                             paramName, 
                             typeof(dynDouble));
                         InPortData.Add(pd);
@@ -211,7 +205,7 @@ namespace Dynamo.Elements
                         string paramName = p.Definition.Name;
 
                         PortData pd = new PortData(null,
-                            p.Definition.Name[0].ToString(),
+                            p.Definition.Name.Substring(0, Math.Min(p.Definition.Name.Length, 3)),
                             paramName,
                             typeof(dynInt));
                         InPortData.Add(pd);
@@ -222,7 +216,7 @@ namespace Dynamo.Elements
                         string paramName = p.Definition.Name;
 
                         PortData pd = new PortData(null,
-                            p.Definition.Name[0].ToString(),
+                            p.Definition.Name.Substring(0, Math.Min(p.Definition.Name.Length, 3)),
                             paramName,
                             typeof(dynString));
                         InPortData.Add(pd);
@@ -287,8 +281,10 @@ namespace Dynamo.Elements
 
         }
 
+        //sets the values on the family instances
         public override void Draw()
         {
+            DataTree familyInstTree = InPortData[0].Object as DataTree;
 
             //skip the first port data because it's the family instances
             for(int i=1; i<InPortData.Count; i++)
@@ -299,13 +295,26 @@ namespace Dynamo.Elements
                 //set the objects on the parameter map
                 parameterMap[pd.ToolTipString] = pd.Object;
 
-                DataTree familyInstTree = InPortData[0].Object as DataTree;
+                //start by assuming that you've got matching data trees
                 DataTree doubleTree = pd.Object as DataTree;
-
-                if (familyInstTree != null && doubleTree != null)
+                
+                if (familyInstTree != null)
                 {
-                    //get the parameter represented by the port data
-                    Process(familyInstTree.Trunk, doubleTree.Trunk, pd.ToolTipString);
+                    if (doubleTree != null)
+                    {
+                        //get the parameter represented by the port data
+                        Process(familyInstTree.Trunk, doubleTree.Trunk, pd.ToolTipString);
+                    }
+                    else
+                    {
+                        //if the incoming object is not null
+                        //then let's try to use it.
+                        if (pd.Object != null)
+                        {
+                            //we've got a single value incoming
+                            ProcessSingleValue(familyInstTree.Trunk, pd.Object, pd.ToolTipString);
+                        }
+                    }
                 }
 
             }
@@ -323,7 +332,18 @@ namespace Dynamo.Elements
                     Parameter p = fi.get_Parameter(paramName);
                     if(p!= null)
                     {
-                        p.Set(Convert.ToDouble(doubleBranch.Leaves[leafCount]));
+                        if (p.StorageType == StorageType.Double) //MDJ 11-23-11 - ian just had doubles but we need to add Ints, should convert to a switch case if we need more
+                        {
+                            p.Set(Convert.ToDouble(doubleBranch.Leaves[leafCount]));
+                        }
+                        else if (p.StorageType == StorageType.Integer)
+                        {
+                            p.Set(Convert.ToInt32(doubleBranch.Leaves[leafCount]));
+                        }
+                        else if (p.StorageType == StorageType.String)
+                        {
+                            p.Set(Convert.ToString(doubleBranch.Leaves[leafCount]));
+                        }
                     }
                 }
                 leafCount++;
@@ -339,6 +359,40 @@ namespace Dynamo.Elements
                     Process(nextBranch, doubleBranch.Branches[subBranchCount], paramName);
                 }
                 subBranchCount++;
+            }
+        }
+
+        public void ProcessSingleValue(DataTreeBranch familyBranch, object value, string paramName)
+        {
+            int leafCount = 0;
+            foreach (object o in familyBranch.Leaves)
+            {
+                FamilyInstance fi = o as FamilyInstance;
+                if (fi != null)
+                {
+                    Parameter p = fi.get_Parameter(paramName);
+                    if (p != null)
+                    {
+                        if (p.StorageType == StorageType.Double) //MDJ 11-23-11 - ian just had doubles but we need to add Ints, should convert to a switch case if we need more
+                        {
+                            p.Set(Convert.ToDouble(value));
+                        }
+                        else if (p.StorageType == StorageType.Integer)
+                        {
+                            p.Set(Convert.ToInt32(value));
+                        }
+                        else if (p.StorageType == StorageType.String)
+                        {
+                            p.Set(Convert.ToString(value));
+                        }
+                    }
+                }
+                leafCount++;
+            }
+
+            foreach (DataTreeBranch nextBranch in familyBranch.Branches)
+            {
+                ProcessSingleValue(nextBranch, value, paramName);
             }
         }
 
@@ -741,7 +795,7 @@ namespace Dynamo.Elements
         public dynFamilyInstanceParameterEvaluation()
         {
 
-            InPortData.Add(new PortData(null, "fi", "Family instances.", typeof(dynFamilyInstanceCreator)));
+            InPortData.Add(new PortData(null, "fi", "Family instances.", typeof(dynElement)));
             InPortData.Add(new PortData(null, "map", "Parameter map.", typeof(dynInstanceParameterMapper)));
 
             base.RegisterInputsAndOutputs();

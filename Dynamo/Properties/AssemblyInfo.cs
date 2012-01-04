@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("goBuild Inc.")]
 [assembly: AssemblyProduct("dynControls")]
-[assembly: AssemblyCopyright("Copyright © goBuild Inc. 2011")]
+[assembly: AssemblyCopyright("Copyright © goBuild Inc. 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

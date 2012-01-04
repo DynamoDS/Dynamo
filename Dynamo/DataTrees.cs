@@ -1,4 +1,4 @@
-﻿//Copyright 2011 Ian Keough
+﻿//Copyright 2012 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -122,22 +122,32 @@ namespace Dynamo.Elements
             {
                 branch.Graph(index + 1, ref message);
             }
-
-            
         }
 
         public object FindFirst()
         {
+            object oFound = null;
+
             foreach (object o in leaves)
             {
-                return o;
+                if (o != null)
+                {
+                    oFound = o;
+                    return oFound;
+                }
             }
             foreach (DataTreeBranch branch in branches)
             {
-                return branch.FindFirst();
+               object o =  branch.FindFirst();
+
+               if (o != null)
+               {
+                   oFound = o;
+                   return o;
+               }
             }
 
-            return null;
+            return oFound;
         }
     }
 }

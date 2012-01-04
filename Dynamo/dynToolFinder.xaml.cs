@@ -1,4 +1,4 @@
-﻿//Copyright 2011 Ian Keough
+﻿//Copyright 2012 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.

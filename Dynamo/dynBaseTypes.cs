@@ -1,4 +1,4 @@
-//Copyright 2011 Ian Keough
+//Copyright 2012 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -139,9 +139,7 @@ namespace Dynamo.Elements
     {
         public dynString()
         {
-            OutPortData.Add(new PortData(0, "", "st", typeof(dynString)));
-
-            base.RegisterInputsAndOutputs();
+            OutPortData.Add(new PortData("", "", "str", typeof(dynString)));
         }
 
         public override void Draw()
@@ -441,7 +439,6 @@ namespace Dynamo.Elements
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }
-
 
     //MDJ dynIncrementer added 11/22-11 
 
@@ -754,9 +751,6 @@ namespace Dynamo.Elements
         }
     }
 
-
-
-
     //MDJ - added by Matt Jezyk 10.27.2011
     [ElementName("Double Slider")]
     [ElementDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
@@ -973,6 +967,86 @@ namespace Dynamo.Elements
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }
+
+    [ElementName("String")]
+    [ElementDescription("An element which creates a string value.")]
+    [RequiresTransaction(false)]
+    public class dynStringInput : dynString
+    {
+        TextBox tb;
+
+        public dynStringInput()
+        {
+
+            //add a text box to the input grid of the control
+            tb = new System.Windows.Controls.TextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Text = "";
+            tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+            tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+
+            OutPortData[0].Object = "";
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        void tb_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            try
+            {
+                OutPortData[0].Object = tb.Text;
+
+                //trigger the ready to build event here
+                //because there are no inputs
+                OnDynElementReadyToBuild(EventArgs.Empty);
+            }
+            catch
+            {
+                OutPortData[0].Object = 0;
+            }
+        }
+
+        void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            //if enter is pressed, update the value
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                TextBox tb = sender as TextBox;
+
+                try
+                {
+                    OutPortData[0].Object = tb.Text;
+
+                    //trigger the ready to build event here
+                    //because there are no inputs
+                    OnDynElementReadyToBuild(EventArgs.Empty);
+                }
+                catch
+                {
+                    OutPortData[0].Object = 0;
+                }
+
+            }
+
+        }
+
+        public override void Update()
+        {
+            tb.Text = OutPortData[0].Object.ToString();
+
+            OnDynElementReadyToBuild(EventArgs.Empty);
+        }
+    }
+
 
     #region element types
 
@@ -1418,44 +1492,6 @@ namespace Dynamo.Elements
 
     }
 
-    //[ElementName("Move")]
-    //[ElementDescription("Create an element which moves other elements by a fixed distance in each step.")]
-    //[RequiresTransaction(true)]
-    //public class dynMove : dynAction, IDynamic
-    //{
-    //    public dynMove(string nickName)
-    //        : base(nickName)
-    //    {
-    //        InPortData.Add(new PortData(null, "XYZ", "Movement vector.", typeof(dynXYZ)));
-    //        InPortData.Add(new PortData(null, "El", "The element to move.", typeof(dynElement)));
-
-    //        base.RegisterInputsAndOutputs();
-    //    }
-
-    //    /// <summary>
-    //    /// Called by dynLoop elements to create iterative behaviors
-    //    /// </summary>
-    //    public override void PerformAction()
-    //    {
-    //        dynElementSettings.SharedInstance.Doc.Document.Move(InPortData[1].Object as Element, InPortData[0].Object as XYZ);
-    //    }
-
-    //    public override void Draw()
-    //    {
-    //        OutPortData[0].Object = this;
-    //    }
-
-    //    public override void Destroy()
-    //    {
-    //        base.Destroy();
-    //    }
-
-    //    public override void Update()
-    //    {
-    //        OnDynElementReadyToBuild(EventArgs.Empty);
-    //    }
-    //}
-
     [ElementName("Watch")]
     [ElementDescription("Create an element for watching the results of other operations.")]
     [RequiresTransaction(false)]
@@ -1489,7 +1525,6 @@ namespace Dynamo.Elements
 
         public dynWatch()
         {
-            
 
             //add a list box
             System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
@@ -1568,9 +1603,6 @@ namespace Dynamo.Elements
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }
-
-    //MDJ - dynComputeSolarRadationValues
-
 
     [ElementName("Extract Solar Radiation Value")]
     [ElementDescription("Create an element for extracting and computing the average solar radiation value based on a csv file.")]
@@ -1770,9 +1802,6 @@ namespace Dynamo.Elements
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }
-
-
-    //MDJ - dynDataFromFile
 
     [ElementName("Read and Watch Data from File")]
     [ElementDescription("Create an element for reading and watching data in a file on disk.")]

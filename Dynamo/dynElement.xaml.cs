@@ -1,4 +1,4 @@
-﻿//Copyright 2011 Ian Keough
+﻿//Copyright 2012 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -274,7 +274,13 @@ namespace Dynamo.Elements
                 dynElementDeselected(this, e);
             }
         }
-        
+
+        protected virtual string Save()
+        {
+            //override this in your derived classes to specify the save behavior
+            return "";
+        }
+
         public void RegisterInputsAndOutputs()
         {
             

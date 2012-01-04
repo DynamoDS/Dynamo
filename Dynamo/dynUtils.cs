@@ -1,4 +1,4 @@
-﻿//Copyright 2011 Ian Keough
+﻿//Copyright 2012 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -353,24 +353,9 @@ namespace Dynamo.Utilities
 	            if (faceRef != null)
 	            {
                     //the suggested new method didn't exist in API?
-	                f = faceRef.GeometryObject as Face;
+                    GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
 
-	                GeometryElement geom = faceRef.Element.get_Geometry(opts);
-	                foreach (GeometryObject geob in geom.Objects)
-	                {
-	                    Solid faceSolid = geob as Solid;
-	
-	                    if(faceSolid != null)
-	                    {
-	                        foreach(Face testFace in faceSolid.Faces)
-	                        {
-	                            if(testFace.Area==f.Area)
-	                            {
-	                                f=testFace;
-	                            }
-	                        }
-	                    }
-	                }
+	                f = geob as Face;
 	            }
 	            return f;
 	        }
@@ -382,7 +367,44 @@ namespace Dynamo.Utilities
 	
 	           
 	    }
-	
+
+        public static Form RequestFormSelection(UIDocument doc, string message, dynElementSettings settings)
+        {
+            try
+            {
+                Form f = null;
+
+                Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+                //MessageBox.Show(message);
+                settings.Bench.Log(message);
+
+                //create some geometry options so that we computer references
+                Autodesk.Revit.DB.Options opts = new Options();
+                opts.ComputeReferences = true;
+                opts.DetailLevel = DetailLevels.Medium;
+                opts.IncludeNonVisibleObjects = false;
+
+                Reference formRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (formRef != null)
+                {
+                    //the suggested new method didn't exist in API?
+                    f = settings.Doc.Document.GetElement(formRef) as Form;
+                }
+                return f;
+            }
+            catch (Exception ex)
+            {
+                settings.Bench.Log(ex.Message);
+                return null;
+            }
+
+
+        }
+
 	    public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message, 
 	        dynElementSettings settings, ref FamilyInstance fi)
 	    {

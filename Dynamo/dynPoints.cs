@@ -1,4 +1,4 @@
-//Copyright 2011 Ian Keough
+//Copyright 2012 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -112,6 +112,7 @@ namespace Dynamo.Elements
                 Process(subBranch, aChild);
             }
         }
+        
         public override void Destroy()
         {
             //base destroys all elements in the collection
@@ -222,7 +223,7 @@ namespace Dynamo.Elements
 
         public dynDistanceBetweenPoints()
         {
-            InPortData.Add(new PortData(null, "pts.", "A group of Reference point(s).", typeof(dynReferencePoint)));
+            InPortData.Add(new PortData(null, "pts.", "A group of elements to measure to.", typeof(dynElement)));
             InPortData.Add(new PortData(null, "pt.", "A Reference point.", typeof(dynReferencePoint)));
 
             OutPortData.Add(new PortData(null, "Distance", "Distance(s) between points.", typeof(dynDouble)));
@@ -244,12 +245,22 @@ namespace Dynamo.Elements
                     //we're only using the first point in the tree right now.
                     if (treeB.Trunk.Leaves.Count > 0)
                     {
-                        ReferencePoint pt = treeB.Trunk.Leaves[0] as ReferencePoint;
-
+                        ReferencePoint pt = treeB.Trunk.FindFirst() as ReferencePoint;
 
                         if (treeA != null && pt != null)
                         {
-                            Process(treeA.Trunk, this.Tree.Trunk);
+                            //find out what kind of elements the tree hash
+                            ReferencePoint rp = treeA.Trunk.FindFirst() as ReferencePoint;
+                            FamilyInstance fi = treeA.Trunk.FindFirst() as FamilyInstance;
+                            if (rp != null)
+                            {
+                                Process(treeA.Trunk, this.Tree.Trunk);
+                            }
+                            else if (fi != null)
+                            {
+                                ProcessInstances(treeA.Trunk, this.Tree.Trunk);
+                            }
+
                         }
                     }
                 }
@@ -259,7 +270,7 @@ namespace Dynamo.Elements
         public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
         {
             DataTree dt = InPortData[1].Object as DataTree;
-            ReferencePoint attractor = dt.Trunk.Leaves[0] as ReferencePoint;
+            ReferencePoint attractor = dt.Trunk.FindFirst() as ReferencePoint;
 
             //use each XYZ leaf on the input
             //to define a new origin
@@ -286,6 +297,39 @@ namespace Dynamo.Elements
 
         }
 
+        public void ProcessInstances(DataTreeBranch bIn, DataTreeBranch currentBranch)
+        {
+            DataTree dt = InPortData[1].Object as DataTree;
+            ReferencePoint attractor = dt.Trunk.FindFirst() as ReferencePoint;
+
+            //use each XYZ leaf on the input
+            //to define a new origin
+            foreach (object o in bIn.Leaves)
+            {
+                FamilyInstance fi = o as FamilyInstance;
+
+                if (fi != null)
+                {
+                    //get the distance betweent the points
+                    LocationPoint lp = fi.Location as LocationPoint;
+                    if (lp != null)
+                    {
+                        double dist = lp.Point.DistanceTo(attractor.Position);
+                        currentBranch.Leaves.Add(dist);
+                    }
+                }
+            }
+
+            foreach (DataTreeBranch b1 in bIn.Branches)
+            {
+                DataTreeBranch newBranch = new DataTreeBranch();
+                currentBranch.Branches.Add(newBranch);
+
+                ProcessInstances(b1, newBranch);
+            }
+
+        }
+     
         public override void Destroy()
         {
             //base destroys all elements in the collection
@@ -297,6 +341,7 @@ namespace Dynamo.Elements
             OnDynElementReadyToBuild(EventArgs.Empty);
         }
     }
+    
     //[ElementName("PtOnEdge")]
     //[ElementDescription("Create an element which owns a reference point on a selected edge.")]
     //[RequiresTransaction(true)]

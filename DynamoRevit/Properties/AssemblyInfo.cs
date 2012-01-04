@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("goBuild Inc.")]
 [assembly: AssemblyProduct("DynamoRevit")]
-[assembly: AssemblyCopyright("Copyright © goBuild Inc. 2011")]
+[assembly: AssemblyCopyright("Copyright © goBuild Inc. 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
