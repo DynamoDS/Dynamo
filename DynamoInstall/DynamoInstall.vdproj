@@ -346,7 +346,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\DynamoInstall.msi"
+        "OutputFilename" = "8:Release\\DynamoInstall_64bit.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -565,7 +565,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DynamoElements, Version=0.1.4385.17598, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:DynamoElements, Version=0.1.4386.14009, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_710229838E72EFCEC12A24072CAE5CC3"
@@ -658,7 +658,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DragCanvas, Version=0.1.4385.17597, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:DragCanvas, Version=0.1.4386.14009, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_A71BFB51F19ACFFDF6B361F42EFC3347"
@@ -898,7 +898,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:dynamo"
         "ProductCode" = "8:{2B83B8FB-33D3-49DA-B741-957000F3D5C2}"
-        "PackageCode" = "8:{7F79CA02-30C6-4BBD-96AA-E9BB38953DEA}"
+        "PackageCode" = "8:{82ADCB54-728F-42A3-938D-3D28AC343CC1}"
         "UpgradeCode" = "8:{F2DBAB88-1FE6-49CD-9488-1C7CFB3B7A47}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
