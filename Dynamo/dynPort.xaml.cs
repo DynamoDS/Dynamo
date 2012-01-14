@@ -165,6 +165,10 @@ namespace Dynamo.Connectors
 
             double x = rootPoint.X + this.Width / 2;
             double y = rootPoint.Y + this.Width / 2;
+
+            center.X = x;
+            center.Y = y;
+
             return new Point(x, y);
 
         }

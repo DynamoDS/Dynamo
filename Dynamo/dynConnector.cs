@@ -54,8 +54,6 @@ namespace Dynamo.Connectors
         BezierSegment connectorCurve;
         Path connector;
 
-        double bezOffset = 100;
-
         //Canvas workBench;
         bool isDrawing = false;
 
@@ -234,10 +232,16 @@ namespace Dynamo.Connectors
         
         public void Redraw(Point p2)
         {
+            double bezOffset = 10;
+
             if(isDrawing)
             {
                 if (pStart != null)
                 {
+                    //adapt the bezier offset to the distance
+                    //between the points. make sure it's at least
+                    //one pixel long
+                    bezOffset = Math.Abs(p2.Y - pStart.Center.Y) / 2.0;
                     connectorPoints.StartPoint = pStart.Center;
                     connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
                     connectorCurve.Point2 = new Point(p2.X - bezOffset, p2.Y);
@@ -245,6 +249,13 @@ namespace Dynamo.Connectors
                 }
 
             }
+        }
+
+        private double Distance(Point p1, Point p2)
+        {
+            double xDist = p1.X - p2.X;
+            double yDist = p1.Y - p2.Y;
+            return Math.Sqrt(xDist * xDist + yDist * yDist);
         }
 
         public bool Connect(dynPort p)
@@ -356,6 +367,13 @@ namespace Dynamo.Connectors
 
         public void Redraw()
         {
+            double bezOffset = 10;
+
+            if (pStart != null && pEnd != null)
+            {
+                bezOffset = Math.Abs(pEnd.Center.Y - pStart.Center.Y) / 2.0;
+            }
+
             //don't redraw with null end points;
             if (pStart != null)
             {

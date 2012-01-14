@@ -332,7 +332,7 @@ namespace Dynamo.Elements
                 this.topControl.Height = Math.Max(inPortData.Count, outPortData.Count) * 20 + 10; //spacing for inputs + title space 
             }
 
-            this.elementShine.Height = this.topControl.Height / 2;
+            //this.elementShine.Height = this.topControl.Height / 2;
 
             if (inputGrid.Children.Count == 0)
             {

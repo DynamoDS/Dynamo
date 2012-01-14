@@ -1281,6 +1281,10 @@ namespace Dynamo.Elements
         void topControl_Loaded(object sender, RoutedEventArgs e)
         {
             SetupKinect();
+
+            if (nui == null)
+                throw new Exception("No kinects can be found.");
+
             //nui.VideoFrameReady += new EventHandler<ImageFrameReadyEventArgs>(nui_VideoFrameReady);
             //nui.DepthFrameReady += new EventHandler<ImageFrameReadyEventArgs>(nui_DepthFrameReady);
             //nui.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(nui_SkeletonFrameReady);
