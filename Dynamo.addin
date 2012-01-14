@@ -9,14 +9,4 @@
     <VendorId>GOBD</VendorId>
     <VendorDescription>GoBuild, www.goBuild.com</VendorDescription>
   </AddIn>
-
-  <!--<AddIn Type="Command">
-    <Assembly>C:\Program Files\goBuild\dynamo\DynamoRevit.dll</Assembly>
-    <AddInId>dc09be67-aa31-4ea7-86c9-d06c080cd3e9</AddInId>
-    <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>
-    <Text>Dynamo</Text>
-    <Description>Visual programming using the Revit API.</Description>
-    <VendorId>GOBD</VendorId>
-  </AddIn>-->
-  
 </RevitAddIns>
