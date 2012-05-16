@@ -14,10 +14,10 @@ namespace Dynamo.FSchemeInterop
    internal class EnvironmentWrapper
    {
       //Our FScheme environment.
-      private FSharpList<FSharpRef<FSharpMap<string, FSharpRef<Expression>>>> env;
+      private FSharpMap<string, FSharpRef<Expression>> env;
 
       //Public property accessor.
-      public FSharpList<FSharpRef<FSharpMap<string, FSharpRef<Expression>>>> Env
+      public FSharpMap<string, FSharpRef<Expression>> Env
       {
          get { return this.env; }
       }
@@ -29,7 +29,7 @@ namespace Dynamo.FSchemeInterop
          this.env = FScheme.environment;
       }
 
-      public EnvironmentWrapper(FSharpList<FSharpRef<FSharpMap<string, FSharpRef<Expression>>>> e)
+      public EnvironmentWrapper(FSharpMap<string, FSharpRef<Expression>> e)
       {
          this.env = e;
       }
@@ -52,12 +52,12 @@ namespace Dynamo.FSchemeInterop
       //Adds a symbol to this environment.
       public void Add(string symbol, Expression expr)
       {
-         this.env.Head.Value = MapModule.Add(symbol, new FSharpRef<Expression>(expr), this.env.Head.contents);
+         this.env = MapModule.Add(symbol, new FSharpRef<Expression>(expr), this.env);
       }
 
       public void Delete(string symbol)
       {
-         this.env.Head.Value = MapModule.Remove(symbol, this.env.Head.contents);
+         this.env = MapModule.Remove(symbol, this.env);
       }
    }
 
@@ -77,7 +77,7 @@ namespace Dynamo.FSchemeInterop
          this.env = new EnvironmentWrapper();
       }
 
-      public ExecutionEnvironment(FSharpList<FSharpRef<FSharpMap<string, FSharpRef<Expression>>>> e)
+      public ExecutionEnvironment(FSharpMap<string, FSharpRef<Expression>> e)
       {
          this.env = new EnvironmentWrapper(e);
       }

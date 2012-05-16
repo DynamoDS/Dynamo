@@ -70,8 +70,7 @@ type Expression =
    | Current of Continuation //continuations (used by call/cc in Scheme)
    | Dummy of string //Dummy values for mutation, should NOT be used except for internally by this interpreter.
 and Continuation = Expression -> Expression
-and Frame = Map<string, Expression ref> ref
-and Environment = Frame list
+and Environment = Map<string, Expression ref>
 
 type ExternFunc = delegate of Expression list -> Expression
 type ExternMacro = delegate of Expression list * Environment -> Expression
@@ -206,14 +205,20 @@ let SortBy cont = function
 
 
 ///Extends the given environment with the given bindings.
-let extend env bindings = (ref (Map.ofList bindings) :: env)
+let rec extend env = function
+   | [] -> env
+   | (a, b) :: t -> extend env t |> Map.add a b
+//(ref (Map.ofList bindings) :: env)
 
 ///Looks up a symbol in the given environment.
-let lookup env symbol =
-   match List.tryPick (fun (frame : Frame) ->
-      Map.tryFind symbol frame.Value) env with
+let lookup env symbol = 
+   match Map.tryFind symbol env with
    | Some(e) -> e
    | None -> sprintf "No binding for '%s'." symbol |> failwith
+//   match List.tryPick (fun (frame : Frame) ->
+//      Map.tryFind symbol frame.Value) env with
+//   | Some(e) -> e
+//   | None -> sprintf "No binding for '%s'." symbol |> failwith
 
 ///Zips given lists into a list of bindings.
 let zip args parameters =
@@ -252,16 +257,23 @@ and Let cont env = function
 
 ///LetRec (Recursive Let) construct
 and LetRec cont env = function
-   | [List(bindings); body] ->
+   //Input is two arguments, a list of bindings and the letrec body
+   | [List(bindings); body] -> 
+      //bind is a function that takes a Expression.List of two arguments, the second of which is ignored
       let bind = function
          | List([Symbol(s); _]) -> s, ref (Dummy("Dummy 'letrec'"))
          | m -> malformed "letrec binding" m
-      let env' = List.map bind bindings |> extend env
-      let frame = env'.Head.Value
+      
+      let env' = List.map bind bindings |> extend env //Map all of the bindings to dummys
+      
       // now update dummy env - assumes dummy env will be captured but not actually accessed (e.g. lambda)
       let rec mapupdate = function
-         | List([Symbol(s); e]) :: t -> eval (fun x -> (frame.Item s) := x; mapupdate t) env' e
+         //If the input is a List (of symbol/expression pairs), then we evaluate the expression in the dummy environment
+         //and then update the environment with the result, and recurse
+         | List([Symbol(s); e]) :: t -> eval (fun x -> (env'.Item s) := x; mapupdate t) env' e
+         //If the input is empty (base case), then we simply evaluate the body with the dummy environment
          | [] -> eval cont env' body
+         //Error case
          | _ -> failwith "Malformed 'let' binding."
       mapupdate bindings
    | m -> malformed "letrec" (List(m))
@@ -287,18 +299,21 @@ and Lambda cont env = function
             | (Symbol(p), a) :: t -> eval (fun x -> mapbind ((p, ref x) :: acc) t) env' a
             //If the list is empty...
             | [] ->
+               let env'' = Map.fold (fun state key value -> Map.add key value state) env' env
                 //extend the captured definition-time environment
-               let env'' = if not acc.IsEmpty
-                           then List.rev acc |> extend (env @ env')
-                           else env @ env'
+               let env''' = if not acc.IsEmpty
+                            then List.rev acc |> extend env''
+                            else env''
                //and evaluate the body with the new environment
-               eval cont' env'' body
+               eval cont' env''' body
             | _ -> failwith "Malformed lambda param."
          // Use mapbind to create our closure
          mapbind [] (zip args parameters)
       // Return the closure function as a special form
       Special(closure) |> cont
    | m -> malformed "lambda" (List(m))
+
+
 
 ///Code quotation construct
 and Quote cont env =
@@ -369,8 +384,8 @@ and Begin cont env =
 and Define cont (env : Environment) = function
    | [Symbol(s); e] ->
       let def = ref (Dummy("Dummy 'define'"))
-      env.Head := Map.add s def env.Head.Value
-      eval (fun x -> def := x; Dummy(sprintf "Defined %s" s) |> cont) env e
+      let env' = Map.add s def env
+      eval (fun x -> def := x; Dummy(sprintf "Defined %s" s) |> cont) env' e
    | m -> malformed "define" (List(m))
 
 ///Load construct -- loads library files, reads them using the simple tokenizer and parser.
@@ -393,7 +408,7 @@ and CallCC cont env = function
 
 ///Our base environment
 and environment =
-   [ref (Map.ofList
+   Map.ofList
       ["*", ref (Function(Multiply))
        "/", ref (Function(Divide))
        "%", ref (Function(Modulus))
@@ -440,7 +455,7 @@ and environment =
        "sort-with", ref (Function(SortWith))
        "sort-by", ref (Function(SortBy))
        //"and", ref (Special(And))
-      ])]
+      ]
 
 ///Our eval loop
 and eval cont env expression =
