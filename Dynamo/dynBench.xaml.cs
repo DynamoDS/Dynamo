@@ -2352,6 +2352,10 @@ namespace Dynamo.Controls
          //Step 1: Generate xml, and save it in a fixed place
          string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
          string pluginsPath = System.IO.Path.Combine(directory, "definitions");
+
+         if (!Directory.Exists(pluginsPath))
+            Directory.CreateDirectory(pluginsPath);
+         
          string path = System.IO.Path.Combine(pluginsPath, funcName + ".dyf");
          SaveWorkspace(path, funcWorkspace, funcName);
 
