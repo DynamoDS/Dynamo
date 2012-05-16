@@ -1200,7 +1200,11 @@ namespace Dynamo.Elements
 
       protected internal override INode Build()
       {
-         return new SymbolNode(this.Symbol);
+         return new SymbolNode(
+            (string)this.Dispatcher.Invoke(new Func<string>(
+               () => this.Symbol
+            ))
+         );
       }
 
       public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
