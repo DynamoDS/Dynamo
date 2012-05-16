@@ -46,19 +46,31 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DragCanvas\bin\Debug\DragCanvas.dll</HintPath>
     </Reference>
+    <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\IronPython 2.7.1\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Drawing">
       <HintPath>..\packages\Coding4Fun.Kinect.Wpf.1.1.0\lib\Microsoft.Expression.Drawing.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Research.Kinect, Version=1.0.0.45, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Research.Kinect, Version=1.0.0.45, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\revit\Sandbox\Stephen_Elliott\DynamoRecharge\Dynamo\DynamoForVasariInstall\Microsoft.Research.Kinect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\IronPython 2.7.1\Microsoft.Scripting.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\revit\Vasari2.5\ReleaseWin32\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\revit\Vasari2.5\ReleaseWin32\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -89,49 +101,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DynamoSplash.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="dynBench.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="dynElement.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="dynPort.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="dynToolFinder.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Converters.cs" />
     <Compile Include="DataTrees.cs" />
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynCollection.cs" />
+    <Compile Include="dynBaseTypes.cs" />
     <Compile Include="dynBench.xaml.cs">
       <DependentUpon>dynBench.xaml</DependentUpon>
     </Compile>
+    <Compile Include="dynCollection.cs" />
     <Compile Include="dynCommunication.cs" />
-    <Compile Include="dynConnector.cs">
-      <Generator>MSBuild:Compile</Generator>
-    </Compile>
+    <Compile Include="dynConnector.cs" />
     <Compile Include="dynCurves.cs" />
     <Compile Include="dynElement.xaml.cs">
       <DependentUpon>dynElement.xaml</DependentUpon>
@@ -142,9 +122,17 @@
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynBaseTypes.cs" />
+    <Compile Include="dynPython.cs" />
     <Compile Include="dynSelection.cs" />
+    <Compile Include="dynToolFinder.xaml.cs">
+      <DependentUpon>dynToolFinder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="dynTransactions.cs" />
     <Compile Include="dynUtils.cs" />
+    <Compile Include="FunctionNamePrompt.xaml.cs">
+      <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IdlePromise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -158,9 +146,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="dynToolFinder.xaml.cs">
-      <DependentUpon>dynToolFinder.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="SearchDictionary.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -172,6 +158,42 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DynamoSplash.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="dynBench.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="dynElement.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="dynPort.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="dynToolFinder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FunctionNamePrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
+      <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
+      <Name>FSchemeInterop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FScheme\FScheme.fsproj">
+      <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
+      <Name>FScheme</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
