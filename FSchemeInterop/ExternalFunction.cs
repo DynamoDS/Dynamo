@@ -88,7 +88,7 @@ namespace Dynamo.FSchemeInterop
          //   )
          //);
          return FScheme.makeExternMacro(new FScheme.ExternMacro(
-            delegate(FSharpList<Expression> args, FSharpMap<string, FSharpRef<Expression>> env)
+            delegate(FSharpList<Expression> args, FSharpRef<FSharpMap<string, FSharpRef<Expression>>> env)
             {
                return macro(args, new ExecutionEnvironment(env));
             }

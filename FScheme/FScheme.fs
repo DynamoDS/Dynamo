@@ -70,7 +70,7 @@ type Expression =
    | Current of Continuation //continuations (used by call/cc in Scheme)
    | Dummy of string //Dummy values for mutation, should NOT be used except for internally by this interpreter.
 and Continuation = Expression -> Expression
-and Environment = Map<string, Expression ref>
+and Environment = Map<string, Expression ref> ref
 
 type ExternFunc = delegate of Expression list -> Expression
 type ExternMacro = delegate of Expression list * Environment -> Expression
@@ -205,14 +205,14 @@ let SortBy cont = function
 
 
 ///Extends the given environment with the given bindings.
-let rec extend env = function
+let rec extend (env : Environment) = function
    | [] -> env
-   | (a, b) :: t -> extend env t |> Map.add a b
+   | (a, b) :: t -> extend (ref (Map.add a b env.Value)) t
 //(ref (Map.ofList bindings) :: env)
 
 ///Looks up a symbol in the given environment.
-let lookup env symbol = 
-   match Map.tryFind symbol env with
+let lookup (env : Environment) symbol = 
+   match Map.tryFind symbol env.Value with
    | Some(e) -> e
    | None -> sprintf "No binding for '%s'." symbol |> failwith
 //   match List.tryPick (fun (frame : Frame) ->
@@ -232,7 +232,7 @@ let zip args parameters =
    List.zip parameters args'
 
 ///If construct
-let rec If cont env = function
+let rec If cont (env : Environment) = function
    | [condition; t; f] -> //(if [condition] [t] [f])
       eval (function
          | List([]) | String("") -> 
@@ -243,7 +243,7 @@ let rec If cont env = function
    | m -> malformed "if" (List(m))
 
 ///Let construct
-and Let cont env = function
+and Let cont (env : Environment) = function
    | [List(bindings); body] ->
       let rec mapbind acc = function
          | List([Symbol(s); e]) :: t -> eval (fun x -> mapbind ((s, ref x) :: acc) t) env e
@@ -256,7 +256,7 @@ and Let cont env = function
    | m -> malformed "let" (List(m))
 
 ///LetRec (Recursive Let) construct
-and LetRec cont env = function
+and LetRec cont (env : Environment) = function
    //Input is two arguments, a list of bindings and the letrec body
    | [List(bindings); body] -> 
       //bind is a function that takes a Expression.List of two arguments, the second of which is ignored
@@ -270,7 +270,7 @@ and LetRec cont env = function
       let rec mapupdate = function
          //If the input is a List (of symbol/expression pairs), then we evaluate the expression in the dummy environment
          //and then update the environment with the result, and recurse
-         | List([Symbol(s); e]) :: t -> eval (fun x -> (env'.Item s) := x; mapupdate t) env' e
+         | List([Symbol(s); e]) :: t -> eval (fun x -> (env'.Value.Item s) := x; mapupdate t) env' e
          //If the input is empty (base case), then we simply evaluate the body with the dummy environment
          | [] -> eval cont env' body
          //Error case
@@ -279,7 +279,7 @@ and LetRec cont env = function
    | m -> malformed "letrec" (List(m))
 
 ///Let* construct
-and LetStar cont env = function
+and LetStar cont (env : Environment) = function
    | [List(bindings); body] ->
       let rec foldbind env' = function
          | List([Symbol(s); e]) :: t -> eval (fun x -> foldbind ([s, ref x] |> extend env') t) env' e
@@ -289,7 +289,7 @@ and LetStar cont env = function
    | m -> malformed "let*" (List(m))
 
 ///Anonymous function (lambda) construct
-and Lambda cont env = function
+and Lambda cont (env : Environment) = function
    | [List(parameters); body] ->
       let closure cont' env' args =
          // bind parameters to actual arguments (evaluated in the caller's environment)
@@ -299,7 +299,7 @@ and Lambda cont env = function
             | (Symbol(p), a) :: t -> eval (fun x -> mapbind ((p, ref x) :: acc) t) env' a
             //If the list is empty...
             | [] ->
-               let env'' = Map.fold (fun state key value -> Map.add key value state) env' env
+               let env'' = Map.fold (fun state key value -> Map.add key value state) env'.Value env.Value |> ref
                 //extend the captured definition-time environment
                let env''' = if not acc.IsEmpty
                             then List.rev acc |> extend env''
@@ -316,7 +316,7 @@ and Lambda cont env = function
 
 
 ///Code quotation construct
-and Quote cont env =
+and Quote cont (env : Environment) =
    let rec unquote cont' = function
       | List([Symbol("unquote"); e]) -> eval cont' env e
       | List(Symbol("unquote") :: _) as m -> malformed "unquote (too many args)" m
@@ -330,10 +330,12 @@ and Quote cont env =
    function [e] -> unquote cont e | m -> malformed "quote" (List(m))
 
 ///Eval construct -- evaluates code quotations
-and Eval cont env = function [args] -> args |> eval (eval cont env) env | m -> malformed "eval" (List(m))
+and Eval cont (env : Environment) = function 
+   | [args] -> args |> eval (eval cont env) env 
+   | m -> malformed "eval" (List(m))
 
 ///Macro construct -- similar to functions, but arguments are passed unevaluated. Useful for short-circuiting.
-and Macro cont env = function
+and Macro cont (env : Environment) = function
    | [List(parameters); body] ->
       let closure cont' env' args =
          // bind parameters to actual arguments (but unevaluated, unlike lambda)
@@ -369,12 +371,12 @@ and Macro cont env = function
    | m -> malformed "and" (List(m))*)
 
 ///Set! construct -- mutation
-and Set cont env = function
+and Set cont (env : Environment) = function
    | [Symbol(s); e] -> eval (fun x -> (lookup env s) := x; Dummy(sprintf "Set %s" s) |> cont) env e
    | m -> malformed "set!" (List(m))
 
 ///Begin construct
-and Begin cont env =
+and Begin cont (env : Environment) =
    let rec foldeval last = function
       | h :: t -> eval (fun x -> foldeval x t) env h
       | [] -> last |> cont
@@ -384,8 +386,8 @@ and Begin cont env =
 and Define cont (env : Environment) = function
    | [Symbol(s); e] ->
       let def = ref (Dummy("Dummy 'define'"))
-      let env' = Map.add s def env
-      eval (fun x -> def := x; Dummy(sprintf "Defined %s" s) |> cont) env' e
+      env := Map.add s def env.Value
+      eval (fun x -> def := x; Dummy(sprintf "Defined %s" s) |> cont) env e
    | m -> malformed "define" (List(m))
 
 ///Load construct -- loads library files, reads them using the simple tokenizer and parser.
@@ -455,7 +457,7 @@ and environment =
        "sort-with", ref (Function(SortWith))
        "sort-by", ref (Function(SortBy))
        //"and", ref (Special(And))
-      ]
+      ] |> ref
 
 ///Our eval loop
 and eval cont env expression =

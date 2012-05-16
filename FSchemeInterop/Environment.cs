@@ -14,10 +14,10 @@ namespace Dynamo.FSchemeInterop
    internal class EnvironmentWrapper
    {
       //Our FScheme environment.
-      private FSharpMap<string, FSharpRef<Expression>> env;
+      private FSharpRef<FSharpMap<string, FSharpRef<Expression>>> env;
 
       //Public property accessor.
-      public FSharpMap<string, FSharpRef<Expression>> Env
+      public FSharpRef<FSharpMap<string, FSharpRef<Expression>>> Env
       {
          get { return this.env; }
       }
@@ -29,7 +29,7 @@ namespace Dynamo.FSchemeInterop
          this.env = FScheme.environment;
       }
 
-      public EnvironmentWrapper(FSharpMap<string, FSharpRef<Expression>> e)
+      public EnvironmentWrapper(FSharpRef<FSharpMap<string, FSharpRef<Expression>>> e)
       {
          this.env = e;
       }
@@ -52,12 +52,12 @@ namespace Dynamo.FSchemeInterop
       //Adds a symbol to this environment.
       public void Add(string symbol, Expression expr)
       {
-         this.env = MapModule.Add(symbol, new FSharpRef<Expression>(expr), this.env);
+         this.env.Value = MapModule.Add(symbol, new FSharpRef<Expression>(expr), this.env.contents);
       }
 
       public void Delete(string symbol)
       {
-         this.env = MapModule.Remove(symbol, this.env);
+         this.env.Value = MapModule.Remove(symbol, this.env.contents);
       }
    }
 
@@ -77,29 +77,30 @@ namespace Dynamo.FSchemeInterop
          this.env = new EnvironmentWrapper();
       }
 
-      public ExecutionEnvironment(FSharpMap<string, FSharpRef<Expression>> e)
+      public ExecutionEnvironment(FSharpRef<FSharpMap<string, FSharpRef<Expression>>> e)
       {
          this.env = new EnvironmentWrapper(e);
       }
 
       //Binds symbols of the given string to the given body.
-      public void DefineSymbol(string name, FScheme.Expression body)
+      public void DefineSymbol(string name, Expression body)
       {
          FScheme.Define(
             IDENT, env.Env, Utils.mkList(Expression.NewSymbol(name), body)
          );
+         //this.env.Add(name, body);
       }
 
       //Binds symbols of the given string to the given Expression.
-      private void DefineExternal(string name, Expression func)
-      {
-         this.env.Add(name, func);
-      }
+      //private void DefineExternal(string name, Expression func)
+      //{
+      //   this.env.Add(name, func);
+      //}
 
       //Binds symbols of the given string to the given External Function.
       public void DefineExternal(string name, FScheme.ExternFunc func)
       {
-         this.DefineExternal(name, FuncContainer.MakeFunction(func));
+         this.DefineSymbol(name, FuncContainer.MakeFunction(func));
       }
 
       //Evaluates the given expression.
