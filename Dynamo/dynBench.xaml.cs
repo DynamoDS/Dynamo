@@ -106,6 +106,7 @@ namespace Dynamo.Controls
          if (!this._activated)
          {
             this.LoadUserTypes();
+            this.workBench.Visibility = System.Windows.Visibility.Visible;
             this._activated = true;
          }
       }
@@ -263,12 +264,22 @@ namespace Dynamo.Controls
                continue;
             }
 
+            dynElement newEl = null;
+
             try
             {
                var obj = Activator.CreateInstance(kvp.Value.t);
                //var obj = Activator.CreateInstanceFrom(kvp.Value.assembly.Location, kvp.Value.t.FullName);
-               dynElement newEl = (dynElement)obj;//.Unwrap();
+               newEl = (dynElement)obj;//.Unwrap();
+            }
+            catch (Exception e) //TODO: Narrow down
+            {
+               Log("Error loading \"" + kvp.Key + "\": " + e.InnerException.Message);
+               continue;
+            }
 
+            try
+            {
                newEl.DisableInteraction();
 
                string name = kvp.Key;
@@ -2353,11 +2364,18 @@ namespace Dynamo.Controls
          string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
          string pluginsPath = System.IO.Path.Combine(directory, "definitions");
 
-         if (!Directory.Exists(pluginsPath))
-            Directory.CreateDirectory(pluginsPath);
-         
-         string path = System.IO.Path.Combine(pluginsPath, funcName + ".dyf");
-         SaveWorkspace(path, funcWorkspace, funcName);
+         try
+         {
+            if (!Directory.Exists(pluginsPath))
+               Directory.CreateDirectory(pluginsPath);
+
+            string path = System.IO.Path.Combine(pluginsPath, funcName + ".dyf");
+            SaveWorkspace(path, funcWorkspace, funcName);
+         }
+         catch (Exception e)
+         {
+            Log("Error saving:" + e.GetType() + ": " + e.Message);
+         }
 
          //Step 2: Find function entry point, and then compile the function and add it to our environment
          dynElement topMost = funcWorkspace.elements.FirstOrDefault(

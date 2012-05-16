@@ -37,7 +37,7 @@
       <Border Margin="291,20,0,0" BorderBrush="Black" BorderThickness="1" Name="border">
          <!--outer canvas clips the inner canvas-->
          <Canvas Name="outerCanvas" Margin="0,0,0,0" ClipToBounds="True">
-            <dynCtrl:DragCanvas x:Name="workBench" Width="100000" Height="100000">
+            <dynCtrl:DragCanvas x:Name="workBench" Width="100000" Height="100000" Visibility="Hidden">
                <Canvas.RenderTransform>
                   <TransformGroup>
                      <ScaleTransform CenterX="-10"
