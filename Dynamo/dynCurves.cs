@@ -35,147 +35,292 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using System.IO.Ports;
 
+using Expression = Dynamo.FScheme.Expression;
+using Microsoft.FSharp.Collections;
+
 namespace Dynamo.Elements
 {
-    [ElementName("ModelCurve")]
-    [ElementDescription("An element which creates a model curve.")]
-    [RequiresTransaction(true)]
-    public class dynModelCurve : dynElement, IDynamic
-    {
+   [ElementName("Model Curve")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which creates a model curve.")]
+   [RequiresTransaction(true)]
+   public class dynModelCurve : dynElement
+   {
+      public dynModelCurve()
+      {
+         InPortData.Add(new PortData(null, "c", "A curve.", typeof(Curve)));
+         InPortData.Add(new PortData(null, "sp", "The sketch plane.", typeof(SketchPlane)));
+         OutPortData.Add(new PortData(null, "mc", "ModelCurve", typeof(ModelCurve)));
 
-        public dynModelCurve()
-        {
-            InPortData.Add(new PortData(null, "c", "A curve.", typeof(dynCurve)));
-            InPortData.Add(new PortData(null, "sp", "The sketch plane.", typeof(dynSketchPlane)));
-            OutPortData.Add(new PortData(null, "mc", "ModelCurve", typeof(dynModelCurve)));
+         base.RegisterInputsAndOutputs();
+      }
 
-            base.RegisterInputsAndOutputs();
-        }
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         Curve c = (Curve)((Expression.Container)args[0]).Item;
+         SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
 
-        public override void Draw()
-        {
-            if (CheckInputs())
+         return Expression.NewContainer(
+            this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+         );
+      }
+
+      //public override void Draw()
+      //{
+      //   if (CheckInputs())
+      //   {
+      //      ModelCurve mc = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewModelCurve(InPortData[0].Object as Curve, InPortData[1].Object as SketchPlane);
+      //      OutPortData[0].Object = mc;
+
+      //      //add the element to the collection
+      //      Elements.Append(mc);
+      //   }
+      //}
+
+      //public override void Destroy()
+      //{
+      //   //base destroys all elements in the collection
+      //   base.Destroy();
+      //}
+
+      //public override void Update()
+      //{
+      //   OnDynElementReadyToBuild(EventArgs.Empty);
+      //}
+   }
+
+   [ElementName("Loft Form")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
+   [RequiresTransaction(true)]
+   public class dynLoftForm : dynElement
+   {
+      public dynLoftForm()
+      {
+         InPortData.Add(new PortData(null, "solid?", "Is solid?", typeof(object)));
+         InPortData.Add(new PortData(null, "refListList", "ReferenceArrayArray", typeof(object)));
+
+         OutPortData.Add(new PortData(null, "form", "Loft Form", typeof(object)));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         bool isSolid = ((FScheme.Expression.Number)args[0]).Item == 1;
+
+         IEnumerable<IEnumerable<Reference>> refArrays = ((FScheme.Expression.List)args[1]).Item.Select(
+            x => ((FScheme.Expression.List)x).Item.Select(
+               y => (Reference)((FScheme.Expression.Container)y).Item
+            )
+         );
+
+         ReferenceArrayArray refArrArr = new ReferenceArrayArray();
+
+         foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
+         {
+            var refArr = new ReferenceArray();
+            foreach (Reference r in refs)
             {
-                ModelCurve mc = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewModelCurve(InPortData[0].Object as Curve, InPortData[1].Object as SketchPlane);
-                OutPortData[0].Object = mc;
-
-                //add the element to the collection
-                Elements.Append(mc);
+               refArr.Append(r);
             }
-        }
+            refArrArr.Append(refArr);
+         }
 
-        public override void Destroy()
-        {
-            //base destroys all elements in the collection
-            base.Destroy();
-        }
+         return FScheme.Expression.NewContainer(
+            dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr)
+         );
+      }
+   }
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
+   [ElementName("Curve By Points")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("doc.FamilyCreate.NewCurveByPoints")]
+   [RequiresTransaction(true)]
+   public class dynCurveByPoints : dynElement
+   {
+      public dynCurveByPoints()
+      {
+         InPortData.Add(new PortData(null, "refPts", "List of reference points", typeof(object)));
+         OutPortData.Add(new PortData(null, "curve", "Curve from ref points", typeof(object)));
 
-    [ElementName("CurveByRefPoints")]
-    [ElementDescription("Node to create a planar model curve.")]
-    [RequiresTransaction(true)]
-    public class dynModelCurveByPoints : dynElement, IDynamic
-    {
-        List<SketchPlane> sps = new List<SketchPlane>();
+         base.RegisterInputsAndOutputs();
+      }
 
-        public dynModelCurveByPoints()
-        {
-            InPortData.Add(new PortData(null, "pt", "The points from which to create the curve", typeof(dynReferencePoint)));
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
+            x => (ReferencePoint)((Expression.Container)x).Item
+         );
 
-            OutPortData.Add(new PortData(null, "cv", "The curve(s) by points created by this operation.", typeof(dynModelCurveByPoints)));
-            OutPortData[0].Object = this.Tree;
+         ReferencePointArray refPtArr = new ReferencePointArray();
 
-            base.RegisterInputsAndOutputs();
+         foreach (var refPt in refPts)
+         {
+            refPtArr.Append(refPt);
+         }
 
-        }
+         return FScheme.Expression.NewContainer(
+            dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr)
+         );
+      }
+   }
 
-        public override void Draw()
-        {
-            if (CheckInputs())
-            {
-                DataTree ptTree = InPortData[0].Object as DataTree;
-                Process(ptTree.Trunk, this.Tree.Trunk);
-            }
-        }
+   [ElementName("Curve Reference")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("CurveyPoints.GeometryCurve.Reference")]
+   [RequiresTransaction(true)]
+   public class dynCurveRef : dynElement
+   {
+      public dynCurveRef()
+      {
+         InPortData.Add(new PortData(null, "curve", "CurveByPoints", typeof(object)));
+         OutPortData.Add(new PortData(null, "curveRef", "Reference", typeof(object)));
 
-        public void Process(DataTreeBranch b, DataTreeBranch currentBranch)
-        {
-           
-            List<XYZ> ptArr = new List<XYZ>();
-            List<double> weights = new List<double>();
+         base.RegisterInputsAndOutputs();
+      }
 
-            foreach (object o in b.Leaves)
-            {
-                ReferencePoint pt = o as ReferencePoint;
-                ptArr.Add(pt.Position);
-                weights.Add(1);
-            }
+      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      {
+         CurveByPoints curve = (args[0] as FScheme.Expression.Container).Item as CurveByPoints;
 
-            //only make a curve if
-            //there's enough points
-            if (ptArr.Count > 1)
-            {
-                //make a curve
-                NurbSpline ns = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewNurbSpline(ptArr, weights);
-                double rawParam = ns.ComputeRawParameter(.5);
-                Transform t = ns.ComputeDerivatives(rawParam, false);
+         return FScheme.Expression.NewContainer(curve.GeometryCurve.Reference);
+      }
+   }
 
-                XYZ norm = t.BasisZ;
-                
-                if(norm.GetLength()==0)
-                {
-                    norm = XYZ.BasisZ;
-                }
+   [ElementName("Planar Curve By Points")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("Node to create a planar model curve.")]
+   [RequiresTransaction(true)]
+   public class dynModelCurveByPoints : dynElement
+   {
+      //List<SketchPlane> sps = new List<SketchPlane>();
 
-                Plane p = new Plane(norm, t.Origin);
-                SketchPlane sp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(p);
-                sps.Add(sp);
+      public dynModelCurveByPoints()
+      {
+         InPortData.Add(new PortData(null, "pts", "The points from which to create the curve", typeof(object)));
 
-                ModelNurbSpline c = (ModelNurbSpline)dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewModelCurve(ns, sp);
+         OutPortData.Add(new PortData(null, "cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline)));
+         //OutPortData[0].Object = this.Tree;
 
-                //add the element to the collection
-                //so it can be deleted later
-                Elements.Append(c);
+         base.RegisterInputsAndOutputs();
+      }
 
-                //create a leaf node on the local branch
-                currentBranch.Leaves.Add(c);
-            }
+      //public override void Draw()
+      //{
+      //   if (CheckInputs())
+      //   {
+      //      DataTree ptTree = InPortData[0].Object as DataTree;
+      //      Process(ptTree.Trunk, this.Tree.Trunk);
+      //   }
+      //}
 
-            foreach (DataTreeBranch b1 in b.Branches)
-            {
-                //every time you read a branch
-                //create a branch
-                DataTreeBranch newBranch = new DataTreeBranch();
-                this.Tree.Trunk.Branches.Add(newBranch);
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var pts = ((Expression.List)args[0]).Item.Select(
+            e => ((ReferencePoint)((Expression.Container)e).Item).Position
+         ).ToList();
 
-                Process(b1, newBranch);
-            }
-        }
+         if (pts.Count <= 1)
+         {
+            throw new Exception("Not enough reference points to make a curve.");
+         }
 
-        public override void Destroy()
-        {
-            
-            //base destroys all elements in the collection
-            base.Destroy();
+         //make a curve
+         NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
+            pts, Enumerable.Repeat(1.0, pts.Count).ToList()
+         );
 
-            foreach (SketchPlane sp in sps)
-            {
-                dynElementSettings.SharedInstance.Doc.Document.Delete(sp);
-            }
+         double rawParam = ns.ComputeRawParameter(.5);
+         Transform t = ns.ComputeDerivatives(rawParam, false);
 
-            sps.Clear();
-        }
+         XYZ norm = t.BasisZ;
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
+         if (norm.GetLength() == 0)
+         {
+            norm = XYZ.BasisZ;
+         }
 
-    
+         Plane p = new Plane(norm, t.Origin);
+         SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
+         //sps.Add(sp);
+
+         ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+
+         return Expression.NewContainer(c);
+      }
+
+      //public void Process(DataTreeBranch b, DataTreeBranch currentBranch)
+      //{
+
+      //   List<XYZ> ptArr = new List<XYZ>();
+      //   List<double> weights = new List<double>();
+
+      //   foreach (object o in b.Leaves)
+      //   {
+      //      ReferencePoint pt = o as ReferencePoint;
+      //      ptArr.Add(pt.Position);
+      //      weights.Add(1);
+      //   }
+
+      //   //only make a curve if
+      //   //there's enough points
+      //   if (ptArr.Count > 1)
+      //   {
+      //      //make a curve
+      //      NurbSpline ns = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewNurbSpline(ptArr, weights);
+      //      double rawParam = ns.ComputeRawParameter(.5);
+      //      Transform t = ns.ComputeDerivatives(rawParam, false);
+
+      //      XYZ norm = t.BasisZ;
+
+      //      if (norm.GetLength() == 0)
+      //      {
+      //         norm = XYZ.BasisZ;
+      //      }
+
+      //      Plane p = new Plane(norm, t.Origin);
+      //      SketchPlane sp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(p);
+      //      sps.Add(sp);
+
+      //      ModelNurbSpline c = (ModelNurbSpline)dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewModelCurve(ns, sp);
+
+      //      //add the element to the collection
+      //      //so it can be deleted later
+      //      Elements.Append(c);
+
+      //      //create a leaf node on the local branch
+      //      currentBranch.Leaves.Add(c);
+      //   }
+
+      //   foreach (DataTreeBranch b1 in b.Branches)
+      //   {
+      //      //every time you read a branch
+      //      //create a branch
+      //      DataTreeBranch newBranch = new DataTreeBranch();
+      //      this.Tree.Trunk.Branches.Add(newBranch);
+
+      //      Process(b1, newBranch);
+      //   }
+      //}
+
+      //public override void Destroy()
+      //{
+
+      //   //base destroys all elements in the collection
+      //   base.Destroy();
+
+      //   foreach (SketchPlane sp in sps)
+      //   {
+      //      dynElementSettings.SharedInstance.Doc.Document.Delete(sp);
+      //   }
+
+      //   sps.Clear();
+      //}
+
+      //public override void Update()
+      //{
+      //   OnDynElementReadyToBuild(EventArgs.Empty);
+      //}
+   }
 }

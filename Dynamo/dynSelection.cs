@@ -5,113 +5,146 @@ using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 
+using Microsoft.FSharp.Collections;
+using Microsoft.FSharp.Core;
+using Expression = Dynamo.FScheme.Expression;
+
 namespace Dynamo.Elements
 {
-    [ElementName("Divided Surface by Selection")]
-    [ElementDescription("An element which allows the user to select a divided surface.")]
-    [RequiresTransaction(true)]
-    public class dynSurfaceBySelection : dynElement, IDynamic
-    {
-        Form f;
-        DividedSurfaceData dsd;
-        //DataTree seedPts = new DataTree();
+   [ElementName("Divided Surface by Selection")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which allows the user to select a divided surface.")]
+   [RequiresTransaction(true)]
+   public class dynSurfaceBySelection : dynElement
+   {
+      Form f;
+      DividedSurfaceData dsd;
+      //DataTree seedPts = new DataTree();
 
-        public dynSurfaceBySelection()
-        {
-            
-            this.topControl.Width = 300;
+      Expression data = Expression.NewList(FSharpList<Expression>.Empty);
 
-            OutPortData.Add(new Connectors.PortData(null, "srf", "The divided surface family instance(s)", typeof(dynElement)));
-            OutPortData[0].Object = this.Tree;
+      public dynSurfaceBySelection()
+      {
+         this.topControl.Width = 300;
 
-            //add a button to the inputGrid on the dynElement
-            System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
-            this.inputGrid.Children.Add(paramMapButt);
-            paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-            paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
-            paramMapButt.Content = "Select";
-            paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         OutPortData.Add(new Connectors.PortData(null, "srf", "The divided surface family instance(s)", typeof(dynElement)));
+         //OutPortData[0].Object = this.Tree;
 
-            base.RegisterInputsAndOutputs();
+         //add a button to the inputGrid on the dynElement
+         System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
+         this.inputGrid.Children.Add(paramMapButt);
+         paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
+         paramMapButt.Content = "Select";
+         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-        }
+         base.RegisterInputsAndOutputs();
 
-        void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            //clear the existing tree and the seed pts tree
-            this.Tree.Clear();
-            //seedPts.Clear();
+      }
 
-            //foreach (Element el in this.Elements)
-            //{
-            //    dynElementSettings.SharedInstance.Doc.Document.Delete(el);
-            //}
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         return data;
+      }
 
-            f = SelectionHelper.RequestFormSelection(dynElementSettings.SharedInstance.Doc, "Select a face.", dynElementSettings.SharedInstance);
-            dsd = f.GetDividedSurfaceData();
-            if (dsd != null)
+      void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      {
+         //clear the existing tree and the seed pts tree
+         //this.Tree.Clear();
+         //seedPts.Clear();
+
+         //foreach (Element el in this.Elements)
+         //{
+         //    dynElementSettings.SharedInstance.Doc.Document.Delete(el);
+         //}
+
+         data = Expression.NewList(FSharpList<Expression>.Empty);
+
+         var result = new List<List<FamilyInstance>>();
+
+         f = SelectionHelper.RequestFormSelection(dynElementSettings.SharedInstance.Doc, "Select a face.", dynElementSettings.SharedInstance);
+         dsd = f.GetDividedSurfaceData();
+         if (dsd != null)
+         {
+            foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
             {
-                foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
-                {
-                    DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
+               DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
 
-                    GridNode gn = new GridNode();
+               GridNode gn = new GridNode();
 
-                    int u = 0;
-                    while (u < ds.NumberOfUGridlines)
-                    {
-                        //add a new tree branch for every node
-                        DataTreeBranch dtb = new DataTreeBranch();
-                        this.Tree.Trunk.Branches.Add(dtb);
-                        //DataTreeBranch seedBranch = new DataTreeBranch();
-                        //seedPts.Trunk.Branches.Add(seedBranch);
+               int u = 0;
+               while (u < ds.NumberOfUGridlines)
+               {
+                  //add a new tree branch for every node
+                  //DataTreeBranch dtb = new DataTreeBranch();
+                  //this.Tree.Trunk.Branches.Add(dtb);
+                  //DataTreeBranch seedBranch = new DataTreeBranch();
+                  //seedPts.Trunk.Branches.Add(seedBranch);
 
-                        gn.UIndex = u;
+                  var lst = new List<FamilyInstance>();
 
-                        int v = 0;
-                        while (v < ds.NumberOfVGridlines)
-                        {
-                            gn.VIndex = v;
+                  gn.UIndex = u;
 
-                            if (ds.IsSeedNode(gn))
-                            {
-                                FamilyInstance fi
-                                  = ds.GetTileFamilyInstance(gn, 0);
+                  int v = 0;
+                  while (v < ds.NumberOfVGridlines)
+                  {
+                     gn.VIndex = v;
 
-                                //put the family instance into the tree
-                                dtb.Leaves.Add(fi);
+                     if (ds.IsSeedNode(gn))
+                     {
+                        FamilyInstance fi
+                          = ds.GetTileFamilyInstance(gn, 0);
 
-                                ////add a reference point for the seed node
-                                //Point p = ds.GetGridNodeReference(gn).GeometryObject as Point;
-                                //if (p != null)
-                                //{
-                                //    ReferencePoint rp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(p.Coord);
-                                //    seedBranch.Leaves.Add(rp);
-                                //    Elements.Append(rp);
-                                //}
-                            }
-                            v = v + 1;
-                        }
-                        u = u + 1;
-                    }
-                }
+                        //put the family instance into the tree
+                        //dtb.Leaves.Add(fi);
+                        lst.Add(fi);
+
+                        ////add a reference point for the seed node
+                        //Point p = ds.GetGridNodeReference(gn).GeometryObject as Point;
+                        //if (p != null)
+                        //{
+                        //    ReferencePoint rp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(p.Coord);
+                        //    seedBranch.Leaves.Add(rp);
+                        //    Elements.Append(rp);
+                        //}
+                     }
+                     v = v + 1;
+                  }
+
+                  result.Add(lst);
+
+                  u = u + 1;
+               }
             }
 
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
+            this.data = Expression.NewList(
+               FSchemeInterop.Utils.convertSequence(
+                  result.Select(
+                     row => Expression.NewList(
+                        FSchemeInterop.Utils.convertSequence(
+                           row.Select(Expression.NewContainer)
+                        )
+                     )
+                  )
+               )
+            );
+         }
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
+         //OnDynElementReadyToBuild(EventArgs.Empty);
+      }
 
-        public override void Destroy()
-        {
-            //don't call base destroy
-            //base.Destroy();
-        }
-    }
+      //public override void Update()
+      //{
+      //   OnDynElementReadyToBuild(EventArgs.Empty);
+      //}
+
+      //public override void Destroy()
+      //{
+      //   //don't call base destroy
+      //   //base.Destroy();
+      //}
+   }
 }

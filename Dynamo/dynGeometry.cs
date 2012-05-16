@@ -13,281 +13,306 @@
 //limitations under the License.
 
 using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.IO;
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit;
-using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI.Events;
-using System.Reflection;
-using System.Windows.Controls;
-using System.Windows.Data;
-using TextBox = System.Windows.Controls.TextBox;
-using System.Windows.Forms;
-using Dynamo.Controls;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
-using System.IO.Ports;
 
 namespace Dynamo.Elements
 {
-    [ElementName("XYZ")]
-    [ElementDescription("An element which creates an XYZ from three double values.")]
-    [RequiresTransaction(true)]
-    public class dynXYZ : dynElement, IDynamic
-    {
-        XYZ pt;
+   [ElementName("XYZ")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which creates an XYZ from three double values.")]
+   [RequiresTransaction(false)]
+   public class dynXYZ : dynElement
+   {
+      public dynXYZ()
+      {
+         InPortData.Add(new PortData(null, "X", "X", typeof(double)));
+         InPortData.Add(new PortData(null, "Y", "Y", typeof(double)));
+         InPortData.Add(new PortData(null, "Z", "Z", typeof(double)));
 
-        public dynXYZ()
-        {
-            InPortData.Add(new PortData(null, "X", "X", typeof(dynDouble)));
-            InPortData.Add(new PortData(null, "Y", "Y", typeof(dynDouble)));
-            InPortData.Add(new PortData(null, "Z", "Z", typeof(dynDouble)));
+         OutPortData.Add(new PortData(null, "xyz", "XYZ", typeof(XYZ)));
 
-            OutPortData.Add(new PortData(null, "xyz", "XYZ", typeof(dynXYZ)));
-            OutPortData[0].Object = this.Tree;
+         base.RegisterInputsAndOutputs();
+      }
 
-            base.RegisterInputsAndOutputs();
+      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      {
+         double x, y, z;
+         x = (args[0] as FScheme.Expression.Number).Item;
+         y = (args[1] as FScheme.Expression.Number).Item;
+         z = (args[2] as FScheme.Expression.Number).Item;
 
-        }
+         return FScheme.Expression.NewContainer(new XYZ(x, y, z));
+      }
 
-        public override void Draw()
-        {
-            if (CheckInputs())
-            {
+      //public override void Draw()
+      //{
+      //   if (CheckInputs())
+      //   {
+      //      //create the xyz
+      //      pt = new XYZ((double)InPortData[0].Object,
+      //          (double)InPortData[1].Object,
+      //          (double)InPortData[2].Object);
 
-                //create the xyz
-                pt = new XYZ((double)InPortData[0].Object,
-                    (double)InPortData[1].Object,
-                    (double)InPortData[2].Object);
+      //      //OutPortData[0].Object = pt;
+      //      this.Tree.Trunk.Leaves.Add(pt);
+      //   }
+      //}
 
-                //OutPortData[0].Object = pt;
-                this.Tree.Trunk.Leaves.Add(pt);
-            }
-        }
+      //public override void Destroy()
+      //{
+      //   pt = null;
+      //   base.Destroy();
+      //}
 
-        public override void Destroy()
-        {
-            pt = null;
-            base.Destroy();
-        }
+      //public override void Update()
+      //{
+      //   OnDynElementReadyToBuild(EventArgs.Empty);
+      //}
+   }
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
+   [ElementName("Plane")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which creates a geometric plane.")]
+   [RequiresTransaction(false)]
+   public class dynPlane : dynElement
+   {
+      public dynPlane()
+      {
+         InPortData.Add(new PortData(null, "normal", "Normal Point (XYZ)", typeof(XYZ)));
+         InPortData.Add(new PortData(null, "origin", "Origin Point (XYZ)", typeof(XYZ)));
+         OutPortData.Add(new PortData(null, "P", "Plane", typeof(Plane)));
+         //OutPortData[0].Object = this.Tree;
 
-    [ElementName("Plane")]
-    [ElementDescription("An element which creates a geometric plane.")]
-    [RequiresTransaction(true)]
-    public class dynPlane : dynElement, IDynamic
-    {
-        public dynPlane()
-        {
-            InPortData.Add(new PortData(null, "XYZ", "Normal", typeof(dynXYZ)));
-            InPortData.Add(new PortData(null, "XYZ", "Origin", typeof(dynXYZ)));
-            OutPortData.Add(new PortData(null, "P", "Plane", typeof(dynPlane)));
-            OutPortData[0].Object = this.Tree;
+         base.RegisterInputsAndOutputs();
+      }
 
-            base.RegisterInputsAndOutputs();
-        }
+      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      {
+         XYZ ptA = (XYZ)((FScheme.Expression.Container)args[0]).Item;
+         XYZ ptB = (XYZ)((FScheme.Expression.Container)args[1]).Item;
 
-        public override void Draw()
-        {
-            if (CheckInputs())
-            {
+         return FScheme.Expression.NewContainer(
+            this.UIDocument.Application.Application.Create.NewPlane(
+               ptA, ptB
+            )
+         );
+      }
 
-                DataTree a = InPortData[0].Object as DataTree;
-                DataTree b = InPortData[1].Object as DataTree;
+      //public override void Draw()
+      //{
+      //   if (CheckInputs())
+      //   {
 
-                if (a != null && b != null)
-                {
-                    Process(this.Tree.Trunk, a.Trunk, b.Trunk);
-                }
+      //      DataTree a = InPortData[0].Object as DataTree;
+      //      DataTree b = InPortData[1].Object as DataTree;
 
-            }
-        }
+      //      if (a != null && b != null)
+      //      {
+      //         Process(this.Tree.Trunk, a.Trunk, b.Trunk);
+      //      }
 
-        void Process(DataTreeBranch currBranch, DataTreeBranch a, DataTreeBranch b)
-        {
-            foreach (object o in a.Leaves)
-            {
+      //   }
+      //}
 
-                if (b.Leaves.Count > a.Leaves.IndexOf(o))
-                {
-                    XYZ ptA = o as XYZ;
-                    XYZ ptB = b.Leaves[a.Leaves.IndexOf(o)] as XYZ;
+      //void Process(DataTreeBranch currBranch, DataTreeBranch a, DataTreeBranch b)
+      //{
+      //   foreach (object o in a.Leaves)
+      //   {
 
-                    if (ptA != null && ptB != null)
-                    {
-                        this.Tree.Trunk.Leaves.Add(dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewPlane(ptA, ptB));
-                    }
-                }
-                
-            }
+      //      if (b.Leaves.Count > a.Leaves.IndexOf(o))
+      //      {
+      //         XYZ ptA = o as XYZ;
+      //         XYZ ptB = b.Leaves[a.Leaves.IndexOf(o)] as XYZ;
 
-            foreach (DataTreeBranch aChild in a.Branches)
-            {
-                DataTreeBranch subBranch = new DataTreeBranch();
-                currBranch.Branches.Add(subBranch);
+      //         if (ptA != null && ptB != null)
+      //         {
+      //            this.Tree.Trunk.Leaves.Add(dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewPlane(ptA, ptB));
+      //         }
+      //      }
 
-                int idx = a.Branches.IndexOf(aChild);
+      //   }
 
-                if (b.Branches.Count > idx)
-                {
-                    Process(subBranch, aChild, b.Branches[idx]);
-                }
-            }
-        }
+      //   foreach (DataTreeBranch aChild in a.Branches)
+      //   {
+      //      DataTreeBranch subBranch = new DataTreeBranch();
+      //      currBranch.Branches.Add(subBranch);
 
-        public override void Destroy()
-        {
-            base.Destroy();
-        }
+      //      int idx = a.Branches.IndexOf(aChild);
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
+      //      if (b.Branches.Count > idx)
+      //      {
+      //         Process(subBranch, aChild, b.Branches[idx]);
+      //      }
+      //   }
+      //}
 
-    [ElementName("SketchPlane")]
-    [ElementDescription("An element which creates a geometric sketch plane.")]
-    [RequiresTransaction(true)]
-    public class dynSketchPlane : dynElement, IDynamic
-    {
-        public dynSketchPlane()
-        {
-            InPortData.Add(new PortData(null, "P", "The plane in which to define the sketch.", typeof(dynPlane)));
-            OutPortData.Add(new PortData(null, "SP", "SketchPlane", typeof(dynSketchPlane)));
-            OutPortData[0].Object = this.Tree;
+      //public override void Destroy()
+      //{
+      //   base.Destroy();
+      //}
 
-            base.RegisterInputsAndOutputs();
-        }
+      //public override void Update()
+      //{
+      //   OnDynElementReadyToBuild(EventArgs.Empty);
+      //}
+   }
 
-        public override void Draw()
-        {
-            if (CheckInputs())
-            {
-                //OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(InPortData[0].Object as Plane);
+   [ElementName("Sketch Plane")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which creates a geometric sketch plane.")]
+   [RequiresTransaction(true)]
+   public class dynSketchPlane : dynElement
+   {
+      public dynSketchPlane()
+      {
+         InPortData.Add(new PortData(null, "plane", "The plane in which to define the sketch.", typeof(dynPlane)));
+         OutPortData.Add(new PortData(null, "SP", "SketchPlane", typeof(dynSketchPlane)));
+         //OutPortData[0].Object = this.Tree;
 
-                DataTree a = InPortData[0].Object as DataTree;
-                if(a != null)
-                {
-                    Process(this.Tree.Trunk, a.Trunk);
-                }
-            }
-        }
+         base.RegisterInputsAndOutputs();
+      }
 
-        void Process(DataTreeBranch currBranch, DataTreeBranch a)
-        {
-            foreach (object o in a.Leaves)
-            {
-                Plane p = o as Plane;
-                if (p != null)
-                {
-                    currBranch.Leaves.Add(dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(p));
-                }
-            }
+      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      {
+         Plane p = (Plane)((FScheme.Expression.Container)args[0]).Item;
 
-            foreach (DataTreeBranch aChild in a.Branches)
-            {
-                DataTreeBranch subBranch = new DataTreeBranch();
-                currBranch.Branches.Add(subBranch);
+         SketchPlane sp = (this.UIDocument.Document.IsFamilyDocument)
+            ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
+            : this.UIDocument.Document.Create.NewSketchPlane(p);
 
-                Process(subBranch, aChild);
-            }
+         return FScheme.Expression.NewContainer(sp);
+      }
 
-        }
+      //public override void Draw()
+      //{
+      //   if (CheckInputs())
+      //   {
+      //      //OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(InPortData[0].Object as Plane);
 
-        public override void Destroy()
-        {
-            base.Destroy();
-        }
+      //      DataTree a = InPortData[0].Object as DataTree;
+      //      if (a != null)
+      //      {
+      //         Process(this.Tree.Trunk, a.Trunk);
+      //      }
+      //   }
+      //}
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
+      //void Process(DataTreeBranch currBranch, DataTreeBranch a)
+      //{
+      //   foreach (object o in a.Leaves)
+      //   {
+      //      Plane p = o as Plane;
+      //      if (p != null)
+      //      {
+      //         currBranch.Leaves.Add(dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(p));
+      //      }
+      //   }
 
-    [ElementName("Line")]
-    [ElementDescription("An element which creates a geometric line.")]
-    [RequiresTransaction(true)]
-    public class dynLineBound : dynCurve, IDynamic
-    {
-        public dynLineBound()
-        {
-            InPortData.Add(new PortData(null, "xyz", "Start", typeof(dynXYZ)));
-            InPortData.Add(new PortData(null, "xyz", "End", typeof(dynXYZ)));
-            OutPortData.Add(new PortData(null, "C", "Line", typeof(dynCurve)));
-            OutPortData[0].Object = this.Tree;
+      //   foreach (DataTreeBranch aChild in a.Branches)
+      //   {
+      //      DataTreeBranch subBranch = new DataTreeBranch();
+      //      currBranch.Branches.Add(subBranch);
 
-            base.RegisterInputsAndOutputs();
-        }
+      //      Process(subBranch, aChild);
+      //   }
 
-        public override void Draw()
-        {
-            if (CheckInputs())
-            {
-                
-                DataTree a = InPortData[0].Object as DataTree;
-                DataTree b = InPortData[1].Object as DataTree;
+      //}
 
-                if (a != null && b != null)
-                {
-                    Process(this.Tree.Trunk, a.Trunk, b.Trunk);
-                }
-            }
-        }
+      //public override void Destroy()
+      //{
+      //   base.Destroy();
+      //}
 
-        void Process(DataTreeBranch currBranch, DataTreeBranch a, DataTreeBranch b)
-        {
+      //public override void Update()
+      //{
+      //   OnDynElementReadyToBuild(EventArgs.Empty);
+      //}
+   }
 
-            foreach (object o in a.Leaves)
-            {
-                if (b.Leaves.Count > a.Leaves.IndexOf(o))
-                {
-                    XYZ ptA = o as XYZ;
-                    XYZ ptB = b.Leaves[a.Leaves.IndexOf(o)] as XYZ;
+   [ElementName("Line")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which creates a geometric line.")]
+   [RequiresTransaction(true)]
+   public class dynLineBound : dynElement
+   {
+      public dynLineBound()
+      {
+         InPortData.Add(new PortData(null, "start", "Start XYZ", typeof(XYZ)));
+         InPortData.Add(new PortData(null, "end", "End XYZ", typeof(XYZ)));
+         OutPortData.Add(new PortData(null, "line", "Line", typeof(Line)));
 
-                    if (ptA != null && ptB != null)
-                    {
-                        Curve c = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewLineBound(ptA, ptB);
-                        currBranch.Leaves.Add(c);
-                    }
-                }
-            }
+         base.RegisterInputsAndOutputs();
+      }
 
-            foreach (DataTreeBranch aChild in a.Branches)
-            {
-                DataTreeBranch subBranch = new DataTreeBranch();
-                currBranch.Branches.Add(subBranch);
+      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      {
+         var ptA = (XYZ)((FScheme.Expression.Container)args[0]).Item;
+         var ptB = (XYZ)((FScheme.Expression.Container)args[1]).Item;
 
-                int idx = a.Branches.IndexOf(aChild);
+         return FScheme.Expression.NewContainer(
+            this.UIDocument.Application.Application.Create.NewLineBound(
+               ptA, ptB
+            )
+         );
+      }
 
-                if(b.Branches.Count > idx)
-                {
-                    Process(subBranch, aChild, b.Branches[idx]);
-                }
-            }
-        }
+      //   public override void Draw()
+      //   {
+      //      if (CheckInputs())
+      //      {
 
-        public override void Destroy()
-        {
-            base.Destroy();
-        }
+      //         DataTree a = InPortData[0].Object as DataTree;
+      //         DataTree b = InPortData[1].Object as DataTree;
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
+      //         if (a != null && b != null)
+      //         {
+      //            Process(this.Tree.Trunk, a.Trunk, b.Trunk);
+      //         }
+      //      }
+      //   }
+
+      //   void Process(DataTreeBranch currBranch, DataTreeBranch a, DataTreeBranch b)
+      //   {
+
+      //      foreach (object o in a.Leaves)
+      //      {
+      //         if (b.Leaves.Count > a.Leaves.IndexOf(o))
+      //         {
+      //            XYZ ptA = o as XYZ;
+      //            XYZ ptB = b.Leaves[a.Leaves.IndexOf(o)] as XYZ;
+
+      //            if (ptA != null && ptB != null)
+      //            {
+      //               Curve c = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewLineBound(ptA, ptB);
+      //               currBranch.Leaves.Add(c);
+      //            }
+      //         }
+      //      }
+
+      //      foreach (DataTreeBranch aChild in a.Branches)
+      //      {
+      //         DataTreeBranch subBranch = new DataTreeBranch();
+      //         currBranch.Branches.Add(subBranch);
+
+      //         int idx = a.Branches.IndexOf(aChild);
+
+      //         if (b.Branches.Count > idx)
+      //         {
+      //            Process(subBranch, aChild, b.Branches[idx]);
+      //         }
+      //      }
+      //   }
+
+      //   public override void Destroy()
+      //   {
+      //      base.Destroy();
+      //   }
+
+      //   public override void Update()
+      //   {
+      //      OnDynElementReadyToBuild(EventArgs.Empty);
+      //   }
+   }
 }

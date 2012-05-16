@@ -114,7 +114,9 @@ namespace Dynamo.Connectors
             //this.workBench = workBench;
             this.index = index;
             InitializeComponent();
-         
+
+            this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
+            this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
         }
         #endregion constructors
 
@@ -165,10 +167,6 @@ namespace Dynamo.Connectors
 
             double x = rootPoint.X + this.Width / 2;
             double y = rootPoint.Y + this.Width / 2;
-
-            center.X = x;
-            center.Y = y;
-
             return new Point(x, y);
 
         }

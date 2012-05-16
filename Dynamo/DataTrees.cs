@@ -37,117 +37,117 @@ using System.IO.Ports;
 
 namespace Dynamo.Elements
 {
-    /// <summary>
-    /// A DataTree represents a branching structure of branches and leaves. 
-    /// It containes at least one branch which is the trunk.
-    /// </summary>
-    public class DataTree
-    {
-        DataTreeBranch trunk;
+   /// <summary>
+   /// A DataTree represents a branching structure of branches and leaves. 
+   /// It containes at least one branch which is the trunk.
+   /// </summary>
+   public class DataTree
+   {
+      DataTreeBranch trunk;
 
-        public DataTreeBranch Trunk
-        {
-            get { return trunk; }
-            set { trunk = value; }
-        }
+      public DataTreeBranch Trunk
+      {
+         get { return trunk; }
+         set { trunk = value; }
+      }
 
-        public DataTree()
-        {
-            trunk = new DataTreeBranch();
-        }
+      public DataTree()
+      {
+         trunk = new DataTreeBranch();
+      }
 
-        public void Clear()
-        {
-            trunk.Clear();
-        }
+      public void Clear()
+      {
+         trunk.Clear();
+      }
 
-        public override string ToString()
-        {
-            //return base.ToString();
-            string graph = "";
-            this.trunk.Graph(0, ref graph);
-            return graph;
-        }
+      public override string ToString()
+      {
+         //return base.ToString();
+         string graph = "";
+         this.trunk.Graph(0, ref graph);
+         return graph;
+      }
 
-    }
+   }
 
-    /// <summary>
-    /// A DataTree is comprised of DataTreeBranches. A DataTreeBranch contains a set of leaves and a set of branches.
-    /// </summary>
-    public class DataTreeBranch
-    {
-        List<DataTreeBranch> branches = new List<DataTreeBranch>();
-        List<object> leaves = new List<object>();
+   /// <summary>
+   /// A DataTree is comprised of DataTreeBranches. A DataTreeBranch contains a set of leaves and a set of branches.
+   /// </summary>
+   public class DataTreeBranch
+   {
+      List<DataTreeBranch> branches = new List<DataTreeBranch>();
+      List<object> leaves = new List<object>();
 
-        public List<DataTreeBranch> Branches
-        {
-            get { return branches; }
-            set { branches = value; }
-        }
+      public List<DataTreeBranch> Branches
+      {
+         get { return branches; }
+         set { branches = value; }
+      }
 
-        public List<object> Leaves
-        {
-            get { return leaves; }
-            set { leaves = value; }
-        }
+      public List<object> Leaves
+      {
+         get { return leaves; }
+         set { leaves = value; }
+      }
 
-        public DataTreeBranch()
-        {
-        }
+      public DataTreeBranch()
+      {
+      }
 
-        public void Clear()
-        {
-            //Debug.WriteLine("Item has " + this.branches.Count + " branches.");
-            for (int i = this.branches.Count - 1; i>=0 ; i--)
+      public void Clear()
+      {
+         //Debug.WriteLine("Item has " + this.branches.Count + " branches.");
+         for (int i = this.branches.Count - 1; i >= 0; i--)
+         {
+            DataTreeBranch b = this.branches[i];
+            b.Clear();
+            this.branches.Remove(b);
+         }
+         this.branches.Clear();
+         leaves.Clear();
+      }
+
+      public void Graph(int index, ref string message)
+      {
+         int leafCount = 0;
+         foreach (object o in this.Leaves)
+         {
+            message += index.ToString() + ":" + leafCount.ToString() + ":{" + o.ToString() + "}\n";
+
+            leafCount++;
+         }
+
+         foreach (DataTreeBranch branch in Branches)
+         {
+            branch.Graph(index + 1, ref message);
+         }
+      }
+
+      public object FindFirst()
+      {
+         object oFound = null;
+
+         foreach (object o in leaves)
+         {
+            if (o != null)
             {
-                DataTreeBranch b = this.branches[i];
-                b.Clear();
-                this.branches.Remove(b);
+               oFound = o;
+               return oFound;
             }
-            this.branches.Clear();
-            leaves.Clear();
-        }
+         }
+         foreach (DataTreeBranch branch in branches)
+         {
+            object o = branch.FindFirst();
 
-        public void Graph(int index, ref string message)
-        {
-            int leafCount = 0;
-            foreach (object o in this.Leaves)
+            if (o != null)
             {
-                message +=  index.ToString()  + ":"  + leafCount.ToString() + ":{" + o.ToString() + "}\n";
-
-                leafCount++;
+               oFound = o;
+               return o;
             }
+         }
 
-            foreach (DataTreeBranch branch in Branches)
-            {
-                branch.Graph(index + 1, ref message);
-            }
-        }
-
-        public object FindFirst()
-        {
-            object oFound = null;
-
-            foreach (object o in leaves)
-            {
-                if (o != null)
-                {
-                    oFound = o;
-                    return oFound;
-                }
-            }
-            foreach (DataTreeBranch branch in branches)
-            {
-               object o =  branch.FindFirst();
-
-               if (o != null)
-               {
-                   oFound = o;
-                   return o;
-               }
-            }
-
-            return oFound;
-        }
-    }
+         return oFound;
+      }
+   }
 }

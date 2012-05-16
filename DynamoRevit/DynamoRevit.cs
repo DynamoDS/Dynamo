@@ -238,18 +238,17 @@ namespace Dynamo.Applications
                 failOpt.SetFailuresPreprocessor(new DynamoWarningSwallower());
                 trans.SetFailureHandlingOptions(failOpt);
 
-                m_revit.Idling += new EventHandler<IdlingEventArgs>(OnIdling);
-
                 #region default level
                 Level defaultLevel = null;
                 FilteredElementCollector fecLevel = new FilteredElementCollector(m_doc.Document);
                 fecLevel.OfClass(typeof(Level));
-                for (int i = 0; i < fecLevel.ToElements().Count; i++)
-                {
-                    defaultLevel = fecLevel.ToElements()[i] as Level;
-                    break;
-                }
-
+                //for (int i = 0; i < fecLevel.ToElements().Count; i++)
+                //{
+                //    defaultLevel = fecLevel.ToElements()[i] as Level;
+                //    break;
+                //}
+                defaultLevel = fecLevel.ToElements()[0] as Level;
+                
                 #endregion
 
                 DynamoWarningSwallower swallow = new DynamoWarningSwallower();
@@ -302,14 +301,6 @@ namespace Dynamo.Applications
 
             return Autodesk.Revit.UI.Result.Succeeded;
         }
-
-        void OnIdling(object sender, IdlingEventArgs e)
-        {
-
-        }
-
-
-        
 
         //public Result OnStartup(Autodesk.Revit.UI.UIControlledApplication application)
         //{

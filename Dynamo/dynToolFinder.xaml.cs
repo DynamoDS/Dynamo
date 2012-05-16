@@ -39,7 +39,7 @@ namespace Dynamo.Elements
     {
         public event ToolFinderFinishedHandler ToolFinderFinished;
 
-        bool _listShowing = false;
+        //bool _listShowing = false;
         List<string> toolNames = new List<string>();
         bool hasStartedSearching = false;
 

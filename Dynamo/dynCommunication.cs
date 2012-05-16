@@ -21,51 +21,80 @@ using System.IO;
 
 namespace Dynamo.Elements
 {
-    [ElementName("Web Request")]
-    [ElementDescription("An element which gathers data from the web using a URL.")]
-    [RequiresTransaction(false)]
-    public class dynWebRequest : dynElement
-    {
-        public dynWebRequest()
-        {
-            InPortData.Add(new Connectors.PortData(null, "url", "A URL to query.", typeof(dynString)));
-            OutPortData.Add(new Connectors.PortData(null, "str", "The string returned from the web request.", typeof(dynString)));
-            OutPortData[0].Object = this.Tree;
+   [ElementName("Web Request")]
+   [ElementCategory(BuiltinElementCategories.MISC)]
+   [ElementDescription("An element which gathers data from the web using a URL.")]
+   [RequiresTransaction(false)]
+   public class dynWebRequest : dynElement
+   {
+      public dynWebRequest()
+      {
+         InPortData.Add(new Connectors.PortData(null, "url", "A URL to query.", typeof(dynString)));
+         OutPortData.Add(new Connectors.PortData(null, "str", "The string returned from the web request.", typeof(dynString)));
+         //OutPortData[0].Object = this.Tree;
 
-            base.RegisterInputsAndOutputs();
-        }
-        public override void Draw()
-        {
-            if (CheckInputs())
-            {
-                //send a webrequest to the URL
-                // Initialize the WebRequest.
-                WebRequest myRequest = WebRequest.Create(InPortData[0].Object.ToString());
+         base.RegisterInputsAndOutputs();
+      }
 
-                // Return the response. 
-                WebResponse myResponse = myRequest.GetResponse();
+      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      {
+         string url = ((FScheme.Expression.String)args[0]).Item;
 
-                Stream dataStream = myResponse.GetResponseStream();
+         //send a webrequest to the URL
+         // Initialize the WebRequest.
+         WebRequest myRequest = WebRequest.Create(url);
 
-                // Open the stream using a StreamReader for easy access.
-                StreamReader reader = new StreamReader(dataStream);
+         // Return the response. 
+         WebResponse myResponse = myRequest.GetResponse();
 
-                // Read the content.
-                string responseFromServer = reader.ReadToEnd();
+         Stream dataStream = myResponse.GetResponseStream();
 
-                // Code to use the WebResponse goes here.
-                this.Tree.Trunk.Leaves.Add(responseFromServer);
+         // Open the stream using a StreamReader for easy access.
+         StreamReader reader = new StreamReader(dataStream);
 
-                reader.Close();
+         // Read the content.
+         string responseFromServer = reader.ReadToEnd();
 
-                // Close the response to free resources.
-                myResponse.Close();
-            }
-        }
+         reader.Close();
 
-        public override void Update()
-        {
-            OnDynElementReadyToBuild(EventArgs.Empty);
-        }
-    }
+         // Close the response to free resources.
+         myResponse.Close();
+
+         return FScheme.Expression.NewString(responseFromServer);
+      }
+
+      //public override void Draw()
+      //{
+      //   if (CheckInputs())
+      //   {
+      //      //send a webrequest to the URL
+      //      // Initialize the WebRequest.
+      //      WebRequest myRequest = WebRequest.Create(InPortData[0].Object.ToString());
+
+      //      // Return the response. 
+      //      WebResponse myResponse = myRequest.GetResponse();
+
+      //      Stream dataStream = myResponse.GetResponseStream();
+
+      //      // Open the stream using a StreamReader for easy access.
+      //      StreamReader reader = new StreamReader(dataStream);
+
+      //      // Read the content.
+      //      string responseFromServer = reader.ReadToEnd();
+
+      //      // Code to use the WebResponse goes here.
+      //      this.Tree.Trunk.Leaves.Add(responseFromServer);
+
+      //      reader.Close();
+
+      //      // Close the response to free resources.
+      //      myResponse.Close();
+      //   }
+      //}
+
+      //public override void Update()
+      //{
+      //   OnDynElementReadyToBuild(EventArgs.Empty);
+      //}
+   }
 }
