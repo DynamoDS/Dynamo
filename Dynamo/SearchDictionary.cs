@@ -8,60 +8,74 @@ namespace Dynamo.Elements
    class SearchDictionary<V>
    {
       private Dictionary<string, HashSet<V>> tagDict = new Dictionary<string, HashSet<V>>();
+      private Dictionary<V, HashSet<string>> symbolDict = new Dictionary<V, HashSet<string>>();
 
-      public void Add(string tag, V value)
+      public void Add(V value, string tag)
       {
          if (tagDict.ContainsKey(tag))
-         {
-            tagDict[tag].Add(value);
-         }
+            this.tagDict[tag].Add(value);
          else
-         {
-            tagDict[tag] = new HashSet<V>() { value };
-         }
+            this.tagDict[tag] = new HashSet<V>() { value };
+
+         if (this.symbolDict.ContainsKey(value))
+            this.symbolDict[value].Add(tag);
+         else
+            this.symbolDict[value] = new HashSet<string>() { tag };
       }
 
-      public void Add(string tag, IEnumerable<V> values)
+      public void Add(IEnumerable<V> values, string tag)
       {
-         if (tagDict.ContainsKey(tag))
-         {
-            tagDict[tag].UnionWith(values);
-         }
+         if (this.tagDict.ContainsKey(tag))
+            this.tagDict[tag].UnionWith(values);
          else
+            this.tagDict[tag] = new HashSet<V>(values);
+
+         foreach (V val in values)
          {
-            tagDict[tag] = new HashSet<V>(values);
+            if (this.symbolDict.ContainsKey(val))
+               this.symbolDict[val].Add(tag);
+            else
+               this.symbolDict[val] = new HashSet<string>() { tag };
          }
       }
 
-      public void Add(IEnumerable<string> tags, V value)
+      public void Add(V value, IEnumerable<string> tags)
       {
          foreach (var tag in tags)
-         {
-            this.Add(tag, value);
-         }
+            this.Add(value, tag);
       }
 
-      public void Add(IEnumerable<string> tags, IEnumerable<V> value)
+      public void Add(IEnumerable<V> values, IEnumerable<string> tags)
       {
          foreach (var tag in tags)
-         {
-            this.Add(tag, value);
-         }
+            this.Add(values, tag);
       }
 
-      public HashSet<V> SearchWithSubString(string search)
+      public HashSet<V> Search(string search)
       {
          HashSet<V> result = new HashSet<V>();
 
          foreach (var word in search.Split(new char[] { ' ' }).Where(x => x.Length > 0))
          {
-            foreach (var pair in tagDict)
+            foreach (var pair in this.tagDict)
             {
-               if (pair.Key.ToLower().Contains(word))
+               if (pair.Key.ToLower().StartsWith(word))
                   result.UnionWith(pair.Value);
             }
          }
          return result;
+      }
+
+      public void Remove(V value, string tag)
+      {
+         this.tagDict[tag].Remove(value);
+         this.symbolDict[value].Remove(tag);
+      }
+
+      public void Remove(V value, IEnumerable<string> tags)
+      {
+         foreach (string tag in tags)
+            this.Remove(value, tag);
       }
    }
 }

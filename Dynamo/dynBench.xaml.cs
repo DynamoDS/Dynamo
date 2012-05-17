@@ -343,10 +343,10 @@ namespace Dynamo.Controls
 
                if (tags != null)
                {
-                  searchDict.Add(tags, newEl);
+                  searchDict.Add(newEl, tags.Where(x => x.Length > 0));
                }
 
-               searchDict.Add(kvp.Key, newEl);
+               searchDict.Add(newEl, kvp.Key.Split(' ').Where(x => x.Length > 0));
             }
             catch (Exception e)
             {
@@ -665,10 +665,7 @@ namespace Dynamo.Controls
          {
             p.Update();
          }
-         foreach (dynPort p in el.OutPorts)
-         {
-            p.Update();
-         }
+         el.OutPort.Update();
       }
 
       /// <summary>
@@ -803,14 +800,11 @@ namespace Dynamo.Controls
                {
                   p.Update();
                }
-               foreach (dynPort p in el.OutPorts)
-               {
-                  p.Update();
-               }
-               foreach (dynPort p in el.StatePorts)
-               {
-                  p.Update();
-               }
+               el.OutPort.Update();
+               //foreach (dynPort p in el.StatePorts)
+               //{
+               //   p.Update();
+               //}
             }
          }
 
@@ -1112,7 +1106,7 @@ namespace Dynamo.Controls
          AddElement(mi.Header.ToString());
       }
 
-      bool SaveWorkspace(string xmlPath, dynWorkspace workSpace, string name=null)
+      bool SaveWorkspace(string xmlPath, dynWorkspace workSpace, string name = null)
       {
          Log("Saving " + xmlPath + "...");
          try
@@ -1176,24 +1170,20 @@ namespace Dynamo.Controls
 
             foreach (dynElement el in workSpace.elements)
             {
-               foreach (dynPort p in el.OutPorts)
+               foreach (dynConnector c in el.OutPort.Connectors)
                {
-                  foreach (dynConnector c in p.Connectors)
-                  {
-                     XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
-                     connectorList.AppendChild(connector);
-                     connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
-                     connector.SetAttribute("start_index", c.Start.Index.ToString());
-                     connector.SetAttribute("end", c.End.Owner.GUID.ToString());
-                     connector.SetAttribute("end_index", c.End.Index.ToString());
+                  XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
+                  connectorList.AppendChild(connector);
+                  connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
+                  connector.SetAttribute("start_index", c.Start.Index.ToString());
+                  connector.SetAttribute("end", c.End.Owner.GUID.ToString());
+                  connector.SetAttribute("end_index", c.End.Index.ToString());
 
-                     if (c.End.PortType == PortType.INPUT)
-                        connector.SetAttribute("portType", "0");
-                     else if (c.End.PortType == PortType.STATE)
-                        connector.SetAttribute("portType", "1");
-                  }
+                  if (c.End.PortType == PortType.INPUT)
+                     connector.SetAttribute("portType", "0");
+                  //else if (c.End.PortType == PortType.STATE)
+                  //   connector.SetAttribute("portType", "1");
                }
-
             }
 
             xmlDoc.Save(xmlPath);
@@ -1419,9 +1409,9 @@ namespace Dynamo.Controls
                dynElement el = AddDynElement(
                   t, nickname, guid, x, y,
                   new dynWorkspace()
-                  { 
-                     elements = this.elements, 
-                     connectors = this.connectors 
+                  {
+                     elements = this.elements,
+                     connectors = this.connectors
                   }
                );
 
@@ -1526,20 +1516,17 @@ namespace Dynamo.Controls
                   p.Connectors[i].Kill();
                }
             }
-            foreach (dynPort p in el.OutPorts)
+            for (int i = el.OutPort.Connectors.Count - 1; i >= 0; i--)
             {
-               for (int i = p.Connectors.Count - 1; i >= 0; i--)
-               {
-                  p.Connectors[i].Kill();
-               }
+               el.OutPort.Connectors[i].Kill();
             }
-            foreach (dynPort p in el.StatePorts)
-            {
-               for (int i = p.Connectors.Count - 1; i >= 0; i--)
-               {
-                  p.Connectors[i].Kill();
-               }
-            }
+            //foreach (dynPort p in el.StatePorts)
+            //{
+            //   for (int i = p.Connectors.Count - 1; i >= 0; i--)
+            //   {
+            //      p.Connectors[i].Kill();
+            //   }
+            //}
 
             //remove the element from the workbench
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
@@ -1563,20 +1550,17 @@ namespace Dynamo.Controls
                   p.Connectors[i].Kill();
                }
             }
-            foreach (dynPort p in el.OutPorts)
+            for (int i = el.OutPort.Connectors.Count - 1; i >= 0; i--)
             {
-               for (int i = p.Connectors.Count - 1; i >= 0; i--)
-               {
-                  p.Connectors[i].Kill();
-               }
+               el.OutPort.Connectors[i].Kill();
             }
-            foreach (dynPort p in el.StatePorts)
-            {
-               for (int i = p.Connectors.Count - 1; i >= 0; i--)
-               {
-                  p.Connectors[i].Kill();
-               }
-            }
+            //foreach (dynPort p in el.StatePorts)
+            //{
+            //   for (int i = p.Connectors.Count - 1; i >= 0; i--)
+            //   {
+            //      p.Connectors[i].Kill();
+            //   }
+            //}
 
             //remove the element from the workbench
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
@@ -1875,12 +1859,9 @@ namespace Dynamo.Controls
 
       internal void DeleteElement(dynElement el)
       {
-         foreach (dynPort p in el.OutPorts)
+         for (int i = el.OutPort.Connectors.Count - 1; i >= 0; i--)
          {
-            for (int i = p.Connectors.Count - 1; i >= 0; i--)
-            {
-               p.Connectors[i].Kill();
-            }
+            el.OutPort.Connectors[i].Kill();
          }
          foreach (dynPort p in el.InPorts)
          {
@@ -1972,7 +1953,7 @@ namespace Dynamo.Controls
 
          foreach (dynElement el in this.homeSpace.elements)
          {
-            if (el.OutPorts.All(x => x.Connectors.Count == 0))
+            if (!el.OutPort.Connectors.Any())
             {
                topMost = el;
 
@@ -2158,7 +2139,7 @@ namespace Dynamo.Controls
       {
          var newElements = new List<dynElement>();
          var newConnectors = new List<dynConnector>();
-         
+
          //Add an entry to the funcdict
          var workSpace = new dynWorkspace(newElements, newConnectors, CANVAS_OFFSET_X, CANVAS_OFFSET_Y);
 
@@ -2253,7 +2234,7 @@ namespace Dynamo.Controls
          }
 
          addMenuItemsDictNew[name] = newEl;
-         searchDict.Add(name, newEl);
+         searchDict.Add(newEl, name.Split(' ').Where(x => x.Length > 0));
 
          if (display)
          {
@@ -2358,28 +2339,31 @@ namespace Dynamo.Controls
          this.setHomeBackground();
       }
 
-      void SaveFunction(string funcName, dynWorkspace funcWorkspace)
+      void SaveFunction(string funcName, dynWorkspace funcWorkspace, bool writeDefinition = true)
       {
          //Step 1: Generate xml, and save it in a fixed place
-         string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-         string pluginsPath = System.IO.Path.Combine(directory, "definitions");
-
-         try
+         if (writeDefinition)
          {
-            if (!Directory.Exists(pluginsPath))
-               Directory.CreateDirectory(pluginsPath);
+            string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string pluginsPath = System.IO.Path.Combine(directory, "definitions");
 
-            string path = System.IO.Path.Combine(pluginsPath, funcName + ".dyf");
-            SaveWorkspace(path, funcWorkspace, funcName);
-         }
-         catch (Exception e)
-         {
-            Log("Error saving:" + e.GetType() + ": " + e.Message);
+            try
+            {
+               if (!Directory.Exists(pluginsPath))
+                  Directory.CreateDirectory(pluginsPath);
+
+               string path = System.IO.Path.Combine(pluginsPath, funcName + ".dyf");
+               SaveWorkspace(path, funcWorkspace, funcName);
+            }
+            catch (Exception e)
+            {
+               Log("Error saving:" + e.GetType() + ": " + e.Message);
+            }
          }
 
          //Step 2: Find function entry point, and then compile the function and add it to our environment
          dynElement topMost = funcWorkspace.elements.FirstOrDefault(
-            el => el.OutPorts.All(x => x.Connectors.Count == 0)
+            el => !el.OutPort.Connectors.Any()
          );
 
          var variables = funcWorkspace.elements.Where(x => x is dynSymbol);
@@ -2518,7 +2502,7 @@ namespace Dynamo.Controls
          foreach (dynElement el in this.Elements)
          {
             dynElement topMost = null;
-            if (el.OutPorts.All(x => x.Connectors.Count == 0))
+            if (!el.OutPort.Connectors.Any())
             {
                topMost = el;
 
@@ -2662,8 +2646,32 @@ namespace Dynamo.Controls
          this.addMenuItemsDictNew.Remove(this.currentFunctionName);
          this.addMenuItemsDictNew[newName] = newAddItem;
 
-         //TODO: Sort the menu after a rename
-         //TODO: Update search dictionary after a rename
+         //Sort the menu after a rename
+         Expander unsorted = this.addMenuCategoryDict.Values.FirstOrDefault(
+            ex => ((WrapPanel)ex.Content).Children.Contains(newAddItem)
+         );
+
+         var wp = (WrapPanel)unsorted.Content;
+
+         var sortedElements = new SortedList<string, dynElement>();
+         foreach (dynElement child in wp.Children)
+         {
+            sortedElements.Add(child.NickName, child);
+         }
+
+         wp.Children.Clear();
+
+         foreach (dynElement child in sortedElements.Values)
+         {
+            wp.Children.Add(child);
+         }
+
+         //Update search dictionary after a rename
+         var oldTags = this.currentFunctionName.Split(' ').Where(x => x.Length > 0);
+         this.searchDict.Remove(newAddItem, oldTags);
+
+         var newTags = newName.Split(' ').Where(x => x.Length > 0);
+         this.searchDict.Add(newAddItem, newTags);
 
          //------------------//
 
@@ -2686,6 +2694,17 @@ namespace Dynamo.Controls
          }
 
          this.environment.RemoveSymbol(this.currentFunctionName);
+
+         //TODO: Delete old stored definition
+         string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+         string pluginsPath = System.IO.Path.Combine(directory, "definitions");
+
+         if (Directory.Exists(pluginsPath))
+         {
+            string oldpath = System.IO.Path.Combine(pluginsPath, this.currentFunctionName + ".dyf");
+            string newpath = System.IO.Path.Combine(pluginsPath, newName + ".dyf");
+            File.Move(oldpath, newpath);
+         }
 
          this.SaveFunction(newName, this.dynFunctionDict[this.currentFunctionName]);
 
@@ -2812,7 +2831,7 @@ namespace Dynamo.Controls
 
          var filter = search.Length == 0
             ? new HashSet<dynElement>(this.addMenuItemsDictNew.Values)
-            : searchDict.SearchWithSubString(search.ToLower());
+            : searchDict.Search(search.ToLower());
 
          this.FilterAddMenu(filter);
       }

@@ -30,7 +30,7 @@ namespace Dynamo.Elements
       public dynWebRequest()
       {
          InPortData.Add(new Connectors.PortData(null, "url", "A URL to query.", typeof(dynString)));
-         OutPortData.Add(new Connectors.PortData(null, "str", "The string returned from the web request.", typeof(dynString)));
+         OutPortData = new Connectors.PortData(null, "str", "The string returned from the web request.", typeof(dynString));
          //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();

@@ -24,7 +24,7 @@ namespace Dynamo.Elements
    {
       public dynReferencePoint()
       {
-         OutPortData.Add(new PortData(null, "pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint)));
+         OutPortData = new PortData(null, "pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint));
          //OutPortData[0].Object = this.Tree;
       }
 
@@ -262,7 +262,7 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData(null, "ptA", "Element to measure to.", typeof(Element)));
          InPortData.Add(new PortData(null, "ptB", "A Reference point.", typeof(ReferencePoint)));
 
-         OutPortData.Add(new PortData(null, "dist", "Distance between points.", typeof(dynDouble)));
+         OutPortData = new PortData(null, "dist", "Distance between points.", typeof(dynDouble));
          //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();
@@ -409,7 +409,7 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData(null, "curve", "ModelCurve", typeof(ModelCurve)));
          InPortData.Add(new PortData(null, "t", "Parameter on edge.", typeof(double)));
-         OutPortData.Add(new PortData(null, "pt", "PointOnEdge", typeof(PointOnEdge)));
+         OutPortData = new PortData(null, "pt", "PointOnEdge", typeof(PointOnEdge));
 
          base.RegisterInputsAndOutputs();
       }

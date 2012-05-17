@@ -50,7 +50,7 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData(null, "c", "A curve.", typeof(Curve)));
          InPortData.Add(new PortData(null, "sp", "The sketch plane.", typeof(SketchPlane)));
-         OutPortData.Add(new PortData(null, "mc", "ModelCurve", typeof(ModelCurve)));
+         OutPortData = new PortData(null, "mc", "ModelCurve", typeof(ModelCurve));
 
          base.RegisterInputsAndOutputs();
       }
@@ -100,7 +100,7 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData(null, "solid?", "Is solid?", typeof(object)));
          InPortData.Add(new PortData(null, "refListList", "ReferenceArrayArray", typeof(object)));
 
-         OutPortData.Add(new PortData(null, "form", "Loft Form", typeof(object)));
+         OutPortData = new PortData(null, "form", "Loft Form", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
@@ -142,7 +142,7 @@ namespace Dynamo.Elements
       public dynCurveByPoints()
       {
          InPortData.Add(new PortData(null, "refPts", "List of reference points", typeof(object)));
-         OutPortData.Add(new PortData(null, "curve", "Curve from ref points", typeof(object)));
+         OutPortData = new PortData(null, "curve", "Curve from ref points", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
@@ -175,7 +175,7 @@ namespace Dynamo.Elements
       public dynCurveRef()
       {
          InPortData.Add(new PortData(null, "curve", "CurveByPoints", typeof(object)));
-         OutPortData.Add(new PortData(null, "curveRef", "Reference", typeof(object)));
+         OutPortData = new PortData(null, "curveRef", "Reference", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
@@ -200,7 +200,7 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData(null, "pts", "The points from which to create the curve", typeof(object)));
 
-         OutPortData.Add(new PortData(null, "cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline)));
+         OutPortData = new PortData(null, "cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline));
          //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
+using Dynamo.Connectors;
 
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
@@ -27,7 +28,7 @@ namespace Dynamo.Elements
       {
          this.topControl.Width = 300;
 
-         OutPortData.Add(new Connectors.PortData(null, "srf", "The divided surface family instance(s)", typeof(dynElement)));
+         OutPortData = new PortData(null, "srf", "The divided surface family instance(s)", typeof(dynElement));
          //OutPortData[0].Object = this.Tree;
 
          //add a button to the inputGrid on the dynElement

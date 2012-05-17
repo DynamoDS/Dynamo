@@ -65,10 +65,10 @@ namespace Dynamo.Elements
 
       #region private members
       List<dynPort> inPorts;
-      List<dynPort> outPorts;
+      dynPort outPort;
       List<dynPort> statePorts;
       List<PortData> inPortData;
-      List<PortData> outPortData;
+      PortData outPortData;
       List<PortData> statePortData;
       Dictionary<dynPort, TextBlock> inPortTextBlocks;
       string nickName;
@@ -95,7 +95,7 @@ namespace Dynamo.Elements
 
       public string ToolTipText
       {
-         get { return outPortData[0].ToolTipString; }
+         get { return outPortData.ToolTipString; }
       }
 
       public List<PortData> InPortData
@@ -103,9 +103,10 @@ namespace Dynamo.Elements
          get { return inPortData; }
       }
 
-      public List<PortData> OutPortData
+      public PortData OutPortData
       {
          get { return outPortData; }
+         set { outPortData = value; }
       }
 
       public List<PortData> StatePortData
@@ -122,10 +123,10 @@ namespace Dynamo.Elements
          }
       }
 
-      public List<dynPort> OutPorts
+      public dynPort OutPort
       {
-         get { return outPorts; }
-         set { outPorts = value; }
+         get { return outPort; }
+         set { outPort = value; }
       }
 
       public List<dynPort> StatePorts
@@ -243,8 +244,6 @@ namespace Dynamo.Elements
 
          inPorts = new List<dynPort>();
          inPortData = new List<PortData>();
-         outPortData = new List<PortData>();
-         outPorts = new List<dynPort>();
          statePorts = new List<dynPort>();
          statePortData = new List<PortData>();
          elements = new ElementArray();
@@ -345,7 +344,7 @@ namespace Dynamo.Elements
          ValidateConnections();
       }
 
-      private Dictionary<UIElement, bool> enabledDict = new Dictionary<UIElement,bool>();
+      private Dictionary<UIElement, bool> enabledDict = new Dictionary<UIElement, bool>();
 
       public void DisableInteraction()
       {
@@ -377,26 +376,26 @@ namespace Dynamo.Elements
          //because it will need them later
          //if (this.GetType() != typeof(dynInstanceParameterMapper))
          //{
-            //size the height of the controller based on the 
-            //whichever is larger the inport or the outport list
-            this.topControl.Height = Math.Max(inPortData.Count, outPortData.Count) * 20 + 10; //spacing for inputs + title space + bottom space
-            //grid.Children.Remove(gridBottom);
-            //grid.Children.Remove(portNamesBottom);
+         //size the height of the controller based on the 
+         //whichever is larger the inport or the outport list
+         this.topControl.Height = Math.Max(inPortData.Count, 1) * 20 + 10; //spacing for inputs + title space + bottom space
+         //grid.Children.Remove(gridBottom);
+         //grid.Children.Remove(portNamesBottom);
 
-            Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
-            gridLeft.Margin = leftGridThick;
-            //Thickness leftNamesThick = new Thickness(portNamesLeft.Margin.Left, portNamesLeft.Margin.Top, portNamesLeft.Margin.Right, 5);
-            //portNamesLeft.Margin = leftNamesThick;
+         Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
+         gridLeft.Margin = leftGridThick;
+         //Thickness leftNamesThick = new Thickness(portNamesLeft.Margin.Left, portNamesLeft.Margin.Top, portNamesLeft.Margin.Right, 5);
+         //portNamesLeft.Margin = leftNamesThick;
 
-            Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
-            gridRight.Margin = rightGridThick;
-            //Thickness rightNamesThick = new Thickness(portNamesRight.Margin.Left, portNamesRight.Margin.Top, portNamesRight.Margin.Right, 5);
-            //portNamesRight.Margin = rightNamesThick;
+         Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
+         gridRight.Margin = rightGridThick;
+         //Thickness rightNamesThick = new Thickness(portNamesRight.Margin.Left, portNamesRight.Margin.Top, portNamesRight.Margin.Right, 5);
+         //portNamesRight.Margin = rightNamesThick;
 
-            Thickness inputGridThick = new Thickness(inputGrid.Margin.Left, inputGrid.Margin.Top, inputGrid.Margin.Right, 5);
-            inputGrid.Margin = inputGridThick;
+         Thickness inputGridThick = new Thickness(inputGrid.Margin.Left, inputGrid.Margin.Top, inputGrid.Margin.Right, 5);
+         inputGrid.Margin = inputGridThick;
 
-            grid.UpdateLayout();
+         grid.UpdateLayout();
          //}
          //else
          //{
@@ -468,22 +467,27 @@ namespace Dynamo.Elements
 
          count = 0;
          numRows = gridRight.RowDefinitions.Count;
-         foreach (object output in OutPortData)
+         if (numRows >= 0)
          {
-            if (count++ < numRows)
-               continue;
-
-            RowDefinition rd = new RowDefinition();
-            gridRight.RowDefinitions.Add(rd);
-
-            //RowDefinition nameRd = new RowDefinition();
-            //portNamesRight.RowDefinitions.Add(nameRd);
+            gridRight.RowDefinitions.Add(new RowDefinition());
          }
 
-         if (count < numRows)
-         {
-            gridRight.RowDefinitions.RemoveRange(count, numRows - count);
-         }
+         //foreach (object output in OutPortData)
+         //{
+         //   if (count++ < numRows)
+         //      continue;
+
+         //   RowDefinition rd = new RowDefinition();
+         //   gridRight.RowDefinitions.Add(rd);
+
+         //   //RowDefinition nameRd = new RowDefinition();
+         //   //portNamesRight.RowDefinitions.Add(nameRd);
+         //}
+
+         //if (count < numRows)
+         //{
+         //   gridRight.RowDefinitions.RemoveRange(count, numRows - count);
+         //}
 
          //foreach(object state in StatePortData)
          //{
@@ -568,14 +572,46 @@ namespace Dynamo.Elements
 
          //read the outputs list and create a number of 
          //output ports
-         int count = 0;
-         foreach (PortData pd in OutPortData)
-         {
-            //add a port for each output
-            //pass in the y center of the port
-            AddPort(pd.Object, PortType.OUTPUT, outPortData[count].NickName, count);
-            count++;
-         }
+         //int count = 0;
+         //foreach (PortData pd in OutPortData)
+         //{
+         //   //add a port for each output
+         //   //pass in the y center of the port
+         //   AddPort(pd.Object, PortType.OUTPUT, outPortData[count].NickName, count);
+         //   count++;
+         //}
+
+         //AddPort(OutPortData.Object, PortType.OUTPUT, OutPortData.NickName, 0);
+
+         dynPort p = new dynPort(0);
+
+         //create a text block for the name of the port
+         TextBlock tb = new TextBlock();
+
+         tb.VerticalAlignment = VerticalAlignment.Center;
+         tb.FontSize = 12;
+         tb.FontWeight = FontWeights.Normal;
+         tb.Foreground = new SolidColorBrush(Colors.Black);
+         tb.Text = OutPortData.NickName;
+
+         tb.HorizontalAlignment = HorizontalAlignment.Right;
+
+         p.PortType = PortType.OUTPUT;
+         outPort = p;
+         gridRight.Children.Add(p);
+         Grid.SetColumn(p, 1);
+         Grid.SetRow(p, 0);
+
+         //portNamesRight.Children.Add(tb);
+         gridRight.Children.Add(tb);
+         Grid.SetColumn(tb, 0);
+         Grid.SetRow(tb, 0);
+
+         p.Owner = this;
+
+         //register listeners on the port
+         p.PortConnected += new PortConnectedHandler(p_PortConnected);
+         p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
       }
 
       public void SetToolTips()
@@ -589,19 +625,14 @@ namespace Dynamo.Elements
             count++;
          }
 
-         count = 0;
-         foreach (dynPort p in outPorts)
-         {
-            p.toolTipText.Text = p.Owner.OutPortData[count].ToolTipString;
-            count++;
-         }
+         outPort.toolTipText.Text = outPort.Owner.OutPortData.ToolTipString;
 
-         count = 0;
-         foreach (dynPort p in statePorts)
-         {
-            p.toolTipText.Text = p.Owner.StatePortData[count].ToolTipString;
-            count++;
-         }
+         //count = 0;
+         //foreach (dynPort p in statePorts)
+         //{
+         //   p.toolTipText.Text = p.Owner.StatePortData[count].ToolTipString;
+         //   count++;
+         //}
       }
 
       /// <summary>
@@ -654,38 +685,38 @@ namespace Dynamo.Elements
                p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
          }
-         else if (portType == PortType.OUTPUT)
-         {
-            dynPort p = new dynPort(index);
+         //else if (portType == PortType.OUTPUT)
+         //{
+         //   dynPort p = new dynPort(index);
 
-            //create a text block for the name of the port
-            TextBlock tb = new TextBlock();
+         //   //create a text block for the name of the port
+         //   TextBlock tb = new TextBlock();
 
-            tb.VerticalAlignment = VerticalAlignment.Center;
-            tb.FontSize = 12;
-            tb.FontWeight = FontWeights.Normal;
-            tb.Foreground = new SolidColorBrush(Colors.Black);
-            tb.Text = name;
+         //   tb.VerticalAlignment = VerticalAlignment.Center;
+         //   tb.FontSize = 12;
+         //   tb.FontWeight = FontWeights.Normal;
+         //   tb.Foreground = new SolidColorBrush(Colors.Black);
+         //   tb.Text = name;
 
-            tb.HorizontalAlignment = HorizontalAlignment.Right;
+         //   tb.HorizontalAlignment = HorizontalAlignment.Right;
 
-            p.PortType = PortType.OUTPUT;
-            outPorts.Add(p);
-            gridRight.Children.Add(p);
-            Grid.SetColumn(p, 1);
-            Grid.SetRow(p, index);
+         //   p.PortType = PortType.OUTPUT;
+         //   outPort = p;
+         //   gridRight.Children.Add(p);
+         //   Grid.SetColumn(p, 1);
+         //   Grid.SetRow(p, index);
 
-            //portNamesRight.Children.Add(tb);
-            gridRight.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, index);
+         //   //portNamesRight.Children.Add(tb);
+         //   gridRight.Children.Add(tb);
+         //   Grid.SetColumn(tb, 0);
+         //   Grid.SetRow(tb, index);
 
-            p.Owner = this;
+         //   p.Owner = this;
 
-            //register listeners on the port
-            p.PortConnected += new PortConnectedHandler(p_PortConnected);
-            p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
-         }
+         //   //register listeners on the port
+         //   p.PortConnected += new PortConnectedHandler(p_PortConnected);
+         //   p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+         //}
          //else if (portType == PortType.STATE)
          //{
          //    tb.HorizontalAlignment = HorizontalAlignment.Center;
@@ -1376,28 +1407,22 @@ namespace Dynamo.Elements
 
       public void UpdateOutputs()
       {
-         foreach (dynPort p in outPorts)
+         //send the messages without updating
+         foreach (dynConnector c in outPort.Connectors)
          {
-            //send the messages without updating
-            foreach (dynConnector c in p.Connectors)
-            {
-               c.SendMessage();
-            }
+            c.SendMessage();
          }
 
          //aggregate the unique output nodes
          //this avoids multiple updates of the same node
          //if a node has the same node connected to several of its outputs
          var uniqueNodes = new HashSet<dynElement>();
-         foreach (dynPort p in outPorts)
+         foreach (dynConnector c in outPort.Connectors)
          {
-            foreach (dynConnector c in p.Connectors)
-            {
-               //if (!uniqueNodes.Contains(c.End.Owner))
-               //{
-               uniqueNodes.Add(c.End.Owner);
-               //}
-            }
+            //if (!uniqueNodes.Contains(c.End.Owner))
+            //{
+            uniqueNodes.Add(c.End.Owner);
+            //}
          }
 
          //update the unique nodes
@@ -1405,43 +1430,34 @@ namespace Dynamo.Elements
          {
             el.Update();
          }
-
-         uniqueNodes = null;
       }
 
       public void FindDownstreamElements(ref List<dynElement> downStream)
       {
-         foreach (dynPort p in outPorts)
+         foreach (dynConnector c in outPort.Connectors)
          {
-            foreach (dynConnector c in p.Connectors)
+            if (!downStream.Contains(c.End.Owner))
             {
-               if (!downStream.Contains(c.End.Owner))
-               {
-                  //don't add it if it's already there
-                  downStream.Add(c.End.Owner);
-               }
-
-               //set a flag on the element to say 
-               //that it has already processed its downstream geometry
-               c.End.Owner.ElementsHaveBeenDeleted = true;
-               c.End.Owner.FindDownstreamElements(ref downStream);
+               //don't add it if it's already there
+               downStream.Add(c.End.Owner);
             }
+
+            //set a flag on the element to say 
+            //that it has already processed its downstream geometry
+            c.End.Owner.ElementsHaveBeenDeleted = true;
+            c.End.Owner.FindDownstreamElements(ref downStream);
          }
       }
 
       public void ClearOutputs()
       {
-         foreach (dynPort p in outPorts)
+         foreach (dynConnector c in outPort.Connectors)
          {
-            foreach (dynConnector c in p.Connectors)
-            {
-               c.Kill();
-            }
+            c.Kill();
          }
 
-         outPorts.Clear();
-         outPortData.Clear();
-
+         outPort = null;
+         outPortData = null;
       }
 
       public bool CheckInputs()

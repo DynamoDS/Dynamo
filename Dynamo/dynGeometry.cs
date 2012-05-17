@@ -31,7 +31,7 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData(null, "Y", "Y", typeof(double)));
          InPortData.Add(new PortData(null, "Z", "Z", typeof(double)));
 
-         OutPortData.Add(new PortData(null, "xyz", "XYZ", typeof(XYZ)));
+         OutPortData = new PortData(null, "xyz", "XYZ", typeof(XYZ));
 
          base.RegisterInputsAndOutputs();
       }
@@ -82,7 +82,7 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData(null, "normal", "Normal Point (XYZ)", typeof(XYZ)));
          InPortData.Add(new PortData(null, "origin", "Origin Point (XYZ)", typeof(XYZ)));
-         OutPortData.Add(new PortData(null, "P", "Plane", typeof(Plane)));
+         OutPortData = new PortData(null, "P", "Plane", typeof(Plane));
          //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();
@@ -168,7 +168,7 @@ namespace Dynamo.Elements
       public dynSketchPlane()
       {
          InPortData.Add(new PortData(null, "plane", "The plane in which to define the sketch.", typeof(dynPlane)));
-         OutPortData.Add(new PortData(null, "SP", "SketchPlane", typeof(dynSketchPlane)));
+         OutPortData = new PortData(null, "SP", "SketchPlane", typeof(dynSketchPlane));
          //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();
@@ -241,7 +241,7 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData(null, "start", "Start XYZ", typeof(XYZ)));
          InPortData.Add(new PortData(null, "end", "End XYZ", typeof(XYZ)));
-         OutPortData.Add(new PortData(null, "line", "Line", typeof(Line)));
+         OutPortData = new PortData(null, "line", "Line", typeof(Line));
 
          base.RegisterInputsAndOutputs();
       }

@@ -24,7 +24,7 @@ namespace Dynamo.Elements
       public dynTransaction()
       {
          InPortData.Add(new PortData(null, "expr", "Expression to run in a transaction.", typeof(object)));
-         OutPortData.Add(new PortData(null, "result", "Result of the expression.", typeof(object)));
+         OutPortData = new PortData(null, "result", "Result of the expression.", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }

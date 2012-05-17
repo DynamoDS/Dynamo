@@ -134,7 +134,7 @@ namespace Dynamo.Connectors
          //if (start != null && end != null && start != end)
          //{
          //in the start element, find the out port at the startIndex
-         pStart = start.OutPorts[startIndex];
+         pStart = start.OutPort;
 
          dynPort endPort = null;
 
@@ -212,7 +212,7 @@ namespace Dynamo.Connectors
             if (pEnd.Owner != null)
             {
                //set the end equal to the start
-               pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData[pStart.Index].Object;
+               pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
 
                //tell the end to update
                pEnd.Owner.Update();
@@ -229,9 +229,9 @@ namespace Dynamo.Connectors
             if (pEnd.Owner != null)
             {
                if (pEnd.PortType == PortType.INPUT)
-                  pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData[pStart.Index].Object;
+                  pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
                else if (pEnd.PortType == PortType.STATE)
-                  pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData[pStart.Index].Object;
+                  pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
 
                //tell the end port's ownder to update
                //pEnd.Owner.Update();
@@ -305,7 +305,7 @@ namespace Dynamo.Connectors
          {
             //set the start and end values to equal so this 
             //starts evaulating immediately
-            pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData[pStart.Index].Object;
+            pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
             p.Connect(this);
             pEnd.Update();
             pEnd.Owner.Update();

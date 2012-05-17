@@ -26,6 +26,9 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using TextBox = System.Windows.Controls.TextBox;
 
+using Expression = Dynamo.FScheme.Expression;
+using Microsoft.FSharp.Collections;
+
 namespace Dynamo.Elements
 {
    [ElementName("Family Type Selector")]
@@ -55,7 +58,7 @@ namespace Dynamo.Elements
 
          PopulateComboBox();
 
-         OutPortData.Add(new PortData(null, "", "Family type", typeof(dynFamilyTypeSelector)));
+         OutPortData = new PortData(null, "", "Family type", typeof(dynFamilyTypeSelector));
          base.RegisterInputsAndOutputs();
       }
 
@@ -85,14 +88,14 @@ namespace Dynamo.Elements
          }
       }
 
-      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
          ComboBoxItem cbi = combo.SelectedItem as ComboBoxItem;
 
          if (cbi != null)
          {
             var f = (FamilySymbol)comboHash[cbi.Content];
-            return FScheme.Expression.NewContainer(f);
+            return Expression.NewContainer(f);
          }
 
          throw new Exception("Nothing selected!");
@@ -118,7 +121,7 @@ namespace Dynamo.Elements
    //      this.topControl.Width = 300;
 
    //      InPortData.Add(new PortData(null, "fi", "The family instance(s) to map.", typeof(dynElement)));
-   //      OutPortData.Add(new PortData(null, "", "A map of parameter values on the instance.", typeof(dynInstanceParameterMapper)));
+   //      OutPortData = new PortData(null, "", "A map of parameter values on the instance.", typeof(dynInstanceParameterMapper)));
    //      OutPortData[0].Object = parameterMap;
 
    //      //add a button to the inputGrid on the dynElement
@@ -403,10 +406,7 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData(null, "xyz", "xyz", typeof(object)));
          InPortData.Add(new PortData(null, "typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
 
-         //StatePortData.Add(new PortData(null, "map", "Instance parameter map.", typeof(dynInstanceParameterMapper)));
-
-         OutPortData.Add(new PortData(null, "fi", "Family instances created by this operation.", typeof(FamilyInstance)));
-         //OutPortData[0].Object = this.Tree;
+         OutPortData = new PortData(null, "fi", "Family instances created by this operation.", typeof(FamilyInstance));
 
          base.RegisterInputsAndOutputs();
       }
@@ -569,7 +569,7 @@ namespace Dynamo.Elements
 
       public dynFamilyInstanceCreatorSelection()
       {
-         OutPortData.Add(new PortData(null, "fi", "Family instances created by this operation.", typeof(FamilyInstance)));
+         OutPortData = new PortData(null, "fi", "Family instances created by this operation.", typeof(FamilyInstance));
 
          //add a button to the inputGrid on the dynElement
          familyInstanceButt = new System.Windows.Controls.Button();
@@ -713,7 +713,7 @@ namespace Dynamo.Elements
    //      InPortData.Add(new PortData(null, "pt", "Reference point.", typeof(object)));
    //      InPortData.Add(new PortData(null, "typ", "The Family Type to use for instantiation.", typeof(object)));
 
-   //      OutPortData.Add(new PortData(null, "fi", "Family instance created by this operation.", typeof(object)));
+   //      OutPortData = new PortData(null, "fi", "Family instance created by this operation.", typeof(object)));
 
    //      base.RegisterInputsAndOutputs();
    //   }
@@ -905,7 +905,7 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData(null, "param", "Parameter to modify (string).", typeof(object)));
          InPortData.Add(new PortData(null, "value", "Value to set the parameter to.", typeof(object)));
 
-         OutPortData.Add(new PortData(null, "fi", "Modified family instance.", typeof(object)));
+         OutPortData = new PortData(null, "fi", "Modified family instance.", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
