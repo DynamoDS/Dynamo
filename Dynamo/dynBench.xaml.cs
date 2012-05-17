@@ -854,7 +854,7 @@ namespace Dynamo.Controls
 
          if (!string.IsNullOrEmpty(xmlPath))
          {
-            if (!SaveWorkspace(xmlPath, new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY)))
+            if (!SaveWorkspace(xmlPath, new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY), this.currentFunctionName))
             {
                //MessageBox.Show("Workbench could not be saved.");
                Log("Workbench could not be saved.");

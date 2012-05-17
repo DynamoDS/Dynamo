@@ -387,8 +387,8 @@ namespace Dynamo.Elements
          //Thickness leftNamesThick = new Thickness(portNamesLeft.Margin.Left, portNamesLeft.Margin.Top, portNamesLeft.Margin.Right, 5);
          //portNamesLeft.Margin = leftNamesThick;
 
-         Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
-         gridRight.Margin = rightGridThick;
+         //Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
+         //gridRight.Margin = rightGridThick;
          //Thickness rightNamesThick = new Thickness(portNamesRight.Margin.Left, portNamesRight.Margin.Top, portNamesRight.Margin.Right, 5);
          //portNamesRight.Margin = rightNamesThick;
 
@@ -467,7 +467,7 @@ namespace Dynamo.Elements
 
          count = 0;
          numRows = gridRight.RowDefinitions.Count;
-         if (numRows >= 0)
+         if (numRows == 0)
          {
             gridRight.RowDefinitions.Add(new RowDefinition());
          }
@@ -484,10 +484,10 @@ namespace Dynamo.Elements
          //   //portNamesRight.RowDefinitions.Add(nameRd);
          //}
 
-         //if (count < numRows)
-         //{
-         //   gridRight.RowDefinitions.RemoveRange(count, numRows - count);
-         //}
+         if (numRows > 1)
+         {
+            gridRight.RowDefinitions.RemoveRange(count, numRows - 1);
+         }
 
          //foreach(object state in StatePortData)
          //{
