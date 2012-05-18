@@ -200,6 +200,18 @@ namespace Dynamo.Elements
          return this.InPortData.Count;
       }
 
+      private int lastEvaledAmt;
+      public override bool IsDirty
+      {
+         get
+         {
+            return lastEvaledAmt != this.InPortData.Count || base.IsDirty;
+         }
+         set
+         {
+            base.IsDirty = value;
+         }
+      }
 
       protected virtual void RemoveInput(object sender, RoutedEventArgs args)
       {
@@ -247,6 +259,11 @@ namespace Dynamo.Elements
             }
          }
          base.ReregisterInputs();
+      }
+
+      protected override void OnEvaluate()
+      {
+         this.lastEvaledAmt = this.InPortData.Count;
       }
    }
 
@@ -730,8 +747,24 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         double theta = (args[0] as Expression.Number).Item;
-         return Expression.NewNumber(Math.Sin(theta));
+         var input = args[0];
+
+         if (input.IsList)
+         {
+            return Expression.NewList(
+               FSchemeInterop.Utils.convertSequence(
+                  ((Expression.List)input).Item.Select(
+                     x =>
+                        Expression.NewNumber(Math.Sin(((Expression.Number)x).Item))
+                  )
+               )
+            );
+         }
+         else
+         {
+            double theta = ((Expression.Number)input).Item;
+            return Expression.NewNumber(Math.Sin(theta));
+         }
       }
    }
 
@@ -751,8 +784,24 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         double theta = (args[0] as Expression.Number).Item;
-         return Expression.NewNumber(Math.Cos(theta));
+         var input = args[0];
+
+         if (input.IsList)
+         {
+            return Expression.NewList(
+               FSchemeInterop.Utils.convertSequence(
+                  ((Expression.List)input).Item.Select(
+                     x => 
+                        Expression.NewNumber(Math.Cos(((Expression.Number)x).Item))
+                  )
+               )
+            );
+         }
+         else
+         {
+            double theta = ((Expression.Number)input).Item;
+            return Expression.NewNumber(Math.Cos(theta));
+         }
       }
    }
 
@@ -1369,6 +1418,20 @@ namespace Dynamo.Elements
          };
       }
 
+      public override bool IsDirty
+      {
+         get
+         {
+            var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+            bool dirtyInternals = ws.elements.Any(e => e.IsDirty);
+            return dirtyInternals || base.IsDirty;
+         }
+         set
+         {
+            base.IsDirty = value;
+         }
+      }
+
       public void SetInputs(IEnumerable<string> inputs)
       {
          int i = 0;
@@ -1479,6 +1542,7 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "0.0";
+         tb.TextChanged += delegate { this.IsDirty = true; };
          //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
          //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
@@ -2050,6 +2114,7 @@ namespace Dynamo.Elements
          tb_slider.Minimum = 0.0;
          tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
          tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
+         tb_slider.ValueChanged += delegate { this.IsDirty = true; };
          //tb_slider.ValueChanged += new System.Windows.RoutedPropertyChangedEventHandler<double>(tb_slider_ValueChanged);
          //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
@@ -2195,20 +2260,14 @@ namespace Dynamo.Elements
 
       void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
       {
-         //OutPortData[0].Object = false;
-
          this.currentValue = false;
-
-         OnDynElementReadyToBuild(EventArgs.Empty);
+         this.IsDirty = true;
       }
 
       void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
       {
-         //OutPortData[0].Object = true;
-
          this.currentValue = true;
-
-         OnDynElementReadyToBuild(EventArgs.Empty);
+         this.IsDirty = true;
       }
    }
 

@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
@@ -62,12 +63,34 @@ namespace Dynamo.Elements
 
       public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
       {
-         XYZ xyz = (XYZ)((FScheme.Expression.Container)args[0]).Item;
+         var input = args[0];
 
-         //return FScheme.Expression.NewContainer(promise);
-         return FScheme.Expression.NewContainer(
-            dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(xyz)
-         );
+         if (input.IsList)
+         {
+            var xyzList = ((FScheme.Expression.List)input).Item;
+
+            return FScheme.Expression.NewList(
+               FSchemeInterop.Utils.convertSequence(
+                  xyzList.Select(
+                     x =>
+                        FScheme.Expression.NewContainer(
+                           this.UIDocument.Document.FamilyCreate.NewReferencePoint(
+                              (XYZ)((FScheme.Expression.Container)x).Item
+                           )
+                        )
+                  )
+               )
+            );
+         }
+         else
+         {
+            XYZ xyz = (XYZ)((FScheme.Expression.Container)input).Item;
+
+            //return FScheme.Expression.NewContainer(promise);
+            return FScheme.Expression.NewContainer(
+               this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz)
+            );
+         }
       }
 
       //public override void Draw()

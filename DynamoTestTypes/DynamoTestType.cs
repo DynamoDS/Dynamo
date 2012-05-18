@@ -54,14 +54,14 @@ namespace Dynamo.Elements
             InPortData.Add(new PortData(null, "C", "The third port", typeof(dynElement)));
 
             //The ouput data looks very similar
-            OutPortData = new PortData(null, "me", "The result of this node.", typeof(dynElement)));
+            OutPortData = new PortData(null, "me", "The result of this node.", typeof(dynElement));
             
             //make the first output port's object the tree
             //from this object. this isn't required yet by the interface, but it's
             //nice if you want the results of this node to be
             //a tree.
             //Don't worry about creating the tree, that's done in the base class.
-            OutPortData[0].Object = this.Tree;
+            //OutPortData[0].Object = this.Tree;
 
             //tell the base type to setup for
             //the number of inputs and outputs

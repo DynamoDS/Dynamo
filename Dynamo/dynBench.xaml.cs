@@ -65,7 +65,7 @@ namespace Dynamo.Controls
       string logText;
 
       dynWorkspace homeSpace;
-      Dictionary<string, dynWorkspace> dynFunctionDict = new Dictionary<string, dynWorkspace>();
+      public Dictionary<string, dynWorkspace> dynFunctionDict = new Dictionary<string, dynWorkspace>();
 
       public dynToolFinder toolFinder;
       public event PropertyChangedEventHandler PropertyChanged;
@@ -1417,6 +1417,9 @@ namespace Dynamo.Controls
 
                el.LoadElement(elNode);
 
+               if (this.currentFunctionName == null)
+                  el.SaveResult = true;
+
                //read the sub elements
                //set any numeric values 
                //foreach (XmlNode subNode in elNode.ChildNodes)
@@ -1949,128 +1952,121 @@ namespace Dynamo.Controls
             this.InIdleThread = true;
          }
 
-         dynElement topMost = null;
+         BackgroundWorker worker = new BackgroundWorker();
 
-         foreach (dynElement el in this.homeSpace.elements)
+         worker.DoWork += delegate(object s, DoWorkEventArgs args)
          {
-            if (!el.OutPort.Connectors.Any())
+            foreach (dynElement topMost in this.homeSpace.elements.Where(x => !x.OutPort.Connectors.Any()))
             {
-               topMost = el;
-
-               BackgroundWorker worker = new BackgroundWorker();
-
-               worker.DoWork += delegate(object s, DoWorkEventArgs args)
+               //TODO: Flesh out error handling
+               try
                {
-                  //TODO: Flesh out error handling
-                  try
+                  FScheme.Expression runningExpression = topMost.Build().Compile();
+
+                  string exp = FScheme.print(runningExpression);
+
+                  this.Dispatcher.Invoke(new Action(
+                     () => Log("> " + exp)
+                  ));
+
+                  IdlePromiseDelegate<FScheme.Expression> run = delegate
                   {
-                     FScheme.Expression runningExpression = topMost.Build().Compile();
-
-                     string exp = FScheme.print(runningExpression);
-
-                     this.Dispatcher.Invoke(new Action(
-                        () => Log("> " + exp)
-                     ));
-
-                     IdlePromiseDelegate<FScheme.Expression> run = delegate
+                     try
                      {
-                        try
+                        var expr = this.environment.Evaluate(runningExpression);
+
+                        this.EndTransaction();
+
+                        return expr;
+                     }
+                     catch (Exception ex)
+                     {
+                        if (ex.Message.Length > 0)
                         {
-                           var expr = this.environment.Evaluate(runningExpression);
-
-                           this.EndTransaction();
-
-                           return expr;
+                           this.Dispatcher.Invoke(new Action(
+                              () => Log("ERROR: " + ex.Message)
+                           ));
                         }
-                        catch (Exception ex)
+
+                        if (_trans != null)
                         {
-                           if (ex.Message.Length > 0)
-                           {
-                              this.Dispatcher.Invoke(new Action(
-                                 () => Log("ERROR: " + ex.Message)
-                              ));
-                           }
-
-                           if (_trans != null)
-                           {
-                              _trans.RollBack();
-                              _trans = null;
-                           }
-
-                           return null;
+                           _trans.RollBack();
+                           _trans = null;
                         }
+
+                        return null;
+                     }
+                  };
+
+                  FScheme.Expression result;
+
+                  if (!debug)
+                  {
+                     Func<dynElement, bool> allIdlePred = delegate(dynElement e)
+                     {
+                        object[] attribs = e.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
+                        if (attribs.Length > 0)
+                        {
+                           return !(attribs[0] as RequiresTransactionAttribute).RequiresTransaction;
+                        }
+
+                        return true;
                      };
 
-                     FScheme.Expression result;
+                     bool allInIdleThread = this.AllElements.Any(x => x is dynTransaction)
+                                            || this.AllElements.All(allIdlePred);
 
-                     if (!debug)
+                     if (allInIdleThread)
                      {
-                        Func<dynElement, bool> allIdlePred = delegate(dynElement e)
-                        {
-                           object[] attribs = e.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
-                           if (attribs.Length > 0)
-                           {
-                              return !(attribs[0] as RequiresTransactionAttribute).RequiresTransaction;
-                           }
-
-                           return true;
-                        };
-
-                        bool allInIdleThread = this.AllElements.Any(x => x is dynTransaction)
-                                               || this.AllElements.All(allIdlePred);
-
-                        if (allInIdleThread)
-                        {
-                           this.TransMode = TransactionMode.Manual;
-                           this.InIdleThread = false;
-                           result = run();
-                        }
-                        else
-                        {
-                           this.TransMode = TransactionMode.Automatic;
-                           this.InIdleThread = true;
-                           result = IdlePromise<FScheme.Expression>.ExecuteOnIdle(run);
-                        }
+                        this.TransMode = TransactionMode.Manual;
+                        this.InIdleThread = false;
+                        result = run();
                      }
                      else
                      {
-                        this.Dispatcher.Invoke(new Action(
-                           () => Log("Running expression in debug.")
-                        ));
-                        result = run();
+                        this.TransMode = TransactionMode.Automatic;
+                        this.InIdleThread = true;
+                        result = IdlePromise<FScheme.Expression>.ExecuteOnIdle(run);
                      }
-
-                     if (result != null)
-                     {
-                        this.Dispatcher.Invoke(new Action(
-                           () => Log(FScheme.print(result))
-                        ));
-                     }
-
                   }
-                  catch (Exception ex)
+                  else
                   {
-                     if (ex.Message.Length > 0)
-                     {
-                        this.Dispatcher.Invoke(new Action(
-                           () => Log("ERROR: " + ex.Message)
-                        ));
-                     }
-
-                     _trans = null;
+                     this.Dispatcher.Invoke(new Action(
+                        () => Log("Running expression in debug.")
+                     ));
+                     result = run();
                   }
-                  finally
+
+                  if (result != null)
                   {
-                     this.runButton.Dispatcher.Invoke(new Action(
-                        delegate { this.runButton.IsEnabled = true; }
+                     this.Dispatcher.Invoke(new Action(
+                        () => Log(FScheme.print(result))
                      ));
                   }
-               };
 
-               this.runButton.IsEnabled = false;
-               worker.RunWorkerAsync();
+               }
+               catch (Exception ex)
+               {
+                  if (ex.Message.Length > 0)
+                  {
+                     this.Dispatcher.Invoke(new Action(
+                        () => Log("ERROR: " + ex.Message)
+                     ));
+                  }
+
+                  _trans = null;
+               }
+               finally
+               {
+                  this.runButton.Dispatcher.Invoke(new Action(
+                     delegate { this.runButton.IsEnabled = true; }
+                  ));
+               }
             }
-         }
+         };
+
+         this.runButton.IsEnabled = false;
+         worker.RunWorkerAsync();
       }
 
       private void Run_Click(object sender, RoutedEventArgs e)
@@ -2398,12 +2394,15 @@ namespace Dynamo.Controls
 
                node.SetInputs(variableNames);
                el.ReregisterInputs();
+               //el.IsDirty = true;
             }
          }
 
-         //---------------//
+         //Step 4: Call OnSave for all saved elements
+         foreach (var el in funcWorkspace.elements)
+            el.OnSave();
 
-         //Step 4: Update new add menu
+         //Step 5: Update new add menu
          var addItem = (dynFunction)this.addMenuItemsDictNew[funcName];
          addItem.SetInputs(variableNames);
          addItem.ReregisterInputs();
@@ -2778,6 +2777,9 @@ namespace Dynamo.Controls
             Canvas.SetTop(el, Math.Max(pos.Y - dragOffset.Y, 0));
 
             el.EnableInteraction();
+
+            if (this.currentFunctionName == null)
+               el.SaveResult = true;
          }
 
          dragOffset = new Point();

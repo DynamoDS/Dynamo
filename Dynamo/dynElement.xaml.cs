@@ -88,6 +88,12 @@ namespace Dynamo.Elements
       public delegate void SetStateDelegate(dynElement el, ElementState state);
 
       #region public members
+      public dynWorkspace WorkSpace
+      {
+         get;
+         internal set;
+      }
+
       public dynElement TopControl
       {
          get { return this.topControl; }
@@ -735,6 +741,22 @@ namespace Dynamo.Elements
 
       }
 
+      Dictionary<dynPort, dynElement> previousEvalPortMappings = new Dictionary<dynPort, dynElement>();
+
+      void CheckPortsForRecalc()
+      {
+         this.IsDirty = this.InPorts.All(
+            delegate(dynPort p)
+            {
+               dynElement oldIn;
+               var cons = p.Connectors;
+               return !this.previousEvalPortMappings.TryGetValue(p, out oldIn) 
+                  || (oldIn == null && !cons.Any())
+                  || (cons.Any() && oldIn == p.Connectors[0].Start.Owner);
+            }
+         );
+      }
+
       /// <summary>
       /// When a port is connected, register a listener for the dynElementUpdated event
       /// and tell the object to build
@@ -743,11 +765,19 @@ namespace Dynamo.Elements
       /// <param name="e"></param>
       void p_PortConnected(object sender, EventArgs e)
       {
+         var port = (dynPort)sender;
+         if (port.PortType == PortType.INPUT)
+            CheckPortsForRecalc();
+
          ValidateConnections();
       }
 
       void p_PortDisconnected(object sender, EventArgs e)
       {
+         var port = (dynPort)sender;
+         if (port.PortType == PortType.INPUT)
+            CheckPortsForRecalc();
+
          Destroy();
          ValidateConnections();
       }
@@ -802,42 +832,30 @@ namespace Dynamo.Elements
 
       }
 
-      /**
-       * Notes:
-       *    -Error Handling:
-       *       -Transactions for an element are stored in a Transaction Stack. When an
-       *        error occurs during the call chain, all transactions on the stack are
-       *        rolled back.
-       *       -For indefinite/looping constructs, this will require some form of control
-       *        structure for when to clear the stack (basically, save the current state
-       *        as what will be restored in the case of an error).
-       *          -For now (at least), have the transaction stack clear at the end of a
-       *           loop. Obviously, for non-looping constructs, it can clear then.
-       *          -We will have to provide manual control over this for user-made loops,
-       *           or we will have to scrap the stack idea completely.
-       *             -Will require some way of using (begin ...) for seide-effects... 
-       */
+      private bool _isDirty = true;
 
-      //private bool _isDirty;
+      ///<summary>
+      ///Does this element need to be regenerated?
+      ///This value only changes to dirty when the input connections have been changed.
+      ///</summary>
+      public virtual bool IsDirty
+      {
+         get
+         {
+            return this._isDirty
+               || this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
+         }
+         set
+         {
+            this._isDirty = value;
+            //if (value)
+            //   this.WorkSpace.Modified(); //TODO: Implement
+         }
+      }
 
-      /// <summary>
-      /// Does this element need to be regenerated?
-      /// This value only changes to dirty when the input connections have been changed.
-      /// </summary>
-      //public bool IsDirty
-      //{
-      //   get
-      //   {
-      //      return this._isDirty
-      //         || this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
-      //   }
-      //   set
-      //   {
-      //      this._isDirty = value;
-      //   }
-      //}
+      private Expression oldValue;
 
-      //private Expression oldValue;
+      public bool SaveResult = false;
 
 
       protected internal virtual INode Build()
@@ -847,22 +865,51 @@ namespace Dynamo.Elements
 
       protected internal virtual ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
-         return new ExternalFunctionNode(
-            new FScheme.ExternFunc(
-            //delegate (FSharpList<Expression> args)
-            //{
-            //   if (this.IsDirty || this.oldValue == null)
-            //   {
-            //      this.IsDirty = false;
-            //      this.oldValue = this.eval(args);
-            //   }
-            //   return this.oldValue;
-            //}
-               this.eval
-            ),
-            portNames
-         );
+         if (!this.SaveResult)
+         {
+            return new ExternalFunctionNode(
+               new FScheme.ExternFunc(this.eval),
+               portNames
+            );
+         }
+         else
+         {
+            return new ExternalMacroNode(
+               new ExternMacro(
+                  this.evalIfDirty
+               ),
+               portNames
+            );
+         }
+      }
 
+
+      protected virtual void OnEvaluate() { }
+      protected internal virtual void OnSave() 
+      {
+         //Save all of the connection states, so we can check if this is dirty
+         foreach (dynPort p in this.InPorts)
+         {
+            this.previousEvalPortMappings[p] = p.Connectors.Any()
+               ? p.Connectors[0].Start.Owner
+               : null;
+         }
+      }
+
+      private Expression evalIfDirty(FSharpList<Expression> args, ExecutionEnvironment environment)
+      {
+         if (this.IsDirty || this.oldValue == null)
+         {
+            this.IsDirty = false;
+            this.oldValue = this.eval(
+               Utils.convertSequence(
+                  args.Select(
+                     input => environment.Evaluate(input)
+                  )
+               )
+            );
+         }
+         return this.oldValue;
       }
 
 
@@ -891,11 +938,24 @@ namespace Dynamo.Elements
       {
          var bench = dynElementSettings.SharedInstance.Bench;
 
+         if (this.SaveResult)
+         {
+            //Store the port mappings for this evaluate. We will compare later to see if it is dirty;
+            foreach (dynPort p in this.InPorts)
+            {
+               this.previousEvalPortMappings[p] = p.Connectors.Any()
+                  ? p.Connectors[0].Start.Owner
+                  : null;
+            }
+         }
+
          object[] attribs = this.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
          bool useTransaction = attribs.Length > 0 && ((RequiresTransactionAttribute)attribs[0]).RequiresTransaction;
          bool debug = bench.RunInDebug;
 
          Expression result = null;
+
+         this.OnEvaluate();
 
          if (useTransaction)
          {

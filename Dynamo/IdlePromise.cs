@@ -96,5 +96,16 @@ namespace Dynamo.Utilities
       {
          return new IdlePromise<T>(p).RedeemPromise();
       }
+
+      public static void ExecuteOnIdle(Action p)
+      {
+         new IdlePromise<bool>(new IdlePromiseDelegate<bool>(
+            delegate
+            {
+               p();
+               return true;
+            }
+         )).RedeemPromise();
+      }
    }
 }

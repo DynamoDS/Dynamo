@@ -29,6 +29,8 @@ using TextBox = System.Windows.Controls.TextBox;
 using Expression = Dynamo.FScheme.Expression;
 using Microsoft.FSharp.Collections;
 
+using System.Linq;
+
 namespace Dynamo.Elements
 {
    [ElementName("Family Type Selector")]
@@ -411,15 +413,11 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      private Expression makeFamilyInstance(object location, FamilySymbol fs)
       {
-         object arg = ((FScheme.Expression.Container)args[0]).Item;
-
-         XYZ pos = arg is ReferencePoint
-            ? ((ReferencePoint)arg).Position
-            : (XYZ)arg;
-
-         FamilySymbol fs = (FamilySymbol)((FScheme.Expression.Container)args[1]).Item;
+         XYZ pos = location is ReferencePoint
+            ? ((ReferencePoint)location).Position
+            : (XYZ)location;
 
          FamilyInstance fi = this.UIDocument.Document.IsFamilyDocument
             ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
@@ -429,7 +427,37 @@ namespace Dynamo.Elements
                pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
             );
 
-         return FScheme.Expression.NewContainer(fi);
+         return Expression.NewContainer(fi);
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         FamilySymbol fs = (FamilySymbol)((Expression.Container)args[1]).Item;
+         var input = args[0];
+         
+         if (input.IsList)
+         {
+            var locList = ((Expression.List)input).Item;
+
+            return Expression.NewList(
+               FSchemeInterop.Utils.convertSequence(
+                  locList.Select(
+                     x =>
+                        this.makeFamilyInstance(
+                           ((Expression.Container)x).Item,
+                           fs
+                        )
+                  )
+               )
+            );
+         }
+         else
+         {
+            return this.makeFamilyInstance(
+               ((Expression.Container)input).Item,
+               fs
+            );
+         }
       }
 
       //public override void Draw()
@@ -910,30 +938,56 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      private static Expression setParam(FamilyInstance fi, string paramName, Expression valueExpr)
       {
-         var fi = (FamilyInstance)((FScheme.Expression.Container)args[0]).Item;
-         var paramName = ((FScheme.Expression.String)args[1]).Item;
-         var valueExpr = args[2];
-
          var p = fi.get_Parameter(paramName);
          if (p != null)
          {
             if (p.StorageType == StorageType.Double)
             {
-               p.Set(((FScheme.Expression.Number)valueExpr).Item);
+               p.Set(((Expression.Number)valueExpr).Item);
             }
             else if (p.StorageType == StorageType.Integer)
             {
-               p.Set((int)((FScheme.Expression.Number)valueExpr).Item);
+               p.Set((int)((Expression.Number)valueExpr).Item);
             }
             else if (p.StorageType == StorageType.String)
             {
-               p.Set(((FScheme.Expression.String)valueExpr).Item);
+               p.Set(((Expression.String)valueExpr).Item);
             }
-            return FScheme.Expression.NewContainer(fi);
+            return Expression.NewContainer(fi);
          }
          throw new Exception("Parameter \"" + paramName + "\" was not found!");
+      }
+
+      public override Expression Evaluate(FSharpList<FScheme.Expression> args)
+      {
+         var paramName = ((Expression.String)args[1]).Item;
+         var valueExpr = args[2];
+
+         var input = args[0];
+         if (input.IsList)
+         {
+            var fiList = ((Expression.List)input).Item;
+            return Expression.NewList(
+               FSchemeInterop.Utils.convertSequence(
+                  fiList.Select(
+                     x =>
+                        setParam(
+                           (FamilyInstance)((Expression.Container)x).Item,
+                           paramName,
+                           valueExpr
+                        )
+                  )
+               )
+            );
+         }
+         else
+         {
+            var fi = (FamilyInstance)((Expression.Container)input).Item;
+
+            return setParam(fi, paramName, valueExpr);
+         }
       }
    }
 }
