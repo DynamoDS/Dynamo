@@ -544,6 +544,17 @@ namespace Dynamo.Elements
 
       private static Random random = new Random();
 
+      public override bool IsDirty
+      {
+         get
+         {
+            return true;
+         }
+         set
+         {
+         }
+      }
+
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          return Expression.NewNumber(random.NextDouble());
@@ -1423,7 +1434,9 @@ namespace Dynamo.Elements
          get
          {
             var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-            bool dirtyInternals = ws.elements.Any(e => e.IsDirty);
+            bool dirtyInternals = ws.Elements.Any(e => e.IsDirty);
+            if (dirtyInternals)
+               this.IsDirty = true;
             return dirtyInternals || base.IsDirty;
          }
          set
@@ -1519,6 +1532,13 @@ namespace Dynamo.Elements
       protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
          return new FunctionNode(this.Symbol, portNames);
+      }
+
+      public override void Destroy()
+      {
+         var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+         foreach (var el in ws.Elements)
+            el.Destroy();
       }
    }
 

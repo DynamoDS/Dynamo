@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="dynTransactions.cs" />
     <Compile Include="dynUtils.cs" />
+    <Compile Include="dynWorkspace.cs" />
     <Compile Include="FunctionNamePrompt.xaml.cs">
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
     </Compile>

@@ -72,7 +72,6 @@ namespace Dynamo.Elements
       List<PortData> statePortData;
       Dictionary<dynPort, TextBlock> inPortTextBlocks;
       string nickName;
-      ElementArray elements;
       Guid guid;
       //bool isSelected = false;
       ElementState state;
@@ -88,10 +87,17 @@ namespace Dynamo.Elements
       public delegate void SetStateDelegate(dynElement el, ElementState state);
 
       #region public members
+      private dynWorkspace _workspace;
       public dynWorkspace WorkSpace
       {
-         get;
-         internal set;
+         get
+         {
+            return _workspace;
+         }
+         internal set
+         {
+            _workspace = value;
+         }
       }
 
       public dynElement TopControl
@@ -157,9 +163,10 @@ namespace Dynamo.Elements
          set { guid = value; }
       }
 
-      public ElementArray Elements
+      public virtual List<Element> Elements
       {
-         get { return elements; }
+         get;
+         set;
       }
 
       public ElementState State
@@ -252,7 +259,7 @@ namespace Dynamo.Elements
          inPortData = new List<PortData>();
          statePorts = new List<dynPort>();
          statePortData = new List<PortData>();
-         elements = new ElementArray();
+         Elements = new List<Element>();
          dataTree = new DataTree();
          inPortTextBlocks = new Dictionary<dynPort, TextBlock>();
 
@@ -283,6 +290,11 @@ namespace Dynamo.Elements
          //dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
       }
       #endregion
+
+      void WorkspaceModified()
+      {
+         this.IsDirty = true;
+      }
 
       protected virtual void OnDynElementDestroyed(EventArgs e)
       {
@@ -368,7 +380,8 @@ namespace Dynamo.Elements
       {
          foreach (UIElement e in this.inputGrid.Children)
          {
-            e.IsEnabled = enabledDict[e];
+            if (enabledDict.ContainsKey(e))
+               e.IsEnabled = enabledDict[e];
          }
       }
 
@@ -842,14 +855,22 @@ namespace Dynamo.Elements
       {
          get
          {
-            return this._isDirty
-               || this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
+            if (this._isDirty)
+               return true;
+            else
+            {
+               bool dirty = this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
+               this._isDirty = dirty;
+               return dirty;
+            }
+            //return this._isDirty
+            //   || this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
          }
          set
          {
             this._isDirty = value;
-            //if (value)
-            //   this.WorkSpace.Modified(); //TODO: Implement
+            if (value)
+               this.WorkSpace.Modified(); //TODO: Implement
          }
       }
 
@@ -974,6 +995,11 @@ namespace Dynamo.Elements
 
                   bench.InitTransaction();
 
+                  if (this.SaveResult)
+                     this.Destroy();
+                  else
+                     this.Elements.Clear();
+
                   result = this.Evaluate(args);
 
                   UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
@@ -1033,6 +1059,11 @@ namespace Dynamo.Elements
                         //   () =>
                         //      dynElementSettings.SharedInstance.Bench.Log("Evaluating Element")
                         //));
+
+                        if (this.SaveResult)
+                           this.Destroy();
+                        else
+                           this.Elements.Clear();
 
                         var exp = this.Evaluate(args);
 
@@ -1449,16 +1480,16 @@ namespace Dynamo.Elements
       /// </summary>
       public virtual void Destroy()
       {
-         foreach (Element e in elements)
+         foreach (Element e in Elements)
          {
             dynElementSettings.SharedInstance.Doc.Document.Delete(e);
          }
 
          //clear out the array to avoid object initialization errors
-         elements.Clear();
+         Elements.Clear();
 
          //clear the data tree
-         dataTree.Clear();
+         //dataTree.Clear();
       }
 
       public virtual void Update()

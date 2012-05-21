@@ -72,12 +72,14 @@ namespace Dynamo.Elements
             return FScheme.Expression.NewList(
                FSchemeInterop.Utils.convertSequence(
                   xyzList.Select(
-                     x =>
-                        FScheme.Expression.NewContainer(
-                           this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-                              (XYZ)((FScheme.Expression.Container)x).Item
-                           )
-                        )
+                     delegate (FScheme.Expression x)
+                     {
+                        var pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
+                           (XYZ)((FScheme.Expression.Container)x).Item
+                        );
+                        this.Elements.Add(pt);
+                        return FScheme.Expression.NewContainer(pt);
+                     }
                   )
                )
             );
@@ -86,10 +88,12 @@ namespace Dynamo.Elements
          {
             XYZ xyz = (XYZ)((FScheme.Expression.Container)input).Item;
 
+            var pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+
+            this.Elements.Add(pt);
+
             //return FScheme.Expression.NewContainer(promise);
-            return FScheme.Expression.NewContainer(
-               this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz)
-            );
+            return FScheme.Expression.NewContainer(pt);
          }
       }
 

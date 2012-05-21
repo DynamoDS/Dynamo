@@ -36,6 +36,7 @@ using Dynamo.Utilities;
 using FailureHandlingOptions = Autodesk.Revit.DB.FailureHandlingOptions;
 using Transaction = Autodesk.Revit.DB.Transaction;
 using TransactionStatus = Autodesk.Revit.DB.TransactionStatus;
+using Path = System.IO.Path;
 
 namespace Dynamo.Controls
 {
@@ -48,14 +49,11 @@ namespace Dynamo.Controls
       private const int CANVAS_OFFSET_X = 10;
 
       double zoom = 1.0;
-      double currentX;
-      double currentY;
       double newX = 0.0;
       double newY = 0.0;
       double oldY = 0.0;
       double oldX = 0.0;
-      List<dynElement> elements;
-      List<dynConnector> connectors;
+
       dynSelection selectedElements;
       bool isConnecting = false;
       dynConnector activeConnector;
@@ -64,19 +62,33 @@ namespace Dynamo.Controls
       StringWriter sw;
       string logText;
 
+      dynWorkspace _cspace;
+      dynWorkspace CurrentSpace
+      {
+         get { return _cspace; }
+         set
+         {
+            _cspace = value;
+            this.CurrentX = _cspace.PositionX;
+            this.CurrentY = _cspace.PositionY;
+            //TODO: Also set the name here.
+         }
+      }
+
       dynWorkspace homeSpace;
       public Dictionary<string, dynWorkspace> dynFunctionDict = new Dictionary<string, dynWorkspace>();
 
       public dynToolFinder toolFinder;
       public event PropertyChangedEventHandler PropertyChanged;
-      Hashtable userTypes = new Hashtable();
-      //Hashtable builtinTypes = new Hashtable();
+
       SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
       public dynBench()
       {
          //run tests, also load core libraries
          FScheme.test();
+
+         this.homeSpace = this.CurrentSpace = new HomeWorkspace();
 
          InitializeComponent();
 
@@ -87,14 +99,10 @@ namespace Dynamo.Controls
          dynElementSettings.SharedInstance.Workbench = workBench;
          dynElementSettings.SharedInstance.Bench = this;
 
-         elements = new List<dynElement>();
-         connectors = new List<dynConnector>();
          selectedElements = new dynSelection();
 
          this.CurrentX = CANVAS_OFFSET_X;
          this.CurrentY = CANVAS_OFFSET_Y;
-
-         this.homeSpace = new dynWorkspace(elements, connectors, CurrentX, CurrentY);
 
          LoadBuiltinTypes();
          //LoadUserTypes();
@@ -115,10 +123,10 @@ namespace Dynamo.Controls
       {
          get
          {
-            return this.homeSpace.elements.Concat(
+            return this.homeSpace.Elements.Concat(
                this.dynFunctionDict.Values.Aggregate(
                   (IEnumerable<dynElement>)new List<dynElement>(),
-                  (a, x) => a.Concat(x.elements)
+                  (a, x) => a.Concat(x.Elements)
                )
             );
          }
@@ -158,20 +166,20 @@ namespace Dynamo.Controls
 
       public double CurrentX
       {
-         get { return currentX; }
+         get { return this.CurrentSpace.PositionX; }
          set
          {
-            currentX = Math.Min(CANVAS_OFFSET_X, value);
+            this.CurrentSpace.PositionX = Math.Min(CANVAS_OFFSET_X, value);
             NotifyPropertyChanged("CurrentX");
          }
       }
 
       public double CurrentY
       {
-         get { return currentY; }
+         get { return this.CurrentSpace.PositionY; }
          set
          {
-            currentY = Math.Min(CANVAS_OFFSET_Y, value);
+            this.CurrentSpace.PositionY = Math.Min(CANVAS_OFFSET_Y, value);
             NotifyPropertyChanged("CurrentY");
          }
       }
@@ -188,14 +196,18 @@ namespace Dynamo.Controls
 
       public List<dynElement> Elements
       {
-         get { return elements; }
-         set { elements = value; }
+         get { return this.CurrentSpace.Elements; }
       }
 
       public dynSelection SelectedElements
       {
          get { return selectedElements; }
          set { selectedElements = value; }
+      }
+
+      public bool ViewingHomespace
+      {
+         get { return this.CurrentSpace == this.homeSpace; }
       }
 
       dynElement draggedElement;
@@ -208,7 +220,7 @@ namespace Dynamo.Controls
       {
          //setup the menu with all the types by reflecting
          //the DynamoElements.dll
-         Assembly elementsAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+         Assembly elementsAssembly = Assembly.GetExecutingAssembly();
          Type[] loadedTypes = elementsAssembly.GetTypes();
 
          foreach (Type t in loadedTypes)
@@ -228,10 +240,10 @@ namespace Dynamo.Controls
          }
 
 
-         string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-         string pluginsPath = System.IO.Path.Combine(directory, "definitions");
+         string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+         string pluginsPath = Path.Combine(directory, "definitions");
 
-         if (System.IO.Directory.Exists(pluginsPath))
+         if (Directory.Exists(pluginsPath))
          {
             loadUserAssemblies(pluginsPath);
          }
@@ -347,6 +359,7 @@ namespace Dynamo.Controls
                }
 
                searchDict.Add(newEl, kvp.Key.Split(' ').Where(x => x.Length > 0));
+               searchDict.Add(newEl, kvp.Key);
             }
             catch (Exception e)
             {
@@ -374,8 +387,8 @@ namespace Dynamo.Controls
       /// </summary>
       public void LoadUserTypes()
       {
-         string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-         string pluginsPath = System.IO.Path.Combine(directory, "definitions");
+         string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+         string pluginsPath = Path.Combine(directory, "definitions");
 
          if (System.IO.Directory.Exists(pluginsPath))
          {
@@ -432,107 +445,73 @@ namespace Dynamo.Controls
       /// <param name="guid"></param>
       /// <param name="x"></param>
       /// <param name="y"></param>
-      public dynElement AddDynElement2(Type elementType, Assembly assem, Guid guid)
-      {
-         try
-         {
-            //http://msdn.microsoft.com/en-us/library/ms173139.aspx
-            //http://stackoverflow.com/questions/4993098/wpf-control-throwing-resource-identified-by-the-uri-missing-exception
-            //http://www.matthidinger.com/archive/2008/10/12/managed-addin-framework-system.addin-with-wpf.aspx
+      //public dynElement AddDynElement(Type elementType, Assembly assem, string nickName, Guid guid, double x, double y)
+      //{
+      //   try
+      //   {
+      //      //http://msdn.microsoft.com/en-us/library/ms173139.aspx
+      //      //http://stackoverflow.com/questions/4993098/wpf-control-throwing-resource-identified-by-the-uri-missing-exception
+      //      //http://www.matthidinger.com/archive/2008/10/12/managed-addin-framework-system.addin-with-wpf.aspx
 
-            //create a new object from a type
-            //that is passed in
+      //      //create a new object from a type
+      //      //that is passed in
+      //      //dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] { nickName });
+      //      var obj = Activator.CreateInstanceFrom(assem.Location, elementType.FullName);
+      //      //var obj = Activator.CreateInstanceFrom(
+      //      //   assem.Location,
+      //      //   elementType.FullName,
+      //      //   false,
+      //      //   BindingFlags.CreateInstance,
+      //      //   null,
+      //      //   new object[] { this },
+      //      //   null,
+      //      //   new object[] { }
+      //      //);
+      //      dynElement el = (dynElement)obj.Unwrap();
 
-            var obj = Activator.CreateInstanceFrom(assem.Location, elementType.FullName);
+      //      el.GUID = guid;
 
-            dynElement el = (dynElement)obj.Unwrap();
+      //      //store the element in the elements list
+      //      this.Elements.Add(el);
 
-            el.GUID = guid;
+      //      //Add the element to the workbench
+      //      workBench.Children.Add(el);
 
-            return el;
-         }
-         catch (Exception e)
-         {
-            dynElementSettings.SharedInstance.Bench.Log(e.Message);
-            return null;
-         }
-      }
+      //      x -= el.Width / 2;
+      //      y -= el.Height / 2;
 
-      /// <summary>
-      /// This method adds dynElements when selected in the menu
-      /// </summary>
-      /// <param name="elementType"></param>
-      /// <param name="nickName"></param>
-      /// <param name="guid"></param>
-      /// <param name="x"></param>
-      /// <param name="y"></param>
-      public dynElement AddDynElement(Type elementType, Assembly assem, string nickName, Guid guid, double x, double y)
-      {
-         try
-         {
-            //http://msdn.microsoft.com/en-us/library/ms173139.aspx
-            //http://stackoverflow.com/questions/4993098/wpf-control-throwing-resource-identified-by-the-uri-missing-exception
-            //http://www.matthidinger.com/archive/2008/10/12/managed-addin-framework-system.addin-with-wpf.aspx
+      //      while (this.Elements.Any(
+      //         delegate(dynElement e)
+      //         {
+      //            var left = Canvas.GetLeft(e);
+      //            var top = Canvas.GetTop(e);
 
-            //create a new object from a type
-            //that is passed in
-            //dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] { nickName });
-            var obj = Activator.CreateInstanceFrom(assem.Location, elementType.FullName);
-            //var obj = Activator.CreateInstanceFrom(
-            //   assem.Location,
-            //   elementType.FullName,
-            //   false,
-            //   BindingFlags.CreateInstance,
-            //   null,
-            //   new object[] { this },
-            //   null,
-            //   new object[] { }
-            //);
-            dynElement el = (dynElement)obj.Unwrap();
+      //            var absLeft = Math.Abs(left - x);
+      //            var absTop = Math.Abs(top - y);
 
-            el.GUID = guid;
+      //            return absLeft < 15 && absTop < 15;
+      //         }))
+      //      {
+      //         x += 15;
+      //         y += 15;
+      //      }
 
-            //store the element in the elements list
-            this.elements.Add(el);
+      //      //Set its initial position based on the center of the element
+      //      Canvas.SetLeft(el, x);
+      //      Canvas.SetTop(el, y);
 
-            //Add the element to the workbench
-            workBench.Children.Add(el);
+      //      //create an event on the element itself
+      //      //to update the elements ports and connectors
+      //      el.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
 
-            x -= el.Width / 2;
-            y -= el.Height / 2;
-
-            while (this.elements.Any(
-               delegate(dynElement e)
-               {
-                  var left = Canvas.GetLeft(e);
-                  var top = Canvas.GetTop(e);
-
-                  var absLeft = Math.Abs(left - x);
-                  var absTop = Math.Abs(top - y);
-
-                  return absLeft < 15 && absTop < 15;
-               }))
-            {
-               x += 15;
-               y += 15;
-            }
-
-            //Set its initial position based on the center of the element
-            Canvas.SetLeft(el, x);
-            Canvas.SetTop(el, y);
-
-            //create an event on the element itself
-            //to update the elements ports and connectors
-            el.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
-
-            return el;
-         }
-         catch (Exception e)
-         {
-            dynElementSettings.SharedInstance.Bench.Log(e.Message);
-            return null;
-         }
-      }
+      //      return el;
+      //   }
+      //   catch (Exception e)
+      //   {
+      //      dynElementSettings.SharedInstance.Bench.Log(e.Message);
+      //      return null;
+      //   }
+      //}
 
       /// <summary>
       /// This method adds dynElements when opening from a file
@@ -558,7 +537,7 @@ namespace Dynamo.Controls
             }
             else
             {
-               ElementNameAttribute elNameAttrib = this.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true)[0] as ElementNameAttribute;
+               ElementNameAttribute elNameAttrib = el.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true)[0] as ElementNameAttribute;
                if (elNameAttrib != null)
                {
                   el.NickName = elNameAttrib.ElementName;
@@ -570,7 +549,7 @@ namespace Dynamo.Controls
             string name = el.NickName;
 
             //store the element in the elements list
-            ws.elements.Add(el);
+            ws.Elements.Add(el);
 
             this.workBench.Children.Add(el);
 
@@ -854,7 +833,7 @@ namespace Dynamo.Controls
 
          if (!string.IsNullOrEmpty(xmlPath))
          {
-            if (!SaveWorkspace(xmlPath, new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY), this.currentFunctionName))
+            if (!SaveWorkspace(xmlPath, this.CurrentSpace))
             {
                //MessageBox.Show("Workbench could not be saved.");
                Log("Workbench could not be saved.");
@@ -909,91 +888,80 @@ namespace Dynamo.Controls
             this.beginNameEditClick = false;
       }
 
-      private void AddElement(string name)
-      {
-         double x = this.CurrentX * -1 + this.outerCanvas.ActualWidth / 2;
-         double y = this.CurrentY * -1 + this.outerCanvas.ActualHeight / 2 - this.LogScroller.ActualHeight;
+      //private void AddElement(string name)
+      //{
+      //   double x = this.CurrentX * -1 + this.outerCanvas.ActualWidth / 2;
+      //   double y = this.CurrentY * -1 + this.outerCanvas.ActualHeight / 2 - this.LogScroller.ActualHeight;
 
-         //TODO - Refactor
-         //Step 1: Make sure mi.Header.ToString() is in the LoadedFunction dictionary
-         if (this.dynFunctionDict.ContainsKey(name))
-         {
-            //Step 2: Make a new dynFunction
-            //    a. Set inputs by traversing LoadedFunction entry for dynSymbols
-            //    b. Set output to "out" for now
-            //    c. Set symbol to mi.Header.ToString()
-            dynWorkspace ws = this.dynFunctionDict[name];
+      //   //TODO - Refactor
+      //   //Step 1: Make sure mi.Header.ToString() is in the LoadedFunction dictionary
+      //   if (this.dynFunctionDict.ContainsKey(name))
+      //   {
+      //      //Step 2: Make a new dynFunction
+      //      //    a. Set inputs by traversing LoadedFunction entry for dynSymbols
+      //      //    b. Set output to "out" for now
+      //      //    c. Set symbol to mi.Header.ToString()
+      //      dynWorkspace ws = this.dynFunctionDict[name];
 
-            dynElement newEl = new dynFunction(
-               ws.elements.Where(e => e is dynSymbol)
-                  .Select(s => ((dynSymbol)s).Symbol),
-               "out",
-               name
-            );
+      //      dynElement newEl = new dynFunction(
+      //         ws.Elements.Where(e => e is dynSymbol)
+      //            .Select(s => ((dynSymbol)s).Symbol),
+      //         "out",
+      //         name
+      //      );
 
-            newEl.GUID = Guid.NewGuid();
+      //      newEl.GUID = Guid.NewGuid();
 
-            //store the element in the elements list
-            this.elements.Add(newEl);
+      //      //store the element in the elements list
+      //      this.Elements.Add(newEl);
 
-            //Add the element to the workbench
-            workBench.Children.Add(newEl);
+      //      //Add the element to the workbench
+      //      workBench.Children.Add(newEl);
 
-            x -= newEl.Width / 2;
-            y -= newEl.Height / 2;
+      //      x -= newEl.Width / 2;
+      //      y -= newEl.Height / 2;
 
-            while (this.elements.Any(
-               delegate(dynElement e)
-               {
-                  var left = Canvas.GetLeft(e);
-                  var top = Canvas.GetTop(e);
+      //      while (this.Elements.Any(
+      //         delegate(dynElement e)
+      //         {
+      //            var left = Canvas.GetLeft(e);
+      //            var top = Canvas.GetTop(e);
 
-                  var absLeft = Math.Abs(left - x);
-                  var absTop = Math.Abs(top - y);
+      //            var absLeft = Math.Abs(left - x);
+      //            var absTop = Math.Abs(top - y);
 
-                  return absLeft < 15 && absTop < 15;
-               }))
-            {
-               x += 15;
-               y += 15;
-            }
+      //            return absLeft < 15 && absTop < 15;
+      //         }))
+      //      {
+      //         x += 15;
+      //         y += 15;
+      //      }
 
-            //Set its initial position
-            Canvas.SetLeft(newEl, x);
-            Canvas.SetTop(newEl, y); //this.currentY + this.workBench.ActualHeight / 2);
+      //      //Set its initial position
+      //      Canvas.SetLeft(newEl, x);
+      //      Canvas.SetTop(newEl, y); //this.currentY + this.workBench.ActualHeight / 2);
 
-            //create an event on the element itself
-            //to update the elements ports and connectors
-            newEl.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
+      //      //create an event on the element itself
+      //      //to update the elements ports and connectors
+      //      newEl.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
 
-            //Step 3: CheckInputs()
-            newEl.CheckInputs();
+      //      //Step 3: CheckInputs()
+      //      newEl.CheckInputs();
 
-            return;
-         }
+      //      return;
+      //   }
 
-         TypeLoadData tld = builtinTypes[name] as TypeLoadData;
-         if (tld != null)
-         {
-            dynElement newEl = AddDynElement(tld.t, tld.assembly, name, Guid.NewGuid(), x, y);
-            if (newEl != null)
-            {
-               newEl.CheckInputs();
-               return;
-            }
-         }
-
-         tld = userTypes[name] as TypeLoadData;
-         if (tld != null)
-         {
-            dynElement newEl = AddDynElement(tld.t, tld.assembly, name, Guid.NewGuid(), x, y);
-            if (newEl != null)
-            {
-               newEl.CheckInputs();
-               return;
-            }
-         }
-      }
+      //   TypeLoadData tld = builtinTypes[name] as TypeLoadData;
+      //   if (tld != null)
+      //   {
+      //      dynElement newEl = AddDynElement(tld.t, tld.assembly, name, Guid.NewGuid(), x, y);
+      //      if (newEl != null)
+      //      {
+      //         newEl.CheckInputs();
+      //         return;
+      //      }
+      //   }
+      //}
 
       private void BeginDragElement(string name, Point eleOffset)
       {
@@ -1004,109 +972,56 @@ namespace Dynamo.Controls
 
          this.dragOffset = eleOffset;
 
-         //TODO - Refactor
-         //Step 1: Make sure mi.Header.ToString() is in the LoadedFunction dictionary
+         dynElement newEl;
+
          if (this.dynFunctionDict.ContainsKey(name))
          {
-            //Step 2: Make a new dynFunction
-            //    a. Set inputs by traversing LoadedFunction entry for dynSymbols
-            //    b. Set output to "out" for now
-            //    c. Set symbol to mi.Header.ToString()
             dynWorkspace ws = this.dynFunctionDict[name];
 
-            dynElement newEl = new dynFunction(
-               ws.elements.Where(e => e is dynSymbol)
+            newEl = new dynFunction(
+               ws.Elements.Where(e => e is dynSymbol)
                   .Select(s => ((dynSymbol)s).Symbol),
                "out",
                name
             );
-
-            newEl.GUID = Guid.NewGuid();
-
-            //Add the element to the workbench
-            overlayCanvas.Children.Add(newEl);
-
-            newEl.Opacity = 0.7;
-
-            x -= eleOffset.X;
-            y -= eleOffset.Y;
-
-            //Set its initial position
-            Canvas.SetLeft(newEl, x);
-            Canvas.SetTop(newEl, y); //this.currentY + this.workBench.ActualHeight / 2);
-
-            this.draggedElement = newEl;
-
-            this.overlayCanvas.IsHitTestVisible = true;
-
-            return;
          }
-
-         TypeLoadData tld = builtinTypes[name] as TypeLoadData;
-         if (tld != null)
+         else
          {
-            dynElement newEl = AddDynElement2(tld.t, tld.assembly, Guid.NewGuid());
+            TypeLoadData tld = builtinTypes[name];
 
-            if (newEl == null)
+            try
+            {
+               var obj = Activator.CreateInstanceFrom(tld.assembly.Location, tld.t.FullName);
+               newEl = (dynElement)obj.Unwrap();
+               newEl.DisableInteraction();
+            }
+            catch (Exception e)
+            {
+               dynElementSettings.SharedInstance.Bench.Log(e.Message);
                return;
-
-            newEl.DisableInteraction();
-
-            overlayCanvas.Children.Add(newEl);
-
-            newEl.Opacity = 0.7;
-
-            x -= eleOffset.X;
-            y -= eleOffset.Y;
-
-            //Set its initial position based on the center of the element
-            Canvas.SetLeft(newEl, x);
-            Canvas.SetTop(newEl, y);
-
-            this.draggedElement = newEl;
-
-            this.overlayCanvas.IsHitTestVisible = true;
-
-            return;
+            }
          }
 
-         tld = userTypes[name] as TypeLoadData;
-         if (tld != null)
-         {
-            dynElement newEl = AddDynElement2(tld.t, tld.assembly, Guid.NewGuid());
+         newEl.GUID = Guid.NewGuid();
 
-            if (newEl == null)
-               return;
+         //Add the element to the workbench
+         overlayCanvas.Children.Add(newEl);
 
-            newEl.DisableInteraction();
+         newEl.Opacity = 0.7;
 
-            overlayCanvas.Children.Add(newEl);
+         x -= eleOffset.X;
+         y -= eleOffset.Y;
 
-            newEl.Opacity = 0.7;
+         //Set its initial position
+         Canvas.SetLeft(newEl, x);
+         Canvas.SetTop(newEl, y);
 
-            x -= eleOffset.X;
-            y -= eleOffset.Y;
+         this.draggedElement = newEl;
 
-            //Set its initial position based on the center of the element
-            Canvas.SetLeft(newEl, x);
-            Canvas.SetTop(newEl, y);
-
-            this.draggedElement = newEl;
-
-            this.overlayCanvas.IsHitTestVisible = true;
-
-            return;
-         }
+         this.overlayCanvas.IsHitTestVisible = true;
       }
 
-      private void AddElement_Click(object sender, RoutedEventArgs args)
-      {
-         System.Windows.Controls.MenuItem mi = args.Source as System.Windows.Controls.MenuItem;
-
-         AddElement(mi.Header.ToString());
-      }
-
-      bool SaveWorkspace(string xmlPath, dynWorkspace workSpace, string name = null)
+      bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
       {
          Log("Saving " + xmlPath + "...");
          try
@@ -1117,12 +1032,12 @@ namespace Dynamo.Controls
             xmlDoc.CreateXmlDeclaration("1.0", null, null);
 
             XmlElement root = xmlDoc.CreateElement("dynWorkspace");  //write the root element
-            root.SetAttribute("X", workSpace.savedX.ToString());
-            root.SetAttribute("Y", workSpace.savedY.ToString());
+            root.SetAttribute("X", workSpace.PositionX.ToString());
+            root.SetAttribute("Y", workSpace.PositionY.ToString());
 
-            if (name != null)
+            if (workSpace != this.homeSpace) //If we are not saving the home space
             {
-               root.SetAttribute("Name", name);
+               root.SetAttribute("Name", workSpace.Name);
                //TODO: Store category
             }
 
@@ -1131,7 +1046,7 @@ namespace Dynamo.Controls
             XmlElement elementList = xmlDoc.CreateElement("dynElements");  //write the root element
             root.AppendChild(elementList);
 
-            foreach (dynElement el in workSpace.elements)
+            foreach (dynElement el in workSpace.Elements)
             {
                Point relPoint = el.TransformToAncestor(workBench).Transform(new Point(0, 0));
 
@@ -1146,29 +1061,13 @@ namespace Dynamo.Controls
                dynEl.SetAttribute("y", Canvas.GetTop(el).ToString());
 
                el.SaveElement(xmlDoc, dynEl);
-
-               //foreach (PortData pd in el.OutPortData)
-               //{
-               //   if (pd.Object != null)
-               //   {
-               //      //only write the numeric values
-               //      if (pd.Object.GetType() == typeof(System.Double) ||
-               //          pd.Object.GetType() == typeof(System.Int32))
-               //      {
-               //         Debug.WriteLine(pd.Object.GetType().ToString());
-               //         XmlElement outEl = xmlDoc.CreateElement(pd.Object.GetType().ToString());
-               //         outEl.SetAttribute("value", pd.Object.ToString());
-               //         dynEl.AppendChild(outEl);
-               //      }
-               //   }
-               //}
             }
 
             //write only the output connectors
             XmlElement connectorList = xmlDoc.CreateElement("dynConnectors");  //write the root element
             root.AppendChild(connectorList);
 
-            foreach (dynElement el in workSpace.elements)
+            foreach (dynElement el in workSpace.Elements)
             {
                foreach (dynConnector c in el.OutPort.Connectors)
                {
@@ -1181,8 +1080,6 @@ namespace Dynamo.Controls
 
                   if (c.End.PortType == PortType.INPUT)
                      connector.SetAttribute("portType", "0");
-                  //else if (c.End.PortType == PortType.STATE)
-                  //   connector.SetAttribute("portType", "1");
                }
             }
 
@@ -1195,14 +1092,6 @@ namespace Dynamo.Controls
          }
 
          return true;
-      }
-
-      void SerializeWorkbench(string xmlPath)
-      {
-         XmlSerializer serializer = new XmlSerializer(typeof(List<dynElement>));
-         TextWriter tw = new StreamWriter(xmlPath);
-         serializer.Serialize(tw, this.elements);
-         tw.Close();
       }
 
       bool OpenDefinition(string xmlPath)
@@ -1234,13 +1123,16 @@ namespace Dynamo.Controls
                }
             }
 
+            //If there is no function name, then we are opening a home definition
             if (funName == null)
             {
-               if (this.currentFunctionName != null) //TODO: Refactor
+               //View the home workspace, then open the bench file
+               if (!this.ViewingHomespace)
                   this.Home_Click(null, null); //TODO: Refactor
                return this.OpenWorkbench(xmlPath);
             }
 
+            //TODO: refactor to include x,y
             var ws = this.newFunction(
                funName,
                category.Length > 0
@@ -1249,8 +1141,8 @@ namespace Dynamo.Controls
                false
             );
 
-            ws.savedX = cx;
-            ws.savedY = cy;
+            ws.PositionX = cx;
+            ws.PositionY = cy;
 
             //this.Log("Opening definition " + xmlPath + "...");
 
@@ -1278,6 +1170,7 @@ namespace Dynamo.Controls
                Type t = Type.GetType(typeName);
 
                dynElement el = AddDynElement(t, nickname, guid, x, y, ws);
+               el.WorkSpace = ws;
 
                el.LoadElement(elNode);
             }
@@ -1302,7 +1195,7 @@ namespace Dynamo.Controls
                dynElement start = null;
                dynElement end = null;
 
-               foreach (dynElement e in ws.elements)
+               foreach (dynElement e in ws.Elements)
                {
                   if (e.GUID == guidStart)
                   {
@@ -1332,12 +1225,12 @@ namespace Dynamo.Controls
                   dynConnector newConnector = new dynConnector(start, end, startIndex,
                       endIndex, portType);
 
-                  ws.connectors.Add(newConnector);
+                  ws.Connectors.Add(newConnector);
                }
             }
 
             this.hideWorkspace(ws);
-            this.SaveFunction(funName, ws);
+            this.SaveFunction(ws);
             #endregion
          }
          catch (Exception ex)
@@ -1354,9 +1247,9 @@ namespace Dynamo.Controls
 
       void hideWorkspace(dynWorkspace ws)
       {
-         foreach (var e in ws.elements)
+         foreach (var e in ws.Elements)
             e.Visibility = System.Windows.Visibility.Collapsed;
-         foreach (var c in ws.connectors)
+         foreach (var c in ws.Connectors)
             c.Visible = false;
       }
 
@@ -1408,16 +1301,13 @@ namespace Dynamo.Controls
 
                dynElement el = AddDynElement(
                   t, nickname, guid, x, y,
-                  new dynWorkspace()
-                  {
-                     elements = this.elements,
-                     connectors = this.connectors
-                  }
+                  this.CurrentSpace
                );
 
                el.LoadElement(elNode);
+               el.WorkSpace = this.CurrentSpace;
 
-               if (this.currentFunctionName == null)
+               if (this.ViewingHomespace)
                   el.SaveResult = true;
 
                //read the sub elements
@@ -1490,7 +1380,7 @@ namespace Dynamo.Controls
                   dynConnector newConnector = new dynConnector(start, end, startIndex,
                       endIndex, portType);
 
-                  connectors.Add(newConnector);
+                  this.CurrentSpace.Connectors.Add(newConnector);
                }
             }
 
@@ -1510,7 +1400,7 @@ namespace Dynamo.Controls
 
       private void CleanWorkspace(dynWorkspace ws)
       {
-         foreach (dynElement el in ws.elements)
+         foreach (dynElement el in ws.Elements)
          {
             foreach (dynPort p in el.InPorts)
             {
@@ -1535,8 +1425,8 @@ namespace Dynamo.Controls
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
          }
 
-         ws.elements.Clear();
-         ws.connectors.Clear();
+         ws.Elements.Clear();
+         ws.Connectors.Clear();
       }
 
       private void CleanWorkbench()
@@ -1544,7 +1434,7 @@ namespace Dynamo.Controls
          Log("Clearing workflow...");
 
          #region clear the existing workflow
-         foreach (dynElement el in elements)
+         foreach (dynElement el in Elements)
          {
             foreach (dynPort p in el.InPorts)
             {
@@ -1569,8 +1459,8 @@ namespace Dynamo.Controls
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
          }
 
-         elements.Clear();
-         connectors.Clear();
+         this.CurrentSpace.Elements.Clear();
+         this.CurrentSpace.Connectors.Clear();
 
          #endregion
       }
@@ -1686,7 +1576,7 @@ namespace Dynamo.Controls
                   activeConnector.Disconnect(p);
                   isConnecting = true;
                   workBench.isConnecting = true;
-                  connectors.Remove(activeConnector);
+                  this.CurrentSpace.Connectors.Remove(activeConnector);
                }
                else
                {
@@ -1719,7 +1609,7 @@ namespace Dynamo.Controls
                {
                   //you've already started connecting
                   //now you're going to stop
-                  connectors.Add(activeConnector);
+                  this.CurrentSpace.Connectors.Add(activeConnector);
                   isConnecting = false;
                   workBench.isConnecting = false;
                   activeConnector = null;
@@ -1875,7 +1765,7 @@ namespace Dynamo.Controls
          }
 
          selectedElements.Remove(el);
-         elements.Remove(el);
+         this.Elements.Remove(el);
          dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
          el = null;
       }
@@ -1892,8 +1782,6 @@ namespace Dynamo.Controls
       }
 
       ExecutionEnvironment environment = new ExecutionEnvironment();
-
-      private string currentFunctionName;
 
       public bool RunInDebug { get { return this.TransMode == TransactionMode.Debug; } }
 
@@ -1944,8 +1832,10 @@ namespace Dynamo.Controls
          return _trans != null;
       }
 
-      private void RunExpression(bool debug)
+      public void RunExpression(bool debug, bool showErrors = true)
       {
+         this.dynamicRun = !showErrors;
+
          if (debug)
          {
             this.TransMode = TransactionMode.Debug;
@@ -1956,7 +1846,7 @@ namespace Dynamo.Controls
 
          worker.DoWork += delegate(object s, DoWorkEventArgs args)
          {
-            foreach (dynElement topMost in this.homeSpace.elements.Where(x => !x.OutPort.Connectors.Any()))
+            foreach (dynElement topMost in this.homeSpace.Elements.Where(x => !x.OutPort.Connectors.Any()))
             {
                //TODO: Flesh out error handling
                try
@@ -2081,7 +1971,7 @@ namespace Dynamo.Controls
 
       private void SaveFunction_Click(object sender, RoutedEventArgs e)
       {
-         SaveFunction(this.currentFunctionName, this.dynFunctionDict[this.currentFunctionName]);
+         SaveFunction(this.CurrentSpace);
       }
 
       //private Dictionary<string, System.Windows.Controls.MenuItem> addMenuItemsDict
@@ -2133,11 +2023,11 @@ namespace Dynamo.Controls
 
       private dynWorkspace newFunction(string name, string category, bool display)
       {
-         var newElements = new List<dynElement>();
-         var newConnectors = new List<dynConnector>();
-
          //Add an entry to the funcdict
-         var workSpace = new dynWorkspace(newElements, newConnectors, CANVAS_OFFSET_X, CANVAS_OFFSET_Y);
+         var workSpace = new FuncWorkspace(name, CANVAS_OFFSET_X, CANVAS_OFFSET_Y);
+
+         var newElements = workSpace.Elements;
+         var newConnectors = workSpace.Connectors;
 
          this.dynFunctionDict[name] = workSpace;
 
@@ -2156,7 +2046,7 @@ namespace Dynamo.Controls
          //this.addMenuItemsDict[name] = mi;
 
          dynFunction newEl = new dynFunction(
-            workSpace.elements.Where(el => el is dynSymbol)
+            workSpace.Elements.Where(el => el is dynSymbol)
                .Select(s => ((dynSymbol)s).Symbol),
             "out",
             name
@@ -2235,44 +2125,41 @@ namespace Dynamo.Controls
          if (display)
          {
             //Store old workspace
-            var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
+            //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
-            if (this.currentFunctionName == null)
-            {
-               this.homeSpace = ws;
-            }
-            else
+            if (!this.ViewingHomespace)
             {
                //Step 2: Store function workspace in the function dictionary
-               this.dynFunctionDict[this.currentFunctionName] = ws;
+               this.dynFunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
                //Step 3: Save function
-               this.SaveFunction(this.currentFunctionName, ws);
+               this.SaveFunction(this.CurrentSpace);
             }
 
-            this.currentFunctionName = name;
-
             //Make old workspace invisible
-            foreach (dynElement dynE in this.elements)
+            foreach (dynElement dynE in this.Elements)
             {
                dynE.Visibility = System.Windows.Visibility.Collapsed;
             }
-            foreach (dynConnector dynC in this.connectors)
+            foreach (dynConnector dynC in this.CurrentSpace.Connectors)
             {
                dynC.Visible = false;
             }
 
-            //Clear the bench for the new function
-            this.elements = newElements;
-            this.connectors = newConnectors;
-            this.CurrentX = CANVAS_OFFSET_X;
-            this.CurrentY = CANVAS_OFFSET_Y;
+            //this.currentFunctionName = name;
+
+            ////Clear the bench for the new function
+            //this.elements = newElements;
+            //this.connectors = newConnectors;
+            //this.CurrentX = CANVAS_OFFSET_X;
+            //this.CurrentY = CANVAS_OFFSET_Y;
+            this.CurrentSpace = workSpace;
 
             this.saveFuncItem.IsEnabled = true;
             this.homeButton.IsEnabled = true;
             //this.varItem.IsEnabled = true;
 
-            this.workspaceLabel.Content = this.currentFunctionName;
+            this.workspaceLabel.Content = this.CurrentSpace.Name;
             this.editNameButton.Visibility = System.Windows.Visibility.Visible;
             this.editNameButton.IsHitTestVisible = true;
             this.setFunctionBackground();
@@ -2291,41 +2178,41 @@ namespace Dynamo.Controls
       private void Home_Click(object sender, RoutedEventArgs e)
       {
          //Step 1: Make function workspace invisible
-         foreach (var ele in this.elements)
+         foreach (var ele in this.Elements)
          {
             ele.Visibility = System.Windows.Visibility.Collapsed;
          }
-         foreach (var con in this.connectors)
+         foreach (var con in this.CurrentSpace.Connectors)
          {
             con.Visible = false;
          }
 
-         var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
+         //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
          //Step 2: Store function workspace in the function dictionary
-         this.dynFunctionDict[this.currentFunctionName] = ws;
+         this.dynFunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
          //Step 3: Save function
-         this.SaveFunction(this.currentFunctionName, ws);
+         this.SaveFunction(this.CurrentSpace);
 
          //Step 4: Make home workspace visible
-         this.elements = this.homeSpace.elements;
-         this.connectors = this.homeSpace.connectors;
-         this.CurrentX = this.homeSpace.savedX;
-         this.CurrentY = this.homeSpace.savedY;
+         //this.elements = this.homeSpace.elements;
+         //this.connectors = this.homeSpace.connectors;
+         //this.CurrentX = this.homeSpace.savedX;
+         //this.CurrentY = this.homeSpace.savedY;
+         this.CurrentSpace = this.homeSpace;
 
-         foreach (var ele in this.elements)
+         foreach (var ele in this.Elements)
          {
             ele.Visibility = System.Windows.Visibility.Visible;
          }
-         foreach (var con in this.connectors)
+         foreach (var con in this.CurrentSpace.Connectors)
          {
             con.Visible = true;
          }
 
          this.saveFuncItem.IsEnabled = false;
          this.homeButton.IsEnabled = false;
-         this.currentFunctionName = null;
          //this.varItem.IsEnabled = false;
 
          this.workspaceLabel.Content = "Home";
@@ -2335,21 +2222,21 @@ namespace Dynamo.Controls
          this.setHomeBackground();
       }
 
-      void SaveFunction(string funcName, dynWorkspace funcWorkspace, bool writeDefinition = true)
+      public void SaveFunction(dynWorkspace funcWorkspace, bool writeDefinition = true)
       {
          //Step 1: Generate xml, and save it in a fixed place
          if (writeDefinition)
          {
-            string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = System.IO.Path.Combine(directory, "definitions");
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string pluginsPath = Path.Combine(directory, "definitions");
 
             try
             {
                if (!Directory.Exists(pluginsPath))
                   Directory.CreateDirectory(pluginsPath);
 
-               string path = System.IO.Path.Combine(pluginsPath, funcName + ".dyf");
-               SaveWorkspace(path, funcWorkspace, funcName);
+               string path = Path.Combine(pluginsPath, funcWorkspace.Name + ".dyf");
+               SaveWorkspace(path, funcWorkspace);
             }
             catch (Exception e)
             {
@@ -2358,11 +2245,11 @@ namespace Dynamo.Controls
          }
 
          //Step 2: Find function entry point, and then compile the function and add it to our environment
-         dynElement topMost = funcWorkspace.elements.FirstOrDefault(
+         dynElement topMost = funcWorkspace.Elements.FirstOrDefault(
             el => !el.OutPort.Connectors.Any()
          );
 
-         var variables = funcWorkspace.elements.Where(x => x is dynSymbol);
+         var variables = funcWorkspace.Elements.Where(x => x is dynSymbol);
          var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
 
          try
@@ -2374,7 +2261,7 @@ namespace Dynamo.Controls
                   topMost.Build().Compile()
                );
 
-               this.environment.DefineSymbol(funcName, expression);
+               this.environment.DefineSymbol(funcWorkspace.Name, expression);
             }
          }
          catch
@@ -2389,7 +2276,7 @@ namespace Dynamo.Controls
             {
                var node = (dynFunction)el;
 
-               if (!node.Symbol.Equals(funcName))
+               if (!node.Symbol.Equals(funcWorkspace.Name))
                   continue;
 
                node.SetInputs(variableNames);
@@ -2399,11 +2286,11 @@ namespace Dynamo.Controls
          }
 
          //Step 4: Call OnSave for all saved elements
-         foreach (var el in funcWorkspace.elements)
+         foreach (var el in funcWorkspace.Elements)
             el.OnSave();
 
          //Step 5: Update new add menu
-         var addItem = (dynFunction)this.addMenuItemsDictNew[funcName];
+         var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name];
          addItem.SetInputs(variableNames);
          addItem.ReregisterInputs();
       }
@@ -2420,50 +2307,47 @@ namespace Dynamo.Controls
          workBench.ignoreClick = true;
 
          //Step 1: Make function workspace invisible
-         foreach (var ele in this.elements)
+         foreach (var ele in this.Elements)
          {
             ele.Visibility = System.Windows.Visibility.Collapsed;
          }
-         foreach (var con in this.connectors)
+         foreach (var con in this.CurrentSpace.Connectors)
          {
             con.Visible = false;
          }
 
-         var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
+         //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
-         if (this.currentFunctionName == null)
-         {
-            this.homeSpace = ws;
-         }
-         else
+         if (!this.ViewingHomespace)
          {
             //Step 2: Store function workspace in the function dictionary
-            this.dynFunctionDict[this.currentFunctionName] = ws;
+            this.dynFunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
             //Step 3: Save function
-            this.SaveFunction(this.currentFunctionName, ws);
+            this.SaveFunction(this.CurrentSpace);
          }
 
          //Step 4: Make home workspace visible
-         this.elements = newWs.elements;
-         this.connectors = newWs.connectors;
-         this.CurrentX = newWs.savedX;
-         this.CurrentY = newWs.savedY;
+         //this.elements = newWs.elements;
+         //this.connectors = newWs.connectors;
+         //this.CurrentX = newWs.savedX;
+         //this.CurrentY = newWs.savedY;
+         this.CurrentSpace = newWs;
 
-         foreach (var ele in this.elements)
+         foreach (var ele in this.Elements)
          {
             ele.Visibility = System.Windows.Visibility.Visible;
          }
-         foreach (var con in this.connectors)
+         foreach (var con in this.CurrentSpace.Connectors)
          {
             con.Visible = true;
          }
+
 
          this.saveFuncItem.IsEnabled = true;
          this.homeButton.IsEnabled = true;
          //this.varItem.IsEnabled = true;
 
-         this.currentFunctionName = symbol;
          this.workspaceLabel.Content = symbol;
          this.editNameButton.Visibility = System.Windows.Visibility.Visible;
          this.editNameButton.IsHitTestVisible = true;
@@ -2523,14 +2407,17 @@ namespace Dynamo.Controls
 
       internal void RemoveConnector(dynConnector c)
       {
-         connectors.Remove(c);
+         this.CurrentSpace.Connectors.Remove(c);
       }
 
       internal void ShowElement(dynElement e)
       {
-         if (!this.elements.Contains(e))
+         if (dynamicRun)
+            return;
+
+         if (!this.Elements.Contains(e))
          {
-            if (this.homeSpace != null && this.homeSpace.elements.Contains(e))
+            if (this.homeSpace != null && this.homeSpace.Elements.Contains(e))
             {
                //Show the homespace
                Home_Click(null, null);
@@ -2539,7 +2426,7 @@ namespace Dynamo.Controls
             {
                foreach (var funcPair in this.dynFunctionDict)
                {
-                  if (funcPair.Value.elements.Contains(e))
+                  if (funcPair.Value.Elements.Contains(e))
                   {
                      DisplayFunction(funcPair.Key);
                      break;
@@ -2612,7 +2499,7 @@ namespace Dynamo.Controls
          this.editNameBox.IsHitTestVisible = true;
          this.editNameBox.Focusable = true;
          this.editNameBox.Focus();
-         this.editNameBox.Text = this.currentFunctionName;
+         this.editNameBox.Text = this.CurrentSpace.Name;
          this.editNameBox.SelectAll();
 
          editingName = true;
@@ -2625,9 +2512,9 @@ namespace Dynamo.Controls
          this.workspaceLabel.Content = this.editNameBox.Text;
 
          //Update view menu
-         var viewItem = this.viewMenuItemsDict[this.currentFunctionName];
+         var viewItem = this.viewMenuItemsDict[this.CurrentSpace.Name];
          viewItem.Header = newName;
-         this.viewMenuItemsDict.Remove(this.currentFunctionName);
+         this.viewMenuItemsDict.Remove(this.CurrentSpace.Name);
          this.viewMenuItemsDict[newName] = viewItem;
 
          //Update add menu
@@ -2638,11 +2525,11 @@ namespace Dynamo.Controls
 
          //------------------//
 
-         var newAddItem = (dynFunction)this.addMenuItemsDictNew[this.currentFunctionName];
-         if (newAddItem.NickName.Equals(this.currentFunctionName))
+         var newAddItem = (dynFunction)this.addMenuItemsDictNew[this.CurrentSpace.Name];
+         if (newAddItem.NickName.Equals(this.CurrentSpace.Name))
             newAddItem.NickName = newName;
          newAddItem.Symbol = newName;
-         this.addMenuItemsDictNew.Remove(this.currentFunctionName);
+         this.addMenuItemsDictNew.Remove(this.CurrentSpace.Name);
          this.addMenuItemsDictNew[newName] = newAddItem;
 
          //Sort the menu after a rename
@@ -2666,7 +2553,7 @@ namespace Dynamo.Controls
          }
 
          //Update search dictionary after a rename
-         var oldTags = this.currentFunctionName.Split(' ').Where(x => x.Length > 0);
+         var oldTags = this.CurrentSpace.Name.Split(' ').Where(x => x.Length > 0);
          this.searchDict.Remove(newAddItem, oldTags);
 
          var newTags = newName.Split(' ').Where(x => x.Length > 0);
@@ -2681,18 +2568,18 @@ namespace Dynamo.Controls
             {
                var node = (dynFunction)el;
 
-               if (!node.Symbol.Equals(this.currentFunctionName))
+               if (!node.Symbol.Equals(this.CurrentSpace.Name))
                   continue;
 
                node.Symbol = newName;
 
                //Rename nickname only if it's still referring to the old name
-               if (node.NickName.Equals(this.currentFunctionName))
+               if (node.NickName.Equals(this.CurrentSpace.Name))
                   node.NickName = newName;
             }
          }
 
-         this.environment.RemoveSymbol(this.currentFunctionName);
+         this.environment.RemoveSymbol(this.CurrentSpace.Name);
 
          //TODO: Delete old stored definition
          string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -2700,19 +2587,19 @@ namespace Dynamo.Controls
 
          if (Directory.Exists(pluginsPath))
          {
-            string oldpath = System.IO.Path.Combine(pluginsPath, this.currentFunctionName + ".dyf");
+            string oldpath = System.IO.Path.Combine(pluginsPath, this.CurrentSpace.Name + ".dyf");
             string newpath = System.IO.Path.Combine(pluginsPath, newName + ".dyf");
             File.Move(oldpath, newpath);
          }
 
-         this.SaveFunction(newName, this.dynFunctionDict[this.currentFunctionName]);
-
          //Update function dictionary
-         var tmp = this.dynFunctionDict[this.currentFunctionName];
-         this.dynFunctionDict.Remove(this.currentFunctionName);
+         var tmp = this.dynFunctionDict[this.CurrentSpace.Name];
+         this.dynFunctionDict.Remove(this.CurrentSpace.Name);
          this.dynFunctionDict[newName] = tmp;
 
-         this.currentFunctionName = newName;
+         ((FuncWorkspace)this.CurrentSpace).Name = newName;
+
+         this.SaveFunction(this.CurrentSpace);
       }
 
       void DisableEditNameBox()
@@ -2769,7 +2656,9 @@ namespace Dynamo.Controls
          {
             this.workBench.Children.Add(el);
 
-            this.elements.Add(el);
+            this.Elements.Add(el);
+
+            el.WorkSpace = this.CurrentSpace;
 
             el.Opacity = 1;
 
@@ -2778,7 +2667,7 @@ namespace Dynamo.Controls
 
             el.EnableInteraction();
 
-            if (this.currentFunctionName == null)
+            if (this.ViewingHomespace)
                el.SaveResult = true;
          }
 
@@ -2786,6 +2675,8 @@ namespace Dynamo.Controls
       }
 
       SearchDictionary<dynElement> searchDict = new SearchDictionary<dynElement>();
+      
+      private bool dynamicRun;
 
       void FilterAddMenu(HashSet<dynElement> elements)
       {
@@ -2859,27 +2750,6 @@ namespace Dynamo.Controls
       {
          assembly = assemblyIn;
          t = typeIn;
-      }
-   }
-
-   public class dynWorkspace
-   {
-      public List<dynElement> elements;
-      public List<dynConnector> connectors;
-
-      public double savedX;
-      public double savedY;
-
-      public dynWorkspace()
-         : this(new List<dynElement>(), new List<dynConnector>(), 0, 0)
-      { }
-
-      public dynWorkspace(List<dynElement> e, List<dynConnector> c, double x, double y)
-      {
-         this.elements = e;
-         this.connectors = c;
-         this.savedX = x;
-         this.savedY = y;
       }
    }
 
