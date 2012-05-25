@@ -413,19 +413,33 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      private Expression makeFamilyInstance(object location, FamilySymbol fs)
+      private Expression makeFamilyInstance(object location, FamilySymbol fs, int count)
       {
          XYZ pos = location is ReferencePoint
             ? ((ReferencePoint)location).Position
             : (XYZ)location;
 
-         FamilyInstance fi = this.UIDocument.Document.IsFamilyDocument
-            ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
-               pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-            )
-            : this.UIDocument.Document.Create.NewFamilyInstance(
-               pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+         FamilyInstance fi;
+
+         if (this.Elements.Count > count)
+         {
+            fi = (FamilyInstance)this.Elements[count];
+            ElementTransformUtils.MoveElement(
+               fi.Document, fi.Id, pos
             );
+         }
+         else
+         {
+            fi = this.UIDocument.Document.IsFamilyDocument
+               ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                  pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+               )
+               : this.UIDocument.Document.Create.NewFamilyInstance(
+                  pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+               );
+
+            this.Elements.Add(fi);
+         }
 
          return Expression.NewContainer(fi);
       }
@@ -439,13 +453,16 @@ namespace Dynamo.Elements
          {
             var locList = ((Expression.List)input).Item;
 
+            int count = 0;
+
             return Expression.NewList(
                FSchemeInterop.Utils.convertSequence(
                   locList.Select(
                      x =>
                         this.makeFamilyInstance(
                            ((Expression.Container)x).Item,
-                           fs
+                           fs,
+                           count++
                         )
                   )
                )
@@ -455,7 +472,8 @@ namespace Dynamo.Elements
          {
             return this.makeFamilyInstance(
                ((Expression.Container)input).Item,
-               fs
+               fs,
+               0
             );
          }
       }

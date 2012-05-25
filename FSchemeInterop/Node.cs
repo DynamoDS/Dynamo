@@ -24,6 +24,21 @@ namespace Dynamo.FSchemeInterop
          Expression Compile();
       }
 
+      public class ExpressionNode : INode
+      {
+         Expression expr;
+
+         public ExpressionNode(Expression v)
+         {
+            this.expr = v;
+         }
+
+         public Expression Compile()
+         {
+            return this.expr;
+         }
+      }
+
       //Node representing an FScheme Number.
       public class NumberNode : INode
       {

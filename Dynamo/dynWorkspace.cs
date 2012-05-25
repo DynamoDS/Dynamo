@@ -33,6 +33,7 @@ namespace Dynamo.Elements
       public double PositionY { get; set; }
 
       public String Name { get; set; }
+      public String Category { get; set; }
 
       #region Contructors
 
@@ -108,7 +109,9 @@ namespace Dynamo.Elements
       {
          if (OnModified != null)
             OnModified();
-         dynElementSettings.SharedInstance.Bench.RunExpression(false);
+         var bench = dynElementSettings.SharedInstance.Bench;
+         if (bench.DynamicRunEnabled && !bench.Running)
+            bench.RunExpression(false, false);
       }
    }
 }

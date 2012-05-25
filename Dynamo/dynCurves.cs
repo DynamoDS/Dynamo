@@ -149,20 +149,31 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
-            x => (ReferencePoint)((Expression.Container)x).Item
-         );
+         Element c;
 
-         ReferencePointArray refPtArr = new ReferencePointArray();
-
-         foreach (var refPt in refPts)
+         if (this.Elements.Any())
          {
-            refPtArr.Append(refPt);
+            c = this.Elements[0];
          }
+         else
+         {
+            IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
+               x => (ReferencePoint)((Expression.Container)x).Item
+            );
 
-         return FScheme.Expression.NewContainer(
-            dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr)
-         );
+            ReferencePointArray refPtArr = new ReferencePointArray();
+
+            foreach (var refPt in refPts)
+            {
+               refPtArr.Append(refPt);
+            }
+
+            c = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+
+            this.Elements.Add(c);
+         }
+         
+         return FScheme.Expression.NewContainer(c);
       }
    }
 

@@ -18,6 +18,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
@@ -69,86 +70,78 @@ namespace Dynamo.Elements
          {
             var xyzList = ((FScheme.Expression.List)input).Item;
 
-            return FScheme.Expression.NewList(
-               FSchemeInterop.Utils.convertSequence(
-                  xyzList.Select(
-                     delegate (FScheme.Expression x)
+            int count = 0;
+
+            var result = Utils.convertSequence(
+               xyzList.Select(
+                  delegate(FScheme.Expression x)
+                  {
+                     ReferencePoint pt;
+                     if (this.Elements.Count > count)
                      {
-                        var pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
+                        pt = (ReferencePoint)this.Elements[count];
+                        pt.Position = (XYZ)((FScheme.Expression.Container)x).Item;
+                     }
+                     else
+                     {
+                        pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
                            (XYZ)((FScheme.Expression.Container)x).Item
                         );
                         this.Elements.Add(pt);
-                        return FScheme.Expression.NewContainer(pt);
                      }
-                  )
+                     count++;
+                     return FScheme.Expression.NewContainer(pt);
+                  }
                )
             );
+
+            int delCount = 0;
+            foreach (var e in this.Elements.Skip(count))
+            {
+               this.UIDocument.Document.Delete(e);
+               delCount++;
+            }
+            if (delCount > 0)
+               this.Elements.RemoveRange(count, delCount);
+
+            return FScheme.Expression.NewList(result);
          }
          else
          {
             XYZ xyz = (XYZ)((FScheme.Expression.Container)input).Item;
 
-            var pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+            ReferencePoint pt;
 
-            this.Elements.Add(pt);
+            if (this.Elements.Any())
+            {
+               pt = (ReferencePoint)this.Elements[0];
+               pt.Position = xyz;
 
+               int count = 0;
+               foreach (var e in this.Elements.Skip(1))
+               {
+                  this.UIDocument.Document.Delete(e);
+                  count++;
+               }
+               if (count > 0)
+                  this.Elements.RemoveRange(1, count);
+            }
+            else
+            {
+               pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+               this.Elements.Add(pt);
+            }
             //return FScheme.Expression.NewContainer(promise);
             return FScheme.Expression.NewContainer(pt);
          }
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      DataTree a = InPortData[0].Object as DataTree;
-      //      if (a != null)
-      //      {
-      //         Process(this.Tree.Trunk, a.Trunk);
-      //      }
-
-      //   }
-      //}
-
-      //public void Process(DataTreeBranch currBranch, DataTreeBranch a)
-      //{
-      //   //foreach (object o in a.Leaves)
-      //   //{
-      //   //   XYZ pt = o as XYZ;
-      //   //   if (pt != null)
-      //   //   {
-      //   //      ReferencePoint rp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(pt);
-      //   //      currBranch.Leaves.Add(rp);
-      //   //      Elements.Append(rp);
-      //   //   }
-      //   //}
-
-      //   //foreach (DataTreeBranch aChild in a.Branches)
-      //   //{
-      //   //   DataTreeBranch subBranch = new DataTreeBranch();
-      //   //   currBranch.Branches.Add(subBranch);
-
-      //   //   Process(subBranch, aChild);
-      //   //}
-      //}
-
-      //public override void Destroy()
-      //{
-      //   //base destroys all elements in the collection
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 
-   [ElementName("Reference Point Grid")]
+   [ElementName("XYZ Grid")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a grid of reference points.")]
    [RequiresTransaction(true)]
-   public class dynReferencePtGrid : dynReferencePoint
+   public class dynReferencePtGrid : dynElement
    {
       public dynReferencePtGrid()
       {
@@ -162,7 +155,7 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData(null, "y-space", "The Y spacing.", typeof(double)));
          InPortData.Add(new PortData(null, "z-space", "The Z spacing.", typeof(double)));
 
-         //outports already added in parent
+         OutPortData = new PortData(null, "XYZs", "List of XYZs in the grid", typeof(XYZ));
 
          base.RegisterInputsAndOutputs();
       }
@@ -193,9 +186,7 @@ namespace Dynamo.Elements
                for (int xCount = 0; xCount < xi; xCount++)
                {
                   result = FSharpList<FScheme.Expression>.Cons(
-                     FScheme.Expression.NewContainer(
-                        this.UIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z))
-                     ),
+                     FScheme.Expression.NewContainer(new XYZ(x, y, z)),
                      result
                   );
                   x += xs;
@@ -205,77 +196,10 @@ namespace Dynamo.Elements
             z += zs;
          }
 
-         return FScheme.Expression.NewList(result);
+         return FScheme.Expression.NewList(
+            ListModule.Reverse(result)
+         );
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      DataTree xyzTree = InPortData[2].Object as DataTree;
-      //      if (xyzTree != null)
-      //      {
-      //         Process(xyzTree.Trunk, this.Tree.Trunk);
-      //      }
-      //   }
-      //}
-
-      //public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
-      //{
-
-      //   //use each XYZ leaf on the input
-      //   //to define a new origin
-      //   foreach (object o in bIn.Leaves)
-      //   {
-      //      ReferencePoint rp = o as ReferencePoint;
-
-      //      if (rp != null)
-      //      {
-      //         for (int i = 0; i < (int)InPortData[0].Object; i++)
-      //         {
-      //            //create a branch for the data tree for
-      //            //this row of points
-      //            DataTreeBranch b = new DataTreeBranch();
-      //            currentBranch.Branches.Add(b);
-
-      //            for (int j = 0; j < (int)InPortData[1].Object; j++)
-      //            {
-      //               XYZ pt = new XYZ(rp.Position.X + i * (double)InPortData[3].Object,
-      //                   rp.Position.Y + j * (double)InPortData[4].Object,
-      //                   rp.Position.Z);
-
-      //               ReferencePoint rpNew = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(pt);
-
-      //               //add the point as a leaf on the branch
-      //               b.Leaves.Add(rpNew);
-
-      //               //add the element to the collection
-      //               Elements.Append(rpNew);
-      //            }
-      //         }
-      //      }
-      //   }
-
-      //   foreach (DataTreeBranch b1 in bIn.Branches)
-      //   {
-      //      DataTreeBranch newBranch = new DataTreeBranch();
-      //      currentBranch.Branches.Add(newBranch);
-
-      //      Process(b1, newBranch);
-      //   }
-
-      //}
-
-      //public override void Destroy()
-      //{
-      //   //base destroys all elements in the collection
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 
    [ElementName("Reference Point Distance")]

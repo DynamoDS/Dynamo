@@ -129,37 +129,6 @@ namespace Dynamo.Elements
       }
    }
 
-   public class dynAction : dynElement
-   {
-      public dynAction()
-      {
-         InPortData.Add(new PortData(null, "act", "The action to perform.", typeof(dynAction)));
-      }
-
-      public virtual void PerformAction()
-      {
-
-      }
-
-      public override void Draw()
-      {
-         base.Draw();
-      }
-
-      public override void Destroy()
-      {
-
-         base.Destroy();
-      }
-
-      public override void Update()
-      {
-         //raise the event for the base class
-         //to build, sending this as the 
-         OnDynElementReadyToBuild(EventArgs.Empty);
-      }
-   }
-
    #region SJE
 
    public abstract class dynVariableInput : dynElement
@@ -1435,8 +1404,8 @@ namespace Dynamo.Elements
          {
             var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
             bool dirtyInternals = ws.Elements.Any(e => e.IsDirty);
-            if (dirtyInternals)
-               this.IsDirty = true;
+            //if (dirtyInternals)
+            //   base.IsDirty = true;
             return dirtyInternals || base.IsDirty;
          }
          set
@@ -1529,6 +1498,14 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
+      protected internal override INode Build()
+      {
+         if (this.IsDirty)
+            return base.Build();
+         else
+            return new ExpressionNode(this.oldValue);
+      }
+
       protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
          return new FunctionNode(this.Symbol, portNames);
@@ -1538,7 +1515,10 @@ namespace Dynamo.Elements
       {
          var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
          foreach (var el in ws.Elements)
-            el.Destroy();
+         {
+            if (!(el is dynFunction) || !((dynFunction)el).Symbol.Equals(this.Symbol))
+               el.Destroy();
+         }
       }
    }
 
@@ -2414,6 +2394,7 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "";
+         tb.TextChanged += delegate { this.IsDirty = true; };
          //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
          //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 

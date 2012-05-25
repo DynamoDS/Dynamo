@@ -196,6 +196,8 @@ namespace Dynamo.Utilities
          }
       }
 
+      public HashSet<ElementId> DeletionSet = new HashSet<ElementId>();
+
       /*
       public dynElementSettings(Autodesk.Revit.UI.UIApplication app, Autodesk.Revit.UI.UIDocument doc, Level defaultLevel, DynamoWarningSwallower warningSwallower, Transaction t)
      {

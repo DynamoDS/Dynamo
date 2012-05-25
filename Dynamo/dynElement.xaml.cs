@@ -163,10 +163,19 @@ namespace Dynamo.Elements
          set { guid = value; }
       }
 
-      public virtual List<Element> Elements
+      private List<List<Element>> elements;
+      public List<Element> Elements
       {
-         get;
-         set;
+         get
+         {
+            while (this.elements.Count <= this.runCount)
+               this.elements.Add(new List<Element>());
+            return this.elements[this.runCount];
+         }
+         private set
+         {
+            this.elements[this.runCount] = value;
+         }
       }
 
       public ElementState State
@@ -259,6 +268,7 @@ namespace Dynamo.Elements
          inPortData = new List<PortData>();
          statePorts = new List<dynPort>();
          statePortData = new List<PortData>();
+         elements = new List<List<Element>>() { new List<Element>() };
          Elements = new List<Element>();
          dataTree = new DataTree();
          inPortTextBlocks = new Dictionary<dynPort, TextBlock>();
@@ -763,7 +773,7 @@ namespace Dynamo.Elements
             {
                dynElement oldIn;
                var cons = p.Connectors;
-               return !this.previousEvalPortMappings.TryGetValue(p, out oldIn) 
+               return !this.previousEvalPortMappings.TryGetValue(p, out oldIn)
                   || (oldIn == null && !cons.Any())
                   || (cons.Any() && oldIn == p.Connectors[0].Start.Owner);
             }
@@ -791,7 +801,7 @@ namespace Dynamo.Elements
          if (port.PortType == PortType.INPUT)
             CheckPortsForRecalc();
 
-         Destroy();
+         //Destroy();
          ValidateConnections();
       }
 
@@ -845,8 +855,37 @@ namespace Dynamo.Elements
 
       }
 
-      private bool _isDirty = true;
+      private int runCount;
 
+      internal void ResetRuns()
+      {
+         if (this.runCount > 0)
+         {
+            PruneRuns();
+            this.runCount = 0;
+         }
+      }
+
+      void PruneRuns()
+      {
+         for (int i = this.elements.Count - 1; i >= this.runCount; i--)
+         {
+            var elems = this.elements[i];
+            foreach (var e in elems)
+               dynElementSettings.SharedInstance.Doc.Document.Delete(e);
+            elems.Clear();
+         }
+
+         if (this.elements.Count > this.runCount)
+         {
+            this.elements.RemoveRange(
+               this.runCount,
+               this.elements.Count - this.runCount
+            );
+         }
+      }
+
+      private bool _isDirty = true;
       ///<summary>
       ///Does this element need to be regenerated?
       ///This value only changes to dirty when the input connections have been changed.
@@ -869,14 +908,46 @@ namespace Dynamo.Elements
          set
          {
             this._isDirty = value;
-            if (value)
+            if (value && this._report)
                this.WorkSpace.Modified(); //TODO: Implement
          }
       }
 
-      private Expression oldValue;
+      private bool _report = true;
 
-      public bool SaveResult = false;
+      protected Expression oldValue;
+
+      private bool _saveResult = false;
+      public bool SaveResult
+      {
+         get
+         {
+            return this._saveResult
+               && this.InPorts.All(x => x.Connectors.Any());
+         }
+         set
+         {
+            this._saveResult = value;
+         }
+      }
+
+
+      public void MarkDirty()
+      {
+         if (this._isDirty)
+            return;
+         else
+         {
+            bool dirty = this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
+            this._isDirty = dirty;
+            return;
+         }
+      }
+
+      protected void Delete(ElementId e)
+      {
+         dynElementSettings.SharedInstance.DeletionSet.Add(e);
+      }
 
 
       protected internal virtual INode Build()
@@ -886,19 +957,17 @@ namespace Dynamo.Elements
 
       protected internal virtual ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
-         if (!this.SaveResult)
+         if (this.SaveResult)
          {
-            return new ExternalFunctionNode(
-               new FScheme.ExternFunc(this.eval),
+            return new ExternalMacroNode(
+               new ExternMacro(this.evalIfDirty),
                portNames
             );
          }
          else
          {
-            return new ExternalMacroNode(
-               new ExternMacro(
-                  this.evalIfDirty
-               ),
+            return new ExternalFunctionNode(
+               new FScheme.ExternFunc(this.eval),
                portNames
             );
          }
@@ -906,7 +975,7 @@ namespace Dynamo.Elements
 
 
       protected virtual void OnEvaluate() { }
-      protected internal virtual void OnSave() 
+      protected internal virtual void OnSave()
       {
          //Save all of the connection states, so we can check if this is dirty
          foreach (dynPort p in this.InPorts)
@@ -930,6 +999,8 @@ namespace Dynamo.Elements
                )
             );
          }
+         else
+            this.runCount++;
          return this.oldValue;
       }
 
@@ -958,6 +1029,9 @@ namespace Dynamo.Elements
       protected Expression eval(FSharpList<Expression> args)
       {
          var bench = dynElementSettings.SharedInstance.Bench;
+
+         if (bench.CancelRun)
+            throw new Exception("Run Cancelled.");
 
          if (this.SaveResult)
          {
@@ -995,10 +1069,8 @@ namespace Dynamo.Elements
 
                   bench.InitTransaction();
 
-                  if (this.SaveResult)
-                     this.Destroy();
-                  else
-                     this.Elements.Clear();
+                  //if (this.SaveResult)
+                  //   this.Destroy();
 
                   result = this.Evaluate(args);
 
@@ -1060,10 +1132,8 @@ namespace Dynamo.Elements
                         //      dynElementSettings.SharedInstance.Bench.Log("Evaluating Element")
                         //));
 
-                        if (this.SaveResult)
-                           this.Destroy();
-                        else
-                           this.Elements.Clear();
+                        //if (this.SaveResult)
+                        //   this.Destroy();
 
                         var exp = this.Evaluate(args);
 
@@ -1131,7 +1201,8 @@ namespace Dynamo.Elements
 
             try
             {
-               //this.Destroy();
+               //if (this.SaveResult)
+               //   this.Destroy();
 
                result = this.Evaluate(args);
 
@@ -1177,6 +1248,9 @@ namespace Dynamo.Elements
 
             #endregion
          }
+
+         //Increment the run counter
+         this.runCount++;
 
          if (result != null)
             return result;
@@ -1480,13 +1554,18 @@ namespace Dynamo.Elements
       /// </summary>
       public virtual void Destroy()
       {
-         foreach (Element e in Elements)
+         this.runCount = 0;
+         foreach (var els in this.elements)
          {
-            dynElementSettings.SharedInstance.Doc.Document.Delete(e);
+            foreach (Element e in els)
+            {
+               dynElementSettings.SharedInstance.Doc.Document.Delete(e);
+            }
+            //els.Clear();
          }
 
          //clear out the array to avoid object initialization errors
-         Elements.Clear();
+         elements.Clear();
 
          //clear the data tree
          //dataTree.Clear();
@@ -1659,7 +1738,35 @@ namespace Dynamo.Elements
 
       private void deleteElem_cm_Click(object sender, RoutedEventArgs e)
       {
-         dynElementSettings.SharedInstance.Bench.DeleteElement(this);
+         //this.Destroy();
+         this.DisableReporting();
+         var bench = dynElementSettings.SharedInstance.Bench;
+
+         //IdlePromise<bool>.ExecuteOnIdle(
+         //   delegate
+         //   {
+         bench.InitTransaction();
+         try
+         {
+            this.Destroy();
+         }
+         catch { }
+         bench.EndTransaction();
+         //   }
+         //);
+
+         bench.DeleteElement(this);
+         this.WorkSpace.Modified();
+      }
+
+      internal void DisableReporting()
+      {
+         this._report = false;
+      }
+
+      internal void EnableReporting()
+      {
+         this._report = true;
       }
    }
 

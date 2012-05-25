@@ -401,7 +401,11 @@ namespace Dynamo.Controls
          string[] filePaths = Directory.GetFiles(directory, "*.dyf");
          foreach (string filePath in filePaths)
          {
-            this.OpenDefinition(filePath);
+            this.OpenDefinition(filePath, true);
+         }
+         foreach (var e in this.AllElements)
+         {
+            e.EnableReporting();
          }
       }
 
@@ -1094,7 +1098,7 @@ namespace Dynamo.Controls
          return true;
       }
 
-      bool OpenDefinition(string xmlPath)
+      bool OpenDefinition(string xmlPath, bool reportingDisabled = false)
       {
          try
          {
@@ -1170,6 +1174,8 @@ namespace Dynamo.Controls
                Type t = Type.GetType(typeName);
 
                dynElement el = AddDynElement(t, nickname, guid, x, y, ws);
+               if (reportingDisabled)
+                  el.DisableReporting();
                el.WorkSpace = ws;
 
                el.LoadElement(elNode);
@@ -1635,6 +1641,8 @@ namespace Dynamo.Controls
             {
                DisableEditNameBox();
             }
+
+            //this.Focus();
          }
          #endregion
 
@@ -1832,8 +1840,15 @@ namespace Dynamo.Controls
          return _trans != null;
       }
 
+      public bool Running = false;
+
       public void RunExpression(bool debug, bool showErrors = true)
       {
+         if (this.Running)
+            return;
+
+         this.Running = true;
+
          this.dynamicRun = !showErrors;
 
          if (debug)
@@ -1846,7 +1861,13 @@ namespace Dynamo.Controls
 
          worker.DoWork += delegate(object s, DoWorkEventArgs args)
          {
-            foreach (dynElement topMost in this.homeSpace.Elements.Where(x => !x.OutPort.Connectors.Any()))
+            var topElements = this.homeSpace.Elements.Where(x => !x.OutPort.Connectors.Any());
+
+            //Mark the topmost as dirty/clean
+            foreach (var topMost in topElements)
+               topMost.MarkDirty();
+
+            foreach (dynElement topMost in topElements)
             {
                //TODO: Flesh out error handling
                try
@@ -1884,6 +1905,8 @@ namespace Dynamo.Controls
                            _trans = null;
                         }
 
+                        this.CancelRun = false;
+
                         return null;
                      }
                   };
@@ -1916,7 +1939,16 @@ namespace Dynamo.Controls
                      {
                         this.TransMode = TransactionMode.Automatic;
                         this.InIdleThread = true;
-                        result = IdlePromise<FScheme.Expression>.ExecuteOnIdle(run);
+
+                        var promise = (IdlePromise<FScheme.Expression>)this.Dispatcher.Invoke(
+                           new Func<IdlePromise<FScheme.Expression>>(
+                              () => new IdlePromise<FScheme.Expression>(run)
+                           )
+                        );
+
+                        result = promise.RedeemPromise();
+
+                        //result = IdlePromise<FScheme.Expression>.ExecuteOnIdle(run);
                      }
                   }
                   else
@@ -1933,7 +1965,6 @@ namespace Dynamo.Controls
                         () => Log(FScheme.print(result))
                      ));
                   }
-
                }
                catch (Exception ex)
                {
@@ -1951,11 +1982,37 @@ namespace Dynamo.Controls
                   this.runButton.Dispatcher.Invoke(new Action(
                      delegate { this.runButton.IsEnabled = true; }
                   ));
+                  this.Running = false;
                }
             }
+
+            var delPromise = (IdlePromise<bool>)this.Dispatcher.Invoke(
+               new Func<IdlePromise<bool>>(
+                  () =>
+                     new IdlePromise<bool>(
+                        delegate
+                        {
+                           this.InitTransaction();
+
+                           foreach (var element in this.AllElements)
+                           {
+                              element.ResetRuns();
+                           }
+
+                           this.EndTransaction();
+                           return true;
+                        }
+                     )
+               )
+            );
+
+            delPromise.RedeemPromise();
          };
 
-         this.runButton.IsEnabled = false;
+         this.runButton.Dispatcher.Invoke(new Action(
+            delegate { this.runButton.IsEnabled = false; }
+         ));
+
          worker.RunWorkerAsync();
       }
 
@@ -2256,7 +2313,7 @@ namespace Dynamo.Controls
          {
             if (topMost != default(dynElement))
             {
-               Dynamo.FScheme.Expression expression = Utils.MakeAnon(
+               FScheme.Expression expression = Utils.MakeAnon(
                   variableNames,
                   topMost.Build().Compile()
                );
@@ -2266,7 +2323,7 @@ namespace Dynamo.Controls
          }
          catch
          {
-
+            //TODO: flesh out error handling (build-loops?)
          }
 
          //Step 3: Update existing function nodes which point to this function to match its changes
@@ -2675,7 +2732,7 @@ namespace Dynamo.Controls
       }
 
       SearchDictionary<dynElement> searchDict = new SearchDictionary<dynElement>();
-      
+
       private bool dynamicRun;
 
       void FilterAddMenu(HashSet<dynElement> elements)
@@ -2733,6 +2790,22 @@ namespace Dynamo.Controls
       {
          //if (this.searchBox.Text.Equals(""))
          //   this.searchBox.Text = "Search";
+      }
+
+      public bool CancelRun
+      {
+         get;
+         private set;
+      }
+
+      private void Cancel_Click(object sender, RoutedEventArgs e)
+      {
+         this.CancelRun = true;
+      }
+
+      public bool DynamicRunEnabled
+      {
+         get { return this.dynamicCheckBox.IsChecked == true; }
       }
    }
 
