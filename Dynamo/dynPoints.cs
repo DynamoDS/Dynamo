@@ -22,42 +22,16 @@ using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
-   public abstract class dynReferencePoint : dynElement
-   {
-      public dynReferencePoint()
-      {
-         OutPortData = new PortData(null, "pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint));
-         //OutPortData[0].Object = this.Tree;
-      }
-
-      //public override void Draw()
-      //{
-
-      //}
-
-      //public override void Destroy()
-      //{
-      //   //base destroys all elements in the collection
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-   }
-
    [ElementName("Reference Point")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a reference point.")]
    [RequiresTransaction(true)]
-   public class dynReferencePointByXYZ : dynReferencePoint
+   public class dynReferencePointByXYZ : dynElement
    {
       public dynReferencePointByXYZ()
       {
          InPortData.Add(new PortData(null, "xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
-
-         //outport already added in parent
+         OutPortData = new PortData(null, "pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint));
 
          base.RegisterInputsAndOutputs();
       }
@@ -131,7 +105,7 @@ namespace Dynamo.Elements
                pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
                this.Elements.Add(pt);
             }
-            //return FScheme.Expression.NewContainer(promise);
+
             return FScheme.Expression.NewContainer(pt);
          }
       }
@@ -214,7 +188,6 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData(null, "ptB", "A Reference point.", typeof(ReferencePoint)));
 
          OutPortData = new PortData(null, "dist", "Distance between points.", typeof(dynDouble));
-         //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();
 
@@ -240,114 +213,6 @@ namespace Dynamo.Elements
             throw new Exception("Cannot cast first argument to ReferencePoint or FamilyInstance.");
          }
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      DataTree treeA = InPortData[0].Object as DataTree;
-      //      DataTree treeB = InPortData[1].Object as DataTree;
-
-      //      if (treeB != null && treeB.Trunk.Leaves.Count > 0)
-      //      {
-      //         //we're only using the first point in the tree right now.
-      //         if (treeB.Trunk.Leaves.Count > 0)
-      //         {
-      //            ReferencePoint pt = treeB.Trunk.FindFirst() as ReferencePoint;
-
-      //            if (treeA != null && pt != null)
-      //            {
-      //               //find out what kind of elements the tree hash
-      //               ReferencePoint rp = treeA.Trunk.FindFirst() as ReferencePoint;
-      //               FamilyInstance fi = treeA.Trunk.FindFirst() as FamilyInstance;
-      //               if (rp != null)
-      //               {
-      //                  Process(treeA.Trunk, this.Tree.Trunk);
-      //               }
-      //               else if (fi != null)
-      //               {
-      //                  ProcessInstances(treeA.Trunk, this.Tree.Trunk);
-      //               }
-
-      //            }
-      //         }
-      //      }
-      //   }
-      //}
-
-      //public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
-      //{
-      //   DataTree dt = InPortData[1].Object as DataTree;
-      //   ReferencePoint attractor = dt.Trunk.FindFirst() as ReferencePoint;
-
-      //   //use each XYZ leaf on the input
-      //   //to define a new origin
-      //   foreach (object o in bIn.Leaves)
-      //   {
-      //      ReferencePoint rp = o as ReferencePoint;
-
-      //      if (rp != null)
-      //      {
-      //         //get the distance betweent the points
-
-      //         double dist = rp.Position.DistanceTo(attractor.Position);
-      //         currentBranch.Leaves.Add(dist);
-      //      }
-      //   }
-
-      //   foreach (DataTreeBranch b1 in bIn.Branches)
-      //   {
-      //      DataTreeBranch newBranch = new DataTreeBranch();
-      //      currentBranch.Branches.Add(newBranch);
-
-      //      Process(b1, newBranch);
-      //   }
-
-      //}
-
-      //public void ProcessInstances(DataTreeBranch bIn, DataTreeBranch currentBranch)
-      //{
-      //   DataTree dt = InPortData[1].Object as DataTree;
-      //   ReferencePoint attractor = dt.Trunk.FindFirst() as ReferencePoint;
-
-      //   //use each XYZ leaf on the input
-      //   //to define a new origin
-      //   foreach (object o in bIn.Leaves)
-      //   {
-      //      FamilyInstance fi = o as FamilyInstance;
-
-      //      if (fi != null)
-      //      {
-      //         //get the distance betweent the points
-      //         LocationPoint lp = fi.Location as LocationPoint;
-      //         if (lp != null)
-      //         {
-      //            double dist = lp.Point.DistanceTo(attractor.Position);
-      //            currentBranch.Leaves.Add(dist);
-      //         }
-      //      }
-      //   }
-
-      //   foreach (DataTreeBranch b1 in bIn.Branches)
-      //   {
-      //      DataTreeBranch newBranch = new DataTreeBranch();
-      //      currentBranch.Branches.Add(newBranch);
-
-      //      ProcessInstances(b1, newBranch);
-      //   }
-
-      //}
-
-      //public override void Destroy()
-      //{
-      //   //base destroys all elements in the collection
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 
    [ElementName("Point On Edge")]
@@ -374,27 +239,6 @@ namespace Dynamo.Elements
             this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t)
          );
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-
-      //      Reference r = (InPortData[0].Object as ModelCurve).GeometryCurve.Reference;
-      //      OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewPointOnEdge(r, (double)InPortData[1].Object);
-
-      //   }
-      //}
-
-      //public override void Destroy()
-      //{
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 }
 

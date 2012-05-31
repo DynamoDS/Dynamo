@@ -64,29 +64,6 @@ namespace Dynamo.Elements
             this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
          );
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      ModelCurve mc = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewModelCurve(InPortData[0].Object as Curve, InPortData[1].Object as SketchPlane);
-      //      OutPortData[0].Object = mc;
-
-      //      //add the element to the collection
-      //      Elements.Append(mc);
-      //   }
-      //}
-
-      //public override void Destroy()
-      //{
-      //   //base destroys all elements in the collection
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 
    [ElementName("Loft Form")]
@@ -149,25 +126,27 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         Element c;
+         CurveByPoints c;
+
+         IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
+            x => (ReferencePoint)((Expression.Container)x).Item
+         );
+
+         ReferencePointArray refPtArr = new ReferencePointArray();
+
+         foreach (var refPt in refPts)
+         {
+            refPtArr.Append(refPt);
+         }
 
          if (this.Elements.Any())
          {
-            c = this.Elements[0];
+            c = (CurveByPoints)this.Elements[0];
+
+            c.SetPoints(refPtArr);
          }
          else
          {
-            IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
-               x => (ReferencePoint)((Expression.Container)x).Item
-            );
-
-            ReferencePointArray refPtArr = new ReferencePointArray();
-
-            foreach (var refPt in refPts)
-            {
-               refPtArr.Append(refPt);
-            }
-
             c = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
 
             this.Elements.Add(c);

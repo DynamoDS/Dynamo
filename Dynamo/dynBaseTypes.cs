@@ -38,6 +38,7 @@ using Microsoft.Research.Kinect.Nui;
 using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
 using System.IO.Ports;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
@@ -256,32 +257,32 @@ namespace Dynamo.Elements
 
       protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
-         return new FunctionNode("list", portNames);
+         if (this.SaveResult)
+            return base.Compile(portNames);
+         else
+            return new FunctionNode("list", portNames);
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol("list")).Item;
+         return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
       }
    }
 
-   public abstract class dynComparison : dynElement
+   public abstract class dynComparison : dynBuiltinFunction
    {
-      private string op;
-
       protected dynComparison(string op) : this(op, op) { }
 
-      protected dynComparison(string op, string name)
+      protected dynComparison(string op, string name) : base(op)
       {
          InPortData.Add(new PortData(null, "x", "operand", typeof(double)));
          InPortData.Add(new PortData(null, "y", "operand", typeof(double)));
          OutPortData = new PortData(null, "x" + name + "y", "comp", typeof(double));
 
-         this.op = op;
-
          this.nickNameBlock.FontSize = 20;
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode(this.op, portNames);
       }
    }
 
@@ -338,9 +339,9 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Boolean AND.")]
    [RequiresTransaction(false)]
-   public class dynAnd : dynElement
+   public class dynAnd : dynBuiltinMacro
    {
-      public dynAnd()
+      public dynAnd() : base("and")
       {
          InPortData.Add(new PortData(null, "a", "operand", typeof(double)));
          InPortData.Add(new PortData(null, "b", "operand", typeof(double)));
@@ -350,20 +351,15 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("and", portNames);
-      }
    }
 
    [ElementName("or")]
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Boolean OR.")]
    [RequiresTransaction(false)]
-   public class dynOr : dynElement
+   public class dynOr : dynBuiltinMacro
    {
-      public dynOr()
+      public dynOr() : base("or")
       {
          InPortData.Add(new PortData(null, "a", "operand", typeof(bool)));
          InPortData.Add(new PortData(null, "b", "operand", typeof(bool)));
@@ -373,20 +369,15 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("or", portNames);
-      }
    }
 
    [ElementName("not")]
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Boolean NOT.")]
    [RequiresTransaction(false)]
-   public class dynNot : dynElement
+   public class dynNot : dynBuiltinFunction
    {
-      public dynNot()
+      public dynNot() : base("not")
       {
          InPortData.Add(new PortData(null, "a", "operand", typeof(bool)));
          OutPortData = new PortData(null, "!a", "result", typeof(bool));
@@ -395,11 +386,6 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("not", portNames);
-      }
    }
 
    [ElementName("+")]
@@ -407,9 +393,9 @@ namespace Dynamo.Elements
    [ElementDescription("Adds two numbers.")]
    [ElementSearchTags("plus", "addition", "sum")]
    [RequiresTransaction(false)]
-   public class dynAddition : dynElement
+   public class dynAddition : dynBuiltinFunction
    {
-      public dynAddition()
+      public dynAddition() : base("+")
       {
          InPortData.Add(new PortData(null, "x", "operand", typeof(double)));
          InPortData.Add(new PortData(null, "y", "operand", typeof(double)));
@@ -419,11 +405,6 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("+", portNames);
-      }
    }
 
    [ElementName("−")]
@@ -431,9 +412,9 @@ namespace Dynamo.Elements
    [ElementDescription("Subtracts two numbers.")]
    [ElementSearchTags("subtraction", "minus", "difference", "-")]
    [RequiresTransaction(false)]
-   public class dynSubtraction : dynElement
+   public class dynSubtraction : dynBuiltinFunction
    {
-      public dynSubtraction()
+      public dynSubtraction() : base("-")
       {
          InPortData.Add(new PortData(null, "x", "operand", typeof(double)));
          InPortData.Add(new PortData(null, "y", "operand", typeof(double)));
@@ -443,11 +424,6 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("-", portNames);
-      }
    }
 
    [ElementName("×")]
@@ -455,9 +431,9 @@ namespace Dynamo.Elements
    [ElementDescription("Multiplies two numbers.")]
    [ElementSearchTags("times", "multiply", "multiplication", "product", "*", "x")]
    [RequiresTransaction(false)]
-   public class dynMultiplication : dynElement
+   public class dynMultiplication : dynBuiltinFunction
    {
-      public dynMultiplication()
+      public dynMultiplication() : base("*")
       {
          InPortData.Add(new PortData(null, "x", "operand", typeof(double)));
          InPortData.Add(new PortData(null, "y", "operand", typeof(double)));
@@ -467,11 +443,6 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("*", portNames);
-      }
    }
 
    [ElementName("÷")]
@@ -479,9 +450,9 @@ namespace Dynamo.Elements
    [ElementDescription("Divides two numbers.")]
    [ElementSearchTags("divide", "division", "quotient", "/")]
    [RequiresTransaction(false)]
-   public class dynDivision : dynElement
+   public class dynDivision : dynBuiltinFunction
    {
-      public dynDivision()
+      public dynDivision() : base("/")
       {
          InPortData.Add(new PortData(null, "x", "operand", typeof(double)));
          InPortData.Add(new PortData(null, "y", "operand", typeof(double)));
@@ -490,11 +461,6 @@ namespace Dynamo.Elements
          this.nickNameBlock.FontSize = 20;
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("/", portNames);
       }
    }
 
@@ -519,9 +485,7 @@ namespace Dynamo.Elements
          {
             return true;
          }
-         set
-         {
-         }
+         set { }
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)
@@ -547,10 +511,14 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      //public override Expression Evaluate(FSharpList<Expression> args)
-      //{
-      //   return Expression.NewNumber(Math.PI);
-      //}
+      public override bool IsDirty
+      {
+         get
+         {
+            return false;
+         }
+         set { }
+      }
 
       protected internal override INode Build()
       {
@@ -562,9 +530,9 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list, using the given comparitor.")]
    [RequiresTransaction(false)]
-   public class dynSortWith : dynElement
+   public class dynSortWith : dynBuiltinFunction
    {
-      public dynSortWith()
+      public dynSortWith() : base("sort-with")
       {
          InPortData.Add(new PortData(null, "list", "List to sort", typeof(object)));
          InPortData.Add(new PortData(null, "c(x, y)", "Comparitor", typeof(object)));
@@ -573,20 +541,15 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("sort", portNames);
-      }
    }
 
    [ElementName("sort-by")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list, using the given key mapper.")]
    [RequiresTransaction(false)]
-   public class dynSortBy : dynElement
+   public class dynSortBy : dynBuiltinFunction
    {
-      public dynSortBy()
+      public dynSortBy() : base("sort-by")
       {
          InPortData.Add(new PortData(null, "list", "List to sort", typeof(object)));
          InPortData.Add(new PortData(null, "c(x)", "Key Mapper", typeof(object)));
@@ -595,20 +558,15 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("sort-by", portNames);
-      }
    }
 
    [ElementName("sort")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list of numbers or strings.")]
    [RequiresTransaction(false)]
-   public class dynSort : dynElement
+   public class dynSort : dynBuiltinFunction
    {
-      public dynSort()
+      public dynSort() : base("sort")
       {
          InPortData.Add(new PortData(null, "list", "List of numbers or strings to sort", typeof(object)));
 
@@ -616,20 +574,15 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("sort", portNames);
-      }
    }
 
    [ElementName("fold")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Reduces a sequence.")]
    [RequiresTransaction(false)]
-   public class dynFold : dynElement
+   public class dynFold : dynBuiltinFunction
    {
-      public dynFold()
+      public dynFold() : base("fold")
       {
          InPortData.Add(new PortData(null, "f(x, a)", "Reductor Funtion", typeof(object)));
          InPortData.Add(new PortData(null, "a", "Seed", typeof(object)));
@@ -638,20 +591,15 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("fold", portNames);
-      }
    }
 
    [ElementName("filter")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Filters a sequence by a given predicate")]
    [RequiresTransaction(false)]
-   public class dynFilter : dynElement
+   public class dynFilter : dynBuiltinFunction
    {
-      public dynFilter()
+      public dynFilter() : base("filter")
       {
          InPortData.Add(new PortData(null, "p(x)", "Predicate", typeof(object)));
          InPortData.Add(new PortData(null, "seq", "Sequence to filter", typeof(object)));
@@ -659,20 +607,15 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("filter", portNames);
-      }
    }
 
    [ElementName("build-sequence")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Creates a sequence of numbers")]
    [RequiresTransaction(false)]
-   public class dynBuildSeq : dynElement
+   public class dynBuildSeq : dynBuiltinFunction
    {
-      public dynBuildSeq()
+      public dynBuildSeq() : base("build-seq")
       {
          InPortData.Add(new PortData(null, "start", "Number to start the sequence at", typeof(double)));
          InPortData.Add(new PortData(null, "end", "Number to end the sequence at", typeof(double)));
@@ -681,11 +624,6 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("build-seq", portNames);
-      }
    }
 
    [ElementName("combine")]
@@ -693,9 +631,9 @@ namespace Dynamo.Elements
    [ElementDescription("Applies a combinator to each element in two sequences")]
    [ElementSearchTags("zip")]
    [RequiresTransaction(false)]
-   public class dynCombine : dynElement
+   public class dynCombine : dynBuiltinFunction
    {
-      public dynCombine()
+      public dynCombine() : base("combine")
       {
          InPortData.Add(new PortData(null, "f(A, B)", "Combinator", typeof(object)));
          InPortData.Add(new PortData(null, "listA", "First list", typeof(object)));
@@ -703,11 +641,6 @@ namespace Dynamo.Elements
          OutPortData = new PortData(null, "[f(A,B)]", "Combined lists", typeof(object));
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("combine", portNames);
       }
    }
 
@@ -785,13 +718,48 @@ namespace Dynamo.Elements
       }
    }
 
+   public abstract class dynBuiltinFunction : dynElement
+   {
+      public string Symbol;
+
+      internal dynBuiltinFunction(string symbol)
+      {
+         this.Symbol = symbol;
+      }
+
+      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+      {
+         if (this.SaveResult)
+            return base.Compile(portNames);
+         else
+            return new FunctionNode(this.Symbol, portNames);
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol(this.Symbol)).Item;
+         return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
+      }
+   }
+
+   public abstract class dynBuiltinMacro : dynBuiltinFunction
+   {
+      internal dynBuiltinMacro(string symbol) : base(symbol) { }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var macro = ((Expression.Special)this.Bench.Environment.LookupSymbol(this.Symbol)).Item;
+         return macro.Invoke(ExecutionEnvironment.IDENT).Invoke(this.macroEnvironment.Env).Invoke(args);
+      }
+   }
+
    [ElementName("map")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Maps a sequence")]
    [RequiresTransaction(false)]
-   public class dynMap : dynElement
+   public class dynMap : dynBuiltinFunction
    {
-      public dynMap()
+      public dynMap() : base("map")
       {
          InPortData.Add(new PortData(null, "f(x)", "The procedure used to map elements", typeof(object)));
          InPortData.Add(new PortData(null, "seq", "The sequence to map over.", typeof(object)));
@@ -799,20 +767,15 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("map", portNames);
-      }
    }
 
    [ElementName("cons")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Creates a pair")]
    [RequiresTransaction(false)]
-   public class dynList : dynElement
+   public class dynList : dynBuiltinFunction
    {
-      public dynList()
+      public dynList() : base("cons")
       {
          InPortData.Add(new PortData(null, "first", "The new Head of the list", typeof(object)));
          InPortData.Add(new PortData(null, "rest", "The new Tail of the list", typeof(object)));
@@ -820,31 +783,21 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("cons", portNames);
-      }
    }
 
    [ElementName("take")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Takes elements from a list")]
    [RequiresTransaction(false)]
-   public class dynTakeList : dynElement
+   public class dynTakeList : dynBuiltinFunction
    {
-      public dynTakeList()
+      public dynTakeList() : base("take")
       {
          InPortData.Add(new PortData(null, "amt", "Amount of elements to extract", typeof(object)));
          InPortData.Add(new PortData(null, "list", "The list to extract elements from", typeof(object)));
          OutPortData = new PortData(null, "elements", "List of extraced elements", typeof(object));
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("take", portNames);
       }
    }
 
@@ -853,20 +806,15 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Drops elements from a list")]
    [RequiresTransaction(false)]
-   public class dynDropList : dynElement
+   public class dynDropList : dynBuiltinFunction
    {
-      public dynDropList()
+      public dynDropList() : base("drop")
       {
          InPortData.Add(new PortData(null, "amt", "Amount of elements to drop", typeof(object)));
          InPortData.Add(new PortData(null, "list", "The list to drop elements from", typeof(object)));
          OutPortData = new PortData(null, "elements", "List of remaining elements", typeof(object));
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("drop", portNames);
       }
    }
 
@@ -875,20 +823,15 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Gets an element from a list at a specified index.")]
    [RequiresTransaction(false)]
-   public class dynGetFromList : dynElement
+   public class dynGetFromList : dynBuiltinFunction
    {
-      public dynGetFromList()
+      public dynGetFromList() : base("get")
       {
          InPortData.Add(new PortData(null, "index", "Index of the element to extract", typeof(object)));
          InPortData.Add(new PortData(null, "list", "The list to extract elements from", typeof(object)));
          OutPortData = new PortData(null, "element", "Extracted element", typeof(object));
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("get", portNames);
       }
    }
 
@@ -907,6 +850,15 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
+      public override bool IsDirty
+      {
+         get
+         {
+            return false;
+         }
+         set { }
+      }
+
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          return Expression.NewList(FSharpList<Expression>.Empty);
@@ -917,19 +869,14 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Checks to see if the given list is empty.")]
    [RequiresTransaction(false)]
-   public class dynIsEmpty : dynElement
+   public class dynIsEmpty : dynBuiltinFunction
    {
-      public dynIsEmpty()
+      public dynIsEmpty() : base("empty?")
       {
          InPortData.Add(new PortData(null, "list", "A list", typeof(object)));
          OutPortData = new PortData(null, "empty?", "Is the given list empty?", typeof(bool));
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("empty?", portNames);
       }
    }
 
@@ -937,19 +884,14 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Gets the length of a list")]
    [RequiresTransaction(false)]
-   public class dynLength : dynElement
+   public class dynLength : dynBuiltinFunction
    {
-      public dynLength()
+      public dynLength() : base("len")
       {
          InPortData.Add(new PortData(null, "list", "A list", typeof(object)));
          OutPortData = new PortData(null, "length", "Length of the list", typeof(object));
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("len", portNames);
       }
    }
 
@@ -957,9 +899,9 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Appends two list")]
    [RequiresTransaction(false)]
-   public class dynAppend : dynElement
+   public class dynAppend : dynBuiltinFunction
    {
-      public dynAppend()
+      public dynAppend() : base("append")
       {
          InPortData.Add(new PortData(null, "listA", "First list", typeof(object)));
          InPortData.Add(new PortData(null, "listB", "Second list", typeof(object)));
@@ -967,30 +909,20 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("append", portNames);
-      }
    }
 
    [ElementName("first")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Gets the first element of a list")]
    [RequiresTransaction(false)]
-   public class dynFirst : dynElement
+   public class dynFirst : dynBuiltinFunction
    {
-      public dynFirst()
+      public dynFirst() : base("first")
       {
          InPortData.Add(new PortData(null, "list", "A list", typeof(object)));
          OutPortData = new PortData(null, "first", "First element in the list", typeof(object));
 
          base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("first", portNames);
       }
    }
 
@@ -998,23 +930,19 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Gets the list with the first element removed.")]
    [RequiresTransaction(false)]
-   public class dynRest : dynElement
+   public class dynRest : dynBuiltinFunction
    {
-      public dynRest()
+      public dynRest() : base("rest")
       {
          InPortData.Add(new PortData(null, "list", "A list", typeof(object)));
          OutPortData = new PortData(null, "rest", "List without the first element.", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode("rest", portNames);
-      }
    }
 
 
+   //TODO: Setup proper IsDirty smart execution management
    [ElementName("begin")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Executes expressions in a sequence")]
@@ -1053,31 +981,7 @@ namespace Dynamo.Elements
    }
 
 
-   //[ElementName("apply2")]
-   //[ElementCategory(BuiltinElementCategories.MISC)]
-   //[ElementDescription("Applies arguments to a function")]
-   //[RequiresTransaction(false)]
-   //public class dynApply2 : dynElement
-   //{
-   //   public dynApply2()
-   //   {
-   //      InPortData.Add(new PortData(null, "func", "Procedure", typeof(object)));
-   //      InPortData.Add(new PortData(null, "arg1", "Argument #1", typeof(object)));
-   //      InPortData.Add(new PortData(null, "arg2", "Argumnet #2", typeof(object)));
-   //      OutPortData = new PortData(null, "result", "Result", typeof(object)));
-
-   //      base.RegisterInputsAndOutputs();
-   //   }
-
-   //   protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-   //   {
-   //      var node = new ApplierNode();
-   //      node.AddInput("arg2");
-   //      return node;
-   //   }
-   //}
-
-
+   //TODO: Setup proper IsDirty smart execution management
    [ElementName("apply")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Applies arguments to a function")]
@@ -1099,12 +1003,6 @@ namespace Dynamo.Elements
 
       protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
-         //var node =  new ApplierNode();
-         //foreach (var name in portNames.Skip(1))
-         //{
-         //   node.AddInput(name);
-         //}
-         //return node;
          return new ApplierNode(portNames.Skip(1));
       }
 
@@ -1164,6 +1062,7 @@ namespace Dynamo.Elements
    }
 
 
+   //TODO: Setup proper IsDirty smart execution management
    [ElementName("if")]
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Conditional statement")]
@@ -1220,6 +1119,15 @@ namespace Dynamo.Elements
          tb.BorderThickness = new Thickness(0);
 
          base.RegisterInputsAndOutputs();
+      }
+
+      public override bool IsDirty
+      {
+         get
+         {
+            return false;
+         }
+         set { }
       }
 
       public string Symbol
@@ -1338,59 +1246,56 @@ namespace Dynamo.Elements
    }
 
 
+   //[RequiresTransaction(false)]
+   //[IsInteractive(false)]
+   //public class dynAnonFunction : dynElement
+   //{
+   //   private INode entryPoint;
+
+   //   public dynAnonFunction(IEnumerable<string> inputs, string output, INode entryPoint)
+   //   {
+   //      int i = 1;
+   //      foreach (string input in inputs)
+   //      {
+   //         InPortData.Add(new PortData(null, input, "Input #" + i++, typeof(object)));
+   //      }
+
+   //      OutPortData = new PortData(null, output, "function output", typeof(object));
+
+   //      this.entryPoint = entryPoint;
+
+   //      base.RegisterInputsAndOutputs();
+   //   }
+
+   //   protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+   //   {
+   //      return new AnonymousFunctionNode(portNames, this.entryPoint);
+   //   }
+   //}
+
+
    [RequiresTransaction(false)]
    [IsInteractive(false)]
-   public class dynAnonFunction : dynElement
+   public class dynFunction : dynBuiltinMacro
    {
-      private INode entryPoint;
-
-      public dynAnonFunction(IEnumerable<string> inputs, string output, INode entryPoint)
-      {
-         int i = 1;
-         foreach (string input in inputs)
-         {
-            InPortData.Add(new PortData(null, input, "Input #" + i++, typeof(object)));
-         }
-
-         OutPortData = new PortData(null, output, "function output", typeof(object));
-
-         this.entryPoint = entryPoint;
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new AnonymousFunctionNode(portNames, this.entryPoint);
-      }
-   }
-
-
-   [RequiresTransaction(false)]
-   [IsInteractive(false)]
-   public class dynFunction : dynElement
-   {
-      public string Symbol;
-
       public dynFunction(IEnumerable<string> inputs, string output, string symbol)
+         : base(symbol)
       {
          this.SetInputs(inputs);
 
          OutPortData = new PortData(null, output, "function output", typeof(object));
 
-         this.Symbol = symbol;
-
-         this.NickName = this.Symbol;
+         this.NickName = symbol;
 
          this.MouseDoubleClick += delegate
          {
-            dynElementSettings.SharedInstance.Bench.DisplayFunction(this.Symbol);
+            dynElementSettings.SharedInstance.Bench.DisplayFunction(symbol);
          };
 
          base.RegisterInputsAndOutputs();
       }
 
-      public dynFunction()
+      public dynFunction() : base(null)
       {
          this.MouseDoubleClick += delegate
          {
@@ -1402,15 +1307,25 @@ namespace Dynamo.Elements
       {
          get
          {
+            if (_taggedSymbols.Contains(this.Symbol))
+               return base.IsDirty;
+            _taggedSymbols.Add(this.Symbol);
+
             var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-            bool dirtyInternals = ws.Elements.Any(e => e.IsDirty);
-            //if (dirtyInternals)
-            //   base.IsDirty = true;
+            bool dirtyInternals = ws.Elements
+               //.Where(e => !(e is dynFunction && ((dynFunction)e).Symbol.Equals(this.Symbol)))
+               .Any(e => e.IsDirty);
             return dirtyInternals || base.IsDirty;
          }
          set
          {
             base.IsDirty = value;
+            if (!value)
+            {
+               var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+               foreach (var e in ws.Elements.Where(e => !(e is dynFunction && ((dynFunction)e).Symbol.Equals(this.Symbol))))
+                  e.IsDirty = false;
+            }
          }
       }
 
@@ -1498,18 +1413,18 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      protected internal override INode Build()
-      {
-         if (this.IsDirty)
-            return base.Build();
-         else
-            return new ExpressionNode(this.oldValue);
-      }
+      //protected internal override INode Build()
+      //{
+      //   if (this.SaveResult && !this.IsDirty)
+      //      return new ExpressionNode(this.oldValue);
+      //   else
+      //      return base.Build();
+      //}
 
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new FunctionNode(this.Symbol, portNames);
-      }
+      //protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+      //{
+      //   return new FunctionNode(this.Symbol, portNames);
+      //}
 
       public override void Destroy()
       {
@@ -1601,6 +1516,7 @@ namespace Dynamo.Elements
          //tb.IsReadOnly = true;
          //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
          //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+         tb.TextChanged += delegate { this.IsDirty = true; };
 
          //turn off the border
          SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -1649,94 +1565,6 @@ namespace Dynamo.Elements
          }
       }
 
-      #region Old Code
-
-      //public event PropertyChangedEventHandler PropertyChanged;
-
-      //private void NotifyPropertyChanged(String info)
-      //{
-      //   if (PropertyChanged != null)
-      //   {
-      //      PropertyChanged(this, new PropertyChangedEventArgs(info));
-      //   }
-      //}
-
-      //public override void Draw()
-      //{
-      //   Process();
-      //   base.Draw();
-      //}
-
-      //void Process()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      double newValue = (double)InPortData[0].Object; // new value is port 0
-      //      // double initialValue = (double)InPortData[1].Object; // init is port 1
-
-      //      if (newValue > CurrentValue) // if 
-      //      {
-      //         CurrentValue = newValue; // hill climber
-      //         OutPortData[0].Object = CurrentValue;
-      //         tb.Text = currentValue.ToString();
-      //      }
-      //   }
-      //}
-
-
-      //void tb_LostFocus(object sender, System.Windows.RoutedEventArgs e)
-      //{
-      //   try
-      //   {
-      //      //CurrentValue = Convert.ToDouble(tb.Text);
-
-      //      //trigger the ready to build event here
-      //      //because there are no inputs
-      //      //OnDynElementReadyToBuild(EventArgs.Empty);
-
-      //      this.CurrentValue = Convert.ToDouble(this.tb.Text);
-      //   }
-      //   catch
-      //   {
-      //      this.CurrentValue = 0.0;
-      //      //OutPortData[0].Object = CurrentValue;
-      //   }
-      //}
-
-      //void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-      //{
-      //   //if enter is pressed, update the value
-      //   if (e.Key == System.Windows.Input.Key.Enter)
-      //   {
-      //      TextBox tb = sender as TextBox;
-
-      //      try
-      //      {
-      //         //CurrentValue = Convert.ToDouble(tb.Text);
-
-      //         //trigger the ready to build event here
-      //         //because there are no inputs
-      //         //OnDynElementReadyToBuild(EventArgs.Empty);
-
-      //         this.CurrentValue = Convert.ToDouble(this.tb.Text);
-      //      }
-      //      catch
-      //      {
-      //         this.CurrentValue = 0.0;
-      //         //OutPortData[0].Object = CurrentValue;
-      //      }
-      //   }
-      //}
-
-      //public override void Update()
-      //{
-      //   tb.Text = CurrentValue.ToString();
-
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-
-      #endregion
-
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          double newValue = (args.Head as Expression.Number).Item;
@@ -1769,6 +1597,7 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "0";
+         tb.TextChanged += delegate { this.IsDirty = true; };
          //tb.IsReadOnly = true;
          //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
          //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
@@ -1815,102 +1644,6 @@ namespace Dynamo.Elements
          }
       }
 
-      #region Old Code
-
-      //public event PropertyChangedEventHandler PropertyChanged;
-
-      //private void NotifyPropertyChanged(String info)
-      //{
-      //   if (PropertyChanged != null)
-      //   {
-      //      PropertyChanged(this, new PropertyChangedEventArgs(info));
-      //   }
-      //}
-
-      //public override void Draw()
-      //{
-      //   Process();
-      //   base.Draw();
-      //}
-
-      //void Process()
-      //{
-
-
-      //   if (CheckInputs())
-      //   {
-      //      int maxIterations = (int)InPortData[0].Object; // max iterations is port 0
-      //      double newValue = (double)InPortData[1].Object; // new value is port 1
-
-      //      if (NumIterations < maxIterations)// march up unto; max
-      //      {
-      //         if (newValue != CurrentValue) // if they vary at all, count that as a change and incretemnt counter.
-      //         {
-      //            CurrentValue = newValue;
-      //            NumIterations++;//main thing we want is to increment
-
-      //            OutPortData[0].Object = NumIterations;//pass out num iterations to port 0
-      //            OutPortData[1].Object = CurrentValue;//pass through value
-      //            tb.Text = NumIterations.ToString(); //show the counter value
-      //         }
-      //         return;
-      //      }
-      //      return;
-      //   }
-      //}
-
-
-      //void tb_LostFocus(object sender, System.Windows.RoutedEventArgs e)
-      //{
-      //   try
-      //   {
-      //      NumIterations = Convert.ToInt32(tb.Text);
-
-      //      //trigger the ready to build event here
-      //      //because there are no inputs
-      //      //OnDynElementReadyToBuild(EventArgs.Empty);
-      //   }
-      //   catch
-      //   {
-      //      NumIterations = 0;
-      //      //OutPortData[0].Object = NumIterations;
-      //   }
-      //}
-
-      //void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-      //{
-      //   //if enter is pressed, update the value
-      //   if (e.Key == System.Windows.Input.Key.Enter)
-      //   {
-      //      TextBox tb = sender as TextBox;
-
-      //      try
-      //      {
-      //         NumIterations = Convert.ToInt32(tb.Text);
-
-      //         //trigger the ready to build event here
-      //         //because there are no inputs
-      //         //OnDynElementReadyToBuild(EventArgs.Empty);
-      //      }
-      //      catch
-      //      {
-      //         NumIterations = 0;
-      //         //OutPortData[0].Object = NumIterations;
-      //      }
-
-      //   }
-
-      //}
-
-      //public override void Update()
-      //{
-      //   tb.Text = NumIterations.ToString();
-
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-
-      #endregion
-
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          double maxIterations = (args[0] as Expression.Number).Item;
@@ -1919,7 +1652,9 @@ namespace Dynamo.Elements
          {
             this.NumIterations++;
             this.CurrentValue = newValue;
-            this.tb.Text = this.NumIterations.ToString();
+            this.tb.Dispatcher.Invoke(new Action(
+               delegate { this.tb.Text = this.NumIterations.ToString(); }
+            ));
          }
          return Expression.NewNumber(this.NumIterations);
       }
@@ -1967,6 +1702,7 @@ namespace Dynamo.Elements
          get { return pickedAnalysisResult; }
          set
          {
+            this.IsDirty = true;
             pickedAnalysisResult = value;
             NotifyPropertyChanged("PickedAnalysisResult");
          }
@@ -1985,9 +1721,6 @@ namespace Dynamo.Elements
       }
       void analysisResultButt_Click(object sender, System.Windows.RoutedEventArgs e)
       {
-         //read from the state objects
-         //if (CheckInputs())
-         //{
          PickedAnalysisResult =
             Dynamo.Utilities.SelectionHelper.RequestAnalysisResultInstanceSelection(
                dynElementSettings.SharedInstance.Doc,
@@ -1998,77 +1731,9 @@ namespace Dynamo.Elements
          if (PickedAnalysisResult != null)
          {
             AnalysisResultID = PickedAnalysisResult.Id;
-            //Process(); // don't need to pass in anything because analysis rssult and tree already have accesors.
          }
-         //}
       }
 
-      #region Old Code
-
-      //public override void Draw()
-      //{
-
-      //   // watch?
-      //   //currentBranch.Leaves.Add(fi);
-
-      //   Process(); // don't need to pass in anything because analysis rssult and tree already have accesors.
-      //   base.Draw();
-      //}
-
-      //public void Process()
-      //{
-      //   if (PickedAnalysisResult != null)
-      //   {
-      //      if (PickedAnalysisResult.Id.IntegerValue == AnalysisResultID.IntegerValue) // sanity check
-      //      {
-      //         SpatialFieldManager dmu_sfm = dynElementSettings.SharedInstance.SpatialFieldManagerUpdated as SpatialFieldManager;
-
-      //         if (pickedAnalysisResult.Id.IntegerValue == dmu_sfm.Id.IntegerValue)
-      //         {
-      //            TaskDialog.Show("ah hah", "picked sfm equals saved one from dmu");
-      //         }
-      //         //need to put a watcher on this to ensure deletion works 
-      //         this.Tree.Clear(); // clean out old refs
-      //         this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-      //         this.Tree.Trunk.Branches[0].Leaves.Add(PickedAnalysisResult);
-
-
-      //         ////let's look a the collection of AR data!
-      //         //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-
-
-      //         //SpatialFieldManager avf = PickedAnalysisResult as SpatialFieldManager;
-      //         //IList<int>resultsList = new List<int>();
-
-
-      //         //resultsList = avf.GetRegisteredResults();
-      //         //int numMeasurements = avf.NumberOfMeasurements;
-      //         //this.Tree.Trunk.Branches[1].Leaves.Add(numMeasurements);
-
-      //         ////avf.
-
-      //         //foreach (int value in resultsList)
-      //         //{
-      //         //    this.Tree.Trunk.Branches[1].Leaves.Add(value);
-      //         //}
-
-      //         OutPortData[0].Object = this.Tree;
-      //         OnDynElementReadyToBuild(EventArgs.Empty);//kick it
-      //      }
-      //   }
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-
-      //public override void Destroy()
-      //{
-      //   //base.Destroy();
-      //}
-
-      #endregion
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
@@ -2102,12 +1767,43 @@ namespace Dynamo.Elements
 
       public dynDoubleSliderInput()
       {
+         TextBox mintb = new TextBox();
+         mintb.MaxLength = 3;
+         mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         mintb.Width = double.NaN;
+         mintb.Text = "0";
+         mintb.TextChanged += delegate { this.tb_slider.Minimum = Convert.ToDouble(mintb.Text); };
+
+         //turn off the border
+         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+         mintb.Background = backgroundBrush;
+         mintb.BorderThickness = new Thickness(0);//turn off the border
+
+         TextBox maxtb = new TextBox();
+         maxtb.MaxLength = 3;
+         maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         maxtb.Width = double.NaN;
+         maxtb.Text = "100";
+         maxtb.TextChanged += delegate { this.tb_slider.Maximum = Convert.ToDouble(maxtb.Text); };
+
+         maxtb.Background = backgroundBrush;
+         maxtb.BorderThickness = new Thickness(0);
+
+         this.SetColumnAmount(3);
+         inputGrid.Children.Add(mintb);
+         inputGrid.Children.Add(maxtb);
+
+         System.Windows.Controls.Grid.SetColumn(mintb, 0);
+         System.Windows.Controls.Grid.SetColumn(maxtb, 2);
+
          //add a slider control to the input grid of the control
          tb_slider = new System.Windows.Controls.Slider();
          tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
          tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          inputGrid.Children.Add(tb_slider);
-         System.Windows.Controls.Grid.SetColumn(tb_slider, 0);
+         System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
          System.Windows.Controls.Grid.SetRow(tb_slider, 0);
          tb_slider.Value = 0.0;
          tb_slider.Maximum = 100.0;
@@ -2139,42 +1835,6 @@ namespace Dynamo.Elements
       {
          get { return this.tb_slider.Value; }
       }
-
-      #region Old Code
-
-      //double currentValue;
-
-      //void tb_slider_ValueChanged(object sender, System.Windows.RoutedEventArgs e)
-      //{
-      //   try
-      //   {
-      //      this.currentValue = tb_slider.Value;
-
-      //      //trigger the ready to build event here
-      //      //because there are no inputs
-      //      //OnDynElementReadyToBuild(EventArgs.Empty);
-      //   }
-      //   catch
-      //   {
-      //      this.currentValue = 0.0;
-      //   }
-      //}
-
-      //public override void Update()
-      //{
-      //if (CheckInputs())
-      //{
-      //set the bounds
-      //tb_slider.Minimum = (double)InPortData[0].Object;
-      //tb_slider.Maximum = (double)InPortData[1].Object;
-      //}
-
-      //tb_slider.Value = (double)OutPortData[0].Object;
-
-      //OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-
-      #endregion
    }
 
    [ElementName("Boolean")]
@@ -2271,110 +1931,6 @@ namespace Dynamo.Elements
       }
    }
 
-   //[ElementName("Int")]
-   //[ElementDescription("An element which creates a signed integer value.")]
-   //[RequiresTransaction(false)]
-   //public class dynIntInput : dynDouble
-   //{
-   //   TextBox tb;
-
-   //   public dynIntInput()
-   //   {
-   //      //add a text box to the input grid of the control
-   //      tb = new System.Windows.Controls.TextBox();
-   //      tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-   //      tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-   //      inputGrid.Children.Add(tb);
-   //      System.Windows.Controls.Grid.SetColumn(tb, 0);
-   //      System.Windows.Controls.Grid.SetRow(tb, 0);
-   //      tb.Text = "0";
-   //      //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-   //      //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
-
-   //      //turn off the border
-   //      SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-   //      tb.Background = backgroundBrush;
-   //      tb.BorderThickness = new Thickness(0);
-
-   //      OutPortData[0].Object = 0;
-
-   //      base.RegisterInputsAndOutputs();
-   //   }
-
-   //   #region Old Code
-
-   //   //int currentValue;
-
-   //   //void tb_LostFocus(object sender, System.Windows.RoutedEventArgs e)
-   //   //{
-   //   //   try
-   //   //   {
-   //   //      //OutPortData[0].Object = Convert.ToInt32(tb.Text);
-
-   //   //      this.currentValue = Convert.ToInt32(tb.Text);
-
-   //   //      //trigger the ready to build event here
-   //   //      //because there are no inputs
-   //   //      //OnDynElementReadyToBuild(EventArgs.Empty);
-   //   //   }
-   //   //   catch
-   //   //   {
-   //   //      //OutPortData[0].Object = 0;
-   //   //      this.currentValue = 0;
-   //   //   }
-   //   //}
-
-   //   //void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-   //   //{
-   //   //   //if enter is pressed, update the value
-   //   //   if (e.Key == System.Windows.Input.Key.Enter)
-   //   //   {
-   //   //      TextBox tb = sender as TextBox;
-
-   //   //      try
-   //   //      {
-   //   //         //OutPortData[0].Object = Convert.ToInt32(tb.Text);
-
-   //   //         this.currentValue = Convert.ToInt32(tb.Text);
-
-   //   //         //trigger the ready to build event here
-   //   //         //because there are no inputs
-   //   //         //OnDynElementReadyToBuild(EventArgs.Empty);
-   //   //      }
-   //   //      catch
-   //   //      {
-   //   //         //OutPortData[0].Object = 0;
-   //   //         this.currentValue = 0;
-   //   //      }
-   //   //   }
-   //   //}
-
-   //   //public override void Update()
-   //   //{
-   //   //   //tb.Text = OutPortData[0].Object.ToString();
-   //   //   tb.Text = this.currentValue.ToString();
-
-   //   //   //OnDynElementReadyToBuild(EventArgs.Empty);
-   //   //}
-
-   //   #endregion
-
-   //   protected override double Value
-   //   {
-   //      get
-   //      {
-   //         try
-   //         {
-   //            return Convert.ToInt32(tb.Text);
-   //         }
-   //         catch
-   //         {
-   //            tb.Text = "0";
-   //            return 0;
-   //         }
-   //      }
-   //   }
-   //}
 
    [ElementName("String")]
    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
@@ -2407,65 +1963,6 @@ namespace Dynamo.Elements
 
          base.RegisterInputsAndOutputs();
       }
-
-      #region Old Code
-
-      //string currentValue;
-
-      //void tb_LostFocus(object sender, System.Windows.RoutedEventArgs e)
-      //{
-      //   try
-      //   {
-      //      //OutPortData[0].Object = tb.Text;
-
-      //      this.currentValue = tb.Text;
-
-      //      //trigger the ready to build event here
-      //      //because there are no inputs
-      //      //OnDynElementReadyToBuild(EventArgs.Empty);
-      //   }
-      //   catch
-      //   {
-      //      //OutPortData[0].Object = 0;
-      //      this.currentValue = "";
-      //   }
-      //}
-
-      //void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-      //{
-      //   //if enter is pressed, update the value
-      //   if (e.Key == System.Windows.Input.Key.Enter)
-      //   {
-      //      TextBox tb = sender as TextBox;
-
-      //      try
-      //      {
-      //         //OutPortData[0].Object = tb.Text;
-
-      //         this.currentValue = tb.Text;
-
-      //         //trigger the ready to build event here
-      //         //because there are no inputs
-      //         //OnDynElementReadyToBuild(EventArgs.Empty);
-      //      }
-      //      catch
-      //      {
-      //         //OutPortData[0].Object = 0;
-      //         this.currentValue = "";
-      //      }
-      //   }
-      //}
-
-      //public override void Update()
-      //{
-      //   //tb.Text = OutPortData[0].Object.ToString();
-
-      //   tb.Text = this.currentValue;
-
-      //   //OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-
-      #endregion
 
       protected override string Value
       {
@@ -2640,6 +2137,7 @@ namespace Dynamo.Elements
          while (port.BytesToRead > 0)
          {
             this.data = port.ReadByte();
+            this.IsDirty = true;
          }
 
          //this.OutPortData[0].Object = Convert.ToDouble(data);
@@ -2659,444 +2157,6 @@ namespace Dynamo.Elements
 
    }
 
-   //[ElementName("Kinect")]
-   //[ElementCategory(BuiltinElementCategories.MISC)]
-   //[ElementDescription("An element which allows you to read from a Kinect.")]
-   //[RequiresTransaction(true)]
-   //public class dynKinect : dynElement
-   //{
-   //   //Kinect Runtime
-   //   Runtime nui;
-   //   Image image1;
-   //   PlanarImage planarImage;
-   //   XYZ rightHandLoc = new XYZ();
-   //   ReferencePoint rightHandPt;
-   //   System.Windows.Shapes.Ellipse rightHandEllipse;
-
-   //   public dynKinect()
-   //   {
-   //      //InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(dynTimer)));
-   //      InPortData.Add(new PortData(null, "X scale", "The amount to scale the skeletal measurements in the X direction.", typeof(double)));
-   //      InPortData.Add(new PortData(null, "Y scale", "The amount to scale the skeletal measurements in the Y direction.", typeof(double)));
-   //      InPortData.Add(new PortData(null, "Z scale", "The amount to scale the skeletal measurements in the Z direction.", typeof(double)));
-
-   //      OutPortData = new PortData(null, "Hand", "Reference point representing hand location", typeof(ReferencePoint)));
-   //      //OutPortData[0].Object = this.Tree;
-
-   //      image1 = new Image();
-   //      image1.Width = 320;
-   //      image1.Height = 240;
-   //      image1.Margin = new Thickness(5);
-   //      image1.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-   //      image1.Name = "image1";
-   //      image1.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-   //      //image1.Margin = new Thickness(0, 0, 0, 0);
-
-   //      Canvas trackingCanvas = new Canvas();
-   //      trackingCanvas.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-   //      trackingCanvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-
-   //      //add an ellipse to track the hand
-   //      rightHandEllipse = new System.Windows.Shapes.Ellipse();
-   //      rightHandEllipse.Height = 10;
-   //      rightHandEllipse.Width = 10;
-   //      rightHandEllipse.Name = "rightHandEllipse";
-   //      SolidColorBrush yellowBrush = new SolidColorBrush(System.Windows.Media.Colors.OrangeRed);
-   //      rightHandEllipse.Fill = yellowBrush;
-
-   //      this.inputGrid.Children.Add(image1);
-   //      this.inputGrid.Children.Add(trackingCanvas);
-   //      trackingCanvas.Children.Add(rightHandEllipse);
-
-   //      base.RegisterInputsAndOutputs();
-
-   //      this.Width = 450;
-   //      this.Height = 240 + 5;
-
-   //      this.Loaded += new RoutedEventHandler(topControl_Loaded);
-   //   }
-
-   //   void topControl_Loaded(object sender, RoutedEventArgs e)
-   //   {
-   //      SetupKinect();
-   //      //nui.VideoFrameReady += new EventHandler<ImageFrameReadyEventArgs>(nui_VideoFrameReady);
-   //      //nui.DepthFrameReady += new EventHandler<ImageFrameReadyEventArgs>(nui_DepthFrameReady);
-   //      //nui.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(nui_SkeletonFrameReady);
-   //      //nui.VideoStream.Open(ImageStreamType.Video, 2, Microsoft.Research.Kinect.Nui.ImageResolution.Resolution640x480, ImageType.Color);
-   //      nui.DepthStream.Open(ImageStreamType.Depth, 2, Microsoft.Research.Kinect.Nui.ImageResolution.Resolution320x240, ImageType.Depth);
-   //   }
-
-   //   public override Expression Evaluate(FSharpList<Expression> args)
-   //   {
-   //      if (rightHandPt == null)
-   //      {
-   //         //create a reference point to track the right hand
-   //         rightHandPt = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(rightHandLoc);
-   //         System.Windows.Point relativePoint =
-   //            rightHandEllipse.TransformToAncestor(dynElementSettings.SharedInstance.Bench.workBench)
-   //                            .Transform(new System.Windows.Point(0, 0));
-
-   //         Canvas.SetLeft(rightHandEllipse, relativePoint.X);
-   //         Canvas.SetTop(rightHandEllipse, relativePoint.Y);
-
-   //         //add the right hand point at the base of the tree
-   //         //this.Tree.Trunk.Leaves.Add(rightHandPt);
-   //      }
-
-   //      //if (CheckInputs())
-   //      //{
-   //      double xScale = (args[1] as Expression.Number).Item;
-   //      double yScale = (args[2] as Expression.Number).Item;
-   //      double zScale = (args[3] as Expression.Number).Item;
-
-   //      //update the image
-   //      image1.Source = nui.DepthStream.GetNextFrame(0).ToBitmapSource();
-
-   //      //get skeletonData
-   //      SkeletonFrame allSkeletons = nui.SkeletonEngine.GetNextFrame(0);
-
-   //      if (allSkeletons != null)
-   //      {
-   //         //get the first tracked skeleton
-   //         SkeletonData skeleton = (from s in allSkeletons.Skeletons
-   //                                  where s.TrackingState == SkeletonTrackingState.Tracked
-   //                                  select s).FirstOrDefault();
-
-   //         if (skeleton != null)
-   //         {
-   //            Joint HandRight = skeleton.Joints[JointID.HandRight];
-   //            rightHandLoc = new XYZ(HandRight.Position.X * xScale, HandRight.Position.Z * zScale, HandRight.Position.Y * yScale);
-
-   //            SetEllipsePosition(rightHandEllipse, HandRight);
-
-   //            XYZ vec = rightHandLoc - rightHandPt.Position;
-   //            Debug.WriteLine(vec.ToString());
-
-   //            //move the reference point
-   //            dynElementSettings.SharedInstance.Doc.Document.Move(rightHandPt, vec);
-
-   //            dynElementSettings.SharedInstance.Doc.RefreshActiveView();
-   //         }
-   //      }
-   //      //}
-
-   //      return Expression.NewContainer(this.rightHandPt);
-   //   }
-
-   //   public override void Draw()
-   //   {
-   //      if (rightHandPt == null)
-   //      {
-   //         //create a reference point to track the right hand
-   //         rightHandPt = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(rightHandLoc);
-   //         System.Windows.Point relativePoint = rightHandEllipse.TransformToAncestor(dynElementSettings.SharedInstance.Bench.workBench)
-   //                       .Transform(new System.Windows.Point(0, 0));
-   //         Canvas.SetLeft(rightHandEllipse, relativePoint.X);
-   //         Canvas.SetTop(rightHandEllipse, relativePoint.Y);
-
-   //         //add the right hand point at the base of the tree
-   //         this.Tree.Trunk.Leaves.Add(rightHandPt);
-   //      }
-
-   //      if (CheckInputs())
-   //      {
-   //         double xScale = Convert.ToDouble(InPortData[1].Object);
-   //         double yScale = Convert.ToDouble(InPortData[2].Object);
-   //         double zScale = Convert.ToDouble(InPortData[3].Object);
-
-   //         //update the image
-   //         image1.Source = nui.DepthStream.GetNextFrame(0).ToBitmapSource();
-
-   //         //get skeletonData
-   //         SkeletonFrame allSkeletons = nui.SkeletonEngine.GetNextFrame(0);
-
-   //         if (allSkeletons != null)
-   //         {
-   //            //get the first tracked skeleton
-   //            SkeletonData skeleton = (from s in allSkeletons.Skeletons
-   //                                     where s.TrackingState == SkeletonTrackingState.Tracked
-   //                                     select s).FirstOrDefault();
-
-   //            if (skeleton != null)
-   //            {
-   //               Joint HandRight = skeleton.Joints[JointID.HandRight];
-   //               rightHandLoc = new XYZ(HandRight.Position.X * xScale, HandRight.Position.Z * zScale, HandRight.Position.Y * yScale);
-
-   //               SetEllipsePosition(rightHandEllipse, HandRight);
-
-   //               XYZ vec = rightHandLoc - rightHandPt.Position;
-   //               Debug.WriteLine(vec.ToString());
-
-   //               //move the reference point
-   //               dynElementSettings.SharedInstance.Doc.Document.Move(rightHandPt, vec);
-
-   //               dynElementSettings.SharedInstance.Doc.RefreshActiveView();
-   //            }
-   //         }
-   //      }
-
-   //   }
-
-   //   public override void Destroy()
-   //   {
-   //      //don't call destroy
-   //      //base.Destroy();
-   //   }
-
-   //   public override void Update()
-   //   {
-   //      OnDynElementReadyToBuild(EventArgs.Empty);
-   //   }
-
-   //   private void SetEllipsePosition(FrameworkElement ellipse, Joint joint)
-   //   {
-   //      var scaledJoint = joint.ScaleTo(320, 240, .5f, .5f);
-
-   //      //System.Windows.Point relativePoint = ellipse.TransformToAncestor(dynElementSettings.SharedInstance.Bench.workBench)
-   //      //                  .Transform(new System.Windows.Point(scaledJoint.Position.X, scaledJoint.Position.Y));
-
-   //      //Canvas.SetLeft(ellipse, relativePoint.X);
-   //      //Canvas.SetTop(ellipse, relativePoint.Y);
-
-   //      Canvas.SetLeft(ellipse, scaledJoint.Position.X);
-   //      Canvas.SetTop(ellipse, scaledJoint.Position.Y);
-   //   }
-
-   //   //void nui_VideoFrameReady(object sender, ImageFrameReadyEventArgs e)
-   //   //{
-   //   //    PlanarImage image = e.ImageFrame.Image;
-   //   //    image1.Source = e.ImageFrame.ToBitmapSource();
-   //   //}
-
-   //   void nui_DepthFrameReady(object sender, ImageFrameReadyEventArgs e)
-   //   {
-   //      planarImage = e.ImageFrame.Image;
-   //      image1.Source = e.ImageFrame.ToBitmapSource();
-
-   //   }
-
-   //   void nui_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-   //   {
-   //      SkeletonFrame allSkeletons = e.SkeletonFrame;
-
-   //      //get the first tracked skeleton
-   //      SkeletonData skeleton = (from s in allSkeletons.Skeletons
-   //                               where s.TrackingState == SkeletonTrackingState.Tracked
-   //                               select s).FirstOrDefault();
-
-   //      Joint HandRight = skeleton.Joints[JointID.HandRight];
-   //      rightHandLoc = new XYZ(HandRight.Position.X, HandRight.Position.Y, HandRight.Position.Z);
-
-   //      //move the reference point
-   //      dynElementSettings.SharedInstance.Doc.Document.Move(rightHandPt, rightHandLoc - rightHandPt.Position);
-   //   }
-
-   //   private void SetupKinect()
-   //   {
-   //      if (Runtime.Kinects.Count == 0)
-   //      {
-   //         this.inputGrid.ToolTip = "No Kinect connected";
-   //      }
-   //      else
-   //      {
-   //         //use first Kinect
-   //         nui = Runtime.Kinects[0];         //Initialize to return both Color & Depth images
-   //         //nui.Initialize(RuntimeOptions.UseColor | RuntimeOptions.UseDepth);
-   //         nui.Initialize(RuntimeOptions.UseDepth | RuntimeOptions.UseSkeletalTracking);
-   //      }
-
-   //   }
-   //}
-
-   //[ElementName("Timer")]
-   //[ElementDescription("An element which allows you to specify an update frequency in milliseconds.")]
-   //[RequiresTransaction(false)]
-   //public class dynTimer : dynElement, IDynamic
-   //{
-   //   Stopwatch sw;
-   //   bool timing = false;
-
-   //   public dynTimer()
-   //   {
-   //      InPortData.Add(new PortData(null, "n", "How often to receive updates in milliseconds.", typeof(dynInt)));
-   //      InPortData.Add(new PortData(null, "i/o", "Turn the timer on or off", typeof(dynBool)));
-   //      OutPortData = new PortData(null, "tim", "The timer, counting in milliseconds.", typeof(dynTimer)));
-   //      OutPortData[0].Object = this;
-
-   //      base.RegisterInputsAndOutputs();
-
-   //      sw = new Stopwatch();
-
-   //   }
-
-   //   void KeepTime()
-   //   {
-   //      if (CheckInputs())
-   //      {
-   //         bool on = Convert.ToBoolean(InPortData[1].Object);
-   //         if (on)
-   //         {
-   //            int interval = Convert.ToInt16(InPortData[0].Object);
-
-   //            if (sw.ElapsedMilliseconds > interval)
-   //            {
-   //               sw.Stop();
-   //               sw.Reset();
-   //               OnDynElementReadyToBuild(EventArgs.Empty);
-   //               sw.Start();
-   //            }
-   //         }
-   //      }
-   //   }
-
-   //   public override void Draw()
-   //   {
-   //      if (CheckInputs())
-   //      {
-   //         bool isTiming = Convert.ToBoolean(InPortData[0].Object);
-
-   //         if (timing)
-   //         {
-   //            if (!isTiming)  //if you are timing and we turn off the timer
-   //            {
-   //               timing = false; //stop
-   //               sw.Stop();
-   //               sw.Reset();
-   //            }
-   //         }
-   //         else
-   //         {
-   //            if (isTiming)
-   //            {
-   //               timing = true;  //if you are not timing and we turn on the timer
-   //               sw.Start();
-   //               while (timing)
-   //               {
-   //                  KeepTime();
-   //               }
-   //            }
-   //         }
-   //      }
-   //   }
-
-   //   public override void Update()
-   //   {
-   //      OnDynElementReadyToBuild(EventArgs.Empty);
-   //   }
-
-   //}
-
-   //[ElementName("Watch")]
-   //[ElementDescription("Create an element for watching the results of other operations.")]
-   //[RequiresTransaction(false)]
-   //public class dynWatch : dynElement, IDynamic, INotifyPropertyChanged
-   //{
-   //   //System.Windows.Controls.Label label;
-   //   //System.Windows.Controls.ListBox listBox;
-   //   System.Windows.Controls.TextBox tb;
-
-   //   string watchValue;
-
-   //   public event PropertyChangedEventHandler PropertyChanged;
-
-   //   private void NotifyPropertyChanged(String info)
-   //   {
-   //      if (PropertyChanged != null)
-   //      {
-   //         PropertyChanged(this, new PropertyChangedEventArgs(info));
-   //      }
-   //   }
-
-   //   public string WatchValue
-   //   {
-   //      get { return watchValue; }
-   //      set
-   //      {
-   //         watchValue = value;
-   //         NotifyPropertyChanged("WatchValue");
-   //      }
-   //   }
-
-   //   public dynWatch()
-   //   {
-
-   //      //add a list box
-   //      System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
-   //      tb.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-   //      tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-
-   //      //turn off the border
-   //      SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-   //      tb.Background = backgroundBrush;
-   //      tb.BorderThickness = new Thickness(0);
-
-   //      WatchValue = "Ready to watch!";
-
-   //      //http://learnwpf.com/post/2006/06/12/How-can-I-create-a-data-binding-in-code-using-WPF.aspx
-
-   //      System.Windows.Data.Binding b = new System.Windows.Data.Binding("WatchValue");
-   //      b.Source = this;
-   //      //label.SetBinding(System.Windows.Controls.Label.ContentProperty, b);
-   //      tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, b);
-
-   //      //this.inputGrid.Children.Add(label);
-   //      this.inputGrid.Children.Add(tb);
-   //      tb.TextWrapping = System.Windows.TextWrapping.Wrap;
-   //      tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-   //      //tb.AcceptsReturn = true;
-
-   //      InPortData.Add(new PortData(null, "", "The Element to watch", typeof(dynElement)));
-
-
-   //      base.RegisterInputsAndOutputs();
-
-   //      //resize the panel
-   //      this.topControl.Height = 100;
-   //      this.topControl.Width = 300;
-   //      UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-   //      Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-   //      //this.UpdateLayout();
-   //   }
-
-   //   public override void Draw()
-   //   {
-   //      if (CheckInputs())
-   //      {
-   //         WatchValue = InPortData[0].Object.ToString();
-   //         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-   //         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-
-   //         //DataTree tree = InPortData[0].Object as DataTree;
-
-   //         //if (tree != null)
-   //         //{
-   //         //    WatchValue = tree.ToString();
-
-   //         //    UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-   //         //    Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-   //         //}
-   //         //else
-   //         //{
-   //         //    //find the object as a string
-   //         //    WatchValue = InPortData[0].Object.ToString();
-   //         //    UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-   //         //    Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-   //         //}
-   //      }
-   //   }
-
-
-   //   public override void Destroy()
-   //   {
-   //      base.Destroy();
-   //   }
-
-   //   public override void Update()
-   //   {
-   //      //this.topControl.Height = 400;
-   //      OnDynElementReadyToBuild(EventArgs.Empty);
-   //   }
-   //}
 
    [ElementName("Extract Solar Radiation Value")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
@@ -3226,58 +2286,6 @@ namespace Dynamo.Elements
          }
       }
 
-      #region OldCode
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      DataTree tree = InPortData[0].Object as DataTree;
-
-      //      if (tree != null)
-      //      {
-      //         SumValue = 0.0; // reset to ensue we don't count on refresh
-      //         Process(tree.Trunk.Branches[0]); // add em back up
-      //         WatchValue = "Computed Sum of SR Values: " + SumValue.ToString() + "\n";
-      //         //WatchValue = WatchValue + tree.ToString(); // MDJ presume data is in a data tree, one line in each datatree leaf
-      //         //this.Tree.Clear();
-      //         // this.Tree.Trunk.Branches[0].Leaves.Add(SumValue);
-      //         try
-      //         {
-      //            OutPortData[0].Object = SumValue;
-      //         }
-      //         catch (Exception e)
-      //         {
-      //            TaskDialog.Show("Error", e.ToString());
-      //         }
-
-      //         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-      //         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-      //      }
-      //      else
-      //      {
-      //         TaskDialog.Show("Error", "Please use this element for computing and showing solar radiation data");
-      //         //find the object as a string
-      //         WatchValue = InPortData[0].Object.ToString();
-      //         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-      //         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-      //      }
-      //   }
-      //}
-
-      //public override void Destroy()
-      //{
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   //this.topControl.Height = 400;
-      //   //OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-
-      #endregion
-
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          string data = ((Expression.String)args[0]).Item;
@@ -3310,153 +2318,19 @@ namespace Dynamo.Elements
 
 
    //SJE
-   //TODO: Fix when Refresh() is implemented
-   //      When the file has been updated, call refresh
    [ElementName("Read File")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
    [RequiresTransaction(false)]
    public class dynFileReader : dynElement
    {
-      //System.Windows.Controls.Label label;
-      //System.Windows.Controls.ListBox listBox;
-      //System.Windows.Controls.TextBox tb;
-
-      //string dataFromFileString;
-      //string filePath = "";
-
-      //public event PropertyChangedEventHandler PropertyChanged;
-
-      //private void NotifyPropertyChanged(String info)
-      //{
-      //   if (PropertyChanged != null)
-      //   {
-      //      PropertyChanged(this, new PropertyChangedEventArgs(info));
-      //   }
-      //}
-
-      //public string DataFromFileString
-      //{
-      //   get { return dataFromFileString; }
-      //   set
-      //   {
-      //      dataFromFileString = value;
-      //      NotifyPropertyChanged("DataFromFileString");
-      //   }
-      //}
-
-      //public string FilePath
-      //{
-      //   get { return filePath; }
-      //   set
-      //   {
-      //      filePath = value;
-      //      NotifyPropertyChanged("FilePath");
-      //   }
-      //}
-
       public dynFileReader()
       {
-         //StackPanel myStackPanel;
-
-         ////Define a StackPanel
-         //myStackPanel = new StackPanel();
-         //myStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
-         //System.Windows.Controls.Grid.SetRow(myStackPanel, 1);
-
-         //this.inputGrid.Children.Add(myStackPanel);
-
-         ////add a button to the inputGrid on the dynElement
-         //System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
-
-         //System.Windows.Controls.Grid.SetColumn(readFileButton, 0); // trying to get this button to be on top... grrr.
-         //System.Windows.Controls.Grid.SetRow(readFileButton, 0);
-         //readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-         //readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         //readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         //readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
-         //readFileButton.Content = "Read File";
-         //readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         //readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-         //myStackPanel.Children.Add(readFileButton);
-
-
-         ////add a list box
-         ////label = new System.Windows.Controls.Label();
-         //System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
-         ////tb.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-         ////tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-
-         //DataFromFileString = "Ready to read file!";
-
-         ////http://learnwpf.com/post/2006/06/12/How-can-I-create-a-data-binding-in-code-using-WPF.aspx
-
-
-         ////this.inputGrid.Children.Add(label);
-         ////this.inputGrid.Children.Add(tb);
-         ////tb.Visibility = System.Windows.Visibility.Hidden;
-         ////System.Windows.Controls.Grid.SetColumn(tb, 0);
-         ////System.Windows.Controls.Grid.SetRow(tb, 1);
-         //tb.TextWrapping = System.Windows.TextWrapping.Wrap;
-         //tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-         //tb.Height = 100;
-         ////tb.AcceptsReturn = true;
-
-         //System.Windows.Data.Binding b = new System.Windows.Data.Binding("DataFromFileString");
-         //b.Source = this;
-         //tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, b);
-
-         //myStackPanel.Children.Add(tb);
-         //myStackPanel.Height = 200;
-
-         //InPortData.Add(new PortData(null, "", "The Element to watch", typeof(dynElement)));
          InPortData.Add(new PortData(null, "path", "Path to the file", typeof(string)));
-         //InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(dynTimer)));
-
          OutPortData = new PortData(null, "contents", "File contents", typeof(string));
-         //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-         //this.Tree.Trunk.Branches[0].Leaves.Add(DataFromFileString);
-         //OutPortData[0].Object = this.Tree;
-
+         
          base.RegisterInputsAndOutputs();
-
-         //resize the panel
-         //this.topControl.Height = 200;
-         //this.topControl.Width = 300;
-         //UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-         //Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-         //this.UpdateLayout();
       }
-
-
-      //void readFileButton_Click(object sender, System.Windows.RoutedEventArgs e)
-      //{
-      //   // string txtPath = "C:\\xfer\\dev\\dynamo_git\\test\\text_files\test.txt";
-      //   string txtPath = "";
-
-      //   System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog();
-
-      //   if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-      //   {
-      //      txtPath = openDialog.FileName;
-      //      DataFromFileString = txtPath;
-      //      readFile(txtPath);
-      //      OnDynElementReadyToBuild(EventArgs.Empty);
-
-      //   }
-
-
-      //   if (string.IsNullOrEmpty(DataFromFileString))
-      //   {
-      //      string fileError = "Data file could not be opened.";
-      //      TaskDialog.Show("Error", fileError);
-      //      dynElementSettings.SharedInstance.Writer.WriteLine(fileError);
-      //      dynElementSettings.SharedInstance.Writer.WriteLine(txtPath);
-
-      //   }
-
-      //}
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
@@ -3468,174 +2342,21 @@ namespace Dynamo.Elements
 
          return Expression.NewString(contents);
       }
-
-      //void readFile(string filePath)
-      //{
-      //   List<string> txtFileList = new List<string>();
-      //   string txtFileString = "";
-
-      //   this.Tree.Clear();
-      //   //add one branch
-      //   this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-      //   //this.Tree.Trunk.Branches[0].Leaves.Add("test");
-
-      //   try
-      //   {
-
-      //      //this.AddFileWatch(txtPath);
-      //      DataFromFileString = ""; //clear old data
-
-      //      //Thread.Sleep(5000); // watch out for potential file contentions
-
-      //      FileStream fs = new FileStream(@filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-      //      // MDJ hack - probably should not create a fs and streamwriter object in a loop, just make them earlier somewhere
-      //      StreamReader reader = new StreamReader(fs);
-      //      // using (StreamReader reader = new StreamReader(File.OpenRead(filePath)))
-      //      // {
-      //      string line;
-      //      while ((line = reader.ReadLine()) != null)
-      //      {
-      //         //DataFromFileString = DataFromFileString + line;
-      //         // this.Tree.Trunk.Leaves.Add(line);
-      //         this.Tree.Trunk.Branches[0].Leaves.Add(line);///mdj ask if there is a better way here.
-      //         txtFileList.Add(line); // Add to list.
-      //         txtFileString = txtFileString + line;
-      //         dynElementSettings.SharedInstance.Writer.WriteLine("Reading: " + line);
-      //      }
-      //      reader.Close();
-      //      //reader.Dispose();
-
-      //      //}
-      //      // DataFromFileString = this.Tree.ToString();
-      //      DataFromFileString = txtFileString;
-      //      FilePath = filePath;
-
-      //      OutPortData[0].Object = this.Tree;
-
-      //   }
-
-      //   catch (Exception e)
-      //   {
-      //      Thread.Sleep(1000); // watch out for potential file contentions
-      //   }
-      //}
-
-      //public void AddFileWatch(string filePath)
-      //{
-      //   // Create a new FileSystemWatcher and set its properties.
-      //   FileSystemWatcher watcher = new FileSystemWatcher();
-      //   watcher.Path = filePath;
-
-      //   try
-      //   {
-      //      //MDJ hard crash - threading / context issue?
-
-      //      /* Watch for changes in LastAccess and LastWrite times, and
-      //         the renaming of files or directories. */
-      //      watcher.NotifyFilter = NotifyFilters.LastAccess; //| NotifyFilters.LastWrite
-      //      // | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-      //      // Only watch text files.
-      //      watcher.Filter = "*.csv";
-
-      //      // Add event handlers.
-      //      watcher.Changed += new FileSystemEventHandler(OnChanged);
-      //      // watcher.Created += new FileSystemEventHandler(OnChanged);
-      //      // watcher.Deleted += new FileSystemEventHandler(OnChanged);
-      //      // watcher.Renamed += new RenamedEventHandler(OnRenamed);
-
-      //      // Begin watching.
-      //      watcher.EnableRaisingEvents = true;
-
-      //   }
-
-      //   catch (Exception e)
-      //   {
-      //      TaskDialog.Show("Error", e.ToString());
-      //   }
-      //}
-
-      //// mdj to do - figure out how to dispose of this FileSystemWatcher
-      //// Define the event handlers.
-      //private static void OnChanged(object source, FileSystemEventArgs e)
-      //{
-      //   // Specify what is done when a file is changed, created, or deleted.
-      //   TaskDialog.Show("File Changed", "File: " + e.FullPath + " " + e.ChangeType);
-      //}
-
-      //private static void OnRenamed(object source, RenamedEventArgs e)
-      //{
-      //   // Specify what is done when a file is renamed.
-      //   TaskDialog.Show("File Renamed", "File: +e.OldFullPath + renamed to + e.FullPath");
-
-      //}
-
-      //public override void Draw()
-      //{
-      //   try
-      //   {
-      //      //bool boolWatch = Convert.ToBoolean(InPortData[0].Object);
-
-      //      if (CheckInputs() && (File.Exists(FilePath))) // (boolWatch == true)
-      //      {
-
-      //         readFile(FilePath);
-      //      }
-
-      //      // OutPortData[0].Object = this.Tree;//Hack - seems like overkill to put in the draw loop
-      //      //OnDynElementUpdated(EventArgs.Empty);
-      //      //OnDynElementReadyToBuild(EventArgs.Empty);
-
-      //      //this.UpdateOutputs();
-      //      //OnDynElementReadyToBuild(EventArgs.Empty);
-
-      //      UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-      //      Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-      //   }
-      //   catch (Exception e)
-      //   {
-      //      TaskDialog.Show("Exception", e.ToString());
-      //   }
-      //}
-
-      //public override void Destroy()
-      //{
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   //this.topControl.Height = 400;
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 
 
    //SJE
-   //TODO: Fix when Refresh() is implemented
-   //      When the file has been updated, call refresh
+   //TODO: Update (or make different versions)
    [ElementName("Watch File")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
    [RequiresTransaction(false)]
    public class dynFileWatcher : dynElement
    {
-      //System.Windows.Controls.Label label;
-      //System.Windows.Controls.ListBox listBox;
       System.Windows.Controls.TextBox tb;
 
       string dataFromFileString;
       string filePath = "";
-
-      //public event PropertyChangedEventHandler PropertyChanged;
-
-      //private void NotifyPropertyChanged(String info)
-      //{
-      //   if (PropertyChanged != null)
-      //   {
-      //      PropertyChanged(this, new PropertyChangedEventArgs(info));
-      //   }
-      //}
 
       public string DataFromFileString
       {

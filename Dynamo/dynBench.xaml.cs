@@ -85,6 +85,8 @@ namespace Dynamo.Controls
 
       public dynBench()
       {
+         this.Environment = new ExecutionEnvironment();
+
          //run tests, also load core libraries
          FScheme.test();
 
@@ -98,6 +100,8 @@ namespace Dynamo.Controls
 
          dynElementSettings.SharedInstance.Workbench = workBench;
          dynElementSettings.SharedInstance.Bench = this;
+
+         IdlePromise.RegisterIdle(dynElementSettings.SharedInstance.Doc.Application);
 
          selectedElements = new dynSelection();
 
@@ -554,6 +558,7 @@ namespace Dynamo.Controls
 
             //store the element in the elements list
             ws.Elements.Add(el);
+            el.WorkSpace = ws;
 
             this.workBench.Children.Add(el);
 
@@ -1176,7 +1181,6 @@ namespace Dynamo.Controls
                dynElement el = AddDynElement(t, nickname, guid, x, y, ws);
                if (reportingDisabled)
                   el.DisableReporting();
-               el.WorkSpace = ws;
 
                el.LoadElement(elNode);
             }
@@ -1311,7 +1315,6 @@ namespace Dynamo.Controls
                );
 
                el.LoadElement(elNode);
-               el.WorkSpace = this.CurrentSpace;
 
                if (this.ViewingHomespace)
                   el.SaveResult = true;
@@ -1404,71 +1407,49 @@ namespace Dynamo.Controls
          return true;
       }
 
-      private void CleanWorkspace(dynWorkspace ws)
-      {
-         foreach (dynElement el in ws.Elements)
-         {
-            foreach (dynPort p in el.InPorts)
-            {
-               for (int i = p.Connectors.Count - 1; i >= 0; i--)
-               {
-                  p.Connectors[i].Kill();
-               }
-            }
-            for (int i = el.OutPort.Connectors.Count - 1; i >= 0; i--)
-            {
-               el.OutPort.Connectors[i].Kill();
-            }
-            //foreach (dynPort p in el.StatePorts)
-            //{
-            //   for (int i = p.Connectors.Count - 1; i >= 0; i--)
-            //   {
-            //      p.Connectors[i].Kill();
-            //   }
-            //}
-
-            //remove the element from the workbench
-            dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
-         }
-
-         ws.Elements.Clear();
-         ws.Connectors.Clear();
-      }
-
       private void CleanWorkbench()
       {
          Log("Clearing workflow...");
 
-         #region clear the existing workflow
-         foreach (dynElement el in Elements)
+         //Copy locally
+         var elements = this.Elements.ToList();
+
+         IdlePromise.ExecuteOnIdle(
+            delegate
+            {
+               InitTransaction();
+
+               foreach (dynElement el in elements)
+               {
+                  el.DisableReporting();
+                  try
+                  {
+                     el.Destroy();
+                  }
+                  catch { }
+               }
+
+               EndTransaction();
+            },
+            true
+         );
+
+         foreach (dynElement el in elements)
          {
             foreach (dynPort p in el.InPorts)
             {
                for (int i = p.Connectors.Count - 1; i >= 0; i--)
-               {
                   p.Connectors[i].Kill();
-               }
             }
             for (int i = el.OutPort.Connectors.Count - 1; i >= 0; i--)
-            {
                el.OutPort.Connectors[i].Kill();
-            }
-            //foreach (dynPort p in el.StatePorts)
-            //{
-            //   for (int i = p.Connectors.Count - 1; i >= 0; i--)
-            //   {
-            //      p.Connectors[i].Kill();
-            //   }
-            //}
 
-            //remove the element from the workbench
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
          }
 
          this.CurrentSpace.Elements.Clear();
          this.CurrentSpace.Connectors.Clear();
-
-         #endregion
+         this.CurrentSpace.Modified();
       }
 
       private void Open_Click(object sender, RoutedEventArgs e)
@@ -1789,7 +1770,11 @@ namespace Dynamo.Controls
          CleanWorkbench();
       }
 
-      ExecutionEnvironment environment = new ExecutionEnvironment();
+      public ExecutionEnvironment Environment 
+      {
+         get;
+         private set;
+      }
 
       public bool RunInDebug { get { return this.TransMode == TransactionMode.Debug; } }
 
@@ -1808,9 +1793,9 @@ namespace Dynamo.Controls
             );
             _trans.Start();
 
-            FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
-            failOpt.SetFailuresPreprocessor(dynElementSettings.SharedInstance.WarningSwallower);
-            _trans.SetFailureHandlingOptions(failOpt);
+            //FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
+            //failOpt.SetFailuresPreprocessor(dynElementSettings.SharedInstance.WarningSwallower);
+            //_trans.SetFailureHandlingOptions(failOpt);
          }
       }
 
@@ -1851,12 +1836,6 @@ namespace Dynamo.Controls
 
          this.dynamicRun = !showErrors;
 
-         if (debug)
-         {
-            this.TransMode = TransactionMode.Debug;
-            this.InIdleThread = true;
-         }
-
          BackgroundWorker worker = new BackgroundWorker();
 
          worker.DoWork += delegate(object s, DoWorkEventArgs args)
@@ -1867,28 +1846,28 @@ namespace Dynamo.Controls
             foreach (var topMost in topElements)
                topMost.MarkDirty();
 
-            foreach (dynElement topMost in topElements)
+            //TODO: Flesh out error handling
+            try
             {
-               //TODO: Flesh out error handling
-               try
+               Action run = delegate
                {
-                  FScheme.Expression runningExpression = topMost.Build().Compile();
-
-                  string exp = FScheme.print(runningExpression);
-
-                  this.Dispatcher.Invoke(new Action(
-                     () => Log("> " + exp)
-                  ));
-
-                  IdlePromiseDelegate<FScheme.Expression> run = delegate
+                  foreach (dynElement topMost in topElements)
                   {
+                     FScheme.Expression runningExpression = topMost.Build().Compile();
+
+                     string exp = FScheme.print(runningExpression);
+
+                     this.Dispatcher.Invoke(new Action(
+                        () => Log("> " + exp)
+                     ));
+
                      try
                      {
-                        var expr = this.environment.Evaluate(runningExpression);
+                        var expr = this.Environment.Evaluate(runningExpression);
 
-                        this.EndTransaction();
-
-                        return expr;
+                        this.Dispatcher.Invoke(new Action(
+                           () => Log(FScheme.print(expr))
+                        ));
                      }
                      catch (Exception ex)
                      {
@@ -1906,107 +1885,79 @@ namespace Dynamo.Controls
                         }
 
                         this.CancelRun = false;
-
-                        return null;
                      }
+                  }
+
+                  this.InitTransaction();
+
+                  foreach (var element in this.AllElements)
+                  {
+                     element.ResetRuns();
+                  }
+
+                  this.EndTransaction();
+               };
+
+               if (!debug)
+               {
+                  Func<dynElement, bool> allIdlePred = delegate(dynElement e)
+                  {
+                     object[] attribs = e.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
+                     if (attribs.Length > 0)
+                     {
+                        return !(attribs[0] as RequiresTransactionAttribute).RequiresTransaction;
+                     }
+
+                     return true;
                   };
 
-                  FScheme.Expression result;
+                  bool allInIdleThread = this.AllElements.Any(x => x is dynTransaction)
+                                         || this.AllElements.All(allIdlePred);
 
-                  if (!debug)
+                  if (allInIdleThread)
                   {
-                     Func<dynElement, bool> allIdlePred = delegate(dynElement e)
-                     {
-                        object[] attribs = e.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
-                        if (attribs.Length > 0)
-                        {
-                           return !(attribs[0] as RequiresTransactionAttribute).RequiresTransaction;
-                        }
-
-                        return true;
-                     };
-
-                     bool allInIdleThread = this.AllElements.Any(x => x is dynTransaction)
-                                            || this.AllElements.All(allIdlePred);
-
-                     if (allInIdleThread)
-                     {
-                        this.TransMode = TransactionMode.Manual;
-                        this.InIdleThread = false;
-                        result = run();
-                     }
-                     else
-                     {
-                        this.TransMode = TransactionMode.Automatic;
-                        this.InIdleThread = true;
-
-                        var promise = (IdlePromise<FScheme.Expression>)this.Dispatcher.Invoke(
-                           new Func<IdlePromise<FScheme.Expression>>(
-                              () => new IdlePromise<FScheme.Expression>(run)
-                           )
-                        );
-
-                        result = promise.RedeemPromise();
-
-                        //result = IdlePromise<FScheme.Expression>.ExecuteOnIdle(run);
-                     }
+                     this.TransMode = TransactionMode.Manual;
+                     this.InIdleThread = false;
+                     run();
                   }
                   else
                   {
-                     this.Dispatcher.Invoke(new Action(
-                        () => Log("Running expression in debug.")
-                     ));
-                     result = run();
-                  }
+                     this.TransMode = TransactionMode.Automatic;
+                     this.InIdleThread = true;
 
-                  if (result != null)
-                  {
-                     this.Dispatcher.Invoke(new Action(
-                        () => Log(FScheme.print(result))
-                     ));
+                     IdlePromise.ExecuteOnIdle(run, false);
                   }
                }
-               catch (Exception ex)
+               else
                {
-                  if (ex.Message.Length > 0)
-                  {
-                     this.Dispatcher.Invoke(new Action(
-                        () => Log("ERROR: " + ex.Message)
-                     ));
-                  }
+                  this.TransMode = TransactionMode.Debug;
+                  this.InIdleThread = true;
 
-                  _trans = null;
-               }
-               finally
-               {
-                  this.runButton.Dispatcher.Invoke(new Action(
-                     delegate { this.runButton.IsEnabled = true; }
+                  this.Dispatcher.Invoke(new Action(
+                     () => Log("Running expression in debug.")
                   ));
-                  this.Running = false;
+
+                  run();
                }
             }
+            catch (Exception ex)
+            {
+               if (ex.Message.Length > 0)
+               {
+                  this.Dispatcher.Invoke(new Action(
+                     () => Log("ERROR: " + ex.Message)
+                  ));
+               }
 
-            var delPromise = (IdlePromise<bool>)this.Dispatcher.Invoke(
-               new Func<IdlePromise<bool>>(
-                  () =>
-                     new IdlePromise<bool>(
-                        delegate
-                        {
-                           this.InitTransaction();
-
-                           foreach (var element in this.AllElements)
-                           {
-                              element.ResetRuns();
-                           }
-
-                           this.EndTransaction();
-                           return true;
-                        }
-                     )
-               )
-            );
-
-            delPromise.RedeemPromise();
+               _trans = null;
+            }
+            finally
+            {
+               this.runButton.Dispatcher.Invoke(new Action(
+                  delegate { this.runButton.IsEnabled = true; }
+               ));
+               this.Running = false;
+            }
          };
 
          this.runButton.Dispatcher.Invoke(new Action(
@@ -2075,7 +2026,7 @@ namespace Dynamo.Controls
          }
          while (!error.Equals(""));
 
-         newFunction(name, category, true);
+         this.newFunction(name, category, true);
       }
 
       private dynWorkspace newFunction(string name, string category, bool display)
@@ -2318,7 +2269,7 @@ namespace Dynamo.Controls
                   topMost.Build().Compile()
                );
 
-               this.environment.DefineSymbol(funcWorkspace.Name, expression);
+               this.Environment.DefineSymbol(funcWorkspace.Name, expression);
             }
          }
          catch
@@ -2636,7 +2587,7 @@ namespace Dynamo.Controls
             }
          }
 
-         this.environment.RemoveSymbol(this.CurrentSpace.Name);
+         this.Environment.RemoveSymbol(this.CurrentSpace.Name);
 
          //TODO: Delete old stored definition
          string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

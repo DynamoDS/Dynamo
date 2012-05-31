@@ -7,40 +7,21 @@ namespace Dynamo.Utilities
 {
    public delegate T IdlePromiseDelegate<T>();
 
-   delegate void _IdlePromiseDelegate();
    class _IdlePromise
    {
-      static Queue<_IdlePromiseDelegate> promises = new Queue<_IdlePromiseDelegate>();
+      static Queue<Action> promises = new Queue<Action>();
 
-      static bool idleRegged = false;
-
-      internal static void AddPromise(_IdlePromiseDelegate d)
+      internal static void AddPromise(Action d)
       {
-         if (!idleRegged)
-         {
-            dynElementSettings.SharedInstance.Doc.Application.Idling +=
-               new EventHandler<Autodesk.Revit.UI.Events.IdlingEventArgs>(Application_Idling);
-            idleRegged = true;
-         }
-
          promises.Enqueue(d);
       }
 
       static void Application_Idling(object sender, Autodesk.Revit.UI.Events.IdlingEventArgs e)
       {
          Thread.Sleep(1);
-         try
+         while (HasPendingPromises())
          {
-            while (HasPendingPromises())
-            {
-               promises.Dequeue()();
-            }
-         }
-         finally
-         {
-            dynElementSettings.SharedInstance.Doc.Application.Idling -=
-               new EventHandler<Autodesk.Revit.UI.Events.IdlingEventArgs>(Application_Idling);
-            idleRegged = false;
+            promises.Dequeue()();
          }
       }
 
@@ -48,13 +29,44 @@ namespace Dynamo.Utilities
       {
          return promises.Any();
       }
+
+      internal static void register(Autodesk.Revit.UI.UIApplication uIApplication)
+      {
+         uIApplication.Idling += new EventHandler<Autodesk.Revit.UI.Events.IdlingEventArgs>(Application_Idling);
+      }
    }
 
-   public static class IdlePromises
+   public static class IdlePromise
    {
       public static bool HasPendingPromises()
       {
          return _IdlePromise.HasPendingPromises();
+      }
+
+      internal static void RegisterIdle(Autodesk.Revit.UI.UIApplication uIApplication)
+      {
+         _IdlePromise.register(uIApplication);
+      }
+
+      public static void ExecuteOnIdle(Action p, bool async = true)
+      {
+         bool redeemed = false;
+
+         _IdlePromise.AddPromise(
+            delegate
+            {
+               p();
+               redeemed = true;
+            }
+         );
+
+         if (!async)
+         {
+            while (!redeemed)
+            {
+               Thread.Sleep(1);
+            }
+         }
       }
    }
 
@@ -95,17 +107,6 @@ namespace Dynamo.Utilities
       public static T ExecuteOnIdle(IdlePromiseDelegate<T> p)
       {
          return new IdlePromise<T>(p).RedeemPromise();
-      }
-
-      public static void ExecuteOnIdle(Action p)
-      {
-         new IdlePromise<bool>(new IdlePromiseDelegate<bool>(
-            delegate
-            {
-               p();
-               return true;
-            }
-         )).RedeemPromise();
       }
    }
 }

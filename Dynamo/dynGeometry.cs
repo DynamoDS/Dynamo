@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
@@ -45,31 +46,6 @@ namespace Dynamo.Elements
 
          return FScheme.Expression.NewContainer(new XYZ(x, y, z));
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      //create the xyz
-      //      pt = new XYZ((double)InPortData[0].Object,
-      //          (double)InPortData[1].Object,
-      //          (double)InPortData[2].Object);
-
-      //      //OutPortData[0].Object = pt;
-      //      this.Tree.Trunk.Leaves.Add(pt);
-      //   }
-      //}
-
-      //public override void Destroy()
-      //{
-      //   pt = null;
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 
    [ElementName("Plane")]
@@ -83,7 +59,6 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData(null, "normal", "Normal Point (XYZ)", typeof(XYZ)));
          InPortData.Add(new PortData(null, "origin", "Origin Point (XYZ)", typeof(XYZ)));
          OutPortData = new PortData(null, "P", "Plane", typeof(Plane));
-         //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();
       }
@@ -93,70 +68,12 @@ namespace Dynamo.Elements
          XYZ ptA = (XYZ)((FScheme.Expression.Container)args[0]).Item;
          XYZ ptB = (XYZ)((FScheme.Expression.Container)args[1]).Item;
 
-         return FScheme.Expression.NewContainer(
-            this.UIDocument.Application.Application.Create.NewPlane(
-               ptA, ptB
-            )
+         var plane = this.UIDocument.Application.Application.Create.NewPlane(
+            ptA, ptB
          );
+
+         return FScheme.Expression.NewContainer(plane);
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-
-      //      DataTree a = InPortData[0].Object as DataTree;
-      //      DataTree b = InPortData[1].Object as DataTree;
-
-      //      if (a != null && b != null)
-      //      {
-      //         Process(this.Tree.Trunk, a.Trunk, b.Trunk);
-      //      }
-
-      //   }
-      //}
-
-      //void Process(DataTreeBranch currBranch, DataTreeBranch a, DataTreeBranch b)
-      //{
-      //   foreach (object o in a.Leaves)
-      //   {
-
-      //      if (b.Leaves.Count > a.Leaves.IndexOf(o))
-      //      {
-      //         XYZ ptA = o as XYZ;
-      //         XYZ ptB = b.Leaves[a.Leaves.IndexOf(o)] as XYZ;
-
-      //         if (ptA != null && ptB != null)
-      //         {
-      //            this.Tree.Trunk.Leaves.Add(dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewPlane(ptA, ptB));
-      //         }
-      //      }
-
-      //   }
-
-      //   foreach (DataTreeBranch aChild in a.Branches)
-      //   {
-      //      DataTreeBranch subBranch = new DataTreeBranch();
-      //      currBranch.Branches.Add(subBranch);
-
-      //      int idx = a.Branches.IndexOf(aChild);
-
-      //      if (b.Branches.Count > idx)
-      //      {
-      //         Process(subBranch, aChild, b.Branches[idx]);
-      //      }
-      //   }
-      //}
-
-      //public override void Destroy()
-      //{
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 
    [ElementName("Sketch Plane")]
@@ -169,7 +86,6 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData(null, "plane", "The plane in which to define the sketch.", typeof(dynPlane)));
          OutPortData = new PortData(null, "SP", "SketchPlane", typeof(dynSketchPlane));
-         //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();
       }
@@ -178,57 +94,22 @@ namespace Dynamo.Elements
       {
          Plane p = (Plane)((FScheme.Expression.Container)args[0]).Item;
 
-         SketchPlane sp = (this.UIDocument.Document.IsFamilyDocument)
+         SketchPlane sp;
+
+         //TODO: Handle Removal
+         if (this.Elements.Any())
+         {
+            sp = (SketchPlane)this.Elements[0];
+         }
+
+         sp = (this.UIDocument.Document.IsFamilyDocument)
             ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
             : this.UIDocument.Document.Create.NewSketchPlane(p);
 
+         //this.Elements.Add(sp);
+
          return FScheme.Expression.NewContainer(sp);
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      //OutPortData[0].Object = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(InPortData[0].Object as Plane);
-
-      //      DataTree a = InPortData[0].Object as DataTree;
-      //      if (a != null)
-      //      {
-      //         Process(this.Tree.Trunk, a.Trunk);
-      //      }
-      //   }
-      //}
-
-      //void Process(DataTreeBranch currBranch, DataTreeBranch a)
-      //{
-      //   foreach (object o in a.Leaves)
-      //   {
-      //      Plane p = o as Plane;
-      //      if (p != null)
-      //      {
-      //         currBranch.Leaves.Add(dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(p));
-      //      }
-      //   }
-
-      //   foreach (DataTreeBranch aChild in a.Branches)
-      //   {
-      //      DataTreeBranch subBranch = new DataTreeBranch();
-      //      currBranch.Branches.Add(subBranch);
-
-      //      Process(subBranch, aChild);
-      //   }
-
-      //}
-
-      //public override void Destroy()
-      //{
-      //   base.Destroy();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 
    [ElementName("Line")]
@@ -241,6 +122,7 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData(null, "start", "Start XYZ", typeof(XYZ)));
          InPortData.Add(new PortData(null, "end", "End XYZ", typeof(XYZ)));
+         InPortData.Add(new PortData(null, "bound?", "Boolean: Is this line bounded?", typeof(bool)));
          OutPortData = new PortData(null, "line", "Line", typeof(Line));
 
          base.RegisterInputsAndOutputs();
@@ -250,69 +132,13 @@ namespace Dynamo.Elements
       {
          var ptA = (XYZ)((FScheme.Expression.Container)args[0]).Item;
          var ptB = (XYZ)((FScheme.Expression.Container)args[1]).Item;
+         var bound = ((FScheme.Expression.Number)args[2]).Item == 1;
 
          return FScheme.Expression.NewContainer(
-            this.UIDocument.Application.Application.Create.NewLineBound(
-               ptA, ptB
+            this.UIDocument.Application.Application.Create.NewLine(
+               ptA, ptB, bound
             )
          );
       }
-
-      //   public override void Draw()
-      //   {
-      //      if (CheckInputs())
-      //      {
-
-      //         DataTree a = InPortData[0].Object as DataTree;
-      //         DataTree b = InPortData[1].Object as DataTree;
-
-      //         if (a != null && b != null)
-      //         {
-      //            Process(this.Tree.Trunk, a.Trunk, b.Trunk);
-      //         }
-      //      }
-      //   }
-
-      //   void Process(DataTreeBranch currBranch, DataTreeBranch a, DataTreeBranch b)
-      //   {
-
-      //      foreach (object o in a.Leaves)
-      //      {
-      //         if (b.Leaves.Count > a.Leaves.IndexOf(o))
-      //         {
-      //            XYZ ptA = o as XYZ;
-      //            XYZ ptB = b.Leaves[a.Leaves.IndexOf(o)] as XYZ;
-
-      //            if (ptA != null && ptB != null)
-      //            {
-      //               Curve c = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewLineBound(ptA, ptB);
-      //               currBranch.Leaves.Add(c);
-      //            }
-      //         }
-      //      }
-
-      //      foreach (DataTreeBranch aChild in a.Branches)
-      //      {
-      //         DataTreeBranch subBranch = new DataTreeBranch();
-      //         currBranch.Branches.Add(subBranch);
-
-      //         int idx = a.Branches.IndexOf(aChild);
-
-      //         if (b.Branches.Count > idx)
-      //         {
-      //            Process(subBranch, aChild, b.Branches[idx]);
-      //         }
-      //      }
-      //   }
-
-      //   public override void Destroy()
-      //   {
-      //      base.Destroy();
-      //   }
-
-      //   public override void Update()
-      //   {
-      //      OnDynElementReadyToBuild(EventArgs.Empty);
-      //   }
    }
 }

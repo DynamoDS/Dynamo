@@ -301,11 +301,6 @@ namespace Dynamo.Elements
       }
       #endregion
 
-      void WorkspaceModified()
-      {
-         this.IsDirty = true;
-      }
-
       protected virtual void OnDynElementDestroyed(EventArgs e)
       {
          if (dynElementDestroyed != null)
@@ -768,14 +763,14 @@ namespace Dynamo.Elements
 
       void CheckPortsForRecalc()
       {
-         this.IsDirty = this.InPorts.All(
+         this.IsDirty = this.InPorts.Any(
             delegate(dynPort p)
             {
                dynElement oldIn;
                var cons = p.Connectors;
                return !this.previousEvalPortMappings.TryGetValue(p, out oldIn)
-                  || (oldIn == null && !cons.Any())
-                  || (cons.Any() && oldIn == p.Connectors[0].Start.Owner);
+                  || (oldIn == null && cons.Any())
+                  || (cons.Any() && oldIn != p.Connectors[0].Start.Owner);
             }
          );
       }
@@ -885,10 +880,11 @@ namespace Dynamo.Elements
          }
       }
 
+      protected internal static HashSet<string> _taggedSymbols = new HashSet<string>();
+      private static bool _startTag = false;
       private bool _isDirty = true;
       ///<summary>
       ///Does this element need to be regenerated?
-      ///This value only changes to dirty when the input connections have been changed.
       ///</summary>
       public virtual bool IsDirty
       {
@@ -898,12 +894,20 @@ namespace Dynamo.Elements
                return true;
             else
             {
+               bool start = _startTag;
+               _startTag = true;
+
                bool dirty = this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
                this._isDirty = dirty;
+
+               if (!start)
+               {
+                  _startTag = false;
+                  _taggedSymbols.Clear();
+               }
+
                return dirty;
             }
-            //return this._isDirty
-            //   || this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
          }
          set
          {
@@ -986,11 +990,13 @@ namespace Dynamo.Elements
          }
       }
 
+      protected internal ExecutionEnvironment macroEnvironment = null;
+
       private Expression evalIfDirty(FSharpList<Expression> args, ExecutionEnvironment environment)
       {
          if (this.IsDirty || this.oldValue == null)
          {
-            this.IsDirty = false;
+            this.macroEnvironment = environment;
             this.oldValue = this.eval(
                Utils.convertSequence(
                   args.Select(
@@ -1252,6 +1258,8 @@ namespace Dynamo.Elements
          //Increment the run counter
          this.runCount++;
 
+         this.IsDirty = false;
+
          if (result != null)
             return result;
          else
@@ -1265,6 +1273,41 @@ namespace Dynamo.Elements
 
       #endregion
 
+      protected internal void SetColumnAmount(int amt)
+      {
+         int count = this.inputGrid.ColumnDefinitions.Count;
+         if (count == amt)
+            return;
+         else if (count < amt)
+         {
+            int diff = amt - count;
+            for (int i = 0; i < diff; i++)
+               this.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+         }
+         else
+         {
+            int diff = count - amt;
+            this.inputGrid.ColumnDefinitions.RemoveRange(amt, diff);
+         }
+      }
+
+      protected internal void SetRowAmount(int amt)
+      {
+         int count = this.inputGrid.RowDefinitions.Count;
+         if (count == amt)
+            return;
+         else if (count < amt)
+         {
+            int diff = amt - count;
+            for (int i = 0; i < diff; i++)
+               this.inputGrid.RowDefinitions.Add(new RowDefinition());
+         }
+         else
+         {
+            int diff = count - amt;
+            this.inputGrid.RowDefinitions.RemoveRange(amt, diff);
+         }
+      }
 
       /// <summary>
       /// The build method is called back from the child class.
@@ -1738,25 +1781,25 @@ namespace Dynamo.Elements
 
       private void deleteElem_cm_Click(object sender, RoutedEventArgs e)
       {
-         //this.Destroy();
          this.DisableReporting();
          var bench = dynElementSettings.SharedInstance.Bench;
 
-         //IdlePromise<bool>.ExecuteOnIdle(
-         //   delegate
-         //   {
-         bench.InitTransaction();
-         try
-         {
-            this.Destroy();
-         }
-         catch { }
-         bench.EndTransaction();
-         //   }
-         //);
+         IdlePromise.ExecuteOnIdle(
+            delegate
+            {
+               bench.InitTransaction();
+               try
+               {
+                  this.Destroy();
+               }
+               catch { }
+               bench.EndTransaction();
 
-         bench.DeleteElement(this);
-         this.WorkSpace.Modified();
+               bench.DeleteElement(this);
+               this.WorkSpace.Modified();
+            },
+            true
+         );
       }
 
       internal void DisableReporting()

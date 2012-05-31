@@ -114,5 +114,16 @@ namespace Dynamo.FSchemeInterop
       {
          this.env.Delete(p);
       }
+
+      public Expression LookupSymbol(string p)
+      {
+         return this.env.Env.Value[p].Value;
+      }
+
+      //Public property accessor.
+      public FSharpRef<FSharpMap<string, FSharpRef<Expression>>> Env
+      {
+         get { return this.env.Env; }
+      }
    }
 }
