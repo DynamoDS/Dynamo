@@ -426,9 +426,6 @@ namespace Dynamo.Elements
             fi = (FamilyInstance)this.Elements[count];
             LocationPoint lp = (LocationPoint)fi.Location;
             lp.Point = pos;
-            //ElementTransformUtils.MoveElement(
-            //   fi.Document, fi.Id, pos
-            //);
          }
          else
          {
@@ -457,7 +454,7 @@ namespace Dynamo.Elements
 
             int count = 0;
 
-            return Expression.NewList(
+            var result = Expression.NewList(
                FSchemeInterop.Utils.convertSequence(
                   locList.Select(
                      x =>
@@ -469,14 +466,36 @@ namespace Dynamo.Elements
                   )
                )
             );
+
+            int delCount = 0;
+            foreach (var e in this.Elements.Skip(count))
+            {
+               this.UIDocument.Document.Delete(e);
+               delCount++;
+            }
+            if (delCount > 0)
+               this.Elements.RemoveRange(count, delCount);
+
+            return result;
          }
          else
          {
-            return this.makeFamilyInstance(
+            var result = this.makeFamilyInstance(
                ((Expression.Container)input).Item,
                fs,
                0
             );
+
+            int count = 0;
+            foreach (var e in this.Elements.Skip(1))
+            {
+               this.UIDocument.Document.Delete(e);
+               count++;
+            }
+            if (count > 0)
+               this.Elements.RemoveRange(1, count);
+
+            return result;
          }
       }
    }

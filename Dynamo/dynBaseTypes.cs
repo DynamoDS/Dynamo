@@ -26,15 +26,12 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
 using Autodesk.Revit.DB;
-//MDJ - i think this is needed for DMU stuff
-using Autodesk.Revit.DB.Analysis; //MDJ  - added for spatialfeildmanager access
+using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI;
-using Coding4Fun.Kinect.Wpf;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Microsoft.Research.Kinect.Nui;
 using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
 using System.IO.Ports;
