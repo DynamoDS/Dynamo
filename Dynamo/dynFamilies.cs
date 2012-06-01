@@ -14,22 +14,17 @@
 
 using System;
 using System.Collections;
-using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Structure;
-using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
-using TextBox = System.Windows.Controls.TextBox;
-
-using Expression = Dynamo.FScheme.Expression;
 using Microsoft.FSharp.Collections;
-
-using System.Linq;
+using Expression = Dynamo.FScheme.Expression;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Elements
 {
@@ -60,7 +55,7 @@ namespace Dynamo.Elements
 
          PopulateComboBox();
 
-         OutPortData = new PortData(null, "", "Family type", typeof(dynFamilyTypeSelector));
+         OutPortData = new PortData("", "Family type", typeof(dynFamilyTypeSelector));
          base.RegisterInputsAndOutputs();
       }
 
@@ -103,6 +98,8 @@ namespace Dynamo.Elements
          throw new Exception("Nothing selected!");
       }
    }
+
+   #region Disabled ParameterMapper
 
    //[ElementName("Instance Parameter Mapper")]
    //[ElementCategory(BuiltinElementCategories.REVIT)]
@@ -389,354 +386,7 @@ namespace Dynamo.Elements
    //   }
    //}
 
-   // MDJ added 11-14-11 
-   // created new class dynFamilyInstanceCreatorXYZ by copying dynFamilyInstanceCreator, would be nice if there was a way to pass in either XYZ or RefPoints to previous class.
-   // Hack: blind copy paste to change this to take XYZ instead
-   // goal is to make family instances placeable in the project env
-   // right now refpoints cannot be placed so the previous family instance creator fail
-   //
-   //
-
-   [ElementName("Family Instance Creator")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which allows you to create family instances.")]
-   [RequiresTransaction(true)]
-   public class dynFamilyInstanceCreatorXYZ : dynElement
-   {
-      public dynFamilyInstanceCreatorXYZ()
-      {
-         InPortData.Add(new PortData(null, "xyz", "xyz", typeof(object)));
-         InPortData.Add(new PortData(null, "typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
-
-         OutPortData = new PortData(null, "fi", "Family instances created by this operation.", typeof(FamilyInstance));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      private Expression makeFamilyInstance(object location, FamilySymbol fs, int count)
-      {
-         XYZ pos = location is ReferencePoint
-            ? ((ReferencePoint)location).Position
-            : (XYZ)location;
-
-         FamilyInstance fi;
-
-         if (this.Elements.Count > count)
-         {
-            fi = (FamilyInstance)this.Elements[count];
-            LocationPoint lp = (LocationPoint)fi.Location;
-            lp.Point = pos;
-            //ElementTransformUtils.MoveElement(
-            //   fi.Document, fi.Id, pos
-            //);
-         }
-         else
-         {
-            fi = this.UIDocument.Document.IsFamilyDocument
-               ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
-                  pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-               )
-               : this.UIDocument.Document.Create.NewFamilyInstance(
-                  pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-               );
-
-            this.Elements.Add(fi);
-         }
-
-         return Expression.NewContainer(fi);
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         FamilySymbol fs = (FamilySymbol)((Expression.Container)args[1]).Item;
-         var input = args[0];
-         
-         if (input.IsList)
-         {
-            var locList = ((Expression.List)input).Item;
-
-            int count = 0;
-
-            return Expression.NewList(
-               FSchemeInterop.Utils.convertSequence(
-                  locList.Select(
-                     x =>
-                        this.makeFamilyInstance(
-                           ((Expression.Container)x).Item,
-                           fs,
-                           count++
-                        )
-                  )
-               )
-            );
-         }
-         else
-         {
-            return this.makeFamilyInstance(
-               ((Expression.Container)input).Item,
-               fs,
-               0
-            );
-         }
-      }
-   }
-
-   // MDJ added 11-21-11 
-   // created new class dynFamilyInstanceCreatorBySelection by copying dynFamilyInstanceCreator, 
-   //
-   //
-
-   [ElementName("Family Instance Selection")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which allows you to select a family instance from the document and reference it in Dynamo.")]
-   [RequiresTransaction(false)]
-   public class dynFamilyInstanceCreatorSelection : dynElement
-   {
-      TextBox tb;
-      System.Windows.Controls.Button familyInstanceButt;
-
-      public dynFamilyInstanceCreatorSelection()
-      {
-         OutPortData = new PortData(null, "fi", "Family instances created by this operation.", typeof(FamilyInstance));
-
-         //add a button to the inputGrid on the dynElement
-         familyInstanceButt = new System.Windows.Controls.Button();
-         familyInstanceButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-         familyInstanceButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         familyInstanceButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         familyInstanceButt.Click += new System.Windows.RoutedEventHandler(familyInstanceButt_Click);
-         familyInstanceButt.Content = "Select Instance";
-         familyInstanceButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         familyInstanceButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-         tb = new TextBox();
-         tb.Text = "Nothing Selected";
-         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         tb.Background = backgroundBrush;
-         tb.BorderThickness = new Thickness(0);
-         tb.IsReadOnly = true;
-         tb.IsReadOnlyCaretVisible = false;
-
-         this.inputGrid.RowDefinitions.Add(new RowDefinition());
-         this.inputGrid.RowDefinitions.Add(new RowDefinition());
-
-         this.inputGrid.Children.Add(tb);
-         this.inputGrid.Children.Add(familyInstanceButt);
-
-         System.Windows.Controls.Grid.SetRow(familyInstanceButt, 0);
-         System.Windows.Controls.Grid.SetRow(tb, 1);
-
-         base.RegisterInputsAndOutputs();
-
-         this.topControl.Height = 60;
-         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-
-      }
-
-      //public event PropertyChangedEventHandler PropertyChanged;
-
-      //private void NotifyPropertyChanged(String info)
-      //{
-      //   if (PropertyChanged != null)
-      //   {
-      //      PropertyChanged(this, new PropertyChangedEventArgs(info));
-      //   }
-      //}
-
-      public FamilyInstance pickedFamilyInstance;
-
-      public FamilyInstance PickedFamilyInstance
-      {
-         get { return pickedFamilyInstance; }
-         set
-         {
-            pickedFamilyInstance = value;
-            NotifyPropertyChanged("PickedFamilyInstance");
-         }
-      }
-
-      private ElementId familyInstanceID;
-
-      private ElementId FamilyInstanceID
-      {
-         get { return familyInstanceID; }
-         set
-         {
-            familyInstanceID = value;
-            NotifyPropertyChanged("FamilyInstanceID");
-         }
-      }
-      void familyInstanceButt_Click(object sender, System.Windows.RoutedEventArgs e)
-      {
-         PickedFamilyInstance = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(dynElementSettings.SharedInstance.Doc, "Selec Massing Family Instance", dynElementSettings.SharedInstance);
-
-         if (PickedFamilyInstance != null)
-         {
-            FamilyInstanceID = PickedFamilyInstance.Id;
-            familyInstanceButt.Content = "Change Instance";
-            this.tb.Text = PickedFamilyInstance.Name;
-         }
-         else
-         {
-            familyInstanceButt.Content = "Select Instance";
-            this.tb.Text = "Nothing Selected";
-         }
-      }
-
-      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
-      {
-         if (PickedFamilyInstance.Id.IntegerValue == FamilyInstanceID.IntegerValue) // sanity check
-            return FScheme.Expression.NewContainer(PickedFamilyInstance);
-         else
-            throw new Exception("SANITY CHECK FAILED");
-      }
-
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         if (this.PickedFamilyInstance != null)
-         {
-            XmlElement outEl = xmlDoc.CreateElement("instance");
-            outEl.SetAttribute("id", this.PickedFamilyInstance.Id.ToString());
-            dynEl.AppendChild(outEl);
-         }
-      }
-
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name.Equals("instance"))
-            {
-               try
-               {
-                  this.PickedFamilyInstance = dynElementSettings.SharedInstance.Doc.Document.get_Element(
-                     new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
-                  ) as FamilyInstance;
-                  if (this.PickedFamilyInstance != null)
-                  {
-                     FamilyInstanceID = PickedFamilyInstance.Id;
-                     this.tb.Text = this.PickedFamilyInstance.Name;
-                     this.familyInstanceButt.Content = "Change Instance";
-                  }
-               }
-               catch { }
-            }
-         }
-      }
-   }
-
-
-   //[ElementName("Family Instance Creator")]
-   //[ElementCategory(BuiltinElementCategories.REVIT)]
-   //[ElementDescription("An element which allows you to create family instance from a point.")]
-   //[RequiresTransaction(true)]
-   //public class dynFamilyInstanceCreator : dynElement
-   //{
-   //   public dynFamilyInstanceCreator()
-   //   {
-   //      InPortData.Add(new PortData(null, "pt", "Reference point.", typeof(object)));
-   //      InPortData.Add(new PortData(null, "typ", "The Family Type to use for instantiation.", typeof(object)));
-
-   //      OutPortData = new PortData(null, "fi", "Family instance created by this operation.", typeof(object)));
-
-   //      base.RegisterInputsAndOutputs();
-   //   }
-
-   //   public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
-   //   {
-   //      var pt = (ReferencePoint)((FScheme.Expression.Container)args[0]).Item;
-   //      var fs = (FamilySymbol)((FScheme.Expression.Container)args[1]).Item;
-
-   //      return FScheme.Expression.NewContainer(
-   //         dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pt.Position, fs, StructuralType.NonStructural)
-   //      );
-   //   }
-
-   //   public override void Draw()
-   //   {
-   //      if (CheckInputs())
-   //      {
-   //         DataTree treeIn = InPortData[0].Object as DataTree;
-   //         if (treeIn != null)
-   //         {
-   //            Process(treeIn.Trunk, this.Tree.Trunk);
-   //         }
-   //      }
-
-   //      base.Draw();
-   //   }
-
-   //   public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
-   //   {
-
-   //      foreach (object o in bIn.Leaves)
-   //      {
-   //         ReferencePoint rp = o as ReferencePoint;
-
-   //         if (rp != null)
-   //         {
-   //            //get the location of the point
-   //            XYZ pos = rp.Position;
-   //            FamilySymbol fs = InPortData[1].Object as FamilySymbol;
-   //            FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
-
-   //            Elements.Append(fi);
-   //            currentBranch.Leaves.Add(fi);
-
-   //         }
-   //      }
-
-   //      foreach (DataTreeBranch b1 in bIn.Branches)
-   //      {
-   //         DataTreeBranch newBranch = new DataTreeBranch();
-   //         this.Tree.Trunk.Branches.Add(newBranch);
-   //         Process(b1, newBranch);
-   //      }
-   //   }
-
-   //   public void ProcessState(DataTreeBranch bIn, Hashtable parameterMap)
-   //   {
-   //      foreach (object o in bIn.Leaves)
-   //      {
-   //         FamilyInstance fi = o as FamilyInstance;
-   //         if (fi != null)
-   //         {
-   //            foreach (DictionaryEntry de in parameterMap)
-   //            {
-   //               if (de.Value != null)
-   //               {
-   //                  //find the parameter on the family instance
-   //                  Parameter p = fi.get_Parameter(de.Key.ToString());
-   //                  if (p != null)
-   //                  {
-   //                     if (de.Value != null)
-   //                        p.Set((double)de.Value);
-   //                  }
-   //               }
-   //            }
-   //         }
-   //      }
-
-   //      foreach (DataTreeBranch nextBranch in bIn.Branches)
-   //      {
-   //         ProcessState(nextBranch, parameterMap);
-   //      }
-   //   }
-
-   //   public override void Update()
-   //   {
-   //      OnDynElementReadyToBuild(EventArgs.Empty);
-   //   }
-
-   //   public override void Destroy()
-   //   {
-   //      base.Destroy();
-   //   }
-   //}
+   #endregion
 
    //[ElementName("Family Instance Parameter Evaluation")]
    //[ElementCategory(BuiltinElementCategories.REVIT)]
@@ -821,6 +471,244 @@ namespace Dynamo.Elements
    //   }
    //}
 
+   [ElementName("Family Instance Creator")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which allows you to create family instances.")]
+   [RequiresTransaction(true)]
+   public class dynFamilyInstanceCreatorXYZ : dynElement
+   {
+      public dynFamilyInstanceCreatorXYZ()
+      {
+         InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
+         InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
+
+         OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      private Expression makeFamilyInstance(object location, FamilySymbol fs, int count)
+      {
+         XYZ pos = location is ReferencePoint
+            ? ((ReferencePoint)location).Position
+            : (XYZ)location;
+
+         FamilyInstance fi;
+
+         if (this.Elements.Count > count)
+         {
+            fi = (FamilyInstance)this.Elements[count];
+            LocationPoint lp = (LocationPoint)fi.Location;
+            lp.Point = pos;
+         }
+         else
+         {
+            fi = this.UIDocument.Document.IsFamilyDocument
+               ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                  pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+               )
+               : this.UIDocument.Document.Create.NewFamilyInstance(
+                  pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+               );
+
+            this.Elements.Add(fi);
+         }
+
+         return Expression.NewContainer(fi);
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         FamilySymbol fs = (FamilySymbol)((Expression.Container)args[1]).Item;
+         var input = args[0];
+         
+         if (input.IsList)
+         {
+            var locList = ((Expression.List)input).Item;
+
+            int count = 0;
+
+            var result = Expression.NewList(
+               FSchemeInterop.Utils.convertSequence(
+                  locList.Select(
+                     x =>
+                        this.makeFamilyInstance(
+                           ((Expression.Container)x).Item,
+                           fs,
+                           count++
+                        )
+                  )
+               )
+            );
+
+            int delCount = 0;
+            foreach (var e in this.Elements.Skip(count))
+            {
+               this.UIDocument.Document.Delete(e);
+               delCount++;
+            }
+            if (delCount > 0)
+               this.Elements.RemoveRange(count, delCount);
+
+            return result;
+         }
+         else
+         {
+            var result = this.makeFamilyInstance(
+               ((Expression.Container)input).Item,
+               fs,
+               0
+            );
+
+            int count = 0;
+            foreach (var e in this.Elements.Skip(1))
+            {
+               this.UIDocument.Document.Delete(e);
+               count++;
+            }
+            if (count > 0)
+               this.Elements.RemoveRange(1, count);
+
+            return result;
+         }
+      }
+   }
+
+   [ElementName("Family Instance Selection")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which allows you to select a family instance from the document and reference it in Dynamo.")]
+   [RequiresTransaction(false)]
+   public class dynFamilyInstanceCreatorSelection : dynElement
+   {
+      TextBox tb;
+      System.Windows.Controls.Button familyInstanceButt;
+
+      public dynFamilyInstanceCreatorSelection()
+      {
+         OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
+
+         //add a button to the inputGrid on the dynElement
+         familyInstanceButt = new System.Windows.Controls.Button();
+         familyInstanceButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+         familyInstanceButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         familyInstanceButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         familyInstanceButt.Click += new System.Windows.RoutedEventHandler(familyInstanceButt_Click);
+         familyInstanceButt.Content = "Select Instance";
+         familyInstanceButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         familyInstanceButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+         tb = new TextBox();
+         tb.Text = "Nothing Selected";
+         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+         tb.Background = backgroundBrush;
+         tb.BorderThickness = new Thickness(0);
+         tb.IsReadOnly = true;
+         tb.IsReadOnlyCaretVisible = false;
+
+         this.inputGrid.RowDefinitions.Add(new RowDefinition());
+         this.inputGrid.RowDefinitions.Add(new RowDefinition());
+
+         this.inputGrid.Children.Add(tb);
+         this.inputGrid.Children.Add(familyInstanceButt);
+
+         System.Windows.Controls.Grid.SetRow(familyInstanceButt, 0);
+         System.Windows.Controls.Grid.SetRow(tb, 1);
+
+         base.RegisterInputsAndOutputs();
+
+         this.topControl.Height = 60;
+         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+
+      }
+
+      public FamilyInstance pickedFamilyInstance;
+
+      public FamilyInstance PickedFamilyInstance
+      {
+         get { return pickedFamilyInstance; }
+         set
+         {
+            pickedFamilyInstance = value;
+            NotifyPropertyChanged("PickedFamilyInstance");
+         }
+      }
+
+      private ElementId familyInstanceID;
+
+      private ElementId FamilyInstanceID
+      {
+         get { return familyInstanceID; }
+         set
+         {
+            familyInstanceID = value;
+            NotifyPropertyChanged("FamilyInstanceID");
+         }
+      }
+      void familyInstanceButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      {
+         PickedFamilyInstance = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(
+            this.UIDocument, "Selec Massing Family Instance", dynElementSettings.SharedInstance
+         );
+
+         if (PickedFamilyInstance != null)
+         {
+            FamilyInstanceID = PickedFamilyInstance.Id;
+            familyInstanceButt.Content = "Change Instance";
+            this.tb.Text = PickedFamilyInstance.Name;
+         }
+         else
+         {
+            familyInstanceButt.Content = "Select Instance";
+            this.tb.Text = "Nothing Selected";
+         }
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         if (PickedFamilyInstance.Id.IntegerValue == FamilyInstanceID.IntegerValue) // sanity check
+            return Expression.NewContainer(PickedFamilyInstance);
+         else
+            throw new Exception("SANITY CHECK FAILED");
+      }
+
+      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+      {
+         //Debug.WriteLine(pd.Object.GetType().ToString());
+         if (this.PickedFamilyInstance != null)
+         {
+            XmlElement outEl = xmlDoc.CreateElement("instance");
+            outEl.SetAttribute("id", this.PickedFamilyInstance.Id.ToString());
+            dynEl.AppendChild(outEl);
+         }
+      }
+
+      public override void LoadElement(XmlNode elNode)
+      {
+         foreach (XmlNode subNode in elNode.ChildNodes)
+         {
+            if (subNode.Name.Equals("instance"))
+            {
+               try
+               {
+                  this.PickedFamilyInstance = dynElementSettings.SharedInstance.Doc.Document.get_Element(
+                     new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
+                  ) as FamilyInstance;
+                  if (this.PickedFamilyInstance != null)
+                  {
+                     FamilyInstanceID = PickedFamilyInstance.Id;
+                     this.tb.Text = this.PickedFamilyInstance.Name;
+                     this.familyInstanceButt.Content = "Change Instance";
+                  }
+               }
+               catch { }
+            }
+         }
+      }
+   }
+
    [ElementName("Set Instance Parameter")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to modify parameters on family instances.")]
@@ -829,11 +717,11 @@ namespace Dynamo.Elements
    {
       public dynFamilyInstanceParameterSetter()
       {
-         InPortData.Add(new PortData(null, "fi", "Family instance.", typeof(object)));
-         InPortData.Add(new PortData(null, "param", "Parameter to modify (string).", typeof(object)));
-         InPortData.Add(new PortData(null, "value", "Value to set the parameter to.", typeof(object)));
+         InPortData.Add(new PortData("fi", "Family instance.", typeof(object)));
+         InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(object)));
+         InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
 
-         OutPortData = new PortData(null, "fi", "Modified family instance.", typeof(object));
+         OutPortData = new PortData("fi", "Modified family instance.", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
@@ -860,7 +748,7 @@ namespace Dynamo.Elements
          throw new Exception("Parameter \"" + paramName + "\" was not found!");
       }
 
-      public override Expression Evaluate(FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
          var paramName = ((Expression.String)args[1]).Item;
          var valueExpr = args[2];

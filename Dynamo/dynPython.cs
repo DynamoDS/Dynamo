@@ -234,8 +234,8 @@ namespace Dynamo.Elements
          //addButton.Click += new RoutedEventHandler(AddInput);
          //subButton.Click += new RoutedEventHandler(RemoveInput);
 
-         InPortData.Add(new PortData(null, "IN", "Input", typeof(object)));
-         OutPortData = new PortData(null, "OUT", "Result of the python script", typeof(object));
+         InPortData.Add(new PortData("IN", "Input", typeof(object)));
+         OutPortData = new PortData("OUT", "Result of the python script", typeof(object));
 
          base.RegisterInputsAndOutputs();
 
@@ -312,6 +312,7 @@ namespace Dynamo.Elements
       //}
 
       private delegate void LogDelegate(string msg);
+      private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
 
       private List<Binding> makeBindings(IEnumerable<Expression> args)
       {
@@ -344,7 +345,8 @@ namespace Dynamo.Elements
          ));
 
          bindings.Add(new Binding("__dynamo__", dynElementSettings.SharedInstance.Bench));
-
+         bindings.Add(new Binding("DynStoredElements", this.Elements));
+         
          return bindings;
       }
 

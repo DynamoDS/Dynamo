@@ -28,7 +28,7 @@ namespace Dynamo.Elements
       {
          this.topControl.Width = 300;
 
-         OutPortData = new PortData(null, "srf", "The divided surface family instance(s)", typeof(dynElement));
+         OutPortData = new PortData("srf", "The divided surface family instance(s)", typeof(dynElement));
          //OutPortData[0].Object = this.Tree;
 
          //add a button to the inputGrid on the dynElement
@@ -163,7 +163,7 @@ namespace Dynamo.Elements
        {
            this.topControl.Width = 300;
 
-           OutPortData = new PortData(null, "face", "The face", typeof(dynElement));
+           OutPortData = new PortData("face", "The face", typeof(dynElement));
            //OutPortData[0].Object = this.Tree;
 
            //add a button to the inputGrid on the dynElement
@@ -219,7 +219,7 @@ namespace Dynamo.Elements
        {
            this.topControl.Width = 300;
 
-           OutPortData = new PortData(null, "curves", "The curves", typeof(ModelCurve));
+           OutPortData = new PortData("curves", "The curves", typeof(ModelCurve));
            //OutPortData[0].Object = this.Tree;
 
            //add a button to the inputGrid on the dynElement

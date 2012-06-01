@@ -49,12 +49,12 @@ namespace Dynamo.Elements
             //a short name which will appear on the node, a tooltip which appears when
             //you hover over the node, and a type which will keep nodes from connecting to
             //others of the wrong type
-            InPortData.Add(new PortData(null, "A", "The first port", typeof(dynElement)));
-            InPortData.Add(new PortData(null, "B", "The second port", typeof(dynElement)));
-            InPortData.Add(new PortData(null, "C", "The third port", typeof(dynElement)));
+            InPortData.Add(new PortData("A", "The first port", typeof(dynElement)));
+            InPortData.Add(new PortData("B", "The second port", typeof(dynElement)));
+            InPortData.Add(new PortData("C", "The third port", typeof(dynElement)));
 
             //The ouput data looks very similar
-            OutPortData = new PortData(null, "me", "The result of this node.", typeof(dynElement));
+            OutPortData = new PortData("me", "The result of this node.", typeof(dynElement));
             
             //make the first output port's object the tree
             //from this object. this isn't required yet by the interface, but it's

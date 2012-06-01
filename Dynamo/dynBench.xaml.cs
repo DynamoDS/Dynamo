@@ -37,6 +37,7 @@ using FailureHandlingOptions = Autodesk.Revit.DB.FailureHandlingOptions;
 using Transaction = Autodesk.Revit.DB.Transaction;
 using TransactionStatus = Autodesk.Revit.DB.TransactionStatus;
 using Path = System.IO.Path;
+using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Controls
 {
@@ -1853,7 +1854,7 @@ namespace Dynamo.Controls
                {
                   foreach (dynElement topMost in topElements)
                   {
-                     FScheme.Expression runningExpression = topMost.Build().Compile();
+                     Expression runningExpression = topMost.Build().Compile();
 
                      string exp = FScheme.print(runningExpression);
 
@@ -2264,7 +2265,7 @@ namespace Dynamo.Controls
          {
             if (topMost != default(dynElement))
             {
-               FScheme.Expression expression = Utils.MakeAnon(
+               Expression expression = Utils.MakeAnon(
                   variableNames,
                   topMost.Build().Compile()
                );
@@ -2397,7 +2398,7 @@ namespace Dynamo.Controls
             {
                topMost = el;
 
-               FScheme.Expression runningExpression = topMost.Build().Compile();
+               Expression runningExpression = topMost.Build().Compile();
 
                //TODO: Flesh out error handling
                try

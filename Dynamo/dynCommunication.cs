@@ -18,6 +18,8 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
+using Microsoft.FSharp.Collections;
+using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Elements
 {
@@ -29,16 +31,16 @@ namespace Dynamo.Elements
    {
       public dynWebRequest()
       {
-         InPortData.Add(new Connectors.PortData(null, "url", "A URL to query.", typeof(dynString)));
-         OutPortData = new Connectors.PortData(null, "str", "The string returned from the web request.", typeof(dynString));
+         InPortData.Add(new Connectors.PortData("url", "A URL to query.", typeof(dynString)));
+         OutPortData = new Connectors.PortData("str", "The string returned from the web request.", typeof(dynString));
          //OutPortData[0].Object = this.Tree;
 
          base.RegisterInputsAndOutputs();
       }
 
-      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
-         string url = ((FScheme.Expression.String)args[0]).Item;
+         string url = ((Expression.String)args[0]).Item;
 
          //send a webrequest to the URL
          // Initialize the WebRequest.
@@ -60,7 +62,7 @@ namespace Dynamo.Elements
          // Close the response to free resources.
          myResponse.Close();
 
-         return FScheme.Expression.NewString(responseFromServer);
+         return Expression.NewString(responseFromServer);
       }
 
       //public override void Draw()

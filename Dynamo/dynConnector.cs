@@ -212,7 +212,7 @@ namespace Dynamo.Connectors
             if (pEnd.Owner != null)
             {
                //set the end equal to the start
-               pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
+               //pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
 
                //tell the end to update
                pEnd.Owner.Update();
@@ -228,10 +228,10 @@ namespace Dynamo.Connectors
          {
             if (pEnd.Owner != null)
             {
-               if (pEnd.PortType == PortType.INPUT)
-                  pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
-               else if (pEnd.PortType == PortType.STATE)
-                  pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
+               //if (pEnd.PortType == PortType.INPUT)
+               //   pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
+               //else if (pEnd.PortType == PortType.STATE)
+               //   pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
 
                //tell the end port's ownder to update
                //pEnd.Owner.Update();
@@ -305,7 +305,7 @@ namespace Dynamo.Connectors
          {
             //set the start and end values to equal so this 
             //starts evaulating immediately
-            pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
+            //pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
             p.Connect(this);
             pEnd.Update();
             pEnd.Owner.Update();
@@ -339,15 +339,15 @@ namespace Dynamo.Connectors
 
          if (p.Equals(pEnd))
          {
-            if (pEnd.PortType == PortType.INPUT)
-            {
-               if (pEnd.Index < pEnd.Owner.InPortData.Count)
-               {
-                  pEnd.Owner.InPortData[pEnd.Index].Object = null;
-               }
-            }
-            else if (pEnd.PortType == PortType.STATE)
-               pEnd.Owner.StatePortData[pEnd.Index].Object = null;
+            //if (pEnd.PortType == PortType.INPUT)
+            //{
+            //   if (pEnd.Index < pEnd.Owner.InPortData.Count)
+            //   {
+            //      pEnd.Owner.InPortData[pEnd.Index].Object = null;
+            //   }
+            //}
+            //else if (pEnd.PortType == PortType.STATE)
+            //   pEnd.Owner.StatePortData[pEnd.Index].Object = null;
             pEnd = null;
          }
 
@@ -372,10 +372,10 @@ namespace Dynamo.Connectors
             //remove the reference to the
             //dynElement attached to port A
 
-            if (pEnd.Index < pEnd.Owner.InPortData.Count)
-            {
-               pEnd.Owner.InPortData[pEnd.Index].Object = null;
-            }
+            //if (pEnd.Index < pEnd.Owner.InPortData.Count)
+            //{
+            //   pEnd.Owner.InPortData[pEnd.Index].Object = null;
+            //}
          }
 
          pStart = null;
@@ -453,6 +453,5 @@ namespace Dynamo.Connectors
       {
          message = "Connection port is not valid.";
       }
-
    }
 }

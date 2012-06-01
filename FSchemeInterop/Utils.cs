@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.FSharp.Collections;
+using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.FSchemeInterop
 {
@@ -11,21 +12,21 @@ namespace Dynamo.FSchemeInterop
    public static class Utils
    {
       //Makes an FScheme Expression representing an anonymous function.
-      public static FScheme.Expression MakeAnon(IEnumerable<string> inputSyms, FScheme.Expression body)
+      public static Expression MakeAnon(IEnumerable<string> inputSyms, Expression body)
       {
          return mkExprList(
-            FScheme.Expression.NewSymbol("lambda"),
-            FScheme.Expression.NewList(convertSequence(
-               inputSyms.Select(x => FScheme.Expression.NewSymbol(x))
+            Expression.NewSymbol("lambda"),
+            Expression.NewList(convertSequence(
+               inputSyms.Select(x => Expression.NewSymbol(x))
             )),
             body
          );
       }
 
       //Makes an FScheme List Expression out of all given arguments.
-      public static FScheme.Expression mkExprList(params FScheme.Expression[] ar)
+      public static Expression mkExprList(params Expression[] ar)
       {
-         return FScheme.Expression.NewList(mkList(ar));
+         return Expression.NewList(mkList(ar));
       }
 
       //Makes an FSharp list from all given arguments.

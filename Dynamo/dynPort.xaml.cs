@@ -14,212 +14,197 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Dynamo.Elements;
-using System.ComponentModel;
 using Dynamo.Utilities;
 
 namespace Dynamo.Connectors
 {
-    /// <summary>
-    /// Interaction logic for dynPort.xaml
-    /// </summary>
-    public delegate void PortConnectedHandler(object sender, EventArgs e);
-    public delegate void PortDisconnectedHandler(object sender, EventArgs e);
-    public enum PortType { INPUT, OUTPUT, STATE };
+   /// <summary>
+   /// Interaction logic for dynPort.xaml
+   /// </summary>
+   public delegate void PortConnectedHandler(object sender, EventArgs e);
+   public delegate void PortDisconnectedHandler(object sender, EventArgs e);
+   public enum PortType { INPUT, OUTPUT, STATE };
 
-    public partial class dynPort : UserControl
-    {
-        #region events
-        public event PortConnectedHandler PortConnected;
-        public event PortConnectedHandler PortDisconnected;
+   public partial class dynPort : UserControl
+   {
+      #region events
+      public event PortConnectedHandler PortConnected;
+      public event PortConnectedHandler PortDisconnected;
 
-        protected virtual void OnPortConnected(EventArgs e)
-        {
-            if (PortConnected != null)
-                PortConnected(this, e);
-        }
-        protected virtual void OnPortDisconnected(EventArgs e)
-        {
-            if (PortDisconnected != null)
-                PortDisconnected(this, e);
-        }
+      protected virtual void OnPortConnected(EventArgs e)
+      {
+         if (PortConnected != null)
+            PortConnected(this, e);
+      }
+      protected virtual void OnPortDisconnected(EventArgs e)
+      {
+         if (PortDisconnected != null)
+            PortDisconnected(this, e);
+      }
 
-        #endregion
+      #endregion
 
-        #region private members
-        
-        List<dynConnector> connectors;
-        Point center;
+      #region private members
 
-        dynElement owner;
-        int index;
-        PortType portType;
+      List<dynConnector> connectors;
+      Point center;
 
-        #endregion
+      dynElement owner;
+      int index;
+      PortType portType;
 
-        #region public members
-        public Point Center
-        {
-            get { return UpdateCenter(); }
-            set { center = value; }
-        }
+      #endregion
 
-        public List<dynConnector> Connectors
-        {
-            get { return connectors; }
-            set { connectors = value; }
-        }
-        
-        //public bool IsInputPort
-        //{
-        //    get { return isInputPort; }
-        //    set { isInputPort = value; }
-        //}
+      #region public members
+      public Point Center
+      {
+         get { return UpdateCenter(); }
+         set { center = value; }
+      }
 
-        public PortType PortType
-        {
-            get { return portType; }
-            set { portType = value; }
-        }
+      public List<dynConnector> Connectors
+      {
+         get { return connectors; }
+         set { connectors = value; }
+      }
 
-        public dynElement Owner
-        {
-            get { return owner; }
-            set { owner = value; }
-        }
-        
-        public int Index
-        {
-            get { return index; }
-            set { index = value; }
-        }
-        #endregion
+      //public bool IsInputPort
+      //{
+      //    get { return isInputPort; }
+      //    set { isInputPort = value; }
+      //}
 
-        #region constructors
+      public PortType PortType
+      {
+         get { return portType; }
+         set { portType = value; }
+      }
 
-        public dynPort( int index)
-        {
-            connectors = new List<dynConnector>();
-            //this.workBench = workBench;
-            this.index = index;
-            InitializeComponent();
+      public dynElement Owner
+      {
+         get { return owner; }
+         set { owner = value; }
+      }
 
-            this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
-            this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
-        }
-        #endregion constructors
+      public int Index
+      {
+         get { return index; }
+         set { index = value; }
+      }
+      #endregion
 
-        #region public methods
-        public void Connect(dynConnector connector)
-        {
-            connectors.Add(connector);
+      #region constructors
 
-            ellipse1Dot.Fill = System.Windows.Media.Brushes.Black;
+      public dynPort(int index)
+      {
+         connectors = new List<dynConnector>();
+         //this.workBench = workBench;
+         this.index = index;
+         InitializeComponent();
 
-            //throw the event for a connection
-            OnPortConnected(EventArgs.Empty);
+         this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
+         this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
+      }
+      #endregion constructors
 
-        }
+      #region public methods
+      public void Connect(dynConnector connector)
+      {
+         connectors.Add(connector);
 
-        public void Disconnect(dynConnector connector)
-        {
-            if (connectors.Contains(connector))
-            {
-                connectors.Remove(connector);
-            }
+         ellipse1Dot.Fill = System.Windows.Media.Brushes.Black;
 
-            //don't set back to white if
-            //there are still connectors on this port
-            if(connectors.Count == 0)
-                ellipse1Dot.Fill = System.Windows.Media.Brushes.White;
+         //throw the event for a connection
+         OnPortConnected(EventArgs.Empty);
 
-            //throw the event for a connection
-            OnPortDisconnected(EventArgs.Empty);
-        }
+      }
 
-        public void Update()
-        {
-            foreach(dynConnector c in connectors)
-            {
-                //calling this with null will have
-                //no effect
-                c.Redraw();
-            }
-        }
-        #endregion
+      public void Disconnect(dynConnector connector)
+      {
+         if (connectors.Contains(connector))
+         {
+            connectors.Remove(connector);
+         }
 
-        #region private methods
-        Point UpdateCenter()
-        {
-            GeneralTransform transform = this.TransformToAncestor(dynElementSettings.SharedInstance.Workbench);
-            Point rootPoint = transform.Transform(new Point(0, 0));
+         //don't set back to white if
+         //there are still connectors on this port
+         if (connectors.Count == 0)
+            ellipse1Dot.Fill = System.Windows.Media.Brushes.White;
 
-            double x = rootPoint.X + this.Width / 2;
-            double y = rootPoint.Y + this.Width / 2;
-            return new Point(x, y);
+         //throw the event for a connection
+         OnPortDisconnected(EventArgs.Empty);
+      }
 
-        }
-        #endregion
+      public void Update()
+      {
+         foreach (dynConnector c in connectors)
+         {
+            //calling this with null will have
+            //no effect
+            c.Redraw();
+         }
+      }
+      #endregion
 
-        private void ellipse1_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //show the contextual menu
-        }
+      #region private methods
+      Point UpdateCenter()
+      {
+         GeneralTransform transform = this.TransformToAncestor(dynElementSettings.SharedInstance.Workbench);
+         Point rootPoint = transform.Transform(new Point(0, 0));
 
-        private void OnOpened(object sender, RoutedEventArgs e)
-        {
-            //do some stuff when opening
-        }
+         double x = rootPoint.X + this.Width / 2;
+         double y = rootPoint.Y + this.Width / 2;
+         return new Point(x, y);
 
-        private void OnClosed(object sender, RoutedEventArgs e)
-        {
-            //do some stuff when closing
-        }
+      }
+      #endregion
 
-    }
+      private void ellipse1_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+      {
+         //show the contextual menu
+      }
 
-    public class PortData
-    {
-        object o;
-        string nickName;
-        string toolTip;
-        Type portType;
+      private void OnOpened(object sender, RoutedEventArgs e)
+      {
+         //do some stuff when opening
+      }
 
-        public string NickName
-        {
-            get { return nickName; }
-        }
-        public string ToolTipString
-        {
-            get { return toolTip; }
-        }
-        public Type PortType
-        {
-            get { return portType; }
-        }
-        public object Object
-        {
-            get{return o;}
-            set { o = value; }
-        }
+      private void OnClosed(object sender, RoutedEventArgs e)
+      {
+         //do some stuff when closing
+      }
 
-        public PortData(object o, string nickName, string tip, Type portType)
-        {
-            this.nickName = nickName;
-            this.toolTip = tip;
-            this.portType = portType;
-        }
+   }
 
-    }
+   public class PortData
+   {
+      string nickName;
+      string toolTip;
+      Type portType;
+
+      public string NickName
+      {
+         get { return nickName; }
+      }
+      public string ToolTipString
+      {
+         get { return toolTip; }
+      }
+      public Type PortType
+      {
+         get { return portType; }
+      }
+
+      public PortData(string nickName, string tip, Type portType)
+      {
+         this.nickName = nickName;
+         this.toolTip = tip;
+         this.portType = portType;
+      }
+   }
 }

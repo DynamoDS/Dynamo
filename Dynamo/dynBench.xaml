@@ -16,7 +16,7 @@
    <Grid>
       <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Name="menu1">
          <MenuItem Header="_File">
-            <MenuItem Header="_New" Click="New_Click" />
+            <MenuItem Header="_Clear" Click="New_Click" />
             <MenuItem Header="_Save As" Click="SaveAs_Click" />
             <MenuItem Header="_Save Function" Click="SaveFunction_Click" Name="saveFuncItem" IsEnabled="False" />
             <MenuItem Header="_Open" Click="Open_Click" />
