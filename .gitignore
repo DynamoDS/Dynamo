@@ -38,3 +38,4 @@ Thumbs.db
 # DEBUG FILES #
 *.pdb
 *.cache
+*.suo

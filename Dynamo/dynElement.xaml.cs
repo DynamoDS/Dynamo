@@ -19,20 +19,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
+using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 using Expression = Dynamo.FScheme.Expression;
 using Grid = System.Windows.Controls.Grid;
-using Dynamo.Controls;
-using System.Windows.Data;
-
 
 namespace Dynamo.Elements
 {
@@ -41,6 +39,14 @@ namespace Dynamo.Elements
    /// </summary
    public enum ElementState { DEAD, ACTIVE, SELECTED, ERROR };
    public enum LacingType { SHORTEST, LONGEST, FULL };
+
+   #region interfaces
+   public interface IDynamic
+   {
+      void Draw();
+      void Destroy();
+   }
+   #endregion
 
    public partial class dynElement : UserControl, IDynamic, INotifyPropertyChanged
    {
@@ -341,18 +347,11 @@ namespace Dynamo.Elements
          }
       }
 
-      protected virtual string Save()
-      {
-         //override this in your derived classes to specify the save behavior
-         return "";
-      }
-
       public void RegisterInputsAndOutputs()
       {
          ResizeElementForInputs();
          SetupPortGrids();
          RegisterInputs();
-         //RegisterStatePorts();
          RegisterOutputs();
          SetToolTips();
          ValidateConnections();
@@ -536,7 +535,7 @@ namespace Dynamo.Elements
             //add a port for each input
             //distribute the ports along the 
             //edges of the icon
-            AddPort(pd.Object, PortType.INPUT, inPortData[count].NickName, count);
+            AddPort(PortType.INPUT, inPortData[count].NickName, count);
             count++;
          }
 
@@ -565,11 +564,6 @@ namespace Dynamo.Elements
                inport.Connectors[0].Kill();
             }
          }
-
-         //else if (portType == PortType.OUTPUT)
-         //{
-
-         //}
       }
 
       public void RegisterStatePorts()
@@ -582,7 +576,7 @@ namespace Dynamo.Elements
             //add a port for each input
             //distribute the ports along the 
             //edges of the icon
-            AddPort(pd.Object, PortType.STATE, statePortData[count].NickName, count);
+            AddPort(PortType.STATE, statePortData[count].NickName, count);
             count++;
          }
       }
@@ -650,13 +644,6 @@ namespace Dynamo.Elements
          }
 
          outPort.toolTipText.Text = outPort.Owner.OutPortData.ToolTipString;
-
-         //count = 0;
-         //foreach (dynPort p in statePorts)
-         //{
-         //   p.toolTipText.Text = p.Owner.StatePortData[count].ToolTipString;
-         //   count++;
-         //}
       }
 
       /// <summary>
@@ -664,11 +651,8 @@ namespace Dynamo.Elements
       /// </summary>
       /// <param name="isInput">Is the port an input?</param>
       /// <param name="index">The index of the port in the port list.</param>
-      public void AddPort(object el, PortType portType, string name, int index)
+      public void AddPort(PortType portType, string name, int index)
       {
-         //set the z order to the back
-         //Canvas.SetZIndex(p, 1);
-
          if (portType == PortType.INPUT)
          {
             if (inPorts.Count > index)
@@ -709,54 +693,6 @@ namespace Dynamo.Elements
                p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
          }
-         //else if (portType == PortType.OUTPUT)
-         //{
-         //   dynPort p = new dynPort(index);
-
-         //   //create a text block for the name of the port
-         //   TextBlock tb = new TextBlock();
-
-         //   tb.VerticalAlignment = VerticalAlignment.Center;
-         //   tb.FontSize = 12;
-         //   tb.FontWeight = FontWeights.Normal;
-         //   tb.Foreground = new SolidColorBrush(Colors.Black);
-         //   tb.Text = name;
-
-         //   tb.HorizontalAlignment = HorizontalAlignment.Right;
-
-         //   p.PortType = PortType.OUTPUT;
-         //   outPort = p;
-         //   gridRight.Children.Add(p);
-         //   Grid.SetColumn(p, 1);
-         //   Grid.SetRow(p, index);
-
-         //   //portNamesRight.Children.Add(tb);
-         //   gridRight.Children.Add(tb);
-         //   Grid.SetColumn(tb, 0);
-         //   Grid.SetRow(tb, index);
-
-         //   p.Owner = this;
-
-         //   //register listeners on the port
-         //   p.PortConnected += new PortConnectedHandler(p_PortConnected);
-         //   p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
-         //}
-         //else if (portType == PortType.STATE)
-         //{
-         //    tb.HorizontalAlignment = HorizontalAlignment.Center;
-
-         //    p.PortType = PortType.STATE;
-         //    statePorts.Add(p);
-         //    gridBottom.Children.Add(p);
-         //    Grid.SetColumn(p, index);
-         //    Grid.SetRow(p, 0);
-
-         //    portNamesBottom.Children.Add(tb);
-         //    Grid.SetColumn(tb, index);
-         //    Grid.SetRow(tb, 0);
-         //}
-
-
       }
 
       Dictionary<dynPort, dynElement> previousEvalPortMappings = new Dictionary<dynPort, dynElement>();
@@ -1681,22 +1617,19 @@ namespace Dynamo.Elements
          {
             //if the port data's object is null
             //or the port data's object type can not be matched
-            if (pd.Object == null) //|| pd.Object.GetType() != pd.PortType)
-            {
-               Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-                   new object[] { true });
+            Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
+               new object[] { true });
 
-               SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-               Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                   new object[] { "One or more connections is null." });
+            SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
+            Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
+               new object[] { "One or more connections is null." });
 
-               return false;
-            }
+            return false;
          }
 
 
          Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-             new object[] { false });
+            new object[] { false });
 
          return true;
       }
@@ -1827,4 +1760,84 @@ namespace Dynamo.Elements
          return null;
       }
    }
+
+   #region class attributes
+   [AttributeUsage(AttributeTargets.All)]
+   public class ElementNameAttribute : System.Attribute
+   {
+      public string ElementName { get; set; }
+
+      public ElementNameAttribute(string elementName)
+      {
+         this.ElementName = elementName;
+      }
+   }
+
+   [AttributeUsage(AttributeTargets.All)]
+   public class ElementCategoryAttribute : System.Attribute
+   {
+      public string ElementCategory { get; set; }
+
+      public ElementCategoryAttribute(string category)
+      {
+         this.ElementCategory = category;
+      }
+   }
+
+   [AttributeUsage(AttributeTargets.All)]
+   public class ElementSearchTagsAttribute : System.Attribute
+   {
+      public List<string> Tags { get; set; }
+
+      public ElementSearchTagsAttribute(params string[] tags)
+      {
+         this.Tags = tags.ToList();
+      }
+   }
+
+   [AttributeUsage(AttributeTargets.All)]
+   public class IsInteractiveAttribute : System.Attribute
+   {
+      public bool IsInteractive { get; set; }
+
+      public IsInteractiveAttribute(bool isInteractive)
+      {
+         this.IsInteractive = isInteractive;
+      }
+   }
+
+   [AttributeUsage(AttributeTargets.All)]
+   public class RequiresTransactionAttribute : System.Attribute
+   {
+      private bool requiresTransaction;
+
+      public bool RequiresTransaction
+      {
+         get { return requiresTransaction; }
+         set { requiresTransaction = value; }
+      }
+
+      public RequiresTransactionAttribute(bool requiresTransaction)
+      {
+         this.requiresTransaction = requiresTransaction;
+      }
+   }
+
+   [AttributeUsage(AttributeTargets.All)]
+   public class ElementDescriptionAttribute : System.Attribute
+   {
+      private string description;
+
+      public string ElementDescription
+      {
+         get { return description; }
+         set { description = value; }
+      }
+
+      public ElementDescriptionAttribute(string description)
+      {
+         this.description = description;
+      }
+   }
+   #endregion
 }

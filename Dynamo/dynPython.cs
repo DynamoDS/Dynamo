@@ -234,8 +234,8 @@ namespace Dynamo.Elements
          //addButton.Click += new RoutedEventHandler(AddInput);
          //subButton.Click += new RoutedEventHandler(RemoveInput);
 
-         InPortData.Add(new PortData(null, "IN", "Input", typeof(object)));
-         OutPortData = new PortData(null, "OUT", "Result of the python script", typeof(object));
+         InPortData.Add(new PortData("IN", "Input", typeof(object)));
+         OutPortData = new PortData("OUT", "Result of the python script", typeof(object));
 
          base.RegisterInputsAndOutputs();
 

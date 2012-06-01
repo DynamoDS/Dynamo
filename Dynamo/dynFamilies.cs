@@ -14,22 +14,17 @@
 
 using System;
 using System.Collections;
-using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Structure;
-using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
-using TextBox = System.Windows.Controls.TextBox;
-
-using Expression = Dynamo.FScheme.Expression;
 using Microsoft.FSharp.Collections;
-
-using System.Linq;
+using Expression = Dynamo.FScheme.Expression;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Elements
 {
@@ -60,7 +55,7 @@ namespace Dynamo.Elements
 
          PopulateComboBox();
 
-         OutPortData = new PortData(null, "", "Family type", typeof(dynFamilyTypeSelector));
+         OutPortData = new PortData("", "Family type", typeof(dynFamilyTypeSelector));
          base.RegisterInputsAndOutputs();
       }
 
@@ -103,6 +98,8 @@ namespace Dynamo.Elements
          throw new Exception("Nothing selected!");
       }
    }
+
+   #region Disabled ParameterMapper
 
    //[ElementName("Instance Parameter Mapper")]
    //[ElementCategory(BuiltinElementCategories.REVIT)]
@@ -389,13 +386,90 @@ namespace Dynamo.Elements
    //   }
    //}
 
-   // MDJ added 11-14-11 
-   // created new class dynFamilyInstanceCreatorXYZ by copying dynFamilyInstanceCreator, would be nice if there was a way to pass in either XYZ or RefPoints to previous class.
-   // Hack: blind copy paste to change this to take XYZ instead
-   // goal is to make family instances placeable in the project env
-   // right now refpoints cannot be placed so the previous family instance creator fail
-   //
-   //
+   #endregion
+
+   //[ElementName("Family Instance Parameter Evaluation")]
+   //[ElementCategory(BuiltinElementCategories.REVIT)]
+   //[ElementDescription("An element which allows you to modify parameters on family instances.")]
+   //[RequiresTransaction(true)]
+   //public class dynFamilyInstanceParameterEvaluation : dynElement
+   //{
+
+   //   public dynFamilyInstanceParameterEvaluation()
+   //   {
+
+   //      InPortData.Add(new PortData(null, "fi", "Family instances.", typeof(dynElement)));
+   //      InPortData.Add(new PortData(null, "map", "Parameter map.", typeof(dynInstanceParameterMapper)));
+
+   //      base.RegisterInputsAndOutputs();
+
+   //   }
+
+   //   public override void Draw()
+   //   {
+   //      if (CheckInputs())
+   //      {
+   //         DataTree treeIn = InPortData[0].Object as DataTree;
+   //         if (treeIn != null)
+   //         {
+   //            Hashtable parameterMap = InPortData[1].Object as Hashtable;
+   //            if (parameterMap != null)
+   //               ProcessState(treeIn.Trunk, parameterMap);
+   //         }
+   //      }
+
+   //      base.Draw();
+   //   }
+
+   //   private void ProcessState(DataTreeBranch bIn, Hashtable parameterMap)
+   //   {
+   //      foreach (object o in bIn.Leaves)
+   //      {
+   //         FamilyInstance fi = o as FamilyInstance;
+   //         if (fi != null)
+   //         {
+   //            foreach (DictionaryEntry de in parameterMap)
+   //            {
+   //               if (de.Value != null)
+   //               {
+   //                  //find the parameter on the family instance
+   //                  Parameter p = fi.get_Parameter(de.Key.ToString());
+   //                  if (p != null)
+   //                  {
+   //                     if (p.StorageType == StorageType.Double)
+   //                     {
+   //                        p.Set((double)de.Value);
+   //                     }
+   //                     else if (p.StorageType == StorageType.Integer)
+   //                     {
+   //                        p.Set((int)de.Value);
+   //                     }
+   //                     else if (p.StorageType == StorageType.String)
+   //                     {
+   //                        p.Set((string)de.Value);
+   //                     }
+   //                  }
+   //               }
+   //            }
+   //         }
+   //      }
+
+   //      foreach (DataTreeBranch nextBranch in bIn.Branches)
+   //      {
+   //         ProcessState(nextBranch, parameterMap);
+   //      }
+   //   }
+
+   //   public override void Update()
+   //   {
+   //      OnDynElementReadyToBuild(EventArgs.Empty);
+   //   }
+
+   //   public override void Destroy()
+   //   {
+   //      base.Destroy();
+   //   }
+   //}
 
    [ElementName("Family Instance Creator")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
@@ -405,10 +479,10 @@ namespace Dynamo.Elements
    {
       public dynFamilyInstanceCreatorXYZ()
       {
-         InPortData.Add(new PortData(null, "xyz", "xyz", typeof(object)));
-         InPortData.Add(new PortData(null, "typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
+         InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
+         InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
 
-         OutPortData = new PortData(null, "fi", "Family instances created by this operation.", typeof(FamilyInstance));
+         OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
 
          base.RegisterInputsAndOutputs();
       }
@@ -500,11 +574,6 @@ namespace Dynamo.Elements
       }
    }
 
-   // MDJ added 11-21-11 
-   // created new class dynFamilyInstanceCreatorBySelection by copying dynFamilyInstanceCreator, 
-   //
-   //
-
    [ElementName("Family Instance Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to select a family instance from the document and reference it in Dynamo.")]
@@ -516,7 +585,7 @@ namespace Dynamo.Elements
 
       public dynFamilyInstanceCreatorSelection()
       {
-         OutPortData = new PortData(null, "fi", "Family instances created by this operation.", typeof(FamilyInstance));
+         OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
 
          //add a button to the inputGrid on the dynElement
          familyInstanceButt = new System.Windows.Controls.Button();
@@ -555,16 +624,6 @@ namespace Dynamo.Elements
 
       }
 
-      //public event PropertyChangedEventHandler PropertyChanged;
-
-      //private void NotifyPropertyChanged(String info)
-      //{
-      //   if (PropertyChanged != null)
-      //   {
-      //      PropertyChanged(this, new PropertyChangedEventArgs(info));
-      //   }
-      //}
-
       public FamilyInstance pickedFamilyInstance;
 
       public FamilyInstance PickedFamilyInstance
@@ -590,7 +649,9 @@ namespace Dynamo.Elements
       }
       void familyInstanceButt_Click(object sender, System.Windows.RoutedEventArgs e)
       {
-         PickedFamilyInstance = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(dynElementSettings.SharedInstance.Doc, "Selec Massing Family Instance", dynElementSettings.SharedInstance);
+         PickedFamilyInstance = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(
+            this.UIDocument, "Selec Massing Family Instance", dynElementSettings.SharedInstance
+         );
 
          if (PickedFamilyInstance != null)
          {
@@ -605,10 +666,10 @@ namespace Dynamo.Elements
          }
       }
 
-      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
          if (PickedFamilyInstance.Id.IntegerValue == FamilyInstanceID.IntegerValue) // sanity check
-            return FScheme.Expression.NewContainer(PickedFamilyInstance);
+            return Expression.NewContainer(PickedFamilyInstance);
          else
             throw new Exception("SANITY CHECK FAILED");
       }
@@ -648,198 +709,6 @@ namespace Dynamo.Elements
       }
    }
 
-
-   //[ElementName("Family Instance Creator")]
-   //[ElementCategory(BuiltinElementCategories.REVIT)]
-   //[ElementDescription("An element which allows you to create family instance from a point.")]
-   //[RequiresTransaction(true)]
-   //public class dynFamilyInstanceCreator : dynElement
-   //{
-   //   public dynFamilyInstanceCreator()
-   //   {
-   //      InPortData.Add(new PortData(null, "pt", "Reference point.", typeof(object)));
-   //      InPortData.Add(new PortData(null, "typ", "The Family Type to use for instantiation.", typeof(object)));
-
-   //      OutPortData = new PortData(null, "fi", "Family instance created by this operation.", typeof(object)));
-
-   //      base.RegisterInputsAndOutputs();
-   //   }
-
-   //   public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
-   //   {
-   //      var pt = (ReferencePoint)((FScheme.Expression.Container)args[0]).Item;
-   //      var fs = (FamilySymbol)((FScheme.Expression.Container)args[1]).Item;
-
-   //      return FScheme.Expression.NewContainer(
-   //         dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pt.Position, fs, StructuralType.NonStructural)
-   //      );
-   //   }
-
-   //   public override void Draw()
-   //   {
-   //      if (CheckInputs())
-   //      {
-   //         DataTree treeIn = InPortData[0].Object as DataTree;
-   //         if (treeIn != null)
-   //         {
-   //            Process(treeIn.Trunk, this.Tree.Trunk);
-   //         }
-   //      }
-
-   //      base.Draw();
-   //   }
-
-   //   public void Process(DataTreeBranch bIn, DataTreeBranch currentBranch)
-   //   {
-
-   //      foreach (object o in bIn.Leaves)
-   //      {
-   //         ReferencePoint rp = o as ReferencePoint;
-
-   //         if (rp != null)
-   //         {
-   //            //get the location of the point
-   //            XYZ pos = rp.Position;
-   //            FamilySymbol fs = InPortData[1].Object as FamilySymbol;
-   //            FamilyInstance fi = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewFamilyInstance(pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
-
-   //            Elements.Append(fi);
-   //            currentBranch.Leaves.Add(fi);
-
-   //         }
-   //      }
-
-   //      foreach (DataTreeBranch b1 in bIn.Branches)
-   //      {
-   //         DataTreeBranch newBranch = new DataTreeBranch();
-   //         this.Tree.Trunk.Branches.Add(newBranch);
-   //         Process(b1, newBranch);
-   //      }
-   //   }
-
-   //   public void ProcessState(DataTreeBranch bIn, Hashtable parameterMap)
-   //   {
-   //      foreach (object o in bIn.Leaves)
-   //      {
-   //         FamilyInstance fi = o as FamilyInstance;
-   //         if (fi != null)
-   //         {
-   //            foreach (DictionaryEntry de in parameterMap)
-   //            {
-   //               if (de.Value != null)
-   //               {
-   //                  //find the parameter on the family instance
-   //                  Parameter p = fi.get_Parameter(de.Key.ToString());
-   //                  if (p != null)
-   //                  {
-   //                     if (de.Value != null)
-   //                        p.Set((double)de.Value);
-   //                  }
-   //               }
-   //            }
-   //         }
-   //      }
-
-   //      foreach (DataTreeBranch nextBranch in bIn.Branches)
-   //      {
-   //         ProcessState(nextBranch, parameterMap);
-   //      }
-   //   }
-
-   //   public override void Update()
-   //   {
-   //      OnDynElementReadyToBuild(EventArgs.Empty);
-   //   }
-
-   //   public override void Destroy()
-   //   {
-   //      base.Destroy();
-   //   }
-   //}
-
-   //[ElementName("Family Instance Parameter Evaluation")]
-   //[ElementCategory(BuiltinElementCategories.REVIT)]
-   //[ElementDescription("An element which allows you to modify parameters on family instances.")]
-   //[RequiresTransaction(true)]
-   //public class dynFamilyInstanceParameterEvaluation : dynElement
-   //{
-
-   //   public dynFamilyInstanceParameterEvaluation()
-   //   {
-
-   //      InPortData.Add(new PortData(null, "fi", "Family instances.", typeof(dynElement)));
-   //      InPortData.Add(new PortData(null, "map", "Parameter map.", typeof(dynInstanceParameterMapper)));
-
-   //      base.RegisterInputsAndOutputs();
-
-   //   }
-
-   //   public override void Draw()
-   //   {
-   //      if (CheckInputs())
-   //      {
-   //         DataTree treeIn = InPortData[0].Object as DataTree;
-   //         if (treeIn != null)
-   //         {
-   //            Hashtable parameterMap = InPortData[1].Object as Hashtable;
-   //            if (parameterMap != null)
-   //               ProcessState(treeIn.Trunk, parameterMap);
-   //         }
-   //      }
-
-   //      base.Draw();
-   //   }
-
-   //   private void ProcessState(DataTreeBranch bIn, Hashtable parameterMap)
-   //   {
-   //      foreach (object o in bIn.Leaves)
-   //      {
-   //         FamilyInstance fi = o as FamilyInstance;
-   //         if (fi != null)
-   //         {
-   //            foreach (DictionaryEntry de in parameterMap)
-   //            {
-   //               if (de.Value != null)
-   //               {
-   //                  //find the parameter on the family instance
-   //                  Parameter p = fi.get_Parameter(de.Key.ToString());
-   //                  if (p != null)
-   //                  {
-   //                     if (p.StorageType == StorageType.Double)
-   //                     {
-   //                        p.Set((double)de.Value);
-   //                     }
-   //                     else if (p.StorageType == StorageType.Integer)
-   //                     {
-   //                        p.Set((int)de.Value);
-   //                     }
-   //                     else if (p.StorageType == StorageType.String)
-   //                     {
-   //                        p.Set((string)de.Value);
-   //                     }
-   //                  }
-   //               }
-   //            }
-   //         }
-   //      }
-
-   //      foreach (DataTreeBranch nextBranch in bIn.Branches)
-   //      {
-   //         ProcessState(nextBranch, parameterMap);
-   //      }
-   //   }
-
-   //   public override void Update()
-   //   {
-   //      OnDynElementReadyToBuild(EventArgs.Empty);
-   //   }
-
-   //   public override void Destroy()
-   //   {
-   //      base.Destroy();
-   //   }
-   //}
-
    [ElementName("Set Instance Parameter")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to modify parameters on family instances.")]
@@ -848,11 +717,11 @@ namespace Dynamo.Elements
    {
       public dynFamilyInstanceParameterSetter()
       {
-         InPortData.Add(new PortData(null, "fi", "Family instance.", typeof(object)));
-         InPortData.Add(new PortData(null, "param", "Parameter to modify (string).", typeof(object)));
-         InPortData.Add(new PortData(null, "value", "Value to set the parameter to.", typeof(object)));
+         InPortData.Add(new PortData("fi", "Family instance.", typeof(object)));
+         InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(object)));
+         InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
 
-         OutPortData = new PortData(null, "fi", "Modified family instance.", typeof(object));
+         OutPortData = new PortData("fi", "Modified family instance.", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
@@ -879,7 +748,7 @@ namespace Dynamo.Elements
          throw new Exception("Parameter \"" + paramName + "\" was not found!");
       }
 
-      public override Expression Evaluate(FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
          var paramName = ((Expression.String)args[1]).Item;
          var valueExpr = args[2];

@@ -13,30 +13,15 @@
 //limitations under the License.
 
 using System;
-using System.Diagnostics;
-using System.Collections.Generic;
 using System.Collections;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.IO;
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit;
-using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI.Events;
-using System.Reflection;
-using System.Windows.Controls;
-using System.Windows.Data;
-using TextBox = System.Windows.Controls.TextBox;
-using System.Windows.Forms;
-using Dynamo.Controls;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
-using System.IO.Ports;
-
-using Expression = Dynamo.FScheme.Expression;
 using Microsoft.FSharp.Collections;
+using Expression = Dynamo.FScheme.Expression;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
@@ -48,9 +33,9 @@ namespace Dynamo.Elements
    {
       public dynModelCurve()
       {
-         InPortData.Add(new PortData(null, "c", "A curve.", typeof(Curve)));
-         InPortData.Add(new PortData(null, "sp", "The sketch plane.", typeof(SketchPlane)));
-         OutPortData = new PortData(null, "mc", "ModelCurve", typeof(ModelCurve));
+         InPortData.Add(new PortData("c", "A curve.", typeof(Curve)));
+         InPortData.Add(new PortData("sp", "The sketch plane.", typeof(SketchPlane)));
+         OutPortData = new PortData("mc", "ModelCurve", typeof(ModelCurve));
 
          base.RegisterInputsAndOutputs();
       }
@@ -74,21 +59,21 @@ namespace Dynamo.Elements
    {
       public dynLoftForm()
       {
-         InPortData.Add(new PortData(null, "solid?", "Is solid?", typeof(object)));
-         InPortData.Add(new PortData(null, "refListList", "ReferenceArrayArray", typeof(object)));
+         InPortData.Add(new PortData("solid?", "Is solid?", typeof(object)));
+         InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(object)));
 
-         OutPortData = new PortData(null, "form", "Loft Form", typeof(object));
+         OutPortData = new PortData("form", "Loft Form", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         bool isSolid = ((FScheme.Expression.Number)args[0]).Item == 1;
+         bool isSolid = ((Expression.Number)args[0]).Item == 1;
 
-         IEnumerable<IEnumerable<Reference>> refArrays = ((FScheme.Expression.List)args[1]).Item.Select(
-            x => ((FScheme.Expression.List)x).Item.Select(
-               y => (Reference)((FScheme.Expression.Container)y).Item
+         IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
+            x => ((Expression.List)x).Item.Select(
+               y => (Reference)((Expression.Container)y).Item
             )
          );
 
@@ -104,7 +89,7 @@ namespace Dynamo.Elements
             refArrArr.Append(refArr);
          }
 
-         return FScheme.Expression.NewContainer(
+         return Expression.NewContainer(
             dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr)
          );
       }
@@ -118,8 +103,8 @@ namespace Dynamo.Elements
    {
       public dynCurveByPoints()
       {
-         InPortData.Add(new PortData(null, "refPts", "List of reference points", typeof(object)));
-         OutPortData = new PortData(null, "curve", "Curve from ref points", typeof(object));
+         InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
+         OutPortData = new PortData("curve", "Curve from ref points", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
@@ -151,12 +136,12 @@ namespace Dynamo.Elements
 
             this.Elements.Add(c);
          }
-         
-         return FScheme.Expression.NewContainer(c);
+
+         return Expression.NewContainer(c);
       }
    }
 
-   [ElementName("Curve Reference")]
+   [ElementName("CurveElement Reference")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("CurveyPoints.GeometryCurve.Reference")]
    [RequiresTransaction(true)]
@@ -164,17 +149,35 @@ namespace Dynamo.Elements
    {
       public dynCurveRef()
       {
-         InPortData.Add(new PortData(null, "curve", "CurveByPoints", typeof(object)));
-         OutPortData = new PortData(null, "curveRef", "Reference", typeof(object));
+         InPortData.Add(new PortData("curve", "CurveByPoints", typeof(object)));
+         OutPortData = new PortData("curveRef", "Reference", typeof(object));
 
          base.RegisterInputsAndOutputs();
       }
 
-      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
-         CurveByPoints curve = (args[0] as FScheme.Expression.Container).Item as CurveByPoints;
+         var input = args[0];
 
-         return FScheme.Expression.NewContainer(curve.GeometryCurve.Reference);
+         if (input.IsList)
+         {
+            return Expression.NewList(
+               Utils.convertSequence(
+                  ((Expression.List)input).Item.Select(
+                     x =>
+                        Expression.NewContainer(
+                           ((CurveElement)((Expression.Container)x).Item).GeometryCurve.Reference
+                        )
+                  )
+               )
+            );
+         }
+         else
+         {
+            return Expression.NewContainer(
+               ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference
+            );
+         }
       }
    }
 
@@ -184,26 +187,13 @@ namespace Dynamo.Elements
    [RequiresTransaction(true)]
    public class dynModelCurveByPoints : dynElement
    {
-      //List<SketchPlane> sps = new List<SketchPlane>();
-
       public dynModelCurveByPoints()
       {
-         InPortData.Add(new PortData(null, "pts", "The points from which to create the curve", typeof(object)));
-
-         OutPortData = new PortData(null, "cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline));
-         //OutPortData[0].Object = this.Tree;
+         InPortData.Add(new PortData("pts", "The points from which to create the curve", typeof(object)));
+         OutPortData = new PortData("cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline));
 
          base.RegisterInputsAndOutputs();
       }
-
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      DataTree ptTree = InPortData[0].Object as DataTree;
-      //      Process(ptTree.Trunk, this.Tree.Trunk);
-      //   }
-      //}
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
@@ -239,78 +229,5 @@ namespace Dynamo.Elements
 
          return Expression.NewContainer(c);
       }
-
-      //public void Process(DataTreeBranch b, DataTreeBranch currentBranch)
-      //{
-
-      //   List<XYZ> ptArr = new List<XYZ>();
-      //   List<double> weights = new List<double>();
-
-      //   foreach (object o in b.Leaves)
-      //   {
-      //      ReferencePoint pt = o as ReferencePoint;
-      //      ptArr.Add(pt.Position);
-      //      weights.Add(1);
-      //   }
-
-      //   //only make a curve if
-      //   //there's enough points
-      //   if (ptArr.Count > 1)
-      //   {
-      //      //make a curve
-      //      NurbSpline ns = dynElementSettings.SharedInstance.Doc.Application.Application.Create.NewNurbSpline(ptArr, weights);
-      //      double rawParam = ns.ComputeRawParameter(.5);
-      //      Transform t = ns.ComputeDerivatives(rawParam, false);
-
-      //      XYZ norm = t.BasisZ;
-
-      //      if (norm.GetLength() == 0)
-      //      {
-      //         norm = XYZ.BasisZ;
-      //      }
-
-      //      Plane p = new Plane(norm, t.Origin);
-      //      SketchPlane sp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewSketchPlane(p);
-      //      sps.Add(sp);
-
-      //      ModelNurbSpline c = (ModelNurbSpline)dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewModelCurve(ns, sp);
-
-      //      //add the element to the collection
-      //      //so it can be deleted later
-      //      Elements.Append(c);
-
-      //      //create a leaf node on the local branch
-      //      currentBranch.Leaves.Add(c);
-      //   }
-
-      //   foreach (DataTreeBranch b1 in b.Branches)
-      //   {
-      //      //every time you read a branch
-      //      //create a branch
-      //      DataTreeBranch newBranch = new DataTreeBranch();
-      //      this.Tree.Trunk.Branches.Add(newBranch);
-
-      //      Process(b1, newBranch);
-      //   }
-      //}
-
-      //public override void Destroy()
-      //{
-
-      //   //base destroys all elements in the collection
-      //   base.Destroy();
-
-      //   foreach (SketchPlane sp in sps)
-      //   {
-      //      dynElementSettings.SharedInstance.Doc.Document.Delete(sp);
-      //   }
-
-      //   sps.Clear();
-      //}
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
    }
 }

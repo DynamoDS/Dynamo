@@ -19,6 +19,7 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Dynamo.FSchemeInterop;
+using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Elements
 {
@@ -30,41 +31,38 @@ namespace Dynamo.Elements
    {
       public dynReferencePointByXYZ()
       {
-         InPortData.Add(new PortData(null, "xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
-         OutPortData = new PortData(null, "pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint));
+         InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
+         OutPortData = new PortData("pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint));
 
          base.RegisterInputsAndOutputs();
       }
 
-      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
          var input = args[0];
-
          if (input.IsList)
          {
-            var xyzList = ((FScheme.Expression.List)input).Item;
-
             int count = 0;
-
+            var xyzList = ((Expression.List)input).Item;
             var result = Utils.convertSequence(
                xyzList.Select(
-                  delegate(FScheme.Expression x)
+                  delegate(Expression x)
                   {
                      ReferencePoint pt;
                      if (this.Elements.Count > count)
                      {
                         pt = (ReferencePoint)this.Elements[count];
-                        pt.Position = (XYZ)((FScheme.Expression.Container)x).Item;
+                        pt.Position = (XYZ)((Expression.Container)x).Item;
                      }
                      else
                      {
                         pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-                           (XYZ)((FScheme.Expression.Container)x).Item
+                           (XYZ)((Expression.Container)x).Item
                         );
                         this.Elements.Add(pt);
                      }
                      count++;
-                     return FScheme.Expression.NewContainer(pt);
+                     return Expression.NewContainer(pt);
                   }
                )
             );
@@ -78,11 +76,11 @@ namespace Dynamo.Elements
             if (delCount > 0)
                this.Elements.RemoveRange(count, delCount);
 
-            return FScheme.Expression.NewList(result);
+            return Expression.NewList(result);
          }
          else
          {
-            XYZ xyz = (XYZ)((FScheme.Expression.Container)input).Item;
+            XYZ xyz = (XYZ)((Expression.Container)input).Item;
 
             ReferencePoint pt;
 
@@ -106,73 +104,8 @@ namespace Dynamo.Elements
                this.Elements.Add(pt);
             }
 
-            return FScheme.Expression.NewContainer(pt);
+            return Expression.NewContainer(pt);
          }
-      }
-   }
-
-   [ElementName("XYZ Grid")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which creates a grid of reference points.")]
-   [RequiresTransaction(true)]
-   public class dynReferencePtGrid : dynElement
-   {
-      public dynReferencePtGrid()
-      {
-         InPortData.Add(new PortData(null, "x-count", "Number in the X direction.", typeof(double)));
-         InPortData.Add(new PortData(null, "y-count", "Number in the Y direction.", typeof(double)));
-         InPortData.Add(new PortData(null, "z-count", "Number in the Z direction.", typeof(double)));
-         InPortData.Add(new PortData(null, "x0", "Starting X Coordinate", typeof(double)));
-         InPortData.Add(new PortData(null, "y0", "Starting Y Coordinate", typeof(double)));
-         InPortData.Add(new PortData(null, "z0", "Starting Z Coordinate", typeof(double)));
-         InPortData.Add(new PortData(null, "x-space", "The X spacing.", typeof(double)));
-         InPortData.Add(new PortData(null, "y-space", "The Y spacing.", typeof(double)));
-         InPortData.Add(new PortData(null, "z-space", "The Z spacing.", typeof(double)));
-
-         OutPortData = new PortData(null, "XYZs", "List of XYZs in the grid", typeof(XYZ));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
-      {
-         double xi, yi, zi, x0, y0, z0, xs, ys, zs;
-
-         xi = ((FScheme.Expression.Number)args[0]).Item;
-         yi = ((FScheme.Expression.Number)args[1]).Item;
-         zi = ((FScheme.Expression.Number)args[2]).Item;
-         x0 = ((FScheme.Expression.Number)args[3]).Item;
-         y0 = ((FScheme.Expression.Number)args[4]).Item;
-         z0 = ((FScheme.Expression.Number)args[5]).Item;
-         xs = ((FScheme.Expression.Number)args[6]).Item;
-         ys = ((FScheme.Expression.Number)args[7]).Item;
-         zs = ((FScheme.Expression.Number)args[8]).Item;
-
-         FSharpList<FScheme.Expression> result = FSharpList<FScheme.Expression>.Empty;
-
-         double z = z0;
-         for (int zCount = 0; zCount < zi; zCount++)
-         {
-            double y = y0;
-            for (int yCount = 0; yCount < yi; yCount++)
-            {
-               double x = x0;
-               for (int xCount = 0; xCount < xi; xCount++)
-               {
-                  result = FSharpList<FScheme.Expression>.Cons(
-                     FScheme.Expression.NewContainer(new XYZ(x, y, z)),
-                     result
-                  );
-                  x += xs;
-               }
-               y += ys;
-            }
-            z += zs;
-         }
-
-         return FScheme.Expression.NewList(
-            ListModule.Reverse(result)
-         );
       }
    }
 
@@ -184,27 +117,27 @@ namespace Dynamo.Elements
    {
       public dynDistanceBetweenPoints()
       {
-         InPortData.Add(new PortData(null, "ptA", "Element to measure to.", typeof(Element)));
-         InPortData.Add(new PortData(null, "ptB", "A Reference point.", typeof(ReferencePoint)));
+         InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Element)));
+         InPortData.Add(new PortData("ptB", "A Reference point.", typeof(ReferencePoint)));
 
-         OutPortData = new PortData(null, "dist", "Distance between points.", typeof(dynDouble));
+         OutPortData = new PortData("dist", "Distance between points.", typeof(dynDouble));
 
          base.RegisterInputsAndOutputs();
 
       }
 
-      public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
-         object arg0 = ((FScheme.Expression.Container)args[0]).Item;
-         XYZ ptB = ((ReferencePoint)((FScheme.Expression.Container)args[1]).Item).Position;
+         object arg0 = ((Expression.Container)args[0]).Item;
+         XYZ ptB = ((ReferencePoint)((Expression.Container)args[1]).Item).Position;
 
          if (arg0 is ReferencePoint)
          {
-            return FScheme.Expression.NewNumber(((ReferencePoint)arg0).Position.DistanceTo(ptB));
+            return Expression.NewNumber(((ReferencePoint)arg0).Position.DistanceTo(ptB));
          }
          else if (arg0 is FamilyInstance)
          {
-            return FScheme.Expression.NewNumber(
+            return Expression.NewNumber(
                ((LocationPoint)((FamilyInstance)arg0).Location).Point.DistanceTo(ptB)
             );
          }
@@ -223,19 +156,19 @@ namespace Dynamo.Elements
    {
       public dynPointOnEdge()
       {
-         InPortData.Add(new PortData(null, "curve", "ModelCurve", typeof(ModelCurve)));
-         InPortData.Add(new PortData(null, "t", "Parameter on edge.", typeof(double)));
-         OutPortData = new PortData(null, "pt", "PointOnEdge", typeof(PointOnEdge));
+         InPortData.Add(new PortData("curve", "ModelCurve", typeof(ModelCurve)));
+         InPortData.Add(new PortData("t", "Parameter on edge.", typeof(double)));
+         OutPortData = new PortData("pt", "PointOnEdge", typeof(PointOnEdge));
 
          base.RegisterInputsAndOutputs();
       }
 
-      public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
-         Reference r = ((ModelCurve)((FScheme.Expression.Container)args[0]).Item).GeometryCurve.Reference;
-         double t = ((FScheme.Expression.Number)args[1]).Item;
+         Reference r = ((ModelCurve)((Expression.Container)args[0]).Item).GeometryCurve.Reference;
+         double t = ((Expression.Number)args[1]).Item;
 
-         return FScheme.Expression.NewContainer(
+         return Expression.NewContainer(
             this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t)
          );
       }
