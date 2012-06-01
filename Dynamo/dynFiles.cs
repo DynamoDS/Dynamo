@@ -7,6 +7,7 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
+using System.Windows.Forms;
 
 namespace Dynamo.Elements
 {
@@ -143,9 +144,9 @@ namespace Dynamo.Elements
       void readFileButton_Click(object sender, System.Windows.RoutedEventArgs e)
       {
          // string txtPath = "C:\\xfer\\dev\\dynamo_git\\test\\text_files\test.txt";
-         System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog();
+         OpenFileDialog openDialog = new OpenFileDialog();
 
-         if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+         if (openDialog.ShowDialog() == DialogResult.OK)
          {
             FilePath = openDialog.FileName;
             AddFileWatch(FilePath);

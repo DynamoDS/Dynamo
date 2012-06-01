@@ -102,6 +102,7 @@
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="dynArduino.cs" />
     <Compile Include="dynBaseTypes.cs" />
     <Compile Include="dynBench.xaml.cs">
       <DependentUpon>dynBench.xaml</DependentUpon>
@@ -114,6 +115,8 @@
       <DependentUpon>dynElement.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynFamilies.cs" />
+    <Compile Include="dynFiles.cs" />
+    <Compile Include="dynFunction.cs" />
     <Compile Include="dynGeometry.cs" />
     <Compile Include="dynPoints.cs" />
     <Compile Include="dynPort.xaml.cs">
@@ -121,6 +124,7 @@
     </Compile>
     <Compile Include="dynPython.cs" />
     <Compile Include="dynSelection.cs" />
+    <Compile Include="dynSolarRadiation.cs" />
     <Compile Include="dynToolFinder.xaml.cs">
       <DependentUpon>dynToolFinder.xaml</DependentUpon>
     </Compile>
