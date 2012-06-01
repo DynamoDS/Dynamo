@@ -727,9 +727,26 @@ namespace Dynamo.Elements
       protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
          if (this.SaveResult)
-            return base.Compile(portNames);
+         {
+            return new ExternalMacroNode(
+               new ExternMacro(this.macroEval),
+               portNames
+            );
+         }
          else
             return new FunctionNode(this.Symbol, portNames);
+      }
+
+      private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+      {
+         if (this.IsDirty || this.oldValue == null)
+         {
+            this.macroEnvironment = environment;
+            this.oldValue = this.eval(args);
+         }
+         else
+            this.runCount++;
+         return this.oldValue;
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)
@@ -859,6 +876,11 @@ namespace Dynamo.Elements
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          return Expression.NewList(FSharpList<Expression>.Empty);
+      }
+
+      protected internal override INode Build()
+      {
+         return new SymbolNode("empty");
       }
    }
 
@@ -1308,7 +1330,7 @@ namespace Dynamo.Elements
                return base.IsDirty;
             _taggedSymbols.Add(this.Symbol);
 
-            var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+            var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
             bool dirtyInternals = ws.Elements
                //.Where(e => !(e is dynFunction && ((dynFunction)e).Symbol.Equals(this.Symbol)))
                .Any(e => e.IsDirty);
@@ -1316,12 +1338,26 @@ namespace Dynamo.Elements
          }
          set
          {
+            //TODO: Implement tagging algorithm for mutual recursion
             base.IsDirty = value;
             if (!value)
             {
-               var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-               foreach (var e in ws.Elements.Where(e => !(e is dynFunction && ((dynFunction)e).Symbol.Equals(this.Symbol))))
+               bool start = _startTag;
+               _startTag = true;
+
+               if (_taggedSymbols.Contains(this.Symbol))
+                  return;
+               _taggedSymbols.Add(this.Symbol);
+
+               var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+               foreach (var e in ws.Elements)
                   e.IsDirty = false;
+
+               if (!start)
+               {
+                  _startTag = false;
+                  _taggedSymbols.Clear();
+               }
             }
          }
       }

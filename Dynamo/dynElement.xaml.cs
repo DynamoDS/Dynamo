@@ -850,7 +850,7 @@ namespace Dynamo.Elements
 
       }
 
-      private int runCount;
+      protected internal int runCount;
 
       internal void ResetRuns()
       {
@@ -881,7 +881,7 @@ namespace Dynamo.Elements
       }
 
       protected internal static HashSet<string> _taggedSymbols = new HashSet<string>();
-      private static bool _startTag = false;
+      protected internal static bool _startTag = false;
       private bool _isDirty = true;
       ///<summary>
       ///Does this element need to be regenerated?
@@ -1032,7 +1032,7 @@ namespace Dynamo.Elements
       }
 
 
-      protected Expression eval(FSharpList<Expression> args)
+      protected internal Expression eval(FSharpList<Expression> args)
       {
          var bench = dynElementSettings.SharedInstance.Bench;
 

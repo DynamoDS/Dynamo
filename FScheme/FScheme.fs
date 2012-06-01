@@ -465,7 +465,7 @@ and eval cont env expression =
    //Basic values get passed to the continuation as themselves
    | Number(_) | String(_) | Current(_) | Container(_) 
    //As to function-like objects
-   | Function(_) | Special(_) | Current(_) as lit -> lit |> cont 
+   | Function(_) | Special(_) as lit -> lit |> cont 
    //Symbols are looked up in the environment, dereferenced, and then passed to the continuation.
    | Symbol(s) -> (lookup env s).Value |> cont 
    //Lists are function calls. First the head is evaluated into a function object, then depending
