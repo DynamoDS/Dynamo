@@ -215,7 +215,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("Point On Edge")]
+   [ElementName("Reference Point On Edge")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Create an element which owns a reference point on a selected edge.")]
    [RequiresTransaction(true)]
@@ -223,22 +223,94 @@ namespace Dynamo.Elements
    {
       public dynPointOnEdge()
       {
-         InPortData.Add(new PortData(null, "curve", "ModelCurve", typeof(ModelCurve)));
+         InPortData.Add(new PortData(null, "curve", "ModelCurve", typeof(Element)));
          InPortData.Add(new PortData(null, "t", "Parameter on edge.", typeof(double)));
-         OutPortData = new PortData(null, "pt", "PointOnEdge", typeof(PointOnEdge));
+         OutPortData = new PortData(null, "pt", "PointOnEdge", typeof(ReferencePoint));
 
          base.RegisterInputsAndOutputs();
       }
 
       public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
       {
-         Reference r = ((ModelCurve)((FScheme.Expression.Container)args[0]).Item).GeometryCurve.Reference;
-         double t = ((FScheme.Expression.Number)args[1]).Item;
+          Reference r = null;
+           object arg0 = ((FScheme.Expression.Container)args[0]).Item;
+           if (arg0 is ModelCurve)
+           {
+              r = ((ModelCurve)((FScheme.Expression.Container)args[0]).Item).GeometryCurve.Reference;
+           }
+           else if (arg0 is CurveByPoints)
+           {
+               r = ((CurveByPoints)((FScheme.Expression.Container)args[0]).Item).GeometryCurve.Reference;
+           }
+           else
+           {
+               throw new Exception("Cannot cast first argument to Curve.");
+           }
 
-         return FScheme.Expression.NewContainer(
-            this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t)
-         );
+           double t = ((FScheme.Expression.Number)args[1]).Item;
+            //Autodesk.Revit.DB..::.PointElementReference
+            //Autodesk.Revit.DB..::.PointOnEdge
+            //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
+            //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
+            //Autodesk.Revit.DB..::.PointOnFace
+            //Autodesk.Revit.DB..::.PointOnPlane
+
+           PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t);
+
+           return FScheme.Expression.NewContainer(
+              this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint)
+           );
       }
+   }
+
+   [ElementName("Reference Point On Face")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("Create an element which owns a reference point on a selected face.")]
+   [RequiresTransaction(true)]
+   public class dynPointOnFace : dynElement
+   {
+       public dynPointOnFace()
+       {
+           InPortData.Add(new PortData(null, "face", "ModelFace", typeof(Reference)));
+           InPortData.Add(new PortData(null, "u", "U Parameter on face.", typeof(double)));
+           InPortData.Add(new PortData(null, "v", "V Parameter on face.", typeof(double)));
+           OutPortData = new PortData(null, "pt", "PointOnFace", typeof(ReferencePoint));
+
+           base.RegisterInputsAndOutputs();
+       }
+
+       public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+       {
+           object arg0 = ((FScheme.Expression.Container)args[0]).Item;
+           if (arg0 is Reference)
+           {
+               // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
+
+               //Face f = ((Face)((FScheme.Expression.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
+               Reference r = ((Reference)((FScheme.Expression.Container)args[0]).Item);
+               
+               double u = ((FScheme.Expression.Number)args[1]).Item;
+               double v = ((FScheme.Expression.Number)args[2]).Item;
+
+               //Autodesk.Revit.DB..::.PointElementReference
+               //Autodesk.Revit.DB..::.PointOnEdge
+               //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
+               //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
+               //Autodesk.Revit.DB..::.PointOnFace
+               //Autodesk.Revit.DB..::.PointOnPlane
+
+               PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
+
+               return FScheme.Expression.NewContainer(
+                  this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint)
+               );
+           }
+           else
+           {
+               throw new Exception("Cannot cast first argument to Face.");
+           }
+
+       }
    }
 }
 

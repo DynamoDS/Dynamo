@@ -16,7 +16,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows the user to select a divided surface.")]
    [RequiresTransaction(true)]
-   public class dynSurfaceBySelection : dynElement
+    public class dynDividedSurfaceBySelection : dynElement
    {
       Form f;
       DividedSurfaceData dsd;
@@ -24,7 +24,7 @@ namespace Dynamo.Elements
 
       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
 
-      public dynSurfaceBySelection()
+      public dynDividedSurfaceBySelection()
       {
          this.topControl.Width = 300;
 
@@ -66,7 +66,7 @@ namespace Dynamo.Elements
 
          var result = new List<List<FamilyInstance>>();
 
-         f = SelectionHelper.RequestFormSelection(dynElementSettings.SharedInstance.Doc, "Select a face.", dynElementSettings.SharedInstance);
+         f = SelectionHelper.RequestFormSelection(dynElementSettings.SharedInstance.Doc, "Select a form element.", dynElementSettings.SharedInstance);
          dsd = f.GetDividedSurfaceData();
          if (dsd != null)
          {
@@ -147,5 +147,65 @@ namespace Dynamo.Elements
       //   //don't call base destroy
       //   //base.Destroy();
       //}
+   }
+
+   [ElementName("Face by Selection")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which allows the user to select a face.")]
+   [RequiresTransaction(true)]
+   public class dynFormElementBySelection : dynElement
+   {
+       Reference f;
+       DividedSurfaceData dsd;
+       //DataTree seedPts = new DataTree();
+
+       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+
+       public dynFormElementBySelection()
+       {
+           this.topControl.Width = 300;
+
+           OutPortData = new PortData(null, "face", "The face", typeof(dynElement));
+           //OutPortData[0].Object = this.Tree;
+
+           //add a button to the inputGrid on the dynElement
+           System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
+           this.inputGrid.Children.Add(paramMapButt);
+           paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+           paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
+           paramMapButt.Content = "Select";
+           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+           base.RegisterInputsAndOutputs();
+
+       }
+
+       public override Expression Evaluate(FSharpList<Expression> args)
+       {
+           return data;
+       }
+
+       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+       {
+           
+
+           data = Expression.NewList(FSharpList<Expression>.Empty);
+
+           var result = new List<List<FamilyInstance>>();
+
+           // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
+
+           f = SelectionHelper.RequestFaceReferenceSelection(dynElementSettings.SharedInstance.Doc, "Select a face.", dynElementSettings.SharedInstance);
+           
+           this.data = Expression.NewContainer(f);
+            
+           }
+
+
+       
+
    }
 }

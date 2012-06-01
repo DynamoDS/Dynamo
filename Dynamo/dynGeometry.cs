@@ -141,4 +141,31 @@ namespace Dynamo.Elements
          );
       }
    }
+   [ElementName("UV")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which creates a UV from two double values.")]
+   [RequiresTransaction(false)]
+   public class dynUV : dynElement
+   {
+       public dynUV()
+       {
+           InPortData.Add(new PortData(null, "U", "U", typeof(double)));
+           InPortData.Add(new PortData(null, "V", "V", typeof(double)));
+
+
+           OutPortData = new PortData(null, "uv", "UV", typeof(UV));
+
+           base.RegisterInputsAndOutputs();
+       }
+
+       public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+       {
+           double u, v;
+           u = (args[0] as FScheme.Expression.Number).Item;
+           v = (args[1] as FScheme.Expression.Number).Item;
+
+
+           return FScheme.Expression.NewContainer(new UV(u, v));
+       }
+   }
 }
