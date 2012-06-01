@@ -30,8 +30,8 @@ namespace Dynamo.Elements
    {
       public dynReferencePointByXYZ()
       {
-         InPortData.Add(new PortData(null, "xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
-         OutPortData = new PortData(null, "pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint));
+         InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
+         OutPortData = new PortData("pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint));
 
          base.RegisterInputsAndOutputs();
       }
@@ -111,71 +111,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("XYZ Grid")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which creates a grid of reference points.")]
-   [RequiresTransaction(true)]
-   public class dynReferencePtGrid : dynElement
-   {
-      public dynReferencePtGrid()
-      {
-         InPortData.Add(new PortData(null, "x-count", "Number in the X direction.", typeof(double)));
-         InPortData.Add(new PortData(null, "y-count", "Number in the Y direction.", typeof(double)));
-         InPortData.Add(new PortData(null, "z-count", "Number in the Z direction.", typeof(double)));
-         InPortData.Add(new PortData(null, "x0", "Starting X Coordinate", typeof(double)));
-         InPortData.Add(new PortData(null, "y0", "Starting Y Coordinate", typeof(double)));
-         InPortData.Add(new PortData(null, "z0", "Starting Z Coordinate", typeof(double)));
-         InPortData.Add(new PortData(null, "x-space", "The X spacing.", typeof(double)));
-         InPortData.Add(new PortData(null, "y-space", "The Y spacing.", typeof(double)));
-         InPortData.Add(new PortData(null, "z-space", "The Z spacing.", typeof(double)));
-
-         OutPortData = new PortData(null, "XYZs", "List of XYZs in the grid", typeof(XYZ));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
-      {
-         double xi, yi, zi, x0, y0, z0, xs, ys, zs;
-
-         xi = ((FScheme.Expression.Number)args[0]).Item;
-         yi = ((FScheme.Expression.Number)args[1]).Item;
-         zi = ((FScheme.Expression.Number)args[2]).Item;
-         x0 = ((FScheme.Expression.Number)args[3]).Item;
-         y0 = ((FScheme.Expression.Number)args[4]).Item;
-         z0 = ((FScheme.Expression.Number)args[5]).Item;
-         xs = ((FScheme.Expression.Number)args[6]).Item;
-         ys = ((FScheme.Expression.Number)args[7]).Item;
-         zs = ((FScheme.Expression.Number)args[8]).Item;
-
-         FSharpList<FScheme.Expression> result = FSharpList<FScheme.Expression>.Empty;
-
-         double z = z0;
-         for (int zCount = 0; zCount < zi; zCount++)
-         {
-            double y = y0;
-            for (int yCount = 0; yCount < yi; yCount++)
-            {
-               double x = x0;
-               for (int xCount = 0; xCount < xi; xCount++)
-               {
-                  result = FSharpList<FScheme.Expression>.Cons(
-                     FScheme.Expression.NewContainer(new XYZ(x, y, z)),
-                     result
-                  );
-                  x += xs;
-               }
-               y += ys;
-            }
-            z += zs;
-         }
-
-         return FScheme.Expression.NewList(
-            ListModule.Reverse(result)
-         );
-      }
-   }
-
+  
    [ElementName("Reference Point Distance")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which measures a distance between reference point(s).")]
@@ -184,10 +120,10 @@ namespace Dynamo.Elements
    {
       public dynDistanceBetweenPoints()
       {
-         InPortData.Add(new PortData(null, "ptA", "Element to measure to.", typeof(Element)));
-         InPortData.Add(new PortData(null, "ptB", "A Reference point.", typeof(ReferencePoint)));
+         InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Element)));
+         InPortData.Add(new PortData("ptB", "A Reference point.", typeof(ReferencePoint)));
 
-         OutPortData = new PortData(null, "dist", "Distance between points.", typeof(dynDouble));
+         OutPortData = new PortData("dist", "Distance between points.", typeof(dynDouble));
 
          base.RegisterInputsAndOutputs();
 
@@ -223,9 +159,9 @@ namespace Dynamo.Elements
    {
       public dynPointOnEdge()
       {
-         InPortData.Add(new PortData(null, "curve", "ModelCurve", typeof(Element)));
-         InPortData.Add(new PortData(null, "t", "Parameter on edge.", typeof(double)));
-         OutPortData = new PortData(null, "pt", "PointOnEdge", typeof(ReferencePoint));
+         InPortData.Add(new PortData("curve", "ModelCurve", typeof(Element)));
+         InPortData.Add(new PortData("t", "Parameter on edge.", typeof(double)));
+         OutPortData = new PortData("pt", "PointOnEdge", typeof(ReferencePoint));
 
          base.RegisterInputsAndOutputs();
       }
@@ -271,10 +207,10 @@ namespace Dynamo.Elements
    {
        public dynPointOnFace()
        {
-           InPortData.Add(new PortData(null, "face", "ModelFace", typeof(Reference)));
-           InPortData.Add(new PortData(null, "u", "U Parameter on face.", typeof(double)));
-           InPortData.Add(new PortData(null, "v", "V Parameter on face.", typeof(double)));
-           OutPortData = new PortData(null, "pt", "PointOnFace", typeof(ReferencePoint));
+           InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
+           InPortData.Add(new PortData("u", "U Parameter on face.", typeof(double)));
+           InPortData.Add(new PortData("v", "V Parameter on face.", typeof(double)));
+           OutPortData = new PortData("pt", "PointOnFace", typeof(ReferencePoint));
 
            base.RegisterInputsAndOutputs();
        }
