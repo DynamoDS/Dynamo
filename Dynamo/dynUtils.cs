@@ -296,7 +296,7 @@ namespace Dynamo.Utilities
 
    public class SelectionHelper
    {
-      public static Curve RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
+      public static ModelCurve RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
          {
@@ -319,7 +319,7 @@ namespace Dynamo.Utilities
             {
                cv = c.GeometryCurve;
             }
-            return cv;
+            return c;
          }
          catch (Exception ex)
          {

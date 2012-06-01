@@ -37,6 +37,7 @@ using System.IO.Ports;
 
 using Expression = Dynamo.FScheme.Expression;
 using Microsoft.FSharp.Collections;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
@@ -170,12 +171,103 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
+   //   public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+   //   {
+   //       object arg0 = ((FScheme.Expression.Container)args[0]).Item;
+
+   //       if (arg0 is CurveByPoints)
+   //       {
+
+   //           CurveByPoints curve = (args[0] as FScheme.Expression.Container).Item as CurveByPoints;
+
+   //           return FScheme.Expression.NewContainer(curve.GeometryCurve.Reference);
+   //       }
+
+   //       if (arg0 is ModelCurve)
+   //       {
+
+   //           ModelCurve curve = (args[0] as FScheme.Expression.Container).Item as ModelCurve;
+
+   //           return FScheme.Expression.NewContainer(curve.GeometryCurve.Reference);
+   //       }
+   //       else
+   //       {
+   //           throw new Exception("Cannot cast first argument to Mpdel Curve or Curve by Points.");
+   //       }
+   //   }
+
       public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
       {
-         CurveByPoints curve = (args[0] as FScheme.Expression.Container).Item as CurveByPoints;
+          var input = args[0];
 
-         return FScheme.Expression.NewContainer(curve.GeometryCurve.Reference);
+          if (input.IsList)
+          {
+              var curveList = ((FScheme.Expression.List)input).Item;
+
+              int count = 0;
+
+              var result = Utils.convertSequence(
+                 curveList.Select(
+                    delegate(FScheme.Expression x)
+                    {
+                        ModelCurve cv;
+                        if (this.Elements.Count > count)
+                        {
+                            cv = (ModelCurve)this.Elements[count];
+                            cv.GeometryCurve = (Curve)((FScheme.Expression.Container)x).Item;
+                        }
+                        else
+                        {
+                            cv = (ModelCurve)((FScheme.Expression.Container)x).Item;
+                            this.Elements.Add(cv);
+                        }
+                        count++;
+                        return FScheme.Expression.NewContainer(cv.GeometryCurve.Reference);
+                    }
+                 )
+              );
+
+              //int delCount = 0;
+              //foreach (var e in this.Elements.Skip(count))
+              //{
+              //    this.UIDocument.Document.Delete(e);
+              //    delCount++;
+              //}
+              //if (delCount > 0)
+              //    this.Elements.RemoveRange(count, delCount);
+
+              return FScheme.Expression.NewList(result);
+          }
+          else
+          {
+              XYZ xyz = (XYZ)((FScheme.Expression.Container)input).Item;
+
+              ReferencePoint pt;
+
+              if (this.Elements.Any())
+              {
+                  pt = (ReferencePoint)this.Elements[0];
+                  pt.Position = xyz;
+
+                  int count = 0;
+                  foreach (var e in this.Elements.Skip(1))
+                  {
+                      this.UIDocument.Document.Delete(e);
+                      count++;
+                  }
+                  if (count > 0)
+                      this.Elements.RemoveRange(1, count);
+              }
+              else
+              {
+                  pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+                  this.Elements.Add(pt);
+              }
+
+              return FScheme.Expression.NewContainer(pt);
+          }
       }
+
    }
 
    [ElementName("Planar Curve By Points")]
