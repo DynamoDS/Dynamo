@@ -209,7 +209,6 @@ namespace Dynamo.Elements
    [RequiresTransaction(true)]
    public class dynCurvesBySelection : dynElement
    {
-       CurveArray crvArray;
        ModelCurve mc;
 
        Expression data = Expression.NewList(FSharpList<Expression>.Empty);
