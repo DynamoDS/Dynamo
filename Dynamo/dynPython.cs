@@ -140,6 +140,7 @@ namespace Dynamo.Elements
 
       public void ProcessCode(string code)
       {
+         code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *" + code;
          this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
       }
 
@@ -268,6 +269,16 @@ namespace Dynamo.Elements
       //   InPortData.Add(new PortData(null, this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
       //   base.ReregisterInputs();
       //}
+
+      //TODO: Make this smarter
+      public override bool IsDirty
+      {
+         get
+         {
+            return true;
+         }
+         set { }
+      }
 
 
       public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)

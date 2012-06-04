@@ -44,6 +44,7 @@ namespace Dynamo.Elements
                var result = IdlePromise<Expression>.ExecuteOnIdle(
                   delegate
                   {
+                     this.Bench.InIdleThread = true;
                      dynElementSettings.SharedInstance.Bench.InitTransaction();
 
                      try
@@ -88,6 +89,8 @@ namespace Dynamo.Elements
                      }
                   }
                );
+
+               this.Bench.InIdleThread = false;
 
                return result;
             }

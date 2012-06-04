@@ -314,7 +314,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Reduces a sequence.")]
    [RequiresTransaction(false)]
-   public class dynFold : dynBuiltinFunction
+   public class dynFold : dynBuiltinMacro
    {
       public dynFold()
          : base("fold")
@@ -332,7 +332,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Filters a sequence by a given predicate")]
    [RequiresTransaction(false)]
-   public class dynFilter : dynBuiltinFunction
+   public class dynFilter : dynBuiltinMacro
    {
       public dynFilter()
          : base("filter")
@@ -349,7 +349,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Creates a sequence of numbers")]
    [RequiresTransaction(false)]
-   public class dynBuildSeq : dynBuiltinFunction
+   public class dynBuildSeq : dynBuiltinMacro
    {
       public dynBuildSeq()
          : base("build-seq")
@@ -368,7 +368,7 @@ namespace Dynamo.Elements
    [ElementDescription("Applies a combinator to each element in two sequences")]
    [ElementSearchTags("zip")]
    [RequiresTransaction(false)]
-   public class dynCombine : dynBuiltinFunction
+   public class dynCombine : dynBuiltinMacro
    {
       public dynCombine()
          : base("combine")
@@ -382,13 +382,11 @@ namespace Dynamo.Elements
       }
    }
 
-
-
    [ElementName("map")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Maps a sequence")]
    [RequiresTransaction(false)]
-   public class dynMap : dynBuiltinFunction
+   public class dynMap : dynBuiltinMacro
    {
       public dynMap()
          : base("map")
@@ -696,7 +694,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Boolean NOT.")]
    [RequiresTransaction(false)]
-   public class dynNot : dynBuiltinFunction
+   public class dynNot : dynBuiltinMacro
    {
       public dynNot()
          : base("not")
@@ -926,6 +924,43 @@ namespace Dynamo.Elements
          {
             double theta = ((Expression.Number)input).Item;
             return Expression.NewNumber(Math.Cos(theta));
+         }
+      }
+   }
+
+   [ElementName("tangent")]
+   [ElementCategory(BuiltinElementCategories.MATH)]
+   [ElementDescription("Computes the tangent of the given angle.")]
+   [RequiresTransaction(false)]
+   public class dynTan : dynElement
+   {
+      public dynTan()
+      {
+         InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
+         OutPortData = new PortData("tan(θ)", "Tangent value of the given angle", typeof(double));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var input = args[0];
+
+         if (input.IsList)
+         {
+            return Expression.NewList(
+               FSchemeInterop.Utils.convertSequence(
+                  ((Expression.List)input).Item.Select(
+                     x =>
+                        Expression.NewNumber(Math.Tan(((Expression.Number)x).Item))
+                  )
+               )
+            );
+         }
+         else
+         {
+            double theta = ((Expression.Number)input).Item;
+            return Expression.NewNumber(Math.Tan(theta));
          }
       }
    }

@@ -203,7 +203,6 @@ let SortBy cont = function
       | _ -> List(l) |> cont
    | m -> malformed "sort-by" (List(m))
 
-
 ///Extends the given environment with the given bindings.
 let rec extend (env : Environment) = function
    | [] -> env
@@ -241,6 +240,47 @@ let rec If cont (env : Environment) = function
             eval cont env f // zero is false
          | _ -> eval cont env t) env condition // everything else is true
    | m -> malformed "if" (List(m))
+
+///Combines lists
+and Combine cont env = function
+   | h :: t ->
+      if t.Length < 2 
+      then malformed "combine" (List(t))
+      else 
+         eval (fun procedure ->
+         let Zip ls =
+            let rec zip' acc lsts =
+               let rec zip'' a al = function
+                  | [] -> (List.rev a), (List.rev al)
+                  | List(h) :: t -> 
+                     match h with
+                     | [] -> [], al
+                     | hh :: ht -> zip'' (hh :: a) (List(ht) :: al) t
+                  | m -> malformed "combine" (List(h :: t))
+               match zip'' [] [] lsts with
+               | [], _ -> List.rev acc
+               | p, t -> zip' (p :: acc) t
+            zip' [] ls
+         let rec mapeval cont'' acc = function
+            | h :: t -> eval (fun h' -> mapeval cont'' (h' :: acc) t) env h
+            | [] -> List.rev acc |> cont''
+         match procedure with
+         | Function(f) ->
+            let mapK lst' =
+               let rec map' a = function
+                  | [] -> List(List.rev a) |> cont
+                  | h'' :: t'' -> apply (fun h' -> map' (h' :: a) t'') env f h''
+               map' [] lst'
+            mapeval (fun evald -> Zip evald |> mapK) [] t
+         | Special(s) ->
+            let mapK lst' =
+               let rec map' a = function
+                  | [] -> List(List.rev a) |> cont
+                  | h :: t -> s (fun h' -> map' (h' :: a) t) env h
+               map' [] lst'
+            mapeval (fun evald -> Zip evald |> mapK) [] t
+         | m -> malformed "combine" h) env h
+   | m -> malformed "combine" (List(m))
 
 ///Let construct
 and Let cont (env : Environment) = function
@@ -456,6 +496,7 @@ and environment =
        "sort", ref (Function(Sort))
        "sort-with", ref (Function(SortWith))
        "sort-by", ref (Function(SortBy))
+       "combine", ref (Special(Combine))
        //"and", ref (Special(And))
       ] |> ref
 
@@ -518,11 +559,11 @@ let test () =
    case "(quote (* 2 (unquote (- 5 2))))" "(* 2 3)" // quote nested unquote
    case "(let ((a 1)) (begin (set! a 2) a))" "2" // begin and assign
    case "(let* ((a 5) (dummy (set! a 10))) a)" "10" // re-assign after let
-   case "(begin (define fac (lambda (x) (if x (* x (fac (- x 1))) 1))) (fac 7))" "5040" // define recursive
-   case "(begin (define square (lambda (x) (* x x))) (square 4))" "16" // global def
+   //case "(begin (define fac (lambda (x) (if x (* x (fac (- x 1))) 1))) (fac 7))" "5040" // define recursive
+   //case "(begin (define square (lambda (x) (* x x))) (square 4))" "16" // global def
    case "(define and (macro (a b) '(if ,a (if ,b 1 0) 0)))" ""
    case "(define or (macro (a b) '(if ,a 1 (if ,b 1 0))))" ""
-   case "(define xor (lambda (a b) (and (or a b) (not (and a b)))))" ""
+   //case "(define xor (lambda (a b) (and (or a b) (not (and a b)))))" ""
    case "(and 0 0)" "0" // or (false)
    case "(and 1 0)" "0" // or (false)
    case "(and 0 1)" "0" // or (false)
@@ -553,7 +594,7 @@ let test () =
    case "(call/cc (lambda (c) (if (c 10) 20 30)))" "10" // call/cc bailing out of 'if'
    case "(+ 8 (call/cc (lambda (k^) (* (k^ 5) 100))))" "13" // call/cc bailing out of multiplication
    case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
-   case "(define combine (lambda (f lst1 lst2) (letrec ((comb* (lambda (lst1 lst2 a) (if (or (empty? lst1) (empty? lst2)) (reverse a) (comb* (rest lst1) (rest lst2) (cons (f (first lst1) (first lst2)) a)))))) (comb* lst1 lst2 empty))))" ""
+   //case "(define combine (lambda (f lst1 lst2) (letrec ((comb* (lambda (lst1 lst2 a) (if (or (empty? lst1) (empty? lst2)) (reverse a) (comb* (rest lst1) (rest lst2) (cons (f (first lst1) (first lst2)) a)))))) (comb* lst1 lst2 empty))))" ""
    case "(define build-seq (lambda (start end step) (if (or (= step 0) (>= start end)) empty (cons start (build-seq (+ start step) end step)))))" ""
    case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9)"
    //case "(define zip (lambda lst1 lst2) (combine cons lst1 lst2)))"

@@ -8,6 +8,9 @@ using System.Xml;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
+using Expression = Dynamo.FScheme.Expression;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
@@ -163,6 +166,25 @@ namespace Dynamo.Elements
          }
 
          base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var procedure = this.Bench.Environment.LookupSymbol(this.Symbol);
+         if (procedure.IsFunction)
+         {
+            return ((Expression.Function)procedure).Item
+               .Invoke(ExecutionEnvironment.IDENT)
+               .Invoke(
+                  Utils.convertSequence(
+                     args.Select(
+                        input => this.macroEnvironment.Evaluate(input)
+                     )
+                  )
+               );
+         }
+         else
+            return base.Evaluate(args);
       }
 
       //protected internal override INode Build()
