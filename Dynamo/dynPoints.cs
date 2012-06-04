@@ -19,7 +19,6 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Dynamo.FSchemeInterop;
-using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Elements
 {
@@ -37,32 +36,35 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
       {
          var input = args[0];
+
          if (input.IsList)
          {
+            var xyzList = ((FScheme.Expression.List)input).Item;
+
             int count = 0;
-            var xyzList = ((Expression.List)input).Item;
+
             var result = Utils.convertSequence(
                xyzList.Select(
-                  delegate(Expression x)
+                  delegate(FScheme.Expression x)
                   {
                      ReferencePoint pt;
                      if (this.Elements.Count > count)
                      {
                         pt = (ReferencePoint)this.Elements[count];
-                        pt.Position = (XYZ)((Expression.Container)x).Item;
+                        pt.Position = (XYZ)((FScheme.Expression.Container)x).Item;
                      }
                      else
                      {
                         pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-                           (XYZ)((Expression.Container)x).Item
+                           (XYZ)((FScheme.Expression.Container)x).Item
                         );
                         this.Elements.Add(pt);
                      }
                      count++;
-                     return Expression.NewContainer(pt);
+                     return FScheme.Expression.NewContainer(pt);
                   }
                )
             );
@@ -76,11 +78,11 @@ namespace Dynamo.Elements
             if (delCount > 0)
                this.Elements.RemoveRange(count, delCount);
 
-            return Expression.NewList(result);
+            return FScheme.Expression.NewList(result);
          }
          else
          {
-            XYZ xyz = (XYZ)((Expression.Container)input).Item;
+            XYZ xyz = (XYZ)((FScheme.Expression.Container)input).Item;
 
             ReferencePoint pt;
 
@@ -104,11 +106,12 @@ namespace Dynamo.Elements
                this.Elements.Add(pt);
             }
 
-            return Expression.NewContainer(pt);
+            return FScheme.Expression.NewContainer(pt);
          }
       }
    }
 
+  
    [ElementName("Reference Point Distance")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which measures a distance between reference point(s).")]
@@ -126,18 +129,18 @@ namespace Dynamo.Elements
 
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
       {
-         object arg0 = ((Expression.Container)args[0]).Item;
-         XYZ ptB = ((ReferencePoint)((Expression.Container)args[1]).Item).Position;
+         object arg0 = ((FScheme.Expression.Container)args[0]).Item;
+         XYZ ptB = ((ReferencePoint)((FScheme.Expression.Container)args[1]).Item).Position;
 
          if (arg0 is ReferencePoint)
          {
-            return Expression.NewNumber(((ReferencePoint)arg0).Position.DistanceTo(ptB));
+            return FScheme.Expression.NewNumber(((ReferencePoint)arg0).Position.DistanceTo(ptB));
          }
          else if (arg0 is FamilyInstance)
          {
-            return Expression.NewNumber(
+            return FScheme.Expression.NewNumber(
                ((LocationPoint)((FamilyInstance)arg0).Location).Point.DistanceTo(ptB)
             );
          }
@@ -148,7 +151,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("Point On Edge")]
+   [ElementName("Reference Point On Edge")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Create an element which owns a reference point on a selected edge.")]
    [RequiresTransaction(true)]
@@ -156,22 +159,94 @@ namespace Dynamo.Elements
    {
       public dynPointOnEdge()
       {
-         InPortData.Add(new PortData("curve", "ModelCurve", typeof(ModelCurve)));
+         InPortData.Add(new PortData("curve", "ModelCurve", typeof(Element)));
          InPortData.Add(new PortData("t", "Parameter on edge.", typeof(double)));
-         OutPortData = new PortData("pt", "PointOnEdge", typeof(PointOnEdge));
+         OutPortData = new PortData("pt", "PointOnEdge", typeof(ReferencePoint));
 
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
       {
-         Reference r = ((ModelCurve)((Expression.Container)args[0]).Item).GeometryCurve.Reference;
-         double t = ((Expression.Number)args[1]).Item;
+          Reference r = null;
+           object arg0 = ((FScheme.Expression.Container)args[0]).Item;
+           if (arg0 is ModelCurve)
+           {
+              r = ((ModelCurve)((FScheme.Expression.Container)args[0]).Item).GeometryCurve.Reference;
+           }
+           else if (arg0 is CurveByPoints)
+           {
+               r = ((CurveByPoints)((FScheme.Expression.Container)args[0]).Item).GeometryCurve.Reference;
+           }
+           else
+           {
+               throw new Exception("Cannot cast first argument to Curve.");
+           }
 
-         return Expression.NewContainer(
-            this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t)
-         );
+           double t = ((FScheme.Expression.Number)args[1]).Item;
+            //Autodesk.Revit.DB..::.PointElementReference
+            //Autodesk.Revit.DB..::.PointOnEdge
+            //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
+            //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
+            //Autodesk.Revit.DB..::.PointOnFace
+            //Autodesk.Revit.DB..::.PointOnPlane
+
+           PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t);
+
+           return FScheme.Expression.NewContainer(
+              this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint)
+           );
       }
+   }
+
+   [ElementName("Reference Point On Face")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("Create an element which owns a reference point on a selected face.")]
+   [RequiresTransaction(true)]
+   public class dynPointOnFace : dynElement
+   {
+       public dynPointOnFace()
+       {
+           InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
+           InPortData.Add(new PortData("u", "U Parameter on face.", typeof(double)));
+           InPortData.Add(new PortData("v", "V Parameter on face.", typeof(double)));
+           OutPortData = new PortData("pt", "PointOnFace", typeof(ReferencePoint));
+
+           base.RegisterInputsAndOutputs();
+       }
+
+       public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+       {
+           object arg0 = ((FScheme.Expression.Container)args[0]).Item;
+           if (arg0 is Reference)
+           {
+               // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
+
+               //Face f = ((Face)((FScheme.Expression.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
+               Reference r = ((Reference)((FScheme.Expression.Container)args[0]).Item);
+               
+               double u = ((FScheme.Expression.Number)args[1]).Item;
+               double v = ((FScheme.Expression.Number)args[2]).Item;
+
+               //Autodesk.Revit.DB..::.PointElementReference
+               //Autodesk.Revit.DB..::.PointOnEdge
+               //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
+               //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
+               //Autodesk.Revit.DB..::.PointOnFace
+               //Autodesk.Revit.DB..::.PointOnPlane
+
+               PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
+
+               return FScheme.Expression.NewContainer(
+                  this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint)
+               );
+           }
+           else
+           {
+               throw new Exception("Cannot cast first argument to Face.");
+           }
+
+       }
    }
 }
 

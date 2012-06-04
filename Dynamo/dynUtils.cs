@@ -296,7 +296,7 @@ namespace Dynamo.Utilities
 
    public class SelectionHelper
    {
-      public static Curve RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
+      public static ModelCurve RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
          {
@@ -313,13 +313,13 @@ namespace Dynamo.Utilities
             Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
             //c = curveRef.Element as ModelCurve;
-            c = dynElementSettings.SharedInstance.Revit.ActiveUIDocument.Document.GetElement(curveRef) as ModelCurve;
+            c = dynElementSettings.SharedInstance.Revit.ActiveUIDocument.Document.GetElement(curveRef) as ModelCurve;//TODO generalize to handle curve by points as well
 
             if (c != null)
             {
                cv = c.GeometryCurve;
             }
-            return cv;
+            return c;
          }
          catch (Exception ex)
          {
@@ -351,7 +351,7 @@ namespace Dynamo.Utilities
 
             if (faceRef != null)
             {
-               //the suggested new method didn't exist in API?
+               
                GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
 
                f = geob as Face;
@@ -367,6 +367,49 @@ namespace Dynamo.Utilities
 
       }
 
+
+      // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
+
+      public static Reference RequestFaceReferenceSelection(UIDocument doc, string message, dynElementSettings settings)
+      {
+          try
+          {
+              Face f = null;
+              //Reference r = null;
+
+              Selection choices = doc.Selection;
+
+              choices.Elements.Clear();
+
+              //MessageBox.Show(message);
+              settings.Bench.Log(message);
+
+              //create some geometry options so that we computer references
+              Autodesk.Revit.DB.Options opts = new Options();
+              opts.ComputeReferences = true;
+              opts.DetailLevel = DetailLevels.Medium;
+              opts.IncludeNonVisibleObjects = false;
+
+              Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
+
+              if (faceRef != null)
+              {
+                 
+                  GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+
+                  f = geob as Face;
+              }
+              //return f;
+              return faceRef;
+          }
+          catch (Exception ex)
+          {
+              settings.Bench.Log(ex.Message);
+              return null;
+          }
+
+
+      }
       public static Form RequestFormSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
@@ -403,6 +446,7 @@ namespace Dynamo.Utilities
 
 
       }
+
 
       public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message,
           dynElementSettings settings, ref FamilyInstance fi)
