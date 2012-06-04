@@ -81,8 +81,16 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol(this.Symbol)).Item;
-         return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
+         var fun = ((Expression.Function)this.Bench.Environment
+            .LookupSymbol(this.Symbol)).Item;
+         
+         return fun
+            .Invoke(ExecutionEnvironment.IDENT)
+            .Invoke(
+               Utils.convertSequence(args.Select(
+                  x => this.macroEnvironment.Evaluate(x)
+               ))
+            );
       }
    }
 
@@ -92,8 +100,13 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         var macro = ((Expression.Special)this.Bench.Environment.LookupSymbol(this.Symbol)).Item;
-         return macro.Invoke(ExecutionEnvironment.IDENT).Invoke(this.macroEnvironment.Env).Invoke(args);
+         var macro = ((Expression.Special)this.Bench.Environment
+            .LookupSymbol(this.Symbol)).Item;
+
+         return macro
+            .Invoke(ExecutionEnvironment.IDENT)
+            .Invoke(this.macroEnvironment.Env)
+            .Invoke(args);
       }
    }
 

@@ -9,6 +9,7 @@ using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using Expression = Dynamo.FScheme.Expression;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
@@ -122,10 +123,10 @@ namespace Dynamo.Elements
             }
 
             this.data = Expression.NewList(
-               FSchemeInterop.Utils.convertSequence(
+               Utils.convertSequence(
                   result.Select(
                      row => Expression.NewList(
-                        FSchemeInterop.Utils.convertSequence(
+                        Utils.convertSequence(
                            row.Select(Expression.NewContainer)
                         )
                      )
@@ -194,7 +195,7 @@ namespace Dynamo.Elements
 
            // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
 
-           f = SelectionHelper.RequestFaceReferenceSelection(dynElementSettings.SharedInstance.Doc, "Select a face.", dynElementSettings.SharedInstance);
+           f = SelectionHelper.RequestFaceReferenceSelection(this.UIDocument, "Select a face.", dynElementSettings.SharedInstance);
 
            this.data = Expression.NewContainer(f);
 
@@ -212,7 +213,7 @@ namespace Dynamo.Elements
        ModelCurve mc;
 
        Expression data = Expression.NewList(FSharpList<Expression>.Empty);
-       FSharpList<FScheme.Expression> result = FSharpList<FScheme.Expression>.Empty;
+       FSharpList<Expression> result = FSharpList<Expression>.Empty;
 
        public dynCurvesBySelection()
        {
@@ -237,10 +238,10 @@ namespace Dynamo.Elements
        }
        //public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
 
-       public override FScheme.Expression Evaluate(FSharpList<Expression> args)
+       public override Expression Evaluate(FSharpList<Expression> args)
        {
            //return data;
-           return FScheme.Expression.NewList(result);
+           return Expression.NewList(result);
        }
 
        void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -250,8 +251,8 @@ namespace Dynamo.Elements
            data = Expression.NewList(FSharpList<Expression>.Empty);
 
            mc = SelectionHelper.RequestModelCurveSelection(dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance);
-           this.result = FSharpList<FScheme.Expression>.Cons(
-                     FScheme.Expression.NewContainer(mc),
+           this.result = FSharpList<Expression>.Cons(
+                     Expression.NewContainer(mc),
                      result);
 
        

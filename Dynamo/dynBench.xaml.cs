@@ -86,11 +86,6 @@ namespace Dynamo.Controls
 
       public dynBench()
       {
-         this.Environment = new ExecutionEnvironment();
-
-         //run tests, also load core libraries
-         FScheme.test();
-
          this.homeSpace = this.CurrentSpace = new HomeWorkspace();
 
          InitializeComponent();
@@ -103,6 +98,20 @@ namespace Dynamo.Controls
          dynElementSettings.SharedInstance.Bench = this;
 
          IdlePromise.RegisterIdle(dynElementSettings.SharedInstance.Doc.Application);
+
+         //run tests, also load core library
+         bool wasError = false;
+         FScheme.test(
+            delegate(string s)
+            {
+               wasError = true;
+               Log(s);
+            }
+         );
+         if (!wasError)
+            Log("All Tests Passed. Core library loaded OK.");
+
+         this.Environment = new ExecutionEnvironment();
 
          selectedElements = new dynSelection();
 
