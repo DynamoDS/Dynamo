@@ -48,15 +48,33 @@ namespace Dynamo.Elements
       {
          get
          {
-            if (_taggedSymbols.Contains(this.Symbol))
-               return base.IsDirty;
-            _taggedSymbols.Add(this.Symbol);
+            bool baseDirty = base.IsDirty;
+            if (baseDirty)
+               return true;
+            else
+            {
+               bool start = _startTag;
+               _startTag = true;
 
-            var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-            bool dirtyInternals = ws.Elements
-               //.Where(e => !(e is dynFunction && ((dynFunction)e).Symbol.Equals(this.Symbol)))
-               .Any(e => e.IsDirty);
-            return dirtyInternals || base.IsDirty;
+               if (_taggedSymbols.Contains(this.Symbol))
+                  return false;
+               _taggedSymbols.Add(this.Symbol);
+            
+               //TODO: bugged? 
+               //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
+               var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+               bool dirtyInternals = ws.Elements
+                  //.Where(e => !(e is dynFunction && ((dynFunction)e).Symbol.Equals(this.Symbol)))
+                  .Any(e => e.IsDirty);
+
+               if (!start)
+               {
+                  _startTag = false;
+                  _taggedSymbols.Clear();
+               }
+
+               return dirtyInternals;
+            }
          }
          set
          {
