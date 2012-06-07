@@ -204,6 +204,8 @@ namespace Dynamo.Elements
 
    }
 
+
+
    [ElementName("Curves by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows the user to select a curve or set of curves.")]
@@ -258,6 +260,65 @@ namespace Dynamo.Elements
        
            //this.data = Expression.NewContainer(mc);
            
+
+       }
+
+
+   }
+   [ElementName("Point by Selection")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which allows the user to select a reference point.")]
+   [RequiresTransaction(true)]
+   public class dynPointBySelection : dynElement
+   {
+       ReferencePoint rp;
+
+       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+       FSharpList<Expression> result = FSharpList<Expression>.Empty;
+
+       public dynPointBySelection()
+       {
+           this.topControl.Width = 300;
+
+           OutPortData = new PortData("ref point", "The point", typeof(ReferencePoint));
+           //OutPortData[0].Object = this.Tree;
+
+           //add a button to the inputGrid on the dynElement
+           System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
+           this.inputGrid.Children.Add(paramMapButt);
+           paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+           paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
+           paramMapButt.Content = "Select";
+           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+           base.RegisterInputsAndOutputs();
+
+       }
+       //public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+
+       public override Expression Evaluate(FSharpList<Expression> args)
+       {
+           return data;
+           //return Expression.NewList(result);
+       }
+
+       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+       {
+
+
+           data = Expression.NewList(FSharpList<Expression>.Empty);
+
+           rp = SelectionHelper.RequestReferencePointSelection(dynElementSettings.SharedInstance.Doc, "Select a reference point.", dynElementSettings.SharedInstance);
+          // this.result = FSharpList<Expression>.Cons(
+          //           Expression.NewContainer(rp),
+          //           result);
+
+
+           this.data = Expression.NewContainer(rp);
+
 
        }
 

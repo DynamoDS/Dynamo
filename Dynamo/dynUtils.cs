@@ -296,6 +296,44 @@ namespace Dynamo.Utilities
 
    public class SelectionHelper
    {
+
+       //RequestReferencePointSelection
+       public static ReferencePoint RequestReferencePointSelection(UIDocument doc, string message, dynElementSettings settings)
+       {
+           try
+           {
+               ReferencePoint rp = null;
+
+               Selection choices = doc.Selection;
+
+               choices.Elements.Clear();
+
+               //MessageBox.Show(message);
+               settings.Bench.Log(message);
+
+               //create some geometry options so that we computer references
+               Autodesk.Revit.DB.Options opts = new Options();
+               opts.ComputeReferences = true;
+               opts.DetailLevel = DetailLevels.Medium;
+               opts.IncludeNonVisibleObjects = false;
+
+               Reference pointRef = doc.Selection.PickObject(ObjectType.Element);
+
+               if (pointRef != null)
+               {
+
+                   rp = settings.Doc.Document.GetElement(pointRef) as ReferencePoint;
+               }
+               return rp;
+           }
+           catch (Exception ex)
+           {
+               settings.Bench.Log(ex.Message);
+               return null;
+           }
+
+
+       }
       public static ModelCurve RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try

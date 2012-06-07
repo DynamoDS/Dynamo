@@ -1,0 +1,50 @@
+<dynWorkspace X="10" Y="55">
+  <dynElements>
+    <Dynamo.Elements.dynPointBySelection type="Dynamo.Elements.dynPointBySelection" guid="6adae558-1d83-4903-a231-a2cf88d4567c" nickname="Point by Selection" x="32.5" y="5.75" />
+    <Dynamo.Elements.dynPointBySelection type="Dynamo.Elements.dynPointBySelection" guid="7ce00e02-b10b-4b31-b93c-bad204a56499" nickname="Point by Selection" x="43.75" y="92.75" />
+    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="8fb17c16-f942-4e1f-b7d2-e69935c70da6" nickname="list" x="322.75" y="45.75">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Elements.dynNewList>
+    <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" nickname="Python Script" x="309.901162790698" y="0">
+      <Script>import math
+ 
+doc = __revit__.ActiveUIDocument.Document
+app = __revit__.Application 
+
+
+beginPoint = IN[0]
+endPoint = IN[1] 
+
+lineRefPointArray = ReferencePointArray()
+lineRefPointArray.Append(beginPoint)
+lineRefPointArray.Append(endPoint)
+
+crv = doc.FamilyCreate.NewCurveByPoints(lineRefPointArray)
+crvRef = crv.GeometryCurve
+
+refptarr = ReferencePointArray()
+ 
+#use for loop to create a series of points
+for i in range(0,40)
+    pt = crvRef.Evaluate(i,1) # returns and XYZ
+    x = 10*pt.X
+    y = 10*pt.Y
+    #x = i*2
+    #y = i*2
+    #z is controlled using sine
+    z = math.sin(i)*2
+ 
+    myXYZ = XYZ(x,y,z)
+    refPt = doc.FamilyCreate.NewReferencePoint(myXYZ)
+    refptarr.Append(refPt)
+ 
+crv2 = doc.FamilyCreate.NewCurveByPoints(refptarr)</Script>
+    </Dynamo.Elements.dynPython>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="6adae558-1d83-4903-a231-a2cf88d4567c" start_index="0" end="8fb17c16-f942-4e1f-b7d2-e69935c70da6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="7ce00e02-b10b-4b31-b93c-bad204a56499" start_index="0" end="8fb17c16-f942-4e1f-b7d2-e69935c70da6" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="8fb17c16-f942-4e1f-b7d2-e69935c70da6" start_index="0" end="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" end_index="0" portType="0" />
+  </dynConnectors>
+</dynWorkspace>

@@ -140,7 +140,7 @@ namespace Dynamo.Elements
 
       public void ProcessCode(string code)
       {
-         code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *" + code;
+         code = "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\n" + code;
          this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
       }
 
