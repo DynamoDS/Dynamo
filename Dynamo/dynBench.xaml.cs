@@ -1057,7 +1057,7 @@ namespace Dynamo.Controls
             if (workSpace != this.homeSpace) //If we are not saving the home space
             {
                root.SetAttribute("Name", workSpace.Name);
-               //TODO: Store category
+               root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
             }
 
             xmlDoc.AppendChild(root);
@@ -1803,9 +1803,9 @@ namespace Dynamo.Controls
             );
             _trans.Start();
 
-            //FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
-            //failOpt.SetFailuresPreprocessor(dynElementSettings.SharedInstance.WarningSwallower);
-            //_trans.SetFailureHandlingOptions(failOpt);
+            FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
+            failOpt.SetFailuresPreprocessor(new DynamoWarningPrinter(this));
+            _trans.SetFailureHandlingOptions(failOpt);
          }
       }
 
@@ -1895,17 +1895,26 @@ namespace Dynamo.Controls
                         }
 
                         this.CancelRun = false;
+                        this.runAgain = false;
                      }
                   }
 
-                  this.InitTransaction();
-
-                  foreach (var element in this.AllElements)
+                  Action delete = delegate
                   {
-                     element.ResetRuns();
-                  }
+                     this.InitTransaction();
 
-                  this.EndTransaction();
+                     foreach (var element in this.AllElements)
+                     {
+                        element.ResetRuns();
+                     }
+
+                     this.EndTransaction();
+                  };
+
+                  if (debug || !this.InIdleThread)
+                     IdlePromise.ExecuteOnIdle(delete, false);
+                  else
+                     delete();
                };
 
                if (!debug)
@@ -1960,6 +1969,7 @@ namespace Dynamo.Controls
                }
 
                _trans = null;
+               this.runAgain = false;
             }
             finally
             {
@@ -1967,6 +1977,13 @@ namespace Dynamo.Controls
                   delegate { this.runButton.IsEnabled = true; }
                ));
                this.Running = false;
+               if (this.runAgain)
+               {
+                  this.runAgain = false;
+                  this.Dispatcher.BeginInvoke(new Action(
+                     delegate { this.RunExpression(debug, showErrors); }
+                  ));
+               }
             }
          };
 
@@ -2042,7 +2059,7 @@ namespace Dynamo.Controls
       private dynWorkspace newFunction(string name, string category, bool display)
       {
          //Add an entry to the funcdict
-         var workSpace = new FuncWorkspace(name, CANVAS_OFFSET_X, CANVAS_OFFSET_Y);
+         var workSpace = new FuncWorkspace(name, category, CANVAS_OFFSET_X, CANVAS_OFFSET_Y);
 
          var newElements = workSpace.Elements;
          var newConnectors = workSpace.Connectors;
@@ -2253,7 +2270,7 @@ namespace Dynamo.Controls
                if (!Directory.Exists(pluginsPath))
                   Directory.CreateDirectory(pluginsPath);
 
-               string path = Path.Combine(pluginsPath, funcWorkspace.Name + ".dyf");
+               string path = Path.Combine(pluginsPath, FormatFileName(funcWorkspace.Name) + ".dyf");
                SaveWorkspace(path, funcWorkspace);
             }
             catch (Exception e)
@@ -2606,7 +2623,10 @@ namespace Dynamo.Controls
          if (Directory.Exists(pluginsPath))
          {
             string oldpath = System.IO.Path.Combine(pluginsPath, this.CurrentSpace.Name + ".dyf");
-            string newpath = System.IO.Path.Combine(pluginsPath, newName + ".dyf");
+            string newpath = FormatFileName(
+               System.IO.Path.Combine(pluginsPath, newName + ".dyf")               
+            );
+
             File.Move(oldpath, newpath);
          }
 
@@ -2618,6 +2638,21 @@ namespace Dynamo.Controls
          ((FuncWorkspace)this.CurrentSpace).Name = newName;
 
          this.SaveFunction(this.CurrentSpace);
+      }
+
+      private static string FormatFileName(string filename)
+      {
+         return RemoveChars(
+            filename, 
+            new string[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" }
+         );
+      }
+
+      private static string RemoveChars(string s, IEnumerable<string> chars)
+      {
+         foreach (var c in chars)
+            s = s.Replace(c, "");
+         return s;
       }
 
       void DisableEditNameBox()
@@ -2694,7 +2729,8 @@ namespace Dynamo.Controls
 
       SearchDictionary<dynElement> searchDict = new SearchDictionary<dynElement>();
 
-      private bool dynamicRun;
+      private bool dynamicRun = false;
+      private bool runAgain = false;
 
       void FilterAddMenu(HashSet<dynElement> elements)
       {
@@ -2768,6 +2804,11 @@ namespace Dynamo.Controls
       {
          get { return this.dynamicCheckBox.IsChecked == true; }
       }
+
+      internal void QueueRun()
+      {
+         this.runAgain = true;
+      }
    }
 
    public class dynSelection : ObservableCollection<dynElement>
@@ -2792,6 +2833,30 @@ namespace Dynamo.Controls
       Automatic,
       Manual,
       Debug
+   }
+
+   public class DynamoWarningPrinter : Autodesk.Revit.DB.IFailuresPreprocessor
+   {
+      dynBench bench;
+
+      public DynamoWarningPrinter(dynBench b)
+      {
+         this.bench = b;
+      }
+
+      public Autodesk.Revit.DB.FailureProcessingResult PreprocessFailures(Autodesk.Revit.DB.FailuresAccessor failuresAccessor)
+      {
+         var failList = failuresAccessor.GetFailureMessages();
+         foreach (var fail in failList)
+         {
+            bench.Log(
+               "Warning: " + fail.GetDescriptionText()
+            );
+            failuresAccessor.DeleteWarning(fail);
+         }
+
+         return Autodesk.Revit.DB.FailureProcessingResult.Continue;
+      }
    }
 
 }

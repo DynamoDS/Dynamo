@@ -994,6 +994,25 @@ namespace Dynamo.Elements
 
          this.OnEvaluate();
 
+         bool corrupt = false;
+         List<Element> corrupted = new List<Element>();
+         foreach (Element e in this.Elements)
+         {
+            try
+            {
+               var id = e.Id;
+               corrupt = id.IntegerValue == 0 || corrupt;
+            }
+            catch
+            {
+               corrupted.Add(e);
+            }
+         }
+         if (corrupt)
+         {
+            this.Elements.RemoveAll(x => corrupted.Contains(x));
+         }
+
          if (useTransaction)
          {
             #region using transaction
@@ -1538,7 +1557,14 @@ namespace Dynamo.Elements
          {
             foreach (Element e in els)
             {
-               dynElementSettings.SharedInstance.Doc.Document.Delete(e);
+               try
+               {
+                  dynElementSettings.SharedInstance.Doc.Document.Delete(e);
+               }
+               catch (Autodesk.Revit.Exceptions.InvalidOperationException)
+               {
+                  //TODO: Flesh out?
+               }
             }
             //els.Clear();
          }
@@ -1725,7 +1751,14 @@ namespace Dynamo.Elements
                {
                   this.Destroy();
                }
-               catch { }
+               catch (Exception ex)
+               {
+                  bench.Log(
+                     "Error deleting elements: " 
+                     + ex.GetType().Name 
+                     + " -- " + ex.Message
+                  );
+               }
                bench.EndTransaction();
 
                bench.DeleteElement(this);

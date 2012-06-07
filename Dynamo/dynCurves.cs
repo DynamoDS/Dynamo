@@ -45,9 +45,22 @@ namespace Dynamo.Elements
          Curve c = (Curve)((Expression.Container)args[0]).Item;
          SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
 
-         return Expression.NewContainer(
-            this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-         );
+         ModelCurve e;
+
+         if (this.Elements.Any())
+         {
+            e = (ModelCurve)this.Elements[0];
+            var loc = (LocationCurve)e.Location;
+         }
+         else
+         {
+            e = this.UIDocument.Document.IsFamilyDocument
+               ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+               : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+            this.Elements.Add(e);
+         }
+
+         return Expression.NewContainer(e);
       }
    }
 
