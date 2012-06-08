@@ -156,8 +156,20 @@ namespace Dynamo.Applications
                         {
                             
                             if (bench.DynamicRunEnabled && !bench.Running)
-                                bench.RunExpression(false, false); // if it's one we are watching kick off RunExpression (note same code as in dynWorkspace Modified()
+                                bench.RunExpression(false, false); // if it's one we are watching kick off RunExpression (note the pre-queue code from dynWorkspace Modified()
+
+                            // this is the new new queue-based code as in dynWorkspace Modified() but this causes cyclic behavior from the DMU side
+                            //if (bench.DynamicRunEnabled) 
+                            //{
+                            //    if (!bench.Running)
+                            //        bench.RunExpression(false, false);
+                            //    else
+                            //        bench.QueueRun();
+                            //}
+                        
                         }
+
+
                     }
 
                     catch (Exception e)
