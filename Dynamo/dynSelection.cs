@@ -280,7 +280,7 @@ namespace Dynamo.Elements
        {
            this.topControl.Width = 300;
 
-           OutPortData = new PortData("ref point", "The point", typeof(ReferencePoint));
+           OutPortData = new PortData("pt", "The point", typeof(ReferencePoint));
            //OutPortData[0].Object = this.Tree;
 
            //add a button to the inputGrid on the dynElement
@@ -297,10 +297,10 @@ namespace Dynamo.Elements
            base.RegisterInputsAndOutputs();
 
        }
-       //public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
 
        public override Expression Evaluate(FSharpList<Expression> args)
        {
+
            return data;
            //return Expression.NewList(result);
        }
@@ -317,7 +317,12 @@ namespace Dynamo.Elements
           //           result);
 
 
+
+           if (dynElementSettings.SharedInstance.UserSelectedElements.IsEmpty)
+
+           dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
            this.data = Expression.NewContainer(rp);
+           this.IsDirty = true;
 
 
        }

@@ -79,31 +79,26 @@ namespace Dynamo.Applications
 
 
                 // MDJ = element level events and dyanmic model update
-
-                // Register sfm updater with Revit
-                //DynamoUpdater updater = new DynamoUpdater(application.ActiveAddInId);
-                //UpdaterRegistry.RegisterUpdater(updater);
-                //// Change Scope = any spatial field element
-                //ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
-                ////ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
-                //// Change type = element addition
-                //UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), SpatialFieldFilter,
-                //Element.GetChangeTypeAny()); // Element.GetChangeTypeElementAddition()
+                // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-reun definitin when they are moved
 
 
-                DynamoUpdater updater = new DynamoUpdater(application.ActiveAddInId);//, sphere.Id, view.Id);
+                DynamoUpdater updater = new DynamoUpdater(application.ActiveAddInId);
                 if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId())) UpdaterRegistry.RegisterUpdater(updater);
-                ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
-                ElementClassFilter familyFilter = new ElementClassFilter(typeof(FamilyInstance));
-                ElementCategoryFilter massFilter = new ElementCategoryFilter(BuiltInCategory.OST_Mass);
+                //ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
+                //ElementClassFilter familyFilter = new ElementClassFilter(typeof(FamilyInstance));
+                //ElementCategoryFilter massFilter = new ElementCategoryFilter(BuiltInCategory.OST_Mass);
+                ElementCategoryFilter refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
                 IList<ElementFilter> filterList = new List<ElementFilter>();
-                filterList.Add(SpatialFieldFilter);
-                filterList.Add(familyFilter);
-                filterList.Add(massFilter);
+                //filterList.Add(SpatialFieldFilter);
+                //filterList.Add(familyFilter);
+                //filterList.Add(massFilter);
+                filterList.Add(refPointFilter);
                 LogicalOrFilter filter = new LogicalOrFilter(filterList);
 
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeGeometry());
-                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
+                UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
+                //UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeParameter();
+                //UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeGeometry());
+                //UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
 
 
 
@@ -128,8 +123,9 @@ namespace Dynamo.Applications
         {
             static AddInId m_appId;
             static UpdaterId m_updaterId;
-            SpatialFieldManager m_sfm = null;
+            //SpatialFieldManager m_sfm = null;
             FamilyInstance m_fam = null;
+            ReferencePoint m_refPoint = null;
             // constructor takes the AddInId for the add-in associated with this updater
             public DynamoUpdater(AddInId id)
             {
@@ -138,54 +134,44 @@ namespace Dynamo.Applications
             }
             public void Execute(UpdaterData data)
             {
-                Document doc = data.GetDocument();
-                Autodesk.Revit.DB.View view = doc.ActiveView;
-                SpatialFieldManager sfm = SpatialFieldManager.GetSpatialFieldManager(view);
+                //Document doc = data.GetDocument();
+                var bench = dynElementSettings.SharedInstance.Bench; // MDJ HOOK
+               
 
-                UpdaterData tempData = data;
-          
-                if (sfm != null)
+                foreach (ElementId addedElement in data.GetAddedElementIds())
                 {
-                    // Cache the spatial field manager if ther is one
-                    if (m_sfm == null)
-                    {
-                        //FilteredElementCollector collector = new FilteredElementCollector(doc);
-                        //collector.OfClass(typeof(SpatialFieldManager));
-                        //var sfm = from element in collector
-                        //          select element;
-                        //if (sfm.Count<Element>() > 0) // if we actually found an SFM
-                        //{
-                        //m_sfm = sfm.Cast<SpatialFieldManager>().ElementAt<SpatialFieldManager>(0);
-                        m_sfm = sfm;
-                        //TaskDialog.Show("ah hah", "found spatial field manager adding to cache");
-                        //}
+                    ReferencePoint m_rp = data.GetDocument().get_Element(addedElement) as ReferencePoint;
 
-                    }
-                    if (m_sfm != null)
-                    {
-                        // if we find an sfm has been updated and it matches what  already have one cached, send it to dyanmo
-                        //foreach (ElementId addedElemId in data.GetAddedElementIds())
-                        //{
-                            //SpatialFieldManager sfm = doc.get_Element(addedElemId) as SpatialFieldManager;
-                            //if (sfm != null)
-                            //{
-                               // TaskDialog.Show("ah hah", "found spatial field manager yet, passing to dynamo");
-                        dynElementSettings.SharedInstance.SpatialFieldManagerUpdated = sfm;
-                        //Dynamo.Elements.OnDynElementReadyToBuild(EventArgs.Empty);//kick it
-                            //}
-                        //}
-                    }
+                    
+  
                 }
-                else
+                foreach (ElementId moddedElement in data.GetModifiedElementIds())
                 {
-                    //TaskDialog.Show("ah hah", "no spatial field manager yet, please run sr tool");
+                    ReferencePoint m_refPoint = data.GetDocument().get_Element(moddedElement) as ReferencePoint;
+
+                    try
+                    {
+
+                        if (dynElementSettings.SharedInstance.UserSelectedElements.Contains(m_refPoint)) // if the point that was updated is contained in the set of elements selected before, force a rebuild of dynamo graph
+                        {
+                            
+                            if (bench.DynamicRunEnabled && !bench.Running)
+                                bench.RunExpression(false, false); // if it's one we are watching kick off RunExpression (note same code as in dynWorkspace Modified()
+                        }
+                    }
+
+                    catch (Exception e)
+                    {
+                        bench.Log(e.ToString());
+                    }
+
                 }
             }
 
 
             public string GetAdditionalInformation()
             {
-                return "Watch for changes to Analysis Results object (Spatial Field Manager) and pass this to Dynamo";
+                return "Watch for user-created or changed Reference Points and pass this to Dynamo";
             }
             public ChangePriority GetChangePriority()
             {
@@ -197,7 +183,7 @@ namespace Dynamo.Applications
             }
             public string GetUpdaterName()
             {
-                return "Dyanmo Analysis Results Watcher";
+                return "Dyanmo RefPoint Watcher";
             }
         }
     }

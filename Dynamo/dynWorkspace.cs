@@ -109,7 +109,7 @@ namespace Dynamo.Elements
       {
          if (OnModified != null)
             OnModified();
-         var bench = dynElementSettings.SharedInstance.Bench;
+         var bench = dynElementSettings.SharedInstance.Bench; // MDJ HOOK
          if (bench.DynamicRunEnabled && !bench.Running)
             bench.RunExpression(false, false);
       }
