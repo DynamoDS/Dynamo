@@ -141,7 +141,37 @@ namespace Dynamo.Applications
                 //Document doc = data.GetDocument();
                 var bench = dynElementSettings.SharedInstance.Bench; // MDJ HOOK
 
+                foreach (ElementId m_addedElementID in data.GetAddedElementIds())
+                {
+                    Element m_addedElement = data.GetDocument().get_Element(m_addedElementID) as Element;// added added because we keep crashing if the user changes selection node to a newly created object
 
+                    try
+                    {
+
+                        if (dynElementSettings.SharedInstance.UserSelectedElements.Contains(m_modifiedElement)) // if the element that was updated is contained in the set of elements selected before, force a rebuild of dynamo graph
+                        {
+
+                            if (bench.DynamicRunEnabled && !bench.Running)
+                                bench.RunExpression(false, false); // if it's one we are watching kick off RunExpression (note the pre-queue code from dynWorkspace Modified()
+
+                            // this is the new new queue-based code as in dynWorkspace Modified() but this causes cyclic behavior from the DMU side
+                            //if (bench.DynamicRunEnabled) 
+                            //{
+                            //    if (!bench.Running)
+                            //        bench.RunExpression(false, false);
+                            //    else
+                            //        bench.QueueRun();
+                            //}
+                        }
+
+                    }
+
+                    catch (Exception e)
+                    {
+                        bench.Log(e.ToString());
+                    }
+
+                }
                 foreach (ElementId m_modifiedElementID in data.GetModifiedElementIds())
                 {
                     Element m_modifiedElement = data.GetDocument().get_Element(m_modifiedElementID) as Element;// note the filter should return all ref points, curves and family instances now. 

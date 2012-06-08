@@ -367,7 +367,7 @@ namespace Dynamo.Elements
          ));
 
          bindings.Add(new Binding("__dynamo__", dynElementSettings.SharedInstance.Bench));
-         bindings.Add(new Binding("DynStoredElements", this.Elements));
+         bindings.Add(new Binding("DynStoredElements", this.Elements)); // use this to pass into the python script a list of previously created elements from dynamo 
          
          return bindings;
       }

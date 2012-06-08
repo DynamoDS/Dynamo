@@ -242,8 +242,10 @@ namespace Dynamo.Elements
 
        public override Expression Evaluate(FSharpList<Expression> args)
        {
-           //return data;
-           return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
+           this.IsDirty = true;
+           return data;
+          
+           //return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
        }
 
        void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -253,12 +255,12 @@ namespace Dynamo.Elements
            data = Expression.NewList(FSharpList<Expression>.Empty);
 
            mc = SelectionHelper.RequestModelCurveSelection(dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance);
-           this.result = FSharpList<Expression>.Cons(
-                     Expression.NewContainer(mc),
-                     result);
+           //this.result = FSharpList<Expression>.Cons(
+           //          Expression.NewContainer(mc),
+           //          result);
 
            dynElementSettings.SharedInstance.UserSelectedElements.Insert(mc); // MDJ HOOK remember the one we selected for comparison in DMU code. 
-           //this.data = Expression.NewContainer(mc);
+           this.data = Expression.NewContainer(mc);
            this.IsDirty = true;
        
            
@@ -302,8 +304,9 @@ namespace Dynamo.Elements
 
        public override Expression Evaluate(FSharpList<Expression> args)
        {
-
+           this.IsDirty = true;
            return data;
+           
            //return Expression.NewList(result);
        }
 
@@ -319,8 +322,6 @@ namespace Dynamo.Elements
           //           result);
 
 
-
-           if (dynElementSettings.SharedInstance.UserSelectedElements.IsEmpty)
 
            dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
            this.data = Expression.NewContainer(rp);
