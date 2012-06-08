@@ -54,15 +54,6 @@ namespace Dynamo.Elements
 
       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
       {
-         //clear the existing tree and the seed pts tree
-         //this.Tree.Clear();
-         //seedPts.Clear();
-
-         //foreach (Element el in this.Elements)
-         //{
-         //    dynElementSettings.SharedInstance.Doc.Document.Delete(el);
-         //}
-
          data = Expression.NewList(FSharpList<Expression>.Empty);
 
          var result = new List<List<FamilyInstance>>();
@@ -80,11 +71,6 @@ namespace Dynamo.Elements
                int u = 0;
                while (u < ds.NumberOfUGridlines)
                {
-                  //add a new tree branch for every node
-                  //DataTreeBranch dtb = new DataTreeBranch();
-                  //this.Tree.Trunk.Branches.Add(dtb);
-                  //DataTreeBranch seedBranch = new DataTreeBranch();
-                  //seedPts.Trunk.Branches.Add(seedBranch);
 
                   var lst = new List<FamilyInstance>();
 
@@ -101,17 +87,7 @@ namespace Dynamo.Elements
                           = ds.GetTileFamilyInstance(gn, 0);
 
                         //put the family instance into the tree
-                        //dtb.Leaves.Add(fi);
                         lst.Add(fi);
-
-                        ////add a reference point for the seed node
-                        //Point p = ds.GetGridNodeReference(gn).GeometryObject as Point;
-                        //if (p != null)
-                        //{
-                        //    ReferencePoint rp = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewReferencePoint(p.Coord);
-                        //    seedBranch.Leaves.Add(rp);
-                        //    Elements.Append(rp);
-                        //}
                      }
                      v = v + 1;
                   }
@@ -134,20 +110,7 @@ namespace Dynamo.Elements
                )
             );
          }
-
-         //OnDynElementReadyToBuild(EventArgs.Empty);
       }
-
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-
-      //public override void Destroy()
-      //{
-      //   //don't call base destroy
-      //   //base.Destroy();
-      //}
    }
 
    [ElementName("Face by Selection")]
@@ -179,7 +142,6 @@ namespace Dynamo.Elements
          paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
          base.RegisterInputsAndOutputs();
-
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)
@@ -189,8 +151,6 @@ namespace Dynamo.Elements
 
       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
       {
-
-
          data = Expression.NewList(FSharpList<Expression>.Empty);
 
          // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
@@ -198,13 +158,8 @@ namespace Dynamo.Elements
          f = SelectionHelper.RequestFaceReferenceSelection(this.UIDocument, "Select a face.", dynElementSettings.SharedInstance);
 
          this.data = Expression.NewContainer(f);
-
       }
-
-
    }
-
-
 
    [ElementName("Curve by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
@@ -242,8 +197,10 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         //return data;
-         return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
+         this.IsDirty = true;
+         return data;
+
+         //return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
       }
 
       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -251,18 +208,18 @@ namespace Dynamo.Elements
          data = Expression.NewList(FSharpList<Expression>.Empty);
 
          mc = SelectionHelper.RequestModelCurveSelection(dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance);
-         this.result = FSharpList<Expression>.Cons(
-                   Expression.NewContainer(mc),
-                   result);
+         //this.result = FSharpList<Expression>.Cons(
+         //          Expression.NewContainer(mc),
+         //          result);
 
          //dynElementSettings.SharedInstance.UserSelectedElements.Insert(mc); // MDJ HOOK remember the one we selected for comparison in DMU code. 
          this.RegisterEvalOnModified(mc.Id);
-         //this.data = Expression.NewContainer(mc);
+
+         this.data = Expression.NewContainer(mc);
          this.IsDirty = true;
       }
-
-
    }
+
    [ElementName("Point by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows the user to select a reference point.")]
@@ -298,15 +255,14 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-
+         this.IsDirty = true;
          return data;
+
          //return Expression.NewList(result);
       }
 
       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
       {
-
-
          data = Expression.NewList(FSharpList<Expression>.Empty);
 
          rp = SelectionHelper.RequestReferencePointSelection(dynElementSettings.SharedInstance.Doc, "Select a reference point.", dynElementSettings.SharedInstance);
@@ -314,17 +270,10 @@ namespace Dynamo.Elements
          //           Expression.NewContainer(rp),
          //           result);
 
-
-
-         //if (dynElementSettings.SharedInstance.UserSelectedElements.IsEmpty)
          //dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
-
          this.RegisterEvalOnModified(rp.Id);
-
          this.data = Expression.NewContainer(rp);
          this.IsDirty = true;
       }
-
-
    }
 }

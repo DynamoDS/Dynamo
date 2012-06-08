@@ -117,6 +117,60 @@ namespace Dynamo.Elements
       }
    }
 
+   [ElementName("XYZ Array Along Curve")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which creates an array of XYZs along a curve.")]
+   [RequiresTransaction(true)]
+   public class dynXYZArrayAlongCurve: dynElement
+   {
+       public dynXYZArrayAlongCurve()
+       {
+           InPortData.Add(new PortData("curve", "Curve", typeof(CurveElement))); 
+           InPortData.Add(new PortData("count", "Number", typeof(double))); // just divide equally for now, dont worry about spacing and starting point
+           //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
+           //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
+
+           OutPortData = new PortData("XYZs", "List of XYZs in the array", typeof(XYZ));
+
+           base.RegisterInputsAndOutputs();
+       }
+
+       public override Expression Evaluate(FSharpList<Expression> args)
+       {
+           double xi, x0, xs;
+           CurveElement c;
+
+           c = ((Expression.Container)args[0]).Item as CurveElement; // Curve 
+           xi = ((Expression.Number)args[1]).Item;// Number
+           //x0 = ((Expression.Number)args[2]).Item;// Starting Coord
+           //xs = ((Expression.Number)args[3]).Item;// Spacing
+
+
+           FSharpList<Expression> result = FSharpList<Expression>.Empty;
+
+           //double x = x0;
+           Curve crvRef = c.GeometryCurve;
+           double t = 0;
+           
+           for (int xCount = 0; xCount < xi; xCount++)
+            {
+               t = xCount/xi; // create normalized curve param by dividing current number by total number
+                result = FSharpList<Expression>.Cons(
+                    Expression.NewContainer(
+                    crvRef.Evaluate(t,true) // pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ taht we store in this list
+                    ),
+                    result
+                );
+                //x += xs;
+            }
+           
+
+           return Expression.NewList(
+              ListModule.Reverse(result)
+           );
+       }
+   }
+
    [ElementName("Plane")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a geometric plane.")]
