@@ -344,11 +344,11 @@ namespace Dynamo.Utilities
 
 
        }
-      public static ModelCurve RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
+       public static CurveElement RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
          {
-            ModelCurve c = null;
+            CurveElement c = null;
             Curve cv = null;
 
             Selection choices = doc.Selection;

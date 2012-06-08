@@ -85,13 +85,16 @@ namespace Dynamo.Applications
                 DynamoUpdater updater = new DynamoUpdater(application.ActiveAddInId);
                 if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId())) UpdaterRegistry.RegisterUpdater(updater);
                 //ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
-                //ElementClassFilter familyFilter = new ElementClassFilter(typeof(FamilyInstance));
                 //ElementCategoryFilter massFilter = new ElementCategoryFilter(BuiltInCategory.OST_Mass);
+                ElementClassFilter familyFilter = new ElementClassFilter(typeof(FamilyInstance));
                 ElementCategoryFilter refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
+                ElementClassFilter modelCurveFilter = new ElementClassFilter(typeof(CurveElement));
                 IList<ElementFilter> filterList = new List<ElementFilter>();
                 //filterList.Add(SpatialFieldFilter);
-                //filterList.Add(familyFilter);
+                
                 //filterList.Add(massFilter);
+                filterList.Add(familyFilter);
+                filterList.Add(modelCurveFilter);
                 filterList.Add(refPointFilter);
                 LogicalOrFilter filter = new LogicalOrFilter(filterList);
 
@@ -124,6 +127,7 @@ namespace Dynamo.Applications
             static AddInId m_appId;
             static UpdaterId m_updaterId;
             //SpatialFieldManager m_sfm = null;
+            Element m_modifiedElement = null;
             FamilyInstance m_fam = null;
             ReferencePoint m_refPoint = null;
             // constructor takes the AddInId for the add-in associated with this updater
@@ -136,23 +140,16 @@ namespace Dynamo.Applications
             {
                 //Document doc = data.GetDocument();
                 var bench = dynElementSettings.SharedInstance.Bench; // MDJ HOOK
-               
 
-                foreach (ElementId addedElement in data.GetAddedElementIds())
-                {
-                    ReferencePoint m_rp = data.GetDocument().get_Element(addedElement) as ReferencePoint;
 
-                    
-  
-                }
-                foreach (ElementId moddedElement in data.GetModifiedElementIds())
+                foreach (ElementId m_modifiedElementID in data.GetModifiedElementIds())
                 {
-                    ReferencePoint m_refPoint = data.GetDocument().get_Element(moddedElement) as ReferencePoint;
+                    Element m_modifiedElement = data.GetDocument().get_Element(m_modifiedElementID) as Element;// note the filter should return all ref points, curves and family instances now. 
 
                     try
                     {
 
-                        if (dynElementSettings.SharedInstance.UserSelectedElements.Contains(m_refPoint)) // if the point that was updated is contained in the set of elements selected before, force a rebuild of dynamo graph
+                        if (dynElementSettings.SharedInstance.UserSelectedElements.Contains(m_modifiedElement)) // if the element that was updated is contained in the set of elements selected before, force a rebuild of dynamo graph
                         {
                             
                             if (bench.DynamicRunEnabled && !bench.Running)
@@ -166,9 +163,28 @@ namespace Dynamo.Applications
                             //    else
                             //        bench.QueueRun();
                             //}
-                        
                         }
 
+                    }
+
+                    catch (Exception e)
+                    {
+                        bench.Log(e.ToString());
+                    }
+
+                }
+                foreach (ElementId m_deletedElementID in data.GetDeletedElementIds())
+                {
+                    Element m_deletedElement = data.GetDocument().get_Element(m_deletedElementID) as Element;
+
+                    try
+                    {
+
+                        if (dynElementSettings.SharedInstance.UserSelectedElements.Contains(m_deletedElement)) // if the element that was updated is contained in the set of elements selected before but was deleted, remove from collection
+                        {
+
+                            dynElementSettings.SharedInstance.UserSelectedElements.Erase(m_deletedElement); // remove deleted element from watch list
+                        }
 
                     }
 
@@ -183,7 +199,7 @@ namespace Dynamo.Applications
 
             public string GetAdditionalInformation()
             {
-                return "Watch for user-created or changed Reference Points and pass this to Dynamo";
+                return "Watch for user-selected elements that have been changed or deleted and use this info to update Dynnamo";
             }
             public ChangePriority GetChangePriority()
             {
