@@ -1076,6 +1076,7 @@ namespace Dynamo.Elements
                   this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
             }
          }
+         base.ReregisterInputs();
       }
    }
 
@@ -1487,29 +1488,51 @@ namespace Dynamo.Elements
    public class dynDoubleSliderInput : dynDouble
    {
       Slider tb_slider;
+      TextBox mintb;
+      TextBox maxtb;
 
       public dynDoubleSliderInput()
       {
-         TextBox mintb = new TextBox();
+         mintb = new TextBox();
          mintb.MaxLength = 3;
          mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
          mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          mintb.Width = double.NaN;
          mintb.Text = "0";
-         mintb.TextChanged += delegate { this.tb_slider.Minimum = Convert.ToDouble(mintb.Text); };
+         mintb.TextChanged += delegate 
+         {
+            try
+            {
+               this.tb_slider.Minimum = Convert.ToDouble(mintb.Text);
+            }
+            catch
+            {
+               this.tb_slider.Minimum = 0;
+            }
+         };
 
          //turn off the border
          SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
          mintb.Background = backgroundBrush;
          mintb.BorderThickness = new Thickness(0);//turn off the border
 
-         TextBox maxtb = new TextBox();
+         maxtb = new TextBox();
          maxtb.MaxLength = 3;
          maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
          maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          maxtb.Width = double.NaN;
          maxtb.Text = "100";
-         maxtb.TextChanged += delegate { this.tb_slider.Maximum = Convert.ToDouble(maxtb.Text); };
+         maxtb.TextChanged += delegate 
+         {
+            try
+            {
+               this.tb_slider.Maximum = Convert.ToDouble(maxtb.Text);
+            }
+            catch
+            {
+               this.tb_slider.Maximum = 0;
+            }
+         };
 
          maxtb.Background = backgroundBrush;
          maxtb.BorderThickness = new Thickness(0);
@@ -1557,6 +1580,41 @@ namespace Dynamo.Elements
       protected override double Value
       {
          get { return this.tb_slider.Value; }
+      }
+
+      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+      {
+         //Debug.WriteLine(pd.Object.GetType().ToString());
+         XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+         outEl.SetAttribute("value", this.Value.ToString());
+         outEl.SetAttribute("min", this.tb_slider.Minimum.ToString());
+         outEl.SetAttribute("max", this.tb_slider.Maximum.ToString());
+         dynEl.AppendChild(outEl);
+      }
+
+      public override void LoadElement(XmlNode elNode)
+      {
+         foreach (XmlNode subNode in elNode.ChildNodes)
+         {
+            if (subNode.Name.Equals(typeof(double).FullName))
+            {
+               foreach (XmlAttribute attr in subNode.Attributes)
+               {
+                  if (attr.Name.Equals("value"))
+                     this.DeserializeValue(attr.Value);
+                  else if (attr.Name.Equals("min"))
+                  {
+                     this.tb_slider.Minimum = Convert.ToDouble(attr.Value);
+                     this.mintb.Text = attr.Value;
+                  }
+                  else if (attr.Name.Equals("max"))
+                  {
+                     this.tb_slider.Maximum = Convert.ToDouble(attr.Value);
+                     this.maxtb.Text = attr.Value;
+                  }
+               }
+            }
+         }
       }
    }
 

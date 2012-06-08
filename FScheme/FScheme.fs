@@ -230,6 +230,10 @@ let zip args parameters =
          split Seq.take @ [List(split Seq.skip)]
    List.zip parameters args'
 
+let Throw cont = function
+   | [String(s)] -> failwith s
+   | m -> malformed "throw" (List(m))
+
 ///If construct
 let rec If cont (env : Environment) = function
    | [condition; t; f] -> //(if [condition] [t] [f])
@@ -497,6 +501,7 @@ and environment =
        "sort-with", ref (Function(SortWith))
        "sort-by", ref (Function(SortBy))
        "combine", ref (Special(Combine))
+       "throw", ref (Function(Throw))
        //"and", ref (Special(And))
       ] |> ref
 

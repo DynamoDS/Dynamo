@@ -153,7 +153,18 @@ namespace Dynamo.Elements
             scope.SetVariable(bind.Symbol, bind.Value);
          }
 
-         this.source.Execute(scope);
+         try
+         {
+            this.source.Execute(scope);  
+         }
+         catch (SyntaxErrorException ex)
+         {
+            throw new Exception(
+               ex.Message 
+               + " at Line " + (ex.Line - 4) 
+               + ", Column " + ex.Column
+            );
+         }
 
          Expression result = Expression.NewNumber(1);
 

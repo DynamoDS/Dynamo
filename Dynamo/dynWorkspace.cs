@@ -38,20 +38,21 @@ namespace Dynamo.Elements
       #region Contructors
 
       public FuncWorkspace()
-         : this("", new List<dynElement>(), new List<dynConnector>(), 0, 0)
+         : this("", "", new List<dynElement>(), new List<dynConnector>(), 0, 0)
       { }
 
-      public FuncWorkspace(String name)
-         : this(name, new List<dynElement>(), new List<dynConnector>(), 0, 0)
+      public FuncWorkspace(String name, String category)
+         : this(name, category, new List<dynElement>(), new List<dynConnector>(), 0, 0)
       { }
 
-      public FuncWorkspace(String name, double x, double y)
-         : this(name, new List<dynElement>(), new List<dynConnector>(), x, y)
+      public FuncWorkspace(String name, String category, double x, double y)
+         : this(name, category, new List<dynElement>(), new List<dynConnector>(), x, y)
       { }
 
-      public FuncWorkspace(String name, List<dynElement> e, List<dynConnector> c, double x, double y)
+      public FuncWorkspace(String name, String category, List<dynElement> e, List<dynConnector> c, double x, double y)
       {
          this.Name = name;
+         this.Category = category;
          this.Elements = e;
          this.Connectors = c;
          this.PositionX = x;
@@ -109,9 +110,14 @@ namespace Dynamo.Elements
       {
          if (OnModified != null)
             OnModified();
-         var bench = dynElementSettings.SharedInstance.Bench; // MDJ HOOK
-         if (bench.DynamicRunEnabled && !bench.Running)
-            bench.RunExpression(false, false);
+         var bench = dynElementSettings.SharedInstance.Bench;
+         if (bench.DynamicRunEnabled)
+         {
+            if (!bench.Running)
+               bench.RunExpression(false, false);
+            else
+               bench.QueueRun();
+         }
       }
    }
 }
