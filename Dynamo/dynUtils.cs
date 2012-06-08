@@ -89,6 +89,7 @@ namespace Dynamo.Utilities
       Transaction trans;
       TextWriter tw;
       Element spatialFieldManagerUpdated;
+      ElementSet userSelectedElements = new ElementSet();
 
       private static dynElementSettings sharedInstance;
 
@@ -116,6 +117,15 @@ namespace Dynamo.Utilities
          {
             spatialFieldManagerUpdated = value;
          }
+      }
+
+      public ElementSet UserSelectedElements
+      {
+          get { return userSelectedElements; }
+          set
+          {
+              userSelectedElements = value;
+          }
       }
 
       public Autodesk.Revit.UI.UIApplication Revit
@@ -334,11 +344,11 @@ namespace Dynamo.Utilities
 
 
        }
-      public static ModelCurve RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
+       public static CurveElement RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
          {
-            ModelCurve c = null;
+            CurveElement c = null;
             Curve cv = null;
 
             Selection choices = doc.Selection;

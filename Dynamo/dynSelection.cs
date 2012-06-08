@@ -206,13 +206,13 @@ namespace Dynamo.Elements
 
 
 
-   [ElementName("Curves by Selection")]
+   [ElementName("Curve by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which allows the user to select a curve or set of curves.")]
+   [ElementDescription("An element which allows the user to select a curve.")] //or set of curves in the future
    [RequiresTransaction(true)]
    public class dynCurvesBySelection : dynElement
    {
-       ModelCurve mc;
+       CurveElement mc;
 
        Expression data = Expression.NewList(FSharpList<Expression>.Empty);
        FSharpList<Expression> result = FSharpList<Expression>.Empty;
@@ -221,7 +221,7 @@ namespace Dynamo.Elements
        {
            this.topControl.Width = 300;
 
-           OutPortData = new PortData("curves", "The curves", typeof(ModelCurve));
+           OutPortData = new PortData("curve", "The curve", typeof(CurveElement));
            //OutPortData[0].Object = this.Tree;
 
            //add a button to the inputGrid on the dynElement
@@ -243,7 +243,7 @@ namespace Dynamo.Elements
        public override Expression Evaluate(FSharpList<Expression> args)
        {
            //return data;
-           return Expression.NewList(result);
+           return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
        }
 
        void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -257,8 +257,10 @@ namespace Dynamo.Elements
                      Expression.NewContainer(mc),
                      result);
 
-       
+           dynElementSettings.SharedInstance.UserSelectedElements.Insert(mc); // MDJ HOOK remember the one we selected for comparison in DMU code. 
            //this.data = Expression.NewContainer(mc);
+           this.IsDirty = true;
+       
            
 
        }
@@ -280,7 +282,7 @@ namespace Dynamo.Elements
        {
            this.topControl.Width = 300;
 
-           OutPortData = new PortData("ref point", "The point", typeof(ReferencePoint));
+           OutPortData = new PortData("pt", "The point", typeof(ReferencePoint));
            //OutPortData[0].Object = this.Tree;
 
            //add a button to the inputGrid on the dynElement
@@ -297,10 +299,10 @@ namespace Dynamo.Elements
            base.RegisterInputsAndOutputs();
 
        }
-       //public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
 
        public override Expression Evaluate(FSharpList<Expression> args)
        {
+
            return data;
            //return Expression.NewList(result);
        }
@@ -317,7 +319,12 @@ namespace Dynamo.Elements
           //           result);
 
 
+
+           if (dynElementSettings.SharedInstance.UserSelectedElements.IsEmpty)
+
+           dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
            this.data = Expression.NewContainer(rp);
+           this.IsDirty = true;
 
 
        }
