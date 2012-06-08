@@ -497,7 +497,7 @@ namespace Dynamo.Elements
 
          if (this.Elements.Count > count)
          {
-            fi = (FamilyInstance)this.Elements[count];
+            fi = (FamilyInstance)this.UIDocument.Document.get_Element(this.Elements[count]);
             LocationPoint lp = (LocationPoint)fi.Location;
             lp.Point = pos;
          }
@@ -511,7 +511,7 @@ namespace Dynamo.Elements
                   pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
                );
 
-            this.Elements.Add(fi);
+            this.Elements.Add(fi.Id);
          }
 
          return Expression.NewContainer(fi);

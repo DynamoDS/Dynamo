@@ -84,8 +84,10 @@ namespace Dynamo.Controls
 
       SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
-      public dynBench()
+      public dynBench(DynamoUpdater updater)
       {
+         this.Updater = updater;
+
          this.homeSpace = this.CurrentSpace = new HomeWorkspace();
 
          InitializeComponent();
@@ -2809,6 +2811,8 @@ namespace Dynamo.Controls
       {
          this.runAgain = true;
       }
+
+      public DynamoUpdater Updater { get; private set; }
    }
 
    public class dynSelection : ObservableCollection<dynElement>
@@ -2849,10 +2853,14 @@ namespace Dynamo.Controls
          var failList = failuresAccessor.GetFailureMessages();
          foreach (var fail in failList)
          {
-            bench.Log(
-               "Warning: " + fail.GetDescriptionText()
-            );
-            failuresAccessor.DeleteWarning(fail);
+            var severity = fail.GetSeverity();
+            if (severity == Autodesk.Revit.DB.FailureSeverity.Warning)
+            {
+               bench.Log(
+                  "!! Warning: " + fail.GetDescriptionText()
+               );
+               failuresAccessor.DeleteWarning(fail);
+            }
          }
 
          return Autodesk.Revit.DB.FailureProcessingResult.Continue;

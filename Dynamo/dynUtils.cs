@@ -89,7 +89,7 @@ namespace Dynamo.Utilities
       Transaction trans;
       TextWriter tw;
       Element spatialFieldManagerUpdated;
-      ElementSet userSelectedElements = new ElementSet();
+      HashSet<ElementId> userSelectedElements = new HashSet<ElementId>();
 
       private static dynElementSettings sharedInstance;
 
@@ -119,14 +119,14 @@ namespace Dynamo.Utilities
          }
       }
 
-      public ElementSet UserSelectedElements
-      {
-          get { return userSelectedElements; }
-          set
-          {
-              userSelectedElements = value;
-          }
-      }
+      //public ElementSet UserSelectedElements
+      //{
+      //    get { return userSelectedElements; }
+      //    set
+      //    {
+      //        userSelectedElements = value;
+      //    }
+      //}
 
       public Autodesk.Revit.UI.UIApplication Revit
       {
@@ -205,8 +205,6 @@ namespace Dynamo.Utilities
             return sharedInstance;
          }
       }
-
-      public HashSet<ElementId> DeletionSet = new HashSet<ElementId>();
 
       /*
       public dynElementSettings(Autodesk.Revit.UI.UIApplication app, Autodesk.Revit.UI.UIDocument doc, Level defaultLevel, DynamoWarningSwallower warningSwallower, Transaction t)
@@ -307,44 +305,44 @@ namespace Dynamo.Utilities
    public class SelectionHelper
    {
 
-       //RequestReferencePointSelection
-       public static ReferencePoint RequestReferencePointSelection(UIDocument doc, string message, dynElementSettings settings)
-       {
-           try
-           {
-               ReferencePoint rp = null;
+      //RequestReferencePointSelection
+      public static ReferencePoint RequestReferencePointSelection(UIDocument doc, string message, dynElementSettings settings)
+      {
+         try
+         {
+            ReferencePoint rp = null;
 
-               Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
-               choices.Elements.Clear();
+            choices.Elements.Clear();
 
-               //MessageBox.Show(message);
-               settings.Bench.Log(message);
+            //MessageBox.Show(message);
+            settings.Bench.Log(message);
 
-               //create some geometry options so that we computer references
-               Autodesk.Revit.DB.Options opts = new Options();
-               opts.ComputeReferences = true;
-               opts.DetailLevel = DetailLevels.Medium;
-               opts.IncludeNonVisibleObjects = false;
+            //create some geometry options so that we computer references
+            Autodesk.Revit.DB.Options opts = new Options();
+            opts.ComputeReferences = true;
+            opts.DetailLevel = DetailLevels.Medium;
+            opts.IncludeNonVisibleObjects = false;
 
-               Reference pointRef = doc.Selection.PickObject(ObjectType.Element);
+            Reference pointRef = doc.Selection.PickObject(ObjectType.Element);
 
-               if (pointRef != null)
-               {
+            if (pointRef != null)
+            {
 
-                   rp = settings.Doc.Document.GetElement(pointRef) as ReferencePoint;
-               }
-               return rp;
-           }
-           catch (Exception ex)
-           {
-               settings.Bench.Log(ex.Message);
-               return null;
-           }
+               rp = settings.Doc.Document.GetElement(pointRef) as ReferencePoint;
+            }
+            return rp;
+         }
+         catch (Exception ex)
+         {
+            settings.Bench.Log(ex.Message);
+            return null;
+         }
 
 
-       }
-       public static CurveElement RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
+      }
+      public static CurveElement RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
          {
@@ -399,7 +397,7 @@ namespace Dynamo.Utilities
 
             if (faceRef != null)
             {
-               
+
                GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
 
                f = geob as Face;
@@ -420,41 +418,41 @@ namespace Dynamo.Utilities
 
       public static Reference RequestFaceReferenceSelection(UIDocument doc, string message, dynElementSettings settings)
       {
-          try
-          {
-              Face f = null;
-              //Reference r = null;
+         try
+         {
+            Face f = null;
+            //Reference r = null;
 
-              Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
-              choices.Elements.Clear();
+            choices.Elements.Clear();
 
-              //MessageBox.Show(message);
-              settings.Bench.Log(message);
+            //MessageBox.Show(message);
+            settings.Bench.Log(message);
 
-              //create some geometry options so that we computer references
-              Autodesk.Revit.DB.Options opts = new Options();
-              opts.ComputeReferences = true;
-              opts.DetailLevel = DetailLevels.Medium;
-              opts.IncludeNonVisibleObjects = false;
+            //create some geometry options so that we computer references
+            Autodesk.Revit.DB.Options opts = new Options();
+            opts.ComputeReferences = true;
+            opts.DetailLevel = DetailLevels.Medium;
+            opts.IncludeNonVisibleObjects = false;
 
-              Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
+            Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
 
-              if (faceRef != null)
-              {
-                 
-                  GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+            if (faceRef != null)
+            {
 
-                  f = geob as Face;
-              }
-              //return f;
-              return faceRef;
-          }
-          catch (Exception ex)
-          {
-              settings.Bench.Log(ex.Message);
-              return null;
-          }
+               GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+
+               f = geob as Face;
+            }
+            //return f;
+            return faceRef;
+         }
+         catch (Exception ex)
+         {
+            settings.Bench.Log(ex.Message);
+            return null;
+         }
 
 
       }
@@ -549,7 +547,7 @@ namespace Dynamo.Utilities
             {
                return doc.Document.get_Element(fsRef.ElementId) as FamilyInstance;
             }
-            else 
+            else
                return null;
          }
          catch (Exception ex)

@@ -166,10 +166,10 @@ namespace Dynamo.Elements
          SketchPlane sp;
 
          //TODO: Handle Removal
-         if (this.Elements.Any())
-         {
-            sp = (SketchPlane)this.Elements[0];
-         }
+         //if (this.Elements.Any())
+         //{
+         //   sp = (SketchPlane)this.UIDocument.Document.get_Element(this.Elements[0]);
+         //}
 
          sp = (this.UIDocument.Document.IsFamilyDocument)
             ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)

@@ -49,7 +49,7 @@ namespace Dynamo.Elements
 
          if (this.Elements.Any())
          {
-            e = (ModelCurve)this.Elements[0];
+            e = (ModelCurve)this.UIDocument.Document.get_Element(this.Elements[0]);
             var loc = (LocationCurve)e.Location;
          }
          else
@@ -57,7 +57,7 @@ namespace Dynamo.Elements
             e = this.UIDocument.Document.IsFamilyDocument
                ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
                : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-            this.Elements.Add(e);
+            this.Elements.Add(e.Id);
          }
 
          return Expression.NewContainer(e);
@@ -139,7 +139,7 @@ namespace Dynamo.Elements
 
          if (this.Elements.Any())
          {
-            c = (CurveByPoints)this.Elements[0];
+            c = (CurveByPoints)this.UIDocument.Document.get_Element(this.Elements[0]);
 
             c.SetPoints(refPtArr);
          }
@@ -147,7 +147,7 @@ namespace Dynamo.Elements
          {
             c = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
 
-            this.Elements.Add(c);
+            this.Elements.Add(c.Id);
          }
 
          return Expression.NewContainer(c);

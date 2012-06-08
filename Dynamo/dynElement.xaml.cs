@@ -169,13 +169,13 @@ namespace Dynamo.Elements
          set { guid = value; }
       }
 
-      private List<List<Element>> elements;
-      public List<Element> Elements
+      private List<List<ElementId>> elements;
+      public List<ElementId> Elements
       {
          get
          {
             while (this.elements.Count <= this.runCount)
-               this.elements.Add(new List<Element>());
+               this.elements.Add(new List<ElementId>());
             return this.elements[this.runCount];
          }
          private set
@@ -274,8 +274,7 @@ namespace Dynamo.Elements
          inPortData = new List<PortData>();
          statePorts = new List<dynPort>();
          statePortData = new List<PortData>();
-         elements = new List<List<Element>>() { new List<Element>() };
-         Elements = new List<Element>();
+         elements = new List<List<ElementId>>() { new List<ElementId>() };
          dataTree = new DataTree();
          inPortTextBlocks = new Dictionary<dynPort, TextBlock>();
 
@@ -884,11 +883,6 @@ namespace Dynamo.Elements
          }
       }
 
-      protected void Delete(ElementId e)
-      {
-         dynElementSettings.SharedInstance.DeletionSet.Add(e);
-      }
-
 
       protected internal virtual INode Build()
       {
@@ -994,24 +988,24 @@ namespace Dynamo.Elements
 
          this.OnEvaluate();
 
-         bool corrupt = false;
-         List<Element> corrupted = new List<Element>();
-         foreach (Element e in this.Elements)
-         {
-            try
-            {
-               var id = e.Id;
-               corrupt = id.IntegerValue == 0 || corrupt;
-            }
-            catch
-            {
-               corrupted.Add(e);
-            }
-         }
-         if (corrupt)
-         {
-            this.Elements.RemoveAll(x => corrupted.Contains(x));
-         }
+         //bool corrupt = false;
+         //List<Element> corrupted = new List<Element>();
+         //foreach (Element e in this.Elements)
+         //{
+         //   try
+         //   {
+         //      var id = e.Id;
+         //      corrupt = id.IntegerValue == 0 || corrupt;
+         //   }
+         //   catch
+         //   {
+         //      corrupted.Add(e);
+         //   }
+         //}
+         //if (corrupt)
+         //{
+         //   this.Elements.RemoveAll(x => corrupted.Contains(x));
+         //}
 
          if (useTransaction)
          {
@@ -1210,6 +1204,15 @@ namespace Dynamo.Elements
             #endregion
          }
 
+         var del = new DynElementUpdateDelegate(this.onDeleted);
+
+         foreach (ElementId id in this.Elements)
+         {
+            this.Bench.Updater.RegisterChangeHook(
+               id, ChangeTypeEnum.Delete, del
+            );
+         }
+
          //Increment the run counter
          this.runCount++;
 
@@ -1224,6 +1227,57 @@ namespace Dynamo.Elements
       public virtual Expression Evaluate(FSharpList<Expression> args)
       {
          throw new NotImplementedException();
+      }
+
+      void onDeleted(List<ElementId> deleted)
+      {
+         foreach (var els in this.elements)
+         {
+            els.RemoveAll(x => deleted.Contains(x));
+         }
+
+         foreach (var id in deleted)
+            this.Bench.Updater.UnRegisterChangeHook(id, ChangeTypeEnum.Delete);
+
+         this._isDirty = true;
+      }
+
+      public void RegisterEvalOnModified(ElementId id)
+      {
+         var u = this.Bench.Updater;
+         u.RegisterChangeHook(
+            id,
+            ChangeTypeEnum.Modified,
+            new DynElementUpdateDelegate(this.ReEvalOnModified)
+         );
+
+         u.RegisterChangeHook(
+            id,
+            ChangeTypeEnum.Delete,
+            new DynElementUpdateDelegate(this.UnRegOnDelete)
+         );
+      }
+
+      void UnRegOnDelete(List<ElementId> deleted)
+      {
+         foreach (var d in deleted)
+         {
+            var u = this.Bench.Updater;
+            u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
+            u.UnRegisterChangeHook(d, ChangeTypeEnum.Modified);
+         }
+      }
+
+      void ReEvalOnModified(List<ElementId> modified)
+      {
+         //if (this.Bench.DynamicRunEnabled)
+         //{
+         //   if (!this.Bench.Running)
+         //      this.Bench.RunExpression(false, false);
+         //   else
+         //      this.Bench.QueueRun();
+         //}
+         this.IsDirty = true;
       }
 
       #endregion
@@ -1555,7 +1609,7 @@ namespace Dynamo.Elements
          this.runCount = 0;
          foreach (var els in this.elements)
          {
-            foreach (Element e in els)
+            foreach (ElementId e in els)
             {
                try
                {
@@ -1754,8 +1808,8 @@ namespace Dynamo.Elements
                catch (Exception ex)
                {
                   bench.Log(
-                     "Error deleting elements: " 
-                     + ex.GetType().Name 
+                     "Error deleting elements: "
+                     + ex.GetType().Name
                      + " -- " + ex.Message
                   );
                }

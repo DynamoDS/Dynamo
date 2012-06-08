@@ -17,7 +17,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows the user to select a divided surface.")]
    [RequiresTransaction(true)]
-    public class dynDividedSurfaceBySelection : dynElement
+   public class dynDividedSurfaceBySelection : dynElement
    {
       Form f;
       DividedSurfaceData dsd;
@@ -156,50 +156,50 @@ namespace Dynamo.Elements
    [RequiresTransaction(true)]
    public class dynFormElementBySelection : dynElement
    {
-       Reference f;
+      Reference f;
 
-       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+      Expression data = Expression.NewList(FSharpList<Expression>.Empty);
 
-       public dynFormElementBySelection()
-       {
-           this.topControl.Width = 300;
+      public dynFormElementBySelection()
+      {
+         this.topControl.Width = 300;
 
-           OutPortData = new PortData("face", "The face", typeof(dynElement));
-           //OutPortData[0].Object = this.Tree;
+         OutPortData = new PortData("face", "The face", typeof(dynElement));
+         //OutPortData[0].Object = this.Tree;
 
-           //add a button to the inputGrid on the dynElement
-           System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
-           this.inputGrid.Children.Add(paramMapButt);
-           paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-           paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
-           paramMapButt.Content = "Select";
-           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         //add a button to the inputGrid on the dynElement
+         System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
+         this.inputGrid.Children.Add(paramMapButt);
+         paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
+         paramMapButt.Content = "Select";
+         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-           base.RegisterInputsAndOutputs();
+         base.RegisterInputsAndOutputs();
 
-       }
+      }
 
-       public override Expression Evaluate(FSharpList<Expression> args)
-       {
-           return data;
-       }
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         return data;
+      }
 
-       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
-       {
+      void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      {
 
 
-           data = Expression.NewList(FSharpList<Expression>.Empty);
+         data = Expression.NewList(FSharpList<Expression>.Empty);
 
-           // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
+         // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
 
-           f = SelectionHelper.RequestFaceReferenceSelection(this.UIDocument, "Select a face.", dynElementSettings.SharedInstance);
+         f = SelectionHelper.RequestFaceReferenceSelection(this.UIDocument, "Select a face.", dynElementSettings.SharedInstance);
 
-           this.data = Expression.NewContainer(f);
+         this.data = Expression.NewContainer(f);
 
-       }
+      }
 
 
    }
@@ -212,58 +212,54 @@ namespace Dynamo.Elements
    [RequiresTransaction(true)]
    public class dynCurvesBySelection : dynElement
    {
-       CurveElement mc;
+      CurveElement mc;
 
-       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
-       FSharpList<Expression> result = FSharpList<Expression>.Empty;
+      Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+      FSharpList<Expression> result = FSharpList<Expression>.Empty;
 
-       public dynCurvesBySelection()
-       {
-           this.topControl.Width = 300;
+      public dynCurvesBySelection()
+      {
+         this.topControl.Width = 300;
 
-           OutPortData = new PortData("curve", "The curve", typeof(CurveElement));
-           //OutPortData[0].Object = this.Tree;
+         OutPortData = new PortData("curve", "The curve", typeof(CurveElement));
+         //OutPortData[0].Object = this.Tree;
 
-           //add a button to the inputGrid on the dynElement
-           System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
-           this.inputGrid.Children.Add(paramMapButt);
-           paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-           paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
-           paramMapButt.Content = "Select";
-           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         //add a button to the inputGrid on the dynElement
+         System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
+         this.inputGrid.Children.Add(paramMapButt);
+         paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
+         paramMapButt.Content = "Select";
+         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-           base.RegisterInputsAndOutputs();
+         base.RegisterInputsAndOutputs();
 
-       }
-       //public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+      }
+      //public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
 
-       public override Expression Evaluate(FSharpList<Expression> args)
-       {
-           //return data;
-           return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
-       }
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         //return data;
+         return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
+      }
 
-       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
-       {
+      void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      {
+         data = Expression.NewList(FSharpList<Expression>.Empty);
 
+         mc = SelectionHelper.RequestModelCurveSelection(dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance);
+         this.result = FSharpList<Expression>.Cons(
+                   Expression.NewContainer(mc),
+                   result);
 
-           data = Expression.NewList(FSharpList<Expression>.Empty);
-
-           mc = SelectionHelper.RequestModelCurveSelection(dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance);
-           this.result = FSharpList<Expression>.Cons(
-                     Expression.NewContainer(mc),
-                     result);
-
-           dynElementSettings.SharedInstance.UserSelectedElements.Insert(mc); // MDJ HOOK remember the one we selected for comparison in DMU code. 
-           //this.data = Expression.NewContainer(mc);
-           this.IsDirty = true;
-       
-           
-
-       }
+         //dynElementSettings.SharedInstance.UserSelectedElements.Insert(mc); // MDJ HOOK remember the one we selected for comparison in DMU code. 
+         this.RegisterEvalOnModified(mc.Id);
+         //this.data = Expression.NewContainer(mc);
+         this.IsDirty = true;
+      }
 
 
    }
@@ -273,61 +269,61 @@ namespace Dynamo.Elements
    [RequiresTransaction(true)]
    public class dynPointBySelection : dynElement
    {
-       ReferencePoint rp;
+      ReferencePoint rp;
 
-       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
-       FSharpList<Expression> result = FSharpList<Expression>.Empty;
+      Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+      FSharpList<Expression> result = FSharpList<Expression>.Empty;
 
-       public dynPointBySelection()
-       {
-           this.topControl.Width = 300;
+      public dynPointBySelection()
+      {
+         this.topControl.Width = 300;
 
-           OutPortData = new PortData("pt", "The point", typeof(ReferencePoint));
-           //OutPortData[0].Object = this.Tree;
+         OutPortData = new PortData("pt", "The point", typeof(ReferencePoint));
+         //OutPortData[0].Object = this.Tree;
 
-           //add a button to the inputGrid on the dynElement
-           System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
-           this.inputGrid.Children.Add(paramMapButt);
-           paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-           paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
-           paramMapButt.Content = "Select";
-           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         //add a button to the inputGrid on the dynElement
+         System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
+         this.inputGrid.Children.Add(paramMapButt);
+         paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
+         paramMapButt.Content = "Select";
+         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-           base.RegisterInputsAndOutputs();
+         base.RegisterInputsAndOutputs();
 
-       }
+      }
 
-       public override Expression Evaluate(FSharpList<Expression> args)
-       {
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
 
-           return data;
-           //return Expression.NewList(result);
-       }
+         return data;
+         //return Expression.NewList(result);
+      }
 
-       void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
-       {
-
-
-           data = Expression.NewList(FSharpList<Expression>.Empty);
-
-           rp = SelectionHelper.RequestReferencePointSelection(dynElementSettings.SharedInstance.Doc, "Select a reference point.", dynElementSettings.SharedInstance);
-          // this.result = FSharpList<Expression>.Cons(
-          //           Expression.NewContainer(rp),
-          //           result);
+      void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      {
 
 
+         data = Expression.NewList(FSharpList<Expression>.Empty);
 
-           if (dynElementSettings.SharedInstance.UserSelectedElements.IsEmpty)
+         rp = SelectionHelper.RequestReferencePointSelection(dynElementSettings.SharedInstance.Doc, "Select a reference point.", dynElementSettings.SharedInstance);
+         // this.result = FSharpList<Expression>.Cons(
+         //           Expression.NewContainer(rp),
+         //           result);
 
-           dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
-           this.data = Expression.NewContainer(rp);
-           this.IsDirty = true;
 
 
-       }
+         //if (dynElementSettings.SharedInstance.UserSelectedElements.IsEmpty)
+         //dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
+
+         this.RegisterEvalOnModified(rp.Id);
+
+         this.data = Expression.NewContainer(rp);
+         this.IsDirty = true;
+      }
 
 
    }

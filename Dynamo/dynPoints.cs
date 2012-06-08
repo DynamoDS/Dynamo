@@ -55,7 +55,7 @@ namespace Dynamo.Elements
                      ReferencePoint pt;
                      if (this.Elements.Count > count)
                      {
-                        pt = (ReferencePoint)this.Elements[count];
+                        pt = (ReferencePoint)this.UIDocument.Document.get_Element(this.Elements[count]);
                         pt.Position = (XYZ)((Expression.Container)x).Item;
                      }
                      else
@@ -63,7 +63,7 @@ namespace Dynamo.Elements
                         pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
                            (XYZ)((Expression.Container)x).Item
                         );
-                        this.Elements.Add(pt);
+                        this.Elements.Add(pt.Id);
                      }
                      count++;
                      return Expression.NewContainer(pt);
@@ -90,7 +90,7 @@ namespace Dynamo.Elements
 
             if (this.Elements.Any())
             {
-               pt = (ReferencePoint)this.Elements[0];
+               pt = (ReferencePoint)this.UIDocument.Document.get_Element(this.Elements[0]);
                pt.Position = xyz;
 
                int count = 0;
@@ -105,7 +105,7 @@ namespace Dynamo.Elements
             else
             {
                pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
-               this.Elements.Add(pt);
+               this.Elements.Add(pt.Id);
             }
 
             return Expression.NewContainer(pt);
