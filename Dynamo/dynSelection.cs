@@ -197,7 +197,7 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         this.IsDirty = true;
+
          return data;
 
          //return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
@@ -255,7 +255,7 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         this.IsDirty = true;
+
          return data;
 
          //return Expression.NewList(result);

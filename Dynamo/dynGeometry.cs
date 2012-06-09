@@ -291,4 +291,143 @@ namespace Dynamo.Elements
            return FScheme.Expression.NewContainer(new UV(u, v));
        }
    }
+
+   [ElementName("SunPath Direction")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which returns the current Sun Path diretion.")]
+   [RequiresTransaction(true)]
+   public class dynSunPathDirection : dynElement
+   {
+       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+
+
+       public dynSunPathDirection()
+       {
+           
+           OutPortData = new PortData("XYZ", "XYZ", typeof(XYZ));
+
+           //add a button to the inputGrid on the dynElement
+           System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
+           this.inputGrid.Children.Add(paramMapButt);
+           paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+           paramMapButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
+           paramMapButt.Content = "Select";
+           paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+           paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+
+           base.RegisterInputsAndOutputs();
+       }
+
+       public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+       {
+
+           View activeView = this.UIDocument.ActiveView;
+           XYZ sunVector = GetSunDirection(activeView);
+           XYZ scaledSunVector = sunVector.Multiply(1000);
+
+           this.data = Expression.NewContainer(scaledSunVector);
+
+           return data;
+       }
+
+       void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
+       {
+           //data = Expression.NewList(FSharpList<Expression>.Empty);
+
+           View activeView = this.UIDocument.ActiveView;
+           this.RegisterEvalOnModified(activeView.SunAndShadowSettings.Id); // register with the DMU, TODO - watch out for view changes, as sun is view specific
+           XYZ sunVector = GetSunDirection(activeView);
+           XYZ scaledSunVector = sunVector.Multiply(1000);
+
+           this.data = Expression.NewContainer(scaledSunVector);
+           this.IsDirty = true;
+       }
+
+
+       /// <summary>
+       /// Description of ShadowCalculatorUtils.
+       /// NOTE: this is derived from Scott Connover's great class "Geometry API in Revit" from DevCamp 2012, source files accesed 6-8-12 from here 
+       /// https://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Homehttps://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Home
+       /// </summary>
+
+       public static XYZ GetSunDirection(View view)
+       {
+           SunAndShadowSettings sunSettings = view.SunAndShadowSettings;
+
+           XYZ initialDirection = XYZ.BasisY;
+
+           //double altitude = sunSettings.Altitude;
+           double altitude = sunSettings.GetFrameAltitude(sunSettings.ActiveFrame);
+           Transform altitudeRotation = Transform.get_Rotation(XYZ.Zero, XYZ.BasisX, altitude);
+           XYZ altitudeDirection = altitudeRotation.OfVector(initialDirection);
+
+           //double azimuth = sunSettings.Azimuth;
+           double azimuth = sunSettings.GetFrameAzimuth(sunSettings.ActiveFrame);
+           double actualAzimuth = 2 * Math.PI - azimuth;
+           Transform azimuthRotation = Transform.get_Rotation(XYZ.Zero, XYZ.BasisZ, actualAzimuth);
+           XYZ sunDirection = azimuthRotation.OfVector(altitudeDirection);
+
+           return sunDirection;
+
+       }
+
+       }
+
+   [ElementName("Line Vector ")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which returns a line in the direction of an XYZ normal.")]
+   [RequiresTransaction(true)]
+   public class dynLineVectorfromXYZ : dynElement
+   {
+       public dynLineVectorfromXYZ()
+       {
+
+           InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
+           InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
+           OutPortData = new PortData("C", "Curve", typeof(CurveElement));
+
+           base.RegisterInputsAndOutputs();
+       }
+
+       public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+       {
+           var ptA = (XYZ)((Expression.Container)args[0]).Item;
+           var ptB = (XYZ)((Expression.Container)args[1]).Item;
+
+          // CurveElement c = MakeLine(this.UIDocument.Document, ptA, ptB);
+           CurveElement c = MakeLineCBP(this.UIDocument.Document, ptA, ptB);
+
+           return FScheme.Expression.NewContainer(c);
+       }
+
+
+       public ModelCurve MakeLine(Document doc, XYZ ptA, XYZ ptB)
+       {
+           Autodesk.Revit.ApplicationServices.Application app = doc.Application;
+           // Create plane by the points
+           Line line = app.Create.NewLine(ptA, ptB, true);
+           XYZ norm = ptA.CrossProduct(ptB);
+           double length = norm.GetLength();
+           if (length == 0) norm = XYZ.BasisZ;
+           Plane plane = app.Create.NewPlane(norm, ptB);
+           SketchPlane skplane = doc.FamilyCreate.NewSketchPlane(plane);
+           // Create line here
+           ModelCurve modelcurve = doc.FamilyCreate.NewModelCurve(line, skplane);
+           return modelcurve;
+       }
+       public CurveByPoints MakeLineCBP(Document doc, XYZ ptA, XYZ ptB)
+       {
+           ReferencePoint sunRP = doc.FamilyCreate.NewReferencePoint(ptA);
+           ReferencePoint originRP = doc.FamilyCreate.NewReferencePoint(ptB);
+           ReferencePointArray sunRPArray = new ReferencePointArray();
+           sunRPArray.Append(sunRP);
+           sunRPArray.Append(originRP);
+           CurveByPoints sunPath = doc.FamilyCreate.NewCurveByPoints(sunRPArray);
+           return sunPath;
+       }
+   }
+   
 }

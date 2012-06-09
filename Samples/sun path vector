@@ -1,0 +1,17 @@
+<dynWorkspace X="10" Y="55">
+  <dynElements>
+    <Dynamo.Elements.dynSunPathDirection type="Dynamo.Elements.dynSunPathDirection" guid="9d310617-d3fb-4f75-bb97-218c87edfdef" nickname="SunPath Direction" x="0" y="80.75" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="1cb8845e-f352-40e1-903d-9f68f47a6307" nickname="Number" x="9" y="168.75">
+      <System.Double value="0" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynXYZ type="Dynamo.Elements.dynXYZ" guid="07a8b460-fd09-4aff-824b-5dcfad934e97" nickname="XYZ" x="189" y="239.25" />
+    <Dynamo.Elements.dynLineVectorfromXYZ type="Dynamo.Elements.dynLineVectorfromXYZ" guid="52efd65f-5f71-4e54-a563-81aeae868c09" nickname="Line Vector " x="301.75" y="111.25" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="9d310617-d3fb-4f75-bb97-218c87edfdef" start_index="0" end="52efd65f-5f71-4e54-a563-81aeae868c09" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="1cb8845e-f352-40e1-903d-9f68f47a6307" start_index="0" end="07a8b460-fd09-4aff-824b-5dcfad934e97" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="1cb8845e-f352-40e1-903d-9f68f47a6307" start_index="0" end="07a8b460-fd09-4aff-824b-5dcfad934e97" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="1cb8845e-f352-40e1-903d-9f68f47a6307" start_index="0" end="07a8b460-fd09-4aff-824b-5dcfad934e97" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="07a8b460-fd09-4aff-824b-5dcfad934e97" start_index="0" end="52efd65f-5f71-4e54-a563-81aeae868c09" end_index="1" portType="0" />
+  </dynConnectors>
+</dynWorkspace>

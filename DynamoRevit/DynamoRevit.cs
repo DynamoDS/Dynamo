@@ -91,6 +91,7 @@ namespace Dynamo.Applications
             ElementClassFilter familyFilter = new ElementClassFilter(typeof(FamilyInstance));
             ElementCategoryFilter refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
             ElementClassFilter modelCurveFilter = new ElementClassFilter(typeof(CurveElement));
+            ElementClassFilter sunFilter = new ElementClassFilter(typeof(SunAndShadowSettings));
             IList<ElementFilter> filterList = new List<ElementFilter>();
             //filterList.Add(SpatialFieldFilter);
 
@@ -98,6 +99,7 @@ namespace Dynamo.Applications
             filterList.Add(familyFilter);
             filterList.Add(modelCurveFilter);
             filterList.Add(refPointFilter);
+            filterList.Add(sunFilter);
             LogicalOrFilter filter = new LogicalOrFilter(filterList);
 
             //UpdaterRegistry.AddTrigger(
