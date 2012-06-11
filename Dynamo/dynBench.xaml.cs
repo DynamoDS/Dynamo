@@ -121,6 +121,7 @@ namespace Dynamo.Controls
          this.CurrentY = CANVAS_OFFSET_Y;
 
          LoadBuiltinTypes();
+         PopulateSamplesMenu();
          //LoadUserTypes();
       }
 
@@ -254,7 +255,6 @@ namespace Dynamo.Controls
                builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
             }
          }
-
 
          string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
          string pluginsPath = Path.Combine(directory, "definitions");
@@ -396,6 +396,42 @@ namespace Dynamo.Controls
          }
 
          #endregion
+      }
+
+      /// <summary>
+      /// Setup the "Samples" sub-menu with contents of samples directory.
+      /// </summary>
+      void PopulateSamplesMenu()
+      {
+         string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+         string samplesPath = Path.Combine(directory, "samples");
+
+         if (System.IO.Directory.Exists(samplesPath))
+         {
+            string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
+            if (filePaths.Any())
+            {
+               foreach (string path in filePaths)
+               {
+                  var item = new System.Windows.Controls.MenuItem()
+                  {
+                     Header = Path.GetFileNameWithoutExtension(path),
+                     Tag = path
+                  };
+                  item.Click += new RoutedEventHandler(sample_Click);
+                  samplesMenu.Items.Add(item);
+               }
+               return;
+            }
+         }
+         this.fileMenu.Items.Remove(this.samplesMenu);
+      }
+
+      void sample_Click(object sender, RoutedEventArgs e)
+      {
+         if (!this.ViewingHomespace) this.Home_Click(null, null);
+
+         this.OpenWorkbench((string)((System.Windows.Controls.MenuItem)sender).Tag);
       }
 
       /// <summary>
@@ -846,7 +882,26 @@ namespace Dynamo.Controls
          //string xmlPath = "C:\\test\\myWorkbench.xml";
          string xmlPath = "";
 
-         System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog();
+         string ext, fltr;
+         if (this.ViewingHomespace)
+         {
+            ext = ".dyn";
+            fltr = "Dynamo Workspace (*.dyn)|*.dyn";
+         }
+         else
+         {
+            ext = ".dyf";
+            fltr = "Dynamo Function (*.dyf)|*.dyf";
+         }
+         fltr += "|All files (*.*)|*.*";
+
+         System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog()
+         {
+            AddExtension=true,
+            DefaultExt=ext,
+            Filter=fltr
+         };
+
          if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
          {
             xmlPath = saveDialog.FileName;
@@ -860,7 +915,6 @@ namespace Dynamo.Controls
                Log("Workbench could not be saved.");
             }
          }
-
       }
 
 
@@ -1469,7 +1523,11 @@ namespace Dynamo.Controls
          //string xmlPath = "C:\\test\\myWorkbench.xml";
          string xmlPath = "";
 
-         System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog();
+         System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
+         {
+            Filter="Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
+         };
+
          if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
          {
             xmlPath = openDialog.FileName;
@@ -2009,10 +2067,10 @@ namespace Dynamo.Controls
          RunExpression(true);
       }
 
-      private void SaveFunction_Click(object sender, RoutedEventArgs e)
-      {
-         SaveFunction(this.CurrentSpace);
-      }
+      //private void SaveFunction_Click(object sender, RoutedEventArgs e)
+      //{
+      //   SaveFunction(this.CurrentSpace);
+      //}
 
       //private Dictionary<string, System.Windows.Controls.MenuItem> addMenuItemsDict
       //   = new Dictionary<string, System.Windows.Controls.MenuItem>();
@@ -2195,7 +2253,7 @@ namespace Dynamo.Controls
             //this.CurrentY = CANVAS_OFFSET_Y;
             this.CurrentSpace = workSpace;
 
-            this.saveFuncItem.IsEnabled = true;
+            //this.saveFuncItem.IsEnabled = true;
             this.homeButton.IsEnabled = true;
             //this.varItem.IsEnabled = true;
 
@@ -2251,7 +2309,7 @@ namespace Dynamo.Controls
             con.Visible = true;
          }
 
-         this.saveFuncItem.IsEnabled = false;
+         //this.saveFuncItem.IsEnabled = false;
          this.homeButton.IsEnabled = false;
          //this.varItem.IsEnabled = false;
 
@@ -2384,7 +2442,7 @@ namespace Dynamo.Controls
          }
 
 
-         this.saveFuncItem.IsEnabled = true;
+         //this.saveFuncItem.IsEnabled = true;
          this.homeButton.IsEnabled = true;
          //this.varItem.IsEnabled = true;
 

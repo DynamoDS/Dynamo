@@ -16,13 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevit", "DynamoRevit\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragCanvas", "DragCanvas\DragCanvas.csproj", "{F9B766BE-A5A3-4680-840F-649462340EE7}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DynamoInstall_64bit", "DynamoInstall\DynamoInstall.vdproj", "{5F40451C-ED61-443F-8BE8-EB0019DE51A7}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DynamoInstall_32bit", "DynamoInstall_32bit\DynamoInstall_32bit.vdproj", "{3A160EBB-367D-4305-B07C-53933AB20093}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F9B766BE-A5A3-4680-840F-649462340EE7} = {F9B766BE-A5A3-4680-840F-649462340EE7}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoTestTypes", "DynamoTestTypes\DynamoTestTypes.csproj", "{25694257-EFDD-400E-A2FE-B7C0EA10728B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7858FA8C-475F-4B8E-B468-1F8200778CF8} = {7858FA8C-475F-4B8E-B468-1F8200778CF8}
@@ -75,18 +68,6 @@ Global
 		{F9B766BE-A5A3-4680-840F-649462340EE7}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{F9B766BE-A5A3-4680-840F-649462340EE7}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
 		{F9B766BE-A5A3-4680-840F-649462340EE7}.Release|x86.ActiveCfg = Release|Any CPU
-		{5F40451C-ED61-443F-8BE8-EB0019DE51A7}.Debug|Any CPU.ActiveCfg = Debug
-		{5F40451C-ED61-443F-8BE8-EB0019DE51A7}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{5F40451C-ED61-443F-8BE8-EB0019DE51A7}.Debug|x86.ActiveCfg = Debug
-		{5F40451C-ED61-443F-8BE8-EB0019DE51A7}.Release|Any CPU.ActiveCfg = Release
-		{5F40451C-ED61-443F-8BE8-EB0019DE51A7}.Release|Mixed Platforms.ActiveCfg = Release
-		{5F40451C-ED61-443F-8BE8-EB0019DE51A7}.Release|x86.ActiveCfg = Release
-		{3A160EBB-367D-4305-B07C-53933AB20093}.Debug|Any CPU.ActiveCfg = Debug
-		{3A160EBB-367D-4305-B07C-53933AB20093}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{3A160EBB-367D-4305-B07C-53933AB20093}.Debug|x86.ActiveCfg = Debug
-		{3A160EBB-367D-4305-B07C-53933AB20093}.Release|Any CPU.ActiveCfg = Release
-		{3A160EBB-367D-4305-B07C-53933AB20093}.Release|Mixed Platforms.ActiveCfg = Release
-		{3A160EBB-367D-4305-B07C-53933AB20093}.Release|x86.ActiveCfg = Release
 		{25694257-EFDD-400E-A2FE-B7C0EA10728B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{25694257-EFDD-400E-A2FE-B7C0EA10728B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25694257-EFDD-400E-A2FE-B7C0EA10728B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
