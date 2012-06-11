@@ -388,6 +388,41 @@ namespace Dynamo.Elements
          }
       }
 
+      public virtual string PrintExpression()
+      {
+         if (!this.InPortData.Any() || !this.InPorts.Any(x => x.Connectors.Any()))
+            return this.NickName;
+
+         string s = "";
+
+         if (this.InPorts.All(x => x.Connectors.Any()))
+         {
+            s += "(" + this.NickName;
+            for (int i = 0; i < this.InPortData.Count; i++)
+            {
+               var port = this.InPorts[i];
+               s += " " + port.Connectors[0].Start.Owner.PrintExpression();
+            }
+            s += ")";
+         }
+         else
+         {
+            s += "(lambda (" + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName)) + ") (" + this.NickName + " ";
+            for (int i = 0; i < this.InPortData.Count; i++)
+            {
+               s += " ";
+               var port = this.InPorts[i];
+               if (port.Connectors.Any())
+                  s += port.Connectors[0].Start.Owner.PrintExpression();
+               else
+                  s += this.InPortData[i].NickName;
+            }
+            s += ")";
+         }
+
+         return s;
+      }
+
       /// <summary>
       /// Resize the control based on the number of inputs.
       /// </summary>

@@ -1867,7 +1867,8 @@ namespace Dynamo.Controls
                   {
                      Expression runningExpression = topMost.Build().Compile();
 
-                     string exp = FScheme.print(runningExpression);
+                     //string exp = FScheme.print(runningExpression);
+                     string exp = topMost.PrintExpression();
 
                      this.Dispatcher.Invoke(new Action(
                         () => Log("> " + exp)

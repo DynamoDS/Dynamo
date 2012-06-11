@@ -1388,6 +1388,11 @@ namespace Dynamo.Elements
             }
          }
       }
+
+      public override string PrintExpression()
+      {
+         return this.Value.ToString();
+      }
    }
 
    public abstract class dynDouble : dynBasicInteractive<double>
