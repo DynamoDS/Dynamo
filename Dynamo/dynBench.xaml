@@ -16,13 +16,13 @@
    <Grid>
       <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Name="menu1">
          <MenuItem Header="_File" Name="fileMenu">
-            <MenuItem Header="_Clear" Click="New_Click">
+            <MenuItem Header="_Clear" Click="New_Click" Name="clearButton">
                <MenuItem.Icon>
                   <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
                </MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="_Open..." Click="Open_Click">
+            <MenuItem Header="_Open..." Click="Open_Click" Name="openButton">
                <MenuItem.Icon>
                   <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
                </MenuItem.Icon>
@@ -33,7 +33,7 @@
                </MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="_Save As..." Click="SaveAs_Click">
+            <MenuItem Header="_Save As..." Click="SaveAs_Click" Name="saveButton">
                <MenuItem.Icon>
                   <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                </MenuItem.Icon>

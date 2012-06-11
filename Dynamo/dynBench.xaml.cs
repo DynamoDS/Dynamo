@@ -92,6 +92,8 @@ namespace Dynamo.Controls
 
          InitializeComponent();
 
+         LockUI();
+
          sw = new StringWriter();
          Log("Welcome to Dynamo!");
          Log(String.Format("You are using build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
@@ -130,10 +132,36 @@ namespace Dynamo.Controls
       {
          if (!this._activated)
          {
-            this.LoadUserTypes();
+            LoadUserTypes();
             this.workBench.Visibility = System.Windows.Visibility.Visible;
             this._activated = true;
+            UnlockUI();
          }
+      }
+
+      void LockUI()
+      {
+         this.uiLocked = true;
+         this.saveButton.IsEnabled = false;
+         this.clearButton.IsEnabled = false;
+      }
+
+      void UnlockUI()
+      {
+         this.uiLocked = false;
+         this.saveButton.IsEnabled = true;
+         this.clearButton.IsEnabled = true;
+
+         if (this.UnlockLoadPath != null && !this.OpenWorkbench(this.UnlockLoadPath))
+         {
+            //MessageBox.Show("Workbench could not be opened.");
+            Log("Workbench could not be opened.");
+
+            dynElementSettings.SharedInstance.Writer.WriteLine("Workbench could not be opened.");
+            dynElementSettings.SharedInstance.Writer.WriteLine(this.UnlockLoadPath);
+         }
+
+         this.UnlockLoadPath = null;
       }
 
       public IEnumerable<dynElement> AllElements
@@ -429,9 +457,22 @@ namespace Dynamo.Controls
 
       void sample_Click(object sender, RoutedEventArgs e)
       {
-         if (!this.ViewingHomespace) this.Home_Click(null, null);
+         var path = (string)((System.Windows.Controls.MenuItem)sender).Tag;
 
-         this.OpenWorkbench((string)((System.Windows.Controls.MenuItem)sender).Tag);
+         if (this.uiLocked)
+            this.QueueLoad(path);
+         else
+         {
+            if (!this.ViewingHomespace) 
+               this.Home_Click(null, null);
+
+            this.OpenWorkbench(path);
+         }
+      }
+
+      private void QueueLoad(string path)
+      {
+         this.UnlockLoadPath = path;
       }
 
       /// <summary>
@@ -1040,6 +1081,9 @@ namespace Dynamo.Controls
 
       private void BeginDragElement(string name, Point eleOffset)
       {
+         if (this.uiLocked)
+            return;
+
          var pos = Mouse.GetPosition(overlayCanvas);
 
          double x = pos.X;
@@ -1535,6 +1579,12 @@ namespace Dynamo.Controls
 
          if (!string.IsNullOrEmpty(xmlPath))
          {
+            if (this.uiLocked)
+            {
+               this.QueueLoad(xmlPath);
+               return;
+            }
+
             if (!OpenDefinition(xmlPath))
             {
                //MessageBox.Show("Workbench could not be opened.");
@@ -2060,11 +2110,6 @@ namespace Dynamo.Controls
       private void Run_Click(object sender, RoutedEventArgs e)
       {
          RunExpression(this.debugCheckBox.IsChecked == true);
-      }
-
-      private void RunDebug_Click(object sender, RoutedEventArgs e)
-      {
-         RunExpression(true);
       }
 
       //private void SaveFunction_Click(object sender, RoutedEventArgs e)
@@ -2794,6 +2839,8 @@ namespace Dynamo.Controls
 
       private bool dynamicRun = false;
       private bool runAgain = false;
+      private bool uiLocked;
+      private string UnlockLoadPath;
 
       void FilterAddMenu(HashSet<dynElement> elements)
       {
