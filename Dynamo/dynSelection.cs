@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
@@ -227,6 +231,8 @@ namespace Dynamo.Elements
    public class dynPointBySelection : dynElement
    {
       ReferencePoint rp;
+      System.Windows.Controls.Button pointButt;
+      System.Windows.Controls.TextBox tb;
 
       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
       FSharpList<Expression> result = FSharpList<Expression>.Empty;
@@ -239,41 +245,323 @@ namespace Dynamo.Elements
          //OutPortData[0].Object = this.Tree;
 
          //add a button to the inputGrid on the dynElement
-         System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
-         this.inputGrid.Children.Add(paramMapButt);
-         paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
-         paramMapButt.Content = "Select";
-         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         pointButt = new System.Windows.Controls.Button();
+         //this.inputGrid.Children.Add(pointButt);
+         pointButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+         pointButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         pointButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         pointButt.Click += new System.Windows.RoutedEventHandler(pointButt_Click);
+         pointButt.Content = "Select";
+         pointButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         pointButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+         tb = new TextBox();
+         tb.Text = "Nothing Selected";
+         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+         tb.Background = backgroundBrush;
+         tb.BorderThickness = new Thickness(0);
+         tb.IsReadOnly = true;
+         tb.IsReadOnlyCaretVisible = false;
+
+         this.inputGrid.RowDefinitions.Add(new RowDefinition());
+         this.inputGrid.RowDefinitions.Add(new RowDefinition());
+
+         this.inputGrid.Children.Add(tb);
+         this.inputGrid.Children.Add(pointButt);
+
+         System.Windows.Controls.Grid.SetRow(pointButt, 0);
+         System.Windows.Controls.Grid.SetRow(tb, 1);
 
          base.RegisterInputsAndOutputs();
 
+         this.topControl.Height = 60;
+         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+
+
+      }
+
+
+
+      public ReferencePoint pickedRefPoint;
+
+      public ReferencePoint PickedRefPoint
+      {
+          get { return pickedRefPoint; }
+          set
+          {
+              pickedRefPoint = value;
+              NotifyPropertyChanged("PickedRefPoint");
+          }
+      }
+
+      private ElementId refPointID;
+
+      private ElementId RefPointID
+      {
+          get { return refPointID; }
+          set
+          {
+              refPointID = value;
+              NotifyPropertyChanged("RefPointID");
+          }
+      }
+      void pointButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      {
+          data = Expression.NewList(FSharpList<Expression>.Empty);
+
+          PickedRefPoint = SelectionHelper.RequestReferencePointSelection(dynElementSettings.SharedInstance.Doc, "Select a reference point.", dynElementSettings.SharedInstance);
+          // this.result = FSharpList<Expression>.Cons(
+          //           Expression.NewContainer(rp),
+          //           result);
+
+          //dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
+
+
+
+          if (PickedRefPoint != null)
+          {
+              RefPointID = pickedRefPoint.Id;
+              this.RegisterEvalOnModified(RefPointID);
+              this.data = Expression.NewContainer(PickedRefPoint);
+
+              pointButt.Content = "Change Ref Point";
+              this.tb.Text = "Ref Point " + PickedRefPoint.Name + PickedRefPoint.Id;
+          }
+          else
+          {
+              pointButt.Content = "Select Ref Point";
+              this.tb.Text = "Nothing Selected";
+          }
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
+          if (PickedRefPoint.Id.IntegerValue == refPointID.IntegerValue) // sanity check
+          {
 
-         return data;
-
-         //return Expression.NewList(result);
+              this.data = Expression.NewContainer(PickedRefPoint);
+              return data;
+          }
+          else
+              throw new Exception("SANITY CHECK FAILED");
       }
 
-      void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
       {
-         data = Expression.NewList(FSharpList<Expression>.Empty);
-
-         rp = SelectionHelper.RequestReferencePointSelection(dynElementSettings.SharedInstance.Doc, "Select a reference point.", dynElementSettings.SharedInstance);
-         // this.result = FSharpList<Expression>.Cons(
-         //           Expression.NewContainer(rp),
-         //           result);
-
-         //dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
-         this.RegisterEvalOnModified(rp.Id);
-         this.data = Expression.NewContainer(rp);
-         this.IsDirty = true;
+          //Debug.WriteLine(pd.Object.GetType().ToString());
+          if (this.PickedRefPoint != null)
+          {
+              XmlElement outEl = xmlDoc.CreateElement("instance");
+              outEl.SetAttribute("id", this.PickedRefPoint.Id.ToString());
+              dynEl.AppendChild(outEl);
+          }
       }
+
+      public override void LoadElement(XmlNode elNode)
+      {
+          foreach (XmlNode subNode in elNode.ChildNodes)
+          {
+              if (subNode.Name.Equals("instance"))
+              {
+                  try
+                  {
+                      this.PickedRefPoint = dynElementSettings.SharedInstance.Doc.Document.get_Element(
+                         new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
+                      ) as ReferencePoint;
+                      if (this.PickedRefPoint != null)
+                      {
+                          refPointID = PickedRefPoint.Id;
+                          this.tb.Text = this.PickedRefPoint.Name;
+                          this.pointButt.Content = "Select Ref Point";
+                      }
+                  }
+                  catch { }
+              }
+          }
+      }
+   }
+
+   [ElementName("SunPath Direction")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("An element which returns the current Sun Path diretion.")]
+   [RequiresTransaction(true)]
+   public class dynSunPathDirection : dynElement
+   {
+       System.Windows.Controls.TextBox tb;
+       System.Windows.Controls.Button sunPathButt;
+       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+
+
+       public dynSunPathDirection()
+       {
+
+           OutPortData = new PortData("XYZ", "XYZ", typeof(XYZ));
+
+           //add a button to the inputGrid on the dynElement
+           sunPathButt = new System.Windows.Controls.Button();
+           //this.inputGrid.Children.Add(sunPathButt);
+           sunPathButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+           sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+           sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+           sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
+           sunPathButt.Content = "Use SunPath\nfrom Current View";
+           sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+           sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+           tb = new TextBox();
+           tb.Text = "No SunPath Registered";
+           tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+           tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+           SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+           tb.Background = backgroundBrush;
+           tb.BorderThickness = new Thickness(0);
+           tb.IsReadOnly = true;
+           tb.IsReadOnlyCaretVisible = false;
+
+           this.inputGrid.RowDefinitions.Add(new RowDefinition());
+           this.inputGrid.RowDefinitions.Add(new RowDefinition());
+
+           this.inputGrid.Children.Add(tb);
+           this.inputGrid.Children.Add(sunPathButt);
+
+           System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
+           System.Windows.Controls.Grid.SetRow(tb, 1);
+
+           base.RegisterInputsAndOutputs();
+
+           this.topControl.Height = 60;
+           UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+           Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+
+       }
+
+
+       /// <summary>
+       /// Description of ShadowCalculatorUtils.
+       /// NOTE: this is derived from Scott Connover's great class "Geometry API in Revit" from DevCamp 2012, source files accesed 6-8-12 from here 
+       /// https://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Homehttps://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Home
+       /// </summary>
+
+       public static XYZ GetSunDirection(SunAndShadowSettings sunSettings)
+       {
+           //SunAndShadowSettings sunSettings = view.SunAndShadowSettings;
+
+           XYZ initialDirection = XYZ.BasisY;
+
+           //double altitude = sunSettings.Altitude;
+           double altitude = sunSettings.GetFrameAltitude(sunSettings.ActiveFrame);
+           Autodesk.Revit.DB.Transform altitudeRotation = Autodesk.Revit.DB.Transform.get_Rotation(XYZ.Zero, XYZ.BasisX, altitude);
+           XYZ altitudeDirection = altitudeRotation.OfVector(initialDirection);
+
+           //double azimuth = sunSettings.Azimuth;
+           double azimuth = sunSettings.GetFrameAzimuth(sunSettings.ActiveFrame);
+           double actualAzimuth = 2 * Math.PI - azimuth;
+           Autodesk.Revit.DB.Transform azimuthRotation = Autodesk.Revit.DB.Transform.get_Rotation(XYZ.Zero, XYZ.BasisZ, actualAzimuth);
+           XYZ sunDirection = azimuthRotation.OfVector(altitudeDirection);
+           XYZ scaledSunVector = sunDirection.Multiply(100);
+
+           return scaledSunVector;
+
+       }
+
+       public SunAndShadowSettings pickedSunAndShadowSettings;
+
+       public SunAndShadowSettings PickedSunAndShadowSettings
+       {
+           get { return pickedSunAndShadowSettings; }
+           set
+           {
+               pickedSunAndShadowSettings = value;
+               NotifyPropertyChanged("PickedSunAndShadowSettings");
+           }
+       }
+
+       private ElementId sunAndShadowSettingsID;
+
+       private ElementId SunAndShadowSettingsID
+       {
+           get { return sunAndShadowSettingsID; }
+           set
+           {
+               sunAndShadowSettingsID = value;
+               NotifyPropertyChanged("SunAndShadowSettingsID");
+           }
+       }
+       void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
+       {
+           //data = Expression.NewList(FSharpList<Expression>.Empty);
+
+           View activeView = this.UIDocument.ActiveView;
+           PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
+
+
+           if (PickedSunAndShadowSettings != null)
+           {
+               sunAndShadowSettingsID = activeView.SunAndShadowSettings.Id;
+               this.RegisterEvalOnModified(sunAndShadowSettingsID); // register with the DMU, TODO - watch out for view changes, as sun is view specific
+               XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
+
+
+               this.data = Expression.NewContainer(sunVector);
+
+               this.tb.Text = PickedSunAndShadowSettings.Name;
+           }
+           else
+           {
+               //sunPathButt.Content = "Select Instance";
+               this.tb.Text = "Nothing Selected";
+           }
+       }
+
+       public override Expression Evaluate(FSharpList<Expression> args)
+       {
+           if (PickedSunAndShadowSettings.Id.IntegerValue == sunAndShadowSettingsID.IntegerValue) // sanity check
+           {
+
+               XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
+               this.data = Expression.NewContainer(sunVector);
+               return data;
+           }
+           else
+               throw new Exception("SANITY CHECK FAILED");
+       }
+
+       public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+       {
+           //Debug.WriteLine(pd.Object.GetType().ToString());
+           if (this.PickedSunAndShadowSettings != null)
+           {
+               XmlElement outEl = xmlDoc.CreateElement("instance");
+               outEl.SetAttribute("id", this.PickedSunAndShadowSettings.Id.ToString());
+               dynEl.AppendChild(outEl);
+           }
+       }
+
+       public override void LoadElement(XmlNode elNode)
+       {
+           foreach (XmlNode subNode in elNode.ChildNodes)
+           {
+               if (subNode.Name.Equals("instance"))
+               {
+                   try
+                   {
+                       this.PickedSunAndShadowSettings = dynElementSettings.SharedInstance.Doc.Document.get_Element(
+                          new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
+                       ) as SunAndShadowSettings;
+                       if (this.PickedSunAndShadowSettings != null)
+                       {
+                           sunAndShadowSettingsID = PickedSunAndShadowSettings.Id;
+                           this.tb.Text = this.PickedSunAndShadowSettings.Name;
+                           this.sunPathButt.Content = "Use SunPath from Current View";
+                       }
+                   }
+                   catch { }
+               }
+           }
+       }
+
    }
 }

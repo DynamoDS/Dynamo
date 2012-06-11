@@ -650,7 +650,7 @@ namespace Dynamo.Elements
       void familyInstanceButt_Click(object sender, System.Windows.RoutedEventArgs e)
       {
          PickedFamilyInstance = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(
-            this.UIDocument, "Selec Massing Family Instance", dynElementSettings.SharedInstance
+            this.UIDocument, "Select Massing Family Instance", dynElementSettings.SharedInstance
          );
 
          if (PickedFamilyInstance != null)
