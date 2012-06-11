@@ -367,7 +367,7 @@ namespace Dynamo.Elements
 
       private Dictionary<UIElement, bool> enabledDict = new Dictionary<UIElement, bool>();
 
-      public void DisableInteraction()
+      internal void DisableInteraction()
       {
          enabledDict.Clear();
 
@@ -379,7 +379,7 @@ namespace Dynamo.Elements
          }
       }
 
-      public void EnableInteraction()
+      internal void EnableInteraction()
       {
          foreach (UIElement e in this.inputGrid.Children)
          {
