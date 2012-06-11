@@ -1868,10 +1868,12 @@ namespace Dynamo.Controls
                      Expression runningExpression = topMost.Build().Compile();
 
                      //string exp = FScheme.print(runningExpression);
-                     string exp = topMost.PrintExpression();
-
                      this.Dispatcher.Invoke(new Action(
-                        () => Log("> " + exp)
+                        delegate
+                        {
+                           string exp = topMost.PrintExpression();
+                           Log("> " + exp);
+                        }
                      ));
 
                      try
