@@ -172,6 +172,8 @@ namespace Dynamo.Elements
    public class dynCurvesBySelection : dynElement
    {
       CurveElement mc;
+      System.Windows.Controls.Button curveButt;
+      System.Windows.Controls.TextBox tb;
 
       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
       FSharpList<Expression> result = FSharpList<Expression>.Empty;
@@ -184,43 +186,169 @@ namespace Dynamo.Elements
          //OutPortData[0].Object = this.Tree;
 
          //add a button to the inputGrid on the dynElement
-         System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
-         this.inputGrid.Children.Add(paramMapButt);
-         paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
-         paramMapButt.Content = "Select";
-         paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         curveButt = new System.Windows.Controls.Button();
+         //this.inputGrid.Children.Add(curveButt);
+         curveButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+         curveButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         curveButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         curveButt.Click += new System.Windows.RoutedEventHandler(curveButt_Click);
+         curveButt.Content = "Select Curve";
+         curveButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         curveButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+         tb = new TextBox();
+         tb.Text = "Nothing Selected";
+         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+         tb.Background = backgroundBrush;
+         tb.BorderThickness = new Thickness(0);
+         tb.IsReadOnly = true;
+         tb.IsReadOnlyCaretVisible = false;
+
+         this.inputGrid.RowDefinitions.Add(new RowDefinition());
+         this.inputGrid.RowDefinitions.Add(new RowDefinition());
+
+         this.inputGrid.Children.Add(tb);
+         this.inputGrid.Children.Add(curveButt);
+
+         System.Windows.Controls.Grid.SetRow(curveButt, 0);
+         System.Windows.Controls.Grid.SetRow(tb, 1);
 
          base.RegisterInputsAndOutputs();
+
+         this.topControl.Height = 60;
+         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
       }
       //public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      //public override Expression Evaluate(FSharpList<Expression> args)
+      //{
+
+      //   return data;
+
+      //   //return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
+      //}
+
+      //void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      //{
+      //   data = Expression.NewList(FSharpList<Expression>.Empty);
+
+      //   mc = SelectionHelper.RequestModelCurveSelection(dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance);
+      //   //this.result = FSharpList<Expression>.Cons(
+      //   //          Expression.NewContainer(mc),
+      //   //          result);
+
+      //   //dynElementSettings.SharedInstance.UserSelectedElements.Insert(mc); // MDJ HOOK remember the one we selected for comparison in DMU code. 
+      //   this.RegisterEvalOnModified(mc.Id);
+
+      //   this.data = Expression.NewContainer(mc);
+      //   this.IsDirty = true;
+      //}
+
+      public CurveElement pickedCurve;
+
+      public CurveElement PickedCurve
       {
-
-         return data;
-
-         //return Expression.NewList(result); // MDJ downstream form element breaks unless this is a list
+          get { return pickedCurve; }
+          set
+          {
+              pickedCurve = value;
+              NotifyPropertyChanged("PickedCurve");
+          }
       }
 
-      void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      private ElementId curveID;
+
+      private ElementId CurveID
       {
-         data = Expression.NewList(FSharpList<Expression>.Empty);
+          get { return curveID; }
+          set
+          {
+              curveID = value;
+              NotifyPropertyChanged("CurveID");
+          }
+      }
+      void curveButt_Click(object sender, System.Windows.RoutedEventArgs e)
+      {
+          data = Expression.NewList(FSharpList<Expression>.Empty);
 
-         mc = SelectionHelper.RequestModelCurveSelection(dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance);
-         //this.result = FSharpList<Expression>.Cons(
-         //          Expression.NewContainer(mc),
-         //          result);
+          PickedCurve = SelectionHelper.RequestModelCurveSelection(dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance);
+          // this.result = FSharpList<Expression>.Cons(
+          //           Expression.NewContainer(rp),
+          //           result);
 
-         //dynElementSettings.SharedInstance.UserSelectedElements.Insert(mc); // MDJ HOOK remember the one we selected for comparison in DMU code. 
-         this.RegisterEvalOnModified(mc.Id);
+          //dynElementSettings.SharedInstance.UserSelectedElements.Insert(rp); // MDJ HOOK remember the one we selected for comparison in DMU code. 
 
-         this.data = Expression.NewContainer(mc);
-         this.IsDirty = true;
+
+
+          if (PickedCurve != null)
+          {
+              if (CurveID != null) //we already had a curve before and are now repicking
+              {
+                  ElementId oldCurveID = CurveID;
+                  // this.RegisterEvalOnModified(oldCurveID);//BUG - stale references after repicking - we do not have a way to deregistering in the system stephen setup
+              }
+              CurveID = pickedCurve.Id;
+              this.RegisterEvalOnModified(CurveID);
+              this.data = Expression.NewContainer(PickedCurve);
+
+              curveButt.Content = "Change Curve";
+              this.tb.Text = PickedCurve.Name + " " + PickedCurve.Id;
+          }
+          else
+          {
+              curveButt.Content = "Select Curve";
+              this.tb.Text = "Nothing Selected";
+          }
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+          if (PickedCurve.Id.IntegerValue == curveID.IntegerValue) // sanity check
+          {
+
+              this.data = Expression.NewContainer(PickedCurve);
+              return data;
+          }
+          else
+              throw new Exception("SANITY CHECK FAILED");
+      }
+
+      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+      {
+          //Debug.WriteLine(pd.Object.GetType().ToString());
+          if (this.PickedCurve != null)
+          {
+              XmlElement outEl = xmlDoc.CreateElement("instance");
+              outEl.SetAttribute("id", this.PickedCurve.Id.ToString());
+              dynEl.AppendChild(outEl);
+          }
+      }
+
+      public override void LoadElement(XmlNode elNode)
+      {
+          foreach (XmlNode subNode in elNode.ChildNodes)
+          {
+              if (subNode.Name.Equals("instance"))
+              {
+                  try
+                  {
+                      this.PickedCurve = dynElementSettings.SharedInstance.Doc.Document.get_Element(
+                         new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
+                      ) as CurveElement;
+                      if (this.PickedCurve != null)
+                      {
+                          curveID = PickedCurve.Id;
+                          this.tb.Text = this.PickedCurve.Name;
+                          this.curveButt.Content = "Select Curve";
+                      }
+                  }
+                  catch { }
+              }
+          }
       }
    }
 
@@ -251,7 +379,7 @@ namespace Dynamo.Elements
          pointButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
          pointButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          pointButt.Click += new System.Windows.RoutedEventHandler(pointButt_Click);
-         pointButt.Content = "Select";
+         pointButt.Content = "Select Point";
          pointButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
          pointButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
@@ -327,12 +455,12 @@ namespace Dynamo.Elements
               this.RegisterEvalOnModified(RefPointID);
               this.data = Expression.NewContainer(PickedRefPoint);
 
-              pointButt.Content = "Change Ref Point";
-              this.tb.Text = "Ref Point " + PickedRefPoint.Name + PickedRefPoint.Id;
+              pointButt.Content = "Change Point";
+              this.tb.Text = "Point " + PickedRefPoint.Name + PickedRefPoint.Id;
           }
           else
           {
-              pointButt.Content = "Select Ref Point";
+              pointButt.Content = "Select Point";
               this.tb.Text = "Nothing Selected";
           }
       }
@@ -375,7 +503,7 @@ namespace Dynamo.Elements
                       {
                           refPointID = PickedRefPoint.Id;
                           this.tb.Text = this.PickedRefPoint.Name;
-                          this.pointButt.Content = "Select Ref Point";
+                          this.pointButt.Content = "Select Point";
                       }
                   }
                   catch { }
