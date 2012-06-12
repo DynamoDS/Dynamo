@@ -95,8 +95,7 @@ namespace Dynamo.Controls
          LockUI();
 
          sw = new StringWriter();
-         Log("Welcome to Dynamo!");
-         Log(String.Format("You are using build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+         Log(String.Format("Dynamo -- Build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
 
          dynElementSettings.SharedInstance.Workbench = workBench;
          dynElementSettings.SharedInstance.Bench = this;
@@ -135,6 +134,20 @@ namespace Dynamo.Controls
             LoadUserTypes();
             this.workBench.Visibility = System.Windows.Visibility.Visible;
             this._activated = true;
+
+            Log("Welcome to Dynamo!");
+
+            if (this.UnlockLoadPath != null && !this.OpenWorkbench(this.UnlockLoadPath))
+            {
+               //MessageBox.Show("Workbench could not be opened.");
+               Log("Workbench could not be opened.");
+
+               dynElementSettings.SharedInstance.Writer.WriteLine("Workbench could not be opened.");
+               dynElementSettings.SharedInstance.Writer.WriteLine(this.UnlockLoadPath);
+            }
+
+            this.UnlockLoadPath = null;
+
             UnlockUI();
          }
       }
@@ -159,17 +172,6 @@ namespace Dynamo.Controls
          this.overlayCanvas.IsHitTestVisible = false;
          this.overlayCanvas.Cursor = null;
          this.overlayCanvas.ForceCursor = false;
-
-         if (this.UnlockLoadPath != null && !this.OpenWorkbench(this.UnlockLoadPath))
-         {
-            //MessageBox.Show("Workbench could not be opened.");
-            Log("Workbench could not be opened.");
-
-            dynElementSettings.SharedInstance.Writer.WriteLine("Workbench could not be opened.");
-            dynElementSettings.SharedInstance.Writer.WriteLine(this.UnlockLoadPath);
-         }
-
-         this.UnlockLoadPath = null;
       }
 
       public IEnumerable<dynElement> AllElements
@@ -493,6 +495,7 @@ namespace Dynamo.Controls
 
          if (System.IO.Directory.Exists(pluginsPath))
          {
+            Log("Autoloading definitions...");
             loadUserWorkspaces(pluginsPath);
          }
       }
@@ -502,6 +505,7 @@ namespace Dynamo.Controls
          string[] filePaths = Directory.GetFiles(directory, "*.dyf");
          foreach (string filePath in filePaths)
          {
+            Log("  " + filePath);
             this.OpenDefinition(filePath, true);
          }
          foreach (var e in this.AllElements)
@@ -1593,6 +1597,7 @@ namespace Dynamo.Controls
                return;
             }
 
+            LockUI();
             if (!OpenDefinition(xmlPath))
             {
                //MessageBox.Show("Workbench could not be opened.");
@@ -1601,6 +1606,7 @@ namespace Dynamo.Controls
                dynElementSettings.SharedInstance.Writer.WriteLine("Workbench could not be opened.");
                dynElementSettings.SharedInstance.Writer.WriteLine(xmlPath);
             }
+            UnlockUI();
          }
       }
 
@@ -1893,9 +1899,11 @@ namespace Dynamo.Controls
          toolFinder = null;
       }
 
-      private void New_Click(object sender, RoutedEventArgs e)
+      private void Clear_Click(object sender, RoutedEventArgs e)
       {
+         LockUI();
          CleanWorkbench();
+         UnlockUI();
       }
 
       public ExecutionEnvironment Environment 
@@ -1999,6 +2007,19 @@ namespace Dynamo.Controls
                         this.Dispatcher.Invoke(new Action(
                            () => Log(FScheme.print(expr))
                         ));
+                     }
+                     catch (CancelEvaluationException ex)
+                     {
+                        if (_trans != null)
+                        {
+                           _trans.RollBack();
+                           _trans = null;
+                        }
+
+                        this.CancelRun = false;
+
+                        if (ex.Force)
+                           this.runAgain = false;
                      }
                      catch (Exception ex)
                      {
@@ -2931,6 +2952,7 @@ namespace Dynamo.Controls
 
       internal void QueueRun()
       {
+         this.CancelRun = true;
          this.runAgain = true;
       }
 
@@ -2986,6 +3008,17 @@ namespace Dynamo.Controls
          }
 
          return Autodesk.Revit.DB.FailureProcessingResult.Continue;
+      }
+   }
+
+   public class CancelEvaluationException : Exception
+   {
+      public bool Force;
+
+      public CancelEvaluationException(bool force)
+         : base("Run Cancelled")
+      {
+         this.Force = force;
       }
    }
 

@@ -1007,9 +1007,6 @@ namespace Dynamo.Elements
       {
          var bench = dynElementSettings.SharedInstance.Bench;
 
-         if (bench.CancelRun)
-            throw new Exception("Run Cancelled.");
-
          if (this.SaveResult)
          {
             //Store the port mappings for this evaluate. We will compare later to see if it is dirty;
@@ -1021,50 +1018,172 @@ namespace Dynamo.Elements
             }
          }
 
-         object[] attribs = this.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
-         bool useTransaction = attribs.Length > 0 && ((RequiresTransactionAttribute)attribs[0]).RequiresTransaction;
-         bool debug = bench.RunInDebug;
+         object[] rtAttribs = this.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
+         bool useTransaction = rtAttribs.Length > 0 && ((RequiresTransactionAttribute)rtAttribs[0]).RequiresTransaction;
+
+         object[] iaAttribs = this.GetType().GetCustomAttributes(typeof(IsInteractiveAttribute), false);
+         bool isInteractive = iaAttribs.Length > 0 && ((IsInteractiveAttribute)iaAttribs[0]).IsInteractive;
 
          Expression result = null;
 
-         this.OnEvaluate();
-
-         //bool corrupt = false;
-         //List<Element> corrupted = new List<Element>();
-         //foreach (Element e in this.Elements)
-         //{
-         //   try
-         //   {
-         //      var id = e.Id;
-         //      corrupt = id.IntegerValue == 0 || corrupt;
-         //   }
-         //   catch
-         //   {
-         //      corrupted.Add(e);
-         //   }
-         //}
-         //if (corrupt)
-         //{
-         //   this.Elements.RemoveAll(x => corrupted.Contains(x));
-         //}
-
-         if (useTransaction)
+         Action evaluation = delegate
          {
-            #region using transaction
+            if (bench.CancelRun)
+               throw new CancelEvaluationException(false);
 
-            if (!debug)
+            bool debug = bench.RunInDebug;
+
+            this.OnEvaluate();
+
+            if (useTransaction)
             {
-               #region no debug
+               #region using transaction
+
+               if (!debug)
+               {
+                  #region no debug
+
+                  try
+                  {
+                     if (bench.TransMode == TransactionMode.Manual && !bench.IsTransactionActive())
+                     {
+                        throw new Exception("A Revit transaction is required in order evaluate this element.");
+                     }
+
+                     bench.InitTransaction();
+
+                     //if (this.SaveResult)
+                     //   this.Destroy();
+
+                     result = this.Evaluate(args);
+
+                     UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+                     Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+
+                     elementsHaveBeenDeleted = false;
+                  }
+                  catch (Exception ex)
+                  {
+                     this.Dispatcher.Invoke(new Action(
+                        delegate
+                        {
+                           Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                           bench.Log(ex.Message);
+                           bench.ShowElement(this);
+
+                           dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
+                           dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
+                        }
+                     ));
+
+                     SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
+                     Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
+                         new object[] { ex.Message });
+
+                     MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
+                     Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
+                         new object[] { true });
+                  }
+
+                  #endregion
+               }
+               else
+               {
+                  #region debug
+
+                  this.Dispatcher.Invoke(new Action(
+                     () =>
+                        bench.Log("Starting a debug transaction for element: " + this.NickName)
+                  ));
+
+                  result = IdlePromise<Expression>.ExecuteOnIdle(
+                     delegate
+                     {
+                        //this.Dispatcher.Invoke(new Action(
+                        //   () =>
+                        //      dynElementSettings.SharedInstance.Bench.Log("Creating transaction...")
+                        //));
+
+                        bench.InitTransaction();
+
+                        try
+                        {
+                           //this.Destroy();
+
+                           //this.Dispatcher.Invoke(new Action(
+                           //   () =>
+                           //      dynElementSettings.SharedInstance.Bench.Log("Evaluating Element")
+                           //));
+
+                           //if (this.SaveResult)
+                           //   this.Destroy();
+
+                           var exp = this.Evaluate(args);
+
+                           UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+                           Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+
+                           elementsHaveBeenDeleted = false;
+
+                           //this.Dispatcher.Invoke(new Action(
+                           //   () =>
+                           //      dynElementSettings.SharedInstance.Bench.Log("Committing transaction")
+                           //));
+
+                           bench.EndTransaction();
+
+                           return exp;
+                        }
+                        catch (Exception ex)
+                        {
+                           this.Dispatcher.Invoke(new Action(
+                              delegate
+                              {
+                                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                                 bench.Log(ex.Message);
+                                 bench.ShowElement(this);
+                              }
+                           ));
+
+                           SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
+                           Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
+                               new object[] { ex.Message });
+
+                           MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
+                           Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
+                               new object[] { true });
+
+                           bench.CancelTransaction();
+
+                           this.Dispatcher.Invoke(new Action(
+                              delegate
+                              {
+                                 dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
+                                 dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
+                              }
+                           ));
+
+                           return null;
+                        }
+                     }
+                  );
+
+                  //dynElementSettings.SharedInstance.Bench.Dispatcher.Invoke(new Action(
+                  //   () =>
+                  //      dynElementSettings.SharedInstance.Bench.Log("End Idle Call")
+                  //));
+
+                  #endregion
+               }
+
+               #endregion
+            }
+            else
+            {
+               #region no transaction
 
                try
                {
-                  if (bench.TransMode == TransactionMode.Manual && !bench.IsTransactionActive())
-                  {
-                     throw new Exception("A Revit transaction is required in order evaluate this element.");
-                  }
-
-                  bench.InitTransaction();
-
                   //if (this.SaveResult)
                   //   this.Destroy();
 
@@ -1081,183 +1200,57 @@ namespace Dynamo.Elements
                      delegate
                      {
                         Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                        bench.Log(ex.Message);
-                        bench.ShowElement(this);
+                        dynElementSettings.SharedInstance.Bench.Log(ex.Message);
 
                         dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
                         dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
+
+                        dynElementSettings.SharedInstance.Bench.ShowElement(this);
+
+                        MarkConnectionState(true);
                      }
                   ));
 
                   SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
                   Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
                       new object[] { ex.Message });
-
-                  MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
-                  Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-                      new object[] { true });
                }
 
+               //try
+               //{
+               //   this.UpdateOutputs();
+               //}
+               //catch (Exception ex)
+               //{
+               //   //Debug.WriteLine("Outputs could not be updated.");
+               //   dynElementSettings.SharedInstance.Bench.Log("Outputs could not be updated.");
+
+               //   dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
+               //   dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
+               //}
+
                #endregion
             }
-            else
+
+            var del = new DynElementUpdateDelegate(this.onDeleted);
+
+            foreach (ElementId id in this.Elements)
             {
-               #region debug
-
-               this.Dispatcher.Invoke(new Action(
-                  () =>
-                     bench.Log("Starting a debug transaction for element: " + this.NickName)
-               ));
-
-               result = IdlePromise<Expression>.ExecuteOnIdle(
-                  delegate
-                  {
-                     //this.Dispatcher.Invoke(new Action(
-                     //   () =>
-                     //      dynElementSettings.SharedInstance.Bench.Log("Creating transaction...")
-                     //));
-
-                     bench.InitTransaction();
-
-                     try
-                     {
-                        //this.Destroy();
-
-                        //this.Dispatcher.Invoke(new Action(
-                        //   () =>
-                        //      dynElementSettings.SharedInstance.Bench.Log("Evaluating Element")
-                        //));
-
-                        //if (this.SaveResult)
-                        //   this.Destroy();
-
-                        var exp = this.Evaluate(args);
-
-                        UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-                        Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-
-                        elementsHaveBeenDeleted = false;
-
-                        //this.Dispatcher.Invoke(new Action(
-                        //   () =>
-                        //      dynElementSettings.SharedInstance.Bench.Log("Committing transaction")
-                        //));
-
-                        bench.EndTransaction();
-
-                        return exp;
-                     }
-                     catch (Exception ex)
-                     {
-                        this.Dispatcher.Invoke(new Action(
-                           delegate
-                           {
-                              Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                              bench.Log(ex.Message);
-                              bench.ShowElement(this);
-                           }
-                        ));
-
-                        SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-                        Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                            new object[] { ex.Message });
-
-                        MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
-                        Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-                            new object[] { true });
-
-                        bench.CancelTransaction();
-
-                        this.Dispatcher.Invoke(new Action(
-                           delegate
-                           {
-                              dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-                              dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-                           }
-                        ));
-
-                        return null;
-                     }
-                  }
+               this.Bench.Updater.RegisterChangeHook(
+                  id, ChangeTypeEnum.Delete, del
                );
-
-               //dynElementSettings.SharedInstance.Bench.Dispatcher.Invoke(new Action(
-               //   () =>
-               //      dynElementSettings.SharedInstance.Bench.Log("End Idle Call")
-               //));
-
-               #endregion
             }
 
-            #endregion
-         }
+            //Increment the run counter
+            this.runCount++;
+
+            this.IsDirty = false;
+         };
+
+         if (isInteractive)
+            this.Dispatcher.Invoke(evaluation);
          else
-         {
-            #region no transaction
-
-            try
-            {
-               //if (this.SaveResult)
-               //   this.Destroy();
-
-               result = this.Evaluate(args);
-
-               UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-               Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-
-               elementsHaveBeenDeleted = false;
-            }
-            catch (Exception ex)
-            {
-               this.Dispatcher.Invoke(new Action(
-                  delegate
-                  {
-                     Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                     dynElementSettings.SharedInstance.Bench.Log(ex.Message);
-
-                     dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-                     dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-
-                     dynElementSettings.SharedInstance.Bench.ShowElement(this);
-
-                     MarkConnectionState(true);
-                  }
-               ));
-
-               SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-               Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                   new object[] { ex.Message });
-            }
-
-            //try
-            //{
-            //   this.UpdateOutputs();
-            //}
-            //catch (Exception ex)
-            //{
-            //   //Debug.WriteLine("Outputs could not be updated.");
-            //   dynElementSettings.SharedInstance.Bench.Log("Outputs could not be updated.");
-
-            //   dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-            //   dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-            //}
-
-            #endregion
-         }
-
-         var del = new DynElementUpdateDelegate(this.onDeleted);
-
-         foreach (ElementId id in this.Elements)
-         {
-            this.Bench.Updater.RegisterChangeHook(
-               id, ChangeTypeEnum.Delete, del
-            );
-         }
-
-         //Increment the run counter
-         this.runCount++;
-
-         this.IsDirty = false;
+            evaluation();
 
          if (result != null)
             return result;
