@@ -367,7 +367,7 @@ namespace Dynamo.Elements
 
       private Dictionary<UIElement, bool> enabledDict = new Dictionary<UIElement, bool>();
 
-      public void DisableInteraction()
+      internal void DisableInteraction()
       {
          enabledDict.Clear();
 
@@ -379,7 +379,7 @@ namespace Dynamo.Elements
          }
       }
 
-      public void EnableInteraction()
+      internal void EnableInteraction()
       {
          foreach (UIElement e in this.inputGrid.Children)
          {
@@ -407,7 +407,9 @@ namespace Dynamo.Elements
          }
          else
          {
-            s += "(lambda (" + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName)) + ") (" + this.NickName + " ";
+            s += "(lambda (" 
+               + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName)) 
+               + ") (" + this.NickName;
             for (int i = 0; i < this.InPortData.Count; i++)
             {
                s += " ";
@@ -417,7 +419,7 @@ namespace Dynamo.Elements
                else
                   s += this.InPortData[i].NickName;
             }
-            s += ")";
+            s += "))";
          }
 
          return s;

@@ -602,6 +602,6 @@ let test (log : ErrorLog) =
    case "(+ 8 (call/cc (lambda (k^) (* (k^ 5) 100))))" "13" // call/cc bailing out of multiplication
    case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
    //case "(define combine (lambda (f lst1 lst2) (letrec ((comb* (lambda (lst1 lst2 a) (if (or (empty? lst1) (empty? lst2)) (reverse a) (comb* (rest lst1) (rest lst2) (cons (f (first lst1) (first lst2)) a)))))) (comb* lst1 lst2 empty))))" ""
-   case "(define build-seq (lambda (start end step) (if (or (= step 0) (>= start end)) empty (cons start (build-seq (+ start step) end step)))))" ""
+   case "(define build-seq (lambda (s e st) (letrec ((bs* (lambda (start end step a) (if (or (<= step 0) (>= start end)) (rev a) (bs* (+ start step) end step (cons start a)))))) (bs* s e st empty))))" ""
    case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9)"
    //case "(define zip (lambda lst1 lst2) (combine cons lst1 lst2)))"

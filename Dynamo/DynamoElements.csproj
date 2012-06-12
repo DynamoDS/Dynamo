@@ -198,6 +198,21 @@
   <ItemGroup>
     <Resource Include="Images\Anonymous_Pencil_icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\saveHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\HomeHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\openHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\DocumentHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\OpenSelectedItemHS.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

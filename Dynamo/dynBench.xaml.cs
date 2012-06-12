@@ -92,6 +92,8 @@ namespace Dynamo.Controls
 
          InitializeComponent();
 
+         LockUI();
+
          sw = new StringWriter();
          Log("Welcome to Dynamo!");
          Log(String.Format("You are using build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
@@ -121,6 +123,7 @@ namespace Dynamo.Controls
          this.CurrentY = CANVAS_OFFSET_Y;
 
          LoadBuiltinTypes();
+         PopulateSamplesMenu();
          //LoadUserTypes();
       }
 
@@ -129,10 +132,36 @@ namespace Dynamo.Controls
       {
          if (!this._activated)
          {
-            this.LoadUserTypes();
+            LoadUserTypes();
             this.workBench.Visibility = System.Windows.Visibility.Visible;
             this._activated = true;
+            UnlockUI();
          }
+      }
+
+      void LockUI()
+      {
+         this.uiLocked = true;
+         this.saveButton.IsEnabled = false;
+         this.clearButton.IsEnabled = false;
+      }
+
+      void UnlockUI()
+      {
+         this.uiLocked = false;
+         this.saveButton.IsEnabled = true;
+         this.clearButton.IsEnabled = true;
+
+         if (this.UnlockLoadPath != null && !this.OpenWorkbench(this.UnlockLoadPath))
+         {
+            //MessageBox.Show("Workbench could not be opened.");
+            Log("Workbench could not be opened.");
+
+            dynElementSettings.SharedInstance.Writer.WriteLine("Workbench could not be opened.");
+            dynElementSettings.SharedInstance.Writer.WriteLine(this.UnlockLoadPath);
+         }
+
+         this.UnlockLoadPath = null;
       }
 
       public IEnumerable<dynElement> AllElements
@@ -254,7 +283,6 @@ namespace Dynamo.Controls
                builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
             }
          }
-
 
          string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
          string pluginsPath = Path.Combine(directory, "definitions");
@@ -396,6 +424,55 @@ namespace Dynamo.Controls
          }
 
          #endregion
+      }
+
+      /// <summary>
+      /// Setup the "Samples" sub-menu with contents of samples directory.
+      /// </summary>
+      void PopulateSamplesMenu()
+      {
+         string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+         string samplesPath = Path.Combine(directory, "samples");
+
+         if (System.IO.Directory.Exists(samplesPath))
+         {
+            string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
+            if (filePaths.Any())
+            {
+               foreach (string path in filePaths)
+               {
+                  var item = new System.Windows.Controls.MenuItem()
+                  {
+                     Header = Path.GetFileNameWithoutExtension(path),
+                     Tag = path
+                  };
+                  item.Click += new RoutedEventHandler(sample_Click);
+                  samplesMenu.Items.Add(item);
+               }
+               return;
+            }
+         }
+         this.fileMenu.Items.Remove(this.samplesMenu);
+      }
+
+      void sample_Click(object sender, RoutedEventArgs e)
+      {
+         var path = (string)((System.Windows.Controls.MenuItem)sender).Tag;
+
+         if (this.uiLocked)
+            this.QueueLoad(path);
+         else
+         {
+            if (!this.ViewingHomespace) 
+               this.Home_Click(null, null);
+
+            this.OpenWorkbench(path);
+         }
+      }
+
+      private void QueueLoad(string path)
+      {
+         this.UnlockLoadPath = path;
       }
 
       /// <summary>
@@ -846,7 +923,26 @@ namespace Dynamo.Controls
          //string xmlPath = "C:\\test\\myWorkbench.xml";
          string xmlPath = "";
 
-         System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog();
+         string ext, fltr;
+         if (this.ViewingHomespace)
+         {
+            ext = ".dyn";
+            fltr = "Dynamo Workspace (*.dyn)|*.dyn";
+         }
+         else
+         {
+            ext = ".dyf";
+            fltr = "Dynamo Function (*.dyf)|*.dyf";
+         }
+         fltr += "|All files (*.*)|*.*";
+
+         System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog()
+         {
+            AddExtension=true,
+            DefaultExt=ext,
+            Filter=fltr
+         };
+
          if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
          {
             xmlPath = saveDialog.FileName;
@@ -860,7 +956,6 @@ namespace Dynamo.Controls
                Log("Workbench could not be saved.");
             }
          }
-
       }
 
 
@@ -986,6 +1081,9 @@ namespace Dynamo.Controls
 
       private void BeginDragElement(string name, Point eleOffset)
       {
+         if (this.uiLocked)
+            return;
+
          var pos = Mouse.GetPosition(overlayCanvas);
 
          double x = pos.X;
@@ -1469,7 +1567,11 @@ namespace Dynamo.Controls
          //string xmlPath = "C:\\test\\myWorkbench.xml";
          string xmlPath = "";
 
-         System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog();
+         System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
+         {
+            Filter="Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
+         };
+
          if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
          {
             xmlPath = openDialog.FileName;
@@ -1477,6 +1579,12 @@ namespace Dynamo.Controls
 
          if (!string.IsNullOrEmpty(xmlPath))
          {
+            if (this.uiLocked)
+            {
+               this.QueueLoad(xmlPath);
+               return;
+            }
+
             if (!OpenDefinition(xmlPath))
             {
                //MessageBox.Show("Workbench could not be opened.");
@@ -1868,10 +1976,12 @@ namespace Dynamo.Controls
                      Expression runningExpression = topMost.Build().Compile();
 
                      //string exp = FScheme.print(runningExpression);
-                     string exp = topMost.PrintExpression();
-
                      this.Dispatcher.Invoke(new Action(
-                        () => Log("> " + exp)
+                        delegate
+                        {
+                           string exp = topMost.PrintExpression();
+                           Log("> " + exp);
+                        }
                      ));
 
                      try
@@ -2002,15 +2112,10 @@ namespace Dynamo.Controls
          RunExpression(this.debugCheckBox.IsChecked == true);
       }
 
-      private void RunDebug_Click(object sender, RoutedEventArgs e)
-      {
-         RunExpression(true);
-      }
-
-      private void SaveFunction_Click(object sender, RoutedEventArgs e)
-      {
-         SaveFunction(this.CurrentSpace);
-      }
+      //private void SaveFunction_Click(object sender, RoutedEventArgs e)
+      //{
+      //   SaveFunction(this.CurrentSpace);
+      //}
 
       //private Dictionary<string, System.Windows.Controls.MenuItem> addMenuItemsDict
       //   = new Dictionary<string, System.Windows.Controls.MenuItem>();
@@ -2193,7 +2298,7 @@ namespace Dynamo.Controls
             //this.CurrentY = CANVAS_OFFSET_Y;
             this.CurrentSpace = workSpace;
 
-            this.saveFuncItem.IsEnabled = true;
+            //this.saveFuncItem.IsEnabled = true;
             this.homeButton.IsEnabled = true;
             //this.varItem.IsEnabled = true;
 
@@ -2249,7 +2354,7 @@ namespace Dynamo.Controls
             con.Visible = true;
          }
 
-         this.saveFuncItem.IsEnabled = false;
+         //this.saveFuncItem.IsEnabled = false;
          this.homeButton.IsEnabled = false;
          //this.varItem.IsEnabled = false;
 
@@ -2382,7 +2487,7 @@ namespace Dynamo.Controls
          }
 
 
-         this.saveFuncItem.IsEnabled = true;
+         //this.saveFuncItem.IsEnabled = true;
          this.homeButton.IsEnabled = true;
          //this.varItem.IsEnabled = true;
 
@@ -2734,6 +2839,8 @@ namespace Dynamo.Controls
 
       private bool dynamicRun = false;
       private bool runAgain = false;
+      private bool uiLocked;
+      private string UnlockLoadPath;
 
       void FilterAddMenu(HashSet<dynElement> elements)
       {
