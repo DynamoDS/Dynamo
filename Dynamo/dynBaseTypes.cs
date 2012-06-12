@@ -45,6 +45,8 @@ namespace Dynamo.Elements
       public const string LIST = "Lists";
    }
 
+   #region FScheme Builtin Interop
+
    public abstract class dynBuiltinFunction : dynElement
    {
       public string Symbol;
@@ -109,6 +111,8 @@ namespace Dynamo.Elements
             .Invoke(args);
       }
    }
+
+   #endregion
 
    public abstract class dynVariableInput : dynElement
    {
