@@ -296,12 +296,16 @@ namespace Dynamo.Elements
               this.data = Expression.NewContainer(PickedCurve);
 
               curveButt.Content = "Change Curve";
-              this.tb.Text = PickedCurve.Name + " " + PickedCurve.Id;
+              string successString = PickedCurve.Name + " " + PickedCurve.Id;
+              this.tb.Text = successString;
+              Bench.Log("Selected " + successString);
           }
           else
           {
               curveButt.Content = "Select Curve";
-              this.tb.Text = "Nothing Selected";
+              string failureString = "Nothing Selected";
+              this.tb.Text = failureString;
+              Bench.Log(failureString);
           }
       }
 
@@ -456,12 +460,16 @@ namespace Dynamo.Elements
               this.data = Expression.NewContainer(PickedRefPoint);
 
               pointButt.Content = "Change Point";
-              this.tb.Text = "Point " + PickedRefPoint.Name + PickedRefPoint.Id;
+              string successString = "Point " + PickedRefPoint.Name + PickedRefPoint.Id;
+              this.tb.Text = successString;
+              Bench.Log("Selected " + successString);
           }
           else
           {
               pointButt.Content = "Select Point";
-              this.tb.Text = "Nothing Selected";
+              string failureString = "Nothing Selected";
+              this.tb.Text = failureString;
+              Bench.Log(failureString);
           }
       }
 
@@ -635,12 +643,16 @@ namespace Dynamo.Elements
 
                this.data = Expression.NewContainer(sunVector);
 
-               this.tb.Text = PickedSunAndShadowSettings.Name;
+               string successString = PickedSunAndShadowSettings.Name;
+               this.tb.Text = successString;
+               Bench.Log("Registered " + successString);
            }
            else
            {
                //sunPathButt.Content = "Select Instance";
-               this.tb.Text = "Nothing Selected";
+               string failureString = "Nothing Registered";
+               this.tb.Text = failureString;
+               Bench.Log(failureString);
            }
        }
 
