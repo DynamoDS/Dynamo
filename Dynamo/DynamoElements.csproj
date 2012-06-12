@@ -96,9 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTrees.cs" />
-    <Compile Include="DynamoSplash.xaml.cs">
-      <DependentUpon>DynamoSplash.xaml</DependentUpon>
-    </Compile>
     <Compile Include="dynArduino.cs" />
     <Compile Include="dynBaseTypes.cs" />
     <Compile Include="dynBench.xaml.cs">
@@ -160,10 +157,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DynamoSplash.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="dynBench.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

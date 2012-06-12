@@ -1358,7 +1358,7 @@ namespace Dynamo.Controls
             }
 
             this.hideWorkspace(ws);
-            this.SaveFunction(ws);
+            this.SaveFunction(ws, false);
             #endregion
          }
          catch (Exception ex)
