@@ -388,6 +388,10 @@ namespace Dynamo.Elements
          }
       }
 
+      /// <summary>
+      /// Creates a Scheme representation of this dynElement and all connected dynElements.
+      /// </summary>
+      /// <returns>S-Expression</returns>
       public virtual string PrintExpression()
       {
          if (!this.InPortData.Any() || !this.InPorts.Any(x => x.Connectors.Any()))
