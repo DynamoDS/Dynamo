@@ -1362,6 +1362,7 @@ namespace Dynamo.Elements
 
    #region Interactive Primitive Types
 
+   [IsInteractive(true)]
    public abstract class dynBasicInteractive<T> : dynElement
    {
       protected abstract T Value { get; }
