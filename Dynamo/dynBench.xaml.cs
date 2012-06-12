@@ -144,6 +144,10 @@ namespace Dynamo.Controls
          this.uiLocked = true;
          this.saveButton.IsEnabled = false;
          this.clearButton.IsEnabled = false;
+
+         this.overlayCanvas.IsHitTestVisible = true;
+         this.overlayCanvas.Cursor = System.Windows.Input.Cursors.AppStarting;
+         this.overlayCanvas.ForceCursor = true;
       }
 
       void UnlockUI()
@@ -151,6 +155,10 @@ namespace Dynamo.Controls
          this.uiLocked = false;
          this.saveButton.IsEnabled = true;
          this.clearButton.IsEnabled = true;
+
+         this.overlayCanvas.IsHitTestVisible = false;
+         this.overlayCanvas.Cursor = null;
+         this.overlayCanvas.ForceCursor = false;
 
          if (this.UnlockLoadPath != null && !this.OpenWorkbench(this.UnlockLoadPath))
          {
@@ -2790,6 +2798,9 @@ namespace Dynamo.Controls
 
       private void OverlayCanvas_OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
       {
+         if (this.uiLocked)
+            return;
+
          var el = draggedElement;
 
          var pos = e.GetPosition(overlayCanvas);
@@ -2800,6 +2811,9 @@ namespace Dynamo.Controls
 
       private void OverlayCanvas_OnMouseUp(object sender, MouseButtonEventArgs e)
       {
+         if (this.uiLocked)
+            return;
+
          var el = draggedElement;
 
          var pos = e.GetPosition(this.workBench);

@@ -112,7 +112,7 @@
             </LinearGradientBrush>
          </Grid.Background>
       </Grid>
-      <Canvas Height="Auto" HorizontalAlignment="Stretch" Margin="0,22,0,-2" Name="overlayCanvas" VerticalAlignment="Stretch" Width="Auto" IsHitTestVisible="False" MouseUp="OverlayCanvas_OnMouseUp" PreviewMouseMove="OverlayCanvas_OnMouseMove">
+      <Canvas HorizontalAlignment="Stretch" Margin="0,20,0,0" Name="overlayCanvas" VerticalAlignment="Stretch" Width="Auto" IsHitTestVisible="False" MouseUp="OverlayCanvas_OnMouseUp" PreviewMouseMove="OverlayCanvas_OnMouseMove">
          <Canvas.Background>
             <SolidColorBrush />
          </Canvas.Background>
