@@ -169,52 +169,28 @@ namespace Dynamo.Elements
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)
-      //   {
-      //       object arg0 = ((FScheme.Expression.Container)args[0]).Item;
-
-   //       if (arg0 is CurveByPoints)
-      //       {
-
-   //           CurveByPoints curve = (args[0] as FScheme.Expression.Container).Item as CurveByPoints;
-
-   //           return FScheme.Expression.NewContainer(curve.GeometryCurve.Reference);
-      //       }
-
-   //       if (arg0 is ModelCurve)
-      //       {
-
-   //           ModelCurve curve = (args[0] as FScheme.Expression.Container).Item as ModelCurve;
-
-   //           return FScheme.Expression.NewContainer(curve.GeometryCurve.Reference);
-      //       }
-      //       else
-      //       {
-      //           throw new Exception("Cannot cast first argument to Mpdel Curve or Curve by Points.");
-      //       }
-      //   }
       {
-          var input = args[0];
+         var input = args[0];
 
-          if (input.IsList)
-          {
-              return Expression.NewList(
-                 Utils.convertSequence(
-                    ((Expression.List)input).Item.Select(
-                       x =>
-                          Expression.NewContainer(
-                             ((CurveElement)((Expression.Container)x).Item).GeometryCurve.Reference
-                          )
-                    )
-                 )
-              );
-          }
-          else
-          {
-              return Expression.NewContainer(
-                 ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference
-              );
-          }
-
+         if (input.IsList)
+         {
+            return Expression.NewList(
+               Utils.convertSequence(
+                  ((Expression.List)input).Item.Select(
+                     x =>
+                        Expression.NewContainer(
+                           ((CurveElement)((Expression.Container)x).Item).GeometryCurve.Reference
+                        )
+                  )
+               )
+            );
+         }
+         else
+         {
+            return Expression.NewContainer(
+               ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference
+            );
+         }
       }
 
    }
