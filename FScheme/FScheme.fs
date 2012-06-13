@@ -207,17 +207,12 @@ let SortBy cont = function
 let rec extend (env : Environment) = function
    | [] -> env
    | (a, b) :: t -> extend (ref (Map.add a b env.Value)) t
-//(ref (Map.ofList bindings) :: env)
 
 ///Looks up a symbol in the given environment.
 let lookup (env : Environment) symbol = 
    match Map.tryFind symbol env.Value with
    | Some(e) -> e
    | None -> sprintf "No binding for '%s'." symbol |> failwith
-//   match List.tryPick (fun (frame : Frame) ->
-//      Map.tryFind symbol frame.Value) env with
-//   | Some(e) -> e
-//   | None -> sprintf "No binding for '%s'." symbol |> failwith
 
 ///Zips given lists into a list of bindings.
 let zip args parameters =
@@ -307,9 +302,8 @@ and LetRec cont (env : Environment) = function
       let bind = function
          | List([Symbol(s); _]) -> s, ref (Dummy("Dummy 'letrec'"))
          | m -> malformed "letrec binding" m
-      
-      let env' = List.map bind bindings |> extend env //Map all of the bindings to dummys
-      
+      //Map all of the bindings to dummys
+      let env' = List.map bind bindings |> extend env
       // now update dummy env - assumes dummy env will be captured but not actually accessed (e.g. lambda)
       let rec mapupdate = function
          //If the input is a List (of symbol/expression pairs), then we evaluate the expression in the dummy environment
@@ -357,8 +351,6 @@ and Lambda cont (env : Environment) = function
       Special(closure) |> cont
    | m -> malformed "lambda" (List(m))
 
-
-
 ///Code quotation construct
 and Quote cont (env : Environment) =
    let rec unquote cont' = function
@@ -392,27 +384,6 @@ and Macro cont (env : Environment) = function
          eval (eval cont' env') env'' body
       Special(closure) |> cont
    | m -> malformed "macro" (List(m))
-
-(*and And cont env = function
-   | [a; b] -> 
-      printfn "ARGS -- a: %s b: %s" (print a) (print b)
-      printfn "Evaluating First Args..."
-      eval (fun expr ->
-         printfn "Ev A: %s" (print expr)
-         match expr with
-         | Number(p) -> 
-            if p <> 0.0 then
-               printfn "Evaluating Second Arg..."
-               eval (fun expr ->
-                  printfn "Ev B: %s" (print expr)
-                  match expr with
-                  | Number(p) ->
-                     if p <> 0.0 then Number(1.0) else Number(0.0) |> cont
-                  | m -> malformed "and parameter" m) env b
-            else
-               (Number(0.0) |> cont)
-         | m -> malformed "and parameter" m) env a
-   | m -> malformed "and" (List(m))*)
 
 ///Set! construct -- mutation
 and Set cont (env : Environment) = function
@@ -502,7 +473,6 @@ and environment =
        "sort-by", ref (Function(SortBy))
        "combine", ref (Special(Combine))
        "throw", ref (Function(Throw))
-       //"and", ref (Special(And))
       ] |> ref
 
 ///Our eval loop
