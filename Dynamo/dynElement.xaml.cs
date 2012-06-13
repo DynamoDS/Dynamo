@@ -1284,11 +1284,21 @@ namespace Dynamo.Elements
             ChangeTypeEnum.Modified,
             new DynElementUpdateDelegate(this.ReEvalOnModified)
          );
-
          u.RegisterChangeHook(
             id,
             ChangeTypeEnum.Delete,
             new DynElementUpdateDelegate(this.UnRegOnDelete)
+         );
+      }
+
+      public void UnregisterEvalOnModified(ElementId id)
+      {
+         var u = this.Bench.Updater;
+         u.UnRegisterChangeHook(
+            id, ChangeTypeEnum.Modified
+         );
+         u.UnRegisterChangeHook(
+            id, ChangeTypeEnum.Delete
          );
       }
 
