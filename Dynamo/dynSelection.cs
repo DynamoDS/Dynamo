@@ -294,6 +294,7 @@ namespace Dynamo.Elements
               CurveID = pickedCurve.Id;
               this.RegisterEvalOnModified(CurveID);
               this.data = Expression.NewContainer(PickedCurve);
+              this.IsDirty = true;
 
               curveButt.Content = "Change Curve";
               string successString = PickedCurve.Name + " " + PickedCurve.Id;
@@ -458,7 +459,7 @@ namespace Dynamo.Elements
               RefPointID = pickedRefPoint.Id;
               this.RegisterEvalOnModified(RefPointID);
               this.data = Expression.NewContainer(PickedRefPoint);
-
+              this.IsDirty = true;
               pointButt.Content = "Change Point";
               string successString = "Point " + PickedRefPoint.Name + PickedRefPoint.Id;
               this.tb.Text = successString;
@@ -642,6 +643,7 @@ namespace Dynamo.Elements
 
 
                this.data = Expression.NewContainer(sunVector);
+               this.IsDirty = true;
 
                string successString = PickedSunAndShadowSettings.Name;
                this.tb.Text = successString;
