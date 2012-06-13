@@ -1977,7 +1977,9 @@ namespace Dynamo.Controls
 
          worker.DoWork += delegate(object s, DoWorkEventArgs args)
          {
-            var topElements = this.homeSpace.Elements.Where(x => !x.OutPort.Connectors.Any());
+            var topElements = this.homeSpace.Elements.Where(
+               x => !x.OutPort.Connectors.Any()
+            );
 
             //Mark the topmost as dirty/clean
             foreach (var topMost in topElements)

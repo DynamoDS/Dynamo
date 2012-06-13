@@ -433,7 +433,7 @@ namespace Dynamo.Elements
       {
          return this.InPorts.Any(
             x => 
-               x.Connectors[0].Start.Owner.RequiresManualTransaction()
+               x.Connectors.Any() && x.Connectors[0].Start.Owner.RequiresManualTransaction()
          );
       }
 
