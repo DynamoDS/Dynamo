@@ -607,8 +607,7 @@ namespace Dynamo.Elements
          tb.IsReadOnly = true;
          tb.IsReadOnlyCaretVisible = false;
 
-         this.inputGrid.RowDefinitions.Add(new RowDefinition());
-         this.inputGrid.RowDefinitions.Add(new RowDefinition());
+         this.SetRowAmount(2);
 
          this.inputGrid.Children.Add(tb);
          this.inputGrid.Children.Add(familyInstanceButt);

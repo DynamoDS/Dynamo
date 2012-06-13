@@ -11,7 +11,6 @@ using System.Windows.Forms;
 
 namespace Dynamo.Elements
 {
-   //SJE
    [ElementName("Read File")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
@@ -38,6 +37,8 @@ namespace Dynamo.Elements
       }
    }
 
+   #region FileWatcher
+
    //SJE
    //TODO: Update (or make different versions)
    [ElementName("Watch File")]
@@ -46,224 +47,177 @@ namespace Dynamo.Elements
    [RequiresTransaction(false)]
    public class dynFileWatcher : dynElement
    {
-      System.Windows.Controls.TextBox tb;
-
-      string dataFromFileString;
-      string filePath = "";
-
-      public string DataFromFileString
-      {
-         get { return dataFromFileString; }
-         set
-         {
-            dataFromFileString = value;
-            NotifyPropertyChanged("DataFromFileString");
-         }
-      }
-
-      public string FilePath
-      {
-         get { return filePath; }
-         set
-         {
-            filePath = value;
-            NotifyPropertyChanged("FilePath");
-         }
-      }
-
-      private FileSystemWatcher watcher;
-
       public dynFileWatcher()
       {
-         StackPanel myStackPanel;
-
-         //Define a StackPanel
-         myStackPanel = new StackPanel();
-         myStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
-         System.Windows.Controls.Grid.SetRow(myStackPanel, 1);
-
-         this.inputGrid.Children.Add(myStackPanel);
-
-         //add a button to the inputGrid on the dynElement
-         System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
-
-         System.Windows.Controls.Grid.SetColumn(readFileButton, 0); // trying to get this button to be on top... grrr.
-         System.Windows.Controls.Grid.SetRow(readFileButton, 0);
-         readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-         readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
-         readFileButton.Content = "Read File";
-         readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-         myStackPanel.Children.Add(readFileButton);
-
-
-         //add a list box
-         //label = new System.Windows.Controls.Label();
-         tb = new System.Windows.Controls.TextBox();
-         //tb.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-         //tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-
-         DataFromFileString = "Ready to read file!";
-
-         //http://learnwpf.com/post/2006/06/12/How-can-I-create-a-data-binding-in-code-using-WPF.aspx
-
-
-         //this.inputGrid.Children.Add(label);
-         //this.inputGrid.Children.Add(tb);
-         //tb.Visibility = System.Windows.Visibility.Hidden;
-         //System.Windows.Controls.Grid.SetColumn(tb, 0);
-         //System.Windows.Controls.Grid.SetRow(tb, 1);
-         tb.TextWrapping = System.Windows.TextWrapping.Wrap;
-         tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-         tb.Height = 100;
-         //tb.AcceptsReturn = true;
-
-         System.Windows.Data.Binding b = new System.Windows.Data.Binding("DataFromFileString");
-         b.Source = this;
-         tb.SetBinding(System.Windows.Controls.TextBox.TextProperty, b);
-
-         myStackPanel.Children.Add(tb);
-         myStackPanel.Height = 200;
-
-         OutPortData = new PortData("contents", "downstream data", typeof(object));
+         this.InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
+         this.OutPortData = new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher));
 
          base.RegisterInputsAndOutputs();
-
-         //resize the panel
-         this.topControl.Height = 200;
-         this.topControl.Width = 300;
-         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-         //this.UpdateLayout();
-      }
-
-
-      void readFileButton_Click(object sender, System.Windows.RoutedEventArgs e)
-      {
-         // string txtPath = "C:\\xfer\\dev\\dynamo_git\\test\\text_files\test.txt";
-         OpenFileDialog openDialog = new OpenFileDialog();
-
-         if (openDialog.ShowDialog() == DialogResult.OK)
-         {
-            FilePath = openDialog.FileName;
-            AddFileWatch(FilePath);
-         }
-
-         if (string.IsNullOrEmpty(DataFromFileString))
-         {
-            string fileError = "Data file could not be opened.";
-            TaskDialog.Show("Error", fileError);
-            dynElementSettings.SharedInstance.Writer.WriteLine(fileError);
-            dynElementSettings.SharedInstance.Writer.WriteLine(FilePath);
-         }
-      }
-
-      public void AddFileWatch(string filePath)
-      {
-         if (this.watcher != null)
-         {
-            this.watcher.Changed -= new FileSystemEventHandler(OnChanged);
-            this.watcher.Dispose();
-         }
-
-         // Create a new FileSystemWatcher and set its properties.
-         this.watcher = new FileSystemWatcher(
-            Path.GetDirectoryName(filePath),
-            Path.GetFileName(filePath)
-         );
-
-         try
-         {
-            //MDJ hard crash - threading / context issue?
-
-            /* Watch for changes in LastAccess and LastWrite times, and
-               the renaming of files or directories. */
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite;
-            // | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            // Only watch text files.
-            //watcher.Filter = "*.csv";
-
-            // Add event handlers.
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            // watcher.Created += new FileSystemEventHandler(OnChanged);
-            // watcher.Deleted += new FileSystemEventHandler(OnChanged);
-            // watcher.Renamed += new RenamedEventHandler(OnRenamed);
-
-            // Begin watching.
-            watcher.EnableRaisingEvents = true;
-
-            fileChanged = true;
-         }
-
-         catch (Exception e)
-         {
-            TaskDialog.Show("Error", e.ToString());
-         }
-      }
-
-      private bool fileChanged = false;
-
-      // mdj to do - figure out how to dispose of this FileSystemWatcher
-      // Define the event handlers.
-      private void OnChanged(object source, FileSystemEventArgs e)
-      {
-         fileChanged = true;
-
-         // Specify what is done when a file is changed, created, or deleted.
-         //this.Dispatcher.BeginInvoke(new Action(
-         //   () =>
-         //      dynElementSettings.SharedInstance.Bench.Log("File Changed: " + e.FullPath + " " + e.ChangeType)
-         //));
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         FileStream fs;
+         //FileStream fs;
+
+         //int tick = 0;
+         //while (!fileChanged || isFileInUse(@FilePath, out fs))
+         //{
+         //   Thread.Sleep(10);
+         //   tick += 10;
+
+         //   if (tick >= 5000)
+         //   {
+         //      throw new Exception("File watcher timeout!");
+         //   }
+         //}
+
+         //StreamReader reader = new StreamReader(fs);
+
+         //string result = reader.ReadToEnd();
+
+         //reader.Close();
+
+         //fileChanged = false;
+
+         //return Expression.NewString(result);
+
+         string fileName = ((Expression.String)args[0]).Item;
+
+         return Expression.NewContainer(new FileWatcher(fileName));
+      }
+
+      //private bool isFileInUse(string path, out FileStream stream)
+      //{
+      //   try
+      //   {
+      //      stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+      //   }
+      //   catch (IOException)
+      //   {
+      //      //the file is unavailable because it is:
+      //      //still being written to
+      //      //or being processed by another thread
+      //      //or does not exist (has already been processed)
+      //      stream = null;
+      //      return true;
+      //   }
+
+      //   //file is not locked
+      //   return false;
+      //}
+   }
+
+   [ElementName("Watched File Changed?")]
+   [ElementCategory(BuiltinElementCategories.MISC)]
+   [ElementDescription("Checks if the file watched by the given FileWatcher has changed.")]
+   [RequiresTransaction(false)]
+   public class dynFileWatcherChanged : dynElement
+   {
+      public dynFileWatcherChanged()
+      {
+         this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
+         this.OutPortData = new PortData("changed?", "Whether or not the file has been changed.", typeof(bool));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
+
+         return Expression.NewNumber(watcher.Changed ? 1 : 0);
+      }
+   }
+
+   //TODO: Add UI for specifying whether should error or continue (checkbox?)
+   [ElementName("Wait for Change")]
+   [ElementCategory(BuiltinElementCategories.MISC)]
+   [ElementDescription("Waits for the specified watched file to change.")]
+   [RequiresTransaction(false)]
+   public class dynFileWatcherWait : dynElement
+   {
+      public dynFileWatcherWait()
+      {
+         this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
+         this.InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(double)));
+         this.OutPortData = new PortData("changed?", "True: File was changed. False: Timed out.", typeof(bool));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
+         double timeout = ((Expression.Number)args[1]).Item;
 
          int tick = 0;
-         while (!fileChanged || isFileInUse(@FilePath, out fs))
+         while (!watcher.Changed)
          {
             Thread.Sleep(10);
             tick += 10;
 
-            if (tick >= 5000)
+            if (tick >= timeout)
             {
                throw new Exception("File watcher timeout!");
             }
          }
 
-         StreamReader reader = new StreamReader(fs);
-
-         string result = reader.ReadToEnd();
-
-         reader.Close();
-
-         fileChanged = false;
-
-         return Expression.NewString(result);
-      }
-
-      private bool isFileInUse(string path, out FileStream stream)
-      {
-         try
-         {
-            stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-         }
-         catch (IOException)
-         {
-            //the file is unavailable because it is:
-            //still being written to
-            //or being processed by another thread
-            //or does not exist (has already been processed)
-            stream = null;
-            return true;
-         }
-
-         //file is not locked
-         return false;
+         return Expression.NewNumber(1);
       }
    }
+
+   [ElementName("Reset File Watcher")]
+   [ElementCategory(BuiltinElementCategories.MISC)]
+   [ElementDescription("Resets state of FileWatcher so that it watches again.")]
+   [RequiresTransaction(false)]
+   public class dynFileWatcherReset : dynElement
+   {
+      public dynFileWatcherReset()
+      {
+         this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
+         this.OutPortData = new PortData("fw", "Updated watcher.", typeof(FileWatcher));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
+
+         watcher.Reset();
+
+         return Expression.NewContainer(watcher);
+      }
+   }
+
+   class FileWatcher
+   {
+      public bool Changed = false;
+
+      private FileSystemWatcher watcher;
+
+      public FileWatcher(string filePath)
+      {
+         this.watcher = new FileSystemWatcher(
+            Path.GetDirectoryName(filePath),
+            Path.GetFileName(filePath)
+         );
+
+         this.watcher.Changed += new FileSystemEventHandler(watcher_Changed);
+         this.watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite;
+         this.watcher.EnableRaisingEvents = true;
+      }
+
+      void watcher_Changed(object sender, FileSystemEventArgs e)
+      {
+         this.Changed = true;
+      }
+
+      public void Reset()
+      {
+         this.Changed = false;
+      }
+   }
+
+   #endregion
 }

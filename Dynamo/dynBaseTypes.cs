@@ -1362,6 +1362,8 @@ namespace Dynamo.Elements
 
    #region Interactive Primitive Types
 
+   #region Base Classes
+   
    [IsInteractive(true)]
    public abstract class dynBasicInteractive<T> : dynElement
    {
@@ -1434,7 +1436,14 @@ namespace Dynamo.Elements
             ))
          );
       }
+
+      public override string PrintExpression()
+      {
+         return "\"" + base.PrintExpression() + "\"";
+      }
    }
+   
+   #endregion
 
    [ElementName("Number")]
    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
@@ -1762,6 +1771,82 @@ namespace Dynamo.Elements
       protected override void DeserializeValue(string val)
       {
          this.tb.Text = val;
+      }
+   }
+
+   [ElementName("Filename")]
+   [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+   [ElementDescription("Allows you to select a file on the system to get its filename.")]
+   [RequiresTransaction(false)]
+   public class dynStringFilename : dynString
+   {
+      System.Windows.Controls.TextBox tb;
+
+      public dynStringFilename()
+      {
+         //add a button to the inputGrid on the dynElement
+         System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
+         readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+         readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
+         readFileButton.Content = "Browse...";
+         readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+         tb = new TextBox();
+         tb.Text = "No file selected.";
+         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+         tb.Background = backgroundBrush;
+         tb.BorderThickness = new Thickness(0);
+         tb.IsReadOnly = true;
+         tb.IsReadOnlyCaretVisible = false;
+         tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); };
+
+         this.SetRowAmount(2);
+
+         this.inputGrid.Children.Add(tb);
+         this.inputGrid.Children.Add(readFileButton);
+
+         System.Windows.Controls.Grid.SetRow(readFileButton, 0);
+         System.Windows.Controls.Grid.SetRow(tb, 1);
+
+         base.RegisterInputsAndOutputs();
+
+         this.topControl.Height = 60;
+         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+      }
+
+      string filename = null;
+      protected override string Value
+      {
+         get { return this.filename; }
+      }
+
+      protected override void DeserializeValue(string val)
+      {
+         if (File.Exists(val))
+         {
+            this.tb.Text = val;
+            this.filename = val;
+         }
+      }
+
+      void readFileButton_Click(object sender, RoutedEventArgs e)
+      {
+         OpenFileDialog openDialog = new OpenFileDialog();
+
+         if (openDialog.ShowDialog() == DialogResult.OK)
+         {
+            this.filename = openDialog.FileName;
+         }
+
+         this.tb.Text = string.IsNullOrEmpty(this.filename)
+            ? "No file selected."
+            : this.filename;
       }
    }
 

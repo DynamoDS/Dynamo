@@ -44,6 +44,31 @@ namespace Dynamo.Elements
          };
       }
 
+      protected internal override bool RequiresManualTransaction()
+      {
+         bool baseManual = base.RequiresManualTransaction();
+         if (baseManual)
+            return true;
+
+         bool start = _startTag;
+         _startTag = true;
+
+         if (_taggedSymbols.Contains(this.Symbol))
+            return false;
+         _taggedSymbols.Add(this.Symbol);
+
+         var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+         bool manualInternals = ws.Elements.Any(x => x.RequiresManualTransaction());
+
+         if (!start)
+         {
+            _startTag = false;
+            _taggedSymbols.Clear();
+         }
+
+         return manualInternals;
+      }
+
       public override bool IsDirty
       {
          get
@@ -51,30 +76,26 @@ namespace Dynamo.Elements
             bool baseDirty = base.IsDirty;
             if (baseDirty)
                return true;
-            else
+
+            bool start = _startTag;
+            _startTag = true;
+
+            if (_taggedSymbols.Contains(this.Symbol))
+               return false;
+            _taggedSymbols.Add(this.Symbol);
+
+            //TODO: bugged? 
+            //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
+            var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+            bool dirtyInternals = ws.Elements.Any(e => e.IsDirty);
+
+            if (!start)
             {
-               bool start = _startTag;
-               _startTag = true;
-
-               if (_taggedSymbols.Contains(this.Symbol))
-                  return false;
-               _taggedSymbols.Add(this.Symbol);
-            
-               //TODO: bugged? 
-               //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
-               var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-               bool dirtyInternals = ws.Elements
-                  //.Where(e => !(e is dynFunction && ((dynFunction)e).Symbol.Equals(this.Symbol)))
-                  .Any(e => e.IsDirty);
-
-               if (!start)
-               {
-                  _startTag = false;
-                  _taggedSymbols.Clear();
-               }
-
-               return dirtyInternals;
+               _startTag = false;
+               _taggedSymbols.Clear();
             }
+
+            return dirtyInternals;
          }
          set
          {
@@ -220,12 +241,29 @@ namespace Dynamo.Elements
 
       public override void Destroy()
       {
-         var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+         bool start = _startTag;
+         _startTag = true;
+
+         if (_taggedSymbols.Contains(this.Symbol))
+            return;
+         _taggedSymbols.Add(this.Symbol);
+
+         var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
          foreach (var el in ws.Elements)
+            el.Destroy();
+
+         if (!start)
          {
-            if (!(el is dynFunction) || !((dynFunction)el).Symbol.Equals(this.Symbol))
-               el.Destroy();
+            _startTag = false;
+            _taggedSymbols.Clear();
          }
+
+         //var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+         //foreach (var el in ws.Elements)
+         //{
+         //   if (!(el is dynFunction) || !((dynFunction)el).Symbol.Equals(this.Symbol))
+         //      el.Destroy();
+         //}
       }
    }
 

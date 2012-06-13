@@ -429,6 +429,14 @@ namespace Dynamo.Elements
          return s;
       }
 
+      protected internal virtual bool RequiresManualTransaction()
+      {
+         return this.InPorts.Any(
+            x => 
+               x.Connectors[0].Start.Owner.RequiresManualTransaction()
+         );
+      }
+
       /// <summary>
       /// Resize the control based on the number of inputs.
       /// </summary>
