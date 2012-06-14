@@ -1,4 +1,4 @@
-<dynWorkspace X="-28.401162790698" Y="54">
+<dynWorkspace X="-153.401162790698" Y="-27">
   <dynElements>
     <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" nickname="Python Script" x="360.901162790698" y="181">
       <Script>import math
@@ -6,7 +6,7 @@
 doc = __revit__.ActiveUIDocument.Document
 app = __revit__.Application
 
-crv = IN[0]
+crv = IN
 crvRef = crv.GeometryCurve
 refptarr = ReferencePointArray()
 
@@ -25,7 +25,9 @@ for i in range(0,steps+1):
     refptarr.Append(refPt)
 crv2 = doc.FamilyCreate.NewCurveByPoints(refptarr)</Script>
     </Dynamo.Elements.dynPython>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="052930f8-51c7-4db1-ae80-5e2b20cbf752" nickname="Curve by Selection" x="65.151162790698" y="219.5" />
+    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="052930f8-51c7-4db1-ae80-5e2b20cbf752" nickname="Curve by Selection" x="65.151162790698" y="219.5">
+      <instance id="32741" />
+    </Dynamo.Elements.dynCurvesBySelection>
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnector start="052930f8-51c7-4db1-ae80-5e2b20cbf752" start_index="0" end="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" end_index="0" portType="0" />

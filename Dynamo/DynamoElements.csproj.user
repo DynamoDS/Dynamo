@@ -4,4 +4,8 @@
     <StartAction>Program</StartAction>
     <StartProgram>c:\Program Files\Autodesk\Revit Architecture 2012\Program\revit.exe</StartProgram>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files\Autodesk\Revit Architecture 2012\Program\Revit.exe</StartProgram>
+  </PropertyGroup>
 </Project>
