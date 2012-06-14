@@ -64,13 +64,14 @@ namespace Dynamo.Elements
       protected abstract void selectButton_Click(object sender, System.Windows.RoutedEventArgs e);
 
       private Element selected;
-      public virtual Element SelectedElement {
+      public virtual Element SelectedElement 
+      {
          get { return selected; }
          set
          {
             if (this.selected != null)
             {
-               if (value.Id.Equals(this.selected.Id))
+               if (value != null && value.Id.Equals(this.selected.Id))
                   return;
 
                this.UnregisterEvalOnModified(this.selected.Id);
@@ -89,8 +90,6 @@ namespace Dynamo.Elements
                this.tb.Text = "Nothing Selected.";
                this.selectButton.Content = "Select";
             }
-
-            
          }
       }
 
