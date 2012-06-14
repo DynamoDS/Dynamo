@@ -81,7 +81,6 @@ namespace Dynamo.Elements
       Guid guid;
       //bool isSelected = false;
       ElementState state;
-      DataTree dataTree;
       bool elementsHaveBeenDeleted = false;
       SetStateDelegate stateSetter;
       LacingType lacingType = LacingType.SHORTEST;
@@ -210,12 +209,6 @@ namespace Dynamo.Elements
          }
       }
 
-      public DataTree Tree
-      {
-         get { return dataTree; }
-         set { dataTree = value; }
-      }
-
       public bool ElementsHaveBeenDeleted
       {
          get { return elementsHaveBeenDeleted; }
@@ -275,7 +268,6 @@ namespace Dynamo.Elements
          statePorts = new List<dynPort>();
          statePortData = new List<PortData>();
          elements = new List<List<ElementId>>() { new List<ElementId>() };
-         dataTree = new DataTree();
          inPortTextBlocks = new Dictionary<dynPort, TextBlock>();
 
          stateSetter = new SetStateDelegate(SetState);
