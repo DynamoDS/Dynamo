@@ -74,8 +74,9 @@ namespace Dynamo.Elements
                   return;
 
                this.UnregisterEvalOnModified(this.selected.Id);
-            }               
+            }
 
+            this.selected = value;
             if (value != null)
             {
                this.RegisterEvalOnModified(value.Id);
@@ -89,7 +90,7 @@ namespace Dynamo.Elements
                this.selectButton.Content = "Select";
             }
 
-            this.selected = value;
+            
          }
       }
 
