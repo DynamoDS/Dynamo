@@ -5,11 +5,17 @@
     </Dynamo.Elements.dynDoubleInput>
     <Dynamo.Elements.dynXYZ type="Dynamo.Elements.dynXYZ" guid="14af8f89-a133-43cc-8449-95336fb0bb6d" nickname="XYZ" x="303" y="102.75" />
     <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="caec8ec2-19b1-4b08-971b-92ebc9e2ad6c" nickname="Reference Point" x="445" y="203.25" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c504eb7d-dd66-4466-9b11-87c0dfced275" nickname="Number" x="21.25" y="126">
+      <System.Double value="0" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="2eb70bdb-773d-4cf4-a10e-828dd39a0cca" nickname="Number Slider" x="22.75" y="179.75">
+      <System.Double value="0" min="0" max="100" />
+    </Dynamo.Elements.dynDoubleSliderInput>
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnector start="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="2" portType="0" />
     <Dynamo.Connectors.dynConnector start="14af8f89-a133-43cc-8449-95336fb0bb6d" start_index="0" end="caec8ec2-19b1-4b08-971b-92ebc9e2ad6c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="c504eb7d-dd66-4466-9b11-87c0dfced275" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="2eb70bdb-773d-4cf4-a10e-828dd39a0cca" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="2" portType="0" />
   </dynConnectors>
 </dynWorkspace>
