@@ -28,16 +28,14 @@ FlatComponentsList=false
 ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
-UninstallDisplayIcon={app}Nodes_32_32.ico
+UninstallDisplayIcon={app}\Nodes_32_32.ico
 UninstallDisplayName=Vasari 2.5 WIP Dynamo Add-In
 PrivilegesRequired=admin
-
 
 [Types]
 Name: "full"; Description: "Full installation"
 Name: "compact"; Description: "Compact installation"
 Name: "custom"; Description: "Custom installation"; Flags: iscustom
-
 
 [Dirs]
 Name: "{app}\definitions"
@@ -46,7 +44,6 @@ Name: "{app}\samples"
 [Components]
 Name: "DynamoForVasariWIP"; Description: "Dynamo For Vasari WIP"; Types: full compact custom; Flags: fixed
 Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
-
 
 [Files]
 ;Core Files
@@ -62,12 +59,11 @@ Source: fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonl
 Source: Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
 Source: Definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
 
-
 [UninstallDelete]
 Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\TP2.5\DynamoforVasari_2.5_WIP.addin"
 
 [Run]
-Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: postinstall runascurrentuser runhidden
+Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
 ;Filename: "del"; Parameters: "/q {app}\fsharp_redist.exe"; Flags: postinstall runascurrentuser runhidden
 
 [Code]

@@ -1934,7 +1934,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [AttributeUsage(AttributeTargets.All)]
+   [AttributeUsage(AttributeTargets.All, Inherited=true)]
    public class IsInteractiveAttribute : System.Attribute
    {
       public bool IsInteractive { get; set; }

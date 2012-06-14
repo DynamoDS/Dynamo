@@ -2026,6 +2026,8 @@ namespace Dynamo.Controls
 
                         if (ex.Force)
                            this.runAgain = false;
+
+                        break;
                      }
                      catch (Exception ex)
                      {

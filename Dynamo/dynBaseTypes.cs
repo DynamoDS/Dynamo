@@ -1367,7 +1367,22 @@ namespace Dynamo.Elements
    [IsInteractive(true)]
    public abstract class dynBasicInteractive<T> : dynElement
    {
-      protected abstract T Value { get; }
+      private T _value = default(T);
+      protected virtual T Value 
+      {
+         get
+         {
+            return this._value;
+         }
+         set
+         {
+            if (!this._value.Equals(value))
+            {
+               this.IsDirty = true;
+               this._value = value;
+            }
+         }
+      }
 
       protected abstract void DeserializeValue(string val);
 
@@ -1406,11 +1421,7 @@ namespace Dynamo.Elements
    {
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         return Expression.NewNumber(
-            (double)this.Dispatcher.Invoke(new Func<double>(
-               delegate { return this.Value; }
-            ))
-         );
+         return Expression.NewNumber(this.Value);
       }
    }
 
@@ -1418,11 +1429,7 @@ namespace Dynamo.Elements
    {
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         return Expression.NewNumber(
-            (bool)this.Dispatcher.Invoke(new Func<bool>(
-               delegate { return this.Value; }
-            )) ? 1 : 0
-         );
+         return Expression.NewNumber(this.Value ? 1 : 0);
       }
    }
 
@@ -1430,11 +1437,7 @@ namespace Dynamo.Elements
    {
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         return Expression.NewString(
-            (string)this.Dispatcher.Invoke(new Func<string>(
-               delegate { return this.Value; }
-            ))
-         );
+         return Expression.NewString(this.Value);
       }
 
       public override string PrintExpression()
@@ -1463,9 +1466,9 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "0.0";
-         tb.TextChanged += delegate { this.IsDirty = true; };
-         //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-         //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+         tb.TextChanged += delegate { if (!this.Bench.DynamicRunEnabled) this.DeserializeValue(tb.Text); };
+         tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+         tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
          //turn off the border
          SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -1477,25 +1480,43 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
+      void tb_LostFocus(object sender, RoutedEventArgs e)
+      {
+         this.DeserializeValue(this.tb.Text);
+      }
+
+      void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+      {
+         if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
+         {
+            this.DeserializeValue(this.tb.Text);
+         }
+      }
+
       protected override double Value
       {
          get
          {
-            try
-            {
-               return Convert.ToDouble(this.tb.Text);
-            }
-            catch
-            {
-               this.tb.Text = "0.0";
-               return 0.0;
-            }
+            return base.Value;
+         }
+         set
+         {
+            base.Value = value;
+
+            this.tb.Text = value.ToString();
          }
       }
 
       protected override void DeserializeValue(string val)
       {
-         this.tb.Text = val;
+         try
+         {
+            this.Value = Convert.ToDouble(val);
+         }
+         catch
+         {
+            this.Value = 0;
+         }
       }
    }   
 
@@ -1749,9 +1770,9 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "";
-         tb.TextChanged += delegate { this.IsDirty = true; };
-         //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-         //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+         tb.TextChanged += delegate { if (!this.Bench.DynamicRunEnabled) this.Value = tb.Text; };
+         tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+         tb.LostFocus += new RoutedEventHandler(tb_LostFocus);
 
          //turn off the border
          SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -1763,14 +1784,21 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      protected override string Value
+      void tb_LostFocus(object sender, RoutedEventArgs e)
       {
-         get { return this.tb.Text; }
+         this.Value = this.tb.Text;
+      }
+
+      void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+      {
+         if (e.Key.Equals(Keys.Enter))
+            this.Value = this.tb.Text;
       }
 
       protected override void DeserializeValue(string val)
       {
          this.tb.Text = val;
+         this.Value = val;
       }
    }
 
@@ -1820,18 +1848,27 @@ namespace Dynamo.Elements
          Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
       }
 
-      string filename = null;
       protected override string Value
       {
-         get { return this.filename; }
+         get
+         {
+            return base.Value;
+         }
+         set
+         {
+            base.Value = value;
+
+            this.tb.Text = string.IsNullOrEmpty(this.Value)
+               ? "No file selected."
+               : this.Value;
+         }
       }
 
       protected override void DeserializeValue(string val)
       {
          if (File.Exists(val))
          {
-            this.tb.Text = val;
-            this.filename = val;
+            this.Value = val;
          }
       }
 
@@ -1841,12 +1878,16 @@ namespace Dynamo.Elements
 
          if (openDialog.ShowDialog() == DialogResult.OK)
          {
-            this.filename = openDialog.FileName;
+            this.Value = openDialog.FileName;
          }
+      }
 
-         this.tb.Text = string.IsNullOrEmpty(this.filename)
-            ? "No file selected."
-            : this.filename;
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         if (string.IsNullOrEmpty(this.Value))
+            throw new Exception("No file selected.");
+
+         return base.Evaluate(args);
       }
    }
 

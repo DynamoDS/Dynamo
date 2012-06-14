@@ -342,7 +342,7 @@ namespace Dynamo.Utilities
 
 
       }
-      public static CurveElement RequestModelCurveSelection(UIDocument doc, string message, dynElementSettings settings)
+      public static CurveElement RequestCurveElementSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
          {
@@ -359,7 +359,7 @@ namespace Dynamo.Utilities
             Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
             //c = curveRef.Element as ModelCurve;
-            c = dynElementSettings.SharedInstance.Revit.ActiveUIDocument.Document.GetElement(curveRef) as ModelCurve;//TODO generalize to handle curve by points as well
+            c = dynElementSettings.SharedInstance.Revit.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
 
             if (c != null)
             {

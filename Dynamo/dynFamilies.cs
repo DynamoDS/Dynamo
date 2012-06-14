@@ -25,6 +25,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
+using System.Collections.Generic;
 
 namespace Dynamo.Elements
 {
@@ -35,7 +36,7 @@ namespace Dynamo.Elements
    public class dynFamilyTypeSelector : dynElement
    {
       System.Windows.Controls.ComboBox combo;
-      Hashtable comboHash;
+      Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
 
       public dynFamilyTypeSelector()
       {
@@ -51,7 +52,7 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetRow(combo, 0);
 
          combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
-         comboHash = new Hashtable();
+         combo.SelectionChanged += delegate { this.IsDirty = true; };
 
          PopulateComboBox();
 
@@ -80,7 +81,7 @@ namespace Dynamo.Elements
                string comboText = f.Name + ":" + fs.Name;
                cbi.Content = comboText;
                combo.Items.Add(cbi);
-               comboHash.Add(comboText, fs);
+               comboHash[comboText] = fs;
             }
          }
       }
@@ -91,7 +92,7 @@ namespace Dynamo.Elements
 
          if (cbi != null)
          {
-            var f = (FamilySymbol)comboHash[cbi.Content];
+            var f = comboHash[(string)cbi.Content];
             return Expression.NewContainer(f);
          }
 
@@ -498,6 +499,7 @@ namespace Dynamo.Elements
          if (this.Elements.Count > count)
          {
             fi = (FamilyInstance)this.UIDocument.Document.get_Element(this.Elements[count]);
+            fi.Symbol = fs;
             LocationPoint lp = (LocationPoint)fi.Location;
             lp.Point = pos;
          }

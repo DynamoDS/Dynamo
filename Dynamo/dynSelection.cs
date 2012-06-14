@@ -97,6 +97,9 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
+         if (this.SelectedElement == null)
+            throw new Exception("Nothing selected.");
+
          return Expression.NewContainer(this.SelectedElement);
       }
 
@@ -296,7 +299,7 @@ namespace Dynamo.Elements
 
       protected override void  selectButton_Click(object sender, RoutedEventArgs e)
       {
-          this.SelectedElement = SelectionHelper.RequestModelCurveSelection(
+          this.SelectedElement = SelectionHelper.RequestCurveElementSelection(
              dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance
           );
       }
