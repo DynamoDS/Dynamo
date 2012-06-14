@@ -29,6 +29,11 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
+      protected internal override bool RequiresManualTransaction()
+      {
+         return true;
+      }
+
       protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
          ExternMacro m = new ExternMacro(

@@ -131,9 +131,10 @@ namespace Dynamo.Controls
       {
          if (!this._activated)
          {
+            this._activated = true;
+
             LoadUserTypes();
             this.workBench.Visibility = System.Windows.Visibility.Visible;
-            this._activated = true;
 
             Log("Welcome to Dynamo!");
 
@@ -1976,7 +1977,9 @@ namespace Dynamo.Controls
 
          worker.DoWork += delegate(object s, DoWorkEventArgs args)
          {
-            var topElements = this.homeSpace.Elements.Where(x => !x.OutPort.Connectors.Any());
+            var topElements = this.homeSpace.Elements.Where(
+               x => !x.OutPort.Connectors.Any()
+            );
 
             //Mark the topmost as dirty/clean
             foreach (var topMost in topElements)
@@ -2004,9 +2007,12 @@ namespace Dynamo.Controls
                      {
                         var expr = this.Environment.Evaluate(runningExpression);
 
-                        this.Dispatcher.Invoke(new Action(
-                           () => Log(FScheme.print(expr))
-                        ));
+                        if (expr != null)
+                        {
+                           this.Dispatcher.Invoke(new Action(
+                              () => Log(FScheme.print(expr))
+                           ));
+                        }
                      }
                      catch (CancelEvaluationException ex)
                      {
@@ -2072,7 +2078,7 @@ namespace Dynamo.Controls
                      return true;
                   };
 
-                  bool allInIdleThread = this.AllElements.Any(x => x is dynTransaction)
+                  bool allInIdleThread = topElements.Any(x => x.RequiresManualTransaction())
                                          || this.AllElements.All(allIdlePred);
 
                   if (allInIdleThread)
