@@ -1266,7 +1266,7 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         double newValue = (args.Head as Expression.Number).Item;
+         double newValue = ((Expression.Number)args.Head).Item;
          if (newValue > this.CurrentValue)
          {
             this.CurrentValue = newValue;
@@ -1344,8 +1344,8 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         double maxIterations = (args[0] as Expression.Number).Item;
-         double newValue = (args[1] as Expression.Number).Item;
+         double maxIterations = ((Expression.Number)args[0]).Item;
+         double newValue = ((Expression.Number)args[1]).Item;
          if (newValue != this.CurrentValue)
          {
             this.NumIterations++;

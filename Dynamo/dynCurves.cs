@@ -49,8 +49,9 @@ namespace Dynamo.Elements
 
          if (this.Elements.Any())
          {
-            e = (ModelCurve)this.UIDocument.Document.get_Element(this.Elements[0]);
-            var loc = (LocationCurve)e.Location;
+            e = this.UIDocument.Document.get_Element(this.Elements[0]) as ModelCurve;
+            var loc = e.Location as LocationCurve;
+            loc.Curve = c;
          }
          else
          {
@@ -82,108 +83,40 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-          bool isSolid = ((Expression.Number)args[0]).Item == 1;
+         bool isSolid = ((Expression.Number)args[0]).Item == 1;
 
-          IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
-             x => ((Expression.List)x).Item.Select(
-                y => (Reference)((Expression.Container)y).Item
-             )
-          );
+         IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
+            delegate(Expression x)
+            {
+               if (x.IsList)
+               {
+                  return (x as Expression.List).Item.Select(
+                     y => (Reference)((Expression.Container)y).Item
+                  );
+               }
+               else
+               {
+                  return new List<Reference>() { (Reference)((Expression.Container)x).Item };
+               }
+            }
+         );
 
-          ReferenceArrayArray refArrArr = new ReferenceArrayArray();
+         ReferenceArrayArray refArrArr = new ReferenceArrayArray();
 
-          foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
-          {
-              var refArr = new ReferenceArray();
-              foreach (Reference r in refs)
-              {
-                  refArr.Append(r);
-              }
-              refArrArr.Append(refArr);
-          }
+         foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
+         {
+            var refArr = new ReferenceArray();
+            foreach (Reference r in refs)
+            {
+               refArr.Append(r);
+            }
+            refArrArr.Append(refArr);
+         }
 
-          return Expression.NewContainer(
-             dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr)
-          );
+         return Expression.NewContainer(
+            dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr)
+         );
       }
-
-      //public override Expression Evaluate(FSharpList<Expression> args)
-      //{
-      //   bool isSolid = ((Expression.Number)args[0]).Item == 1;
-
-      //   var input = args[1];
-
-      //   ReferenceArrayArray refArrArr = new ReferenceArrayArray();
-      //   var refArr = new ReferenceArray();
-
-        
-
-      //   if (input.IsList)
-      //   {
-      //       refArrArr.Clear();
-
-      //       var testItem = ((Expression.List)args[1]).Item.HeadOrDefault;//sample one item
-
-      //       if (testItem.IsList) // test to see if the sub-lists are actually lists. TODO - clean up. sampling one item in testItem does not a sanity check make
-      //       {
-      //           Bench.Log("dynLoftForm was passed a list of lists");
-
-      //           //stephen's old way of handling lists of lists - enumerate outside list and convert to a RefArray
-      //           IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
-      //               x => ((Expression.List)x).Item.Select(
-      //                   y => (Reference)((Expression.Container)y).Item
-      //              )
-      //           );
-
-      //           // then presume there are other lists inside the outside list, convert them to refArrays too
-      //           foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
-      //           {
-      //               refArr.Clear();//make sure to clear this because we declared it early, don't want a crufty array hanging around
-      //               foreach (Reference r in refs)
-      //               {
-      //                   refArr.Append(r);
-      //               }
-
-      //               refArrArr.Append(refArr);
-
-      //           }
-      //       }
-
-      //       // sometimes people pass in 'naked' curve refs into the list and then into create form. I am trying to make that not puke by adding this case
-      //       // test to see if we have a container in the list, if so enumm
-      //       if (testItem.IsContainer) // TODO - clean up. sampling one item in testItem does not a sanity check make
-      //       {
-      //           Bench.Log("dynLoftForm was passed a list of containers");
-
-      //           // there is an 'oustide' list in args[1] that contains containers
-      //           IEnumerable<Reference> refArray = ((Expression.List)args[1]).Item.Select(
-      //                 y => (Reference)((Expression.Container)y).Item 
-
-      //           );
-
-      //           foreach (Reference curveRef in refArray) // for the case where there is a nested list of lists, iterate thru nested lists
-      //           {
-      //               refArr.Clear();//we just want one instance in each refArray, then add them to the master refArrArr
-      //               refArr.Append((Reference)curveRef);//'naked' Curve Reference - just container, no outside list
-      //               refArrArr.Append(refArr);
-      //           }
-
-      //       }
-
-      //   }
-      //   else // handle  case where one and only one curve ref is passed in instead of any list or list of lists
-      //   {
-      //       Bench.Log("dynLoftForm was passed a single container");
-      //       refArr.Clear();
-      //       refArr.Append((Reference)((Expression.Container)args[1]).Item);//'naked' Curve Reference
-      //       refArrArr.Append(refArr);
-
-      //   }
-         
-      //   return Expression.NewContainer(
-      //      dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr)
-      //   );
-      //}
    }
 
    [ElementName("Curve By Points")]
@@ -217,14 +150,12 @@ namespace Dynamo.Elements
 
          if (this.Elements.Any())
          {
-            c = (CurveByPoints)this.UIDocument.Document.get_Element(this.Elements[0]);
-
+            c = this.UIDocument.Document.get_Element(this.Elements[0]) as CurveByPoints;
             c.SetPoints(refPtArr);
          }
          else
          {
             c = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-
             this.Elements.Add(c.Id);
          }
 
@@ -254,7 +185,7 @@ namespace Dynamo.Elements
          {
             return Expression.NewList(
                Utils.convertSequence(
-                  ((Expression.List)input).Item.Select(
+                  (input as Expression.List).Item.Select(
                      x =>
                         Expression.NewContainer(
                            ((CurveElement)((Expression.Container)x).Item).GeometryCurve.Reference

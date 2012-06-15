@@ -38,14 +38,14 @@ namespace Dynamo
             += new EventHandler<DocumentChangedEventArgs>(Application_DocumentChanged);
       }
 
-      private void processUpdates(dynamic source)
+      private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted)
       {
          //Document doc = data.GetDocument();
          var bench = dynElementSettings.SharedInstance.Bench; // MDJ HOOK
 
          var modDict = this.updateDict[ChangeTypeEnum.Modified];
          var dict = new Dictionary<DynElementUpdateDelegate, List<ElementId>>();
-         foreach (ElementId modifiedElementID in source.GetModifiedElementIds())
+         foreach (ElementId modifiedElementID in modified)
          {
             try
             {
@@ -72,7 +72,7 @@ namespace Dynamo
 
          modDict = this.updateDict[ChangeTypeEnum.Delete];
          dict.Clear();
-         foreach (ElementId deletedElementID in source.GetDeletedElementIds())
+         foreach (ElementId deletedElementID in deleted)
          {
             try
             {
@@ -102,9 +102,16 @@ namespace Dynamo
       void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
       {
          if (args.GetDocument().Equals(dynElementSettings.SharedInstance.Doc.Document))
-            this.processUpdates(args);
+            this.processUpdates(args.GetModifiedElementIds(), args.GetDeletedElementIds());
       }
 
+      /// <summary>
+      /// Watches for changes of the given type to the Element with the given ID. When changed, executes
+      /// the given Delegate.
+      /// </summary>
+      /// <param name="e">ID of the Element being watched.</param>
+      /// <param name="type">Type of change to watch for.</param>
+      /// <param name="d">Delegate to be called when changed.</param>
       public void RegisterChangeHook(ElementId e, ChangeTypeEnum type, DynElementUpdateDelegate d)
       {
          Dictionary<ElementId, DynElementUpdateDelegate> dict;
@@ -119,6 +126,11 @@ namespace Dynamo
          dict[e] = d;
       }
 
+      /// <summary>
+      /// Unregisters an element that has been registered via RegisterChangeHook()
+      /// </summary>
+      /// <param name="e">ID of the Element to unregister.</param>
+      /// <param name="type">Type of change to unsubscribe from.</param>
       public void UnRegisterChangeHook(ElementId e, ChangeTypeEnum type)
       {
          this.updateDict[type].Remove(e);
@@ -126,24 +138,27 @@ namespace Dynamo
 
       public void Execute(UpdaterData data)
       {
-         this.processUpdates(data);
+         this.processUpdates(data.GetModifiedElementIds(), data.GetDeletedElementIds());
       }
 
       public string GetAdditionalInformation()
       {
          return "Watch for user-selected elements that have been changed or deleted and use this info to update Dynnamo";
       }
+
       public ChangePriority GetChangePriority()
       {
          return ChangePriority.FloorsRoofsStructuralWalls;
       }
+
       public UpdaterId GetUpdaterId()
       {
          return m_updaterId;
       }
+
       public string GetUpdaterName()
       {
-         return "Dyanmo RefPoint Watcher";
+         return "Dyanmo Element Watcher";
       }
    }
 }

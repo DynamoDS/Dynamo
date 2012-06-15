@@ -20,6 +20,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 using Expression = Dynamo.FScheme.Expression;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
@@ -43,19 +44,18 @@ namespace Dynamo.Elements
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          double x, y, z;
-         x = (args[0] as Expression.Number).Item;
-         y = (args[1] as Expression.Number).Item;
-         z = (args[2] as Expression.Number).Item;
+         x = ((Expression.Number)args[0]).Item;
+         y = ((Expression.Number)args[1]).Item;
+         z = ((Expression.Number)args[2]).Item;
 
          return Expression.NewContainer(new XYZ(x, y, z));
       }
    }
 
-
    [ElementName("XYZ Grid")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a grid of reference points.")]
-   [RequiresTransaction(true)]
+   [RequiresTransaction(false)]
    public class dynReferencePtGrid : dynElement
    {
       public dynReferencePtGrid()
@@ -120,55 +120,53 @@ namespace Dynamo.Elements
    [ElementName("XYZ Array Along Curve")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates an array of XYZs along a curve.")]
-   [RequiresTransaction(true)]
-   public class dynXYZArrayAlongCurve: dynElement
+   [RequiresTransaction(false)]
+   public class dynXYZArrayAlongCurve : dynElement
    {
-       public dynXYZArrayAlongCurve()
-       {
-           InPortData.Add(new PortData("curve", "Curve", typeof(CurveElement))); 
-           InPortData.Add(new PortData("count", "Number", typeof(double))); // just divide equally for now, dont worry about spacing and starting point
-           //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
-           //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
+      public dynXYZArrayAlongCurve()
+      {
+         InPortData.Add(new PortData("curve", "Curve", typeof(CurveElement)));
+         InPortData.Add(new PortData("count", "Number", typeof(double))); // just divide equally for now, dont worry about spacing and starting point
+         //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
+         //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
 
-           OutPortData = new PortData("XYZs", "List of XYZs in the array", typeof(XYZ));
+         OutPortData = new PortData("XYZs", "List of XYZs in the array", typeof(XYZ));
 
-           base.RegisterInputsAndOutputs();
-       }
+         base.RegisterInputsAndOutputs();
+      }
 
-       public override Expression Evaluate(FSharpList<Expression> args)
-       {
-           double xi, x0, xs;
-           CurveElement c;
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         CurveElement c = (CurveElement)((Expression.Container)args[0]).Item; // Curve 
+         
+         double xi;//, x0, xs;
+         xi = ((Expression.Number)args[1]).Item;// Number
+         //x0 = ((Expression.Number)args[2]).Item;// Starting Coord
+         //xs = ((Expression.Number)args[3]).Item;// Spacing
 
-           c = ((Expression.Container)args[0]).Item as CurveElement; // Curve 
-           xi = ((Expression.Number)args[1]).Item;// Number
-           //x0 = ((Expression.Number)args[2]).Item;// Starting Coord
-           //xs = ((Expression.Number)args[3]).Item;// Spacing
 
+         FSharpList<Expression> result = FSharpList<Expression>.Empty;
 
-           FSharpList<Expression> result = FSharpList<Expression>.Empty;
+         //double x = x0;
+         Curve crvRef = c.GeometryCurve;
+         double t = 0;
 
-           //double x = x0;
-           Curve crvRef = c.GeometryCurve;
-           double t = 0;
-           
-           for (int xCount = 0; xCount < xi; xCount++)
-            {
-               t = xCount/xi; // create normalized curve param by dividing current number by total number
-                result = FSharpList<Expression>.Cons(
-                    Expression.NewContainer(
-                    crvRef.Evaluate(t,true) // pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ taht we store in this list
-                    ),
-                    result
-                );
-                //x += xs;
-            }
-           
+         for (int xCount = 0; xCount < xi; xCount++)
+         {
+            t = xCount / xi; // create normalized curve param by dividing current number by total number
+            result = FSharpList<Expression>.Cons(
+                Expression.NewContainer(
+                    crvRef.Evaluate(t, true) // pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ taht we store in this list
+                ),
+                result
+            );
+            //x += xs;
+         }
 
-           return Expression.NewList(
-              ListModule.Reverse(result)
-           );
-       }
+         return Expression.NewList(
+            ListModule.Reverse(result)
+         );
+      }
    }
 
    [ElementName("Plane")]
@@ -215,30 +213,51 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         Plane p = (Plane)((Expression.Container)args[0]).Item;
+         var input = args[0];
 
-         SketchPlane sp;
+         //TODO: If possible, update to handle mutation rather than deletion...
+         foreach (var e in this.Elements)
+            this.UIDocument.Document.Delete(e);
 
-         //TODO: Handle Removal
-         //if (this.Elements.Any())
-         //{
-         //   sp = (SketchPlane)this.UIDocument.Document.get_Element(this.Elements[0]);
-         //}
+         if (input.IsList)
+         {
+            var planeList = (input as Expression.List).Item;
 
-         sp = (this.UIDocument.Document.IsFamilyDocument)
-            ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
-            : this.UIDocument.Document.Create.NewSketchPlane(p);
+            var result = Utils.convertSequence(
+               planeList.Select(
+                  delegate(Expression x)
+                  {
+                     SketchPlane p = this.UIDocument.Document.FamilyCreate.NewSketchPlane(
+                        (Plane)((Expression.Container)x).Item
+                     );
+                     
+                     this.Elements.Add(p.Id);
+                     return Expression.NewContainer(p);
+                  }
+               )
+            );
 
-         //this.Elements.Add(sp);
+            return Expression.NewList(result);
+         }
+         else
+         {
+            Plane p = (Plane)((Expression.Container)input).Item;
 
-         return Expression.NewContainer(sp);
+            SketchPlane sp = (this.UIDocument.Document.IsFamilyDocument)
+               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(p)
+               : this.UIDocument.Document.Create.NewSketchPlane(p);
+
+            this.Elements.Add(sp.Id);
+
+            return Expression.NewContainer(sp);
+         }
       }
    }
 
    [ElementName("Line")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a geometric line.")]
-   [RequiresTransaction(true)]
+   [RequiresTransaction(false)]
    public class dynLineBound : dynElement
    {
       public dynLineBound()
@@ -264,35 +283,34 @@ namespace Dynamo.Elements
          );
       }
    }
+   
    [ElementName("UV")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a UV from two double values.")]
    [RequiresTransaction(false)]
    public class dynUV : dynElement
    {
-       public dynUV()
-       {
-           InPortData.Add(new PortData("U", "U", typeof(double)));
-           InPortData.Add(new PortData("V", "V", typeof(double)));
+      public dynUV()
+      {
+         InPortData.Add(new PortData("U", "U", typeof(double)));
+         InPortData.Add(new PortData("V", "V", typeof(double)));
 
 
-           OutPortData = new PortData("uv", "UV", typeof(UV));
+         OutPortData = new PortData("uv", "UV", typeof(UV));
 
-           base.RegisterInputsAndOutputs();
-       }
+         base.RegisterInputsAndOutputs();
+      }
 
-       public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
-       {
-           double u, v;
-           u = (args[0] as FScheme.Expression.Number).Item;
-           v = (args[1] as FScheme.Expression.Number).Item;
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         double u, v;
+         u = ((Expression.Number)args[0]).Item;
+         v = ((Expression.Number)args[1]).Item;
 
 
-           return FScheme.Expression.NewContainer(new UV(u, v));
-       }
+         return FScheme.Expression.NewContainer(new UV(u, v));
+      }
    }
-
-  
 
    [ElementName("Line Vector ")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
@@ -300,52 +318,53 @@ namespace Dynamo.Elements
    [RequiresTransaction(true)]
    public class dynLineVectorfromXYZ : dynElement
    {
-       public dynLineVectorfromXYZ()
-       {
+      public dynLineVectorfromXYZ()
+      {
 
-           InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
-           InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
-           OutPortData = new PortData("C", "Curve", typeof(CurveElement));
+         InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
+         InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
+         OutPortData = new PortData("C", "Curve", typeof(CurveElement));
 
-           base.RegisterInputsAndOutputs();
-       }
+         base.RegisterInputsAndOutputs();
+      }
 
-       public override FScheme.Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
-       {
-           var ptA = (XYZ)((Expression.Container)args[0]).Item;
-           var ptB = (XYZ)((Expression.Container)args[1]).Item;
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var ptA = (XYZ)((Expression.Container)args[0]).Item;
+         var ptB = (XYZ)((Expression.Container)args[1]).Item;
 
-          // CurveElement c = MakeLine(this.UIDocument.Document, ptA, ptB);
-           CurveElement c = MakeLineCBP(this.UIDocument.Document, ptA, ptB);
+         // CurveElement c = MakeLine(this.UIDocument.Document, ptA, ptB);
+         CurveElement c = MakeLineCBP(this.UIDocument.Document, ptA, ptB);
 
-           return FScheme.Expression.NewContainer(c);
-       }
+         return FScheme.Expression.NewContainer(c);
+      }
 
 
-       public ModelCurve MakeLine(Document doc, XYZ ptA, XYZ ptB)
-       {
-           Autodesk.Revit.ApplicationServices.Application app = doc.Application;
-           // Create plane by the points
-           Line line = app.Create.NewLine(ptA, ptB, true);
-           XYZ norm = ptA.CrossProduct(ptB);
-           double length = norm.GetLength();
-           if (length == 0) norm = XYZ.BasisZ;
-           Plane plane = app.Create.NewPlane(norm, ptB);
-           SketchPlane skplane = doc.FamilyCreate.NewSketchPlane(plane);
-           // Create line here
-           ModelCurve modelcurve = doc.FamilyCreate.NewModelCurve(line, skplane);
-           return modelcurve;
-       }
-       public CurveByPoints MakeLineCBP(Document doc, XYZ ptA, XYZ ptB)
-       {
-           ReferencePoint sunRP = doc.FamilyCreate.NewReferencePoint(ptA);
-           ReferencePoint originRP = doc.FamilyCreate.NewReferencePoint(ptB);
-           ReferencePointArray sunRPArray = new ReferencePointArray();
-           sunRPArray.Append(sunRP);
-           sunRPArray.Append(originRP);
-           CurveByPoints sunPath = doc.FamilyCreate.NewCurveByPoints(sunRPArray);
-           return sunPath;
-       }
+      public ModelCurve MakeLine(Document doc, XYZ ptA, XYZ ptB)
+      {
+         Autodesk.Revit.ApplicationServices.Application app = doc.Application;
+         // Create plane by the points
+         Line line = app.Create.NewLine(ptA, ptB, true);
+         XYZ norm = ptA.CrossProduct(ptB);
+         double length = norm.GetLength();
+         if (length == 0) norm = XYZ.BasisZ;
+         Plane plane = app.Create.NewPlane(norm, ptB);
+         SketchPlane skplane = doc.FamilyCreate.NewSketchPlane(plane);
+         // Create line here
+         ModelCurve modelcurve = doc.FamilyCreate.NewModelCurve(line, skplane);
+         return modelcurve;
+      }
+
+      public CurveByPoints MakeLineCBP(Document doc, XYZ ptA, XYZ ptB)
+      {
+         ReferencePoint sunRP = doc.FamilyCreate.NewReferencePoint(ptA);
+         ReferencePoint originRP = doc.FamilyCreate.NewReferencePoint(ptB);
+         ReferencePointArray sunRPArray = new ReferencePointArray();
+         sunRPArray.Append(sunRP);
+         sunRPArray.Append(originRP);
+         CurveByPoints sunPath = doc.FamilyCreate.NewCurveByPoints(sunRPArray);
+         return sunPath;
+      }
    }
-   
+
 }

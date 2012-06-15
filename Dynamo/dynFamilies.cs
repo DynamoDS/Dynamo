@@ -92,7 +92,7 @@ namespace Dynamo.Elements
 
          if (cbi != null)
          {
-            var f = comboHash[(string)cbi.Content];
+            var f = comboHash[cbi.Content as string];
             return Expression.NewContainer(f);
          }
 
@@ -387,8 +387,6 @@ namespace Dynamo.Elements
    //   }
    //}
 
-   #endregion
-
    //[ElementName("Family Instance Parameter Evaluation")]
    //[ElementCategory(BuiltinElementCategories.REVIT)]
    //[ElementDescription("An element which allows you to modify parameters on family instances.")]
@@ -472,6 +470,8 @@ namespace Dynamo.Elements
    //   }
    //}
 
+   #endregion
+
    [ElementName("Family Instance Creator")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to create family instances.")]
@@ -491,16 +491,16 @@ namespace Dynamo.Elements
       private Expression makeFamilyInstance(object location, FamilySymbol fs, int count)
       {
          XYZ pos = location is ReferencePoint
-            ? ((ReferencePoint)location).Position
+            ? (location as ReferencePoint).Position
             : (XYZ)location;
 
          FamilyInstance fi;
 
          if (this.Elements.Count > count)
          {
-            fi = (FamilyInstance)this.UIDocument.Document.get_Element(this.Elements[count]);
+            fi = this.UIDocument.Document.get_Element(this.Elements[count]) as FamilyInstance;
             fi.Symbol = fs;
-            LocationPoint lp = (LocationPoint)fi.Location;
+            LocationPoint lp = fi.Location as LocationPoint;
             lp.Point = pos;
          }
          else
@@ -526,7 +526,7 @@ namespace Dynamo.Elements
          
          if (input.IsList)
          {
-            var locList = ((Expression.List)input).Item;
+            var locList = (input as Expression.List).Item;
 
             int count = 0;
 
@@ -576,6 +576,7 @@ namespace Dynamo.Elements
       }
    }
 
+   //TODO: In Destroy(), have code that resets Elements back to their default.
    [ElementName("Set Instance Parameter")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to modify parameters on family instances.")]
@@ -623,7 +624,7 @@ namespace Dynamo.Elements
          var input = args[0];
          if (input.IsList)
          {
-            var fiList = ((Expression.List)input).Item;
+            var fiList = (input as Expression.List).Item;
             return Expression.NewList(
                FSchemeInterop.Utils.convertSequence(
                   fiList.Select(

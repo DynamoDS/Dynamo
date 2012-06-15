@@ -44,7 +44,7 @@ namespace Dynamo.Elements
 
          if (input.IsList)
          {
-            var xyzList = ((Expression.List)input).Item;
+            var xyzList = (input as Expression.List).Item;
 
             int count = 0;
 
@@ -55,7 +55,7 @@ namespace Dynamo.Elements
                      ReferencePoint pt;
                      if (this.Elements.Count > count)
                      {
-                        pt = (ReferencePoint)this.UIDocument.Document.get_Element(this.Elements[count]);
+                        pt = this.UIDocument.Document.get_Element(this.Elements[count]) as ReferencePoint;
                         pt.Position = (XYZ)((Expression.Container)x).Item;
                      }
                      else
@@ -90,7 +90,7 @@ namespace Dynamo.Elements
 
             if (this.Elements.Any())
             {
-               pt = (ReferencePoint)this.UIDocument.Document.get_Element(this.Elements[0]);
+               pt = this.UIDocument.Document.get_Element(this.Elements[0]) as ReferencePoint;
                pt.Position = xyz;
 
                int count = 0;
@@ -113,7 +113,6 @@ namespace Dynamo.Elements
       }
    }
 
-  
    [ElementName("Reference Point Distance")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which measures a distance between reference point(s).")]
@@ -138,12 +137,12 @@ namespace Dynamo.Elements
 
          if (arg0 is ReferencePoint)
          {
-            return Expression.NewNumber(((ReferencePoint)arg0).Position.DistanceTo(ptB));
+            return Expression.NewNumber((arg0 as ReferencePoint).Position.DistanceTo(ptB));
          }
          else if (arg0 is FamilyInstance)
          {
             return Expression.NewNumber(
-               ((LocationPoint)((FamilyInstance)arg0).Location).Point.DistanceTo(ptB)
+               ((arg0 as FamilyInstance).Location as LocationPoint).Point.DistanceTo(ptB)
             );
          }
          else
@@ -170,34 +169,44 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-          Reference r = null;
-           object arg0 = ((Expression.Container)args[0]).Item;
-           if (arg0 is ModelCurve)
-           {
-              r = ((ModelCurve)((Expression.Container)args[0]).Item).GeometryCurve.Reference;
-           }
-           else if (arg0 is CurveByPoints)
-           {
-               r = ((CurveByPoints)((Expression.Container)args[0]).Item).GeometryCurve.Reference;
-           }
-           else
-           {
-               throw new Exception("Cannot cast first argument to Curve.");
-           }
+         Reference r = null;
+         object arg0 = ((Expression.Container)args[0]).Item;
+         if (arg0 is ModelCurve)
+         {
+            r = (((Expression.Container)args[0]).Item as ModelCurve).GeometryCurve.Reference;
+         }
+         else if (arg0 is CurveByPoints)
+         {
+            r = (((Expression.Container)args[0]).Item as CurveByPoints).GeometryCurve.Reference;
+         }
+         else
+         {
+            throw new Exception("Cannot cast first argument to Curve.");
+         }
 
-           double t = ((Expression.Number)args[1]).Item;
-            //Autodesk.Revit.DB..::.PointElementReference
-            //Autodesk.Revit.DB..::.PointOnEdge
-            //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
-            //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
-            //Autodesk.Revit.DB..::.PointOnFace
-            //Autodesk.Revit.DB..::.PointOnPlane
+         double t = ((Expression.Number)args[1]).Item;
+         //Autodesk.Revit.DB..::.PointElementReference
+         //Autodesk.Revit.DB..::.PointOnEdge
+         //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
+         //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
+         //Autodesk.Revit.DB..::.PointOnFace
+         //Autodesk.Revit.DB..::.PointOnPlane
 
-           PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t);
+         PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t);
 
-           return FScheme.Expression.NewContainer(
-              this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint)
-           );
+         ReferencePoint p;
+
+         if (this.Elements.Any())
+         {
+            p = this.UIDocument.Document.get_Element(this.Elements[0]) as ReferencePoint;
+            p.SetPointElementReference(edgePoint);
+         }
+         else
+         {
+            p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
+         }
+
+         return FScheme.Expression.NewContainer(p);
       }
    }
 
@@ -207,48 +216,48 @@ namespace Dynamo.Elements
    [RequiresTransaction(true)]
    public class dynPointOnFace : dynElement
    {
-       public dynPointOnFace()
-       {
-           InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
-           InPortData.Add(new PortData("u", "U Parameter on face.", typeof(double)));
-           InPortData.Add(new PortData("v", "V Parameter on face.", typeof(double)));
-           OutPortData = new PortData("pt", "PointOnFace", typeof(ReferencePoint));
+      public dynPointOnFace()
+      {
+         InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
+         InPortData.Add(new PortData("u", "U Parameter on face.", typeof(double)));
+         InPortData.Add(new PortData("v", "V Parameter on face.", typeof(double)));
+         OutPortData = new PortData("pt", "PointOnFace", typeof(ReferencePoint));
 
-           base.RegisterInputsAndOutputs();
-       }
+         base.RegisterInputsAndOutputs();
+      }
 
-       public override Expression Evaluate(FSharpList<Expression> args)
-       {
-           object arg0 = ((Expression.Container)args[0]).Item;
-           if (arg0 is Reference)
-           {
-               // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         object arg0 = ((Expression.Container)args[0]).Item;
+         if (arg0 is Reference)
+         {
+            // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
 
-               //Face f = ((Face)((FScheme.Expression.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
-               Reference r = ((Reference)((Expression.Container)args[0]).Item);
-               
-               double u = ((Expression.Number)args[1]).Item;
-               double v = ((Expression.Number)args[2]).Item;
+            //Face f = ((Face)((FScheme.Expression.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
+            Reference r = arg0 as Reference;
 
-               //Autodesk.Revit.DB..::.PointElementReference
-               //Autodesk.Revit.DB..::.PointOnEdge
-               //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
-               //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
-               //Autodesk.Revit.DB..::.PointOnFace
-               //Autodesk.Revit.DB..::.PointOnPlane
+            double u = ((Expression.Number)args[1]).Item;
+            double v = ((Expression.Number)args[2]).Item;
 
-               PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
+            //Autodesk.Revit.DB..::.PointElementReference
+            //Autodesk.Revit.DB..::.PointOnEdge
+            //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
+            //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
+            //Autodesk.Revit.DB..::.PointOnFace
+            //Autodesk.Revit.DB..::.PointOnPlane
 
-               return Expression.NewContainer(
-                  this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint)
-               );
-           }
-           else
-           {
-               throw new Exception("Cannot cast first argument to Face.");
-           }
+            PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
 
-       }
+            return Expression.NewContainer(
+               this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint)
+            );
+         }
+         else
+         {
+            throw new Exception("Cannot cast first argument to Face.");
+         }
+
+      }
    }
 }
 
