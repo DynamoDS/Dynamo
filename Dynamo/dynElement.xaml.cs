@@ -386,14 +386,16 @@ namespace Dynamo.Elements
       /// <returns>S-Expression</returns>
       public virtual string PrintExpression()
       {
+         var nick = this.NickName.Replace(' ', '_');
+
          if (!this.InPortData.Any() || !this.InPorts.Any(x => x.Connectors.Any()))
-            return this.NickName;
+            return nick;
 
          string s = "";
 
          if (this.InPorts.All(x => x.Connectors.Any()))
          {
-            s += "(" + this.NickName;
+            s += "(" + nick;
             for (int i = 0; i < this.InPortData.Count; i++)
             {
                var port = this.InPorts[i];
@@ -404,8 +406,8 @@ namespace Dynamo.Elements
          else
          {
             s += "(lambda (" 
-               + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName)) 
-               + ") (" + this.NickName;
+               + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName))
+               + ") (" + nick;
             for (int i = 0; i < this.InPortData.Count; i++)
             {
                s += " ";

@@ -1969,6 +1969,13 @@ namespace Dynamo.Controls
          if (this.Running)
             return;
 
+         //TODO: Hack. Might cause things to break later on...
+         if (this.CancelRun)
+         {
+            this.CancelRun = false;
+            return;
+         }
+
          this.Running = true;
 
          this.dynamicRun = !showErrors;
