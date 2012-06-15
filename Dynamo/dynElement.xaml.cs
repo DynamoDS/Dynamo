@@ -1276,18 +1276,18 @@ namespace Dynamo.Elements
          this._isDirty = true;
       }
 
-      public void RegisterEvalOnModified(ElementId id)
+      public void RegisterEvalOnModified(ElementId id, Action modAction = null, Action delAction = null)
       {
          var u = this.Bench.Updater;
          u.RegisterChangeHook(
             id,
             ChangeTypeEnum.Modified,
-            new DynElementUpdateDelegate(this.ReEvalOnModified)
+            this.ReEvalOnModified(modAction)
          );
          u.RegisterChangeHook(
             id,
             ChangeTypeEnum.Delete,
-            new DynElementUpdateDelegate(this.UnRegOnDelete)
+            this.UnRegOnDelete(delAction)
          );
       }
 
@@ -1302,26 +1302,32 @@ namespace Dynamo.Elements
          );
       }
 
-      void UnRegOnDelete(List<ElementId> deleted)
+      DynElementUpdateDelegate UnRegOnDelete(Action deleteAction)
       {
-         foreach (var d in deleted)
+         return delegate(List<ElementId> deleted)
          {
-            var u = this.Bench.Updater;
-            u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
-            u.UnRegisterChangeHook(d, ChangeTypeEnum.Modified);
-         }
+            foreach (var d in deleted)
+            {
+               var u = this.Bench.Updater;
+               u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
+               u.UnRegisterChangeHook(d, ChangeTypeEnum.Modified);
+            }
+            if (deleteAction != null)
+               deleteAction();
+         };
       }
 
-      void ReEvalOnModified(List<ElementId> modified)
+      DynElementUpdateDelegate ReEvalOnModified(Action modifiedAction)
       {
-         //if (this.Bench.DynamicRunEnabled)
-         //{
-         //   if (!this.Bench.Running)
-         //      this.Bench.RunExpression(false, false);
-         //   else
-         //      this.Bench.QueueRun();
-         //}
-         this.IsDirty = true;
+         return delegate(List<ElementId> modified)
+         {
+            if (!this.IsDirty)
+            {
+               this.IsDirty = true;
+               if (modifiedAction != null)
+                  modifiedAction();
+            }
+         };
       }
 
       #endregion

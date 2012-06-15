@@ -80,7 +80,10 @@ namespace Dynamo.Elements
             this.selected = value;
             if (value != null)
             {
-               this.RegisterEvalOnModified(value.Id);
+               this.RegisterEvalOnModified(
+                  value.Id,
+                  delAction: delegate { this.selected = null; this.SelectedElement = null; }
+               );
 
                this.tb.Text = this.SelectionText;
                this.selectButton.Content = "Change";

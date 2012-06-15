@@ -83,6 +83,12 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
+         if (this.Elements.Any())
+         {
+            FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
+            this.Elements.Clear();
+         }
+
          bool isSolid = ((Expression.Number)args[0]).Item == 1;
 
          IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
@@ -95,27 +101,23 @@ namespace Dynamo.Elements
                   );
                }
                else
-               {
                   return new List<Reference>() { (Reference)((Expression.Container)x).Item };
-               }
             }
          );
 
          ReferenceArrayArray refArrArr = new ReferenceArrayArray();
-
          foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
          {
             var refArr = new ReferenceArray();
             foreach (Reference r in refs)
-            {
                refArr.Append(r);
-            }
             refArrArr.Append(refArr);
          }
 
-         return Expression.NewContainer(
-            dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr)
-         );
+         Form f = this.UIDocument.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr);
+         this.Elements.Add(f.Id);
+
+         return Expression.NewContainer(f);
       }
    }
 
