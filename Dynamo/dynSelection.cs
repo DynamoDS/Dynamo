@@ -84,6 +84,8 @@ namespace Dynamo.Elements
 
                this.tb.Text = this.SelectionText;
                this.selectButton.Content = "Change";
+
+               this.IsDirty = true;
             }
             else
             {

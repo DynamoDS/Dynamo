@@ -52,7 +52,11 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetRow(combo, 0);
 
          combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
-         combo.SelectionChanged += delegate { this.IsDirty = true; };
+         combo.SelectionChanged += delegate 
+         {
+            if (combo.SelectedIndex != -1)
+               this.IsDirty = true; 
+         };
 
          PopulateComboBox();
 
