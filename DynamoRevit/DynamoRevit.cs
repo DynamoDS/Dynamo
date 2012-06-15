@@ -84,7 +84,7 @@ namespace Dynamo.Applications
             // MDJ = element level events and dyanmic model update
             // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-reun definitin when they are moved
 
-            updater = new DynamoUpdater(application.ActiveAddInId);
+            updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
             if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId())) UpdaterRegistry.RegisterUpdater(updater);
             //ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
             //ElementCategoryFilter massFilter = new ElementCategoryFilter(BuiltInCategory.OST_Mass);
