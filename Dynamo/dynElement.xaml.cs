@@ -821,11 +821,30 @@ namespace Dynamo.Elements
 
       #region SJEChanges
 
+      /// <summary>
+      /// Override this to implement custom save data for your Element. If overridden, you should also override
+      /// LoadElement() in order to read the data back when loaded.
+      /// </summary>
+      /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
+      /// <param name="dynEl">The XmlElement representing this Element.</param>
       public virtual void SaveElement(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl)
+      {
+
+      }      
+
+      /// <summary>
+      /// Override this to implement loading of custom data for your Element. If overridden, you should also override
+      /// SaveElement() in order to write the data when saved.
+      /// </summary>
+      /// <param name="elNode">The XmlNode representing this Element.</param>
+      public virtual void LoadElement(System.Xml.XmlNode elNode)
       {
 
       }
 
+      /// <summary>
+      /// Implementation detail, records how many times this Element has been executed during this run.
+      /// </summary>
       protected internal int runCount;
 
       internal void ResetRuns()
@@ -860,7 +879,9 @@ namespace Dynamo.Elements
       protected internal static bool _startTag = false;
       private bool _isDirty = true;
       ///<summary>
-      ///Does this element need to be regenerated?
+      ///Does this Element need to be regenerated? Setting this to true will trigger a modification event
+      ///for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
+      ///trigger an evaluation.
       ///</summary>
       public virtual bool IsDirty
       {
@@ -898,7 +919,11 @@ namespace Dynamo.Elements
       protected Expression oldValue;
 
       private bool _saveResult = false;
-      public bool SaveResult
+      /// <summary>
+      /// Determines whether or not the output of this Element will be saved. If true, Evaluate() will not be called
+      /// unless IsDirty is true. Otherwise, Evaluate will be called regardless of the IsDirty value.
+      /// </summary>
+      internal bool SaveResult
       {
          get
          {
@@ -912,6 +937,9 @@ namespace Dynamo.Elements
       }
 
 
+      /// <summary>
+      /// Forces the node to refresh it's dirty state by checking all inputs.
+      /// </summary>
       public void MarkDirty()
       {
          if (this._isDirty)
@@ -925,11 +953,22 @@ namespace Dynamo.Elements
       }
 
 
+      /// <summary>
+      /// Builds an INode out of this Element. Override this or Compile() if you want complete control over this Element's
+      /// execution.
+      /// </summary>
+      /// <returns>The INode representation of this Element.</returns>
       protected internal virtual INode Build()
       {
          return this.compile(this.InPortData.Select(x => x.NickName));
       }
 
+      /// <summary>
+      /// Compiles this Element into a ProcedureCallNode. Override this instead of Build() if you don't want to set up all
+      /// of the inputs for the ProcedureCallNode.
+      /// </summary>
+      /// <param name="portNames">The names of the inputs to the node.</param>
+      /// <returns>A ProcedureCallNode which will then be processed recursively to be connected to its inputs.</returns>
       protected internal virtual ProcedureCallNode Compile(IEnumerable<string> portNames)
       {
          if (this.SaveResult)
@@ -948,9 +987,17 @@ namespace Dynamo.Elements
          }
       }
 
-
+      /// <summary>
+      /// Called right before Evaluate() is called. Useful for processing side-effects without touching Evaluate()
+      /// </summary>
       protected virtual void OnEvaluate() { }
-      protected internal virtual void OnSave()
+
+      /// <summary>
+      /// Called when the node's workspace has been saved.
+      /// </summary>
+      protected internal virtual void OnSave() { }
+
+      internal void onSave()
       {
          //Save all of the connection states, so we can check if this is dirty
          foreach (dynPort p in this.InPorts)
@@ -959,6 +1006,7 @@ namespace Dynamo.Elements
                ? p.Connectors[0].Start.Owner
                : null;
          }
+         this.OnSave();
       }
 
       protected internal ExecutionEnvironment macroEnvironment = null;
@@ -1052,9 +1100,6 @@ namespace Dynamo.Elements
 
                      bench.InitTransaction();
 
-                     //if (this.SaveResult)
-                     //   this.Destroy();
-
                      result = this.Evaluate(args);
 
                      UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
@@ -1099,36 +1144,17 @@ namespace Dynamo.Elements
                   result = IdlePromise<Expression>.ExecuteOnIdle(
                      delegate
                      {
-                        //this.Dispatcher.Invoke(new Action(
-                        //   () =>
-                        //      dynElementSettings.SharedInstance.Bench.Log("Creating transaction...")
-                        //));
 
                         bench.InitTransaction();
 
                         try
                         {
-                           //this.Destroy();
-
-                           //this.Dispatcher.Invoke(new Action(
-                           //   () =>
-                           //      dynElementSettings.SharedInstance.Bench.Log("Evaluating Element")
-                           //));
-
-                           //if (this.SaveResult)
-                           //   this.Destroy();
-
                            var exp = this.Evaluate(args);
 
                            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
                            elementsHaveBeenDeleted = false;
-
-                           //this.Dispatcher.Invoke(new Action(
-                           //   () =>
-                           //      dynElementSettings.SharedInstance.Bench.Log("Committing transaction")
-                           //));
 
                            bench.EndTransaction();
 
@@ -1168,11 +1194,6 @@ namespace Dynamo.Elements
                      }
                   );
 
-                  //dynElementSettings.SharedInstance.Bench.Dispatcher.Invoke(new Action(
-                  //   () =>
-                  //      dynElementSettings.SharedInstance.Bench.Log("End Idle Call")
-                  //));
-
                   #endregion
                }
 
@@ -1184,9 +1205,6 @@ namespace Dynamo.Elements
 
                try
                {
-                  //if (this.SaveResult)
-                  //   this.Destroy();
-
                   result = this.Evaluate(args);
 
                   UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
@@ -1216,21 +1234,10 @@ namespace Dynamo.Elements
                       new object[] { ex.Message });
                }
 
-               //try
-               //{
-               //   this.UpdateOutputs();
-               //}
-               //catch (Exception ex)
-               //{
-               //   //Debug.WriteLine("Outputs could not be updated.");
-               //   dynElementSettings.SharedInstance.Bench.Log("Outputs could not be updated.");
-
-               //   dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-               //   dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-               //}
-
                #endregion
             }
+
+            #region Register Elements w/ DMU
 
             var del = new DynElementUpdateDelegate(this.onDeleted);
 
@@ -1240,6 +1247,8 @@ namespace Dynamo.Elements
                   id, ChangeTypeEnum.Delete, del
                );
             }
+
+            #endregion
 
             //Increment the run counter
             this.runCount++;
@@ -1258,6 +1267,11 @@ namespace Dynamo.Elements
             throw new Exception();
       }
 
+      /// <summary>
+      /// The dynElement's Evaluation Logic.
+      /// </summary>
+      /// <param name="args">Arguments to the node. You are guaranteed to have as many arguments as you have InPorts at the time it is run.</param>
+      /// <returns>An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is connected to.</returns>
       public virtual Expression Evaluate(FSharpList<Expression> args)
       {
          throw new NotImplementedException();
@@ -1276,6 +1290,12 @@ namespace Dynamo.Elements
          this._isDirty = true;
       }
 
+
+      /// <summary>
+      /// Registers the given element id with the DMU such that any change in the element will
+      /// trigger a workspace modification event (dynamic running and saving).
+      /// </summary>
+      /// <param name="id">ElementId of the element to watch.</param>
       public void RegisterEvalOnModified(ElementId id)
       {
          var u = this.Bench.Updater;
@@ -1291,6 +1311,11 @@ namespace Dynamo.Elements
          );
       }
 
+      /// <summary>
+      /// Unregisters the given element id with the DMU. Should not be called unless it has already
+      /// been registered with RegisterEvalOnModified
+      /// </summary>
+      /// <param name="id">ElementId of the element to stop watching.</param>
       public void UnregisterEvalOnModified(ElementId id)
       {
          var u = this.Bench.Updater;
@@ -1314,13 +1339,6 @@ namespace Dynamo.Elements
 
       void ReEvalOnModified(List<ElementId> modified)
       {
-         //if (this.Bench.DynamicRunEnabled)
-         //{
-         //   if (!this.Bench.Running)
-         //      this.Bench.RunExpression(false, false);
-         //   else
-         //      this.Bench.QueueRun();
-         //}
          this.IsDirty = true;
       }
 
@@ -1827,11 +1845,6 @@ namespace Dynamo.Elements
       }
 
       private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-      {
-
-      }
-
-      public virtual void LoadElement(System.Xml.XmlNode elNode)
       {
 
       }
