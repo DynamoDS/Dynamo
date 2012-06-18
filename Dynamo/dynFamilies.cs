@@ -26,6 +26,7 @@ using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
 using System.Collections.Generic;
+using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
@@ -75,7 +76,7 @@ namespace Dynamo.Elements
          combo.Items.Clear();
 
          //load all the currently loaded types into the combo list
-         FilteredElementCollector fec = new FilteredElementCollector(dynElementSettings.SharedInstance.Doc.Document);
+         FilteredElementCollector fec = new FilteredElementCollector(this.UIDocument.Document);
          fec.OfClass(typeof(Family));
          foreach (Family f in fec.ToElements())
          {
@@ -535,7 +536,7 @@ namespace Dynamo.Elements
             int count = 0;
 
             var result = Expression.NewList(
-               FSchemeInterop.Utils.convertSequence(
+               Utils.convertSequence(
                   locList.Select(
                      x =>
                         this.makeFamilyInstance(
@@ -630,7 +631,7 @@ namespace Dynamo.Elements
          {
             var fiList = (input as Expression.List).Item;
             return Expression.NewList(
-               FSchemeInterop.Utils.convertSequence(
+               Utils.convertSequence(
                   fiList.Select(
                      x =>
                         setParam(
@@ -647,6 +648,76 @@ namespace Dynamo.Elements
             var fi = (FamilyInstance)((Expression.Container)input).Item;
 
             return setParam(fi, paramName, valueExpr);
+         }
+      }
+   }
+
+   [ElementName("Get Instance Parameter")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("Fetches the value of a parameter of a Family Instance.")]
+   [RequiresTransaction(true)]
+   public class dynFamilyInstanceParameterGetter : dynElement
+   {
+      public dynFamilyInstanceParameterGetter()
+      {
+         InPortData.Add(new PortData("fi", "Family instance.", typeof(FamilyInstance)));
+         InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
+
+         OutPortData = new PortData("val", "Parameter value.", typeof(object));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      private static Expression getParam(FamilyInstance fi, string paramName)
+      {
+         var p = fi.get_Parameter(paramName);
+         if (p != null)
+         {
+            if (p.StorageType == StorageType.Double)
+            {
+               return Expression.NewNumber(p.AsDouble());
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+               return Expression.NewNumber(p.AsInteger());
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+               return Expression.NewString(p.AsString());
+            }
+            else
+            {
+               return Expression.NewContainer(p.AsElementId());
+            }
+         }
+         throw new Exception("Parameter \"" + paramName + "\" was not found!");
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var paramName = ((Expression.String)args[1]).Item;
+
+         var input = args[0];
+         if (input.IsList)
+         {
+            var fiList = (input as Expression.List).Item;
+            return Expression.NewList(
+               Utils.convertSequence(
+                  fiList.Select(
+                     x =>
+                        getParam(
+                           (FamilyInstance)((Expression.Container)x).Item,
+                           paramName
+                        )
+                  )
+               )
+            );
+         }
+         else
+         {
+            var fi = (FamilyInstance)((Expression.Container)input).Item;
+
+            return getParam(fi, paramName);
          }
       }
    }

@@ -43,14 +43,14 @@
             <ColumnDefinition Width="14"/>
          </Grid.ColumnDefinitions>
       </Grid>
-      <Canvas Canvas.Left="0" 
+        <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
                 Name="elementCanvas" 
                 Margin="0,0,0,0">
          <!--<Canvas.BitmapEffect>
                 <DropShadowBitmapEffect Color="Black" Direction="320" ShadowDepth="10" Softness="1" Opacity=".35"/>
             </Canvas.BitmapEffect>-->
-         <Rectangle HorizontalAlignment="Right" 
+                <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"
                        Width="{Binding ElementName=topControl, Path=Width}"
@@ -61,7 +61,10 @@
                        Stroke="black"
                        StrokeThickness="2"
                        Canvas.ZIndex="90">
-            <Rectangle.Fill>
+                <Rectangle.Effect>
+                    <DropShadowEffect Opacity="0" />
+                </Rectangle.Effect>
+                    <Rectangle.Fill>
                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
                   <GradientStop Color="Yellow" Offset="0.0" />
                   <GradientStop Color="Orange" Offset="1" />
