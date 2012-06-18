@@ -57,54 +57,9 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         //FileStream fs;
-
-         //int tick = 0;
-         //while (!fileChanged || isFileInUse(@FilePath, out fs))
-         //{
-         //   Thread.Sleep(10);
-         //   tick += 10;
-
-         //   if (tick >= 5000)
-         //   {
-         //      throw new Exception("File watcher timeout!");
-         //   }
-         //}
-
-         //StreamReader reader = new StreamReader(fs);
-
-         //string result = reader.ReadToEnd();
-
-         //reader.Close();
-
-         //fileChanged = false;
-
-         //return Expression.NewString(result);
-
          string fileName = ((Expression.String)args[0]).Item;
-
          return Expression.NewContainer(new FileWatcher(fileName));
       }
-
-      //private bool isFileInUse(string path, out FileStream stream)
-      //{
-      //   try
-      //   {
-      //      stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-      //   }
-      //   catch (IOException)
-      //   {
-      //      //the file is unavailable because it is:
-      //      //still being written to
-      //      //or being processed by another thread
-      //      //or does not exist (has already been processed)
-      //      stream = null;
-      //      return true;
-      //   }
-
-      //   //file is not locked
-      //   return false;
-      //}
    }
 
    [ElementName("Watched File Changed?")]

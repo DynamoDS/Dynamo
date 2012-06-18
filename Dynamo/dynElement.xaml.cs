@@ -386,14 +386,16 @@ namespace Dynamo.Elements
       /// <returns>S-Expression</returns>
       public virtual string PrintExpression()
       {
+         var nick = this.NickName.Replace(' ', '_');
+
          if (!this.InPortData.Any() || !this.InPorts.Any(x => x.Connectors.Any()))
-            return this.NickName;
+            return nick;
 
          string s = "";
 
          if (this.InPorts.All(x => x.Connectors.Any()))
          {
-            s += "(" + this.NickName;
+            s += "(" + nick;
             for (int i = 0; i < this.InPortData.Count; i++)
             {
                var port = this.InPorts[i];
@@ -404,8 +406,8 @@ namespace Dynamo.Elements
          else
          {
             s += "(lambda (" 
-               + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName)) 
-               + ") (" + this.NickName;
+               + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName))
+               + ") (" + nick;
             for (int i = 0; i < this.InPortData.Count; i++)
             {
                s += " ";
@@ -1290,24 +1292,24 @@ namespace Dynamo.Elements
          this._isDirty = true;
       }
 
-
+     
       /// <summary>
       /// Registers the given element id with the DMU such that any change in the element will
       /// trigger a workspace modification event (dynamic running and saving).
       /// </summary>
       /// <param name="id">ElementId of the element to watch.</param>
-      public void RegisterEvalOnModified(ElementId id)
+      public void RegisterEvalOnModified(ElementId id, Action modAction = null, Action delAction = null)
       {
          var u = this.Bench.Updater;
          u.RegisterChangeHook(
             id,
             ChangeTypeEnum.Modified,
-            new DynElementUpdateDelegate(this.ReEvalOnModified)
+            this.ReEvalOnModified(modAction)
          );
          u.RegisterChangeHook(
             id,
             ChangeTypeEnum.Delete,
-            new DynElementUpdateDelegate(this.UnRegOnDelete)
+            this.UnRegOnDelete(delAction)
          );
       }
 
@@ -1327,19 +1329,32 @@ namespace Dynamo.Elements
          );
       }
 
-      void UnRegOnDelete(List<ElementId> deleted)
+      DynElementUpdateDelegate UnRegOnDelete(Action deleteAction)
       {
-         foreach (var d in deleted)
+         return delegate(List<ElementId> deleted)
          {
-            var u = this.Bench.Updater;
-            u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
-            u.UnRegisterChangeHook(d, ChangeTypeEnum.Modified);
-         }
+            foreach (var d in deleted)
+            {
+               var u = this.Bench.Updater;
+               u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
+               u.UnRegisterChangeHook(d, ChangeTypeEnum.Modified);
+            }
+            if (deleteAction != null)
+               deleteAction();
+         };
       }
 
-      void ReEvalOnModified(List<ElementId> modified)
+      DynElementUpdateDelegate ReEvalOnModified(Action modifiedAction)
       {
-         this.IsDirty = true;
+         return delegate(List<ElementId> modified)
+         {
+            if (!this.IsDirty)
+            {
+               this.IsDirty = true;
+               if (modifiedAction != null)
+                  modifiedAction();
+            }
+         };
       }
 
       #endregion

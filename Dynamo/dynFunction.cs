@@ -212,7 +212,7 @@ namespace Dynamo.Elements
          var procedure = this.Bench.Environment.LookupSymbol(this.Symbol);
          if (procedure.IsFunction)
          {
-            return ((Expression.Function)procedure).Item
+            return (procedure as Expression.Function).Item
                .Invoke(ExecutionEnvironment.IDENT)
                .Invoke(
                   Utils.convertSequence(

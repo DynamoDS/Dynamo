@@ -1266,7 +1266,7 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         double newValue = (args.Head as Expression.Number).Item;
+         double newValue = ((Expression.Number)args.Head).Item;
          if (newValue > this.CurrentValue)
          {
             this.CurrentValue = newValue;
@@ -1344,8 +1344,8 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         double maxIterations = (args[0] as Expression.Number).Item;
-         double newValue = (args[1] as Expression.Number).Item;
+         double maxIterations = ((Expression.Number)args[0]).Item;
+         double newValue = ((Expression.Number)args[1]).Item;
          if (newValue != this.CurrentValue)
          {
             this.NumIterations++;
@@ -1376,15 +1376,15 @@ namespace Dynamo.Elements
          }
          set
          {
-            if (!this._value.Equals(value))
+            if (this._value == null || !this._value.Equals(value))
             {
-               this.IsDirty = true;
+               this.IsDirty = value != null;
                this._value = value;
             }
          }
       }
 
-      protected abstract void DeserializeValue(string val);
+      protected abstract T DeserializeValue(string val);
 
       public dynBasicInteractive()
       {
@@ -1406,7 +1406,7 @@ namespace Dynamo.Elements
          {
             if (subNode.Name == typeof(T).FullName)
             {
-               this.DeserializeValue(subNode.Attributes[0].Value);
+               this.Value = this.DeserializeValue(subNode.Attributes[0].Value);
             }
          }
       }
@@ -1466,7 +1466,7 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "0.0";
-         tb.TextChanged += delegate { if (!this.Bench.DynamicRunEnabled) this.DeserializeValue(tb.Text); };
+         tb.TextChanged += delegate { if (!this.Bench.DynamicRunEnabled) this.Value = this.DeserializeValue(tb.Text); };
          tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
          tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
@@ -1482,14 +1482,14 @@ namespace Dynamo.Elements
 
       void tb_LostFocus(object sender, RoutedEventArgs e)
       {
-         this.DeserializeValue(this.tb.Text);
+         this.Value = this.DeserializeValue(this.tb.Text);
       }
 
       void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
       {
          if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
          {
-            this.DeserializeValue(this.tb.Text);
+            this.Value = this.DeserializeValue(this.tb.Text);
          }
       }
 
@@ -1502,20 +1502,19 @@ namespace Dynamo.Elements
          set
          {
             base.Value = value;
-
             this.tb.Text = value.ToString();
          }
       }
 
-      protected override void DeserializeValue(string val)
+      protected override double DeserializeValue(string val)
       {
          try
          {
-            this.Value = Convert.ToDouble(val);
+            return Convert.ToDouble(val);
          }
          catch
          {
-            this.Value = 0;
+            return 0;
          }
       }
    }   
@@ -1596,7 +1595,7 @@ namespace Dynamo.Elements
          tb_slider.Minimum = 0.0;
          tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
          tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
-         tb_slider.ValueChanged += delegate { this.IsDirty = true; };
+         tb_slider.ValueChanged += delegate { this.Value = this.tb_slider.Value; };
          //tb_slider.ValueChanged += new System.Windows.RoutedPropertyChangedEventHandler<double>(tb_slider_ValueChanged);
          //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
@@ -1608,18 +1607,25 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      protected override void DeserializeValue(string val)
+      protected override double DeserializeValue(string val)
       {
          try
          {
-            this.tb_slider.Value = Convert.ToDouble(val);
+            return Convert.ToDouble(val);
          }
-         catch { }
+         catch
+         {
+            return 0;
+         }
       }
 
       protected override double Value
       {
-         get { return this.tb_slider.Value; }
+         set
+         {
+            base.Value = value;
+            this.tb_slider.Value = value;
+         }
       }
 
       public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -1641,7 +1647,7 @@ namespace Dynamo.Elements
                foreach (XmlAttribute attr in subNode.Attributes)
                {
                   if (attr.Name.Equals("value"))
-                     this.DeserializeValue(attr.Value);
+                     this.Value = this.DeserializeValue(attr.Value);
                   else if (attr.Name.Equals("min"))
                   {
                      this.tb_slider.Minimum = Convert.ToDouble(attr.Value);
@@ -1709,46 +1715,44 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      protected override void DeserializeValue(string val)
+      protected override bool DeserializeValue(string val)
       {
          try
          {
-            if (val.Equals("True"))
+            return val.ToLower().Equals("true");
+         }
+         catch 
+         {
+            return false;
+         }
+      }
+
+      protected override bool Value
+      {
+         set
+         {
+            base.Value = value;
+            if (value)
             {
-               this.currentValue = true;
                this.rbFalse.IsChecked = false;
                this.rbTrue.IsChecked = true;
             }
             else
             {
-               this.currentValue = false;
                this.rbFalse.IsChecked = true;
                this.rbTrue.IsChecked = false;
             }
          }
-         catch { }
       }
-
-      protected override bool Value
-      {
-         get
-         {
-            return this.currentValue;
-         }
-      }
-
-      bool currentValue = false;
 
       void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
       {
-         this.currentValue = false;
-         this.IsDirty = true;
+         this.Value = false;
       }
 
       void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
       {
-         this.currentValue = true;
-         this.IsDirty = true;
+         this.Value = true;
       }
    }
 
@@ -1784,6 +1788,15 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
+      protected override string Value
+      {
+         set
+         {
+            base.Value = value;
+            this.tb.Text = value;
+         }
+      }
+
       void tb_LostFocus(object sender, RoutedEventArgs e)
       {
          this.Value = this.tb.Text;
@@ -1795,10 +1808,9 @@ namespace Dynamo.Elements
             this.Value = this.tb.Text;
       }
 
-      protected override void DeserializeValue(string val)
+      protected override string DeserializeValue(string val)
       {
-         this.tb.Text = val;
-         this.Value = val;
+         return val;
       }
    }
 
@@ -1864,11 +1876,15 @@ namespace Dynamo.Elements
          }
       }
 
-      protected override void DeserializeValue(string val)
+      protected override string DeserializeValue(string val)
       {
          if (File.Exists(val))
          {
-            this.Value = val;
+            return val;
+         }
+         else
+         {
+            return "";
          }
       }
 

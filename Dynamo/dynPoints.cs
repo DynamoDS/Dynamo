@@ -44,7 +44,7 @@ namespace Dynamo.Elements
 
          if (input.IsList)
          {
-            var xyzList = ((Expression.List)input).Item;
+            var xyzList = (input as Expression.List).Item;
 
             int count = 0;
 
@@ -55,7 +55,7 @@ namespace Dynamo.Elements
                      ReferencePoint pt;
                      if (this.Elements.Count > count)
                      {
-                        pt = (ReferencePoint)this.UIDocument.Document.get_Element(this.Elements[count]);
+                        pt = this.UIDocument.Document.get_Element(this.Elements[count]) as ReferencePoint;
                         pt.Position = (XYZ)((Expression.Container)x).Item;
                      }
                      else
@@ -90,7 +90,7 @@ namespace Dynamo.Elements
 
             if (this.Elements.Any())
             {
-               pt = (ReferencePoint)this.UIDocument.Document.get_Element(this.Elements[0]);
+               pt = this.UIDocument.Document.get_Element(this.Elements[0]) as ReferencePoint;
                pt.Position = xyz;
 
                int count = 0;
@@ -112,7 +112,6 @@ namespace Dynamo.Elements
          }
       }
    }
-
 
    [ElementName("Reference Point Distance")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
@@ -137,12 +136,12 @@ namespace Dynamo.Elements
 
          if (arg0 is ReferencePoint)
          {
-            return Expression.NewNumber(((ReferencePoint)arg0).Position.DistanceTo(ptB));
+            return Expression.NewNumber((arg0 as ReferencePoint).Position.DistanceTo(ptB));
          }
          else if (arg0 is FamilyInstance)
          {
             return Expression.NewNumber(
-               ((LocationPoint)((FamilyInstance)arg0).Location).Point.DistanceTo(ptB)
+               ((arg0 as FamilyInstance).Location as LocationPoint).Point.DistanceTo(ptB)
             );
          }
          else
@@ -170,6 +169,7 @@ namespace Dynamo.Elements
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          Reference r = ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference;
+
          double t = ((Expression.Number)args[1]).Item;
          //Autodesk.Revit.DB..::.PointElementReference
          //Autodesk.Revit.DB..::.PointOnEdge
@@ -180,9 +180,19 @@ namespace Dynamo.Elements
 
          PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t);
 
-         return FScheme.Expression.NewContainer(
-            this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint)
-         );
+         ReferencePoint p;
+
+         if (this.Elements.Any())
+         {
+            p = this.UIDocument.Document.get_Element(this.Elements[0]) as ReferencePoint;
+            p.SetPointElementReference(edgePoint);
+         }
+         else
+         {
+            p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
+         }
+
+         return Expression.NewContainer(p);
       }
    }
 
@@ -210,7 +220,7 @@ namespace Dynamo.Elements
             // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
 
             //Face f = ((Face)((FScheme.Expression.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
-            Reference r = ((Reference)((Expression.Container)args[0]).Item);
+            Reference r = arg0 as Reference;
 
             double u = ((Expression.Number)args[1]).Item;
             double v = ((Expression.Number)args[2]).Item;
