@@ -558,8 +558,7 @@ namespace Dynamo.Utilities
       }
 
 
-      public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message,
-  dynElementSettings settings)
+      public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
          {
