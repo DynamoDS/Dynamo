@@ -38,7 +38,7 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Expression> args)
+      public override Expression Evaluate(FSharpList<Expression> args)
       {
          var input = args[0];
 
@@ -124,10 +124,9 @@ namespace Dynamo.Elements
          InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Element)));
          InPortData.Add(new PortData("ptB", "A Reference point.", typeof(ReferencePoint)));
 
-         OutPortData = new PortData("dist", "Distance between points.", typeof(dynDouble));
+         OutPortData = new PortData("dist", "Distance between points.", typeof(double));
 
          base.RegisterInputsAndOutputs();
-
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)
@@ -169,20 +168,7 @@ namespace Dynamo.Elements
 
       public override Expression Evaluate(FSharpList<Expression> args)
       {
-         Reference r = null;
-         object arg0 = ((Expression.Container)args[0]).Item;
-         if (arg0 is ModelCurve)
-         {
-            r = (((Expression.Container)args[0]).Item as ModelCurve).GeometryCurve.Reference;
-         }
-         else if (arg0 is CurveByPoints)
-         {
-            r = (((Expression.Container)args[0]).Item as CurveByPoints).GeometryCurve.Reference;
-         }
-         else
-         {
-            throw new Exception("Cannot cast first argument to Curve.");
-         }
+         Reference r = ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference;
 
          double t = ((Expression.Number)args[1]).Item;
          //Autodesk.Revit.DB..::.PointElementReference
@@ -206,7 +192,7 @@ namespace Dynamo.Elements
             p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
          }
 
-         return FScheme.Expression.NewContainer(p);
+         return Expression.NewContainer(p);
       }
    }
 

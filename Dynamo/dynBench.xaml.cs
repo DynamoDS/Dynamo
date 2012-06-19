@@ -1969,6 +1969,13 @@ namespace Dynamo.Controls
          if (this.Running)
             return;
 
+         //TODO: Hack. Might cause things to break later on...
+         if (this.CancelRun)
+         {
+            this.CancelRun = false;
+            return;
+         }
+
          this.Running = true;
 
          this.dynamicRun = !showErrors;
@@ -2467,7 +2474,7 @@ namespace Dynamo.Controls
 
          //Step 4: Call OnSave for all saved elements
          foreach (var el in funcWorkspace.Elements)
-            el.OnSave();
+            el.onSave();
 
          //Step 5: Update new add menu
          var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name];

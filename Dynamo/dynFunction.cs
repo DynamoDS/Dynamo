@@ -11,6 +11,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using Dynamo.FSchemeInterop;
+using System.Windows.Media.Effects;
 
 namespace Dynamo.Elements
 {
@@ -27,6 +28,8 @@ namespace Dynamo.Elements
 
          this.NickName = symbol;
 
+         ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
+
          this.MouseDoubleClick += delegate
          {
             dynElementSettings.SharedInstance.Bench.DisplayFunction(symbol);
@@ -42,6 +45,8 @@ namespace Dynamo.Elements
          {
             dynElementSettings.SharedInstance.Bench.DisplayFunction(this.Symbol);
          };
+
+         ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
       }
 
       protected internal override bool RequiresManualTransaction()
