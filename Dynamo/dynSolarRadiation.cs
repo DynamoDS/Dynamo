@@ -20,8 +20,8 @@ namespace Dynamo.Elements
    {
       public dynComputeSolarRadiationValue()
       {
-         InPortData.Add(new PortData("s", "The solar radiation data file", typeof(string)));
-         OutPortData = new PortData("s", "The solar radiation computed data", typeof(double));
+         InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
+         OutPortData = new PortData("data", "The solar radiation computed data", typeof(double));
 
          base.RegisterInputsAndOutputs();
       }
