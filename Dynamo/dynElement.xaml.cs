@@ -944,14 +944,20 @@ namespace Dynamo.Elements
       /// </summary>
       public void MarkDirty()
       {
-         if (this._isDirty)
-            return;
-         else
+         bool dirty = false;
+         foreach (var p in this.InPorts)
          {
-            bool dirty = this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
-            this._isDirty = dirty;
-            return;
+            foreach (var c in p.Connectors)
+            {
+               var input = c.Start.Owner;
+               input.MarkDirty();
+               if (c.Start.Owner.IsDirty)
+                  dirty = true;
+            }
          }
+         if (!this._isDirty)
+            this._isDirty = dirty;
+         return;
       }
 
 
@@ -1264,15 +1270,17 @@ namespace Dynamo.Elements
 
       void onDeleted(List<ElementId> deleted)
       {
+         int count = 0;
          foreach (var els in this.elements)
          {
-            els.RemoveAll(x => deleted.Contains(x));
+            count += els.RemoveAll(x => deleted.Contains(x));
          }
 
          foreach (var id in deleted)
             this.Bench.Updater.UnRegisterChangeHook(id, ChangeTypeEnum.Delete);
 
-         this._isDirty = true;
+         if (!this._isDirty)
+            this._isDirty = count > 0;
       }
 
 
