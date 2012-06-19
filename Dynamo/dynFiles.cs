@@ -37,7 +37,7 @@ namespace Dynamo.Elements
       }
    }
 
-   #region FileWatcher
+   #region File Watcher
 
    //SJE
    //TODO: Update (or make different versions)
@@ -145,11 +145,12 @@ namespace Dynamo.Elements
       }
    }
 
-   class FileWatcher
+   class FileWatcher : IDisposable
    {
       public bool Changed = false;
 
       private FileSystemWatcher watcher;
+      private FileSystemEventHandler handler;
 
       public FileWatcher(string filePath)
       {
@@ -157,8 +158,9 @@ namespace Dynamo.Elements
             Path.GetDirectoryName(filePath),
             Path.GetFileName(filePath)
          );
+         this.handler = new FileSystemEventHandler(watcher_Changed);
 
-         this.watcher.Changed += new FileSystemEventHandler(watcher_Changed);
+         this.watcher.Changed += handler;
          this.watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite;
          this.watcher.EnableRaisingEvents = true;
       }
@@ -172,6 +174,16 @@ namespace Dynamo.Elements
       {
          this.Changed = false;
       }
+
+      #region IDisposable Members
+
+      public void Dispose()
+      {
+         this.watcher.Changed -= handler;
+         this.watcher.Dispose();
+      }
+
+      #endregion
    }
 
    #endregion
