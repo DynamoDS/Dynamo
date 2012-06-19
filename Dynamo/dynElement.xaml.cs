@@ -369,6 +369,7 @@ namespace Dynamo.Elements
 
             e.IsEnabled = false;
          }
+         this.State = ElementState.DEAD;
       }
 
       internal void EnableInteraction()
@@ -378,6 +379,7 @@ namespace Dynamo.Elements
             if (enabledDict.ContainsKey(e))
                e.IsEnabled = enabledDict[e];
          }
+         this.ValidateConnections();
       }
 
       /// <summary>
