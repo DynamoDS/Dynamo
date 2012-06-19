@@ -1378,7 +1378,7 @@ namespace Dynamo.Elements
 
       protected override void OnTextChanged(TextChangedEventArgs e)
       {
-         if (!dynElementSettings.SharedInstance.Bench.DynamicRunEnabled)
+         if (!dynElementSettings.SharedInstance.Bench.DynamicRunEnabled && this.OnCommit != null)
             this.OnCommit();
       }
 
@@ -1386,13 +1386,15 @@ namespace Dynamo.Elements
       {
          if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
          {
-            this.OnCommit();
+            if (this.OnCommit != null)
+               this.OnCommit();
          }
       }
 
       protected override void OnLostFocus(RoutedEventArgs e)
       {
-         this.OnCommit();
+         if (this.OnCommit != null)
+            this.OnCommit();
       }
    }
    
