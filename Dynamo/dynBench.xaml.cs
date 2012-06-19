@@ -1155,6 +1155,13 @@ namespace Dynamo.Controls
 
       bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
       {
+         //Find compile errors
+         var tests = workSpace.Elements.SkipWhile(x => x.OutPort.Connectors.Any()).Skip(1);
+         foreach (var ele in tests.Where(x => !x.OutPort.Connectors.Any()))
+         {
+            ele.Error("Nodes can have only one output.");
+         }
+
          Log("Saving " + xmlPath + "...");
          try
          {
