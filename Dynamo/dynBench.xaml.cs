@@ -2257,6 +2257,7 @@ namespace Dynamo.Controls
          newEl.GUID = Guid.NewGuid();
          newEl.Margin = new Thickness(5, 30, 5, 5);
          newEl.LayoutTransform = new ScaleTransform(.8, .8);
+         newEl.State = ElementState.DEAD;
 
          Expander expander;
 
@@ -2487,6 +2488,7 @@ namespace Dynamo.Controls
          var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name];
          addItem.SetInputs(variableNames);
          addItem.ReregisterInputs();
+         addItem.State = ElementState.DEAD;
       }
 
       internal void DisplayFunction(string symbol)
