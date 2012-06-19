@@ -199,6 +199,7 @@ namespace Dynamo.Elements
    {
       private DynPythonEngine engine = new DynPythonEngine();
       private bool dirty = true;
+      private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
       TextBox tb;
 
@@ -220,32 +221,6 @@ namespace Dynamo.Elements
 
          this.ContentGrid.Children.Add(tb);
 
-         //System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
-         //addButton.Content = "+";
-         //addButton.Width = 20;
-         //addButton.Height = 20;
-         //addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         //addButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
-
-         //System.Windows.Controls.Button subButton = new System.Windows.Controls.Button();
-         //subButton.Content = "-";
-         //subButton.Width = 20;
-         //subButton.Height = 20;
-         //subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         //subButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
-
-         //inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-         //inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-         //inputGrid.Children.Add(addButton);
-         //Grid.SetColumn(addButton, 0);
-
-         //inputGrid.Children.Add(subButton);
-         //Grid.SetColumn(subButton, 1);
-
-         //addButton.Click += new RoutedEventHandler(AddInput);
-         //subButton.Click += new RoutedEventHandler(RemoveInput);
-
          InPortData.Add(new PortData("IN", "Input", typeof(object)));
          OutPortData = new PortData("OUT", "Result of the python script", typeof(object));
 
@@ -257,29 +232,6 @@ namespace Dynamo.Elements
          UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
          Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
       }
-
-
-      //protected virtual int getNewInputIndex()
-      //{
-      //   return this.InPortData.Count;
-      //}
-
-
-      //protected virtual void RemoveInput(object sender, RoutedEventArgs args)
-      //{
-      //   var count = InPortData.Count;
-      //   if (count > 0)
-      //   {
-      //      InPortData.RemoveAt(count - 1);
-      //      base.ReregisterInputs();
-      //   }
-      //}
-
-      //protected virtual void AddInput(object sender, RoutedEventArgs args)
-      //{
-      //   InPortData.Add(new PortData(null, this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
-      //   base.ReregisterInputs();
-      //}
 
       //TODO: Make this smarter
       public override bool IsDirty
@@ -294,14 +246,6 @@ namespace Dynamo.Elements
 
       public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
       {
-         //foreach (var inport in InPortData)
-         //{
-         //   XmlElement input = xmlDoc.CreateElement("Input");
-
-         //   input.SetAttribute("name", inport.NickName);
-
-         //   dynEl.AppendChild(input);
-         //}
          XmlElement script = xmlDoc.CreateElement("Script");
          script.InnerText = this.tb.Text;
          dynEl.AppendChild(script);
@@ -309,49 +253,31 @@ namespace Dynamo.Elements
 
       public override void LoadElement(XmlNode elNode)
       {
-         //int i = InPortData.Count;
          foreach (XmlNode subNode in elNode.ChildNodes)
          {
             if (subNode.Name == "Script")
                this.tb.Text = subNode.InnerText;
-
-            //if (i > 0) 
-            //{
-            //   i--;
-            //   continue;
-            //}
-
-            //if (subNode.Name == "Input")
-            //{
-            //   this.InPortData.Add(new PortData(null, subNode.Attributes["name"].Value, "", typeof(object)));
-            //}
          }
       }
-
-      //protected string getInputRootName()
-      //{
-      //   return "arg";
-      //}
 
       private delegate void LogDelegate(string msg);
       private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
 
       private List<Binding> makeBindings(IEnumerable<Expression> args)
       {
+         //Zip up our inputs
          var bindings = this.InPortData
             .Select(x => x.NickName)
             .Zip(args, (s, v) => new Binding(s, Converters.convertFromExpression(v)))
             .ToList();
 
-         bindings.Add(new Binding("__revit__", this.UIDocument.Application));
-         bindings.Add(new Binding("DynLog", new LogDelegate(this.Bench.Log)));
-         bindings.Add(new Binding(
-            "DynFunction",
-            new Func<Func<IEnumerable<dynamic>, dynamic>, Expression>(
-               Converters.convertPyFunction
-            )
-         ));
-
+         bindings.Add(new Binding("DynLog", new LogDelegate(this.Bench.Log))); //Logging
+         //bindings.Add(new Binding(
+         //   "DynFunction",
+         //   new Func<Func<IEnumerable<dynamic>, dynamic>, Expression>(
+         //      Converters.convertPyFunction
+         //   )
+         //));
          bindings.Add(new Binding(
             "DynTransaction",
             new Func<Autodesk.Revit.DB.SubTransaction>(
@@ -365,10 +291,12 @@ namespace Dynamo.Elements
                }
             )
          ));
-
+         bindings.Add(new Binding("__revit__", this.UIDocument.Application));
          bindings.Add(new Binding("__dynamo__", dynElementSettings.SharedInstance.Bench));
-         bindings.Add(new Binding("DynStoredElements", this.Elements)); // use this to pass into the python script a list of previously created elements from dynamo 
-         
+         bindings.Add(new Binding("__persistant__", this.stateDict));
+
+         // use this to pass into the python script a list of previously created elements from dynamo 
+         bindings.Add(new Binding("DynStoredElements", this.Elements)); 
          return bindings;
       }
 
