@@ -1117,6 +1117,10 @@ namespace Dynamo.Elements
 
                      elementsHaveBeenDeleted = false;
                   }
+                  catch (CancelEvaluationException ex)
+                  {
+                     throw ex;
+                  }
                   catch (Exception ex)
                   {
                      this.Dispatcher.Invoke(new Action(
@@ -1163,6 +1167,10 @@ namespace Dynamo.Elements
 
                            return exp;
                         }
+                        catch (CancelEvaluationException ex)
+                        {
+                           throw ex;
+                        }
                         catch (Exception ex)
                         {
                            this.Dispatcher.Invoke(new Action(
@@ -1208,6 +1216,10 @@ namespace Dynamo.Elements
                   Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
                   elementsHaveBeenDeleted = false;
+               }
+               catch (CancelEvaluationException ex)
+               {
+                  throw ex;
                }
                catch (Exception ex)
                {

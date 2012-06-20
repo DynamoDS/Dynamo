@@ -1155,13 +1155,6 @@ namespace Dynamo.Controls
 
       bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
       {
-         //Find compile errors
-         var tests = workSpace.Elements.SkipWhile(x => x.OutPort.Connectors.Any()).Skip(1);
-         foreach (var ele in tests.Where(x => !x.OutPort.Connectors.Any()))
-         {
-            ele.Error("Nodes can have only one output.");
-         }
-
          Log("Saving " + xmlPath + "...");
          try
          {
@@ -2123,6 +2116,19 @@ namespace Dynamo.Controls
                   run();
                }
             }
+            catch (CancelEvaluationException ex)
+            {
+               if (_trans != null)
+               {
+                  _trans.RollBack();
+                  _trans = null;
+               }
+
+               this.CancelRun = false;
+
+               if (ex.Force)
+                  this.runAgain = false;
+            }
             catch (Exception ex)
             {
                if (ex.Message.Length > 0)
@@ -2132,8 +2138,14 @@ namespace Dynamo.Controls
                   ));
                }
 
-               _trans = null;
+               if (_trans != null)
+               {
+                  _trans.RollBack();
+                  _trans = null;
+               }
+
                this.runAgain = false;
+               this.CancelRun = false;
             }
             finally
             {
@@ -2419,7 +2431,7 @@ namespace Dynamo.Controls
 
       public void SaveFunction(dynWorkspace funcWorkspace, bool writeDefinition = true)
       {
-         //Step 1: Generate xml, and save it in a fixed place
+         //Generate xml, and save it in a fixed place
          if (writeDefinition)
          {
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -2439,21 +2451,29 @@ namespace Dynamo.Controls
             }
          }
 
-         //Step 2: Find function entry point, and then compile the function and add it to our environment
-         dynElement topMost = funcWorkspace.Elements.FirstOrDefault(
-            el => !el.OutPort.Connectors.Any()
-         );
+         //Find compile errors
+         var topMost = funcWorkspace.Elements.Where(x => !x.OutPort.Connectors.Any()).ToList();
+         if (topMost.Count > 1)
+         {
+            foreach (var ele in topMost)
+            {
+               ele.Error("Nodes can have only one output.");
+            }
+         }
+
+         //Find function entry point, and then compile the function and add it to our environment
+         dynElement top = topMost.FirstOrDefault();
 
          var variables = funcWorkspace.Elements.Where(x => x is dynSymbol);
          var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
 
          try
          {
-            if (topMost != default(dynElement))
+            if (top != default(dynElement))
             {
                Expression expression = Utils.MakeAnon(
                   variableNames,
-                  topMost.Build().Compile()
+                  top.Build().Compile()
                );
 
                this.Environment.DefineSymbol(funcWorkspace.Name, expression);
@@ -2464,7 +2484,7 @@ namespace Dynamo.Controls
             //TODO: flesh out error handling (build-loops?)
          }
 
-         //Step 3: Update existing function nodes which point to this function to match its changes
+         //Update existing function nodes which point to this function to match its changes
          foreach (var el in this.AllElements)
          {
             if (el is dynFunction)
@@ -2480,11 +2500,11 @@ namespace Dynamo.Controls
             }
          }
 
-         //Step 4: Call OnSave for all saved elements
+         //Call OnSave for all saved elements
          foreach (var el in funcWorkspace.Elements)
             el.onSave();
 
-         //Step 5: Update new add menu
+         //Update new add menu
          var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name];
          addItem.SetInputs(variableNames);
          addItem.ReregisterInputs();
