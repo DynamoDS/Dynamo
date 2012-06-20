@@ -1438,7 +1438,7 @@ namespace Dynamo.Elements
       {
          foreach (XmlNode subNode in elNode.ChildNodes)
          {
-            if (subNode.Name == typeof(T).FullName)
+            if (subNode.Name.Equals(typeof(T).FullName))
             {
                this.Value = this.DeserializeValue(subNode.Attributes[0].Value);
             }
@@ -1504,19 +1504,6 @@ namespace Dynamo.Elements
          tb.OnCommit += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
 
          base.RegisterInputsAndOutputs();
-      }
-
-      void tb_LostFocus(object sender, RoutedEventArgs e)
-      {
-         this.Value = this.DeserializeValue(this.tb.Text);
-      }
-
-      void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-      {
-         if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
-         {
-            this.Value = this.DeserializeValue(this.tb.Text);
-         }
       }
 
       protected override double Value
