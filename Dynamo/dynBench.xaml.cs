@@ -702,7 +702,7 @@ namespace Dynamo.Controls
       public void ClearSelection()
       {
          //set all other items to the unselected state
-         foreach (dynElement el in selectedElements)
+         foreach (dynElement el in selectedElements.ToList())
          {
             el.Deselect();
          }
