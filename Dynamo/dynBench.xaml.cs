@@ -1155,6 +1155,13 @@ namespace Dynamo.Controls
 
       bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
       {
+         //Find compile errors
+         var tests = workSpace.Elements.SkipWhile(x => x.OutPort.Connectors.Any()).Skip(1);
+         foreach (var ele in tests.Where(x => !x.OutPort.Connectors.Any()))
+         {
+            ele.Error("Nodes can have only one output.");
+         }
+
          Log("Saving " + xmlPath + "...");
          try
          {
@@ -2250,6 +2257,7 @@ namespace Dynamo.Controls
          newEl.GUID = Guid.NewGuid();
          newEl.Margin = new Thickness(5, 30, 5, 5);
          newEl.LayoutTransform = new ScaleTransform(.8, .8);
+         newEl.State = ElementState.DEAD;
 
          Expander expander;
 
@@ -2480,6 +2488,7 @@ namespace Dynamo.Controls
          var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name];
          addItem.SetInputs(variableNames);
          addItem.ReregisterInputs();
+         addItem.State = ElementState.DEAD;
       }
 
       internal void DisplayFunction(string symbol)

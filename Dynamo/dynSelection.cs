@@ -69,12 +69,18 @@ namespace Dynamo.Elements
          get { return selected; }
          set
          {
+            var dirty = false;
             if (this.selected != null)
             {
                if (value != null && value.Id.Equals(this.selected.Id))
                   return;
 
+               dirty = true;
                this.UnregisterEvalOnModified(this.selected.Id);
+            }
+            else
+            {
+               dirty = value != null;
             }
 
             this.selected = value;
@@ -87,14 +93,15 @@ namespace Dynamo.Elements
 
                this.tb.Text = this.SelectionText;
                this.selectButton.Content = "Change";
-
-               this.IsDirty = true;
             }
             else
             {
                this.tb.Text = "Nothing Selected.";
                this.selectButton.Content = "Select";
             }
+
+            if (dirty)
+               this.IsDirty = true;
          }
       }
 

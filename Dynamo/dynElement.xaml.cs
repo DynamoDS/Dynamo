@@ -369,6 +369,7 @@ namespace Dynamo.Elements
 
             e.IsEnabled = false;
          }
+         this.State = ElementState.DEAD;
       }
 
       internal void EnableInteraction()
@@ -378,6 +379,7 @@ namespace Dynamo.Elements
             if (enabledDict.ContainsKey(e))
                e.IsEnabled = enabledDict[e];
          }
+         this.ValidateConnections();
       }
 
       /// <summary>
@@ -405,7 +407,7 @@ namespace Dynamo.Elements
          }
          else
          {
-            s += "(lambda (" 
+            s += "(lambda ("
                + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName))
                + ") (" + nick;
             for (int i = 0; i < this.InPortData.Count; i++)
@@ -426,7 +428,7 @@ namespace Dynamo.Elements
       protected internal virtual bool RequiresManualTransaction()
       {
          return this.InPorts.Any(
-            x => 
+            x =>
                x.Connectors.Any() && x.Connectors[0].Start.Owner.RequiresManualTransaction()
          );
       }
@@ -832,7 +834,7 @@ namespace Dynamo.Elements
       public virtual void SaveElement(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl)
       {
 
-      }      
+      }
 
       /// <summary>
       /// Override this to implement loading of custom data for your Element. If overridden, you should also override
@@ -944,14 +946,20 @@ namespace Dynamo.Elements
       /// </summary>
       public void MarkDirty()
       {
-         if (this._isDirty)
-            return;
-         else
+         bool dirty = false;
+         foreach (var p in this.InPorts)
          {
-            bool dirty = this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
-            this._isDirty = dirty;
-            return;
+            foreach (var c in p.Connectors)
+            {
+               var input = c.Start.Owner;
+               input.MarkDirty();
+               if (c.Start.Owner.IsDirty)
+                  dirty = true;
+            }
          }
+         if (!this._isDirty)
+            this._isDirty = dirty;
+         return;
       }
 
 
@@ -1123,13 +1131,7 @@ namespace Dynamo.Elements
                         }
                      ));
 
-                     SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-                     Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                         new object[] { ex.Message });
-
-                     MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
-                     Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-                         new object[] { true });
+                     this.Error(ex.Message);
                   }
 
                   #endregion
@@ -1146,7 +1148,6 @@ namespace Dynamo.Elements
                   result = IdlePromise<Expression>.ExecuteOnIdle(
                      delegate
                      {
-
                         bench.InitTransaction();
 
                         try
@@ -1173,13 +1174,7 @@ namespace Dynamo.Elements
                               }
                            ));
 
-                           SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-                           Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                               new object[] { ex.Message });
-
-                           MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
-                           Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-                               new object[] { true });
+                           this.Error(ex.Message);
 
                            bench.CancelTransaction();
 
@@ -1226,14 +1221,10 @@ namespace Dynamo.Elements
                         dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
 
                         dynElementSettings.SharedInstance.Bench.ShowElement(this);
-
-                        MarkConnectionState(true);
                      }
                   ));
 
-                  SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-                  Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                      new object[] { ex.Message });
+                  this.Error(ex.Message);
                }
 
                #endregion
@@ -1281,18 +1272,20 @@ namespace Dynamo.Elements
 
       void onDeleted(List<ElementId> deleted)
       {
+         int count = 0;
          foreach (var els in this.elements)
          {
-            els.RemoveAll(x => deleted.Contains(x));
+            count += els.RemoveAll(x => deleted.Contains(x));
          }
 
          foreach (var id in deleted)
             this.Bench.Updater.UnRegisterChangeHook(id, ChangeTypeEnum.Delete);
 
-         this._isDirty = true;
+         if (!this._isDirty)
+            this._isDirty = count > 0;
       }
 
-     
+
       /// <summary>
       /// Registers the given element id with the DMU such that any change in the element will
       /// trigger a workspace modification event (dynamic running and saving).
@@ -1348,7 +1341,7 @@ namespace Dynamo.Elements
       {
          return delegate(List<ElementId> modified)
          {
-            if (!this.IsDirty)
+            if (!this.IsDirty && !this.Bench.Running)
             {
                this.IsDirty = true;
                if (modifiedAction != null)
@@ -1798,7 +1791,7 @@ namespace Dynamo.Elements
 
       public void Deselect()
       {
-         Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ACTIVE });
+         this.ValidateConnections();
       }
 
       void SetState(dynElement el, ElementState state)
@@ -1903,6 +1896,15 @@ namespace Dynamo.Elements
       {
          this._report = true;
       }
+
+      internal void Error(string p)
+      {
+         MarkConnectionState(true);
+
+         SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
+         Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
+             new object[] { p });
+      }
    }
 
    [ValueConversion(typeof(double), typeof(Thickness))]
@@ -1954,7 +1956,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [AttributeUsage(AttributeTargets.All, Inherited=true)]
+   [AttributeUsage(AttributeTargets.All, Inherited = true)]
    public class IsInteractiveAttribute : System.Attribute
    {
       public bool IsInteractive { get; set; }

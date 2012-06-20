@@ -97,7 +97,14 @@ namespace Dynamo.Elements
                if (x.IsList)
                {
                   return (x as Expression.List).Item.Select(
-                     y => (Reference)((Expression.Container)y).Item
+                     delegate(Expression y)
+                     {
+                        var item = ((Expression.Container)y).Item;
+                        if (item is CurveElement)
+                           return (item as CurveElement).GeometryCurve.Reference;
+                        else
+                           return (Reference)item;
+                     }
                   );
                }
                else

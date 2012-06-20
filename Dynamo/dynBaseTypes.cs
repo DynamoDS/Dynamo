@@ -1363,6 +1363,40 @@ namespace Dynamo.Elements
    #region Interactive Primitive Types
 
    #region Base Classes
+
+   class dynTextBox : TextBox
+   {
+      public event Action OnCommit;
+
+      public dynTextBox()
+      {
+         //turn off the border
+         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+         Background = backgroundBrush;
+         BorderThickness = new Thickness(0);
+      }
+
+      protected override void OnTextChanged(TextChangedEventArgs e)
+      {
+         if (!dynElementSettings.SharedInstance.Bench.DynamicRunEnabled && this.OnCommit != null)
+            this.OnCommit();
+      }
+
+      protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
+      {
+         if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
+         {
+            if (this.OnCommit != null)
+               this.OnCommit();
+         }
+      }
+
+      protected override void OnLostFocus(RoutedEventArgs e)
+      {
+         if (this.OnCommit != null)
+            this.OnCommit();
+      }
+   }
    
    [IsInteractive(true)]
    public abstract class dynBasicInteractive<T> : dynElement
@@ -1454,28 +1488,20 @@ namespace Dynamo.Elements
    [RequiresTransaction(false)]
    public class dynDoubleInput : dynDouble
    {
-      TextBox tb;
+      dynTextBox tb;
 
       public dynDoubleInput()
       {
          //add a text box to the input grid of the control
-         tb = new System.Windows.Controls.TextBox();
+         tb = new dynTextBox();
          tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
          tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          inputGrid.Children.Add(tb);
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "0.0";
-         tb.TextChanged += delegate { if (!this.Bench.DynamicRunEnabled) this.Value = this.DeserializeValue(tb.Text); };
-         tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-         tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
 
-         //turn off the border
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         tb.Background = backgroundBrush;
-         tb.BorderThickness = new Thickness(0);
-
-         //OutPortData[0].Object = 0.0;
+         tb.OnCommit += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
 
          base.RegisterInputsAndOutputs();
       }
@@ -1527,18 +1553,19 @@ namespace Dynamo.Elements
    public class dynDoubleSliderInput : dynDouble
    {
       Slider tb_slider;
-      TextBox mintb;
-      TextBox maxtb;
+      dynTextBox mintb;
+      dynTextBox maxtb;
 
       public dynDoubleSliderInput()
       {
-         mintb = new TextBox();
+         mintb = new dynTextBox();
          mintb.MaxLength = 3;
          mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
          mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          mintb.Width = double.NaN;
          mintb.Text = "0";
-         mintb.TextChanged += delegate 
+         
+         mintb.OnCommit += delegate 
          {
             try
             {
@@ -1550,18 +1577,13 @@ namespace Dynamo.Elements
             }
          };
 
-         //turn off the border
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         mintb.Background = backgroundBrush;
-         mintb.BorderThickness = new Thickness(0);//turn off the border
-
-         maxtb = new TextBox();
+         maxtb = new dynTextBox();
          maxtb.MaxLength = 3;
          maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
          maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          maxtb.Width = double.NaN;
          maxtb.Text = "100";
-         maxtb.TextChanged += delegate 
+         maxtb.OnCommit += delegate 
          {
             try
             {
@@ -1572,9 +1594,6 @@ namespace Dynamo.Elements
                this.tb_slider.Maximum = 0;
             }
          };
-
-         maxtb.Background = backgroundBrush;
-         maxtb.BorderThickness = new Thickness(0);
 
          this.SetColumnAmount(3);
          inputGrid.Children.Add(mintb);
@@ -1596,14 +1615,7 @@ namespace Dynamo.Elements
          tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
          tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
          tb_slider.ValueChanged += delegate { this.Value = this.tb_slider.Value; };
-         //tb_slider.ValueChanged += new System.Windows.RoutedPropertyChangedEventHandler<double>(tb_slider_ValueChanged);
-         //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
-
-         //InPortData.Add(new PortData(null, "Lower", "Lower", typeof(dynDouble)));
-         //InPortData.Add(new PortData(null, "Upper", "Upper", typeof(dynDouble)));
-
-         //OutPortData[0].Object = 0.0;
-
+         
          base.RegisterInputsAndOutputs();
       }
 
@@ -1762,28 +1774,20 @@ namespace Dynamo.Elements
    [RequiresTransaction(false)]
    public class dynStringInput : dynString
    {
-      TextBox tb;
+      dynTextBox tb;
 
       public dynStringInput()
       {
          //add a text box to the input grid of the control
-         tb = new System.Windows.Controls.TextBox();
+         tb = new dynTextBox();
          tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
          tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          inputGrid.Children.Add(tb);
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "";
-         tb.TextChanged += delegate { if (!this.Bench.DynamicRunEnabled) this.Value = tb.Text; };
-         tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-         tb.LostFocus += new RoutedEventHandler(tb_LostFocus);
 
-         //turn off the border
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         tb.Background = backgroundBrush;
-         tb.BorderThickness = new Thickness(0);
-
-         //OutPortData[0].Object = "";
+         tb.OnCommit += delegate { this.Value = this.tb.Text; };
 
          base.RegisterInputsAndOutputs();
       }
