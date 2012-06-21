@@ -823,8 +823,6 @@ namespace Dynamo.Elements
          }
       }
 
-      #region SJEChanges
-
       /// <summary>
       /// Override this to implement custom save data for your Element. If overridden, you should also override
       /// LoadElement() in order to read the data back when loaded.
@@ -1117,6 +1115,10 @@ namespace Dynamo.Elements
 
                      elementsHaveBeenDeleted = false;
                   }
+                  catch (CancelEvaluationException ex)
+                  {
+                     throw ex;
+                  }
                   catch (Exception ex)
                   {
                      this.Dispatcher.Invoke(new Action(
@@ -1163,6 +1165,10 @@ namespace Dynamo.Elements
 
                            return exp;
                         }
+                        catch (CancelEvaluationException ex)
+                        {
+                           throw ex;
+                        }
                         catch (Exception ex)
                         {
                            this.Dispatcher.Invoke(new Action(
@@ -1208,6 +1214,10 @@ namespace Dynamo.Elements
                   Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
                   elementsHaveBeenDeleted = false;
+               }
+               catch (CancelEvaluationException ex)
+               {
+                  throw ex;
                }
                catch (Exception ex)
                {
@@ -1350,8 +1360,6 @@ namespace Dynamo.Elements
          };
       }
 
-      #endregion
-
       protected internal void SetColumnAmount(int amt)
       {
          int count = this.inputGrid.ColumnDefinitions.Count;
@@ -1387,275 +1395,6 @@ namespace Dynamo.Elements
             this.inputGrid.RowDefinitions.RemoveRange(amt, diff);
          }
       }
-
-      /// <summary>
-      /// The build method is called back from the child class.
-      /// </summary>
-      /// <param name="sender"></param>
-      /// <param name="e"></param>
-      //public void Build(object sender, EventArgs e)
-      //{
-      //   dynElement el = sender as dynElement;
-
-      //   bool useTransaction = true;
-
-      //   object[] attribs = el.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
-      //   if (attribs.Length > 0)
-      //   {
-      //      if ((attribs[0] as RequiresTransactionAttribute).RequiresTransaction == false)
-      //      {
-      //         useTransaction = false;
-      //      }
-      //   }
-
-      //   bool debug = dynElementSettings.SharedInstance.Bench.RunInDebug;
-
-      //   if (!debug)
-      //   {
-      //      #region no debug
-
-      //      #region using transaction
-      //      if (useTransaction)
-      //      {
-      //         Transaction t = new Transaction(dynElementSettings.SharedInstance.Doc.Document, el.GetType().ToString() + " update.");
-      //         TransactionStatus ts = t.Start();
-
-      //         try
-      //         {
-      //            FailureHandlingOptions failOpt = t.GetFailureHandlingOptions();
-      //            failOpt.SetFailuresPreprocessor(dynElementSettings.SharedInstance.WarningSwallower);
-      //            t.SetFailureHandlingOptions(failOpt);
-
-      //            el.Destroy();
-      //            el.Draw();
-
-      //            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-      //            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { el });
-
-      //            elementsHaveBeenDeleted = false;
-
-      //            ts = t.Commit();
-
-      //         }
-      //         catch (Exception ex)
-      //         {
-      //            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-      //            dynElementSettings.SharedInstance.Bench.Log(ex.Message);
-
-      //            SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-      //            Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-      //                new object[] { ex.Message });
-
-      //            MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
-      //            Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-      //                new object[] { true });
-
-      //            if (ts == TransactionStatus.Committed)
-      //            {
-      //               t.RollBack();
-      //            }
-
-      //            t.Dispose();
-
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-      //         }
-
-      //         try
-      //         {
-      //            el.UpdateOutputs();
-      //         }
-      //         catch (Exception ex)
-      //         {
-
-      //            //Debug.WriteLine("Outputs could not be updated.");
-      //            dynElementSettings.SharedInstance.Bench.Log("Outputs could not be updated.");
-      //            if (ts == TransactionStatus.Committed)
-      //            {
-      //               t.RollBack();
-      //            }
-
-      //            t.Dispose();
-
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-      //         }
-      //      }
-      //      #endregion
-
-      //      #region no transaction
-      //      if (!useTransaction)
-      //      {
-      //         try
-      //         {
-
-      //            el.Destroy();
-
-      //            el.Draw();
-
-      //            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-      //            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { el });
-
-      //            elementsHaveBeenDeleted = false;
-      //         }
-      //         catch (Exception ex)
-      //         {
-      //            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-      //            dynElementSettings.SharedInstance.Bench.Log(ex.Message);
-
-      //            SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-      //            Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-      //                new object[] { ex.Message });
-
-      //            MarkConnectionState(true);
-
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-
-      //         }
-
-      //         try
-      //         {
-      //            el.UpdateOutputs();
-      //         }
-      //         catch (Exception ex)
-      //         {
-
-      //            //Debug.WriteLine("Outputs could not be updated.");
-      //            dynElementSettings.SharedInstance.Bench.Log("Outputs could not be updated.");
-
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-      //         }
-      //      }
-      //      #endregion
-
-      //      #endregion
-      //   }
-      //   else
-      //   {
-      //      #region debug
-
-      //      #region using transaction
-      //      if (useTransaction)
-      //      {
-      //         Transaction t = new Transaction(dynElementSettings.SharedInstance.Doc.Document, el.GetType().ToString() + " update.");
-      //         TransactionStatus ts = t.Start();
-
-      //         try
-      //         {
-      //            FailureHandlingOptions failOpt = t.GetFailureHandlingOptions();
-      //            failOpt.SetFailuresPreprocessor(dynElementSettings.SharedInstance.WarningSwallower);
-      //            t.SetFailureHandlingOptions(failOpt);
-
-      //            el.Destroy();
-      //            el.Draw();
-
-      //            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-      //            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { el });
-
-      //            elementsHaveBeenDeleted = false;
-
-      //            ts = t.Commit();
-
-      //         }
-      //         catch (Exception ex)
-      //         {
-      //            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-      //            dynElementSettings.SharedInstance.Bench.Log(ex.Message);
-
-      //            SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-      //            Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-      //                new object[] { ex.Message });
-
-      //            MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
-      //            Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-      //                new object[] { true });
-
-      //            if (ts == TransactionStatus.Committed)
-      //            {
-      //               t.RollBack();
-      //            }
-
-      //            t.Dispose();
-
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-      //         }
-
-      //         try
-      //         {
-      //            el.UpdateOutputs();
-      //         }
-      //         catch (Exception ex)
-      //         {
-
-      //            //Debug.WriteLine("Outputs could not be updated.");
-      //            dynElementSettings.SharedInstance.Bench.Log("Outputs could not be updated.");
-      //            if (ts == TransactionStatus.Committed)
-      //            {
-      //               t.RollBack();
-      //            }
-
-      //            t.Dispose();
-
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-      //         }
-      //      }
-
-      //      #endregion
-
-      //      #region no transaction
-      //      if (!useTransaction)
-      //      {
-      //         try
-      //         {
-
-      //            el.Destroy();
-
-      //            el.Draw();
-
-      //            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-      //            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { el });
-
-      //            elementsHaveBeenDeleted = false;
-      //         }
-      //         catch (Exception ex)
-      //         {
-      //            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-      //            dynElementSettings.SharedInstance.Bench.Log(ex.Message);
-
-      //            SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-      //            Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-      //                new object[] { ex.Message });
-
-      //            MarkConnectionState(true);
-
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-
-      //         }
-
-      //         try
-      //         {
-      //            el.UpdateOutputs();
-      //         }
-      //         catch (Exception ex)
-      //         {
-
-      //            //Debug.WriteLine("Outputs could not be updated.");
-      //            dynElementSettings.SharedInstance.Bench.Log("Outputs could not be updated.");
-
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-      //            dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-      //         }
-      //      }
-      //      #endregion
-
-      //      #endregion
-      //   }
-      //}
 
       public void CallUpdateLayout(FrameworkElement el)
       {
@@ -1761,18 +1500,23 @@ namespace Dynamo.Elements
 
       public bool CheckInputs()
       {
-         MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
+         var mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
 
          foreach (PortData pd in InPortData)
          {
             //if the port data's object is null
             //or the port data's object type can not be matched
-            Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-               new object[] { true });
+            Dispatcher.Invoke(
+               mcsd, 
+               System.Windows.Threading.DispatcherPriority.Background,
+               new object[] { true }
+            );
 
             SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-            Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-               new object[] { "One or more connections is null." });
+            Dispatcher.Invoke(
+               sttd, System.Windows.Threading.DispatcherPriority.Background,
+               new object[] { "One or more connections is null." }
+            );
 
             return false;
          }
@@ -1786,7 +1530,11 @@ namespace Dynamo.Elements
 
       public void Select()
       {
-         Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.SELECTED });
+         Dispatcher.Invoke(
+            stateSetter, 
+            System.Windows.Threading.DispatcherPriority.Background, 
+            new object[] { this, ElementState.SELECTED }
+         );
       }
 
       public void Deselect()

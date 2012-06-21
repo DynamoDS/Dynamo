@@ -34,9 +34,10 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to select a Family Type from a drop down list.")]
    [RequiresTransaction(true)]
+   [IsInteractive(true)]
    public class dynFamilyTypeSelector : dynElement
    {
-      System.Windows.Controls.ComboBox combo;
+      ComboBox combo;
       Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
 
       public dynFamilyTypeSelector()
@@ -45,7 +46,7 @@ namespace Dynamo.Elements
          this.topControl.Width = 300;
 
          //add a drop down list to the window
-         combo = new System.Windows.Controls.ComboBox();
+         combo = new ComboBox();
          combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
          combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          this.inputGrid.Children.Add(combo);
@@ -53,15 +54,15 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetRow(combo, 0);
 
          combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
-         combo.SelectionChanged += delegate 
+         combo.SelectionChanged += delegate
          {
             if (combo.SelectedIndex != -1)
-               this.IsDirty = true; 
+               this.IsDirty = true;
          };
 
          PopulateComboBox();
 
-         OutPortData = new PortData("", "Family type", typeof(dynFamilyTypeSelector));
+         OutPortData = new PortData("", "Family type", typeof(FamilySymbol));
          base.RegisterInputsAndOutputs();
       }
 
@@ -102,6 +103,170 @@ namespace Dynamo.Elements
          }
 
          throw new Exception("Nothing selected!");
+      }
+   }
+
+   [ElementName("Family Instance Parameter Selector")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("Given a family instance, allows the user to select a paramter as a string.")]
+   [RequiresTransaction(false)]
+   public class dynFamilyInstanceParameterSelector : dynElement
+   {
+      ComboBox paramBox = new ComboBox();
+      ElementId storedId = null;
+      string value = "";
+      Dictionary<int, string> values = new Dictionary<int, string>();
+
+      public dynFamilyInstanceParameterSelector()
+      {
+         //widen the control
+         this.topControl.Width = 300;
+
+         //add a drop down list to the window
+         paramBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+         paramBox.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         this.inputGrid.Children.Add(paramBox);
+         System.Windows.Controls.Grid.SetColumn(paramBox, 0);
+         System.Windows.Controls.Grid.SetRow(paramBox, 0);
+
+         paramBox.SelectionChanged += delegate
+         {
+            if (paramBox.SelectedIndex != -1)
+            {
+               this.IsDirty = true;
+               this.value = this.values[this.paramBox.SelectedIndex];
+            }
+         };
+
+         paramBox.IsEnabled = false;
+
+         InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Element)));
+         OutPortData = new PortData("", "Parameter Name", typeof(string));
+         base.RegisterInputsAndOutputs();
+      }
+
+      private static string getStorageTypeString(StorageType st)
+      {
+         switch (st)
+         {
+            case StorageType.Integer:
+               return "int";
+            case StorageType.Double:
+               return "dbl";
+            case StorageType.String:
+               return "str";
+            case StorageType.ElementId:
+            default:
+               return "id";
+         }
+      }
+
+      private void PopulateComboBox(ParameterSet set)
+      {
+         this.values.Clear();
+
+         SortedList<string, Parameter> paramList = new SortedList<string, Parameter>();
+         //var paramList = new List<string>();
+         foreach (Parameter p in set)
+         {
+            if (p.IsReadOnly || p.StorageType == StorageType.None)
+               continue;
+
+            var val = p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")";
+            paramList.Add(val, p);
+         }
+
+         int i = 0;
+         foreach (Parameter p in paramList.Values)
+         {
+            this.values[i++] = p.Definition.Name;
+         }
+
+         this.paramBox.Dispatcher.Invoke(new Action(
+            delegate
+            {
+               this.paramBox.IsEnabled = true;
+               this.paramBox.Items.Clear();
+               foreach (string val in paramList.Keys)
+               {
+                  this.paramBox.Items.Add(val);
+               }
+            }
+         ));
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var input = (Element)((Expression.Container)args[0]).Item;
+
+         if (!input.Id.Equals(this.storedId))
+         {
+            this.storedId = input.Id;
+            if (input is FamilySymbol)
+            {
+               var fs = input as FamilySymbol;
+               this.PopulateComboBox(fs.Parameters);
+            }
+            else
+            {
+               var fi = (FamilyInstance)input;
+               this.PopulateComboBox(fi.Parameters);
+            }
+         }
+
+         return Expression.NewString(this.value);
+      }
+
+      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+      {
+         XmlElement outEl = xmlDoc.CreateElement("familyid");
+         outEl.SetAttribute("value", this.storedId.IntegerValue.ToString());
+         dynEl.AppendChild(outEl);
+
+         XmlElement param = xmlDoc.CreateElement("index");
+         param.SetAttribute("value", this.paramBox.SelectedIndex.ToString());
+         dynEl.AppendChild(param);
+      }
+
+      public override void LoadElement(XmlNode elNode)
+      {
+         int selection = -1;
+         foreach (XmlNode subNode in elNode.ChildNodes)
+         {
+            if (subNode.Name.Equals("familyid"))
+            {
+               int id;
+               try
+               {
+                  id = Convert.ToInt32(subNode.Attributes[0].Value);
+               }
+               catch
+               {
+                  continue;
+               }
+               this.storedId = new ElementId(id);
+               Element e = this.UIDocument.Document.get_Element(this.storedId);
+               if (e is FamilySymbol)
+                  this.PopulateComboBox((e as FamilySymbol).Parameters);
+               else if (e is FamilyInstance)
+                  this.PopulateComboBox((e as FamilyInstance).Parameters);
+               else
+               {
+                  this.storedId = null;
+                  continue;
+               }
+            }
+            else if (subNode.Name.Equals("index"))
+            {
+               try
+               {
+                  selection = Convert.ToInt32(subNode.Attributes[0].Value);
+               }
+               catch { }
+            }
+         }
+         if (this.storedId != null)
+            this.paramBox.SelectedIndex = selection;
       }
    }
 
@@ -481,6 +646,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to create family instances.")]
    [RequiresTransaction(true)]
+   [IsInteractive(true)]
    public class dynFamilyInstanceCreatorXYZ : dynElement
    {
       public dynFamilyInstanceCreatorXYZ()
@@ -528,7 +694,7 @@ namespace Dynamo.Elements
       {
          FamilySymbol fs = (FamilySymbol)((Expression.Container)args[1]).Item;
          var input = args[0];
-         
+
          if (input.IsList)
          {
             var locList = (input as Expression.List).Item;
@@ -615,6 +781,14 @@ namespace Dynamo.Elements
             else if (p.StorageType == StorageType.String)
             {
                p.Set(((Expression.String)valueExpr).Item);
+            }
+            else if (valueExpr.IsNumber)
+            {
+               p.Set(new ElementId((int)(valueExpr as Expression.Number).Item));
+            }
+            else
+            {
+               p.Set((ElementId)((Expression.Container)valueExpr).Item);
             }
             return Expression.NewContainer(fi);
          }
