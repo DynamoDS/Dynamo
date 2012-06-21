@@ -120,7 +120,7 @@ namespace Dynamo.Elements
       public dynFamilyInstanceParameterSelector()
       {
          //widen the control
-         this.topControl.Width = 300;
+         this.topControl.Height = 175;
 
          //add a drop down list to the window
          paramBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -161,15 +161,15 @@ namespace Dynamo.Elements
          }
       }
 
-      private void PopulateComboBox(ParameterSet set)
+      private void PopulateComboBox(IEnumerable set, bool readOnly)
       {
          this.values.Clear();
 
          SortedList<string, Parameter> paramList = new SortedList<string, Parameter>();
          //var paramList = new List<string>();
-         foreach (Parameter p in set)
+         foreach (dynamic p in set)
          {
-            if (p.IsReadOnly || p.StorageType == StorageType.None)
+            if ((readOnly && p.IsReadOnly) || p.StorageType == StorageType.None)
                continue;
 
             var val = p.Definition.Name + " (" + getStorageTypeString(p.StorageType) + ")";
@@ -205,12 +205,15 @@ namespace Dynamo.Elements
             if (input is FamilySymbol)
             {
                var fs = input as FamilySymbol;
-               this.PopulateComboBox(fs.Parameters);
+               var fd = this.UIDocument.Document.EditFamily(fs.Family);
+               var ps = fd.FamilyManager.Parameters;
+               //this.PopulateComboBox(fs.Parameters, false);
+               this.PopulateComboBox(ps, false);
             }
             else
             {
                var fi = (FamilyInstance)input;
-               this.PopulateComboBox(fi.Parameters);
+               this.PopulateComboBox(fi.Parameters, true);
             }
          }
 
@@ -247,9 +250,11 @@ namespace Dynamo.Elements
                this.storedId = new ElementId(id);
                Element e = this.UIDocument.Document.get_Element(this.storedId);
                if (e is FamilySymbol)
-                  this.PopulateComboBox((e as FamilySymbol).Parameters);
+               {
+                  this.PopulateComboBox((e as FamilySymbol).Parameters, false);
+               }
                else if (e is FamilyInstance)
-                  this.PopulateComboBox((e as FamilyInstance).Parameters);
+                  this.PopulateComboBox((e as FamilyInstance).Parameters, true);
                else
                {
                   this.storedId = null;
@@ -669,10 +674,26 @@ namespace Dynamo.Elements
 
          if (this.Elements.Count > count)
          {
-            fi = this.UIDocument.Document.get_Element(this.Elements[count]) as FamilyInstance;
-            fi.Symbol = fs;
-            LocationPoint lp = fi.Location as LocationPoint;
-            lp.Point = pos;
+            Element e;
+            if (dynUtils.TryGetElement(this.Elements[count], out e))
+            {
+               fi = this.UIDocument.Document.get_Element(this.Elements[count]) as FamilyInstance;
+               fi.Symbol = fs;
+               LocationPoint lp = fi.Location as LocationPoint;
+               lp.Point = pos;
+            }
+            else
+            {
+               fi = this.UIDocument.Document.IsFamilyDocument
+                  ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                     pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                  )
+                  : this.UIDocument.Document.Create.NewFamilyInstance(
+                     pos, fs, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                  );
+
+               this.Elements[count] = fi.Id;
+            }
          }
          else
          {

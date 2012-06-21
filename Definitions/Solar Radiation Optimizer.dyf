@@ -1,12 +1,12 @@
 <dynWorkspace X="10" Y="55" Name="Solar Radiation Optimizer" Category="Revit">
   <dynElements>
-    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="4afe98cb-f3f3-405c-b42d-183ac3f100ad" nickname="Variable" x="0" y="36.45">
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="4afe98cb-f3f3-405c-b42d-183ac3f100ad" nickname="Variable" x="0" y="0">
       <Symbol value="famInst" />
     </Dynamo.Elements.dynSymbol>
-    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="ba61d47e-4501-4ce5-902c-9d2119ecba95" nickname="Variable" x="0" y="87.65">
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="ba61d47e-4501-4ce5-902c-9d2119ecba95" nickname="Variable" x="0" y="53.25">
       <Symbol value="parameter" />
     </Dynamo.Elements.dynSymbol>
-    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="db1b3035-829a-4142-aeb6-85307812b1a2" nickname="Variable" x="0" y="140.65">
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="db1b3035-829a-4142-aeb6-85307812b1a2" nickname="Variable" x="0" y="135.05">
       <Symbol value="increment" />
     </Dynamo.Elements.dynSymbol>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="d86c032c-eeb7-490a-b795-90c2ab54b9a7" nickname="Variable" x="0" y="191.85">
@@ -30,14 +30,14 @@
       <Input name="index0" />
       <Input name="index1" />
     </Dynamo.Elements.dynNewList>
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="368fbdb1-a80a-4726-b641-dc98442a9a53" nickname="Number" x="80.7999999999998" y="414.4875">
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="368fbdb1-a80a-4726-b641-dc98442a9a53" nickname="Number" x="64.7999999999998" y="437.6875">
       <System.Double value="0" />
     </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="1e2bc1d1-53c0-4099-854a-f1e2d3248c23" nickname="Variable" x="0" y="262.0375">
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="1e2bc1d1-53c0-4099-854a-f1e2d3248c23" nickname="Variable" x="0" y="245.2375">
       <Symbol value="path" />
     </Dynamo.Elements.dynSymbol>
-    <Dynamo.Elements.dynFileWatcher type="Dynamo.Elements.dynFileWatcher" guid="6d8e892b-f3e8-405b-aff6-04953184b2eb" nickname="Watch File" x="318.1" y="305.7875" />
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="c14de34c-a2f9-477b-b0a9-a72292e9e2b2" nickname="solarradupdate" x="766.1" y="55.9">
+    <Dynamo.Elements.dynFileWatcher type="Dynamo.Elements.dynFileWatcher" guid="6d8e892b-f3e8-405b-aff6-04953184b2eb" nickname="Watch File" x="320.5" y="327.3875" />
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="c14de34c-a2f9-477b-b0a9-a72292e9e2b2" nickname="solarradupdate" x="750.9" y="30.3">
       <Symbol value="solarradupdate" />
       <Output value="out" />
       <Inputs>

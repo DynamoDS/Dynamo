@@ -27,6 +27,28 @@ namespace Dynamo.Utilities
 {
    class dynUtils
    {
+      private static ElementId _testid;
+      /// <summary>
+      /// Utility function to determine if an Element of the given ID exists in the document.
+      /// </summary>
+      /// <param name="e">ID to check.</param>
+      /// <returns>True if exists, false otherwise.</returns>
+      public static bool TryGetElement(ElementId id, out Element e)
+      {
+         try
+         {
+            e = dynElementSettings.SharedInstance.Doc.Document.get_Element(id);
+            _testid = e.Id;
+            return true;
+         }
+         catch
+         {
+            e = null;
+            return false;
+         }
+      }
+
+
       /// <summary>
       /// Creates a sketch plane by projecting one point's z coordinate down to the other's z coordinate.
       /// </summary>

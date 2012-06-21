@@ -1,4 +1,4 @@
-<dynWorkspace X="-185.2" Y="55" Name="solarradupdate" Category="Miscellaneous">
+<dynWorkspace X="10" Y="55" Name="solarradupdate" Category="Miscellaneous">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="080c41ad-eff1-41b6-bb1a-277bec2b0e77" nickname="Variable" x="0" y="0">
       <Symbol value="fi" />

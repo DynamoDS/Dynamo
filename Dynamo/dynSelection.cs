@@ -17,6 +17,7 @@ using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
+   [IsInteractive(true)]
    public abstract class dynElementSelection : dynElement
    {
       TextBox tb;
@@ -174,7 +175,7 @@ namespace Dynamo.Elements
    [ElementName("Divided Surface by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows the user to select a divided surface.")]
-   [RequiresTransaction(true)]
+   [RequiresTransaction(false)]
    public class dynDividedSurfaceBySelection : dynElementSelection
    {
       Expression data;
@@ -271,7 +272,7 @@ namespace Dynamo.Elements
    [ElementName("Face by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows the user to select a face.")]
-   [RequiresTransaction(true)]
+   [RequiresTransaction(false)]
    public class dynFormElementBySelection : dynElementSelection
    {
       Reference f;
@@ -302,7 +303,7 @@ namespace Dynamo.Elements
    [ElementName("Curve by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows the user to select a curve.")] //or set of curves in the future
-   [RequiresTransaction(true)]
+   [RequiresTransaction(false)]
    public class dynCurvesBySelection : dynElementSelection
    {
       public dynCurvesBySelection() 
@@ -325,7 +326,7 @@ namespace Dynamo.Elements
    [ElementName("Point by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows the user to select a reference point.")]
-   [RequiresTransaction(true)]
+   [RequiresTransaction(false)]
    public class dynPointBySelection : dynElementSelection
    {
       public dynPointBySelection() : 
@@ -348,7 +349,7 @@ namespace Dynamo.Elements
    [ElementName("SunPath Direction")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which returns the current Sun Path direction.")]
-   [RequiresTransaction(true)]
+   [RequiresTransaction(false)]
    public class dynSunPathDirection : dynElement
    {
        System.Windows.Controls.TextBox tb;

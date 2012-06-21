@@ -38,6 +38,11 @@ namespace Dynamo
             += new EventHandler<DocumentChangedEventArgs>(Application_DocumentChanged);
       }
 
+      public void RollBack(IEnumerable<ElementId> deleted)
+      {
+         this.processUpdates(new List<ElementId>(), deleted);
+      }
+
       private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted)
       {
          //Document doc = data.GetDocument();
