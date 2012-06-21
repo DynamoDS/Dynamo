@@ -1,6 +1,6 @@
-<dynWorkspace X="10" Y="42.9999999999999">
+<dynWorkspace X="10" Y="50.1999999999999">
   <dynElements>
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="9c8c2279-6f59-417c-8218-3b337230bd99" nickname="GraphFunction" x="712.855263157895" y="158.584210526316">
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="9c8c2279-6f59-417c-8218-3b337230bd99" nickname="GraphFunction" x="709.655263157895" y="167.384210526316">
       <Symbol value="GraphFunction" />
       <Output value="out" />
       <Inputs>
@@ -10,7 +10,7 @@
         <Input value="y = f(x)" />
       </Inputs>
     </Dynamo.Elements.dynFunction>
-    <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="734ce2dc-eb47-4cd5-98a9-2d75ed87fac2" nickname="Reference Point" x="870.313157894737" y="188.736842105263" />
+    <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="734ce2dc-eb47-4cd5-98a9-2d75ed87fac2" nickname="Reference Point" x="866.313157894737" y="197.536842105263" />
     <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="affb404d-ed36-41dd-aa93-cc304afb2a23" nickname="Number" x="0" y="270.797368421053">
       <System.Double value="32" />
     </Dynamo.Elements.dynDoubleInput>
@@ -37,14 +37,14 @@
     <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="84e9e06f-5c7a-4705-ac36-71b46cd5f2fe" nickname="Number" x="0" y="361.936842105263">
       <System.Double value="1" />
     </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynSin type="Dynamo.Elements.dynSin" guid="3d7e0885-94c2-4123-9a1a-803a517aa74f" nickname="sine" x="362.952631578947" y="479.752631578947" />
-    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="6597042e-185b-45d7-8241-25f41bf753e9" nickname="×" x="516.51052631579" y="23.1578947368421" />
-    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="c8ca1146-0945-475b-bfc2-df2afbb71f99" nickname="×" x="519.763157894737" y="179.110526315789" />
+    <Dynamo.Elements.dynSin type="Dynamo.Elements.dynSin" guid="3d7e0885-94c2-4123-9a1a-803a517aa74f" nickname="sine" x="391.752631578947" y="499.752631578947" />
+    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="6597042e-185b-45d7-8241-25f41bf753e9" nickname="×" x="522.11052631579" y="22.3578947368421" />
+    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="c8ca1146-0945-475b-bfc2-df2afbb71f99" nickname="×" x="522.163157894737" y="177.510526315789" />
     <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="ea1f32ed-145b-4218-a013-87dd5e9053b2" nickname="Number Slider" x="0" y="50.5921052631579">
       <System.Double value="1" min="0" max="10" />
     </Dynamo.Elements.dynDoubleSliderInput>
     <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="bddfacc6-3281-45f1-8346-d7e0eeb5f85c" nickname="×" x="348.131578947368" y="381.184210526316" />
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="70161769-254b-49ea-a964-e083ee7d10df" nickname="ConnectPoints" x="1016.05263157895" y="188.815789473684">
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="70161769-254b-49ea-a964-e083ee7d10df" nickname="ConnectPoints" x="1024.05263157895" y="197.615789473684">
       <Symbol value="ConnectPoints" />
       <Output value="out" />
       <Inputs>
