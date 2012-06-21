@@ -474,7 +474,7 @@ namespace Dynamo.Controls
             this.QueueLoad(path);
          else
          {
-            if (!this.ViewingHomespace) 
+            if (!this.ViewingHomespace)
                this.Home_Click(null, null);
 
             this.OpenWorkbench(path);
@@ -951,9 +951,9 @@ namespace Dynamo.Controls
 
          System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog()
          {
-            AddExtension=true,
-            DefaultExt=ext,
-            Filter=fltr
+            AddExtension = true,
+            DefaultExt = ext,
+            Filter = fltr
          };
 
          if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -1582,7 +1582,7 @@ namespace Dynamo.Controls
 
          System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
          {
-            Filter="Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
+            Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
          };
 
          if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -1907,7 +1907,7 @@ namespace Dynamo.Controls
          UnlockUI();
       }
 
-      public ExecutionEnvironment Environment 
+      public ExecutionEnvironment Environment
       {
          get;
          private set;
@@ -1918,6 +1918,44 @@ namespace Dynamo.Controls
       public bool InIdleThread;
 
       public TransactionMode TransMode;
+
+      private List<Autodesk.Revit.DB.ElementId> _transElements = new List<Autodesk.Revit.DB.ElementId>();
+      private List<Autodesk.Revit.DB.ElementId> _modified = new List<Autodesk.Revit.DB.ElementId>();
+ 
+      internal void RegisterDeleteHook(Autodesk.Revit.DB.ElementId id, DynElementUpdateDelegate d)
+      {
+         DynElementUpdateDelegate del = delegate(List<Autodesk.Revit.DB.ElementId> deleted)
+         {
+            var valid = new List<Autodesk.Revit.DB.ElementId>();
+            var invalid = new List<Autodesk.Revit.DB.ElementId>();
+            foreach (var delId in deleted.Where(x => !_modified.Contains(x)))
+            {
+               try
+               {
+                  valid.Add(dynElementSettings.SharedInstance.Doc.Document.get_Element(delId).Id);
+               }
+               catch
+               {
+                  invalid.Add(delId);
+               }
+            }
+            valid.Clear();
+            d(invalid);
+         };
+
+         DynElementUpdateDelegate mod = delegate(List<Autodesk.Revit.DB.ElementId> modded)
+         {
+            _modified.AddRange(modded);
+         };
+
+         this.Updater.RegisterChangeHook(
+            id, ChangeTypeEnum.Delete, del
+         );
+         this.Updater.RegisterChangeHook(
+            id, ChangeTypeEnum.Modified, mod
+         );
+         this._transElements.Add(id);
+      }
 
       private Transaction _trans;
       public void InitTransaction()
@@ -1943,7 +1981,10 @@ namespace Dynamo.Controls
          if (_trans != null)
          {
             if (_trans.GetStatus() == TransactionStatus.Started)
+            {
                _trans.Commit();
+               _transElements.Clear(); _modified.Clear();
+            }
             _trans = null;
          }
       }
@@ -1954,6 +1995,8 @@ namespace Dynamo.Controls
          {
             _trans.RollBack();
             _trans = null;
+            this.Updater.RollBack(this._transElements);
+            this._transElements.Clear(); _modified.Clear();
          }
       }
 
@@ -1970,11 +2013,8 @@ namespace Dynamo.Controls
             return;
 
          //TODO: Hack. Might cause things to break later on...
-         if (this.CancelRun)
-         {
-            this.CancelRun = false;
-            return;
-         }
+         this.CancelRun = false;
+         this.runAgain = false;
 
          this.Running = true;
 
@@ -2023,11 +2063,7 @@ namespace Dynamo.Controls
                      }
                      catch (CancelEvaluationException ex)
                      {
-                        if (_trans != null)
-                        {
-                           _trans.RollBack();
-                           _trans = null;
-                        }
+                        this.CancelTransaction();
 
                         this.CancelRun = false;
 
@@ -2045,14 +2081,12 @@ namespace Dynamo.Controls
                            ));
                         }
 
-                        if (_trans != null)
-                        {
-                           _trans.RollBack();
-                           _trans = null;
-                        }
+                        this.CancelTransaction();
 
                         this.CancelRun = false;
                         this.runAgain = false;
+
+                        break;
                      }
                   }
 
@@ -2118,11 +2152,7 @@ namespace Dynamo.Controls
             }
             catch (CancelEvaluationException ex)
             {
-               if (_trans != null)
-               {
-                  _trans.RollBack();
-                  _trans = null;
-               }
+               this.CancelTransaction();
 
                this.CancelRun = false;
 
@@ -2138,11 +2168,7 @@ namespace Dynamo.Controls
                   ));
                }
 
-               if (_trans != null)
-               {
-                  _trans.RollBack();
-                  _trans = null;
-               }
+               this.CancelTransaction();
 
                this.runAgain = false;
                this.CancelRun = false;
@@ -2805,7 +2831,7 @@ namespace Dynamo.Controls
          {
             string oldpath = System.IO.Path.Combine(pluginsPath, this.CurrentSpace.Name + ".dyf");
             string newpath = FormatFileName(
-               System.IO.Path.Combine(pluginsPath, newName + ".dyf")               
+               System.IO.Path.Combine(pluginsPath, newName + ".dyf")
             );
 
             File.Move(oldpath, newpath);
@@ -2824,7 +2850,7 @@ namespace Dynamo.Controls
       private static string FormatFileName(string filename)
       {
          return RemoveChars(
-            filename, 
+            filename,
             new string[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" }
          );
       }

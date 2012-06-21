@@ -55,8 +55,19 @@ namespace Dynamo.Elements
                      ReferencePoint pt;
                      if (this.Elements.Count > count)
                      {
-                        pt = this.UIDocument.Document.get_Element(this.Elements[count]) as ReferencePoint;
-                        pt.Position = (XYZ)((Expression.Container)x).Item;
+                        Element e;
+                        if (dynUtils.TryGetElement(this.Elements[count], out e))
+                        {
+                           pt = e as ReferencePoint;
+                           pt.Position = (XYZ)((Expression.Container)x).Item;
+                        }
+                        else
+                        {
+                           pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
+                              (XYZ)((Expression.Container)x).Item
+                           );
+                           this.Elements[count] = pt.Id;
+                        }
                      }
                      else
                      {
@@ -90,13 +101,22 @@ namespace Dynamo.Elements
 
             if (this.Elements.Any())
             {
-               pt = this.UIDocument.Document.get_Element(this.Elements[0]) as ReferencePoint;
-               pt.Position = xyz;
+               Element e;
+               if (dynUtils.TryGetElement(this.Elements[0], out e))
+               {
+                  pt = e as ReferencePoint;
+                  pt.Position = xyz;
+               }
+               else
+               {
+                  pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
+                  this.Elements[0] = pt.Id;
+               }
 
                int count = 0;
-               foreach (var e in this.Elements.Skip(1))
+               foreach (var el in this.Elements.Skip(1))
                {
-                  this.UIDocument.Document.Delete(e);
+                  this.UIDocument.Document.Delete(el);
                   count++;
                }
                if (count > 0)
@@ -184,12 +204,22 @@ namespace Dynamo.Elements
 
          if (this.Elements.Any())
          {
-            p = this.UIDocument.Document.get_Element(this.Elements[0]) as ReferencePoint;
-            p.SetPointElementReference(edgePoint);
+            Element e;
+            if (dynUtils.TryGetElement(this.Elements[0], out e))
+            {
+               p = e as ReferencePoint;
+               p.SetPointElementReference(edgePoint);
+            }
+            else
+            {
+               p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
+               this.Elements[0] = p.Id;
+            }
          }
          else
          {
             p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
+            this.Elements.Add(p.Id);
          }
 
          return Expression.NewContainer(p);
@@ -234,15 +264,34 @@ namespace Dynamo.Elements
 
             PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
 
-            return Expression.NewContainer(
-               this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint)
-            );
+            ReferencePoint pt;
+
+            if (this.Elements.Any())
+            {
+               Element e;
+               if (dynUtils.TryGetElement(this.Elements[0], out e))
+               {
+                  pt = e as ReferencePoint;
+                  pt.SetPointElementReference(facePoint);
+               }
+               else
+               {
+                  pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
+                  this.Elements[0] = pt.Id;
+               }
+            }
+            else
+            {
+               pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
+               this.Elements.Add(pt.Id);
+            }
+
+            return Expression.NewContainer(pt);
          }
          else
          {
             throw new Exception("Cannot cast first argument to Face.");
          }
-
       }
    }
 }

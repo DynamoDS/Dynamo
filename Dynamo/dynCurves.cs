@@ -45,23 +45,34 @@ namespace Dynamo.Elements
          Curve c = (Curve)((Expression.Container)args[0]).Item;
          SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
 
-         ModelCurve e;
+         ModelCurve mc;
 
          if (this.Elements.Any())
          {
-            e = this.UIDocument.Document.get_Element(this.Elements[0]) as ModelCurve;
-            var loc = e.Location as LocationCurve;
-            loc.Curve = c;
+            Element e;
+            if (dynUtils.TryGetElement(this.Elements[0], out e))
+            {
+               mc = e as ModelCurve;
+               var loc = mc.Location as LocationCurve;
+               loc.Curve = c;
+            }
+            else
+            {
+               mc = this.UIDocument.Document.IsFamilyDocument
+                  ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                  : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+               this.Elements[0] = mc.Id;
+            }
          }
          else
          {
-            e = this.UIDocument.Document.IsFamilyDocument
+            mc = this.UIDocument.Document.IsFamilyDocument
                ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
                : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-            this.Elements.Add(e.Id);
+            this.Elements.Add(mc.Id);
          }
 
-         return Expression.NewContainer(e);
+         return Expression.NewContainer(mc);
       }
    }
 
@@ -159,12 +170,21 @@ namespace Dynamo.Elements
 
          if (this.Elements.Any())
          {
-            c = this.UIDocument.Document.get_Element(this.Elements[0]) as CurveByPoints;
-            c.SetPoints(refPtArr);
+            Element e;
+            if (dynUtils.TryGetElement(this.Elements[0], out e))
+            {
+               c = e as CurveByPoints;
+               c.SetPoints(refPtArr);
+            }
+            else
+            {
+               c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+               this.Elements[0] = c.Id;
+            }
          }
          else
          {
-            c = dynElementSettings.SharedInstance.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+            c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
             this.Elements.Add(c.Id);
          }
 
@@ -213,54 +233,54 @@ namespace Dynamo.Elements
 
    }
 
-   [ElementName("Planar Curve By Points")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("Node to create a planar model curve.")]
-   [RequiresTransaction(true)]
-   public class dynModelCurveByPoints : dynElement
-   {
-      public dynModelCurveByPoints()
-      {
-         InPortData.Add(new PortData("pts", "The points from which to create the curve", typeof(object)));
-         OutPortData = new PortData("cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline));
+   //[ElementName("Planar Curve By Points")]
+   //[ElementCategory(BuiltinElementCategories.REVIT)]
+   //[ElementDescription("Node to create a planar model curve.")]
+   //[RequiresTransaction(true)]
+   //public class dynModelCurveByPoints : dynElement
+   //{
+   //   public dynModelCurveByPoints()
+   //   {
+   //      InPortData.Add(new PortData("pts", "The points from which to create the curve", typeof(object)));
+   //      OutPortData = new PortData("cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline));
 
-         base.RegisterInputsAndOutputs();
-      }
+   //      base.RegisterInputsAndOutputs();
+   //   }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var pts = ((Expression.List)args[0]).Item.Select(
-            e => ((ReferencePoint)((Expression.Container)e).Item).Position
-         ).ToList();
+   //   public override Expression Evaluate(FSharpList<Expression> args)
+   //   {
+   //      var pts = ((Expression.List)args[0]).Item.Select(
+   //         e => ((ReferencePoint)((Expression.Container)e).Item).Position
+   //      ).ToList();
 
-         if (pts.Count <= 1)
-         {
-            throw new Exception("Not enough reference points to make a curve.");
-         }
+   //      if (pts.Count <= 1)
+   //      {
+   //         throw new Exception("Not enough reference points to make a curve.");
+   //      }
 
-         //make a curve
-         NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
-            pts, Enumerable.Repeat(1.0, pts.Count).ToList()
-         );
+   //      //make a curve
+   //      NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
+   //         pts, Enumerable.Repeat(1.0, pts.Count).ToList()
+   //      );
 
-         double rawParam = ns.ComputeRawParameter(.5);
-         Transform t = ns.ComputeDerivatives(rawParam, false);
+   //      double rawParam = ns.ComputeRawParameter(.5);
+   //      Transform t = ns.ComputeDerivatives(rawParam, false);
 
-         XYZ norm = t.BasisZ;
+   //      XYZ norm = t.BasisZ;
 
-         if (norm.GetLength() == 0)
-         {
-            norm = XYZ.BasisZ;
-         }
+   //      if (norm.GetLength() == 0)
+   //      {
+   //         norm = XYZ.BasisZ;
+   //      }
 
-         Plane p = new Plane(norm, t.Origin);
-         SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
-         //sps.Add(sp);
+   //      Plane p = new Plane(norm, t.Origin);
+   //      SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
+   //      //sps.Add(sp);
 
-         ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+   //      ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
 
-         return Expression.NewContainer(c);
-      }
-   }
+   //      return Expression.NewContainer(c);
+   //   }
+   //}
 }
 

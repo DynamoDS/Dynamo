@@ -1094,7 +1094,6 @@ namespace Dynamo.Elements
             if (useTransaction)
             {
                #region using transaction
-
                if (!debug)
                {
                   #region no debug
@@ -1114,6 +1113,7 @@ namespace Dynamo.Elements
                      Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
                      elementsHaveBeenDeleted = false;
+                     this.ValidateConnections();
                   }
                   catch (CancelEvaluationException ex)
                   {
@@ -1162,6 +1162,8 @@ namespace Dynamo.Elements
                            elementsHaveBeenDeleted = false;
 
                            bench.EndTransaction();
+
+                           this.ValidateConnections();
 
                            return exp;
                         }
@@ -1214,6 +1216,8 @@ namespace Dynamo.Elements
                   Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
                   elementsHaveBeenDeleted = false;
+
+                  this.ValidateConnections();
                }
                catch (CancelEvaluationException ex)
                {
@@ -1245,11 +1249,7 @@ namespace Dynamo.Elements
             var del = new DynElementUpdateDelegate(this.onDeleted);
 
             foreach (ElementId id in this.Elements)
-            {
-               this.Bench.Updater.RegisterChangeHook(
-                  id, ChangeTypeEnum.Delete, del
-               );
-            }
+               this.Bench.RegisterDeleteHook(id, del);
 
             #endregion
 
@@ -1267,7 +1267,7 @@ namespace Dynamo.Elements
          if (result != null)
             return result;
          else
-            throw new Exception();
+            throw new Exception("");
       }
 
       /// <summary>
