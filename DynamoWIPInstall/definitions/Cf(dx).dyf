@@ -12,9 +12,9 @@
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="00f79b13-c3c8-4cd1-81da-48aeab26750b" nickname="Variable" x="0" y="175.05">
       <Symbol value="x" />
     </Dynamo.Elements.dynSymbol>
-    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="71c301af-5ff7-49bc-bc04-edc350047fc6" nickname="×" x="716.7" y="22.3000000000001" />
-    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="4c0345d6-2c32-45c1-93f3-3d3c7555c14c" nickname="×" x="348.9" y="155.1" />
-    <Dynamo.Elements.dynApply1 type="Dynamo.Elements.dynApply1" guid="14e3c83d-c54f-42d8-b5b5-d7acd438c386" nickname="apply" x="480.7" y="93.1">
+    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="71c301af-5ff7-49bc-bc04-edc350047fc6" nickname="×" x="648.7" y="21.5000000000001" />
+    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="4c0345d6-2c32-45c1-93f3-3d3c7555c14c" nickname="×" x="297.7" y="155.1" />
+    <Dynamo.Elements.dynApply1 type="Dynamo.Elements.dynApply1" guid="14e3c83d-c54f-42d8-b5b5-d7acd438c386" nickname="apply" x="417.5" y="89.9">
       <Input name="arg1" />
     </Dynamo.Elements.dynApply1>
   </dynElements>

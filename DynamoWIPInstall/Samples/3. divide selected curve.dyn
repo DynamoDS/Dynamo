@@ -1,11 +1,11 @@
 <dynWorkspace X="10" Y="55">
   <dynElements>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="849bb853-81b8-4b63-bb86-5546794a9087" nickname="Curve by Selection" x="9" y="74" />
-    <Dynamo.Elements.dynXYZArrayAlongCurve type="Dynamo.Elements.dynXYZArrayAlongCurve" guid="c9433b83-f998-4027-a81e-136581967ea0" nickname="XYZ Array Along Curve" x="287" y="104.25" />
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c84b1288-03cc-4854-b67d-0ef60370eb87" nickname="Number" x="12" y="155">
+    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="849bb853-81b8-4b63-bb86-5546794a9087" nickname="Curve by Selection" x="0" y="0" />
+    <Dynamo.Elements.dynXYZArrayAlongCurve type="Dynamo.Elements.dynXYZArrayAlongCurve" guid="c9433b83-f998-4027-a81e-136581967ea0" nickname="XYZ Array Along Curve" x="287" y="74.65" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c84b1288-03cc-4854-b67d-0ef60370eb87" nickname="Number" x="0" y="159.8">
       <System.Double value="21" />
     </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="72092b8f-57a9-496c-978a-ce08cfdf7cd2" nickname="Reference Point" x="448.5" y="169.5" />
+    <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="72092b8f-57a9-496c-978a-ce08cfdf7cd2" nickname="Reference Point" x="492.5" y="84.7" />
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnector start="849bb853-81b8-4b63-bb86-5546794a9087" start_index="0" end="c9433b83-f998-4027-a81e-136581967ea0" end_index="0" portType="0" />
