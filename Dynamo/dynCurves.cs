@@ -119,7 +119,19 @@ namespace Dynamo.Elements
                   );
                }
                else
-                  return new List<Reference>() { (Reference)((Expression.Container)x).Item };
+               {
+                  var obj = ((Expression.Container)x).Item;
+                  Reference r;
+                  if (obj is CurveElement)
+                  {
+                     r = (obj as CurveElement).GeometryCurve.Reference;
+                  }
+                  else
+                  {
+                     r = (Reference)obj;
+                  }
+                  return new List<Reference>() { r };
+               }
             }
          );
 
