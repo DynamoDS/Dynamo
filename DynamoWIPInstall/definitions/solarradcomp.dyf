@@ -1,7 +1,7 @@
 <dynWorkspace X="10" Y="55" Name="solarradcomp" Category="Miscellaneous">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="b744d305-0928-4af0-86d3-ce6034125e7b" nickname="Variable" x="0" y="0">
-      <Symbol value="acc" />
+      <Symbol value="old" />
     </Dynamo.Elements.dynSymbol>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="989f4130-71ef-4bda-971a-b1b6d7b82e66" nickname="Variable" x="0" y="144.671052631579">
       <Symbol value="data" />
@@ -9,10 +9,10 @@
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="c942d95b-b105-4aad-9898-bccd438a4fe9" nickname="Variable" x="0" y="206.986842105263">
       <Symbol value="newAmt" />
     </Dynamo.Elements.dynSymbol>
-    <Dynamo.Elements.dynFirst type="Dynamo.Elements.dynFirst" guid="3bafd705-9f0c-4acc-8584-4d2e1a40a7b2" nickname="first" x="416.184210526316" y="0" />
-    <Dynamo.Elements.dynGreaterThan type="Dynamo.Elements.dynGreaterThan" guid="58b32a67-fcc5-46d3-9aac-39ef9066348f" nickname="&gt;" x="664.921052631579" y="0" />
-    <Dynamo.Elements.dynConditional type="Dynamo.Elements.dynConditional" guid="a869308d-9162-47b6-bcfa-9e57fe87895e" nickname="if" x="1018.92105263158" y="83.0789473684211" />
-    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="388d6681-5978-4fa7-b136-87487ce5bcdf" nickname="list" x="533.605263157895" y="144.026315789474">
+    <Dynamo.Elements.dynFirst type="Dynamo.Elements.dynFirst" guid="3bafd705-9f0c-4acc-8584-4d2e1a40a7b2" nickname="first" x="304.605263157895" y="0" />
+    <Dynamo.Elements.dynGreaterThan type="Dynamo.Elements.dynGreaterThan" guid="58b32a67-fcc5-46d3-9aac-39ef9066348f" nickname="&gt;" x="460.71052631579" y="0" />
+    <Dynamo.Elements.dynConditional type="Dynamo.Elements.dynConditional" guid="a869308d-9162-47b6-bcfa-9e57fe87895e" nickname="if" x="589.447368421054" y="78.8684210526316" />
+    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="388d6681-5978-4fa7-b136-87487ce5bcdf" nickname="list" x="322.026315789474" y="167.184210526316">
       <Input name="index0" />
       <Input name="index1" />
     </Dynamo.Elements.dynNewList>

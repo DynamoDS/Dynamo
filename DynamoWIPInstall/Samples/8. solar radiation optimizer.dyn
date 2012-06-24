@@ -1,8 +1,6 @@
 <dynWorkspace X="10" Y="55">
   <dynElements>
-    <Dynamo.Elements.dynFamilyInstanceCreatorSelection type="Dynamo.Elements.dynFamilyInstanceCreatorSelection" guid="190adeab-697e-4975-aead-5570f742aa85" nickname="Family Instance Selection" x="0" y="0">
-      <instance id="236321" />
-    </Dynamo.Elements.dynFamilyInstanceCreatorSelection>
+    <Dynamo.Elements.dynFamilyInstanceCreatorSelection type="Dynamo.Elements.dynFamilyInstanceCreatorSelection" guid="190adeab-697e-4975-aead-5570f742aa85" nickname="Family Instance Selection" x="0" y="0" />
     <Dynamo.Elements.dynStringInput type="Dynamo.Elements.dynStringInput" guid="c223c0ca-50bf-4a36-852d-340e4645cfd1" nickname="String" x="0" y="97.1">
       <System.String value="increment" />
     </Dynamo.Elements.dynStringInput>
@@ -12,7 +10,7 @@
     <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="49c62c74-0706-47b4-ae79-ac6a0ec269c1" nickname="Number" x="0" y="202.9">
       <System.Double value="36" />
     </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="4e7b027c-030c-4f18-8e83-a70d88b09a7e" nickname="Solar Radiation Optimizer" x="447.9" y="48.2">
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="4e7b027c-030c-4f18-8e83-a70d88b09a7e" nickname="Solar Radiation Optimizer" x="339.1" y="68.2">
       <Symbol value="Solar Radiation Optimizer" />
       <Output value="out" />
       <Inputs>
