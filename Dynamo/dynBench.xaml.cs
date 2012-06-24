@@ -84,8 +84,12 @@ namespace Dynamo.Controls
 
       SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
-      public dynBench(DynamoUpdater updater)
+      SplashScreen splashScreen;
+
+      public dynBench(DynamoUpdater updater, SplashScreen splash)
       {
+         this.splashScreen = splash;
+
          this.Updater = updater;
 
          this.homeSpace = this.CurrentSpace = new HomeWorkspace();
@@ -150,6 +154,8 @@ namespace Dynamo.Controls
             this.UnlockLoadPath = null;
 
             UnlockUI();
+
+            this.splashScreen.Close(TimeSpan.FromMilliseconds(100));
          }
       }
 

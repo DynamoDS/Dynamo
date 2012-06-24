@@ -35,6 +35,9 @@ using Dynamo.Elements;
 using Dynamo.Controls;
 using System.Xml.Serialization;
 using Dynamo.Utilities;
+using System.Windows.Interop;
+using System.Reflection;
+using System.Windows;
 
 
 namespace Dynamo.Applications
@@ -58,8 +61,6 @@ namespace Dynamo.Applications
 
          try
          {
-
-
             // Create new ribbon panel
             RibbonPanel ribbonPanel = application.CreateRibbonPanel("Visual Programming"); //MDJ todo - move hard-coded strings out to resource files
 
@@ -117,7 +118,7 @@ namespace Dynamo.Applications
          }
          catch (Exception ex)
          {
-            MessageBox.Show(ex.ToString());
+            System.Windows.Forms.MessageBox.Show(ex.ToString());
             return Result.Failed;
          }
       }
@@ -128,7 +129,7 @@ namespace Dynamo.Applications
          return Result.Succeeded;
       }
    }
-   
+
 
    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
@@ -189,13 +190,23 @@ namespace Dynamo.Applications
             //dynElementSettings settings = new dynElementSettings(m_revit, m_doc,
             //defaultLevel, swallow, trans);
 
+            //get window handle
+            IntPtr h = Process.GetCurrentProcess().MainWindowHandle;
 
-            //show the log
-            dynamoForm = new dynBench(DynamoRevitApp.updater);
+            //prepare and show splash
+            var splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
+            splashScreen.Show(false, true);
 
-            //get the window handle
-            Process process = Process.GetCurrentProcess();
-            new System.Windows.Interop.WindowInteropHelper(dynamoForm).Owner = process.MainWindowHandle;
+            //show the window
+            dynamoForm = new dynBench(DynamoRevitApp.updater, splashScreen);
+
+            //var revitWindow = (Window)HwndSource.FromHwnd(h).RootVisual;
+            //var w = revitWindow.ActualWidth;
+            //var h = revitWindow.ActualHeight;
+
+            //set window handle and show dynamo
+            new System.Windows.Interop.WindowInteropHelper(dynamoForm).Owner = h;
+            dynamoForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             dynamoForm.Show();
 
             if (dynamoForm.DialogResult.HasValue && dynamoForm.DialogResult.Value == false)   //the WPF false is "cancel"
@@ -283,7 +294,26 @@ namespace Dynamo.Applications
    }
 
 
+   class WindowHandle : System.Windows.Interop.IWin32Window
+   {
+      IntPtr _hwnd;
 
+      public WindowHandle(IntPtr h)
+      {
+         Debug.Assert(IntPtr.Zero != h,
+           "expected non-null window handle");
+
+         _hwnd = h;
+      }
+
+      public IntPtr Handle
+      {
+         get
+         {
+            return _hwnd;
+         }
+      }
+   }
 
 }
 
