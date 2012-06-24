@@ -1,10 +1,14 @@
 <dynWorkspace X="10" Y="55">
   <dynElements>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="849bb853-81b8-4b63-bb86-5546794a9087" nickname="Curve by Selection" x="0" y="0" />
+    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="849bb853-81b8-4b63-bb86-5546794a9087" nickname="Curve by Selection" x="0" y="0">
+      <instance id="32741" />
+    </Dynamo.Elements.dynCurvesBySelection>
     <Dynamo.Elements.dynXYZArrayAlongCurve type="Dynamo.Elements.dynXYZArrayAlongCurve" guid="c9433b83-f998-4027-a81e-136581967ea0" nickname="XYZ Array Along Curve" x="295.8" y="49.05" />
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="5dbb1369-04cd-42e3-89c3-2156f05675c4" nickname="Curve by Selection" x="0" y="173.25" />
+    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="5dbb1369-04cd-42e3-89c3-2156f05675c4" nickname="Curve by Selection" x="0" y="173.25">
+      <instance id="32722" />
+    </Dynamo.Elements.dynCurvesBySelection>
     <Dynamo.Elements.dynXYZArrayAlongCurve type="Dynamo.Elements.dynXYZArrayAlongCurve" guid="b6bc233e-226a-4672-bc18-bf5cb2d3ee84" nickname="XYZ Array Along Curve" x="293.1" y="149.75" />
-    <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="587d4b00-7ea4-40ed-8a1b-b92044417ee1" nickname="Python Script" x="780.1" y="176.2">
+    <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="587d4b00-7ea4-40ed-8a1b-b92044417ee1" nickname="Python Script" x="567.1" y="225.2">
       <Script>import math
 
 doc = __revit__.ActiveUIDocument.Document
@@ -34,7 +38,7 @@ for i in range(0,max):
       <Input name="index2" />
     </Dynamo.Elements.dynNewList>
     <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="5e122a73-d6b0-4ccc-bb01-f238e4cb2604" nickname="Number Slider" x="0" y="98.9">
-      <System.Double value="7.33333333333334" min="0" max="20" />
+      <System.Double value="20" min="0" max="20" />
     </Dynamo.Elements.dynDoubleSliderInput>
     <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="27f17d64-7590-42c2-86f1-e95c9a750a59" nickname="Reference Point" x="439.95" y="58.9" />
     <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="fe41ce19-4c4d-4796-9e96-cb91466ba9ec" nickname="Reference Point" x="438.2" y="160" />
