@@ -10,7 +10,7 @@ BEWARE LEGAL STUFF BELOW!!!
 
 Those portions created by Ian are provided with the following copyright:
 
-Copyright 2011 Ian Keough
+Copyright 2012 Ian Keough
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,13 +25,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
-
 ==============================================================================
 
-Dynamo For Vasari 2.1: Integrating Dynamo into Project Vasari and extending Dynamo to support integrated analysis and performance-based design.
+
+Autodesk has contributed new concepts, features and implementation into the Dynamo Open Source project. 
+
+The current version will run on top of Revit 2012 and Project Vasari 2.5. It will be released as a new Project Vasari WIP soon but is available now experimental form on github.
+
+Key new features :
+
+- User Interface - side panel to allow you to search and then drag and drop new nodes in to place
+- User-created nodes – you can make 'sub-nodes' and then reference them elsewhere, these act like writing a reusable function in a programming language
+- Python Scripting node – we have integrated a python scripting node into 
+- Math, logic and other nodes – many new nodes added to support evaluation,  iteration and looping
+
+Dynamo For Vasari 2.5 WIP: Integrating Dynamo into Project Vasari and extending Dynamo to support integrated analysis and performance-based design.
 
 
-Portions of DynamoForVasari_2-1.exe copyright 2011 Autodesk and released as 'Derivative Work' in 'Object' (compiled) form under the Apache License. 
-
-DynamoForVasari_2-1.exe is a work-in-progress (WIP) addin for Project Vasari released under a non-commercial EULA.  See Project Vasari Enu User License Agreement for more detail.
 
