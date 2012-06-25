@@ -864,7 +864,10 @@ namespace Dynamo.Elements
          {
             var elems = this.elements[i];
             foreach (var e in elems)
-               dynElementSettings.SharedInstance.Doc.Document.Delete(e);
+            {
+               this.Bench.Log("DEL: " + e.IntegerValue);
+               this.UIDocument.Document.Delete(e);
+            }
             elems.Clear();
          }
 
@@ -1109,6 +1112,15 @@ namespace Dynamo.Elements
 
                      result = this.Evaluate(args);
 
+                     foreach (ElementId eid in this.deletedIds)
+                     {
+                        this.Bench.RegisterSuccessfulDeleteHook(
+                           eid,
+                           onSuccessfulDelete
+                        );
+                     }
+                     this.deletedIds.Clear();
+
                      UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                      Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
@@ -1155,6 +1167,15 @@ namespace Dynamo.Elements
                         try
                         {
                            var exp = this.Evaluate(args);
+
+                           foreach (ElementId eid in this.deletedIds)
+                           {
+                              this.Bench.RegisterSuccessfulDeleteHook(
+                                 eid,
+                                 onSuccessfulDelete
+                              );
+                           }
+                           this.deletedIds.Clear();
 
                            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
@@ -1270,6 +1291,14 @@ namespace Dynamo.Elements
             throw new Exception("");
       }
 
+      private List<ElementId> deletedIds = new List<ElementId>();
+      protected void DeleteElement(ElementId id, bool hookOnly=false)
+      {
+         if (!hookOnly)
+            this.UIDocument.Document.Delete(id);
+         deletedIds.Add(id);
+      }
+
       /// <summary>
       /// The dynElement's Evaluation Logic.
       /// </summary>
@@ -1288,9 +1317,6 @@ namespace Dynamo.Elements
             count += els.RemoveAll(x => deleted.Contains(x));
          }
 
-         foreach (var id in deleted)
-            this.Bench.Updater.UnRegisterChangeHook(id, ChangeTypeEnum.Delete);
-
          if (!this._isDirty)
             this._isDirty = count > 0;
       }
@@ -1306,7 +1332,7 @@ namespace Dynamo.Elements
          var u = this.Bench.Updater;
          u.RegisterChangeHook(
             id,
-            ChangeTypeEnum.Modified,
+            ChangeTypeEnum.Modify,
             this.ReEvalOnModified(modAction)
          );
          u.RegisterChangeHook(
@@ -1325,7 +1351,7 @@ namespace Dynamo.Elements
       {
          var u = this.Bench.Updater;
          u.UnRegisterChangeHook(
-            id, ChangeTypeEnum.Modified
+            id, ChangeTypeEnum.Modify
          );
          u.UnRegisterChangeHook(
             id, ChangeTypeEnum.Delete
@@ -1340,7 +1366,7 @@ namespace Dynamo.Elements
             {
                var u = this.Bench.Updater;
                u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
-               u.UnRegisterChangeHook(d, ChangeTypeEnum.Modified);
+               u.UnRegisterChangeHook(d, ChangeTypeEnum.Modify);
             }
             if (deleteAction != null)
                deleteAction();
@@ -1353,11 +1379,17 @@ namespace Dynamo.Elements
          {
             if (!this.IsDirty && !this.Bench.Running)
             {
-               this.IsDirty = true;
                if (modifiedAction != null)
                   modifiedAction();
+               this.IsDirty = true;
             }
          };
+      }
+
+      void onSuccessfulDelete(List<ElementId> deleted)
+      {
+         foreach (var els in this.elements)
+            els.RemoveAll(x => deleted.Contains(x));
       }
 
       protected internal void SetColumnAmount(int amt)

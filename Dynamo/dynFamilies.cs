@@ -33,7 +33,7 @@ namespace Dynamo.Elements
    [ElementName("Family Type Selector")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to select a Family Type from a drop down list.")]
-   [RequiresTransaction(true)]
+   [RequiresTransaction(false)]
    [IsInteractive(true)]
    public class dynFamilyTypeSelector : dynElement
    {
@@ -110,6 +110,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Given a family instance, allows the user to select a paramter as a string.")]
    [RequiresTransaction(false)]
+   [IsInteractive(true)]
    public class dynFamilyInstanceParameterSelector : dynElement
    {
       ComboBox paramBox = new ComboBox();
@@ -133,8 +134,8 @@ namespace Dynamo.Elements
          {
             if (paramBox.SelectedIndex != -1)
             {
-               this.IsDirty = true;
                this.value = this.values[this.paramBox.SelectedIndex];
+               this.IsDirty = true;
             }
          };
 
@@ -651,7 +652,6 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to create family instances.")]
    [RequiresTransaction(true)]
-   [IsInteractive(true)]
    public class dynFamilyInstanceCreatorXYZ : dynElement
    {
       public dynFamilyInstanceCreatorXYZ()
@@ -735,14 +735,10 @@ namespace Dynamo.Elements
                )
             );
 
-            int delCount = 0;
             foreach (var e in this.Elements.Skip(count))
             {
-               this.UIDocument.Document.Delete(e);
-               delCount++;
+               this.DeleteElement(e);
             }
-            if (delCount > 0)
-               this.Elements.RemoveRange(count, delCount);
 
             return result;
          }
@@ -754,14 +750,10 @@ namespace Dynamo.Elements
                0
             );
 
-            int count = 0;
             foreach (var e in this.Elements.Skip(1))
             {
-               this.UIDocument.Document.Delete(e);
-               count++;
+               this.DeleteElement(e);
             }
-            if (count > 0)
-               this.Elements.RemoveRange(1, count);
 
             return result;
          }

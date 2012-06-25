@@ -97,7 +97,7 @@ namespace Dynamo.Elements
          if (this.Elements.Any())
          {
             FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
-            this.Elements.Clear();
+            this.DeleteElement(this.Elements[0], true);
          }
 
          bool isSolid = ((Expression.Number)args[0]).Item == 1;
@@ -196,6 +196,9 @@ namespace Dynamo.Elements
          }
          else
          {
+            //TODO: This method of handling bad elements may cause problems. Instead of overwriting
+            //      index in Elements, might be better to just add it the Elements and then do
+            //      this.DeleteElement(id, true) on the old index.
             c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
             this.Elements.Add(c.Id);
          }

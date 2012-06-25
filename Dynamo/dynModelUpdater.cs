@@ -14,7 +14,8 @@ namespace Dynamo
    public enum ChangeTypeEnum
    {
       Delete,
-      Modified
+      Modify,
+      Add
    };
 
    public class DynamoUpdater : IUpdater
@@ -32,7 +33,8 @@ namespace Dynamo
          m_updaterId = new UpdaterId(m_appId, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
 
          this.updateDict[ChangeTypeEnum.Delete] = new Dictionary<ElementId, DynElementUpdateDelegate>();
-         this.updateDict[ChangeTypeEnum.Modified] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+         this.updateDict[ChangeTypeEnum.Modify] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+         this.updateDict[ChangeTypeEnum.Add] = new Dictionary<ElementId, DynElementUpdateDelegate>();
 
          app.DocumentChanged
             += new EventHandler<DocumentChangedEventArgs>(Application_DocumentChanged);
@@ -40,15 +42,16 @@ namespace Dynamo
 
       public void RollBack(IEnumerable<ElementId> deleted)
       {
-         this.processUpdates(new List<ElementId>(), deleted);
+         this.processUpdates(new List<ElementId>(), deleted, new List<ElementId>());
       }
 
-      private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted)
+      private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
       {
          //Document doc = data.GetDocument();
          var bench = dynElementSettings.SharedInstance.Bench; // MDJ HOOK
 
-         var modDict = this.updateDict[ChangeTypeEnum.Modified];
+         #region Modified
+         var modDict = this.updateDict[ChangeTypeEnum.Modify];
          var dict = new Dictionary<DynElementUpdateDelegate, List<ElementId>>();
          foreach (ElementId modifiedElementID in modified)
          {
@@ -62,19 +65,46 @@ namespace Dynamo
                   dict[k] = new List<ElementId>();
                dict[k].Add(modifiedElementID);
             }
-
             catch (Exception e)
             {
                bench.Log(e.ToString());
             }
-
          }
 
          foreach (var pair in dict)
          {
             pair.Key(pair.Value);
          }
+         #endregion
 
+         #region Added
+         modDict = this.updateDict[ChangeTypeEnum.Add];
+         dict.Clear();
+         foreach (ElementId addedElementID in added)
+         {
+            try
+            {
+               if (!modDict.ContainsKey(addedElementID))
+                  continue;
+
+               var k = modDict[addedElementID];
+               if (!dict.ContainsKey(k))
+                  dict[k] = new List<ElementId>();
+               dict[k].Add(addedElementID);
+            }
+            catch (Exception e)
+            {
+               bench.Log(e.ToString());
+            }
+         }
+
+         foreach (var pair in dict)
+         {
+            pair.Key(pair.Value);
+         }
+         #endregion
+
+         #region Deleted
          modDict = this.updateDict[ChangeTypeEnum.Delete];
          dict.Clear();
          foreach (ElementId deletedElementID in deleted)
@@ -88,26 +118,30 @@ namespace Dynamo
                if (!dict.ContainsKey(k))
                   dict[k] = new List<ElementId>();
                dict[k].Add(deletedElementID);
-
             }
-
             catch (Exception e)
             {
                bench.Log(e.ToString());
             }
-
          }
 
          foreach (var pair in dict)
          {
             pair.Key(pair.Value);
          }
+         #endregion
       }
 
       void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
       {
          if (args.GetDocument().Equals(dynElementSettings.SharedInstance.Doc.Document))
-            this.processUpdates(args.GetModifiedElementIds(), args.GetDeletedElementIds());
+         {
+            this.processUpdates(
+               args.GetModifiedElementIds(),
+               args.GetDeletedElementIds(),
+               args.GetAddedElementIds()
+            );
+         }
       }
 
       /// <summary>
@@ -143,7 +177,11 @@ namespace Dynamo
 
       public void Execute(UpdaterData data)
       {
-         this.processUpdates(data.GetModifiedElementIds(), data.GetDeletedElementIds());
+         this.processUpdates(
+            data.GetModifiedElementIds(), 
+            data.GetDeletedElementIds(),
+            data.GetAddedElementIds()
+         );
       }
 
       public string GetAdditionalInformation()
