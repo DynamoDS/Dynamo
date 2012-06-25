@@ -865,7 +865,6 @@ namespace Dynamo.Elements
             var elems = this.elements[i];
             foreach (var e in elems)
             {
-               this.Bench.Log("DEL: " + e.IntegerValue);
                this.UIDocument.Document.Delete(e);
             }
             elems.Clear();
