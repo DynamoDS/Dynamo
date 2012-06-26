@@ -241,6 +241,23 @@ namespace Dynamo.Elements
 
    #region Lists
 
+   [ElementName("reverse")]
+   [ElementDescription("Reverses a list")]
+   [ElementCategory(BuiltinElementCategories.LIST)]
+   [RequiresTransaction(false)]
+   public class dynReverse : dynBuiltinFunction
+   {
+      public dynReverse()
+         : base("reverse")
+      {
+         InPortData.Add(new PortData("list", "List to sort", typeof(object)));
+
+         OutPortData = new PortData("rev", "Reversed list", typeof(object));
+
+         base.RegisterInputsAndOutputs();
+      }
+   }
+
    [ElementName("list")]
    [ElementDescription("Makes a new list out of the given inputs")]
    [ElementCategory(BuiltinElementCategories.LIST)]
@@ -1412,8 +1429,8 @@ namespace Dynamo.Elements
          {
             if (this._value == null || !this._value.Equals(value))
             {
-               this.IsDirty = value != null;
                this._value = value;
+               this.IsDirty = value != null;
             }
          }
       }

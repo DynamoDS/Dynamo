@@ -83,9 +83,9 @@ namespace Dynamo.Elements
          get { return pickedAnalysisResult; }
          set
          {
-            this.IsDirty = true;
             pickedAnalysisResult = value;
             NotifyPropertyChanged("PickedAnalysisResult");
+            this.IsDirty = true;
          }
       }
 

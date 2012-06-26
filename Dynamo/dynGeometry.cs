@@ -217,7 +217,7 @@ namespace Dynamo.Elements
 
          //TODO: If possible, update to handle mutation rather than deletion...
          foreach (var e in this.Elements)
-            this.UIDocument.Document.Delete(e);
+            this.DeleteElement(e);
 
          if (input.IsList)
          {
@@ -294,7 +294,6 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData("U", "U", typeof(double)));
          InPortData.Add(new PortData("V", "V", typeof(double)));
-
 
          OutPortData = new PortData("uv", "UV", typeof(UV));
 

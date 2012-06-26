@@ -1926,15 +1926,38 @@ namespace Dynamo.Controls
       public TransactionMode TransMode;
 
       private List<Autodesk.Revit.DB.ElementId> _transElements = new List<Autodesk.Revit.DB.ElementId>();
-      private List<Autodesk.Revit.DB.ElementId> _modified = new List<Autodesk.Revit.DB.ElementId>();
- 
+
+      private Dictionary<Autodesk.Revit.DB.ElementId, DynElementUpdateDelegate> _transDelElements
+         = new Dictionary<Autodesk.Revit.DB.ElementId, DynElementUpdateDelegate>();
+
+      internal void RegisterSuccessfulDeleteHook(Autodesk.Revit.DB.ElementId id, DynElementUpdateDelegate d)
+      {
+         this._transDelElements[id] = d;
+      }
+
+      private void CommitDeletions()
+      {
+         var delDict = new Dictionary<DynElementUpdateDelegate, List<Autodesk.Revit.DB.ElementId>>();
+         foreach (var kvp in this._transDelElements)
+         {
+            if (!delDict.ContainsKey(kvp.Value))
+            {
+               delDict[kvp.Value] = new List<Autodesk.Revit.DB.ElementId>();
+            }
+            delDict[kvp.Value].Add(kvp.Key);
+         }
+
+         foreach (var kvp in delDict)
+            kvp.Key(kvp.Value);
+      }
+
       internal void RegisterDeleteHook(Autodesk.Revit.DB.ElementId id, DynElementUpdateDelegate d)
       {
          DynElementUpdateDelegate del = delegate(List<Autodesk.Revit.DB.ElementId> deleted)
          {
             var valid = new List<Autodesk.Revit.DB.ElementId>();
             var invalid = new List<Autodesk.Revit.DB.ElementId>();
-            foreach (var delId in deleted.Where(x => !_modified.Contains(x)))
+            foreach (var delId in deleted)
             {
                try
                {
@@ -1947,18 +1970,33 @@ namespace Dynamo.Controls
             }
             valid.Clear();
             d(invalid);
+            foreach (var invId in invalid)
+            {
+               this.Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Modify);
+               this.Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Add);
+               this.Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Delete);
+            }
          };
 
          DynElementUpdateDelegate mod = delegate(List<Autodesk.Revit.DB.ElementId> modded)
          {
-            _modified.AddRange(modded);
+            _transElements.RemoveAll(x => modded.Contains(x));
+
+            foreach (var mid in modded)
+            {
+               this.Updater.UnRegisterChangeHook(mid, ChangeTypeEnum.Modify);
+               this.Updater.UnRegisterChangeHook(mid, ChangeTypeEnum.Add);
+            }
          };
 
          this.Updater.RegisterChangeHook(
             id, ChangeTypeEnum.Delete, del
          );
          this.Updater.RegisterChangeHook(
-            id, ChangeTypeEnum.Modified, mod
+            id, ChangeTypeEnum.Modify, mod
+         );
+         this.Updater.RegisterChangeHook(
+            id, ChangeTypeEnum.Add, mod
          );
          this._transElements.Add(id);
       }
@@ -1989,7 +2027,9 @@ namespace Dynamo.Controls
             if (_trans.GetStatus() == TransactionStatus.Started)
             {
                _trans.Commit();
-               _transElements.Clear(); _modified.Clear();
+               _transElements.Clear();
+               CommitDeletions();
+               _transDelElements.Clear();
             }
             _trans = null;
          }
@@ -2002,7 +2042,8 @@ namespace Dynamo.Controls
             _trans.RollBack();
             _trans = null;
             this.Updater.RollBack(this._transElements);
-            this._transElements.Clear(); _modified.Clear();
+            this._transElements.Clear();
+            this._transDelElements.Clear();
          }
       }
 
@@ -2182,14 +2223,20 @@ namespace Dynamo.Controls
             finally
             {
                this.runButton.Dispatcher.Invoke(new Action(
-                  delegate { this.runButton.IsEnabled = true; }
+                  delegate 
+                  {
+                     this.runButton.IsEnabled = true; 
+                  }
                ));
                this.Running = false;
                if (this.runAgain)
                {
                   this.runAgain = false;
                   this.Dispatcher.BeginInvoke(new Action(
-                     delegate { this.RunExpression(debug, showErrors); }
+                     delegate 
+                     {
+                        this.RunExpression(debug, showErrors); 
+                     }
                   ));
                }
             }
@@ -3033,6 +3080,14 @@ namespace Dynamo.Controls
       }
 
       public DynamoUpdater Updater { get; private set; }
+
+      private void ClearLog_Click(object sender, RoutedEventArgs e)
+      {
+         this.sw.Flush();
+         this.sw.Close();
+         this.sw = new StringWriter();
+         this.LogText = sw.ToString();
+      }
    }
 
    public class dynSelection : ObservableCollection<dynElement>

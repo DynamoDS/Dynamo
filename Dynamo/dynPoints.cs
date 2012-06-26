@@ -82,14 +82,10 @@ namespace Dynamo.Elements
                )
             );
 
-            int delCount = 0;
             foreach (var e in this.Elements.Skip(count))
             {
-               this.UIDocument.Document.Delete(e);
-               delCount++;
+               this.DeleteElement(e);
             }
-            if (delCount > 0)
-               this.Elements.RemoveRange(count, delCount);
 
             return Expression.NewList(result);
          }
@@ -113,14 +109,10 @@ namespace Dynamo.Elements
                   this.Elements[0] = pt.Id;
                }
 
-               int count = 0;
                foreach (var el in this.Elements.Skip(1))
                {
-                  this.UIDocument.Document.Delete(el);
-                  count++;
+                  this.DeleteElement(el);
                }
-               if (count > 0)
-                  this.Elements.RemoveRange(1, count);
             }
             else
             {

@@ -88,6 +88,11 @@
                       VerticalAlignment="Bottom" 
                       HorizontalScrollBarVisibility="Auto"
                       Background="DarkGray" Opacity=".5" Margin="291,0,0,0">
+         <ScrollViewer.ContextMenu>
+            <ContextMenu>
+               <MenuItem Header="Clear" Click="ClearLog_Click" />
+            </ContextMenu>
+         </ScrollViewer.ContextMenu>
          <TextBlock Margin="5"
                            Text="{Binding ElementName=_this, Path=LogText}" 
                            Foreground="White" TextWrapping="Wrap"/>
