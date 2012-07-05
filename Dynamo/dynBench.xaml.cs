@@ -138,8 +138,6 @@ namespace Dynamo.Controls
             this._activated = true;
 
             LoadUserTypes();
-            this.workBench.Visibility = System.Windows.Visibility.Visible;
-
             Log("Welcome to Dynamo!");
 
             if (this.UnlockLoadPath != null && !this.OpenWorkbench(this.UnlockLoadPath))
@@ -155,6 +153,8 @@ namespace Dynamo.Controls
 
             UnlockUI();
 
+            this.workBench.Visibility = System.Windows.Visibility.Visible;
+
             this.splashScreen.Close(TimeSpan.FromMilliseconds(100));
          }
       }
@@ -168,6 +168,8 @@ namespace Dynamo.Controls
          this.overlayCanvas.IsHitTestVisible = true;
          this.overlayCanvas.Cursor = System.Windows.Input.Cursors.AppStarting;
          this.overlayCanvas.ForceCursor = true;
+
+         //this.workBench.Visibility = System.Windows.Visibility.Hidden;
       }
 
       void UnlockUI()
@@ -179,6 +181,8 @@ namespace Dynamo.Controls
          this.overlayCanvas.IsHitTestVisible = false;
          this.overlayCanvas.Cursor = null;
          this.overlayCanvas.ForceCursor = false;
+
+         //this.workBench.Visibility = System.Windows.Visibility.Visible;
       }
 
       public IEnumerable<dynElement> AllElements
@@ -512,8 +516,7 @@ namespace Dynamo.Controls
          string[] filePaths = Directory.GetFiles(directory, "*.dyf");
          foreach (string filePath in filePaths)
          {
-            Log("  " + filePath);
-            this.OpenDefinition(filePath, true);
+            this.OpenDefinition(filePath);
          }
          foreach (var e in this.AllElements)
          {
@@ -638,7 +641,7 @@ namespace Dynamo.Controls
       /// <param name="x"></param>
       /// <param name="y"></param>
       /// <returns></returns>
-      public dynElement AddDynElement(Type elementType, string nickName, Guid guid, double x, double y, dynWorkspace ws)
+      public dynElement AddDynElement(Type elementType, string nickName, Guid guid, double x, double y, dynWorkspace ws, System.Windows.Visibility vis = System.Windows.Visibility.Visible)
       {
          try
          {
@@ -667,6 +670,8 @@ namespace Dynamo.Controls
             //store the element in the elements list
             ws.Elements.Add(el);
             el.WorkSpace = ws;
+
+            el.Visibility = vis;
 
             this.workBench.Children.Add(el);
 
@@ -1232,7 +1237,7 @@ namespace Dynamo.Controls
          return true;
       }
 
-      bool OpenDefinition(string xmlPath, bool reportingDisabled = false)
+      bool OpenDefinition(string xmlPath)
       {
          try
          {
@@ -1269,6 +1274,13 @@ namespace Dynamo.Controls
                   this.Home_Click(null, null); //TODO: Refactor
                return this.OpenWorkbench(xmlPath);
             }
+            else if (this.dynFunctionDict.ContainsKey(funName))
+            {
+               Log("ERROR: Could not load definition for \"" + funName + "\", a node with this name already exists.");
+               return false;
+            }
+
+            Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
             //TODO: refactor to include x,y
             var ws = this.newFunction(
@@ -1307,10 +1319,8 @@ namespace Dynamo.Controls
 
                Type t = Type.GetType(typeName);
 
-               dynElement el = AddDynElement(t, nickname, guid, x, y, ws);
-               if (reportingDisabled)
-                  el.DisableReporting();
-
+               dynElement el = AddDynElement(t, nickname, guid, x, y, ws, System.Windows.Visibility.Hidden);
+               el.DisableReporting();
                el.LoadElement(elNode);
             }
 
@@ -1368,6 +1378,9 @@ namespace Dynamo.Controls
                }
             }
 
+            foreach (var e in ws.Elements)
+               e.EnableReporting();
+
             this.hideWorkspace(ws);
             this.SaveFunction(ws, false);
             #endregion
@@ -1394,7 +1407,7 @@ namespace Dynamo.Controls
 
       bool OpenWorkbench(string xmlPath)
       {
-         Log("Opening workbench " + xmlPath + "...");
+         Log("Opening home workspace " + xmlPath + "...");
          CleanWorkbench();
 
          try
@@ -1442,6 +1455,8 @@ namespace Dynamo.Controls
                   t, nickname, guid, x, y,
                   this.CurrentSpace
                );
+
+               el.DisableReporting();
 
                el.LoadElement(elNode);
 
@@ -1521,6 +1536,9 @@ namespace Dynamo.Controls
                   this.CurrentSpace.Connectors.Add(newConnector);
                }
             }
+
+            foreach (var e in this.CurrentSpace.Elements)
+               e.EnableReporting();
 
             #endregion
          }
@@ -2157,19 +2175,8 @@ namespace Dynamo.Controls
 
                if (!debug)
                {
-                  Func<dynElement, bool> allIdlePred = delegate(dynElement e)
-                  {
-                     object[] attribs = e.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
-                     if (attribs.Length > 0)
-                     {
-                        return !(attribs[0] as RequiresTransactionAttribute).RequiresTransaction;
-                     }
-
-                     return true;
-                  };
-
                   bool allInIdleThread = topElements.Any(x => x.RequiresManualTransaction())
-                                         || this.AllElements.All(allIdlePred);
+                                         || topElements.All(x => !x.RequiresTransaction());
 
                   if (allInIdleThread)
                   {
@@ -2592,7 +2599,7 @@ namespace Dynamo.Controls
 
       internal void DisplayFunction(string symbol)
       {
-         if (!this.dynFunctionDict.ContainsKey(symbol))
+         if (!this.dynFunctionDict.ContainsKey(symbol) || this.CurrentSpace.Name.Equals(symbol))
             return;
 
          var newWs = this.dynFunctionDict[symbol];
@@ -2804,6 +2811,12 @@ namespace Dynamo.Controls
       {
          var newName = this.editNameBox.Text;
 
+         if (this.dynFunctionDict.ContainsKey(newName))
+         {
+            Log("ERROR: Cannot rename to \"" + newName + "\", node with same name already exists.");
+            return;
+         }
+
          this.workspaceLabel.Content = this.editNameBox.Text;
 
          //Update view menu
@@ -2883,12 +2896,15 @@ namespace Dynamo.Controls
          if (Directory.Exists(pluginsPath))
          {
             string oldpath = System.IO.Path.Combine(pluginsPath, this.CurrentSpace.Name + ".dyf");
+            if (File.Exists(oldpath))
+            {
             string newpath = FormatFileName(
                System.IO.Path.Combine(pluginsPath, newName + ".dyf")
             );
 
             File.Move(oldpath, newpath);
          }
+            }
 
          //Update function dictionary
          var tmp = this.dynFunctionDict[this.CurrentSpace.Name];

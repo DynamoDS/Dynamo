@@ -62,9 +62,18 @@ namespace Dynamo.Elements
          Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
       }
 
+      /// <summary>
+      /// Callback for when the "Select" button has been clicked.
+      /// </summary>
+      /// <param name="sender">The select button.</param>
+      /// <param name="e"></param>
       protected abstract void selectButton_Click(object sender, System.Windows.RoutedEventArgs e);
 
       private Element selected;
+      /// <summary>
+      /// The Element which is selected. Setting this property will automatically register the Element
+      /// for proper updating, and will update this node's IsDirty value.
+      /// </summary>
       public virtual Element SelectedElement 
       {
          get { return selected; }
@@ -106,6 +115,10 @@ namespace Dynamo.Elements
          }
       }
 
+      /// <summary>
+      /// Determines what the text should read on the node when the selection has been changed.
+      /// Is ignored in the case where nothing is selected.
+      /// </summary>
       protected abstract string SelectionText { get; }
 
       public override Expression Evaluate(FSharpList<Expression> args)

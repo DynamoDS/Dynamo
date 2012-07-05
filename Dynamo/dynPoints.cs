@@ -42,84 +42,112 @@ namespace Dynamo.Elements
       {
          var input = args[0];
 
+         //If we are receiving a list, we must create reference points for each XYZ in the list.
          if (input.IsList)
          {
             var xyzList = (input as Expression.List).Item;
 
+            //Counter to keep track of how many ref points we've made. We'll use this to delete old
+            //elements later.
             int count = 0;
 
+            //We create out output by...
             var result = Utils.convertSequence(
                xyzList.Select(
+                  //..taking each element in the list and...
                   delegate(Expression x)
                   {
                      ReferencePoint pt;
+                     //...if we already have elements made by this node in a previous run...
                      if (this.Elements.Count > count)
                      {
                         Element e;
+                        //...we attempt to fetch it from the document...
                         if (dynUtils.TryGetElement(this.Elements[count], out e))
                         {
+                           //...and if we're successful, update it's position... 
                            pt = e as ReferencePoint;
                            pt.Position = (XYZ)((Expression.Container)x).Item;
                         }
                         else
                         {
+                           //...otherwise, we can make a new reference point and replace it in the list of
+                           //previously created points.
                            pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
                               (XYZ)((Expression.Container)x).Item
                            );
                            this.Elements[count] = pt.Id;
                         }
                      }
+                     //...otherwise...
                      else
                      {
+                        //...we create a new point...
                         pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
                            (XYZ)((Expression.Container)x).Item
                         );
+                        //...and store it in the element list for future runs.
                         this.Elements.Add(pt.Id);
                      }
+                     //Finally, we update the counter, and return a new Expression containing the reference point.
+                     //This Expression will be placed in the Expression.List that will be passed downstream from this
+                     //node.
                      count++;
                      return Expression.NewContainer(pt);
                   }
                )
             );
 
+            //Now that we've created all the Reference Points from this run, we delete all of the
+            //extra ones from the previous run.
             foreach (var e in this.Elements.Skip(count))
             {
                this.DeleteElement(e);
             }
 
+            //Fin
             return Expression.NewList(result);
          }
+         //If we're not receiving a list, we will just assume we received one XYZ.
          else
          {
             XYZ xyz = (XYZ)((Expression.Container)input).Item;
 
             ReferencePoint pt;
 
+            //If we've made any elements previously...
             if (this.Elements.Any())
             {
                Element e;
+               //...try to get the first one...
                if (dynUtils.TryGetElement(this.Elements[0], out e))
                {
+                  //..and if we do, update it's position.
                   pt = e as ReferencePoint;
                   pt.Position = xyz;
                }
                else
                {
+                  //...otherwise, just make a new one and replace it in the list.
                   pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
                   this.Elements[0] = pt.Id;
                }
 
+               //We still delete all extra elements, since in the previous run we might have received a list.
                foreach (var el in this.Elements.Skip(1))
                {
                   this.DeleteElement(el);
                }
             }
+            //...otherwise...
             else
             {
+               //...just make a point and store it.
                pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(xyz);
                this.Elements.Add(pt.Id);
             }
 
+            //Fin
             return Expression.NewContainer(pt);
          }
       }
@@ -127,39 +155,48 @@ namespace Dynamo.Elements
 
    [ElementName("Reference Point Distance")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which measures a distance between reference point(s).")]
+   [ElementDescription("An element which measures a distance between point(s).")]
    [RequiresTransaction(false)]
    public class dynDistanceBetweenPoints : dynElement
    {
       public dynDistanceBetweenPoints()
       {
-         InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Element)));
-         InPortData.Add(new PortData("ptB", "A Reference point.", typeof(ReferencePoint)));
+         InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(object)));
+         InPortData.Add(new PortData("ptB", "A Reference point.", typeof(object)));
 
          OutPortData = new PortData("dist", "Distance between points.", typeof(double));
 
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      private XYZ getXYZ(object arg)
       {
-         object arg0 = ((Expression.Container)args[0]).Item;
-         XYZ ptB = ((ReferencePoint)((Expression.Container)args[1]).Item).Position;
-
-         if (arg0 is ReferencePoint)
+         if (arg is ReferencePoint)
          {
-            return Expression.NewNumber((arg0 as ReferencePoint).Position.DistanceTo(ptB));
+            return (arg as ReferencePoint).Position;
          }
-         else if (arg0 is FamilyInstance)
+         else if (arg is FamilyInstance)
          {
-            return Expression.NewNumber(
-               ((arg0 as FamilyInstance).Location as LocationPoint).Point.DistanceTo(ptB)
-            );
+            return ((arg as FamilyInstance).Location as LocationPoint).Point;
+         }
+         else if (arg is XYZ)
+         {
+            return arg as XYZ;
          }
          else
          {
-            throw new Exception("Cannot cast first argument to ReferencePoint or FamilyInstance.");
+            throw new Exception("Cannot cast argument to ReferencePoint or FamilyInstance or XYZ.");
          }
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         //Grab our inputs and turn them into XYZs.
+         XYZ ptA = this.getXYZ(((Expression.Container)args[0]).Item);
+         XYZ ptB = this.getXYZ(((Expression.Container)args[1]).Item);
+
+         //Return the calculated distance.
+         return Expression.NewNumber(ptA.DistanceTo(ptB));
       }
    }
 

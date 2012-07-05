@@ -34,11 +34,16 @@ using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Elements
 {
+   /// <summary>
+   /// Built-in Dynamo Categories. If you want your node to appear in one of the existing Dynamo
+   /// categories, then use these constants. This ensures that if the names of the categories
+   /// change down the road, your node will still be placed there.
+   /// </summary>
    public static class BuiltinElementCategories
    {
       public const string MATH = "Math";
       public const string COMPARISON = "Comparison";
-      public const string BOOLEAN = "Boolean";
+      public const string BOOLEAN = "Logic";
       public const string PRIMITIVES = "Primitives";
       public const string REVIT = "Revit";
       public const string MISC = "Miscellaneous";

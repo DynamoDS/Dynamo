@@ -22,14 +22,17 @@ namespace Dynamo.Elements
       public dynFunction(IEnumerable<string> inputs, string output, string symbol)
          : base(symbol)
       {
+         //Set inputs and output
          this.SetInputs(inputs);
-
          OutPortData = new PortData(output, "function output", typeof(object));
-
+         
+         //Set the nickname
          this.NickName = symbol;
 
+         //Add a drop-shadow.
          ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
 
+         //Setup double-click behavior
          this.MouseDoubleClick += delegate
          {
             dynElementSettings.SharedInstance.Bench.DisplayFunction(symbol);
@@ -41,36 +44,77 @@ namespace Dynamo.Elements
       public dynFunction()
          : base(null)
       {
+         //Setup double-click behavior
          this.MouseDoubleClick += delegate
          {
             dynElementSettings.SharedInstance.Bench.DisplayFunction(this.Symbol);
          };
 
+         //Add a drop-shadow
          ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
       }
 
       protected internal override bool RequiresManualTransaction()
       {
+         //Check if we already know we require a Manual Transaction
          bool baseManual = base.RequiresManualTransaction();
          if (baseManual)
             return true;
 
+         //Initialize our recursive function detection construct
          bool start = _startTag;
          _startTag = true;
 
+         //If we've already been here, then we know we're safe already, no need to check internals.
          if (_taggedSymbols.Contains(this.Symbol))
             return false;
+         //Remember we've been here.
          _taggedSymbols.Add(this.Symbol);
 
+         //Grab the workspace inside this function, and check if any of it's internals require a manual transaction.
          var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
          bool manualInternals = ws.Elements.Any(x => x.RequiresManualTransaction());
 
+         //If we started the traversal here, then end the recursive function detection.
          if (!start)
          {
             _startTag = false;
             _taggedSymbols.Clear();
          }
 
+         //Fin
+         return manualInternals;
+      }
+
+      protected internal override bool RequiresTransaction()
+      {
+         //Check if we already know we require a Transaction
+         bool baseManual = base.RequiresTransaction();
+         if (baseManual)
+            return true;
+
+         //Initialize our recursive function detection construct
+         bool start = _startTag;
+         _startTag = true;
+
+         //If we've already been here, then we know we're safe already, no need to check internals.
+         if (_taggedSymbols.Contains(this.Symbol))
+            return false;
+         //Remember we've been here.
+         _taggedSymbols.Add(this.Symbol);
+
+         //Grab the workspace inside this function, and check if any of it's internals require a transaction.
+         var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+         bool manualInternals = ws.Elements.Any(x => x.RequiresTransaction());
+
+         //If we started the traversal here, then end the recursive function detection.
+         if (!start)
+         {
+            _startTag = false;
+            _taggedSymbols.Clear();
+         }
+
+         //Fin
          return manualInternals;
       }
 
@@ -78,15 +122,19 @@ namespace Dynamo.Elements
       {
          get
          {
+            //Do we already know we're dirty?
             bool baseDirty = base.IsDirty;
             if (baseDirty)
                return true;
 
+            //Initialize recursive function detection construct.
             bool start = _startTag;
             _startTag = true;
 
+            //If we've already been here, then we're not dirty.
             if (_taggedSymbols.Contains(this.Symbol))
                return false;
+            //Remember we've been here.
             _taggedSymbols.Add(this.Symbol);
 
             //TODO: bugged? 
@@ -94,6 +142,7 @@ namespace Dynamo.Elements
             var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
             bool dirtyInternals = ws.Elements.Any(e => e.IsDirty);
 
+            //If we started the traversal here, clean up.
             if (!start)
             {
                _startTag = false;
@@ -104,21 +153,27 @@ namespace Dynamo.Elements
          }
          set
          {
-            //TODO: Implement tagging algorithm for mutual recursion
+            //Set the base value.
             base.IsDirty = value;
+            //If we're clean, then notify all internals.
             if (!value)
             {
+               //Recursion detection start.
                bool start = _startTag;
                _startTag = true;
 
+               //If we've been here, then we're done.
                if (_taggedSymbols.Contains(this.Symbol))
                   return;
+               //Remember
                _taggedSymbols.Add(this.Symbol);
 
+               //Notifiy all internals that we're clean.
                var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
                foreach (var e in ws.Elements)
                   e.IsDirty = false;
 
+               //If we started traversal here, cleanup.
                if (!start)
                {
                   _startTag = false;
@@ -128,6 +183,10 @@ namespace Dynamo.Elements
          }
       }
 
+      /// <summary>
+      /// Sets the inputs of this function.
+      /// </summary>
+      /// <param name="inputs"></param>
       public void SetInputs(IEnumerable<string> inputs)
       {
          int i = 0;

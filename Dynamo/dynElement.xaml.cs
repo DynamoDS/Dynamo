@@ -433,6 +433,17 @@ namespace Dynamo.Elements
          );
       }
 
+      protected internal virtual bool RequiresTransaction()
+      {
+         object[] attribs = this.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
+
+         return (attribs.Length > 0 && (attribs[0] as RequiresTransactionAttribute).RequiresTransaction)
+            || this.InPorts.Any(
+                  x =>
+                     x.Connectors.Any() && x.Connectors[0].Start.Owner.RequiresTransaction()
+               );
+      }
+
       /// <summary>
       /// Resize the control based on the number of inputs.
       /// </summary>
@@ -842,6 +853,17 @@ namespace Dynamo.Elements
       public virtual void LoadElement(System.Xml.XmlNode elNode)
       {
 
+      }
+
+      /// <summary>
+      /// Is this node an entry point to the program?
+      /// </summary>
+      public bool IsTopmost 
+      { 
+         get 
+         { 
+            return this.OutPort == null || !this.OutPort.Connectors.Any(); 
+         } 
       }
 
       /// <summary>
