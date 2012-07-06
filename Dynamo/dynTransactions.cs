@@ -12,6 +12,7 @@ using Microsoft.FSharp.Core;
 using Expression = Dynamo.FScheme.Expression;
 using Autodesk.Revit.DB;
 using System.Diagnostics;
+using Dynamo.Controls;
 
 namespace Dynamo.Elements
 {
@@ -61,7 +62,13 @@ namespace Dynamo.Elements
 
                         dynElementSettings.SharedInstance.Bench.EndTransaction();
 
+                        this.ValidateConnections();
+
                         return exp;
+                     }
+                     catch (CancelEvaluationException ex)
+                     {
+                        throw ex;
                      }
                      catch (Exception ex)
                      {
@@ -69,27 +76,15 @@ namespace Dynamo.Elements
                            delegate
                            {
                               Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                              dynElementSettings.SharedInstance.Bench.Log(ex.Message);
-                              dynElementSettings.SharedInstance.Bench.ShowElement(this);
-                           }
-                        ));
+                              this.Bench.Log(ex.Message);
+                              this.Bench.ShowElement(this);
 
-                        SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-                        Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                              new object[] { ex.Message });
-
-                        MarkConnectionStateDelegate mcsd = new MarkConnectionStateDelegate(MarkConnectionState);
-                        Dispatcher.Invoke(mcsd, System.Windows.Threading.DispatcherPriority.Background,
-                              new object[] { true });
-
-                        this.Dispatcher.Invoke(new Action(
-                           delegate
-                           {
                               dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
                               dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
                            }
                         ));
 
+                        this.Error(ex.Message);
                         return null;
                      }
                   }

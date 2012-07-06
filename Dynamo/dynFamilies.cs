@@ -166,7 +166,7 @@ namespace Dynamo.Elements
       {
          this.values.Clear();
 
-         SortedList<string, Parameter> paramList = new SortedList<string, Parameter>();
+         SortedList<string, dynamic> paramList = new SortedList<string, dynamic>();
          //var paramList = new List<string>();
          foreach (dynamic p in set)
          {
@@ -178,7 +178,7 @@ namespace Dynamo.Elements
          }
 
          int i = 0;
-         foreach (Parameter p in paramList.Values)
+         foreach (dynamic p in paramList.Values)
          {
             this.values[i++] = p.Definition.Name;
          }

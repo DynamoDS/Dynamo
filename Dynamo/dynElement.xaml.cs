@@ -962,7 +962,6 @@ namespace Dynamo.Elements
          }
       }
 
-
       /// <summary>
       /// Forces the node to refresh it's dirty state by checking all inputs.
       /// </summary>
