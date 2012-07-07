@@ -831,6 +831,72 @@ namespace Dynamo.Elements
       }
    }
 
+   [ElementName("round")]
+   [ElementCategory(BuiltinElementCategories.MATH)]
+   [ElementDescription("Rounds a number to the nearest integer value.")]
+   [RequiresTransaction(false)]
+   public class dynRound : dynElement
+   {
+      public dynRound()
+      {
+         InPortData.Add(new PortData("x", "A number", typeof(double)));
+         OutPortData = new PortData("int", "Rounded number", typeof(double));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         return Expression.NewNumber(
+            Math.Round(((Expression.Number)args[0]).Item)
+         );
+      }
+   }
+
+   [ElementName("floor")]
+   [ElementCategory(BuiltinElementCategories.MATH)]
+   [ElementDescription("Rounds a number to the nearest smaller integer.")]
+   [RequiresTransaction(false)]
+   public class dynFloor : dynElement
+   {
+      public dynFloor()
+      {
+         InPortData.Add(new PortData("x", "A number", typeof(double)));
+         OutPortData = new PortData("int", "Number rounded down", typeof(double));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         return Expression.NewNumber(
+            Math.Floor(((Expression.Number)args[0]).Item)
+         );
+      }
+   }
+
+   [ElementName("ceiling")]
+   [ElementCategory(BuiltinElementCategories.MATH)]
+   [ElementDescription("Rounds a number to the nearest larger integer value.")]
+   [RequiresTransaction(false)]
+   public class dynCeiling : dynElement
+   {
+      public dynCeiling()
+      {
+         InPortData.Add(new PortData("x", "A number", typeof(double)));
+         OutPortData = new PortData("int", "Number rounded up", typeof(double));
+
+         base.RegisterInputsAndOutputs();
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         return Expression.NewNumber(
+            Math.Ceiling(((Expression.Number)args[0]).Item)
+         );
+      }
+   }
+
    [ElementName("random")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Generates a uniform random number in the range [0.0, 1.0).")]

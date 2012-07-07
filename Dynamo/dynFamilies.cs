@@ -205,11 +205,21 @@ namespace Dynamo.Elements
             this.storedId = input.Id;
             if (input is FamilySymbol)
             {
+               var paramDict = new Dictionary<string, dynamic>();
+
                var fs = input as FamilySymbol;
+
+               foreach (dynamic p in fs.Parameters)
+                  paramDict[p.Definition.Name] = p;
+               
                var fd = this.UIDocument.Document.EditFamily(fs.Family);
                var ps = fd.FamilyManager.Parameters;
+
+               foreach (dynamic p in ps)
+                  paramDict[p.Definition.Name] = p;
+
                //this.PopulateComboBox(fs.Parameters, false);
-               this.PopulateComboBox(ps, false);
+               this.PopulateComboBox(paramDict.Values, false);
             }
             else
             {

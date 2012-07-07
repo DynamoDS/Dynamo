@@ -2175,8 +2175,8 @@ namespace Dynamo.Controls
 
                if (!debug)
                {
-                  bool allInIdleThread = topElements.Any(x => x.RequiresManualTransaction())
-                                         || topElements.All(x => !x.RequiresTransaction());
+                  bool manTran = topElements.Any(x => x.RequiresManualTransaction());
+                  bool allInIdleThread = manTran || topElements.All(x => !x.RequiresTransaction());
 
                   if (allInIdleThread)
                   {
@@ -2230,9 +2230,9 @@ namespace Dynamo.Controls
             finally
             {
                this.runButton.Dispatcher.Invoke(new Action(
-                  delegate 
+                  delegate
                   {
-                     this.runButton.IsEnabled = true; 
+                     this.runButton.IsEnabled = true;
                   }
                ));
                this.Running = false;
@@ -2240,9 +2240,9 @@ namespace Dynamo.Controls
                {
                   this.runAgain = false;
                   this.Dispatcher.BeginInvoke(new Action(
-                     delegate 
+                     delegate
                      {
-                        this.RunExpression(debug, showErrors); 
+                        this.RunExpression(debug, showErrors);
                      }
                   ));
                }
@@ -2544,6 +2544,13 @@ namespace Dynamo.Controls
             foreach (var ele in topMost)
             {
                ele.Error("Nodes can have only one output.");
+            }
+         }
+         else
+         {
+            foreach (var ele in topMost)
+            {
+               ele.ValidateConnections();
             }
          }
 
@@ -2898,13 +2905,13 @@ namespace Dynamo.Controls
             string oldpath = System.IO.Path.Combine(pluginsPath, this.CurrentSpace.Name + ".dyf");
             if (File.Exists(oldpath))
             {
-            string newpath = FormatFileName(
-               System.IO.Path.Combine(pluginsPath, newName + ".dyf")
-            );
+               string newpath = FormatFileName(
+                  System.IO.Path.Combine(pluginsPath, newName + ".dyf")
+               );
 
-            File.Move(oldpath, newpath);
-         }
+               File.Move(oldpath, newpath);
             }
+         }
 
          //Update function dictionary
          var tmp = this.dynFunctionDict[this.CurrentSpace.Name];
@@ -3086,7 +3093,19 @@ namespace Dynamo.Controls
 
       public bool DynamicRunEnabled
       {
-         get { return this.dynamicCheckBox.IsChecked == true; }
+         get
+         {
+            var topElements = this.homeSpace.Elements.Where(
+               x => !x.OutPort.Connectors.Any()
+            );
+
+            bool manTran = topElements.Any(x => x.RequiresManualTransaction());
+
+            this.dynamicCheckBox.IsChecked = !manTran;
+            this.dynamicCheckBox.IsEnabled = !manTran;
+
+            return !manTran && this.dynamicCheckBox.IsChecked == true;
+         }
       }
 
       internal void QueueRun()

@@ -40,6 +40,9 @@ namespace Dynamo.Elements
          ExternMacro m = new ExternMacro(
             delegate(FSharpList<Expression> args, ExecutionEnvironment environment)
             {
+               if (this.Bench.CancelRun)
+                  throw new CancelEvaluationException(false);
+
                var arg = args[0]; //Get the only argument
 
                if (dynElementSettings.SharedInstance.Bench.RunInDebug)

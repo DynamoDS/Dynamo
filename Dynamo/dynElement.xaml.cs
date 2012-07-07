@@ -774,21 +774,20 @@ namespace Dynamo.Elements
       /// <param name="e"></param>
       void p_PortConnected(object sender, EventArgs e)
       {
+         ValidateConnections();
+
          var port = (dynPort)sender;
          if (port.PortType == PortType.INPUT)
             CheckPortsForRecalc();
-
-         ValidateConnections();
       }
 
       void p_PortDisconnected(object sender, EventArgs e)
       {
+         ValidateConnections();
+
          var port = (dynPort)sender;
          if (port.PortType == PortType.INPUT)
             CheckPortsForRecalc();
-
-         //Destroy();
-         ValidateConnections();
       }
 
       /// <summary>
@@ -936,7 +935,7 @@ namespace Dynamo.Elements
          {
             this._isDirty = value;
             if (value && this._report)
-               this.WorkSpace.Modified(); //TODO: Implement
+               this.WorkSpace.Modified();
          }
       }
 
