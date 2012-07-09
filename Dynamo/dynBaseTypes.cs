@@ -839,7 +839,7 @@ namespace Dynamo.Elements
    {
       public dynRound()
       {
-         InPortData.Add(new PortData("x", "A number", typeof(double)));
+         InPortData.Add(new PortData("dbl", "A number", typeof(double)));
          OutPortData = new PortData("int", "Rounded number", typeof(double));
 
          base.RegisterInputsAndOutputs();
@@ -856,12 +856,13 @@ namespace Dynamo.Elements
    [ElementName("floor")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Rounds a number to the nearest smaller integer.")]
+   [ElementSearchTags("round")]
    [RequiresTransaction(false)]
    public class dynFloor : dynElement
    {
       public dynFloor()
       {
-         InPortData.Add(new PortData("x", "A number", typeof(double)));
+         InPortData.Add(new PortData("dbl", "A number", typeof(double)));
          OutPortData = new PortData("int", "Number rounded down", typeof(double));
 
          base.RegisterInputsAndOutputs();
@@ -878,12 +879,13 @@ namespace Dynamo.Elements
    [ElementName("ceiling")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Rounds a number to the nearest larger integer value.")]
+   [ElementSearchTags("round")]
    [RequiresTransaction(false)]
    public class dynCeiling : dynElement
    {
       public dynCeiling()
       {
-         InPortData.Add(new PortData("x", "A number", typeof(double)));
+         InPortData.Add(new PortData("dbl", "A number", typeof(double)));
          OutPortData = new PortData("int", "Number rounded up", typeof(double));
 
          base.RegisterInputsAndOutputs();
@@ -1464,9 +1466,25 @@ namespace Dynamo.Elements
          BorderThickness = new Thickness(0);
       }
 
+      protected new string Text
+      {
+         get { return base.Text; }
+         set
+         {
+            base.Text = value;
+            if (!shouldCommit() && this.OnCommit != null)
+               this.OnCommit();
+         }
+      }
+
+      private bool shouldCommit()
+      {
+         return !dynElementSettings.SharedInstance.Bench.DynamicRunEnabled;
+      }
+
       protected override void OnTextChanged(TextChangedEventArgs e)
       {
-         if (!dynElementSettings.SharedInstance.Bench.DynamicRunEnabled && this.OnCommit != null)
+         if (this.shouldCommit() && this.OnCommit != null)
             this.OnCommit();
       }
 
@@ -1490,7 +1508,7 @@ namespace Dynamo.Elements
    public abstract class dynBasicInteractive<T> : dynElement
    {
       private T _value = default(T);
-      protected virtual T Value 
+      public virtual T Value 
       {
          get
          {
@@ -1594,7 +1612,7 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      protected override double Value
+      public override double Value
       {
          get
          {
@@ -1706,10 +1724,15 @@ namespace Dynamo.Elements
          }
       }
 
-      protected override double Value
+      public override double Value
       {
          set
          {
+            if (value > this.tb_slider.Maximum)
+               this.maxtb.Text = value.ToString();
+            if (value < this.tb_slider.Minimum)
+               this.mintb.Text = value.ToString();
+
             base.Value = value;
             this.tb_slider.Value = value;
          }
@@ -1717,7 +1740,6 @@ namespace Dynamo.Elements
 
       public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
       {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
          XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
          outEl.SetAttribute("value", this.Value.ToString());
          outEl.SetAttribute("min", this.tb_slider.Minimum.ToString());
@@ -1814,7 +1836,7 @@ namespace Dynamo.Elements
          }
       }
 
-      protected override bool Value
+      public override bool Value
       {
          set
          {
@@ -1867,7 +1889,7 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      protected override string Value
+      public override string Value
       {
          set
          {
@@ -1939,7 +1961,7 @@ namespace Dynamo.Elements
          Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
       }
 
-      protected override string Value
+      public override string Value
       {
          get
          {

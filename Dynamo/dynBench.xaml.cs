@@ -38,6 +38,7 @@ using Transaction = Autodesk.Revit.DB.Transaction;
 using TransactionStatus = Autodesk.Revit.DB.TransactionStatus;
 using Path = System.IO.Path;
 using Expression = Dynamo.FScheme.Expression;
+using System.Text.RegularExpressions;
 
 namespace Dynamo.Controls
 {
@@ -1136,6 +1137,14 @@ namespace Dynamo.Controls
             {
                var obj = Activator.CreateInstanceFrom(tld.assembly.Location, tld.t.FullName);
                newEl = (dynElement)obj.Unwrap();
+
+               if (newEl is dynDouble)
+                  (newEl as dynDouble).Value = this.storedSearchNum;
+               else if (newEl is dynStringInput)
+                  (newEl as dynStringInput).Value = this.storedSearchStr;
+               else if (newEl is dynBool)
+                  (newEl as dynBool).Value = this.storedSearchBool;
+
                newEl.DisableInteraction();
             }
             catch (Exception e)
@@ -1895,6 +1904,11 @@ namespace Dynamo.Controls
                DisableEditNameBox();
                e.Handled = true;
             }
+         }
+
+         if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.F))
+         {
+            this.searchBox.Focus();
          }
       }
 
@@ -3063,15 +3077,58 @@ namespace Dynamo.Controls
          }
       }
 
+      private static Regex searchBarNumRegex = new Regex(@"^-?\d+(\.\d*)?$");
+      private double storedSearchNum = 0;
+      private string storedSearchStr = "";
+      private bool storedSearchBool = false;
+
       private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
       {
          var search = this.searchBox.Text.Trim();
 
-         var filter = search.Length == 0
-            ? new HashSet<dynElement>(this.addMenuItemsDictNew.Values)
-            : searchDict.Search(search.ToLower());
+         if (searchBarNumRegex.IsMatch(search))
+         {
+            storedSearchNum = Convert.ToDouble(search);
+            this.FilterAddMenu(
+               new HashSet<dynElement>() 
+               { 
+                  this.addMenuItemsDictNew["Number"], 
+                  this.addMenuItemsDictNew["Number Slider"] 
+               }
+            );
+         }
+         else if (search.StartsWith("\""))
+         {
+            storedSearchStr = dynBench.RemoveChars(search, new List<string>() { "\"" });
+            this.FilterAddMenu(
+               new HashSet<dynElement>()
+               {
+                  this.addMenuItemsDictNew["String"]
+               }
+            );
+         }
+         else if (search.Equals("true") || search.Equals("false"))
+         {
+            storedSearchBool = Convert.ToBoolean(search);
+            this.FilterAddMenu(
+               new HashSet<dynElement>()
+               {
+                  this.addMenuItemsDictNew["Boolean"]
+               }
+            );
+         }
+         else
+         {
+            this.storedSearchNum = 0;
+            this.storedSearchStr = "";
+            this.storedSearchBool = false;
 
-         this.FilterAddMenu(filter);
+            var filter = search.Length == 0
+               ? new HashSet<dynElement>(this.addMenuItemsDictNew.Values)
+               : searchDict.Search(search.ToLower());
+
+            this.FilterAddMenu(filter);
+         }
       }
 
       private void searchBox_LostFocus(object sender, RoutedEventArgs e)
@@ -3101,10 +3158,13 @@ namespace Dynamo.Controls
 
             bool manTran = topElements.Any(x => x.RequiresManualTransaction());
 
-            this.dynamicCheckBox.IsChecked = !manTran;
             this.dynamicCheckBox.IsEnabled = !manTran;
+            if (manTran)
+               this.dynamicCheckBox.IsChecked = false;
 
-            return !manTran && this.dynamicCheckBox.IsChecked == true;
+            return !manTran 
+               && this.dynamicCheckBox.IsEnabled 
+               && this.dynamicCheckBox.IsChecked == true;
          }
       }
 

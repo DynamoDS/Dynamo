@@ -934,7 +934,7 @@ namespace Dynamo.Elements
          set
          {
             this._isDirty = value;
-            if (value && this._report)
+            if (value && this._report && this.WorkSpace != null)
                this.WorkSpace.Modified();
          }
       }
