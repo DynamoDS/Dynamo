@@ -1776,6 +1776,7 @@ namespace Dynamo.Elements
    [ElementName("Boolean")]
    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
    [ElementDescription("An element which allows selection between a true and false.")]
+   [ElementSearchTags("true", "truth", "false")]
    [RequiresTransaction(false)]
    public class dynBoolSelector : dynBool
    {
