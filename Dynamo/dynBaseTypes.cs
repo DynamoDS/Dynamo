@@ -1458,12 +1458,37 @@ namespace Dynamo.Elements
    {
       public event Action OnCommit;
 
+      private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+      private static Brush waiting = Brushes.Orange;
+
+
       public dynTextBox()
       {
          //turn off the border
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         Background = backgroundBrush;
+         Background = clear;
          BorderThickness = new Thickness(0);
+      }
+
+      private bool pending;
+      public bool Pending
+      {
+         get { return pending; }
+         set
+         {
+            if (value)
+               Background = waiting;
+            else
+               Background = clear;
+         }
+      }
+
+      private void commit()
+      {
+         if (this.OnCommit != null)
+         {
+            this.OnCommit();
+         }
+         this.Pending = false;
       }
 
       protected new string Text
@@ -1472,8 +1497,7 @@ namespace Dynamo.Elements
          set
          {
             base.Text = value;
-            if (!shouldCommit() && this.OnCommit != null)
-               this.OnCommit();
+            this.commit();
          }
       }
 
@@ -1484,23 +1508,22 @@ namespace Dynamo.Elements
 
       protected override void OnTextChanged(TextChangedEventArgs e)
       {
-         if (this.shouldCommit() && this.OnCommit != null)
-            this.OnCommit();
+         //if (this.shouldCommit() && this.OnCommit != null)
+         //   this.OnCommit();
+         this.Pending = true;
       }
 
       protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
       {
          if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
          {
-            if (this.OnCommit != null)
-               this.OnCommit();
+            this.commit();
          }
       }
 
       protected override void OnLostFocus(RoutedEventArgs e)
       {
-         if (this.OnCommit != null)
-            this.OnCommit();
+         this.commit();
       }
    }
    
@@ -1622,6 +1645,7 @@ namespace Dynamo.Elements
          {
             base.Value = value;
             this.tb.Text = value.ToString();
+            this.tb.Pending = false;
          }
       }
 
@@ -1657,7 +1681,6 @@ namespace Dynamo.Elements
          mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
          mintb.Width = double.NaN;
          mintb.Text = "0";
-         
          mintb.OnCommit += delegate 
          {
             try
@@ -1669,6 +1692,7 @@ namespace Dynamo.Elements
                this.tb_slider.Minimum = 0;
             }
          };
+         mintb.Pending = false;
 
          maxtb = new dynTextBox();
          maxtb.MaxLength = 3;
@@ -1687,6 +1711,7 @@ namespace Dynamo.Elements
                this.tb_slider.Maximum = 0;
             }
          };
+         maxtb.Pending = false;
 
          this.SetColumnAmount(3);
          inputGrid.Children.Add(mintb);
@@ -1729,9 +1754,15 @@ namespace Dynamo.Elements
          set
          {
             if (value > this.tb_slider.Maximum)
+            {
                this.maxtb.Text = value.ToString();
+               this.maxtb.Pending = false;
+            }
             if (value < this.tb_slider.Minimum)
+            {
                this.mintb.Text = value.ToString();
+               this.mintb.Pending = false;
+            }
 
             base.Value = value;
             this.tb_slider.Value = value;
