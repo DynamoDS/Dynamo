@@ -1460,7 +1460,7 @@ namespace Dynamo.Elements
       public event Action OnChangeCommitted;
 
       private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-      private static Brush waiting = Brushes.Orange;
+      //private static Brush waiting = Brushes.Orange;
 
       public dynTextBox()
       {
@@ -1496,13 +1496,11 @@ namespace Dynamo.Elements
          {
             if (value)
             {
-               //Background = waiting;
                this.FontStyle = FontStyles.Italic;
                this.FontWeight = FontWeights.Bold;
             }
             else
             {
-               //Background = clear;
                this.FontStyle = FontStyles.Normal;
                this.FontWeight = FontWeights.Normal;
             }
@@ -1536,22 +1534,21 @@ namespace Dynamo.Elements
 
       protected override void OnTextChanged(TextChangedEventArgs e)
       {
-         //if (this.shouldCommit() && this.OnCommit != null)
-         //   this.OnCommit();
          this.Pending = true;
 
-         var p = this.CaretIndex;
+         if (this.IsNumeric)
+         {
+            var p = this.CaretIndex;
 
-         base.Text = dynBench.RemoveChars(
-            this.Text,
-            this.Text.ToCharArray()
-               .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-               .Select(c => c.ToString())
-         );
+            base.Text = dynBench.RemoveChars(
+               this.Text,
+               this.Text.ToCharArray()
+                  .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                  .Select(c => c.ToString())
+            );
 
-         this.CaretIndex = p;
-
-         //base.OnPreviewTextInput(e);
+            this.CaretIndex = p;
+         }
       }
 
       protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
@@ -1560,23 +1557,7 @@ namespace Dynamo.Elements
          {
             this.commit();
          }
-         //else
-         //{
-         //   e.Handled = this.IsNumeric && System.Windows.Input. e.Key
-         //      && new System.Windows.Input.KeyConverter()
-         //         .ConvertToString(e.Key)
-         //         .ToCharArray()
-         //         .Any(c => !char.IsDigit(c) && c != '-' && c != '.');
-         //}
       }
-
-      //protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
-      //{
-      //   if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
-      //   {
-      //      this.commit();
-      //   }
-      //}
 
       protected override void OnLostFocus(RoutedEventArgs e)
       {
