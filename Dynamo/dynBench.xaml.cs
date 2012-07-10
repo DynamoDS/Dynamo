@@ -2945,7 +2945,7 @@ namespace Dynamo.Controls
          );
       }
 
-      private static string RemoveChars(string s, IEnumerable<string> chars)
+      internal static string RemoveChars(string s, IEnumerable<string> chars)
       {
          foreach (var c in chars)
             s = s.Replace(c, "");

@@ -31,6 +31,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
+using Dynamo.Controls;
 
 namespace Dynamo.Elements
 {
@@ -90,7 +91,7 @@ namespace Dynamo.Elements
       {
          var fun = ((Expression.Function)this.Bench.Environment
             .LookupSymbol(this.Symbol)).Item;
-         
+
          return fun
             .Invoke(ExecutionEnvironment.IDENT)
             .Invoke(
@@ -620,7 +621,7 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
    }
-   
+
    #endregion
 
    #region Boolean
@@ -1456,17 +1457,35 @@ namespace Dynamo.Elements
 
    class dynTextBox : TextBox
    {
-      public event Action OnCommit;
+      public event Action OnChangeCommitted;
 
       private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
       private static Brush waiting = Brushes.Orange;
-
 
       public dynTextBox()
       {
          //turn off the border
          Background = clear;
          BorderThickness = new Thickness(0);
+      }
+
+      private bool numeric;
+      public bool IsNumeric
+      {
+         get { return numeric; }
+         set
+         {
+            numeric = value;
+            if (value && this.Text.Length > 0)
+            {
+               this.Text = dynBench.RemoveChars(
+                  this.Text,
+                  this.Text.ToCharArray()
+                     .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                     .Select(c => c.ToString())
+               );
+            }
+         }
       }
 
       private bool pending;
@@ -1476,22 +1495,31 @@ namespace Dynamo.Elements
          set
          {
             if (value)
-               Background = waiting;
+            {
+               //Background = waiting;
+               this.FontStyle = FontStyles.Italic;
+               this.FontWeight = FontWeights.Bold;
+            }
             else
-               Background = clear;
+            {
+               //Background = clear;
+               this.FontStyle = FontStyles.Normal;
+               this.FontWeight = FontWeights.Normal;
+            }
+            pending = value;
          }
       }
 
       private void commit()
       {
-         if (this.OnCommit != null)
+         if (this.OnChangeCommitted != null)
          {
-            this.OnCommit();
+            this.OnChangeCommitted();
          }
          this.Pending = false;
       }
 
-      protected new string Text
+      new public string Text
       {
          get { return base.Text; }
          set
@@ -1511,27 +1539,56 @@ namespace Dynamo.Elements
          //if (this.shouldCommit() && this.OnCommit != null)
          //   this.OnCommit();
          this.Pending = true;
+
+         var p = this.CaretIndex;
+
+         base.Text = dynBench.RemoveChars(
+            this.Text,
+            this.Text.ToCharArray()
+               .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+               .Select(c => c.ToString())
+         );
+
+         this.CaretIndex = p;
+
+         //base.OnPreviewTextInput(e);
       }
 
-      protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
+      protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
       {
          if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
          {
             this.commit();
          }
+         //else
+         //{
+         //   e.Handled = this.IsNumeric && System.Windows.Input. e.Key
+         //      && new System.Windows.Input.KeyConverter()
+         //         .ConvertToString(e.Key)
+         //         .ToCharArray()
+         //         .Any(c => !char.IsDigit(c) && c != '-' && c != '.');
+         //}
       }
+
+      //protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
+      //{
+      //   if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
+      //   {
+      //      this.commit();
+      //   }
+      //}
 
       protected override void OnLostFocus(RoutedEventArgs e)
       {
          this.commit();
       }
    }
-   
+
    [IsInteractive(true)]
    public abstract class dynBasicInteractive<T> : dynElement
    {
       private T _value = default(T);
-      public virtual T Value 
+      public virtual T Value
       {
          get
          {
@@ -1608,7 +1665,7 @@ namespace Dynamo.Elements
          return "\"" + base.PrintExpression() + "\"";
       }
    }
-   
+
    #endregion
 
    [ElementName("Number")]
@@ -1628,9 +1685,9 @@ namespace Dynamo.Elements
          inputGrid.Children.Add(tb);
          System.Windows.Controls.Grid.SetColumn(tb, 0);
          System.Windows.Controls.Grid.SetRow(tb, 0);
+         tb.IsNumeric = true;
          tb.Text = "0.0";
-
-         tb.OnCommit += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
+         tb.OnChangeCommitted += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
 
          base.RegisterInputsAndOutputs();
       }
@@ -1643,9 +1700,12 @@ namespace Dynamo.Elements
          }
          set
          {
+            if (base.Value == value)
+               return;
+
             base.Value = value;
             this.tb.Text = value.ToString();
-            this.tb.Pending = false;
+            //this.tb.Pending = false;
          }
       }
 
@@ -1660,7 +1720,7 @@ namespace Dynamo.Elements
             return 0;
          }
       }
-   }   
+   }
 
    //MDJ - added by Matt Jezyk 10.27.2011
    [ElementName("Number Slider")]
@@ -1675,51 +1735,6 @@ namespace Dynamo.Elements
 
       public dynDoubleSliderInput()
       {
-         mintb = new dynTextBox();
-         mintb.MaxLength = 3;
-         mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         mintb.Width = double.NaN;
-         mintb.Text = "0";
-         mintb.OnCommit += delegate 
-         {
-            try
-            {
-               this.tb_slider.Minimum = Convert.ToDouble(mintb.Text);
-            }
-            catch
-            {
-               this.tb_slider.Minimum = 0;
-            }
-         };
-         mintb.Pending = false;
-
-         maxtb = new dynTextBox();
-         maxtb.MaxLength = 3;
-         maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         maxtb.Width = double.NaN;
-         maxtb.Text = "100";
-         maxtb.OnCommit += delegate 
-         {
-            try
-            {
-               this.tb_slider.Maximum = Convert.ToDouble(maxtb.Text);
-            }
-            catch
-            {
-               this.tb_slider.Maximum = 0;
-            }
-         };
-         maxtb.Pending = false;
-
-         this.SetColumnAmount(3);
-         inputGrid.Children.Add(mintb);
-         inputGrid.Children.Add(maxtb);
-
-         System.Windows.Controls.Grid.SetColumn(mintb, 0);
-         System.Windows.Controls.Grid.SetColumn(maxtb, 2);
-
          //add a slider control to the input grid of the control
          tb_slider = new System.Windows.Controls.Slider();
          tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1733,7 +1748,54 @@ namespace Dynamo.Elements
          tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
          tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
          tb_slider.ValueChanged += delegate { this.Value = this.tb_slider.Value; };
-         
+
+         mintb = new dynTextBox();
+         mintb.MaxLength = 3;
+         mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         mintb.Width = double.NaN;
+         mintb.IsNumeric = true;
+         mintb.Text = "0";
+         mintb.OnChangeCommitted += delegate
+         {
+            try
+            {
+               this.tb_slider.Minimum = Convert.ToDouble(mintb.Text);
+            }
+            catch
+            {
+               this.tb_slider.Minimum = 0;
+            }
+         };
+         //mintb.Pending = false;
+
+         maxtb = new dynTextBox();
+         maxtb.MaxLength = 3;
+         maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+         maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+         maxtb.Width = double.NaN;
+         maxtb.IsNumeric = true;
+         maxtb.Text = "100";
+         maxtb.OnChangeCommitted += delegate
+         {
+            try
+            {
+               this.tb_slider.Maximum = Convert.ToDouble(maxtb.Text);
+            }
+            catch
+            {
+               this.tb_slider.Maximum = 0;
+            }
+         };
+         //maxtb.Pending = false;
+
+         this.SetColumnAmount(3);
+         inputGrid.Children.Add(mintb);
+         inputGrid.Children.Add(maxtb);
+
+         System.Windows.Controls.Grid.SetColumn(mintb, 0);
+         System.Windows.Controls.Grid.SetColumn(maxtb, 2);
+
          base.RegisterInputsAndOutputs();
       }
 
@@ -1753,15 +1815,18 @@ namespace Dynamo.Elements
       {
          set
          {
+            if (base.Value == value)
+               return;
+
             if (value > this.tb_slider.Maximum)
             {
                this.maxtb.Text = value.ToString();
-               this.maxtb.Pending = false;
+               //this.maxtb.Pending = false;
             }
             if (value < this.tb_slider.Minimum)
             {
                this.mintb.Text = value.ToString();
-               this.mintb.Pending = false;
+               //this.mintb.Pending = false;
             }
 
             base.Value = value;
@@ -1790,12 +1855,12 @@ namespace Dynamo.Elements
                      this.Value = this.DeserializeValue(attr.Value);
                   else if (attr.Name.Equals("min"))
                   {
-                     this.tb_slider.Minimum = Convert.ToDouble(attr.Value);
+                     //this.tb_slider.Minimum = Convert.ToDouble(attr.Value);
                      this.mintb.Text = attr.Value;
                   }
                   else if (attr.Name.Equals("max"))
                   {
-                     this.tb_slider.Maximum = Convert.ToDouble(attr.Value);
+                     //this.tb_slider.Maximum = Convert.ToDouble(attr.Value);
                      this.maxtb.Text = attr.Value;
                   }
                }
@@ -1862,7 +1927,7 @@ namespace Dynamo.Elements
          {
             return val.ToLower().Equals("true");
          }
-         catch 
+         catch
          {
             return false;
          }
@@ -1916,7 +1981,7 @@ namespace Dynamo.Elements
          System.Windows.Controls.Grid.SetRow(tb, 0);
          tb.Text = "";
 
-         tb.OnCommit += delegate { this.Value = this.tb.Text; };
+         tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
 
          base.RegisterInputsAndOutputs();
       }
@@ -1925,6 +1990,9 @@ namespace Dynamo.Elements
       {
          set
          {
+            if (base.Value == value)
+               return;
+
             base.Value = value;
             this.tb.Text = value;
          }
