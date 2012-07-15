@@ -226,8 +226,8 @@ namespace Dynamo.Elements
          //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
          //Autodesk.Revit.DB..::.PointOnFace
          //Autodesk.Revit.DB..::.PointOnPlane
-
-         PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t);
+         PointLocationOnCurve plc = new PointLocationOnCurve(PointOnCurveMeasurementType.NormalizedCurveParameter, t, PointOnCurveMeasureFrom.Beginning);
+         PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, plc);
 
          ReferencePoint p;
 
