@@ -31,10 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamoElements, Version=0.1.4317.38189, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dynamo\bin\Debug\DynamoElements.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="DynamoElements">
+      <HintPath>..\Dynamo\bin\Release\DynamoElements.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
