@@ -344,7 +344,7 @@ namespace Dynamo.Utilities
             //create some geometry options so that we computer references
             Autodesk.Revit.DB.Options opts = new Options();
             opts.ComputeReferences = true;
-            opts.DetailLevel = ViewDetailLevel.Medium;
+            opts.DetailLevel = DetailLevels.Medium;
             opts.IncludeNonVisibleObjects = false;
 
             Reference pointRef = doc.Selection.PickObject(ObjectType.Element);
@@ -412,7 +412,7 @@ namespace Dynamo.Utilities
             //create some geometry options so that we computer references
             Autodesk.Revit.DB.Options opts = new Options();
             opts.ComputeReferences = true;
-            opts.DetailLevel = ViewDetailLevel.Medium;
+            opts.DetailLevel = DetailLevels.Medium;
             opts.IncludeNonVisibleObjects = false;
 
             Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
@@ -455,7 +455,7 @@ namespace Dynamo.Utilities
             //create some geometry options so that we computer references
             Autodesk.Revit.DB.Options opts = new Options();
             opts.ComputeReferences = true;
-            opts.DetailLevel = ViewDetailLevel.Medium;
+            opts.DetailLevel = DetailLevels.Medium;
             opts.IncludeNonVisibleObjects = false;
 
             Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
@@ -494,7 +494,7 @@ namespace Dynamo.Utilities
             //create some geometry options so that we computer references
             Autodesk.Revit.DB.Options opts = new Options();
             opts.ComputeReferences = true;
-            opts.DetailLevel = ViewDetailLevel.Medium;
+            opts.DetailLevel = DetailLevels.Medium;
             opts.IncludeNonVisibleObjects = false;
 
             Reference formRef = doc.Selection.PickObject(ObjectType.Element);
