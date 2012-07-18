@@ -51,7 +51,7 @@ namespace Dynamo.Elements
             //elements later.
             int count = 0;
 
-            //We create out output by...
+            //We create our output by...
             var result = Utils.convertSequence(
                xyzList.Select(
                   //..taking each element in the list and...
@@ -226,8 +226,8 @@ namespace Dynamo.Elements
          //Autodesk.Revit.DB..::.PointOnEdgeFaceIntersection
          //Autodesk.Revit.DB..::.PointOnFace
          //Autodesk.Revit.DB..::.PointOnPlane
-
-         PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, t);
+         PointLocationOnCurve plc = new PointLocationOnCurve(PointOnCurveMeasurementType.NormalizedCurveParameter, t, PointOnCurveMeasureFrom.Beginning);
+         PointElementReference edgePoint = this.UIDocument.Application.Application.Create.NewPointOnEdge(r, plc);
 
          ReferencePoint p;
 

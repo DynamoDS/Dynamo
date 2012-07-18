@@ -3004,6 +3004,7 @@ namespace Dynamo.Controls
       }
 
       private static Regex searchBarNumRegex = new Regex(@"^-?\d+(\.\d*)?$");
+      private static Regex searchBarStrRegex = new Regex("^\"([^\"]*)\"?$");
       private double storedSearchNum = 0;
       private string storedSearchStr = "";
       private bool storedSearchBool = false;
@@ -3011,6 +3012,8 @@ namespace Dynamo.Controls
       private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
       {
          var search = this.searchBox.Text.Trim();
+
+         Match m;
 
          if (searchBarNumRegex.IsMatch(search))
          {
@@ -3023,9 +3026,9 @@ namespace Dynamo.Controls
                }
             );
          }
-         else if (search.StartsWith("\""))
+         else if ((m = searchBarStrRegex.Match(search)).Success)  //(search.StartsWith("\""))
          {
-            storedSearchStr = dynBench.RemoveChars(search, new List<string>() { "\"" });
+            storedSearchStr = m.Groups[1].Captures[0].Value;
             this.FilterAddMenu(
                new HashSet<dynElement>()
                {
