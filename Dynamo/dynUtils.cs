@@ -37,7 +37,7 @@ namespace Dynamo.Utilities
       {
          try
          {
-            e = dynElementSettings.SharedInstance.Doc.Document.get_Element(id);
+            e = dynElementSettings.SharedInstance.Doc.Document.GetElement(id);
             _testid = e.Id;
             return true;
          }
@@ -567,7 +567,7 @@ namespace Dynamo.Utilities
 
             if (fsRef != null)
             {
-               return doc.Document.get_Element(fsRef.ElementId) as FamilyInstance;
+               return doc.Document.GetElement(fsRef.ElementId) as FamilyInstance;
             }
             else
                return null;
@@ -605,7 +605,7 @@ namespace Dynamo.Utilities
 
                if (fsRef != null)
                {
-                  AnalysisResult = doc.Document.get_Element(fsRef.ElementId) as Element;
+                  AnalysisResult = doc.Document.GetElement(fsRef.ElementId) as Element;
 
                   if (AnalysisResult != null)
                   {

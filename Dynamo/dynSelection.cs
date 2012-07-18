@@ -150,7 +150,7 @@ namespace Dynamo.Elements
                var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
                try
                {
-                  saved = this.UIDocument.Document.get_Element(id) as FamilyInstance;
+                  saved = this.UIDocument.Document.GetElement(id) as FamilyInstance;
                }
                catch 
                {
@@ -523,7 +523,7 @@ namespace Dynamo.Elements
                {
                    try
                    {
-                       this.PickedSunAndShadowSettings = dynElementSettings.SharedInstance.Doc.Document.get_Element(
+                       this.PickedSunAndShadowSettings = dynElementSettings.SharedInstance.Doc.Document.GetElement(
                           new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
                        ) as SunAndShadowSettings;
                        if (this.PickedSunAndShadowSettings != null)
