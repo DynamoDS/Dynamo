@@ -57,8 +57,6 @@ namespace Dynamo.Applications
 
       public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
       {
-
-
          try
          {
             // Create new ribbon panel
@@ -159,7 +157,7 @@ namespace Dynamo.Applications
             trans.Start();
 
             FailureHandlingOptions failOpt = trans.GetFailureHandlingOptions();
-            failOpt.SetFailuresPreprocessor(new DynamoWarningSwallower());
+            //failOpt.SetFailuresPreprocessor(new DynamoWarningSwallower());
             trans.SetFailureHandlingOptions(failOpt);
 
             #region default level
@@ -175,12 +173,12 @@ namespace Dynamo.Applications
 
             #endregion
 
-            DynamoWarningSwallower swallow = new DynamoWarningSwallower();
+            //DynamoWarningSwallower swallow = new DynamoWarningSwallower();
 
             dynElementSettings.SharedInstance.Revit = m_revit;
             dynElementSettings.SharedInstance.Doc = m_doc;
             dynElementSettings.SharedInstance.DefaultLevel = defaultLevel;
-            dynElementSettings.SharedInstance.WarningSwallower = swallow;
+            //dynElementSettings.SharedInstance.WarningSwallower = swallow;
             dynElementSettings.SharedInstance.MainTransaction = trans;
             dynElementSettings.SharedInstance.Writer = tw;
             //dynElementSettings settings = new dynElementSettings(m_revit, m_doc,

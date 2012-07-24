@@ -58,9 +58,11 @@
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

@@ -355,6 +355,14 @@ namespace Dynamo.Elements
          RegisterInputs();
          SetToolTips();
          ValidateConnections();
+         UpdateConnections();
+      }
+
+      void UpdateConnections()
+      {
+         foreach (var p in this.InPorts)
+            p.Update();
+         this.OutPort.Update();
       }
 
       private Dictionary<UIElement, bool> enabledDict = new Dictionary<UIElement, bool>();
@@ -755,13 +763,13 @@ namespace Dynamo.Elements
       void CheckPortsForRecalc()
       {
          this.IsDirty = this.InPorts.Any(
-            delegate(dynPort p)
+            delegate(dynPort port)
             {
-               dynElement oldIn;
-               var cons = p.Connectors;
-               return !this.previousEvalPortMappings.TryGetValue(p, out oldIn)
-                  || (oldIn == null && cons.Any())
-                  || (cons.Any() && oldIn != p.Connectors[0].Start.Owner);
+               dynElement oldInput;
+               var connectors = port.Connectors;
+               return !this.previousEvalPortMappings.TryGetValue(port, out oldInput)
+                  || (oldInput == null && connectors.Any())
+                  || (connectors.Any() && oldInput != port.Connectors[0].Start.Owner);
             }
          );
       }
@@ -798,9 +806,9 @@ namespace Dynamo.Elements
       {
          bool flag = false;
 
-         foreach (dynPort p in inPorts)
+         foreach (dynPort port in inPorts)
          {
-            if (p.Connectors.Count == 0)
+            if (port.Connectors.Count == 0)
             {
                flag = true;
             }
@@ -916,6 +924,7 @@ namespace Dynamo.Elements
                return true;
             else
             {
+               //TODO: move this entirely to dynFunction?
                bool start = _startTag;
                _startTag = true;
 

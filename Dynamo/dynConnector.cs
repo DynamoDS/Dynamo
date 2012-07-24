@@ -26,7 +26,6 @@ namespace Dynamo.Connectors
 
    public class dynConnector : UIElement
    {
-
       public event ConnectorConnectedHandler Connected;
 
       protected virtual void OnConnected(EventArgs e)
@@ -36,6 +35,7 @@ namespace Dynamo.Connectors
       }
 
       const int STROKE_THICKNESS = 1;
+      const double STROKE_OPACITY = .6;
 
       dynPort pStart;
       dynPort pEnd;
@@ -83,7 +83,7 @@ namespace Dynamo.Connectors
 
             connector.Stroke = Brushes.Black;
             connector.StrokeThickness = STROKE_THICKNESS;
-            connector.Opacity = .8;
+            connector.Opacity = STROKE_OPACITY;
 
             DoubleCollection dashArray = new DoubleCollection();
             dashArray.Add(5); dashArray.Add(2);
@@ -127,7 +127,7 @@ namespace Dynamo.Connectors
 
       }
 
-      public dynConnector(dynElement start, dynElement end, int startIndex, int endIndex, int portType)
+      public dynConnector(dynElement start, dynElement end, int startIndex, int endIndex, int portType, bool visible)
       {
          //this.workBench = settings.WorkBench;
 
@@ -152,7 +152,7 @@ namespace Dynamo.Connectors
          connector = new Path();
          connector.Stroke = Brushes.Black;
          connector.StrokeThickness = STROKE_THICKNESS;
-         connector.Opacity = .8;
+         connector.Opacity = STROKE_OPACITY;
 
          DoubleCollection dashArray = new DoubleCollection();
          dashArray.Add(5); dashArray.Add(2);
@@ -170,6 +170,7 @@ namespace Dynamo.Connectors
          connectorPoints.Segments.Add(connectorCurve);
          connectorGeometry.Figures.Add(connectorPoints);
          connector.Data = connectorGeometry;
+         this.Visible = visible;
          dynElementSettings.SharedInstance.Workbench.Children.Add(connector);
 
          connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
@@ -187,10 +188,11 @@ namespace Dynamo.Connectors
          Canvas.SetZIndex(this, 300);
 
          this.Connect(endPort);
-
-         //}
-
       }
+
+      public dynConnector(dynElement start, dynElement end, int startIndex, int endIndex, int portType)
+         : this(start, end, startIndex, endIndex, portType, true)
+      { }
 
       public void Highlight()
       {
@@ -323,7 +325,7 @@ namespace Dynamo.Connectors
          set
          {
             if (value)
-               connector.Opacity = .8;
+               connector.Opacity = STROKE_OPACITY;
             else
                connector.Opacity = 0;
          }

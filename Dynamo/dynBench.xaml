@@ -108,7 +108,7 @@
          <Button Margin="155,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Cancel" Click="Cancel_Click" Name="cancelButton" />
          <CheckBox Margin="60,0,0,35" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="dynamicCheckBox" />
          <Label Margin="72,0,0,29" Content="Run Automatically" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-         <CheckBox Margin="60,0,0,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="debugCheckBox" />
+         <CheckBox Margin="60,0,0,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="debugCheckBox" Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" />
          <Label Margin="72,0,0,7" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
          <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

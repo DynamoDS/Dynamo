@@ -104,7 +104,7 @@ namespace Dynamo.Utilities
       Autodesk.Revit.UI.UIDocument doc;
 
       Level defaultLevel;
-      DynamoWarningSwallower warningSwallower;
+      //DynamoWarningSwallower warningSwallower;
       dynBench bench;
       Dynamo.Controls.DragCanvas workbench;
       dynCollection dynColl;
@@ -165,11 +165,11 @@ namespace Dynamo.Utilities
          get { return defaultLevel; }
          set { defaultLevel = value; }
       }
-      public DynamoWarningSwallower WarningSwallower
-      {
-         get { return warningSwallower; }
-         set { warningSwallower = value; }
-      }
+      //public DynamoWarningSwallower WarningSwallower
+      //{
+      //   get { return warningSwallower; }
+      //   set { warningSwallower = value; }
+      //}
       public Dynamo.Controls.DragCanvas Workbench
       {
          get { return workbench; }
@@ -277,56 +277,53 @@ namespace Dynamo.Utilities
       }
    }
 
-   public class DynamoWarningSwallower : IFailuresPreprocessor
-   {
-      public FailureProcessingResult PreprocessFailures(
-          FailuresAccessor a)
-      {
-         // inside event handler, get all warnings
+   //public class DynamoWarningSwallower : IFailuresPreprocessor
+   //{
+   //   public FailureProcessingResult PreprocessFailures(
+   //       FailuresAccessor a)
+   //   {
+   //      // inside event handler, get all warnings
 
-         IList<FailureMessageAccessor> failures
-             = a.GetFailureMessages();
+   //      IList<FailureMessageAccessor> failures = a.GetFailureMessages();
 
-         foreach (FailureMessageAccessor f in failures)
-         {
-            // check failure definition ids
-            // against ones to dismiss:
+   //      foreach (FailureMessageAccessor f in failures)
+   //      {
+   //         // check failure definition ids
+   //         // against ones to dismiss:
 
-            FailureDefinitionId id
-                = f.GetFailureDefinitionId();
+   //         FailureDefinitionId id = f.GetFailureDefinitionId();
 
-            //      BuiltInFailures.JoinElementsFailures.CannotKeepJoined == id ||
-            //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructural == id ||
-            //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructuralError == id ||
-            //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsWarn == id
+   //         //      BuiltInFailures.JoinElementsFailures.CannotKeepJoined == id ||
+   //         //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructural == id ||
+   //         //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructuralError == id ||
+   //         //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsWarn == id
 
-            if (BuiltInFailures.InaccurateFailures.InaccurateLine == id ||
-                BuiltInFailures.OverlapFailures.DuplicateInstances == id ||
-                BuiltInFailures.InaccurateFailures.InaccurateCurveBasedFamily == id ||
-                BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id
-                )
-            {
-               a.DeleteWarning(f);
-            }
-            //else if(BuiltInFailures.CurveFailures.LineTooShortError == id ||
-            //    BuiltInFailures.CurveFailures.LineTooShortWarning == id
-            //    )
-            //{
-            //    a.RollBackPendingTransaction();
-            //}
-            else
-            {
-               a.RollBackPendingTransaction();
-            }
+   //         if (BuiltInFailures.InaccurateFailures.InaccurateLine == id ||
+   //             BuiltInFailures.OverlapFailures.DuplicateInstances == id ||
+   //             BuiltInFailures.InaccurateFailures.InaccurateCurveBasedFamily == id ||
+   //             BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id
+   //             )
+   //         {
+   //            a.DeleteWarning(f);
+   //         }
+   //         //else if(BuiltInFailures.CurveFailures.LineTooShortError == id ||
+   //         //    BuiltInFailures.CurveFailures.LineTooShortWarning == id
+   //         //    )
+   //         //{
+   //         //    a.RollBackPendingTransaction();
+   //         //}
+   //         else
+   //         {
+   //            a.RollBackPendingTransaction();
+   //         }
 
-         }
-         return FailureProcessingResult.Continue;
-      }
-   }
+   //      }
+   //      return FailureProcessingResult.Continue;
+   //   }
+   //}
 
    public class SelectionHelper
    {
-
       //RequestReferencePointSelection
       public static ReferencePoint RequestReferencePointSelection(UIDocument doc, string message, dynElementSettings settings)
       {
@@ -361,9 +358,8 @@ namespace Dynamo.Utilities
             settings.Bench.Log(ex.Message);
             return null;
          }
-
-
       }
+
       public static CurveElement RequestCurveElementSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
@@ -419,9 +415,7 @@ namespace Dynamo.Utilities
 
             if (faceRef != null)
             {
-
                GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
-
                f = geob as Face;
             }
             return f;
@@ -431,10 +425,7 @@ namespace Dynamo.Utilities
             settings.Bench.Log(ex.Message);
             return null;
          }
-
-
       }
-
 
       // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
 
@@ -475,9 +466,8 @@ namespace Dynamo.Utilities
             settings.Bench.Log(ex.Message);
             return null;
          }
-
-
       }
+
       public static Form RequestFormSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
@@ -511,10 +501,7 @@ namespace Dynamo.Utilities
             settings.Bench.Log(ex.Message);
             return null;
          }
-
-
       }
-
 
       public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message,
           dynElementSettings settings, ref FamilyInstance fi)
@@ -540,9 +527,11 @@ namespace Dynamo.Utilities
                {
                   return fi.Symbol;
                }
-               else return null;
+               else
+                  return null;
             }
-            else return null;
+            else
+               return null;
          }
          catch (Exception ex)
          {
@@ -584,7 +573,6 @@ namespace Dynamo.Utilities
       {
          try
          {
-
             View view = doc.ActiveView as View;
 
             SpatialFieldManager sfm = SpatialFieldManager.GetSpatialFieldManager(view);
@@ -611,11 +599,14 @@ namespace Dynamo.Utilities
                   {
                      return AnalysisResult;
                   }
-                  else return null;
+                  else
+                     return null;
                }
-               else return null;
+               else 
+                  return null;
             }
-            else return null;
+            else 
+               return null;
          }
          catch (Exception ex)
          {
@@ -623,7 +614,5 @@ namespace Dynamo.Utilities
             return null;
          }
       }
-
    }
-
 }
