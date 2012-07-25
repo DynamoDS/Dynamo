@@ -114,6 +114,7 @@ namespace Dynamo.Connectors
             Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
             Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
             dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
+            endDot.Opacity = STROKE_OPACITY;
 
             connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
             connector.MouseLeave += delegate { Unhighlight(); };
@@ -194,6 +195,7 @@ namespace Dynamo.Connectors
          Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
          Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
          dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
+         endDot.Opacity = STROKE_OPACITY;
 
          connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
          connector.MouseLeave += delegate { Unhighlight(); };
@@ -320,7 +322,6 @@ namespace Dynamo.Connectors
             pEnd.Owner.Update();
          }
 
-         endDot.Visibility = System.Windows.Visibility.Visible;
          return true;
       }
 
@@ -332,10 +333,16 @@ namespace Dynamo.Connectors
          }
          set
          {
-            if (value)
-               connector.Opacity = STROKE_OPACITY;
-            else
-               connector.Opacity = 0;
+             if (value)
+             {
+                 connector.Opacity = STROKE_OPACITY;
+                 endDot.Opacity = STROKE_OPACITY;
+             }
+             else
+             {
+                 connector.Opacity = 0;
+                 endDot.Opacity = 0;
+             }
          }
       }
 
@@ -367,7 +374,6 @@ namespace Dynamo.Connectors
          connector.StrokeDashArray.Add(5);
          connector.StrokeDashArray.Add(2);
 
-         endDot.Visibility = System.Windows.Visibility.Visible;
       }
 
       public void Kill()
@@ -412,7 +418,6 @@ namespace Dynamo.Connectors
                   connectorCurve.Point2 = new Point(p2.X - bezOffset, p2.Y);
                   connectorCurve.Point3 = p2;
 
-                  endDot.Visibility = System.Windows.Visibility.Visible;
                   Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
                   Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
               }
@@ -440,7 +445,6 @@ namespace Dynamo.Connectors
             }
             connectorCurve.Point3 = pEnd.Center;
 
-            endDot.Visibility = System.Windows.Visibility.Hidden;
             Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
             Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
          }
