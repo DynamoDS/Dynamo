@@ -42,6 +42,8 @@ namespace Dynamo.Connectors
 
       PathFigure connectorPoints;
       BezierSegment connectorCurve;
+      Ellipse endDot;
+      const int END_DOT_SIZE = 6;
       Path connector;
 
       double bezOffset = 100;
@@ -102,6 +104,16 @@ namespace Dynamo.Connectors
             connectorGeometry.Figures.Add(connectorPoints);
             connector.Data = connectorGeometry;
             workBench.Children.Add(connector);
+
+            endDot = new Ellipse();
+            endDot.Height = 6;
+            endDot.Width = 6;
+            endDot.Fill = Brushes.Black;
+            endDot.StrokeThickness = 2;
+            endDot.Stroke = Brushes.Black;
+            Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
+            Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
+            dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
 
             connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
             connector.MouseLeave += delegate { Unhighlight(); };
@@ -173,6 +185,16 @@ namespace Dynamo.Connectors
          this.Visible = visible;
          dynElementSettings.SharedInstance.Workbench.Children.Add(connector);
 
+         endDot = new Ellipse();
+         endDot.Height = 6;
+         endDot.Width = 6;
+         endDot.Fill = Brushes.Black;
+         endDot.StrokeThickness = 2;
+         endDot.Stroke = Brushes.Black;
+         Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
+         Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
+         dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
+
          connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
          connector.MouseLeave += delegate { Unhighlight(); };
 
@@ -242,21 +264,6 @@ namespace Dynamo.Connectors
 
       }
 
-      public void Redraw(Point p2)
-      {
-         if (isDrawing)
-         {
-            if (pStart != null)
-            {
-               connectorPoints.StartPoint = pStart.Center;
-               connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
-               connectorCurve.Point2 = new Point(p2.X - bezOffset, p2.Y);
-               connectorCurve.Point3 = p2;
-            }
-
-         }
-      }
-
       public bool Connect(dynPort p)
       {
          //test if the port that you are connecting too is not the start port or the end port
@@ -313,6 +320,7 @@ namespace Dynamo.Connectors
             pEnd.Owner.Update();
          }
 
+         endDot.Visibility = System.Windows.Visibility.Visible;
          return true;
       }
 
@@ -358,6 +366,8 @@ namespace Dynamo.Connectors
          //turn the connector back to dashed
          connector.StrokeDashArray.Add(5);
          connector.StrokeDashArray.Add(2);
+
+         endDot.Visibility = System.Windows.Visibility.Visible;
       }
 
       public void Kill()
@@ -384,10 +394,30 @@ namespace Dynamo.Connectors
          pEnd = null;
 
          dynElementSettings.SharedInstance.Workbench.Children.Remove(connector);
+         dynElementSettings.SharedInstance.Workbench.Children.Remove(endDot);
 
          isDrawing = false;
 
          dynElementSettings.SharedInstance.Bench.RemoveConnector(this);
+      }
+
+      public void Redraw(Point p2)
+      {
+          if (isDrawing)
+          {
+              if (pStart != null)
+              {
+                  connectorPoints.StartPoint = pStart.Center;
+                  connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
+                  connectorCurve.Point2 = new Point(p2.X - bezOffset, p2.Y);
+                  connectorCurve.Point3 = p2;
+
+                  endDot.Visibility = System.Windows.Visibility.Visible;
+                  Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
+                  Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
+              }
+
+          }
       }
 
       public void Redraw()
@@ -409,6 +439,10 @@ namespace Dynamo.Connectors
                connectorCurve.Point2 = new Point(pEnd.Center.X, pEnd.Center.Y + bezOffset);
             }
             connectorCurve.Point3 = pEnd.Center;
+
+            endDot.Visibility = System.Windows.Visibility.Hidden;
+            Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
+            Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
          }
       }
 
