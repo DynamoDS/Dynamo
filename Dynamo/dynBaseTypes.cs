@@ -1671,6 +1671,14 @@ namespace Dynamo.Elements
          tb.OnChangeCommitted += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
 
          base.RegisterInputsAndOutputs();
+
+         //take out the left and right margins
+         //and make this so it's not so wide
+         this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+         this.topControl.Width = 100;
+
+         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
+         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
       }
 
       public override double Value
