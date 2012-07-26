@@ -385,9 +385,10 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("build-sequence")]
+   [ElementName("build sequence")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Creates a sequence of numbers")]
+   [ElementSearchTags("range")]
    [RequiresTransaction(false)]
    public class dynBuildSeq : dynBuiltinMacro
    {
@@ -422,15 +423,15 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("cross")]
+   [ElementName("cartesian product")]
    [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Applies a combinator to each pair in the cross product of two sequences")]
-   [ElementSearchTags("product", "cartesian")]
+   [ElementDescription("Applies a combinator to each pair in the cartesion product of two sequences")]
+   [ElementSearchTags("cross")]
    [RequiresTransaction(false)]
-   public class dynCombine : dynBuiltinMacro
+   public class dynCartProd : dynBuiltinMacro
    {
-      public dynCombine()
-         : base("cross-product")
+      public dynCartProd()
+         : base("cartesian-product")
       {
          InPortData.Add(new PortData("f(A, B)", "Combinator", typeof(object)));
          InPortData.Add(new PortData("listA", "First list", typeof(object)));
