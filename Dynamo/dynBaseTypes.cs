@@ -225,7 +225,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("ident")]
+   [ElementName("Identity")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Identity function")]
    [RequiresTransaction(false)]
@@ -247,7 +247,7 @@ namespace Dynamo.Elements
 
    #region Lists
 
-   [ElementName("reverse")]
+   [ElementName("Reverse")]
    [ElementDescription("Reverses a list")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [RequiresTransaction(false)]
@@ -264,7 +264,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("list")]
+   [ElementName("List")]
    [ElementDescription("Makes a new list out of the given inputs")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [RequiresTransaction(false)]
@@ -297,7 +297,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("sort-with")]
+   [ElementName("Sort-With")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list, using the given comparitor.")]
    [RequiresTransaction(false)]
@@ -315,7 +315,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("sort-by")]
+   [ElementName("Sort-By")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list, using the given key mapper.")]
    [RequiresTransaction(false)]
@@ -333,7 +333,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("sort")]
+   [ElementName("Sort")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list of numbers or strings.")]
    [RequiresTransaction(false)]
@@ -350,7 +350,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("fold")]
+   [ElementName("Reduce")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Reduces a sequence.")]
    [RequiresTransaction(false)]
@@ -368,7 +368,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("filter")]
+   [ElementName("Filter")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Filters a sequence by a given predicate")]
    [RequiresTransaction(false)]
@@ -385,7 +385,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("build sequence")]
+   [ElementName("Build Sequence")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Creates a sequence of numbers")]
    [ElementSearchTags("range")]
@@ -404,7 +404,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("combine")]
+   [ElementName("Combine")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Applies a combinator to each element in two sequences")]
    [ElementSearchTags("zip")]
@@ -423,7 +423,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("cartesian product")]
+   [ElementName("Cartesian Product")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Applies a combinator to each pair in the cartesion product of two sequences")]
    [ElementSearchTags("cross")]
@@ -442,7 +442,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("map")]
+   [ElementName("Map")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Maps a sequence")]
    [RequiresTransaction(false)]
@@ -459,7 +459,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("cons")]
+   [ElementName("Cons")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Creates a pair")]
    [RequiresTransaction(false)]
@@ -476,7 +476,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("take")]
+   [ElementName("Take")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Takes elements from a list")]
    [RequiresTransaction(false)]
@@ -493,7 +493,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("drop")]
+   [ElementName("Drop")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Drops elements from a list")]
    [RequiresTransaction(false)]
@@ -510,7 +510,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("get")]
+   [ElementName("Get")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Gets an element from a list at a specified index.")]
    [RequiresTransaction(false)]
@@ -527,7 +527,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("empty")]
+   [ElementName("Empty")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("An empty list")]
    [RequiresTransaction(false)]
@@ -561,7 +561,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("isEmpty?")]
+   [ElementName("Is Empty?")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Checks to see if the given list is empty.")]
    [RequiresTransaction(false)]
@@ -577,7 +577,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("len")]
+   [ElementName("Count")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Gets the length of a list")]
    [RequiresTransaction(false)]
@@ -593,7 +593,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("append")]
+   [ElementName("Append")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Appends two list")]
    [RequiresTransaction(false)]
@@ -610,7 +610,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("first")]
+   [ElementName("First")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Gets the first element of a list")]
    [RequiresTransaction(false)]
@@ -626,7 +626,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("rest")]
+   [ElementName("Rest")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Gets the list with the first element removed.")]
    [RequiresTransaction(false)]
@@ -712,7 +712,7 @@ namespace Dynamo.Elements
       public dynEqual() : base("=") { }
    }
 
-   [ElementName("and")]
+   [ElementName("And")]
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Boolean AND.")]
    [RequiresTransaction(false)]
@@ -731,7 +731,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("or")]
+   [ElementName("Or")]
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Boolean OR.")]
    [RequiresTransaction(false)]
@@ -750,7 +750,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("not")]
+   [ElementName("Not")]
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Boolean NOT.")]
    [RequiresTransaction(false)]
@@ -852,7 +852,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("round")]
+   [ElementName("Round")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Rounds a number to the nearest integer value.")]
    [RequiresTransaction(false)]
@@ -874,7 +874,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("floor")]
+   [ElementName("Floor")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Rounds a number to the nearest smaller integer.")]
    [ElementSearchTags("round")]
@@ -897,7 +897,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("ceiling")]
+   [ElementName("Ceiling")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Rounds a number to the nearest larger integer value.")]
    [ElementSearchTags("round")]
@@ -920,7 +920,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("random")]
+   [ElementName("Random")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Generates a uniform random number in the range [0.0, 1.0).")]
    [RequiresTransaction(false)]
@@ -982,7 +982,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("sine")]
+   [ElementName("Sine")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Computes the sine of the given angle.")]
    [RequiresTransaction(false)]
@@ -1019,7 +1019,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("cosine")]
+   [ElementName("Cosine")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Computes the cosine of the given angle.")]
    [RequiresTransaction(false)]
@@ -1056,7 +1056,7 @@ namespace Dynamo.Elements
       }
    }
 
-   [ElementName("tangent")]
+   [ElementName("Tangent")]
    [ElementCategory(BuiltinElementCategories.MATH)]
    [ElementDescription("Computes the tangent of the given angle.")]
    [RequiresTransaction(false)]
@@ -1098,7 +1098,7 @@ namespace Dynamo.Elements
    #region Control Flow
 
    //TODO: Setup proper IsDirty smart execution management
-   [ElementName("begin")]
+   [ElementName("Perform All")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Executes expressions in a sequence")]
    [RequiresTransaction(false)]
@@ -1136,7 +1136,7 @@ namespace Dynamo.Elements
    }
 
    //TODO: Setup proper IsDirty smart execution management
-   [ElementName("apply")]
+   [ElementName("Apply")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Applies arguments to a function")]
    [RequiresTransaction(false)]
@@ -1196,7 +1196,7 @@ namespace Dynamo.Elements
    }
 
    //TODO: Setup proper IsDirty smart execution management
-   [ElementName("if")]
+   [ElementName("If")]
    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
    [ElementDescription("Conditional statement")]
    [RequiresTransaction(false)]
