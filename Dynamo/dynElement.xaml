@@ -73,7 +73,7 @@
          </Rectangle>
          <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
-                       Canvas.Top="0"
+                       Canvas.Top="2"
                        Width="{Binding ElementName=topControl, Path=Width}"
                        Height="50" 
                        Name="elementShine" 
