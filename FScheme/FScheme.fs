@@ -549,6 +549,7 @@ let test (log : ErrorLog) =
    case "(fold * 1 '(2 3 4 5))" "120" // fold
    case "(reverse '(1 2 3))" "(3 2 1)" // reverse
    case "(begin (define map (lambda (f lst) (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) empty lst)))) (map (lambda (x) x) '(1 2 3)))" "(1 2 3)"
+   case "(begin (define cross-product (lambda (lsta lstb comb) (map (lambda (x) (map (lambda (y) (comb x y)) lstb)) lsta))) (cross-product '(1 2 3) list))" "((1 1) (1 2) (1 3) (2 1) (2 2) (2 3) (3 1) (3 2) (3 3))"
    case "(begin (define filter (lambda (p lst) (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) empty lst)))) (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))" "(0 1)"
    case "(list 1 2 3)" "(1 2 3)"
    case "(define not (lambda (x) (if x 0 1)))" ""

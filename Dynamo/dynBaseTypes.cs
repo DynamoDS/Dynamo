@@ -422,6 +422,25 @@ namespace Dynamo.Elements
       }
    }
 
+   [ElementName("cross")]
+   [ElementCategory(BuiltinElementCategories.LIST)]
+   [ElementDescription("Applies a combinator to each pair in the cross product of two sequences")]
+   [ElementSearchTags("product", "cartesian")]
+   [RequiresTransaction(false)]
+   public class dynCombine : dynBuiltinMacro
+   {
+      public dynCombine()
+         : base("cross-product")
+      {
+         InPortData.Add(new PortData("f(A, B)", "Combinator", typeof(object)));
+         InPortData.Add(new PortData("listA", "First list", typeof(object)));
+         InPortData.Add(new PortData("listB", "Second list", typeof(object)));
+         OutPortData = new PortData("AxB", "Combined lists", typeof(object));
+
+         base.RegisterInputsAndOutputs();
+      }
+   }
+
    [ElementName("map")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Maps a sequence")]
