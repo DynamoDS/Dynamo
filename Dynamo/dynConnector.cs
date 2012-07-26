@@ -183,7 +183,6 @@ namespace Dynamo.Connectors
          connectorPoints.Segments.Add(connectorCurve);
          connectorGeometry.Figures.Add(connectorPoints);
          connector.Data = connectorGeometry;
-         this.Visible = visible;
          dynElementSettings.SharedInstance.Workbench.Children.Add(connector);
 
          endDot = new Ellipse();
@@ -196,6 +195,8 @@ namespace Dynamo.Connectors
          Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
          dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
          endDot.Opacity = STROKE_OPACITY;
+
+         this.Visible = visible;
 
          connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
          connector.MouseLeave += delegate { Unhighlight(); };
