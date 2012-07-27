@@ -56,17 +56,13 @@
     <Reference Include="PresentationFramework.Aero">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="RevitAPI">
+    <Reference Include="RevitAPI, Version=2013.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\r2013\ReleaseWin32\RevitAPI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="RevitAPIUI">
+    <Reference Include="RevitAPIUI, Version=2013.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\r2013\ReleaseWin32\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
-      <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
