@@ -171,7 +171,7 @@ namespace Dynamo.Elements
          if (scope.ContainsVariable("OUT"))
          {
             dynamic output = scope.GetVariable("OUT");
-
+            
             result = Converters.convertToExpression(output);
          }
 

@@ -50,6 +50,10 @@
     <Reference Include="RevitAPIUI">
       <HintPath>..\..\..\..\r2013\ReleaseWin32\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
+      <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

@@ -1306,8 +1306,9 @@ namespace Dynamo.Controls
 
                if (start != null && end != null && start != end)
                {
-                  dynConnector newConnector = new dynConnector(start, end, startIndex,
-                      endIndex, portType);
+                  dynConnector newConnector = new dynConnector(
+                     start, end, startIndex, endIndex, portType, false
+                  );
 
                   ws.Connectors.Add(newConnector);
                }
@@ -2046,20 +2047,23 @@ namespace Dynamo.Controls
                   {
                      Expression runningExpression = topMost.Build().Compile();
 
-                     //string exp = FScheme.print(runningExpression);
-                     this.Dispatcher.Invoke(new Action(
-                        delegate
-                        {
-                           string exp = topMost.PrintExpression();
-                           Log("> " + exp);
-                        }
-                     ));
+                     if (debug)
+                     {
+                        //string exp = FScheme.print(runningExpression);
+                        this.Dispatcher.Invoke(new Action(
+                           delegate
+                           {
+                              string exp = topMost.PrintExpression();
+                              Log("> " + exp);
+                           }
+                        ));
+                     }
 
                      try
                      {
                         var expr = this.Environment.Evaluate(runningExpression);
 
-                        if (expr != null)
+                        if (debug && expr != null)
                         {
                            this.Dispatcher.Invoke(new Action(
                               () => Log(FScheme.print(expr))
@@ -2069,12 +2073,9 @@ namespace Dynamo.Controls
                      catch (CancelEvaluationException ex)
                      {
                         this.CancelTransaction();
-
                         this.CancelRun = false;
-
                         if (ex.Force)
                            this.runAgain = false;
-
                         break;
                      }
                      catch (Exception ex)
@@ -2085,12 +2086,9 @@ namespace Dynamo.Controls
                               () => Log("ERROR: " + ex.Message)
                            ));
                         }
-
                         this.CancelTransaction();
-
                         this.CancelRun = false;
                         this.runAgain = false;
-
                         break;
                      }
                   }
@@ -2100,9 +2098,7 @@ namespace Dynamo.Controls
                      this.InitTransaction();
 
                      foreach (var element in this.AllElements)
-                     {
                         element.ResetRuns();
-                     }
 
                      this.EndTransaction();
                   };
@@ -2128,7 +2124,6 @@ namespace Dynamo.Controls
                   {
                      this.TransMode = TransactionMode.Automatic;
                      this.InIdleThread = true;
-
                      IdlePromise.ExecuteOnIdle(run, false);
                   }
                }
@@ -2147,9 +2142,7 @@ namespace Dynamo.Controls
             catch (CancelEvaluationException ex)
             {
                this.CancelTransaction();
-
                this.CancelRun = false;
-
                if (ex.Force)
                   this.runAgain = false;
             }
@@ -2163,7 +2156,6 @@ namespace Dynamo.Controls
                }
 
                this.CancelTransaction();
-
                this.runAgain = false;
                this.CancelRun = false;
             }
@@ -2175,6 +2167,7 @@ namespace Dynamo.Controls
                      this.runButton.IsEnabled = true;
                   }
                ));
+
                this.Running = false;
                if (this.runAgain)
                {
@@ -3087,12 +3080,13 @@ namespace Dynamo.Controls
 
             bool manTran = topElements.Any(x => x.RequiresManualTransaction());
 
-            this.dynamicCheckBox.IsEnabled = !manTran;
+            this.dynamicCheckBox.IsEnabled = !manTran && this.debugCheckBox.IsChecked == false;
             if (manTran)
                this.dynamicCheckBox.IsChecked = false;
 
-            return !manTran 
-               && this.dynamicCheckBox.IsEnabled 
+            return !manTran
+               && this.dynamicCheckBox.IsEnabled
+               && this.debugCheckBox.IsChecked == false
                && this.dynamicCheckBox.IsChecked == true;
          }
       }
@@ -3111,6 +3105,17 @@ namespace Dynamo.Controls
          this.sw.Close();
          this.sw = new StringWriter();
          this.LogText = sw.ToString();
+      }
+
+      private void debugCheckBox_Checked(object sender, RoutedEventArgs e)
+      {
+         this.dynamicCheckBox.IsChecked = false;
+         this.dynamicCheckBox.IsEnabled = false;
+      }
+
+      private void debugCheckBox_Unchecked(object sender, RoutedEventArgs e)
+      {
+         this.dynamicCheckBox.IsEnabled = true;
       }
    }
 

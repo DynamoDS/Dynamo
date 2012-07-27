@@ -63,6 +63,10 @@
     <Reference Include="RevitAPIUI">
       <HintPath>..\..\..\..\r2013\ReleaseWin32\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
+      <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -178,6 +182,7 @@
     <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
       <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
       <Name>DragCanvas</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>

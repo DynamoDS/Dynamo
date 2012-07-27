@@ -370,6 +370,12 @@ and Eval cont (env : Environment) = function
    | [args] -> args |> eval (eval cont env) env 
    | m -> malformed "eval" (List(m))
 
+///Apply construct
+and Apply cont env = function
+   | [Function(f); List(args)] -> apply cont env f args
+   | [Special(f); List(args)] -> f cont env args
+   | m -> malformed "apply" (List(m))
+
 ///Macro construct -- similar to functions, but arguments are passed unevaluated. Useful for short-circuiting.
 and Macro cont (env : Environment) = function
    | [List(parameters); body] ->
@@ -473,6 +479,7 @@ and environment =
        "sort-by", ref (Function(SortBy))
        "combine", ref (Special(Combine))
        "throw", ref (Function(Throw))
+       "apply", ref (Special(Apply))
       ] |> ref
 
 ///Our eval loop
@@ -549,6 +556,7 @@ let test (log : ErrorLog) =
    case "(fold * 1 '(2 3 4 5))" "120" // fold
    case "(reverse '(1 2 3))" "(3 2 1)" // reverse
    case "(begin (define map (lambda (f lst) (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) empty lst)))) (map (lambda (x) x) '(1 2 3)))" "(1 2 3)"
+//   case "(begin (define cross-product (lambda (lsta lstb comb) (map (lambda (x) (map (lambda (y) (comb x y)) lstb)) lsta))) (cross-product '(1 2 3) list))" "((1 1) (1 2) (1 3) (2 1) (2 2) (2 3) (3 1) (3 2) (3 3))"
    case "(begin (define filter (lambda (p lst) (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) empty lst)))) (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))" "(0 1)"
    case "(list 1 2 3)" "(1 2 3)"
    case "(define not (lambda (x) (if x 0 1)))" ""
@@ -574,4 +582,5 @@ let test (log : ErrorLog) =
    //case "(define combine (lambda (f lst1 lst2) (letrec ((comb* (lambda (lst1 lst2 a) (if (or (empty? lst1) (empty? lst2)) (reverse a) (comb* (rest lst1) (rest lst2) (cons (f (first lst1) (first lst2)) a)))))) (comb* lst1 lst2 empty))))" ""
    case "(define build-seq (lambda (s e st) (letrec ((bs* (lambda (start end step a) (if (or (<= step 0) (>= start end)) (rev a) (bs* (+ start step) end step (cons start a)))))) (bs* s e st empty))))" ""
    case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9)"
+   case "(begin (define cartesian-product (lambda (comb lofls) (let ((cp (lambda (lsts) (fold (lambda (l1 l2) (fold (lambda (x res) (append (foldl (lambda (y acc) (cons (cons x y) acc)) empty l2) res)) empty l1)) (first lsts) (rest lsts))))) (map (lambda (args) (apply comb args)) (cp lofls))))) (cartesian-product '(1 2) '(3 4) '(5 6))" "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
    //case "(define zip (lambda lst1 lst2) (combine cons lst1 lst2)))"

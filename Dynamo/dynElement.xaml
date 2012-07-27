@@ -73,7 +73,7 @@
          </Rectangle>
          <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
-                       Canvas.Top="0"
+                       Canvas.Top="2"
                        Width="{Binding ElementName=topControl, Path=Width}"
                        Height="50" 
                        Name="elementShine" 
@@ -97,25 +97,29 @@
                        Canvas.ZIndex="99"
                        Canvas.Left="0" 
                        Width="160" />-->
-         <TextBox Height="Auto" 
-                       Name="nickNameBlock" 
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Left"
-                       Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                       Margin="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Converter={StaticResource MarginConverter}, Mode=OneWay}"
-                       FontFamily="Calibri"
-                       FontSize="14" 
-                       FontWeight="Normal" 
-                       TextAlignment="Center" 
-                       IsHitTestVisible="False" 
-                       Canvas.ZIndex="99" 
-                       Width="{Binding ElementName=grid, Path=ActualWidth}"
-                       MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
-                       BorderThickness="0" TextWrapping="Wrap" IsReadOnly="True">
-            <TextBox.Background>
+         <TextBlock  Height="Auto" 
+                     Name="nickNameBlock" 
+                     VerticalAlignment="Center" 
+                     HorizontalAlignment="Left"
+                     Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Converter={StaticResource MarginConverter}, Mode=OneWay}"
+                     FontFamily="Calibri"
+                     FontSize="15" 
+                     FontWeight="Normal" 
+                     TextAlignment="Center" 
+                     IsHitTestVisible="False" 
+                     Canvas.ZIndex="99" 
+                     Width="{Binding ElementName=grid, Path=ActualWidth}"
+                     MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
+                     TextWrapping="Wrap"
+                     Background="Transparent" FontStyle="Normal">
+            <!--<TextBox.Background>
                <SolidColorBrush />
-            </TextBox.Background>
-         </TextBox>
+            </TextBox.Background>-->
+            <!-- <TextBlock.Effect>
+               <DropShadowEffect ShadowDepth="0" Color="WhiteSmoke" BlurRadius="4" />
+            </TextBlock.Effect> -->
+         </TextBlock>
       </Canvas>
       <!--<Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Name="portNamesLeft" Margin="25,5,0,35" Width="Auto" IsHitTestVisible="True" Background="Transparent"/>
         <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="portNamesRight" Margin="5,5,25,35" Width="Auto" IsHitTestVisible="True" Background="Transparent"/>-->
