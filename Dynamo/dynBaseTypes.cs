@@ -297,11 +297,12 @@ namespace Dynamo.Elements
       }
    }
 
+   /*
    [ElementName("Sort-With")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list, using the given comparitor.")]
    [RequiresTransaction(false)]
-   public class dynSortWith : dynBuiltinFunction
+   public class dynSortWith : dynBuiltinMacro
    {
       public dynSortWith()
          : base("sort-with")
@@ -319,7 +320,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list, using the given key mapper.")]
    [RequiresTransaction(false)]
-   public class dynSortBy : dynBuiltinFunction
+   public class dynSortBy : dynBuiltinMacro
    {
       public dynSortBy()
          : base("sort-by")
@@ -332,6 +333,7 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
    }
+    */
 
    [ElementName("Sort")]
    [ElementCategory(BuiltinElementCategories.LIST)]
@@ -353,6 +355,7 @@ namespace Dynamo.Elements
    [ElementName("Reduce")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Reduces a sequence.")]
+   [ElementSearchTags("fold")]
    [RequiresTransaction(false)]
    public class dynFold : dynBuiltinMacro
    {
