@@ -409,36 +409,184 @@ namespace Dynamo.Elements
    [ElementDescription("Applies a combinator to each element in two sequences")]
    [ElementSearchTags("zip")]
    [RequiresTransaction(false)]
-   public class dynCombine : dynBuiltinMacro
+   public class dynCombine : dynVariableInput
    {
       public dynCombine()
-         : base("combine")
       {
-         InPortData.Add(new PortData("f(A, B)", "Combinator", typeof(object)));
-         InPortData.Add(new PortData("listA", "First list", typeof(object)));
-         InPortData.Add(new PortData("listB", "Second list", typeof(object)));
-         OutPortData = new PortData("[f(A,B)]", "Combined lists", typeof(object));
+         InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
+         InPortData.Add(new PortData("list1", "First list", typeof(object)));
+         InPortData.Add(new PortData("list2", "Second list", typeof(object)));
+         OutPortData = new PortData("combined", "Combined lists", typeof(object));
 
          base.RegisterInputsAndOutputs();
+      }
+
+      protected override string getInputRootName()
+      {
+         return "list";
+      }
+
+      protected override void RemoveInput(object sender, RoutedEventArgs args)
+      {
+         if (InPortData.Count > 3)
+            base.RemoveInput(sender, args);
+      }
+
+      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+      {
+         //Debug.WriteLine(pd.Object.GetType().ToString());
+         foreach (var inport in InPortData.Skip(3))
+         {
+            XmlElement input = xmlDoc.CreateElement("Input");
+
+            input.SetAttribute("name", inport.NickName);
+
+            dynEl.AppendChild(input);
+         }
+      }
+
+      public override void LoadElement(XmlNode elNode)
+      {
+         foreach (XmlNode subNode in elNode.ChildNodes)
+         {
+            if (subNode.Name == "Input")
+            {
+               var attr = subNode.Attributes["name"].Value;
+
+               if (!attr.Equals("comb"))
+                  this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+            }
+         }
+         base.ReregisterInputs();
+      }
+
+      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+      {
+         if (this.SaveResult)
+         {
+            return new ExternalMacroNode(
+               new ExternMacro(this.macroEval),
+               portNames
+            );
+         }
+         else
+            return new FunctionNode("combine", portNames);
+      }
+
+      private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+      {
+         if (this.IsDirty || this.oldValue == null)
+         {
+            this.macroEnvironment = environment;
+            this.oldValue = this.eval(args);
+         }
+         else
+            this.runCount++;
+         return this.oldValue;
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var macro = ((Expression.Special)this.Bench.Environment
+            .LookupSymbol("combine")).Item;
+
+         return macro
+            .Invoke(ExecutionEnvironment.IDENT)
+            .Invoke(this.macroEnvironment.Env)
+            .Invoke(args);
       }
    }
 
    [ElementName("Cartesian Product")]
    [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Applies a combinator to each pair in the cartesion product of two sequences")]
+   [ElementDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
    [ElementSearchTags("cross")]
    [RequiresTransaction(false)]
-   public class dynCartProd : dynBuiltinMacro
+   public class dynCartProd : dynVariableInput
    {
       public dynCartProd()
-         : base("cartesian-product")
       {
-         InPortData.Add(new PortData("f(A, B)", "Combinator", typeof(object)));
-         InPortData.Add(new PortData("listA", "First list", typeof(object)));
-         InPortData.Add(new PortData("listB", "Second list", typeof(object)));
-         OutPortData = new PortData("AxB", "Combined lists", typeof(object));
+         InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
+         InPortData.Add(new PortData("list1", "First list", typeof(object)));
+         InPortData.Add(new PortData("list2", "Second list", typeof(object)));
+         OutPortData = new PortData("combined", "Combined lists", typeof(object));
 
          base.RegisterInputsAndOutputs();
+      }
+
+      protected override string getInputRootName()
+      {
+         return "list";
+      }
+
+      protected override void RemoveInput(object sender, RoutedEventArgs args)
+      {
+         if (InPortData.Count > 3)
+            base.RemoveInput(sender, args);
+      }
+
+      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+      {
+         //Debug.WriteLine(pd.Object.GetType().ToString());
+         foreach (var inport in InPortData.Skip(3))
+         {
+            XmlElement input = xmlDoc.CreateElement("Input");
+
+            input.SetAttribute("name", inport.NickName);
+
+            dynEl.AppendChild(input);
+         }
+      }
+
+      public override void LoadElement(XmlNode elNode)
+      {
+         foreach (XmlNode subNode in elNode.ChildNodes)
+         {
+            if (subNode.Name == "Input")
+            {
+               var attr = subNode.Attributes["name"].Value;
+
+               if (!attr.Equals("comb"))
+                  this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+            }
+         }
+         base.ReregisterInputs();
+      }
+
+      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+      {
+         if (this.SaveResult)
+         {
+            return new ExternalMacroNode(
+               new ExternMacro(this.macroEval),
+               portNames
+            );
+         }
+         else
+            return new FunctionNode("cartesian-product", portNames);
+      }
+
+      private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+      {
+         if (this.IsDirty || this.oldValue == null)
+         {
+            this.macroEnvironment = environment;
+            this.oldValue = this.eval(args);
+         }
+         else
+            this.runCount++;
+         return this.oldValue;
+      }
+
+      public override Expression Evaluate(FSharpList<Expression> args)
+      {
+         var macro = ((Expression.Special)this.Bench.Environment
+            .LookupSymbol("cartesian-product")).Item;
+
+         return macro
+            .Invoke(ExecutionEnvironment.IDENT)
+            .Invoke(this.macroEnvironment.Env)
+            .Invoke(args);
       }
    }
 
