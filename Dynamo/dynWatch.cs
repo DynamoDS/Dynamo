@@ -74,8 +74,38 @@ namespace Dynamo.Elements
  
         }
 
+        /*
+        private void generateContent(Expression eIn, System.Text.StringBuilder sb, string linePrefix="")
+        {
+           sb.Append(linePrefix);
+           if (eIn.IsContainer)
+           {
+              sb.AppendLine((eIn as Expression.Container).Item.ToString());
+           }
+           //else if (eIn.IsFunction)
+           //{
+           //   sb.AppendLine((eIn as Expression.Function).Item.ToString());
+           //}
+           else if (eIn.IsList)
+           {
+              sb.AppendLine("List:");
+              foreach (Expression subExp in (eIn as Expression.List).Item)
+                 this.generateContent(subExp, sb, linePrefix + "    ");
+           }
+           else if (eIn.IsNumber)
+           {
+              sb.AppendLine((eIn as Expression.Number).Item.ToString());
+           }
+           else if (eIn.IsString)
+           {
+              sb.AppendLine((eIn as Expression.String).Item.ToString());
+           }
+        }
+         * */
+
         public override Expression Evaluate(FSharpList<Expression> args)
         {
+
             string content = "";
             string prefix = "";
 
