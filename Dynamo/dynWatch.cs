@@ -58,45 +58,41 @@ namespace Dynamo.Elements
  
         }
 
+        private void generateContent(Expression eIn, System.Text.StringBuilder sb, string linePrefix="")
+        {
+           sb.Append(linePrefix);
+           if (eIn.IsContainer)
+           {
+              sb.AppendLine((eIn as Expression.Container).Item.ToString());
+           }
+           //else if (eIn.IsFunction)
+           //{
+           //   sb.AppendLine((eIn as Expression.Function).Item.ToString());
+           //}
+           else if (eIn.IsList)
+           {
+              sb.AppendLine("List:");
+              foreach (Expression subExp in (eIn as Expression.List).Item)
+                 this.generateContent(subExp, sb, linePrefix + "    ");
+           }
+           else if (eIn.IsNumber)
+           {
+              sb.AppendLine((eIn as Expression.Number).Item.ToString());
+           }
+           else if (eIn.IsString)
+           {
+              sb.AppendLine((eIn as Expression.String).Item.ToString());
+           }
+        }
+
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            string content = "";
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
             foreach (Expression e in args)
             {
-                if (e.GetType() == typeof(Expression.List))
-                {
-                    Expression.List l = (Expression.List)e;
-                    foreach (Expression eIn in l.Item)
-                    {
-                        if (eIn.IsContainer)
-                        {
-                            content += (eIn as Expression.Container).Item.ToString() + "\n";
-                        }
-                        else if (eIn.IsFunction)
-                        {
-                            content += (eIn as Expression.Function).Item.ToString() + "\n";
-                        }
-                        else if (eIn.IsList)
-                        {
-                            //TODO: deal with lists
-                            content += eIn.GetType().ToString() + "\n";
-                        }
-                        else if (eIn.IsNumber)
-                        {
-                            content += (eIn as Expression.Number).Item.ToString() + "\n";
-                        }
-                        else if (eIn.IsString)
-                        {
-                            content += (eIn as Expression.String).Item.ToString() + "\n";
-                        }
-                        else if (eIn.IsSymbol)
-                        {
-                            content += (eIn as Expression.Symbol).Item.ToString() + "\n";
-                        }
-                        
-                    }
-                }
+               this.generateContent(e, sb);
             }
+            string content = sb.ToString();
 
             watchBlock.Dispatcher.Invoke(new Action(
             delegate
