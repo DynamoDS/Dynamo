@@ -142,7 +142,7 @@ let Divide = math (/) "division"
 let Modulus = math (%) "modulus"
 
 ///Simple wrapper for comparison operations.
-let boolMath op name cont : (Expression list -> Expression) = function
+let boolMath (op : (IComparable -> IComparable -> bool)) name cont = function
    //If the arguments coming in consist of two numbers...
    | [Number(a); Number(b)] -> 
       //Apply the given operator, then...
@@ -150,6 +150,10 @@ let boolMath op name cont : (Expression list -> Expression) = function
       //...if it returns true, pass 1.0 to the continuation
       | true -> Number(1.0) |> cont
       //...else, pass 0.0 to the continuation
+      | _ -> Number(0.0) |> cont
+   | [String(a); String(b)] ->
+      match (op a b) with
+      | true -> Number(1.0) |> cont
       | _ -> Number(0.0) |> cont
    //Otherwise, fail.
    | m -> malformed name (List(m))
@@ -160,6 +164,11 @@ let GTE = boolMath (>=) "greater-than-or-equals"
 let LT = boolMath (<) "less-than"
 let GT = boolMath (>) "greater-than"
 let EQ = boolMath (=) "equals"
+
+//
+let _r = new Random()
+
+let RandomDbl cont = function _ -> Number(_r.NextDouble()) |> cont
 
 //List Functions
 let IsEmpty cont = function [List([])] -> Number(1.0) |> cont | _ -> Number (0.0) |> cont
@@ -241,114 +250,6 @@ let rec If cont (env : Environment) = function
             eval cont env f // zero is false
          | _ -> eval cont env t) env condition // everything else is true
    | m -> malformed "if" (List(m))
-
-(*///Sorts using a comparitor function
-and SortWith cont env = function
-   | [lst; proc] ->
-      eval (fun procedure ->
-         match procedure with
-         //If we are given a list and a function...
-         | Function(f) ->
-            //mapeval: Evaluates all Expressions in the given list, and passes
-            //         resulting list to given continuation
-            let rec mapeval cont'' acc = function
-             | h :: t -> eval (fun h' -> mapeval cont'' (h' :: acc) t) env h
-             | [] -> List.rev acc |> cont''
-            eval (fun li ->
-               match li with
-               | List(l) ->
-                  //We evaluate all the arguments.
-                  // The resulting list is then...
-                  mapeval (fun els ->
-                              //...sorted by applying the given Function, 
-                              //   and making sure that it returns an integer.
-                              List.sortWith 
-                                 (fun e1 e2 -> 
-                                    match f id [e1; e2] with 
-                                    | Number(n) -> (int n) 
-                                    | m -> malformed "sort comparitor argument" m)
-                                 els
-                              //The results are then turned into an Expression.List, and passed to the
-                              //continuation.
-                              |> List |> cont) [] l
-               | m -> malformed "sort-with list" m) env lst
-         //If we are given a list and a Special...
-         | Special(f) ->
-            eval (fun li ->
-               match li with
-               | List(l) ->
-                  //Then we sort the list by applying the given Special,
-                  //and making sure that it returns an integer.
-                  List.sortWith 
-                     (fun e1 e2 ->
-                        match f id env [e1; e2] with
-                        | Number(n) -> (int n)
-                        | m -> malformed "sort comparitor argument" m)
-                     l
-                  //The results are then turned into an Expression.List and passed to the
-                  //continuation.
-                  |> List |> cont
-               | m -> malformed "sort-with list" m) env lst
-         //Otherwise, fail.
-         | m -> malformed "sort-with comparitor" m) env proc
-   | m -> malformed "sort-with" (List(m))
-
-///Sorts by converting elements in a list to primitives (Numbers, Strings, etc.)
-and SortBy cont env = function
-   | [lst; proc] -> 
-      eval (fun procedure ->
-         match procedure with
-         | Function(f) ->
-            //mapeval: Evaluates all Expressions in the given list, and passes
-            //         resulting list to given continuation
-            let rec mapeval cont'' acc = function
-             | h :: t -> eval (fun h' -> mapeval cont'' (h' :: acc) t) env h
-             | [] -> List.rev acc |> cont''
-            eval (fun li ->
-               match li with
-               | List(l) ->
-                  mapeval (fun args ->
-                     match args with
-                     //If the list has at least one element...
-                     | h :: _ ->
-                        //Convert the first element to determine the resulting type...
-                        match f id [h] with
-                        //If the type is an Expression.Number...
-                        | Number(n) ->
-                           List.sortBy (fun e -> match f id [e] with
-                                                   | Number(n2) -> n2
-                                                   | m -> malformed "sort key" m)
-                                       args |> List |> cont
-                        | String(s) -> List(List.sortBy (fun e -> match f id [e] with
-                                                                  | String(s2) -> s2
-                                                                  | m -> malformed "sort key" m)
-                                                        args) |> cont
-                        | m -> malformed "sort key" (List(args))
-                     | _ -> List(args) |> cont) [] l
-               | m -> malformed "sort-by list" m) env lst
-         | Special(f) ->
-            eval (fun li ->
-               match li with
-               | List(l) ->
-                     match l with
-                     | h :: _ ->
-                        match f id env [h] with
-                        | Number(n) ->
-                           List.sortBy (fun e -> match f id env [e] with
-                                                   | Number(n2) -> n2
-                                                   | m -> malformed "sort key" m)
-                                       l |> List |> cont
-                        | String(s) ->
-                           List.sortBy (fun e -> match f id env [e] with
-                                                   | String(s2) -> s2
-                                                   | m -> malformed "sort key" m)
-                                       l |> List |> cont
-                        | m -> malformed "sort key" (List(l))
-                     | _ -> List(l) |> cont
-               | m -> malformed "sort-by list" m) env lst
-         | m -> malformed "sort-by projection" m) env proc
-   | m -> malformed "sort-by" (List(m))
-*)
 
 ///Combines lists
 and Combine cont env = function
@@ -591,11 +492,10 @@ and environment =
        "rev", ref (Function(Rev))
        "list", ref (Function(MakeList))
        "sort", ref (Function(Sort))
-//       "sort-with", ref (Special(SortWith))
-//       "sort-by", ref (Special(SortBy))
        "combine", ref (Special(Combine))
        "throw", ref (Function(Throw))
        "apply", ref (Special(Apply))
+       "rand", ref (Function(RandomDbl))
       ] |> ref
 
 ///Our eval loop
@@ -641,7 +541,7 @@ let rec repl output =
    try Console.ReadLine() |> rep environment |> repl
    with ex -> repl ex.Message
 
-type ErrorLog = delegate of String -> unit
+type ErrorLog = delegate of string -> unit
 
 //Tests
 let test (log : ErrorLog) =
@@ -659,11 +559,9 @@ let test (log : ErrorLog) =
    case "(quote (* 2 (unquote (- 5 2))))" "(* 2 3)" // quote nested unquote
    case "(let ((a 1)) (begin (set! a 2) a))" "2" // begin and assign
    case "(let* ((a 5) (dummy (set! a 10))) a)" "10" // re-assign after let
-//   case "(begin (define fac (lambda (x) (if x (* x (fac (- x 1))) 1))) (fac 7))" "5040" // define recursive
-//   case "(begin (define square (lambda (x) (* x x))) (square 4))" "16" // global def
    case "(define and (macro (a b) '(if ,a (if ,b 1 0) 0)))" ""
    case "(define or (macro (a b) '(if ,a 1 (if ,b 1 0))))" ""
-//   case "(define xor (lambda (a b) (and (or a b) (not (and a b)))))" ""
+   case "(define xor (lambda (a b) (and (or a b) (not (and a b)))))" ""
    case "(begin (define too-many (lambda (a x) x)) (too-many 1 2 3))" "(2 3)"
    case "(too-many '(1 1) '(2 2) '(3 3))" "((2 2) (3 3))"
    case "(and 0 0)" "0" // or (false)
@@ -674,7 +572,6 @@ let test (log : ErrorLog) =
    case "(fold * 1 '(2 3 4 5))" "120" // fold
    case "(reverse '(1 2 3))" "(3 2 1)" // reverse
    case "(begin (define map (lambda (f lst) (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) empty lst)))) (map (lambda (x) x) '(1 2 3)))" "(1 2 3)"
-//   case "(begin (define cross-product (lambda (lsta lstb comb) (map (lambda (x) (map (lambda (y) (comb x y)) lstb)) lsta))) (cross-product '(1 2 3) list))" "((1 1) (1 2) (1 3) (2 1) (2 2) (2 3) (3 1) (3 2) (3 3))"
    case "(begin (define filter (lambda (p lst) (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) empty lst)))) (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))" "(0 1)"
    case "(list 1 2 3)" "(1 2 3)"
    case "(define not (lambda (x) (if x 0 1)))" ""
@@ -686,10 +583,10 @@ let test (log : ErrorLog) =
    case "(or 1 1)" "1" // or (true)
    case "(not 0)" "1" // or (true)
    case "(not 1)" "0" // or (false)
-//   case "(xor 0 0)" "0" // xor (false)
-//   case "(xor 1 0)" "1" // xor (true)
-//   case "(xor 0 1)" "1" // xor (true)
-//   case "(xor 1 1)" "0" // xor (false)
+   case "(xor 0 0)" "0" // xor (false)
+   case "(xor 1 0)" "1" // xor (true)
+   case "(xor 0 1)" "1" // xor (true)
+   case "(xor 1 1)" "0" // xor (false)
    case "(let ((square (lambda (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
    case "(let ((square (lambda (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
    case "(let ((square (lambda (x) (* x x)))) (map square '()))" "()" // mapping empty
@@ -697,10 +594,10 @@ let test (log : ErrorLog) =
    case "(call/cc (lambda (c) (if (c 10) 20 30)))" "10" // call/cc bailing out of 'if'
    case "(+ 8 (call/cc (lambda (k^) (* (k^ 5) 100))))" "13" // call/cc bailing out of multiplication
    case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
-//   case "(define combine (lambda (f lst1 lst2) (letrec ((comb* (lambda (lst1 lst2 a) (if (or (empty? lst1) (empty? lst2)) (reverse a) (comb* (rest lst1) (rest lst2) (cons (f (first lst1) (first lst2)) a)))))) (comb* lst1 lst2 empty))))" ""
    case "(define build-seq (lambda (s e st) (letrec ((bs* (lambda (start end step a) (if (or (<= step 0) (>= start end)) (rev a) (bs* (+ start step) end step (cons start a)))))) (bs* s e st empty))))" ""
    case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9)"
    case "(begin (define cp-atom-list (lambda (at lst) (letrec ((cal* (lambda (x l a) (if (empty? l) (reverse a) (cal* x (rest l) (cons (cons x (first l)) a)))))) (cal* at lst empty)))) (define cp-list-list (lambda (l1 l2) (letrec ((cll* (lambda (m n a) (if (or (empty? m) (empty? n)) a (cll* (rest m) n (append a (cp-atom-list (first m) n))))))) (cll* l1 l2 empty)))) (define cartesian-product (lambda (comb lsts) (let* ((lofls (reverse lsts)) (rst (rest lofls)) (cp (lambda (lsts) (fold cp-list-list (map list (first lofls)) rst)))) (map (lambda (args) (apply comb args)) (cp lofls))))))" ""
    case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))" "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
-//   case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
-//   case "(define zip (lambda lst1 lst2) (combine cons lst1 lst2)))"
+   case "(begin (define qs (lambda (lst f c) (if (empty? lst) empty (let* ((pivot (f (first lst))) (lt (filter (lambda (x) (c (f x) pivot)) (rest lst))) (gt (filter (lambda (x) (not (c (f x) pivot))) (rest lst)))) (append (qs lt f c) (cons (first lst) (qs gt f c))))))) (define sort-with (lambda (lst comp) (qs lst (lambda (x) x) (lambda (a b) (< (comp a b) 0))))) (define sort-by (lambda (lst proj) (map (lambda (x) (first x)) (qs (map (lambda (x) (list x (proj x))) lst) (lambda (y) (first (rest y))) <)))))" ""
+   case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
+   case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"

@@ -205,7 +205,7 @@ namespace Dynamo.Elements
                   break;
             }
 
-            if (value != ElementState.DEAD)
+            if (value != ElementState.ERROR)
             {
                SetTooltip();
             }

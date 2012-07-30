@@ -297,7 +297,6 @@ namespace Dynamo.Elements
       }
    }
 
-   /*
    [ElementName("Sort-With")]
    [ElementCategory(BuiltinElementCategories.LIST)]
    [ElementDescription("Returns a sorted list, using the given comparitor.")]
@@ -333,7 +332,6 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
    }
-    */
 
    [ElementName("Sort")]
    [ElementCategory(BuiltinElementCategories.LIST)]
@@ -874,7 +872,7 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData("a", "operand", typeof(double)));
          InPortData.Add(new PortData("b", "operand", typeof(double)));
-         OutPortData = new PortData("a ^ b", "result", typeof(double));
+         OutPortData = new PortData("a∧b", "result", typeof(double));
 
          this.nickNameBlock.FontSize = 20;
 
@@ -893,7 +891,26 @@ namespace Dynamo.Elements
       {
          InPortData.Add(new PortData("a", "operand", typeof(bool)));
          InPortData.Add(new PortData("b", "operand", typeof(bool)));
-         OutPortData = new PortData("a V b", "result", typeof(bool));
+         OutPortData = new PortData("a∨b", "result", typeof(bool));
+
+         this.nickNameBlock.FontSize = 20;
+
+         base.RegisterInputsAndOutputs();
+      }
+   }
+
+   [ElementName("Xor")]
+   [ElementCategory(BuiltinElementCategories.BOOLEAN)]
+   [ElementDescription("Boolean XOR.")]
+   [RequiresTransaction(false)]
+   public class dynXor : dynBuiltinMacro
+   {
+      public dynXor()
+         : base("xor")
+      {
+         InPortData.Add(new PortData("a", "operand", typeof(bool)));
+         InPortData.Add(new PortData("b", "operand", typeof(bool)));
+         OutPortData = new PortData("a⊻b", "result", typeof(bool));
 
          this.nickNameBlock.FontSize = 20;
 
