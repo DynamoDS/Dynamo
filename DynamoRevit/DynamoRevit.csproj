@@ -44,10 +44,12 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\VasariSDK\2-5\References\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
