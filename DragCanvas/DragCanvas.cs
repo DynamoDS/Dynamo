@@ -254,7 +254,7 @@ namespace Dynamo.Controls
 
       #region OnMouseLeftButtonDown
 
-      protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+      protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
       {
          if (ignoreClick)
          {
@@ -264,7 +264,7 @@ namespace Dynamo.Controls
 
          if (!isConnecting)
          {
-            base.OnPreviewMouseLeftButtonDown(e);
+            base.OnMouseLeftButtonDown(e);
 
             this.isDragInProgress = false;
 
