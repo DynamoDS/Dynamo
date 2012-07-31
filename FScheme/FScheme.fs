@@ -142,20 +142,14 @@ let Divide = math (/) "division"
 let Modulus = math (%) "modulus"
 
 ///Simple wrapper for comparison operations.
-let boolMath (op : (IComparable -> IComparable -> bool)) name cont = function
-   //If the arguments coming in consist of two numbers...
-   | [Number(a); Number(b)] -> 
-      //Apply the given operator, then...
-      match (op a b) with
-      //...if it returns true, pass 1.0 to the continuation
-      | true -> Number(1.0) |> cont
-      //...else, pass 0.0 to the continuation
-      | _ -> Number(0.0) |> cont
-   | [String(a); String(b)] ->
-      match (op a b) with
+let boolMath (op : (IComparable -> IComparable -> bool)) name cont args =
+   let comp a' b' = 
+      match (op a' b') with
       | true -> Number(1.0) |> cont
       | _ -> Number(0.0) |> cont
-   //Otherwise, fail.
+   match args with
+   | [Number(a); Number(b)] -> comp a b
+   | [String(a); String(b)] -> comp a b
    | m -> malformed name (List(m))
 
 //Comparison operations.
@@ -165,9 +159,8 @@ let LT = boolMath (<) "less-than"
 let GT = boolMath (>) "greater-than"
 let EQ = boolMath (=) "equals"
 
-//
+//Random Number
 let _r = new Random()
-
 let RandomDbl cont = function _ -> Number(_r.NextDouble()) |> cont
 
 //List Functions
@@ -217,7 +210,7 @@ let Sort cont = function
 ///Extends the given environment with the given bindings.
 let rec extend (env : Environment) = function
    | [] -> env
-   | (a, b) :: t -> extend (ref (Map.add a b env.Value)) t
+   | (a, b) :: t -> extend (Map.add a b env.Value |> ref) t
 
 ///Looks up a symbol in the given environment.
 let lookup (env : Environment) symbol = 
@@ -236,6 +229,7 @@ let zip args parameters =
          split Seq.take @ [List(Symbol("list") :: split Seq.skip)]
    List.zip parameters args'
 
+///Error construct
 let Throw cont = function
    | [String(s)] -> failwith s
    | m -> malformed "throw" (List(m))
@@ -250,47 +244,6 @@ let rec If cont (env : Environment) = function
             eval cont env f // zero is false
          | _ -> eval cont env t) env condition // everything else is true
    | m -> malformed "if" (List(m))
-
-///Combines lists
-and Combine cont env = function
-   | h :: t ->
-      if t.Length < 2 
-      then malformed "combine" (List(t))
-      else 
-         eval (fun procedure ->
-         let Zip ls =
-            let rec zip' acc lsts =
-               let rec zip'' a al = function
-                  | [] -> (List.rev a), (List.rev al)
-                  | List(h) :: t -> 
-                     match h with
-                     | [] -> [], al
-                     | hh :: ht -> zip'' (hh :: a) (List(ht) :: al) t
-                  | m -> malformed "combine" (List(h :: t))
-               match zip'' [] [] lsts with
-               | [], _ -> List.rev acc
-               | p, t -> zip' (p :: acc) t
-            zip' [] ls
-         let rec mapeval cont'' acc = function
-            | h :: t -> eval (fun h' -> mapeval cont'' (h' :: acc) t) env h
-            | [] -> List.rev acc |> cont''
-         match procedure with
-         | Function(f) ->
-            let mapK lst' =
-               let rec map' a = function
-                  | [] -> List(List.rev a) |> cont
-                  | h'' :: t'' -> apply (fun h' -> map' (h' :: a) t'') env f h''
-               map' [] lst'
-            mapeval (fun evald -> Zip evald |> mapK) [] t
-         | Special(s) ->
-            let mapK lst' =
-               let rec map' a = function
-                  | [] -> List(List.rev a) |> cont
-                  | h :: t -> s (fun h' -> map' (h' :: a) t) env h
-               map' [] lst'
-            mapeval (fun evald -> Zip evald |> mapK) [] t
-         | m -> malformed "combine" h) env h
-   | m -> malformed "combine" (List(m))
 
 ///Let construct
 and Let cont (env : Environment) = function
@@ -378,20 +331,8 @@ and Quote cont (env : Environment) =
 
 ///Eval construct -- evaluates code quotations
 and Eval cont (env : Environment) = function 
-   | [args] -> args |> eval (eval cont env) env 
+   | [args] -> eval (eval cont env) env args
    | m -> malformed "eval" (List(m))
-
-///Apply construct
-and Apply cont env = function
-   | [h; arg] ->   
-      let argCont cont' = function
-         | List(args) -> args |> cont'
-         | m -> malformed "apply arguments" m
-      eval (fun p -> match p with
-                     | Function(f) -> eval ((fun args -> apply cont env f args) |> argCont) env arg
-                     | Special(f) -> eval ((fun args -> f cont env args) |> argCont) env arg
-                     | m -> malformed "apply function" h) env h
-   | m -> malformed "apply" (List(m))
 
 ///Macro construct -- similar to functions, but arguments are passed unevaluated. Useful for short-circuiting.
 and Macro cont (env : Environment) = function
@@ -438,7 +379,7 @@ and Load cont = function
 
 ///Display construct -- used to print to stdout
 and Display cont = function
-   | [e] -> print e |> printf "DISPLAY: %s"; Dummy("Dummy 'display'") |> cont
+   | [e] -> print e |> printf "DISPLAY: %s \n"; Dummy("Dummy 'display'") |> cont
    | m -> malformed "display" (List(m))
 
 ///Call/cc -- gives access to the current interpreter continuation.
@@ -492,9 +433,7 @@ and environment =
        "rev", ref (Function(Rev))
        "list", ref (Function(MakeList))
        "sort", ref (Function(Sort))
-       "combine", ref (Special(Combine))
        "throw", ref (Function(Throw))
-       "apply", ref (Special(Apply))
        "rand", ref (Function(RandomDbl))
       ] |> ref
 
@@ -503,7 +442,7 @@ and eval cont env expression =
    match expression with
    //Basic values get passed to the continuation as themselves
    | Number(_) | String(_) | Current(_) | Container(_) 
-   //As to function-like objects
+   //As do function-like objects
    | Function(_) | Special(_) as lit -> lit |> cont 
    //Symbols are looked up in the environment, dereferenced, and then passed to the continuation.
    | Symbol(s) -> (lookup env s).Value |> cont 
@@ -517,7 +456,7 @@ and eval cont env expression =
          | Special(f) -> f cont env t 
          //Continuations take one argument, and have that argument passed
          | Current(f) -> match t with [rtn] -> f rtn | m -> malformed "call/cc args" (List(m))
-         | m -> malformed "expression" m) env h
+         | m -> h :: t |> apply cont env MakeList) (*malformed "expression" m*) env h
    //Anything else causes an error.
    | Dummy(s) -> sprintf "Cannot evaluate dummy value: %s" s |> failwith
    | _ -> failwith "Malformed expression."
@@ -562,6 +501,10 @@ let test (log : ErrorLog) =
    case "(define and (macro (a b) '(if ,a (if ,b 1 0) 0)))" ""
    case "(define or (macro (a b) '(if ,a 1 (if ,b 1 0))))" ""
    case "(define xor (lambda (a b) (and (or a b) (not (and a b)))))" ""
+   case "(define apply (macro (f args) (let ((x '(eval (cons ,f ,args)))) (begin (display x) x))))" ""
+   case "(apply + '(1 2))" "3"
+   case "(apply append '((1) (2)))" "(1 2)"
+   case "(append '(1) '(2))" "(1 2)"
    case "(begin (define too-many (lambda (a x) x)) (too-many 1 2 3))" "(2 3)"
    case "(too-many '(1 1) '(2 2) '(3 3))" "((2 2) (3 3))"
    case "(and 0 0)" "0" // or (false)
@@ -601,3 +544,7 @@ let test (log : ErrorLog) =
    case "(begin (define qs (lambda (lst f c) (if (empty? lst) empty (let* ((pivot (f (first lst))) (lt (filter (lambda (x) (c (f x) pivot)) (rest lst))) (gt (filter (lambda (x) (not (c (f x) pivot))) (rest lst)))) (append (qs lt f c) (cons (first lst) (qs gt f c))))))) (define sort-with (lambda (lst comp) (qs lst (lambda (x) x) (lambda (a b) (< (comp a b) 0))))) (define sort-by (lambda (lst proj) (map (lambda (x) (first x)) (qs (map (lambda (x) (list x (proj x))) lst) (lambda (y) (first (rest y))) <)))))" ""
    case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
    case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
+   case "(define zip (lambda (lofls) (letrec ((zip'' (lambda (lofls a al) (if (empty? lofls) (list (reverse a) (reverse al)) (if (empty? (first lofls)) (list empty al) (zip'' (rest lofls) (cons (first (first lofls)) a) (cons (rest (first lofls)) al)))))) (zip' (lambda (lofls acc) (let ((result (zip'' lofls empty empty))) (if (empty? (first result)) (reverse acc) (let ((p (first result)) (t (first (rest result)))) (zip' t (cons p acc)))))))) (zip' lofls empty))))" ""
+   case "(define combine (lambda (f lofls) (map (lambda (x) (apply f x)) (zip lofls))))" ""
+   case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
+   case "(combine (lambda (x y) (begin (display x) (display y) (append x y))) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
