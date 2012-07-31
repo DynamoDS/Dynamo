@@ -24,7 +24,7 @@ class Node(object):
         return ("##" + self.name + "\n"
             + "###Description\n" 
             + self.description + "\n\n"
-            + (("###Inputs\n" + "\n".join(["  * " + str(input) for input in self.inputs]) + "\n") if len(self.inputs) else "")
+            + (("###Inputs\n" + "\n".join(["  * " + str(input) for input in self.inputs])) if len(self.inputs) else "") + "\n\n"
             + "###Output\n"
             + "  * " + str(self.output) + "\n"
         )
