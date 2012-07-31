@@ -51,6 +51,7 @@
     <ProjectReference Include="..\FScheme\FScheme.fsproj">
       <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
       <Name>FScheme</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

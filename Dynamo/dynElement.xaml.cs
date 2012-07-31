@@ -205,6 +205,11 @@ namespace Dynamo.Elements
                   break;
             }
 
+            if (value != ElementState.ERROR)
+            {
+               SetTooltip();
+            }
+
             state = value;
          }
       }
@@ -1464,6 +1469,16 @@ namespace Dynamo.Elements
       public void SetTooltip(string message)
       {
          this.ToolTip = message;
+      }
+
+      void SetTooltip()
+      {
+         object[] rtAttribs = this.GetType().GetCustomAttributes(typeof(ElementDescriptionAttribute), false);
+         if (rtAttribs.Length > 0)
+         {
+            string description = ((ElementDescriptionAttribute)rtAttribs[0]).ElementDescription;
+            this.ToolTip = description;
+         }
       }
 
       public virtual void Draw()
