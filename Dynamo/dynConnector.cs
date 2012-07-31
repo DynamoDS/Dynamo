@@ -415,6 +415,13 @@ namespace Dynamo.Connectors
               if (pStart != null)
               {
                   connectorPoints.StartPoint = pStart.Center;
+
+                  //calculate the bezier offset based on the distance
+                  //between ports. if the distance is less than 2 * 100,
+                  //make the offset 1/3 of the distance
+                  double distance = Math.Sqrt(Math.Pow(p2.X - pStart.Center.X, 2) + Math.Pow(p2.Y - pStart.Center.Y, 2));
+                  bezOffset = .3 * distance;
+
                   connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
                   connectorCurve.Point2 = new Point(p2.X - bezOffset, p2.Y);
                   connectorCurve.Point3 = p2;
@@ -436,6 +443,9 @@ namespace Dynamo.Connectors
          }
          if (pEnd != null)
          {
+             double distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
+             bezOffset = .3 * distance;
+
             if (pEnd.PortType == PortType.INPUT)
             {
                connectorCurve.Point2 = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
