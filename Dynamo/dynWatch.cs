@@ -40,7 +40,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Visualize the output of node.")]
     [RequiresTransaction(false)]
-    class dynWatch:dynElement
+    class dynWatch : dynElement
     {
         System.Windows.Controls.TextBlock watchBlock;
 
@@ -67,11 +67,11 @@ namespace Dynamo.Elements
             watchBlock = new System.Windows.Controls.TextBlock();
             watchBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             watchBlock.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            watchBlock.IsEnabled = false;
 
             sv.Content = watchBlock;
 
             this.inputGrid.Children.Add(sv);
- 
         }
 
         /*
@@ -154,7 +154,7 @@ namespace Dynamo.Elements
                 string newPrefix = prefix + "\t";
                 int innerCount = 0;
 
-                foreach(Expression eIn2 in (eIn as Expression.List).Item)
+                foreach (Expression eIn2 in (eIn as Expression.List).Item)
                 {
                     Process(eIn2, ref content, newPrefix, innerCount);
                     innerCount++;
