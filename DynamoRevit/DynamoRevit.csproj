@@ -43,19 +43,10 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="RevitAPI">
-      <HintPath>..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\Program Files\Autodesk\Revit Architecture 2012\Program\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
     <Reference Include="RevitAPI, Version=2013.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\r2013\ReleaseWin32\RevitAPI.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPIUI, Version=2013.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\r2013\ReleaseWin32\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
