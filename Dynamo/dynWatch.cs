@@ -41,7 +41,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Visualize the output of node.")]
     [RequiresTransaction(false)]
-    class dynWatch:dynElement
+    class dynWatch : dynElement
     {
         //System.Windows.Controls.TextBlock watchBlock;
         WatchTree wt;
@@ -63,6 +63,7 @@ namespace Dynamo.Elements
             wt = new WatchTree();
             this.inputGrid.Children.Add(wt);
             wtb = wt.FindResource("Tree") as WatchTreeBranch;
+
         }
 
         /*
@@ -148,6 +149,7 @@ namespace Dynamo.Elements
 
                 string newPrefix = prefix + "\t";
                 int innerCount = 0;
+
                 WatchNode n = new WatchNode(eIn.GetType().ToString());
                 node.Children.Add(n);
                 foreach(Expression eIn2 in (eIn as Expression.List).Item)

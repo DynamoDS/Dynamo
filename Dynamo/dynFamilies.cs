@@ -259,7 +259,7 @@ namespace Dynamo.Elements
                   continue;
                }
                this.storedId = new ElementId(id);
-               Element e = this.UIDocument.Document.get_Element(this.storedId);
+               Element e = this.UIDocument.Document.GetElement(this.storedId);
                if (e is FamilySymbol)
                {
                   this.PopulateComboBox((e as FamilySymbol).Parameters, false);
@@ -687,7 +687,7 @@ namespace Dynamo.Elements
             Element e;
             if (dynUtils.TryGetElement(this.Elements[count], out e))
             {
-               fi = this.UIDocument.Document.get_Element(this.Elements[count]) as FamilyInstance;
+               fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
                fi.Symbol = fs;
                LocationPoint lp = fi.Location as LocationPoint;
                lp.Point = pos;

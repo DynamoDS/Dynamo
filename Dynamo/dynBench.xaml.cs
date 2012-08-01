@@ -1920,7 +1920,7 @@ namespace Dynamo.Controls
             {
                try
                {
-                  valid.Add(dynElementSettings.SharedInstance.Doc.Document.get_Element(delId).Id);
+                  valid.Add(dynElementSettings.SharedInstance.Doc.Document.GetElement(delId).Id);
                }
                catch
                {

@@ -37,7 +37,7 @@ namespace Dynamo.Utilities
       {
          try
          {
-            e = dynElementSettings.SharedInstance.Doc.Document.get_Element(id);
+            e = dynElementSettings.SharedInstance.Doc.Document.GetElement(id);
             _testid = e.Id;
             return true;
          }
@@ -104,7 +104,7 @@ namespace Dynamo.Utilities
       Autodesk.Revit.UI.UIDocument doc;
 
       Level defaultLevel;
-      //DynamoWarningSwallower warningSwallower;
+      DynamoWarningSwallower warningSwallower;
       dynBench bench;
       Dynamo.Controls.DragCanvas workbench;
       dynCollection dynColl;
@@ -165,11 +165,11 @@ namespace Dynamo.Utilities
          get { return defaultLevel; }
          set { defaultLevel = value; }
       }
-      //public DynamoWarningSwallower WarningSwallower
-      //{
-      //   get { return warningSwallower; }
-      //   set { warningSwallower = value; }
-      //}
+      public DynamoWarningSwallower WarningSwallower
+      {
+         get { return warningSwallower; }
+         set { warningSwallower = value; }
+      }
       public Dynamo.Controls.DragCanvas Workbench
       {
          get { return workbench; }
@@ -277,53 +277,56 @@ namespace Dynamo.Utilities
       }
    }
 
-   //public class DynamoWarningSwallower : IFailuresPreprocessor
-   //{
-   //   public FailureProcessingResult PreprocessFailures(
-   //       FailuresAccessor a)
-   //   {
-   //      // inside event handler, get all warnings
+   public class DynamoWarningSwallower : IFailuresPreprocessor
+   {
+      public FailureProcessingResult PreprocessFailures(
+          FailuresAccessor a)
+      {
+         // inside event handler, get all warnings
 
-   //      IList<FailureMessageAccessor> failures = a.GetFailureMessages();
+         IList<FailureMessageAccessor> failures
+             = a.GetFailureMessages();
 
-   //      foreach (FailureMessageAccessor f in failures)
-   //      {
-   //         // check failure definition ids
-   //         // against ones to dismiss:
+         foreach (FailureMessageAccessor f in failures)
+         {
+            // check failure definition ids
+            // against ones to dismiss:
 
-   //         FailureDefinitionId id = f.GetFailureDefinitionId();
+            FailureDefinitionId id
+                = f.GetFailureDefinitionId();
 
-   //         //      BuiltInFailures.JoinElementsFailures.CannotKeepJoined == id ||
-   //         //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructural == id ||
-   //         //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructuralError == id ||
-   //         //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsWarn == id
+            //      BuiltInFailures.JoinElementsFailures.CannotKeepJoined == id ||
+            //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructural == id ||
+            //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructuralError == id ||
+            //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsWarn == id
 
-   //         if (BuiltInFailures.InaccurateFailures.InaccurateLine == id ||
-   //             BuiltInFailures.OverlapFailures.DuplicateInstances == id ||
-   //             BuiltInFailures.InaccurateFailures.InaccurateCurveBasedFamily == id ||
-   //             BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id
-   //             )
-   //         {
-   //            a.DeleteWarning(f);
-   //         }
-   //         //else if(BuiltInFailures.CurveFailures.LineTooShortError == id ||
-   //         //    BuiltInFailures.CurveFailures.LineTooShortWarning == id
-   //         //    )
-   //         //{
-   //         //    a.RollBackPendingTransaction();
-   //         //}
-   //         else
-   //         {
-   //            a.RollBackPendingTransaction();
-   //         }
+            if (BuiltInFailures.InaccurateFailures.InaccurateLine == id ||
+                BuiltInFailures.OverlapFailures.DuplicateInstances == id ||
+                BuiltInFailures.InaccurateFailures.InaccurateCurveBasedFamily == id ||
+                BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id
+                )
+            {
+               a.DeleteWarning(f);
+            }
+            //else if(BuiltInFailures.CurveFailures.LineTooShortError == id ||
+            //    BuiltInFailures.CurveFailures.LineTooShortWarning == id
+            //    )
+            //{
+            //    a.RollBackPendingTransaction();
+            //}
+            else
+            {
+               a.RollBackPendingTransaction();
+            }
 
-   //      }
-   //      return FailureProcessingResult.Continue;
-   //   }
-   //}
+         }
+         return FailureProcessingResult.Continue;
+      }
+   }
 
    public class SelectionHelper
    {
+
       //RequestReferencePointSelection
       public static ReferencePoint RequestReferencePointSelection(UIDocument doc, string message, dynElementSettings settings)
       {
@@ -341,7 +344,7 @@ namespace Dynamo.Utilities
             //create some geometry options so that we computer references
             Autodesk.Revit.DB.Options opts = new Options();
             opts.ComputeReferences = true;
-            opts.DetailLevel = DetailLevels.Medium;
+            opts.DetailLevel = ViewDetailLevel.Medium;
             opts.IncludeNonVisibleObjects = false;
 
             Reference pointRef = doc.Selection.PickObject(ObjectType.Element);
@@ -358,8 +361,9 @@ namespace Dynamo.Utilities
             settings.Bench.Log(ex.Message);
             return null;
          }
-      }
 
+
+      }
       public static CurveElement RequestCurveElementSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
@@ -408,14 +412,16 @@ namespace Dynamo.Utilities
             //create some geometry options so that we computer references
             Autodesk.Revit.DB.Options opts = new Options();
             opts.ComputeReferences = true;
-            opts.DetailLevel = DetailLevels.Medium;
+            opts.DetailLevel = ViewDetailLevel.Medium;
             opts.IncludeNonVisibleObjects = false;
 
             Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
 
             if (faceRef != null)
             {
+
                GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+
                f = geob as Face;
             }
             return f;
@@ -425,7 +431,10 @@ namespace Dynamo.Utilities
             settings.Bench.Log(ex.Message);
             return null;
          }
+
+
       }
+
 
       // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
 
@@ -446,7 +455,7 @@ namespace Dynamo.Utilities
             //create some geometry options so that we computer references
             Autodesk.Revit.DB.Options opts = new Options();
             opts.ComputeReferences = true;
-            opts.DetailLevel = DetailLevels.Medium;
+            opts.DetailLevel = ViewDetailLevel.Medium;
             opts.IncludeNonVisibleObjects = false;
 
             Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
@@ -466,8 +475,9 @@ namespace Dynamo.Utilities
             settings.Bench.Log(ex.Message);
             return null;
          }
-      }
 
+
+      }
       public static Form RequestFormSelection(UIDocument doc, string message, dynElementSettings settings)
       {
          try
@@ -484,7 +494,7 @@ namespace Dynamo.Utilities
             //create some geometry options so that we computer references
             Autodesk.Revit.DB.Options opts = new Options();
             opts.ComputeReferences = true;
-            opts.DetailLevel = DetailLevels.Medium;
+            opts.DetailLevel = ViewDetailLevel.Medium;
             opts.IncludeNonVisibleObjects = false;
 
             Reference formRef = doc.Selection.PickObject(ObjectType.Element);
@@ -501,7 +511,10 @@ namespace Dynamo.Utilities
             settings.Bench.Log(ex.Message);
             return null;
          }
+
+
       }
+
 
       public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message,
           dynElementSettings settings, ref FamilyInstance fi)
@@ -527,11 +540,9 @@ namespace Dynamo.Utilities
                {
                   return fi.Symbol;
                }
-               else
-                  return null;
+               else return null;
             }
-            else
-               return null;
+            else return null;
          }
          catch (Exception ex)
          {
@@ -556,7 +567,7 @@ namespace Dynamo.Utilities
 
             if (fsRef != null)
             {
-               return doc.Document.get_Element(fsRef.ElementId) as FamilyInstance;
+               return doc.Document.GetElement(fsRef.ElementId) as FamilyInstance;
             }
             else
                return null;
@@ -573,6 +584,7 @@ namespace Dynamo.Utilities
       {
          try
          {
+
             View view = doc.ActiveView as View;
 
             SpatialFieldManager sfm = SpatialFieldManager.GetSpatialFieldManager(view);
@@ -593,20 +605,17 @@ namespace Dynamo.Utilities
 
                if (fsRef != null)
                {
-                  AnalysisResult = doc.Document.get_Element(fsRef.ElementId) as Element;
+                  AnalysisResult = doc.Document.GetElement(fsRef.ElementId) as Element;
 
                   if (AnalysisResult != null)
                   {
                      return AnalysisResult;
                   }
-                  else
-                     return null;
+                  else return null;
                }
-               else 
-                  return null;
+               else return null;
             }
-            else 
-               return null;
+            else return null;
          }
          catch (Exception ex)
          {
@@ -614,5 +623,7 @@ namespace Dynamo.Utilities
             return null;
          }
       }
+
    }
+
 }

@@ -42,17 +42,13 @@ using System.Windows;
 
 namespace Dynamo.Applications
 {
-
    //MDJ - Added by Matt Jezyk - 10.27.2011
    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
-
    public class DynamoRevitApp : IExternalApplication
    {
-
       static private string m_AssemblyName = System.Reflection.Assembly.GetExecutingAssembly().Location;
       static private string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
-
       static public DynamoUpdater updater;
 
       public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
@@ -77,8 +73,6 @@ namespace Dynamo.Applications
 
             pushButton.LargeImage = bitmapSource;
             pushButton.Image = bitmapSource;
-
-
 
             // MDJ = element level events and dyanmic model update
             // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-reun definitin when they are moved
@@ -124,7 +118,6 @@ namespace Dynamo.Applications
       }
    }
 
-
    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
    class DynamoRevit : IExternalCommand
@@ -137,9 +130,9 @@ namespace Dynamo.Applications
 
       public Autodesk.Revit.UI.Result Execute(Autodesk.Revit.UI.ExternalCommandData revit, ref string message, ElementSet elements)
       {
+         SplashScreen splashScreen = null;
          try
          {
-
             //create a log file
             string tempPath = System.IO.Path.GetTempPath();
             string logPath = Path.Combine(tempPath, "dynamoLog.txt");
@@ -188,7 +181,7 @@ namespace Dynamo.Applications
             IntPtr h = Process.GetCurrentProcess().MainWindowHandle;
 
             //prepare and show splash
-            var splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
+            splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
             splashScreen.Show(false, true);
 
             //show the window
@@ -226,6 +219,9 @@ namespace Dynamo.Applications
                tw.Close();
             }
 
+            //if (splashScreen != null)
+            //   splashScreen.Close(TimeSpan.FromMilliseconds(100));
+
             return Autodesk.Revit.UI.Result.Failed;
          }
 
@@ -249,42 +245,41 @@ namespace Dynamo.Applications
       //    return Result.Succeeded;
       //}
 
-      void GetStyles(ref Element dynVolatileStyle, ref Element dynPersistentStyle,
-                  ref Element dynXStyle, ref Element dynYStyle, ref Element dynZStyle)
-      {
+      //void GetStyles(ref Element dynVolatileStyle, ref Element dynPersistentStyle,
+      //            ref Element dynXStyle, ref Element dynYStyle, ref Element dynZStyle)
+      //{
+      //   Curve tick = m_revit.Application.Create.NewLineBound(new XYZ(), new XYZ(0, 1, 0));
+      //   Plane p = new Plane(new XYZ(0, 0, 1), new XYZ());
+      //   SketchPlane sp = m_doc.Document.Create.NewSketchPlane(p);
+      //   ModelCurve ml = m_doc.Document.Create.NewModelCurve(tick, sp);
+      //   ElementArray styles = ml.GetLineStyleIds();
+      //   ElementArrayIterator styleIter = styles.ForwardIterator();
 
-         Curve tick = m_revit.Application.Create.NewLineBound(new XYZ(), new XYZ(0, 1, 0));
-         Plane p = new Plane(new XYZ(0, 0, 1), new XYZ());
-         SketchPlane sp = m_doc.Document.Create.NewSketchPlane(p);
-         ModelCurve ml = m_doc.Document.Create.NewModelCurve(tick, sp);
-         ElementArray styles = ml.LineStyles;
-         ElementArrayIterator styleIter = styles.ForwardIterator();
-
-         while (styleIter.MoveNext())
-         {
-            Element style = styleIter.Current as Element;
-            if (style.Name == "dynVolatile")
-            {
-               dynVolatileStyle = style;
-            }
-            else if (style.Name == "dynPersistent")
-            {
-               dynPersistentStyle = style;
-            }
-            else if (style.Name == "dynX")
-            {
-               dynXStyle = style;
-            }
-            else if (style.Name == "dynY")
-            {
-               dynYStyle = style;
-            }
-            else if (style.Name == "dynZ")
-            {
-               dynZStyle = style;
-            }
-         }
-      }
+      //   while (styleIter.MoveNext())
+      //   {
+      //      Element style = styleIter.Current as Element;
+      //      if (style.Name == "dynVolatile")
+      //      {
+      //         dynVolatileStyle = style;
+      //      }
+      //      else if (style.Name == "dynPersistent")
+      //      {
+      //         dynPersistentStyle = style;
+      //      }
+      //      else if (style.Name == "dynX")
+      //      {
+      //         dynXStyle = style;
+      //      }
+      //      else if (style.Name == "dynY")
+      //      {
+      //         dynYStyle = style;
+      //      }
+      //      else if (style.Name == "dynZ")
+      //      {
+      //         dynZStyle = style;
+      //      }
+      //   }
+      //}
    }
 
 
@@ -308,6 +303,5 @@ namespace Dynamo.Applications
          }
       }
    }
-
 }
 
