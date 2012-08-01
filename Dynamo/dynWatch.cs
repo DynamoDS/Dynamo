@@ -33,6 +33,7 @@ using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
 using Dynamo.Controls;
 using System.Windows.Documents;
+using System.ComponentModel;
 
 namespace Dynamo.Elements
 {
@@ -42,7 +43,10 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     class dynWatch:dynElement
     {
-        System.Windows.Controls.TextBlock watchBlock;
+        //System.Windows.Controls.TextBlock watchBlock;
+        WatchTree wt;
+        WatchNode wn;
+        WatchTreeBranch wtb;
 
         public dynWatch()
         {
@@ -53,25 +57,12 @@ namespace Dynamo.Elements
             //take out the left and right margins
             //and make this so it's not so wide
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            this.topControl.Width = 300;
+            this.topControl.Width = 500;
             this.topControl.Height = 300;
 
-            //TODO:
-            //add a text box to the grid
-            ScrollViewer sv = new ScrollViewer();
-            sv.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            sv.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-            sv.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-
-            watchBlock = new System.Windows.Controls.TextBlock();
-            watchBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            watchBlock.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-
-            sv.Content = watchBlock;
-
-            this.inputGrid.Children.Add(sv);
- 
+            wt = new WatchTree();
+            this.inputGrid.Children.Add(wt);
+            wtb = wt.FindResource("Tree") as WatchTreeBranch;
         }
 
         /*
@@ -110,26 +101,25 @@ namespace Dynamo.Elements
             string prefix = "";
 
             int count = 0;
+
+            wtb.Clear();
+            wn = new WatchNode(args.GetType().ToString());
+            wtb.Add(wn);
+
             foreach (Expression e in args)
             {
-                Process(e, ref content, prefix, count);
+                Process(e, ref content, prefix, count, wn);
                 count++;
             }
 
-            watchBlock.Dispatcher.Invoke(new Action(
-            delegate
-            {
-                watchBlock.Text = content;
-            }
-            ));
-
+            //return the content that has been gathered
             return Expression.NewString(content);
         }
 
-        void Process(Expression eIn, ref string content, string prefix, int count)
+        void Process(Expression eIn, ref string content, string prefix, int count, WatchNode node)
         {
             content += prefix + string.Format("[{0}]:", count.ToString());
-
+            
             if (eIn.IsContainer)
             {
                 //TODO: make clickable hyperlinks to show the element in Revit
@@ -142,10 +132,15 @@ namespace Dynamo.Elements
                     id = revitEl.Id.ToString();
                 }
                 content += (eIn as Expression.Container).Item.ToString() + ":" + id + "\n";
+                WatchNode n = new WatchNode((eIn as Expression.Container).Item.ToString() + ":" + id);
+                node.Children.Add(n);
+
             }
             else if (eIn.IsFunction)
             {
                 content += (eIn as Expression.Function).Item.ToString() + "\n";
+                WatchNode n = new WatchNode((eIn as Expression.Function).Item.ToString());
+                node.Children.Add(n);
             }
             else if (eIn.IsList)
             {
@@ -153,25 +148,33 @@ namespace Dynamo.Elements
 
                 string newPrefix = prefix + "\t";
                 int innerCount = 0;
-
+                WatchNode n = new WatchNode(eIn.GetType().ToString());
+                node.Children.Add(n);
                 foreach(Expression eIn2 in (eIn as Expression.List).Item)
                 {
-                    Process(eIn2, ref content, newPrefix, innerCount);
+                    Process(eIn2, ref content, newPrefix, innerCount, n);
                     innerCount++;
                 }
             }
             else if (eIn.IsNumber)
             {
                 content += (eIn as Expression.Number).Item.ToString() + "\n";
+                WatchNode n = new WatchNode((eIn as Expression.Number).Item.ToString());
+                node.Children.Add(n);
             }
             else if (eIn.IsString)
             {
                 content += (eIn as Expression.String).Item.ToString() + "\n";
+                WatchNode n = new WatchNode((eIn as Expression.String).Item.ToString());
+                node.Children.Add(n);
             }
             else if (eIn.IsSymbol)
             {
                 content += (eIn as Expression.Symbol).Item.ToString() + "\n";
+                WatchNode n = new WatchNode((eIn as Expression.Symbol).Item.ToString());
+                node.Children.Add(n);
             }
         }
     }
+
 }
