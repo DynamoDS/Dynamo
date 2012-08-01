@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Dynamo.Elements.WatchTree"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dynamo.Elements"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <local:WatchTreeBranch x:Key="Tree">
+            <!--<local:WatchNode NodeLabel="A"/>
+            <local:WatchNode NodeLabel="B"/>
+            <local:WatchNode NodeLabel="C"/>-->
+        </local:WatchTreeBranch>
+    </UserControl.Resources>
+    <Grid DataContext="{StaticResource Tree}">
+        <TreeView Name="treeView1" ItemsSource="{Binding}">
+            <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type local:WatchNode}">
+                        <TreeViewItem Header="{Binding NodeLabel}"/>
+                    </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </Grid>
+</UserControl>
