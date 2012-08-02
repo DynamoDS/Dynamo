@@ -70,6 +70,10 @@ limitations under the License.
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy .\FSchemeInterop.dll ..\..\..\DynamoRevit\bin\Debug\FSchemeInterop.dll
+copy .\FSchemeInterop.pdb ..\..\..\DynamoRevit\bin\Debug\FSchemeInterop.pdb</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

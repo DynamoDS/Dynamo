@@ -27,6 +27,12 @@ namespace Dynamo.Elements
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //find the element which was clicked
+            //and implement it's method for jumping to stuff
+        }
     }
 
     public class WatchNode : INotifyPropertyChanged
@@ -42,6 +48,7 @@ namespace Dynamo.Elements
 
         WatchTreeBranch _children = new WatchTreeBranch();
         string _label;
+        string _link;
 
         public WatchTreeBranch Children
         {
@@ -60,13 +67,23 @@ namespace Dynamo.Elements
                 Notify("NodeLabel");
             }
         }
+        public string Link
+        {
+            get { return _link; }
+            set
+            {
+                _link = value;
+                Notify("Link");
+            }
+        }
 
         public WatchNode()
         {
         }
-        public WatchNode(string label)
+        public WatchNode(string label, string link)
         {
             _label = label;
+            _link = link;
         }
     }
 
