@@ -9,21 +9,26 @@
     <UserControl.Resources>
         <local:WatchTreeBranch x:Key="Tree">
             <local:WatchNode NodeLabel="A" Link="Blah"/>
-            <local:WatchNode NodeLabel="B" Link="Blah Blah"/>
+            <local:WatchNode NodeLabel="B"/>
             <local:WatchNode NodeLabel="C" Link="Blah Blah Blah"/>
         </local:WatchTreeBranch>
     </UserControl.Resources>
     <Grid DataContext="{StaticResource Tree}">
         <TreeView Name="treeView1" 
-                  ItemsSource="{Binding}" 
+                  ItemsSource="{Binding}"
                   Background="{x:Null}" 
                   BorderBrush="{x:Null}">
             <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type local:WatchNode}">
                     <Grid Margin="2" Width="Auto">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=NodeLabel}" VerticalAlignment="Center" Margin="4,0,0,0"/>
-                            <Button Content="{Binding Path=Link}" Margin="10,2,2,2" VerticalAlignment="Center" Click="Button_Click"/>
+                            <TextBlock Text="{Binding Path=NodeLabel}" 
+                                       VerticalAlignment="Center" Margin="4,0,0,0"/>
+                            <Button Content="{Binding Path=Link}" 
+                                    Margin="10,2,2,2" 
+                                    VerticalAlignment="Center" 
+                                    Click="Button_Click"
+                                    Visibility="{Binding Path=Link, TargetNullValue=Hidden}"/>
                         </StackPanel>
                     </Grid>
                     <!--<TreeViewItem Header="{Binding NodeLabel}"/>-->

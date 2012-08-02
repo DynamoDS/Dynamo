@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace Dynamo.Elements
 {
@@ -80,10 +81,9 @@ namespace Dynamo.Elements
         public WatchNode()
         {
         }
-        public WatchNode(string label, string link)
+        public WatchNode(string label)
         {
             _label = label;
-            _link = link;
         }
     }
 
@@ -92,4 +92,16 @@ namespace Dynamo.Elements
         
     }
 
+    public sealed class NullToVisibiltyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value == null ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
