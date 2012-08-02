@@ -43,14 +43,11 @@
             <ColumnDefinition Width="14"/>
          </Grid.ColumnDefinitions>
       </Grid>
-        <Canvas Canvas.Left="0" 
+      <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
                 Name="elementCanvas" 
                 Margin="0,0,0,0">
-         <!--<Canvas.BitmapEffect>
-                <DropShadowBitmapEffect Color="Black" Direction="320" ShadowDepth="10" Softness="1" Opacity=".35"/>
-            </Canvas.BitmapEffect>-->
-                <Rectangle HorizontalAlignment="Right" 
+         <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"
                        Width="{Binding ElementName=topControl, Path=Width}"
@@ -61,10 +58,10 @@
                        Stroke="black"
                        StrokeThickness="2"
                        Canvas.ZIndex="90">
-                <Rectangle.Effect>
-                    <DropShadowEffect Opacity="0" />
-                </Rectangle.Effect>
-                    <Rectangle.Fill>
+            <Rectangle.Effect>
+               <DropShadowEffect Opacity="0" />
+            </Rectangle.Effect>
+            <Rectangle.Fill>
                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
                   <GradientStop Color="Yellow" Offset="0.0" />
                   <GradientStop Color="Orange" Offset="1" />
@@ -84,19 +81,6 @@
                <SolidColorBrush Opacity=".25" Color="white" />
             </Rectangle.Fill>
          </Rectangle>
-         <!--<TextBlock Height="18" 
-                       Name="nickNameBlock" 
-                       VerticalAlignment="Center" 
-                       Text="nickName" 
-                       Margin="0,-18,0,0" 
-                       FontFamily="Calibri"
-                       FontSize="14" 
-                       FontWeight="Normal" 
-                       TextAlignment="Center" 
-                       IsHitTestVisible="False" 
-                       Canvas.ZIndex="99"
-                       Canvas.Left="0" 
-                       Width="160" />-->
          <TextBlock  Height="Auto" 
                      Name="nickNameBlock" 
                      VerticalAlignment="Center" 
@@ -121,18 +105,11 @@
             </TextBlock.Effect> -->
          </TextBlock>
       </Canvas>
-      <!--<Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Name="portNamesLeft" Margin="25,5,0,35" Width="Auto" IsHitTestVisible="True" Background="Transparent"/>
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="portNamesRight" Margin="5,5,25,35" Width="Auto" IsHitTestVisible="True" Background="Transparent"/>-->
-      <!--<Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Name="portNamesBottom" Margin="5,5,5,15" Height="20" IsHitTestVisible="True" Background="Transparent"/>-->
       <Grid Name="inputGrid"
               VerticalAlignment="Stretch"
               HorizontalAlignment="Stretch"
               Height="Auto"
               Width="Auto"
               Margin="45,5,45,5"/>
-      <!--<Grid Name="gridBottom"
-              VerticalAlignment="Bottom"
-              Height="10"
-              Margin="5,5"/>-->
    </Grid>
 </UserControl>

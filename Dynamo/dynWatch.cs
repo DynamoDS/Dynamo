@@ -45,7 +45,6 @@ namespace Dynamo.Elements
     {
         //System.Windows.Controls.TextBlock watchBlock;
         WatchTree wt;
-        WatchNode wn;
         WatchTreeBranch wtb;
 
         public dynWatch()
@@ -97,29 +96,35 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-
             string content = "";
             string prefix = "";
 
             int count = 0;
 
-            wtb.Clear();
-            wn = new WatchNode(args.GetType().ToString());
-            wtb.Add(wn);
+            this.Dispatcher.Invoke(new Action(
+                delegate
+                {
+                    wtb.Clear();
+                    //WatchNode wn = new WatchNode(args.GetType().ToString());
+                    //wtb.Add(wn);
 
-            foreach (Expression e in args)
-            {
-                Process(e, ref content, prefix, count, wn);
-                count++;
-            }
+                    foreach (Expression e in args)
+                    {
+                        wtb.Add(Process(e, ref content, prefix, count));
+                        count++;
+                    }
+                }
+            ));
 
             //return the content that has been gathered
             return Expression.NewString(content);
         }
 
-        void Process(Expression eIn, ref string content, string prefix, int count, WatchNode node)
+        WatchNode Process(Expression eIn, ref string content, string prefix, int count)
         {
             content += prefix + string.Format("[{0}]:", count.ToString());
+
+            WatchNode node = null;
             
             if (eIn.IsContainer)
             {
@@ -133,15 +138,15 @@ namespace Dynamo.Elements
                     id = revitEl.Id.ToString();
                 }
                 content += (eIn as Expression.Container).Item.ToString() + ":" + id + "\n";
-                WatchNode n = new WatchNode((eIn as Expression.Container).Item.ToString() + ":" + id);
-                node.Children.Add(n);
+                node = new WatchNode((eIn as Expression.Container).Item.ToString() + ":" + id);
+                //node.Children.Add(n);
 
             }
-            else if (eIn.IsFunction)
+            else if (eIn.IsFunction || eIn.IsSpecial)
             {
-                content += (eIn as Expression.Function).Item.ToString() + "\n";
-                WatchNode n = new WatchNode((eIn as Expression.Function).Item.ToString());
-                node.Children.Add(n);
+                content += eIn.ToString() + "\n";
+                node = new WatchNode(eIn.ToString());
+                //node.Children.Add(n);
             }
             else if (eIn.IsList)
             {
@@ -150,32 +155,34 @@ namespace Dynamo.Elements
                 string newPrefix = prefix + "\t";
                 int innerCount = 0;
 
-                WatchNode n = new WatchNode(eIn.GetType().ToString());
-                node.Children.Add(n);
+                node = new WatchNode(eIn.GetType().ToString());
+                //node.Children.Add(n);
                 foreach(Expression eIn2 in (eIn as Expression.List).Item)
                 {
-                    Process(eIn2, ref content, newPrefix, innerCount, n);
+                    node.Children.Add(Process(eIn2, ref content, newPrefix, innerCount));
                     innerCount++;
                 }
             }
             else if (eIn.IsNumber)
             {
                 content += (eIn as Expression.Number).Item.ToString() + "\n";
-                WatchNode n = new WatchNode((eIn as Expression.Number).Item.ToString());
-                node.Children.Add(n);
+                node = new WatchNode((eIn as Expression.Number).Item.ToString());
+                //node.Children.Add(n);
             }
             else if (eIn.IsString)
             {
                 content += (eIn as Expression.String).Item.ToString() + "\n";
-                WatchNode n = new WatchNode((eIn as Expression.String).Item.ToString());
-                node.Children.Add(n);
+                node = new WatchNode((eIn as Expression.String).Item.ToString());
+                //node.Children.Add(n);
             }
             else if (eIn.IsSymbol)
             {
                 content += (eIn as Expression.Symbol).Item.ToString() + "\n";
-                WatchNode n = new WatchNode((eIn as Expression.Symbol).Item.ToString());
-                node.Children.Add(n);
+                node = new WatchNode((eIn as Expression.Symbol).Item.ToString());
+                //node.Children.Add(n);
             }
+
+            return node;
         }
     }
 

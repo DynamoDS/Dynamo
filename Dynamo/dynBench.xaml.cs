@@ -374,7 +374,12 @@ namespace Dynamo.Controls
                newEl.GUID = new Guid();
                newEl.Margin = new Thickness(5, 30, 5, 5);
 
-               newEl.LayoutTransform = new ScaleTransform(.8, .8);
+               var target = this.sidebarGrid.Width - 30;
+               var width = newEl.ActualWidth != 0 ? newEl.ActualWidth : newEl.Width;
+               var scale = Math.Min(target / width, .8);
+
+               newEl.LayoutTransform = new ScaleTransform(scale, scale);
+               newEl.nickNameBlock.FontSize *= .8/scale;
 
                Tuple<Expander, SortedList<string, dynElement>> expander;
 
