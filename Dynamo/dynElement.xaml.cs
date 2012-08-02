@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Controls;
@@ -70,6 +71,7 @@ namespace Dynamo.Elements
       }
 
       #region private members
+      //System.Windows.Shapes.Ellipse dirtyEllipse;
       List<dynPort> inPorts;
       dynPort outPort;
       List<dynPort> statePorts;
@@ -298,6 +300,15 @@ namespace Dynamo.Elements
 
          //set the z index to 2
          Canvas.SetZIndex(this, 1);
+
+         //dirtyEllipse = new System.Windows.Shapes.Ellipse();
+         //dirtyEllipse.Height = 20;
+         //dirtyEllipse.Width = 20;
+         //dirtyEllipse.Fill = Brushes.Red;
+         //this.elementCanvas.Children.Add(dirtyEllipse);
+         //Canvas.SetBottom(dirtyEllipse, 10);
+         //Canvas.SetRight(dirtyEllipse, 10);
+         //Canvas.SetZIndex(dirtyEllipse, 100);
 
          //dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
       }
@@ -915,7 +926,16 @@ namespace Dynamo.Elements
 
       protected internal static HashSet<string> _taggedSymbols = new HashSet<string>();
       protected internal static bool _startTag = false;
+      //private bool __isDirty = true;
       private bool _isDirty = true;
+      //{
+      //    get { return __isDirty; }
+      //    set
+      //    {
+      //        __isDirty = value;
+      //        this.Dispatcher.BeginInvoke(new Action(() => this.dirtyEllipse.Fill = __isDirty ? Brushes.Red : Brushes.Green));
+      //    }
+      //}
       ///<summary>
       ///Does this Element need to be regenerated? Setting this to true will trigger a modification event
       ///for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
@@ -1078,18 +1098,25 @@ namespace Dynamo.Elements
       {
          var node = this.Compile(portNames);
 
+         var incomplete = false;
+
          for (int i = 0; i < this.InPortData.Count; i++)
          {
             var port = this.InPorts[i];
             if (port.Connectors.Count > 0)
             {
-               var data = this.InPortData[i];
-               node.ConnectInput(
-                  data.NickName,
-                  port.Connectors[0].Start.Owner.Build()
-               );
+                var data = this.InPortData[i];
+                node.ConnectInput(
+                   data.NickName,
+                   port.Connectors[0].Start.Owner.Build()
+                );
             }
+            else
+                incomplete = true;
          }
+
+         if (incomplete)
+             this.IsDirty = false;
 
          return node;
       }
