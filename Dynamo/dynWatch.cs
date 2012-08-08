@@ -63,6 +63,15 @@ namespace Dynamo.Elements
             this.inputGrid.Children.Add(wt);
             wtb = wt.FindResource("Tree") as WatchTreeBranch;
 
+            foreach (dynPort p in this.InPorts)
+            {
+                p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+            }
+        }
+
+        void p_PortDisconnected(object sender, EventArgs e)
+        {
+            wtb.Clear();
         }
 
         /*

@@ -29,6 +29,7 @@ namespace Dynamo.Elements
         public WatchTree()
         {
             InitializeComponent();
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -43,9 +43,9 @@
             </Setter>
         </Style>
         <local:WatchTreeBranch x:Key="Tree">
-            <local:WatchNode NodeLabel="A" Link="Blah"/>
+            <!--<local:WatchNode NodeLabel="A" Link="Blah"/>
             <local:WatchNode NodeLabel="B"/>
-            <local:WatchNode NodeLabel="C" Link="Blah Blah Blah"/>
+            <local:WatchNode NodeLabel="C" Link="Blah Blah Blah"/>-->
         </local:WatchTreeBranch>
     </UserControl.Resources>
     <Grid DataContext="{StaticResource Tree}">
