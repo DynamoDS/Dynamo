@@ -435,6 +435,9 @@ namespace Dynamo.Connectors
 
       public void Redraw()
       {
+          double distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
+          bezOffset = .3 * distance;
+
          //don't redraw with null end points;
          if (pStart != null)
          {
@@ -443,8 +446,6 @@ namespace Dynamo.Connectors
          }
          if (pEnd != null)
          {
-             double distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
-             bezOffset = .3 * distance;
 
             if (pEnd.PortType == PortType.INPUT)
             {
