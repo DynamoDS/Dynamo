@@ -56,8 +56,8 @@ namespace Dynamo.Elements
             //take out the left and right margins
             //and make this so it's not so wide
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            this.topControl.Width = 500;
-            this.topControl.Height = 300;
+            this.topControl.Width = 300;
+            this.topControl.Height = 200;
 
             wt = new WatchTree();
             this.inputGrid.Children.Add(wt);
@@ -116,6 +116,11 @@ namespace Dynamo.Elements
 
             //return the content that has been gathered
             return Expression.NewString(content);
+        }
+
+        public void ShowClickedElementInView()
+        {
+
         }
 
         WatchNode Process(Expression eIn, ref string content, string prefix, int count)

@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using Dynamo.Utilities;
+using Autodesk.Revit.DB;
 
 namespace Dynamo.Elements
 {
@@ -33,6 +35,14 @@ namespace Dynamo.Elements
         {
             //find the element which was clicked
             //and implement it's method for jumping to stuff
+            FrameworkElement fe = sender as FrameworkElement;
+            int elId = Convert.ToInt32(((WatchNode)fe.DataContext).Link);  
+            
+            Element el = dynElementSettings.SharedInstance.Doc.Document.GetElement(new ElementId(elId));
+            if (el != null)
+            {
+                dynElementSettings.SharedInstance.Doc.ShowElements(el);
+            }
         }
     }
 
@@ -96,7 +106,7 @@ namespace Dynamo.Elements
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? Visibility.Hidden : Visibility.Visible;
+            return value == null ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
