@@ -154,7 +154,7 @@ namespace Dynamo.Applications
                 FilteredElementCollector fecLevel = new FilteredElementCollector(m_doc.Document);
                 fecLevel.OfClass(typeof(Level));
                 defaultLevel = fecLevel.ToElements()[0] as Level;
-                
+
                 #endregion
 
                 dynElementSettings.SharedInstance.Revit = m_revit;
@@ -175,49 +175,35 @@ namespace Dynamo.Applications
                         //show the window
                         dynamoForm = new dynBench(DynamoRevitApp.updater, splashScreen);
 
-            //show the window
-            dynamoForm = new dynBench(DynamoRevitApp.updater, splashScreen);
+                        //set window handle and show dynamo
+                        new System.Windows.Interop.WindowInteropHelper(dynamoForm).Owner = h;
 
-            //var revitWindow = (Window)HwndSource.FromHwnd(h).RootVisual;
-            //var w = revitWindow.ActualWidth;
-            //var h = revitWindow.ActualHeight;
+                        dynamoForm.WindowStartupLocation = WindowStartupLocation.Manual;
 
-            //set window handle and show dynamo
-            new System.Windows.Interop.WindowInteropHelper(dynamoForm).Owner = h;
-            
-             dynamoForm.WindowStartupLocation = WindowStartupLocation.Manual;
+                        if (System.Windows.Forms.SystemInformation.MonitorCount > 1)
+                        {
+                            System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[1].Bounds;
+                            dynamoForm.Left = bounds.X;
+                            dynamoForm.Top = bounds.Y;
+                        }
+                        else
+                        {
+                            System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[0].Bounds;
+                            dynamoForm.Left = bounds.X;
+                            dynamoForm.Top = bounds.Y;
+                        }
 
-            if (System.Windows.Forms.SystemInformation.MonitorCount > 1)
-            {
-                
-                System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[1].Bounds;
-                dynamoForm.Left = bounds.X;
-                dynamoForm.Top = bounds.Y;
+                        dynamoForm.Show();
+                    }
+                ));
             }
-            else
+            catch (Exception ex)
             {
-                System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[0].Bounds;
-                dynamoForm.Left = bounds.X;
-                dynamoForm.Top = bounds.Y;
-            }
+                tw.WriteLine("Dynamo log ended " + System.DateTime.Now.ToString());
 
-            dynamoForm.Show();
-
-            if (dynamoForm.DialogResult.HasValue && dynamoForm.DialogResult.Value == false)   //the WPF false is "cancel"
-            {
-                //trans.Dispose();
-                Debug.WriteLine(e.Message + ":" + e.StackTrace);
-                Debug.WriteLine(e.InnerException);
-                message = e.Message + " : " + e.StackTrace;
-
-                if (tw != null)
-                {
-                    tw.WriteLine(e.Message);
-                    tw.WriteLine(e.StackTrace);
-                    tw.Close();
-                }
-
-                return Autodesk.Revit.UI.Result.Failed;
+                tw.Close();
+                System.Windows.Forms.MessageBox.Show(ex.ToString());
+                return Result.Failed;
             }
 
             return Autodesk.Revit.UI.Result.Succeeded;
