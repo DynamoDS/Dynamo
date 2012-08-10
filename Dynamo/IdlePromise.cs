@@ -44,7 +44,7 @@ namespace Dynamo.Utilities
          return promises.Any();
       }
 
-      internal static void register(Autodesk.Revit.UI.UIApplication uIApplication)
+      internal static void register(Autodesk.Revit.UI.UIControlledApplication uIApplication)
       {
          uIApplication.Idling += new EventHandler<Autodesk.Revit.UI.Events.IdlingEventArgs>(Application_Idling);
       }
@@ -57,7 +57,7 @@ namespace Dynamo.Utilities
          return _IdlePromise.HasPendingPromises();
       }
 
-      internal static void RegisterIdle(Autodesk.Revit.UI.UIApplication uIApplication)
+      public static void RegisterIdle(Autodesk.Revit.UI.UIControlledApplication uIApplication)
       {
          _IdlePromise.register(uIApplication);
       }

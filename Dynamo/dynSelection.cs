@@ -72,8 +72,7 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
 
          this.topControl.Height = 60;
-         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+         this.UpdateLayout();
       }
 
       /// <summary>
@@ -288,7 +287,7 @@ namespace Dynamo.Elements
          }
       }
 
-      protected override void  selectButton_Click(object sender, RoutedEventArgs e)
+      protected override void selectButton_Click(object sender, RoutedEventArgs e)
       {
          this.SelectedElement = SelectionHelper.RequestFormSelection(
             dynElementSettings.SharedInstance.Doc, "Select a form element.", dynElementSettings.SharedInstance
@@ -422,9 +421,7 @@ namespace Dynamo.Elements
            base.RegisterInputsAndOutputs();
 
            this.topControl.Height = 60;
-           UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-           Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-
+           this.UpdateLayout();
        }
 
 

@@ -243,8 +243,7 @@ namespace Dynamo.Elements
          topControl.Height = 200;
          topControl.Width = 300;
 
-         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+         this.UpdateLayout();
       }
 
       //TODO: Make this smarter

@@ -35,2256 +35,2254 @@ using Dynamo.Controls;
 
 namespace Dynamo.Elements
 {
-   /// <summary>
-   /// Built-in Dynamo Categories. If you want your node to appear in one of the existing Dynamo
-   /// categories, then use these constants. This ensures that if the names of the categories
-   /// change down the road, your node will still be placed there.
-   /// </summary>
-   public static class BuiltinElementCategories
-   {
-      public const string MATH = "Math";
-      public const string COMPARISON = "Comparison";
-      public const string BOOLEAN = "Logic";
-      public const string PRIMITIVES = "Primitives";
-      public const string REVIT = "Revit";
-      public const string MISC = "Miscellaneous";
-      public const string LIST = "Lists";
-   }
+    /// <summary>
+    /// Built-in Dynamo Categories. If you want your node to appear in one of the existing Dynamo
+    /// categories, then use these constants. This ensures that if the names of the categories
+    /// change down the road, your node will still be placed there.
+    /// </summary>
+    public static class BuiltinElementCategories
+    {
+        public const string MATH = "Math";
+        public const string COMPARISON = "Comparison";
+        public const string BOOLEAN = "Logic";
+        public const string PRIMITIVES = "Primitives";
+        public const string REVIT = "Revit";
+        public const string MISC = "Miscellaneous";
+        public const string LIST = "Lists";
+    }
 
-   #region FScheme Builtin Interop
+    #region FScheme Builtin Interop
 
-   public abstract class dynBuiltinFunction : dynElement
-   {
-      public string Symbol;
+    public abstract class dynBuiltinFunction : dynElement
+    {
+        public string Symbol;
 
-      internal dynBuiltinFunction(string symbol)
-      {
-         this.Symbol = symbol;
-      }
+        internal dynBuiltinFunction(string symbol)
+        {
+            this.Symbol = symbol;
+        }
 
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         if (this.SaveResult)
-         {
-            return new ExternalMacroNode(
-               new ExternMacro(this.macroEval),
-               portNames
-            );
-         }
-         else
-            return new FunctionNode(this.Symbol, portNames);
-      }
+        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        {
+            if (this.SaveResult)
+            {
+                return new ExternalMacroNode(
+                   new ExternMacro(this.macroEval),
+                   portNames
+                );
+            }
+            else
+                return new FunctionNode(this.Symbol, portNames);
+        }
 
-      private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
-      {
-         if (this.IsDirty || this.oldValue == null)
-         {
-            this.macroEnvironment = environment;
-            this.oldValue = this.eval(args);
-         }
-         else
-            this.runCount++;
-         return this.oldValue;
-      }
+        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        {
+            if (this.IsDirty || this.oldValue == null)
+            {
+                this.macroEnvironment = environment;
+                this.oldValue = this.eval(args);
+            }
+            else
+                this.runCount++;
+            return this.oldValue;
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var fun = ((Expression.Function)this.Bench.Environment
-            .LookupSymbol(this.Symbol)).Item;
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var fun = ((Expression.Function)this.Bench.Environment
+               .LookupSymbol(this.Symbol)).Item;
 
-         return fun
-            .Invoke(ExecutionEnvironment.IDENT)
-            .Invoke(
-               Utils.convertSequence(args.Select(
-                  x => this.macroEnvironment.Evaluate(x)
-               ))
-            );
-      }
-   }
+            return fun
+               .Invoke(ExecutionEnvironment.IDENT)
+               .Invoke(
+                  Utils.convertSequence(args.Select(
+                     x => this.macroEnvironment.Evaluate(x)
+                  ))
+               );
+        }
+    }
 
-   public abstract class dynBuiltinMacro : dynBuiltinFunction
-   {
-      internal dynBuiltinMacro(string symbol) : base(symbol) { }
+    public abstract class dynBuiltinMacro : dynBuiltinFunction
+    {
+        internal dynBuiltinMacro(string symbol) : base(symbol) { }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var macro = ((Expression.Special)this.Bench.Environment
-            .LookupSymbol(this.Symbol)).Item;
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var macro = ((Expression.Special)this.Bench.Environment
+               .LookupSymbol(this.Symbol)).Item;
 
-         return macro
-            .Invoke(ExecutionEnvironment.IDENT)
-            .Invoke(this.macroEnvironment.Env)
-            .Invoke(args);
-      }
-   }
+            return macro
+               .Invoke(ExecutionEnvironment.IDENT)
+               .Invoke(this.macroEnvironment.Env)
+               .Invoke(args);
+        }
+    }
 
-   #endregion
+    #endregion
 
-   public abstract class dynVariableInput : dynElement
-   {
-      protected dynVariableInput()
-         : base()
-      {
-         System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
-         addButton.Content = "+";
-         addButton.Width = 20;
-         addButton.Height = 20;
-         addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         addButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+    public abstract class dynVariableInput : dynElement
+    {
+        protected dynVariableInput()
+            : base()
+        {
+            System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
+            addButton.Content = "+";
+            addButton.Width = 20;
+            addButton.Height = 20;
+            addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            addButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
 
-         System.Windows.Controls.Button subButton = new System.Windows.Controls.Button();
-         subButton.Content = "-";
-         subButton.Width = 20;
-         subButton.Height = 20;
-         subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         subButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            System.Windows.Controls.Button subButton = new System.Windows.Controls.Button();
+            subButton.Content = "-";
+            subButton.Width = 20;
+            subButton.Height = 20;
+            subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            subButton.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
 
-         inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-         inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
-         inputGrid.Children.Add(addButton);
-         System.Windows.Controls.Grid.SetColumn(addButton, 0);
+            inputGrid.Children.Add(addButton);
+            System.Windows.Controls.Grid.SetColumn(addButton, 0);
 
-         inputGrid.Children.Add(subButton);
-         System.Windows.Controls.Grid.SetColumn(subButton, 1);
+            inputGrid.Children.Add(subButton);
+            System.Windows.Controls.Grid.SetColumn(subButton, 1);
 
-         addButton.Click += new RoutedEventHandler(AddInput);
-         subButton.Click += new RoutedEventHandler(RemoveInput);
-      }
+            addButton.Click += new RoutedEventHandler(AddInput);
+            subButton.Click += new RoutedEventHandler(RemoveInput);
+        }
 
-      protected abstract string getInputRootName();
-      protected virtual int getNewInputIndex()
-      {
-         return this.InPortData.Count;
-      }
+        protected abstract string getInputRootName();
+        protected virtual int getNewInputIndex()
+        {
+            return this.InPortData.Count;
+        }
 
-      private int lastEvaledAmt;
-      public override bool IsDirty
-      {
-         get
-         {
-            return lastEvaledAmt != this.InPortData.Count || base.IsDirty;
-         }
-         set
-         {
-            base.IsDirty = value;
-         }
-      }
+        private int lastEvaledAmt;
+        public override bool IsDirty
+        {
+            get
+            {
+                return lastEvaledAmt != this.InPortData.Count || base.IsDirty;
+            }
+            set
+            {
+                base.IsDirty = value;
+            }
+        }
 
-      protected virtual void RemoveInput(object sender, RoutedEventArgs args)
-      {
-         var count = InPortData.Count;
-         if (count > 0)
-         {
-            InPortData.RemoveAt(count - 1);
+        protected virtual void RemoveInput(object sender, RoutedEventArgs args)
+        {
+            var count = InPortData.Count;
+            if (count > 0)
+            {
+                InPortData.RemoveAt(count - 1);
+                base.ReregisterInputs();
+            }
+        }
+
+        protected virtual void AddInput(object sender, RoutedEventArgs args)
+        {
+            InPortData.Add(new PortData(this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
             base.ReregisterInputs();
-         }
-      }
+        }
 
-      protected virtual void AddInput(object sender, RoutedEventArgs args)
-      {
-         InPortData.Add(new PortData(this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
-         base.ReregisterInputs();
-      }
-
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         foreach (var inport in InPortData)
-         {
-            XmlElement input = xmlDoc.CreateElement("Input");
-
-            input.SetAttribute("name", inport.NickName);
-
-            dynEl.AppendChild(input);
-         }
-      }
-
-      public override void LoadElement(XmlNode elNode)
-      {
-         int i = InPortData.Count;
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (i > 0)
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            foreach (var inport in InPortData)
             {
-               i--;
-               continue;
-            }
+                XmlElement input = xmlDoc.CreateElement("Input");
 
-            if (subNode.Name == "Input")
+                input.SetAttribute("name", inport.NickName);
+
+                dynEl.AppendChild(input);
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            int i = InPortData.Count;
+            foreach (XmlNode subNode in elNode.ChildNodes)
             {
-               this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                if (i > 0)
+                {
+                    i--;
+                    continue;
+                }
+
+                if (subNode.Name == "Input")
+                {
+                    this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                }
             }
-         }
-         base.ReregisterInputs();
-      }
+            base.ReregisterInputs();
+        }
 
-      protected override void OnEvaluate()
-      {
-         this.lastEvaledAmt = this.InPortData.Count;
-      }
-   }
+        protected override void OnEvaluate()
+        {
+            this.lastEvaledAmt = this.InPortData.Count;
+        }
+    }
 
-   [ElementName("Identity")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Identity function")]
-   [RequiresTransaction(false)]
-   public class dynIdentity : dynElement
-   {
-      public dynIdentity()
-      {
-         InPortData.Add(new PortData("x", "in", typeof(bool)));
-         OutPortData = new PortData("x", "out", typeof(object));
+    [ElementName("Identity")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Identity function")]
+    [RequiresTransaction(false)]
+    public class dynIdentity : dynElement
+    {
+        public dynIdentity()
+        {
+            InPortData.Add(new PortData("x", "in", typeof(bool)));
+            OutPortData = new PortData("x", "out", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return args[0];
-      }
-   }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return args[0];
+        }
+    }
 
-   #region Lists
+    #region Lists
 
-   [ElementName("Reverse")]
-   [ElementDescription("Reverses a list")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [RequiresTransaction(false)]
-   public class dynReverse : dynBuiltinFunction
-   {
-      public dynReverse()
-         : base("reverse")
-      {
-         InPortData.Add(new PortData("list", "List to sort", typeof(object)));
+    [ElementName("Reverse")]
+    [ElementDescription("Reverses a list")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [RequiresTransaction(false)]
+    public class dynReverse : dynBuiltinFunction
+    {
+        public dynReverse()
+            : base("reverse")
+        {
+            InPortData.Add(new PortData("list", "List to sort", typeof(object)));
 
-         OutPortData = new PortData("rev", "Reversed list", typeof(object));
+            OutPortData = new PortData("rev", "Reversed list", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
-   }
+            base.RegisterInputsAndOutputs();
+        }
+    }
 
-   [ElementName("List")]
-   [ElementDescription("Makes a new list out of the given inputs")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [RequiresTransaction(false)]
-   public class dynNewList : dynVariableInput
-   {
-      public dynNewList()
-      {
-         OutPortData = new PortData("list", "A list", typeof(object));
+    [ElementName("List")]
+    [ElementDescription("Makes a new list out of the given inputs")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [RequiresTransaction(false)]
+    public class dynNewList : dynVariableInput
+    {
+        public dynNewList()
+        {
+            OutPortData = new PortData("list", "A list", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      protected override string getInputRootName()
-      {
-         return "index";
-      }
+        protected override string getInputRootName()
+        {
+            return "index";
+        }
 
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         if (this.SaveResult)
-            return base.Compile(portNames);
-         else
-            return new FunctionNode("list", portNames);
-      }
+        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        {
+            if (this.SaveResult)
+                return base.Compile(portNames);
+            else
+                return new FunctionNode("list", portNames);
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol("list")).Item;
-         return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
-      }
-   }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol("list")).Item;
+            return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
+        }
+    }
 
-   [ElementName("Sort-With")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Returns a sorted list, using the given comparitor.")]
-   [RequiresTransaction(false)]
-   public class dynSortWith : dynBuiltinMacro
-   {
-      public dynSortWith()
-         : base("sort-with")
-      {
-         InPortData.Add(new PortData("list", "List to sort", typeof(object)));
-         InPortData.Add(new PortData("c(x, y)", "Comparitor", typeof(object)));
+    [ElementName("Sort-With")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Returns a sorted list, using the given comparitor.")]
+    [RequiresTransaction(false)]
+    public class dynSortWith : dynBuiltinMacro
+    {
+        public dynSortWith()
+            : base("sort-with")
+        {
+            InPortData.Add(new PortData("list", "List to sort", typeof(object)));
+            InPortData.Add(new PortData("c(x, y)", "Comparitor", typeof(object)));
 
-         OutPortData = new PortData("sorted", "Sorted list", typeof(object));
+            OutPortData = new PortData("sorted", "Sorted list", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
-   }
+            base.RegisterInputsAndOutputs();
+        }
+    }
 
-   [ElementName("Sort-By")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Returns a sorted list, using the given key mapper.")]
-   [RequiresTransaction(false)]
-   public class dynSortBy : dynBuiltinMacro
-   {
-      public dynSortBy()
-         : base("sort-by")
-      {
-         InPortData.Add(new PortData("list", "List to sort", typeof(object)));
-         InPortData.Add(new PortData("c(x)", "Key Mapper", typeof(object)));
+    [ElementName("Sort-By")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Returns a sorted list, using the given key mapper.")]
+    [RequiresTransaction(false)]
+    public class dynSortBy : dynBuiltinMacro
+    {
+        public dynSortBy()
+            : base("sort-by")
+        {
+            InPortData.Add(new PortData("list", "List to sort", typeof(object)));
+            InPortData.Add(new PortData("c(x)", "Key Mapper", typeof(object)));
 
-         OutPortData = new PortData("sorted", "Sorted list", typeof(object));
+            OutPortData = new PortData("sorted", "Sorted list", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
-   }
+            base.RegisterInputsAndOutputs();
+        }
+    }
 
-   [ElementName("Sort")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Returns a sorted list of numbers or strings.")]
-   [RequiresTransaction(false)]
-   public class dynSort : dynBuiltinFunction
-   {
-      public dynSort()
-         : base("sort")
-      {
-         InPortData.Add(new PortData("list", "List of numbers or strings to sort", typeof(object)));
+    [ElementName("Sort")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Returns a sorted list of numbers or strings.")]
+    [RequiresTransaction(false)]
+    public class dynSort : dynBuiltinFunction
+    {
+        public dynSort()
+            : base("sort")
+        {
+            InPortData.Add(new PortData("list", "List of numbers or strings to sort", typeof(object)));
 
-         OutPortData = new PortData("sorted", "Sorted list", typeof(object));
+            OutPortData = new PortData("sorted", "Sorted list", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
-   }
+            base.RegisterInputsAndOutputs();
+        }
+    }
 
-   [ElementName("Reduce")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Reduces a sequence.")]
-   [ElementSearchTags("fold")]
-   [RequiresTransaction(false)]
-   public class dynFold : dynBuiltinMacro
-   {
-      public dynFold()
-         : base("fold")
-      {
-         InPortData.Add(new PortData("f(x, a)", "Reductor Funtion", typeof(object)));
-         InPortData.Add(new PortData("a", "Seed", typeof(object)));
-         InPortData.Add(new PortData("seq", "Sequence", typeof(object)));
-         OutPortData = new PortData("out", "Result", typeof(object));
+    [ElementName("Reduce")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Reduces a sequence.")]
+    [ElementSearchTags("fold")]
+    [RequiresTransaction(false)]
+    public class dynFold : dynBuiltinMacro
+    {
+        public dynFold()
+            : base("fold")
+        {
+            InPortData.Add(new PortData("f(x, a)", "Reductor Funtion", typeof(object)));
+            InPortData.Add(new PortData("a", "Seed", typeof(object)));
+            InPortData.Add(new PortData("seq", "Sequence", typeof(object)));
+            OutPortData = new PortData("out", "Result", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
-   }
+            base.RegisterInputsAndOutputs();
+        }
+    }
 
-   [ElementName("Filter")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Filters a sequence by a given predicate")]
-   [RequiresTransaction(false)]
-   public class dynFilter : dynBuiltinMacro
-   {
-      public dynFilter()
-         : base("filter")
-      {
-         InPortData.Add(new PortData("p(x)", "Predicate", typeof(object)));
-         InPortData.Add(new PortData("seq", "Sequence to filter", typeof(object)));
-         OutPortData = new PortData("filtered", "Filtered Sequence", typeof(object));
+    [ElementName("Filter")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Filters a sequence by a given predicate")]
+    [RequiresTransaction(false)]
+    public class dynFilter : dynBuiltinMacro
+    {
+        public dynFilter()
+            : base("filter")
+        {
+            InPortData.Add(new PortData("p(x)", "Predicate", typeof(object)));
+            InPortData.Add(new PortData("seq", "Sequence to filter", typeof(object)));
+            OutPortData = new PortData("filtered", "Filtered Sequence", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
-   }
+            base.RegisterInputsAndOutputs();
+        }
+    }
 
-   [ElementName("Build Sequence")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Creates a sequence of numbers")]
-   [ElementSearchTags("range")]
-   [RequiresTransaction(false)]
-   public class dynBuildSeq : dynBuiltinMacro
-   {
-      public dynBuildSeq()
-         : base("build-seq")
-      {
-         InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(double)));
-         InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(double)));
-         InPortData.Add(new PortData("step", "Space between numbers", typeof(double)));
-         OutPortData = new PortData("seq", "New sequence", typeof(object));
+    [ElementName("Build Sequence")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Creates a sequence of numbers")]
+    [ElementSearchTags("range")]
+    [RequiresTransaction(false)]
+    public class dynBuildSeq : dynBuiltinMacro
+    {
+        public dynBuildSeq()
+            : base("build-seq")
+        {
+            InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(double)));
+            InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(double)));
+            InPortData.Add(new PortData("step", "Space between numbers", typeof(double)));
+            OutPortData = new PortData("seq", "New sequence", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
-   }
+            base.RegisterInputsAndOutputs();
+        }
+    }
 
-   [ElementName("Combine")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Applies a combinator to each element in two sequences")]
-   [ElementSearchTags("zip")]
-   [RequiresTransaction(false)]
-   public class dynCombine : dynVariableInput
-   {
-      public dynCombine()
-      {
-         InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
-         InPortData.Add(new PortData("list1", "First list", typeof(object)));
-         InPortData.Add(new PortData("list2", "Second list", typeof(object)));
-         OutPortData = new PortData("combined", "Combined lists", typeof(object));
+    [ElementName("Combine")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Applies a combinator to each element in two sequences")]
+    [ElementSearchTags("zip")]
+    [RequiresTransaction(false)]
+    public class dynCombine : dynVariableInput
+    {
+        public dynCombine()
+        {
+            InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
+            InPortData.Add(new PortData("list1", "First list", typeof(object)));
+            InPortData.Add(new PortData("list2", "Second list", typeof(object)));
+            OutPortData = new PortData("combined", "Combined lists", typeof(object));
 
-         base.RegisterInputsAndOutputs();
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      protected override string getInputRootName()
-      {
-         return "list";
-      }
+        protected override string getInputRootName()
+        {
+            return "list";
+        }
 
-      protected override void RemoveInput(object sender, RoutedEventArgs args)
-      {
-         if (InPortData.Count > 3)
-            base.RemoveInput(sender, args);
-      }
+        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count > 3)
+                base.RemoveInput(sender, args);
+        }
 
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         foreach (var inport in InPortData.Skip(3))
-         {
-            XmlElement input = xmlDoc.CreateElement("Input");
-
-            input.SetAttribute("name", inport.NickName);
-
-            dynEl.AppendChild(input);
-         }
-      }
-
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name == "Input")
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            foreach (var inport in InPortData.Skip(3))
             {
-               var attr = subNode.Attributes["name"].Value;
+                XmlElement input = xmlDoc.CreateElement("Input");
 
-               if (!attr.Equals("comb"))
-                  this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                input.SetAttribute("name", inport.NickName);
+
+                dynEl.AppendChild(input);
             }
-         }
-         base.ReregisterInputs();
-      }
+        }
 
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         if (this.SaveResult)
-         {
-            return new ExternalMacroNode(
-               new ExternMacro(this.macroEval),
-               portNames
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == "Input")
+                {
+                    var attr = subNode.Attributes["name"].Value;
+
+                    if (!attr.Equals("comb"))
+                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                }
+            }
+            base.ReregisterInputs();
+        }
+
+        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        {
+            if (this.SaveResult)
+            {
+                return new ExternalMacroNode(
+                   new ExternMacro(this.macroEval),
+                   portNames
+                );
+            }
+            else
+                return new FunctionNode("combine", portNames);
+        }
+
+        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        {
+            if (this.IsDirty || this.oldValue == null)
+            {
+                this.macroEnvironment = environment;
+                this.oldValue = this.eval(args);
+            }
+            else
+                this.runCount++;
+            return this.oldValue;
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var macro = ((Expression.Special)this.Bench.Environment
+               .LookupSymbol("combine")).Item;
+
+            return macro
+               .Invoke(ExecutionEnvironment.IDENT)
+               .Invoke(this.macroEnvironment.Env)
+               .Invoke(args);
+        }
+    }
+
+    [ElementName("Cartesian Product")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
+    [ElementSearchTags("cross")]
+    [RequiresTransaction(false)]
+    public class dynCartProd : dynVariableInput
+    {
+        public dynCartProd()
+        {
+            InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
+            InPortData.Add(new PortData("list1", "First list", typeof(object)));
+            InPortData.Add(new PortData("list2", "Second list", typeof(object)));
+            OutPortData = new PortData("combined", "Combined lists", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        protected override string getInputRootName()
+        {
+            return "list";
+        }
+
+        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count > 3)
+                base.RemoveInput(sender, args);
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            foreach (var inport in InPortData.Skip(3))
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+
+                input.SetAttribute("name", inport.NickName);
+
+                dynEl.AppendChild(input);
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == "Input")
+                {
+                    var attr = subNode.Attributes["name"].Value;
+
+                    if (!attr.Equals("comb"))
+                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                }
+            }
+            base.ReregisterInputs();
+        }
+
+        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        {
+            if (this.SaveResult)
+            {
+                return new ExternalMacroNode(
+                   new ExternMacro(this.macroEval),
+                   portNames
+                );
+            }
+            else
+                return new FunctionNode("cartesian-product", portNames);
+        }
+
+        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        {
+            if (this.IsDirty || this.oldValue == null)
+            {
+                this.macroEnvironment = environment;
+                this.oldValue = this.eval(args);
+            }
+            else
+                this.runCount++;
+            return this.oldValue;
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var macro = ((Expression.Special)this.Bench.Environment
+               .LookupSymbol("cartesian-product")).Item;
+
+            return macro
+               .Invoke(ExecutionEnvironment.IDENT)
+               .Invoke(this.macroEnvironment.Env)
+               .Invoke(args);
+        }
+    }
+
+    [ElementName("Map")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Maps a sequence")]
+    [RequiresTransaction(false)]
+    public class dynMap : dynBuiltinMacro
+    {
+        public dynMap()
+            : base("map")
+        {
+            InPortData.Add(new PortData("f(x)", "The procedure used to map elements", typeof(object)));
+            InPortData.Add(new PortData("seq", "The sequence to map over.", typeof(object)));
+            OutPortData = new PortData("mapped", "Mapped sequence", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Cons")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Creates a pair")]
+    [RequiresTransaction(false)]
+    public class dynList : dynBuiltinFunction
+    {
+        public dynList()
+            : base("cons")
+        {
+            InPortData.Add(new PortData("first", "The new Head of the list", typeof(object)));
+            InPortData.Add(new PortData("rest", "The new Tail of the list", typeof(object)));
+            OutPortData = new PortData("list", "Result List", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Take")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Takes elements from a list")]
+    [RequiresTransaction(false)]
+    public class dynTakeList : dynBuiltinFunction
+    {
+        public dynTakeList()
+            : base("take")
+        {
+            InPortData.Add(new PortData("amt", "Amount of elements to extract", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to extract elements from", typeof(object)));
+            OutPortData = new PortData("elements", "List of extraced elements", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Drop")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Drops elements from a list")]
+    [RequiresTransaction(false)]
+    public class dynDropList : dynBuiltinFunction
+    {
+        public dynDropList()
+            : base("drop")
+        {
+            InPortData.Add(new PortData("amt", "Amount of elements to drop", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to drop elements from", typeof(object)));
+            OutPortData = new PortData("elements", "List of remaining elements", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Get")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Gets an element from a list at a specified index.")]
+    [RequiresTransaction(false)]
+    public class dynGetFromList : dynBuiltinFunction
+    {
+        public dynGetFromList()
+            : base("get")
+        {
+            InPortData.Add(new PortData("index", "Index of the element to extract", typeof(object)));
+            InPortData.Add(new PortData("list", "The list to extract elements from", typeof(object)));
+            OutPortData = new PortData("element", "Extracted element", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Empty")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("An empty list")]
+    [RequiresTransaction(false)]
+    [IsInteractive(false)]
+    public class dynEmpty : dynElement
+    {
+        public dynEmpty()
+        {
+            OutPortData = new PortData("empty", "An empty list", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override bool IsDirty
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewList(FSharpList<Expression>.Empty);
+        }
+
+        protected internal override INode Build()
+        {
+            return new SymbolNode("empty");
+        }
+    }
+
+    [ElementName("Is Empty?")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Checks to see if the given list is empty.")]
+    [RequiresTransaction(false)]
+    public class dynIsEmpty : dynBuiltinFunction
+    {
+        public dynIsEmpty()
+            : base("empty?")
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(object)));
+            OutPortData = new PortData("empty?", "Is the given list empty?", typeof(bool));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Count")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Gets the length of a list")]
+    [RequiresTransaction(false)]
+    public class dynLength : dynBuiltinFunction
+    {
+        public dynLength()
+            : base("len")
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(object)));
+            OutPortData = new PortData("length", "Length of the list", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Append")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Appends two list")]
+    [RequiresTransaction(false)]
+    public class dynAppend : dynBuiltinFunction
+    {
+        public dynAppend()
+            : base("append")
+        {
+            InPortData.Add(new PortData("listA", "First list", typeof(object)));
+            InPortData.Add(new PortData("listB", "Second list", typeof(object)));
+            OutPortData = new PortData("A+B", "A appended onto B", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("First")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Gets the first element of a list")]
+    [RequiresTransaction(false)]
+    public class dynFirst : dynBuiltinFunction
+    {
+        public dynFirst()
+            : base("first")
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(object)));
+            OutPortData = new PortData("first", "First element in the list", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Rest")]
+    [ElementCategory(BuiltinElementCategories.LIST)]
+    [ElementDescription("Gets the list with the first element removed.")]
+    [RequiresTransaction(false)]
+    public class dynRest : dynBuiltinFunction
+    {
+        public dynRest()
+            : base("rest")
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(object)));
+            OutPortData = new PortData("rest", "List without the first element.", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    #endregion
+
+    #region Boolean
+
+    public abstract class dynComparison : dynBuiltinFunction
+    {
+        protected dynComparison(string op) : this(op, op) { }
+
+        protected dynComparison(string op, string name)
+            : base(op)
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x" + name + "y", "comp", typeof(double));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("<")]
+    [ElementCategory(BuiltinElementCategories.COMPARISON)]
+    [ElementDescription("Compares two numbers.")]
+    [ElementSearchTags("less", "than")]
+    [RequiresTransaction(false)]
+    public class dynLessThan : dynComparison
+    {
+        public dynLessThan() : base("<") { }
+    }
+
+    [ElementName("≤")]
+    [ElementCategory(BuiltinElementCategories.COMPARISON)]
+    [ElementDescription("Compares two numbers.")]
+    [ElementSearchTags("<=", "less", "than", "equal")]
+    [RequiresTransaction(false)]
+    public class dynLessThanEquals : dynComparison
+    {
+        public dynLessThanEquals() : base("<=", "≤") { }
+    }
+
+    [ElementName(">")]
+    [ElementCategory(BuiltinElementCategories.COMPARISON)]
+    [ElementDescription("Compares two numbers.")]
+    [ElementSearchTags("greater", "than")]
+    [RequiresTransaction(false)]
+    public class dynGreaterThan : dynComparison
+    {
+        public dynGreaterThan() : base(">") { }
+    }
+
+    [ElementName("≥")]
+    [ElementCategory(BuiltinElementCategories.COMPARISON)]
+    [ElementDescription("Compares two numbers.")]
+    [ElementSearchTags(">=", "greater", "than", "equal")]
+    [RequiresTransaction(false)]
+    public class dynGreaterThanEquals : dynComparison
+    {
+        public dynGreaterThanEquals() : base(">=", "≥") { }
+    }
+
+    [ElementName("=")]
+    [ElementCategory(BuiltinElementCategories.COMPARISON)]
+    [ElementDescription("Compares two numbers.")]
+    [RequiresTransaction(false)]
+    public class dynEqual : dynComparison
+    {
+        public dynEqual() : base("=") { }
+    }
+
+    [ElementName("And")]
+    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
+    [ElementDescription("Boolean AND.")]
+    [RequiresTransaction(false)]
+    public class dynAnd : dynBuiltinMacro
+    {
+        public dynAnd()
+            : base("and")
+        {
+            InPortData.Add(new PortData("a", "operand", typeof(double)));
+            InPortData.Add(new PortData("b", "operand", typeof(double)));
+            OutPortData = new PortData("a∧b", "result", typeof(double));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Or")]
+    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
+    [ElementDescription("Boolean OR.")]
+    [RequiresTransaction(false)]
+    public class dynOr : dynBuiltinMacro
+    {
+        public dynOr()
+            : base("or")
+        {
+            InPortData.Add(new PortData("a", "operand", typeof(bool)));
+            InPortData.Add(new PortData("b", "operand", typeof(bool)));
+            OutPortData = new PortData("a∨b", "result", typeof(bool));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Xor")]
+    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
+    [ElementDescription("Boolean XOR.")]
+    [RequiresTransaction(false)]
+    public class dynXor : dynBuiltinMacro
+    {
+        public dynXor()
+            : base("xor")
+        {
+            InPortData.Add(new PortData("a", "operand", typeof(bool)));
+            InPortData.Add(new PortData("b", "operand", typeof(bool)));
+            OutPortData = new PortData("a⊻b", "result", typeof(bool));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Not")]
+    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
+    [ElementDescription("Boolean NOT.")]
+    [RequiresTransaction(false)]
+    public class dynNot : dynBuiltinMacro
+    {
+        public dynNot()
+            : base("not")
+        {
+            InPortData.Add(new PortData("a", "operand", typeof(bool)));
+            OutPortData = new PortData("!a", "result", typeof(bool));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    #endregion
+
+    #region Math
+
+    [ElementName("+")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Adds two numbers.")]
+    [ElementSearchTags("plus", "addition", "sum")]
+    [RequiresTransaction(false)]
+    public class dynAddition : dynBuiltinFunction
+    {
+        public dynAddition()
+            : base("+")
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x+y", "sum", typeof(double));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("−")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Subtracts two numbers.")]
+    [ElementSearchTags("subtraction", "minus", "difference", "-")]
+    [RequiresTransaction(false)]
+    public class dynSubtraction : dynBuiltinFunction
+    {
+        public dynSubtraction()
+            : base("-")
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x-y", "difference", typeof(double));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("×")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Multiplies two numbers.")]
+    [ElementSearchTags("times", "multiply", "multiplication", "product", "*", "x")]
+    [RequiresTransaction(false)]
+    public class dynMultiplication : dynBuiltinFunction
+    {
+        public dynMultiplication()
+            : base("*")
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x∙y", "product", typeof(double));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("÷")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Divides two numbers.")]
+    [ElementSearchTags("divide", "division", "quotient", "/")]
+    [RequiresTransaction(false)]
+    public class dynDivision : dynBuiltinFunction
+    {
+        public dynDivision()
+            : base("/")
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x÷y", "result", typeof(double));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Round")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Rounds a number to the nearest integer value.")]
+    [RequiresTransaction(false)]
+    public class dynRound : dynElement
+    {
+        public dynRound()
+        {
+            InPortData.Add(new PortData("dbl", "A number", typeof(double)));
+            OutPortData = new PortData("int", "Rounded number", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(
+               Math.Round(((Expression.Number)args[0]).Item)
             );
-         }
-         else
-            return new FunctionNode("combine", portNames);
-      }
+        }
+    }
 
-      private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
-      {
-         if (this.IsDirty || this.oldValue == null)
-         {
-            this.macroEnvironment = environment;
-            this.oldValue = this.eval(args);
-         }
-         else
-            this.runCount++;
-         return this.oldValue;
-      }
+    [ElementName("Floor")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Rounds a number to the nearest smaller integer.")]
+    [ElementSearchTags("round")]
+    [RequiresTransaction(false)]
+    public class dynFloor : dynElement
+    {
+        public dynFloor()
+        {
+            InPortData.Add(new PortData("dbl", "A number", typeof(double)));
+            OutPortData = new PortData("int", "Number rounded down", typeof(double));
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var macro = ((Expression.Special)this.Bench.Environment
-            .LookupSymbol("combine")).Item;
+            base.RegisterInputsAndOutputs();
+        }
 
-         return macro
-            .Invoke(ExecutionEnvironment.IDENT)
-            .Invoke(this.macroEnvironment.Env)
-            .Invoke(args);
-      }
-   }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(
+               Math.Floor(((Expression.Number)args[0]).Item)
+            );
+        }
+    }
 
-   [ElementName("Cartesian Product")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
-   [ElementSearchTags("cross")]
-   [RequiresTransaction(false)]
-   public class dynCartProd : dynVariableInput
-   {
-      public dynCartProd()
-      {
-         InPortData.Add(new PortData("comb", "Combinator", typeof(object)));
-         InPortData.Add(new PortData("list1", "First list", typeof(object)));
-         InPortData.Add(new PortData("list2", "Second list", typeof(object)));
-         OutPortData = new PortData("combined", "Combined lists", typeof(object));
+    [ElementName("Ceiling")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Rounds a number to the nearest larger integer value.")]
+    [ElementSearchTags("round")]
+    [RequiresTransaction(false)]
+    public class dynCeiling : dynElement
+    {
+        public dynCeiling()
+        {
+            InPortData.Add(new PortData("dbl", "A number", typeof(double)));
+            OutPortData = new PortData("int", "Number rounded up", typeof(double));
 
-         base.RegisterInputsAndOutputs();
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      protected override string getInputRootName()
-      {
-         return "list";
-      }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(
+               Math.Ceiling(((Expression.Number)args[0]).Item)
+            );
+        }
+    }
 
-      protected override void RemoveInput(object sender, RoutedEventArgs args)
-      {
-         if (InPortData.Count > 3)
-            base.RemoveInput(sender, args);
-      }
+    [ElementName("Random")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Generates a uniform random number in the range [0.0, 1.0).")]
+    [RequiresTransaction(false)]
+    public class dynRandom : dynElement
+    {
+        public dynRandom()
+        {
+            OutPortData = new PortData("rand", "Random number between 0.0 and 1.0.", typeof(double));
 
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         foreach (var inport in InPortData.Skip(3))
-         {
-            XmlElement input = xmlDoc.CreateElement("Input");
+            base.RegisterInputsAndOutputs();
+        }
 
-            input.SetAttribute("name", inport.NickName);
+        private static Random random = new Random();
 
-            dynEl.AppendChild(input);
-         }
-      }
-
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name == "Input")
+        public override bool IsDirty
+        {
+            get
             {
-               var attr = subNode.Attributes["name"].Value;
-
-               if (!attr.Equals("comb"))
-                  this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                return true;
             }
-         }
-         base.ReregisterInputs();
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         if (this.SaveResult)
-         {
-            return new ExternalMacroNode(
-               new ExternMacro(this.macroEval),
-               portNames
-            );
-         }
-         else
-            return new FunctionNode("cartesian-product", portNames);
-      }
-
-      private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
-      {
-         if (this.IsDirty || this.oldValue == null)
-         {
-            this.macroEnvironment = environment;
-            this.oldValue = this.eval(args);
-         }
-         else
-            this.runCount++;
-         return this.oldValue;
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var macro = ((Expression.Special)this.Bench.Environment
-            .LookupSymbol("cartesian-product")).Item;
-
-         return macro
-            .Invoke(ExecutionEnvironment.IDENT)
-            .Invoke(this.macroEnvironment.Env)
-            .Invoke(args);
-      }
-   }
-
-   [ElementName("Map")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Maps a sequence")]
-   [RequiresTransaction(false)]
-   public class dynMap : dynBuiltinMacro
-   {
-      public dynMap()
-         : base("map")
-      {
-         InPortData.Add(new PortData("f(x)", "The procedure used to map elements", typeof(object)));
-         InPortData.Add(new PortData("seq", "The sequence to map over.", typeof(object)));
-         OutPortData = new PortData("mapped", "Mapped sequence", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Cons")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Creates a pair")]
-   [RequiresTransaction(false)]
-   public class dynList : dynBuiltinFunction
-   {
-      public dynList()
-         : base("cons")
-      {
-         InPortData.Add(new PortData("first", "The new Head of the list", typeof(object)));
-         InPortData.Add(new PortData("rest", "The new Tail of the list", typeof(object)));
-         OutPortData = new PortData("list", "Result List", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Take")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Takes elements from a list")]
-   [RequiresTransaction(false)]
-   public class dynTakeList : dynBuiltinFunction
-   {
-      public dynTakeList()
-         : base("take")
-      {
-         InPortData.Add(new PortData("amt", "Amount of elements to extract", typeof(object)));
-         InPortData.Add(new PortData("list", "The list to extract elements from", typeof(object)));
-         OutPortData = new PortData("elements", "List of extraced elements", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Drop")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Drops elements from a list")]
-   [RequiresTransaction(false)]
-   public class dynDropList : dynBuiltinFunction
-   {
-      public dynDropList()
-         : base("drop")
-      {
-         InPortData.Add(new PortData("amt", "Amount of elements to drop", typeof(object)));
-         InPortData.Add(new PortData("list", "The list to drop elements from", typeof(object)));
-         OutPortData = new PortData("elements", "List of remaining elements", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Get")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Gets an element from a list at a specified index.")]
-   [RequiresTransaction(false)]
-   public class dynGetFromList : dynBuiltinFunction
-   {
-      public dynGetFromList()
-         : base("get")
-      {
-         InPortData.Add(new PortData("index", "Index of the element to extract", typeof(object)));
-         InPortData.Add(new PortData("list", "The list to extract elements from", typeof(object)));
-         OutPortData = new PortData("element", "Extracted element", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Empty")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("An empty list")]
-   [RequiresTransaction(false)]
-   [IsInteractive(false)]
-   public class dynEmpty : dynElement
-   {
-      public dynEmpty()
-      {
-         OutPortData = new PortData("empty", "An empty list", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override bool IsDirty
-      {
-         get
-         {
-            return false;
-         }
-         set { }
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewList(FSharpList<Expression>.Empty);
-      }
-
-      protected internal override INode Build()
-      {
-         return new SymbolNode("empty");
-      }
-   }
-
-   [ElementName("Is Empty?")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Checks to see if the given list is empty.")]
-   [RequiresTransaction(false)]
-   public class dynIsEmpty : dynBuiltinFunction
-   {
-      public dynIsEmpty()
-         : base("empty?")
-      {
-         InPortData.Add(new PortData("list", "A list", typeof(object)));
-         OutPortData = new PortData("empty?", "Is the given list empty?", typeof(bool));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Count")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Gets the length of a list")]
-   [RequiresTransaction(false)]
-   public class dynLength : dynBuiltinFunction
-   {
-      public dynLength()
-         : base("len")
-      {
-         InPortData.Add(new PortData("list", "A list", typeof(object)));
-         OutPortData = new PortData("length", "Length of the list", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Append")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Appends two list")]
-   [RequiresTransaction(false)]
-   public class dynAppend : dynBuiltinFunction
-   {
-      public dynAppend()
-         : base("append")
-      {
-         InPortData.Add(new PortData("listA", "First list", typeof(object)));
-         InPortData.Add(new PortData("listB", "Second list", typeof(object)));
-         OutPortData = new PortData("A+B", "A appended onto B", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("First")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Gets the first element of a list")]
-   [RequiresTransaction(false)]
-   public class dynFirst : dynBuiltinFunction
-   {
-      public dynFirst()
-         : base("first")
-      {
-         InPortData.Add(new PortData("list", "A list", typeof(object)));
-         OutPortData = new PortData("first", "First element in the list", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Rest")]
-   [ElementCategory(BuiltinElementCategories.LIST)]
-   [ElementDescription("Gets the list with the first element removed.")]
-   [RequiresTransaction(false)]
-   public class dynRest : dynBuiltinFunction
-   {
-      public dynRest()
-         : base("rest")
-      {
-         InPortData.Add(new PortData("list", "A list", typeof(object)));
-         OutPortData = new PortData("rest", "List without the first element.", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   #endregion
-
-   #region Boolean
-
-   public abstract class dynComparison : dynBuiltinFunction
-   {
-      protected dynComparison(string op) : this(op, op) { }
-
-      protected dynComparison(string op, string name)
-         : base(op)
-      {
-         InPortData.Add(new PortData("x", "operand", typeof(double)));
-         InPortData.Add(new PortData("y", "operand", typeof(double)));
-         OutPortData = new PortData("x" + name + "y", "comp", typeof(double));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("<")]
-   [ElementCategory(BuiltinElementCategories.COMPARISON)]
-   [ElementDescription("Compares two numbers.")]
-   [ElementSearchTags("less", "than")]
-   [RequiresTransaction(false)]
-   public class dynLessThan : dynComparison
-   {
-      public dynLessThan() : base("<") { }
-   }
-
-   [ElementName("≤")]
-   [ElementCategory(BuiltinElementCategories.COMPARISON)]
-   [ElementDescription("Compares two numbers.")]
-   [ElementSearchTags("<=", "less", "than", "equal")]
-   [RequiresTransaction(false)]
-   public class dynLessThanEquals : dynComparison
-   {
-      public dynLessThanEquals() : base("<=", "≤") { }
-   }
-
-   [ElementName(">")]
-   [ElementCategory(BuiltinElementCategories.COMPARISON)]
-   [ElementDescription("Compares two numbers.")]
-   [ElementSearchTags("greater", "than")]
-   [RequiresTransaction(false)]
-   public class dynGreaterThan : dynComparison
-   {
-      public dynGreaterThan() : base(">") { }
-   }
-
-   [ElementName("≥")]
-   [ElementCategory(BuiltinElementCategories.COMPARISON)]
-   [ElementDescription("Compares two numbers.")]
-   [ElementSearchTags(">=", "greater", "than", "equal")]
-   [RequiresTransaction(false)]
-   public class dynGreaterThanEquals : dynComparison
-   {
-      public dynGreaterThanEquals() : base(">=", "≥") { }
-   }
-
-   [ElementName("=")]
-   [ElementCategory(BuiltinElementCategories.COMPARISON)]
-   [ElementDescription("Compares two numbers.")]
-   [RequiresTransaction(false)]
-   public class dynEqual : dynComparison
-   {
-      public dynEqual() : base("=") { }
-   }
-
-   [ElementName("And")]
-   [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-   [ElementDescription("Boolean AND.")]
-   [RequiresTransaction(false)]
-   public class dynAnd : dynBuiltinMacro
-   {
-      public dynAnd()
-         : base("and")
-      {
-         InPortData.Add(new PortData("a", "operand", typeof(double)));
-         InPortData.Add(new PortData("b", "operand", typeof(double)));
-         OutPortData = new PortData("a∧b", "result", typeof(double));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Or")]
-   [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-   [ElementDescription("Boolean OR.")]
-   [RequiresTransaction(false)]
-   public class dynOr : dynBuiltinMacro
-   {
-      public dynOr()
-         : base("or")
-      {
-         InPortData.Add(new PortData("a", "operand", typeof(bool)));
-         InPortData.Add(new PortData("b", "operand", typeof(bool)));
-         OutPortData = new PortData("a∨b", "result", typeof(bool));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Xor")]
-   [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-   [ElementDescription("Boolean XOR.")]
-   [RequiresTransaction(false)]
-   public class dynXor : dynBuiltinMacro
-   {
-      public dynXor()
-         : base("xor")
-      {
-         InPortData.Add(new PortData("a", "operand", typeof(bool)));
-         InPortData.Add(new PortData("b", "operand", typeof(bool)));
-         OutPortData = new PortData("a⊻b", "result", typeof(bool));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Not")]
-   [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-   [ElementDescription("Boolean NOT.")]
-   [RequiresTransaction(false)]
-   public class dynNot : dynBuiltinMacro
-   {
-      public dynNot()
-         : base("not")
-      {
-         InPortData.Add(new PortData("a", "operand", typeof(bool)));
-         OutPortData = new PortData("!a", "result", typeof(bool));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   #endregion
-
-   #region Math
-
-   [ElementName("+")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Adds two numbers.")]
-   [ElementSearchTags("plus", "addition", "sum")]
-   [RequiresTransaction(false)]
-   public class dynAddition : dynBuiltinFunction
-   {
-      public dynAddition()
-         : base("+")
-      {
-         InPortData.Add(new PortData("x", "operand", typeof(double)));
-         InPortData.Add(new PortData("y", "operand", typeof(double)));
-         OutPortData = new PortData("x+y", "sum", typeof(double));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("−")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Subtracts two numbers.")]
-   [ElementSearchTags("subtraction", "minus", "difference", "-")]
-   [RequiresTransaction(false)]
-   public class dynSubtraction : dynBuiltinFunction
-   {
-      public dynSubtraction()
-         : base("-")
-      {
-         InPortData.Add(new PortData("x", "operand", typeof(double)));
-         InPortData.Add(new PortData("y", "operand", typeof(double)));
-         OutPortData = new PortData("x-y", "difference", typeof(double));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("×")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Multiplies two numbers.")]
-   [ElementSearchTags("times", "multiply", "multiplication", "product", "*", "x")]
-   [RequiresTransaction(false)]
-   public class dynMultiplication : dynBuiltinFunction
-   {
-      public dynMultiplication()
-         : base("*")
-      {
-         InPortData.Add(new PortData("x", "operand", typeof(double)));
-         InPortData.Add(new PortData("y", "operand", typeof(double)));
-         OutPortData = new PortData("x∙y", "product", typeof(double));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("÷")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Divides two numbers.")]
-   [ElementSearchTags("divide", "division", "quotient", "/")]
-   [RequiresTransaction(false)]
-   public class dynDivision : dynBuiltinFunction
-   {
-      public dynDivision()
-         : base("/")
-      {
-         InPortData.Add(new PortData("x", "operand", typeof(double)));
-         InPortData.Add(new PortData("y", "operand", typeof(double)));
-         OutPortData = new PortData("x÷y", "result", typeof(double));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-   }
-
-   [ElementName("Round")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Rounds a number to the nearest integer value.")]
-   [RequiresTransaction(false)]
-   public class dynRound : dynElement
-   {
-      public dynRound()
-      {
-         InPortData.Add(new PortData("dbl", "A number", typeof(double)));
-         OutPortData = new PortData("int", "Rounded number", typeof(double));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewNumber(
-            Math.Round(((Expression.Number)args[0]).Item)
-         );
-      }
-   }
-
-   [ElementName("Floor")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Rounds a number to the nearest smaller integer.")]
-   [ElementSearchTags("round")]
-   [RequiresTransaction(false)]
-   public class dynFloor : dynElement
-   {
-      public dynFloor()
-      {
-         InPortData.Add(new PortData("dbl", "A number", typeof(double)));
-         OutPortData = new PortData("int", "Number rounded down", typeof(double));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewNumber(
-            Math.Floor(((Expression.Number)args[0]).Item)
-         );
-      }
-   }
-
-   [ElementName("Ceiling")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Rounds a number to the nearest larger integer value.")]
-   [ElementSearchTags("round")]
-   [RequiresTransaction(false)]
-   public class dynCeiling : dynElement
-   {
-      public dynCeiling()
-      {
-         InPortData.Add(new PortData("dbl", "A number", typeof(double)));
-         OutPortData = new PortData("int", "Number rounded up", typeof(double));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewNumber(
-            Math.Ceiling(((Expression.Number)args[0]).Item)
-         );
-      }
-   }
-
-   [ElementName("Random")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Generates a uniform random number in the range [0.0, 1.0).")]
-   [RequiresTransaction(false)]
-   public class dynRandom : dynElement
-   {
-      public dynRandom()
-      {
-         OutPortData = new PortData("rand", "Random number between 0.0 and 1.0.", typeof(double));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      private static Random random = new Random();
-
-      public override bool IsDirty
-      {
-         get
-         {
-            return true;
-         }
-         set { }
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewNumber(random.NextDouble());
-      }
-   }
-
-   [ElementName("π")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Pi constant")]
-   [RequiresTransaction(false)]
-   [ElementSearchTags("pi", "trigonometry", "circle")]
-   [IsInteractive(false)]
-   public class dynPi : dynElement
-   {
-      public dynPi()
-      {
-         OutPortData = new PortData("3.14159...", "pi", typeof(double));
-
-         this.nickNameBlock.FontSize = 20;
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override bool IsDirty
-      {
-         get
-         {
-            return false;
-         }
-         set { }
-      }
-
-      protected internal override INode Build()
-      {
-         return new NumberNode(Math.PI);
-      }
-   }
-
-   [ElementName("Sine")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Computes the sine of the given angle.")]
-   [RequiresTransaction(false)]
-   public class dynSin : dynElement
-   {
-      public dynSin()
-      {
-         InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-         OutPortData = new PortData("sin(θ)", "Sine value of the given angle", typeof(double));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var input = args[0];
-
-         if (input.IsList)
-         {
-            return Expression.NewList(
-               FSchemeInterop.Utils.convertSequence(
-                  ((Expression.List)input).Item.Select(
-                     x =>
-                        Expression.NewNumber(Math.Sin(((Expression.Number)x).Item))
-                  )
-               )
-            );
-         }
-         else
-         {
-            double theta = ((Expression.Number)input).Item;
-            return Expression.NewNumber(Math.Sin(theta));
-         }
-      }
-   }
-
-   [ElementName("Cosine")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Computes the cosine of the given angle.")]
-   [RequiresTransaction(false)]
-   public class dynCos : dynElement
-   {
-      public dynCos()
-      {
-         InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-         OutPortData = new PortData("cos(θ)", "Cosine value of the given angle", typeof(double));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var input = args[0];
-
-         if (input.IsList)
-         {
-            return Expression.NewList(
-               FSchemeInterop.Utils.convertSequence(
-                  ((Expression.List)input).Item.Select(
-                     x =>
-                        Expression.NewNumber(Math.Cos(((Expression.Number)x).Item))
-                  )
-               )
-            );
-         }
-         else
-         {
-            double theta = ((Expression.Number)input).Item;
-            return Expression.NewNumber(Math.Cos(theta));
-         }
-      }
-   }
-
-   [ElementName("Tangent")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("Computes the tangent of the given angle.")]
-   [RequiresTransaction(false)]
-   public class dynTan : dynElement
-   {
-      public dynTan()
-      {
-         InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-         OutPortData = new PortData("tan(θ)", "Tangent value of the given angle", typeof(double));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var input = args[0];
-
-         if (input.IsList)
-         {
-            return Expression.NewList(
-               FSchemeInterop.Utils.convertSequence(
-                  ((Expression.List)input).Item.Select(
-                     x =>
-                        Expression.NewNumber(Math.Tan(((Expression.Number)x).Item))
-                  )
-               )
-            );
-         }
-         else
-         {
-            double theta = ((Expression.Number)input).Item;
-            return Expression.NewNumber(Math.Tan(theta));
-         }
-      }
-   }
-
-   #endregion
-
-   #region Control Flow
-
-   //TODO: Setup proper IsDirty smart execution management
-   [ElementName("Perform All")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Executes expressions in a sequence")]
-   [RequiresTransaction(false)]
-   public class dynBegin : dynVariableInput
-   {
-      public dynBegin()
-      {
-         InPortData.Add(new PortData("expr1", "Expression #1", typeof(object)));
-         InPortData.Add(new PortData("expr2", "Expression #2", typeof(object)));
-         OutPortData = new PortData("last", "Result of final expression", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      protected override void RemoveInput(object sender, RoutedEventArgs args)
-      {
-         if (InPortData.Count > 2)
-            base.RemoveInput(sender, args);
-      }
-
-      protected override string getInputRootName()
-      {
-         return "expr";
-      }
-
-      protected override int getNewInputIndex()
-      {
-         return this.InPortData.Count + 1;
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new BeginNode(portNames);
-      }
-   }
-
-   //TODO: Setup proper IsDirty smart execution management
-   [ElementName("Apply")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Applies arguments to a function")]
-   [RequiresTransaction(false)]
-   public class dynApply1 : dynVariableInput
-   {
-      public dynApply1()
-      {
-         InPortData.Add(new PortData("func", "Procedure", typeof(object)));
-         OutPortData = new PortData("result", "Result", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      protected override string getInputRootName()
-      {
-         return "arg";
-      }
-
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new ApplierNode(portNames.Skip(1));
-      }
-
-      protected override void RemoveInput(object sender, RoutedEventArgs args)
-      {
-         if (InPortData.Count > 1)
-            base.RemoveInput(sender, args);
-      }
-
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         foreach (var inport in InPortData.Skip(1))
-         {
-            XmlElement input = xmlDoc.CreateElement("Input");
-
-            input.SetAttribute("name", inport.NickName);
-
-            dynEl.AppendChild(input);
-         }
-      }
-
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name == "Input")
+            set { }
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(random.NextDouble());
+        }
+    }
+
+    [ElementName("π")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Pi constant")]
+    [RequiresTransaction(false)]
+    [ElementSearchTags("pi", "trigonometry", "circle")]
+    [IsInteractive(false)]
+    public class dynPi : dynElement
+    {
+        public dynPi()
+        {
+            OutPortData = new PortData("3.14159...", "pi", typeof(double));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override bool IsDirty
+        {
+            get
             {
-               var attr = subNode.Attributes["name"].Value;
-
-               if (!attr.Equals("func"))
-                  this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                return false;
             }
-         }
-         base.ReregisterInputs();
-      }
-   }
+            set { }
+        }
 
-   //TODO: Setup proper IsDirty smart execution management
-   [ElementName("If")]
-   [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-   [ElementDescription("Conditional statement")]
-   [RequiresTransaction(false)]
-   public class dynConditional : dynElement
-   {
-      public dynConditional()
-      {
-         InPortData.Add(new PortData("test", "Test block", typeof(bool)));
-         InPortData.Add(new PortData("true", "True block", typeof(object)));
-         InPortData.Add(new PortData("false", "False block", typeof(object)));
+        protected internal override INode Build()
+        {
+            return new NumberNode(Math.PI);
+        }
+    }
 
-         OutPortData = new PortData("result", "Result", typeof(object));
+    [ElementName("Sine")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Computes the sine of the given angle.")]
+    [RequiresTransaction(false)]
+    public class dynSin : dynElement
+    {
+        public dynSin()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("sin(θ)", "Sine value of the given angle", typeof(double));
 
-         this.nickNameBlock.FontSize = 20;
+            base.RegisterInputsAndOutputs();
+        }
 
-         base.RegisterInputsAndOutputs();
-      }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var input = args[0];
 
-      protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      {
-         return new ConditionalNode();
-      }
-   }
-
-   [ElementName("Debug Breakpoint")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Halts execution until user clicks button.")]
-   [RequiresTransaction(false)]
-   public class dynBreakpoint : dynElement
-   {
-      System.Windows.Controls.Button button;
-
-      public dynBreakpoint()
-      {
-         //add a text box to the input grid of the control
-         button = new System.Windows.Controls.Button();
-         button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         button.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         //inputGrid.RowDefinitions.Add(new RowDefinition());
-         inputGrid.Children.Add(button);
-         System.Windows.Controls.Grid.SetColumn(button, 0);
-         System.Windows.Controls.Grid.SetRow(button, 0);
-         button.Content = "Continue";
-
-         this.enabled = false;
-
-         button.Click += new RoutedEventHandler(button_Click);
-
-         InPortData.Add(new PortData("", "Object to inspect", typeof(object)));
-         OutPortData = new PortData("", "Object inspected", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      private bool _enabled;
-      private bool enabled
-      {
-         get { return _enabled; }
-         set
-         {
-            _enabled = value;
-            button.IsEnabled = value;
-         }
-      }
-
-      void button_Click(object sender, RoutedEventArgs e)
-      {
-         this.Deselect();
-         enabled = false;
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var result = args[0];
-
-         this.Dispatcher.Invoke(new Action(
-            delegate
+            if (input.IsList)
             {
-               dynElementSettings.SharedInstance.Bench.Log(FScheme.print(result));
+                return Expression.NewList(
+                   FSchemeInterop.Utils.convertSequence(
+                      ((Expression.List)input).Item.Select(
+                         x =>
+                            Expression.NewNumber(Math.Sin(((Expression.Number)x).Item))
+                      )
+                   )
+                );
             }
-         ));
+            else
+            {
+                double theta = ((Expression.Number)input).Item;
+                return Expression.NewNumber(Math.Sin(theta));
+            }
+        }
+    }
 
-         if (dynElementSettings.SharedInstance.Bench.RunInDebug)
-         {
-            button.Dispatcher.Invoke(new Action(
+    [ElementName("Cosine")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Computes the cosine of the given angle.")]
+    [RequiresTransaction(false)]
+    public class dynCos : dynElement
+    {
+        public dynCos()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("cos(θ)", "Cosine value of the given angle", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var input = args[0];
+
+            if (input.IsList)
+            {
+                return Expression.NewList(
+                   FSchemeInterop.Utils.convertSequence(
+                      ((Expression.List)input).Item.Select(
+                         x =>
+                            Expression.NewNumber(Math.Cos(((Expression.Number)x).Item))
+                      )
+                   )
+                );
+            }
+            else
+            {
+                double theta = ((Expression.Number)input).Item;
+                return Expression.NewNumber(Math.Cos(theta));
+            }
+        }
+    }
+
+    [ElementName("Tangent")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Computes the tangent of the given angle.")]
+    [RequiresTransaction(false)]
+    public class dynTan : dynElement
+    {
+        public dynTan()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("tan(θ)", "Tangent value of the given angle", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var input = args[0];
+
+            if (input.IsList)
+            {
+                return Expression.NewList(
+                   FSchemeInterop.Utils.convertSequence(
+                      ((Expression.List)input).Item.Select(
+                         x =>
+                            Expression.NewNumber(Math.Tan(((Expression.Number)x).Item))
+                      )
+                   )
+                );
+            }
+            else
+            {
+                double theta = ((Expression.Number)input).Item;
+                return Expression.NewNumber(Math.Tan(theta));
+            }
+        }
+    }
+
+    #endregion
+
+    #region Control Flow
+
+    //TODO: Setup proper IsDirty smart execution management
+    [ElementName("Perform All")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Executes expressions in a sequence")]
+    [RequiresTransaction(false)]
+    public class dynBegin : dynVariableInput
+    {
+        public dynBegin()
+        {
+            InPortData.Add(new PortData("expr1", "Expression #1", typeof(object)));
+            InPortData.Add(new PortData("expr2", "Expression #2", typeof(object)));
+            OutPortData = new PortData("last", "Result of final expression", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count > 2)
+                base.RemoveInput(sender, args);
+        }
+
+        protected override string getInputRootName()
+        {
+            return "expr";
+        }
+
+        protected override int getNewInputIndex()
+        {
+            return this.InPortData.Count + 1;
+        }
+
+        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        {
+            return new BeginNode(portNames);
+        }
+    }
+
+    //TODO: Setup proper IsDirty smart execution management
+    [ElementName("Apply")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Applies arguments to a function")]
+    [RequiresTransaction(false)]
+    public class dynApply1 : dynVariableInput
+    {
+        public dynApply1()
+        {
+            InPortData.Add(new PortData("func", "Procedure", typeof(object)));
+            OutPortData = new PortData("result", "Result", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        protected override string getInputRootName()
+        {
+            return "arg";
+        }
+
+        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        {
+            return new ApplierNode(portNames.Skip(1));
+        }
+
+        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count > 1)
+                base.RemoveInput(sender, args);
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            foreach (var inport in InPortData.Skip(1))
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+
+                input.SetAttribute("name", inport.NickName);
+
+                dynEl.AppendChild(input);
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == "Input")
+                {
+                    var attr = subNode.Attributes["name"].Value;
+
+                    if (!attr.Equals("func"))
+                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                }
+            }
+            base.ReregisterInputs();
+        }
+    }
+
+    //TODO: Setup proper IsDirty smart execution management
+    [ElementName("If")]
+    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
+    [ElementDescription("Conditional statement")]
+    [RequiresTransaction(false)]
+    public class dynConditional : dynElement
+    {
+        public dynConditional()
+        {
+            InPortData.Add(new PortData("test", "Test block", typeof(bool)));
+            InPortData.Add(new PortData("true", "True block", typeof(object)));
+            InPortData.Add(new PortData("false", "False block", typeof(object)));
+
+            OutPortData = new PortData("result", "Result", typeof(object));
+
+            this.nickNameBlock.FontSize = 20;
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        {
+            return new ConditionalNode();
+        }
+    }
+
+    [ElementName("Debug Breakpoint")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Halts execution until user clicks button.")]
+    [RequiresTransaction(false)]
+    public class dynBreakpoint : dynElement
+    {
+        System.Windows.Controls.Button button;
+
+        public dynBreakpoint()
+        {
+            //add a text box to the input grid of the control
+            button = new System.Windows.Controls.Button();
+            button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            button.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            //inputGrid.RowDefinitions.Add(new RowDefinition());
+            inputGrid.Children.Add(button);
+            System.Windows.Controls.Grid.SetColumn(button, 0);
+            System.Windows.Controls.Grid.SetRow(button, 0);
+            button.Content = "Continue";
+
+            this.enabled = false;
+
+            button.Click += new RoutedEventHandler(button_Click);
+
+            InPortData.Add(new PortData("", "Object to inspect", typeof(object)));
+            OutPortData = new PortData("", "Object inspected", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        private bool _enabled;
+        private bool enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                _enabled = value;
+                button.IsEnabled = value;
+            }
+        }
+
+        void button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Deselect();
+            enabled = false;
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var result = args[0];
+
+            this.Dispatcher.Invoke(new Action(
                delegate
                {
-                  enabled = true;
-                  this.Select();
-                  dynElementSettings.SharedInstance.Bench.ShowElement(this);
+                   dynElementSettings.SharedInstance.Bench.Log(FScheme.print(result));
                }
             ));
 
-            while (enabled)
+            if (dynElementSettings.SharedInstance.Bench.RunInDebug)
             {
-               Thread.Sleep(1);
+                button.Dispatcher.Invoke(new Action(
+                   delegate
+                   {
+                       enabled = true;
+                       this.Select();
+                       dynElementSettings.SharedInstance.Bench.ShowElement(this);
+                   }
+                ));
+
+                while (enabled)
+                {
+                    Thread.Sleep(1);
+                }
             }
-         }
 
-         return result;
-      }
-   }
+            return result;
+        }
+    }
 
-   #endregion
+    #endregion
 
-   #region Mutative Math
+    #region Mutative Math
 
-   //MDJ dynOptimizer added 11/22-11 (or dynEvaluate?)
-   [ElementName("Optimizer")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
-   [RequiresTransaction(false)]
-   public class dynOptimizer : dynElement
-   {
-      TextBox tb;
+    //MDJ dynOptimizer added 11/22-11 (or dynEvaluate?)
+    [ElementName("Optimizer")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
+    [RequiresTransaction(false)]
+    public class dynOptimizer : dynElement
+    {
+        TextBox tb;
 
-      public dynOptimizer()
-      {
-         //add a text box to the input grid of the control
-         tb = new System.Windows.Controls.TextBox();
-         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         inputGrid.Children.Add(tb);
-         System.Windows.Controls.Grid.SetColumn(tb, 0);
-         System.Windows.Controls.Grid.SetRow(tb, 0);
-         tb.Text = "0.0";
-         //tb.IsReadOnly = true;
-         //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-         //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
-         tb.TextChanged += delegate { this.IsDirty = true; };
+        public dynOptimizer()
+        {
+            //add a text box to the input grid of the control
+            tb = new System.Windows.Controls.TextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Text = "0.0";
+            //tb.IsReadOnly = true;
+            //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+            //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+            tb.TextChanged += delegate { this.IsDirty = true; };
 
-         //turn off the border
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         tb.Background = backgroundBrush;
-         tb.BorderThickness = new Thickness(0);
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
 
-         InPortData.Add(new PortData("N", "New Value", typeof(double)));
-         //InPortData.Add(new PortData(null, "I", "Initial Value", typeof(dynDouble)));
+            InPortData.Add(new PortData("N", "New Value", typeof(double)));
+            //InPortData.Add(new PortData(null, "I", "Initial Value", typeof(dynDouble)));
 
 
-         //outport declared in the abstract
+            //outport declared in the abstract
 
-         OutPortData = new PortData("dbl", "The larger value of the input vs. the current value", typeof(double));
+            OutPortData = new PortData("dbl", "The larger value of the input vs. the current value", typeof(double));
 
-         base.RegisterInputsAndOutputs();
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
-         outEl.SetAttribute("value", this.tb.Text);
-         dynEl.AppendChild(outEl);
-      }
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", this.tb.Text);
+            dynEl.AppendChild(outEl);
+        }
 
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name == typeof(double).FullName)
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
             {
-               this.tb.Text = subNode.Attributes[0].Value;
+                if (subNode.Name == typeof(double).FullName)
+                {
+                    this.tb.Text = subNode.Attributes[0].Value;
+                }
             }
-         }
-      }
+        }
 
-      public double currentValue = 0.0;// instead of initialValue for now
+        public double currentValue = 0.0;// instead of initialValue for now
 
-      public double CurrentValue
-      {
-         get { return currentValue; }
-         set
-         {
-            currentValue = value;
-            //NotifyPropertyChanged("CurrentValue");
-         }
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         double newValue = ((Expression.Number)args.Head).Item;
-         if (newValue > this.CurrentValue)
-         {
-            this.CurrentValue = newValue;
-            this.tb.Text = this.CurrentValue.ToString();
-         }
-         return Expression.NewNumber(this.CurrentValue);
-      }
-   }
-
-   //MDJ dynIncrementer added 11/22-11
-   [ElementName("Incrementer")]
-   [ElementCategory(BuiltinElementCategories.MATH)]
-   [ElementDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
-   [RequiresTransaction(false)]
-   public class dynIncrementer : dynElement
-   {
-      TextBox tb;
-
-      public dynIncrementer()
-      {
-         //add a text box to the input grid of the control
-         tb = new System.Windows.Controls.TextBox();
-         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         inputGrid.Children.Add(tb);
-         System.Windows.Controls.Grid.SetColumn(tb, 0);
-         System.Windows.Controls.Grid.SetRow(tb, 0);
-         tb.Text = "0";
-         tb.TextChanged += delegate { this.IsDirty = true; };
-         //tb.IsReadOnly = true;
-         //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-         //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
-
-         //turn off the border
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         tb.Background = backgroundBrush;
-         tb.BorderThickness = new Thickness(0);
-
-         InPortData.Add(new PortData("m", "Max Iterations", typeof(double)));
-         InPortData.Add(new PortData("v", "Value", typeof(double)));
-
-         OutPortData = new PortData("v", "Value", typeof(double));
-
-         base.RegisterInputsAndOutputs();
-
-         //OutPortData[0].Object = numIterations;
-         //OutPortData[1].Object = currentValue;
-      }
-
-
-      public double currentValue = 0.0;// instead of initialValue for now
-
-      public double CurrentValue
-      {
-         get { return currentValue; }
-         set
-         {
-            currentValue = value;
-            //NotifyPropertyChanged("CurrentValue");
-         }
-      }
-
-
-      public int numIterations = 0;
-
-      public int NumIterations
-      {
-         get { return numIterations; }
-         set
-         {
-            numIterations = value;
-            //NotifyPropertyChanged("NumIterations");
-         }
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         double maxIterations = ((Expression.Number)args[0]).Item;
-         double newValue = ((Expression.Number)args[1]).Item;
-         if (newValue != this.CurrentValue)
-         {
-            this.NumIterations++;
-            this.CurrentValue = newValue;
-            this.tb.Dispatcher.Invoke(new Action(
-               delegate { this.tb.Text = this.NumIterations.ToString(); }
-            ));
-         }
-         return Expression.NewNumber(this.NumIterations);
-      }
-   }
-
-   #endregion
-
-   #region Interactive Primitive Types
-
-   #region Base Classes
-
-   class dynTextBox : TextBox
-   {
-      public event Action OnChangeCommitted;
-
-      private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-      //private static Brush waiting = Brushes.Orange;
-
-      public dynTextBox()
-      {
-         //turn off the border
-         Background = clear;
-         BorderThickness = new Thickness(0);
-      }
-
-      private bool numeric;
-      public bool IsNumeric
-      {
-         get { return numeric; }
-         set
-         {
-            numeric = value;
-            if (value && this.Text.Length > 0)
+        public double CurrentValue
+        {
+            get { return currentValue; }
+            set
             {
-               this.Text = dynBench.RemoveChars(
-                  this.Text,
-                  this.Text.ToCharArray()
-                     .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                     .Select(c => c.ToString())
-               );
+                currentValue = value;
+                //NotifyPropertyChanged("CurrentValue");
             }
-         }
-      }
+        }
 
-      private bool pending;
-      public bool Pending
-      {
-         get { return pending; }
-         set
-         {
-            if (value)
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            double newValue = ((Expression.Number)args.Head).Item;
+            if (newValue > this.CurrentValue)
             {
-               this.FontStyle = FontStyles.Italic;
-               this.FontWeight = FontWeights.Bold;
+                this.CurrentValue = newValue;
+                this.tb.Text = this.CurrentValue.ToString();
             }
-            else
+            return Expression.NewNumber(this.CurrentValue);
+        }
+    }
+
+    //MDJ dynIncrementer added 11/22-11
+    [ElementName("Incrementer")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
+    [RequiresTransaction(false)]
+    public class dynIncrementer : dynElement
+    {
+        TextBox tb;
+
+        public dynIncrementer()
+        {
+            //add a text box to the input grid of the control
+            tb = new System.Windows.Controls.TextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Text = "0";
+            tb.TextChanged += delegate { this.IsDirty = true; };
+            //tb.IsReadOnly = true;
+            //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+            //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+
+            InPortData.Add(new PortData("m", "Max Iterations", typeof(double)));
+            InPortData.Add(new PortData("v", "Value", typeof(double)));
+
+            OutPortData = new PortData("v", "Value", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+
+            //OutPortData[0].Object = numIterations;
+            //OutPortData[1].Object = currentValue;
+        }
+
+
+        public double currentValue = 0.0;// instead of initialValue for now
+
+        public double CurrentValue
+        {
+            get { return currentValue; }
+            set
             {
-               this.FontStyle = FontStyles.Normal;
-               this.FontWeight = FontWeights.Normal;
+                currentValue = value;
+                //NotifyPropertyChanged("CurrentValue");
             }
-            pending = value;
-         }
-      }
+        }
 
-      private void commit()
-      {
-         if (this.OnChangeCommitted != null)
-         {
-            this.OnChangeCommitted();
-         }
-         this.Pending = false;
-      }
 
-      new public string Text
-      {
-         get { return base.Text; }
-         set
-         {
-            base.Text = value;
+        public int numIterations = 0;
+
+        public int NumIterations
+        {
+            get { return numIterations; }
+            set
+            {
+                numIterations = value;
+                //NotifyPropertyChanged("NumIterations");
+            }
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            double maxIterations = ((Expression.Number)args[0]).Item;
+            double newValue = ((Expression.Number)args[1]).Item;
+            if (newValue != this.CurrentValue)
+            {
+                this.NumIterations++;
+                this.CurrentValue = newValue;
+                this.tb.Dispatcher.Invoke(new Action(
+                   delegate { this.tb.Text = this.NumIterations.ToString(); }
+                ));
+            }
+            return Expression.NewNumber(this.NumIterations);
+        }
+    }
+
+    #endregion
+
+    #region Interactive Primitive Types
+
+    #region Base Classes
+
+    class dynTextBox : TextBox
+    {
+        public event Action OnChangeCommitted;
+
+        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+        //private static Brush waiting = Brushes.Orange;
+
+        public dynTextBox()
+        {
+            //turn off the border
+            Background = clear;
+            BorderThickness = new Thickness(0);
+        }
+
+        private bool numeric;
+        public bool IsNumeric
+        {
+            get { return numeric; }
+            set
+            {
+                numeric = value;
+                if (value && this.Text.Length > 0)
+                {
+                    this.Text = dynBench.RemoveChars(
+                       this.Text,
+                       this.Text.ToCharArray()
+                          .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                          .Select(c => c.ToString())
+                    );
+                }
+            }
+        }
+
+        private bool pending;
+        public bool Pending
+        {
+            get { return pending; }
+            set
+            {
+                if (value)
+                {
+                    this.FontStyle = FontStyles.Italic;
+                    this.FontWeight = FontWeights.Bold;
+                }
+                else
+                {
+                    this.FontStyle = FontStyles.Normal;
+                    this.FontWeight = FontWeights.Normal;
+                }
+                pending = value;
+            }
+        }
+
+        private void commit()
+        {
+            if (this.OnChangeCommitted != null)
+            {
+                this.OnChangeCommitted();
+            }
+            this.Pending = false;
+        }
+
+        new public string Text
+        {
+            get { return base.Text; }
+            set
+            {
+                base.Text = value;
+                this.commit();
+            }
+        }
+
+        private bool shouldCommit()
+        {
+            return !dynElementSettings.SharedInstance.Bench.DynamicRunEnabled;
+        }
+
+        protected override void OnTextChanged(TextChangedEventArgs e)
+        {
+            this.Pending = true;
+
+            if (this.IsNumeric)
+            {
+                var p = this.CaretIndex;
+
+                base.Text = dynBench.RemoveChars(
+                   this.Text,
+                   this.Text.ToCharArray()
+                      .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
+                      .Select(c => c.ToString())
+                );
+
+                this.CaretIndex = p;
+            }
+        }
+
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
+            {
+                this.commit();
+            }
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
             this.commit();
-         }
-      }
+        }
+    }
 
-      private bool shouldCommit()
-      {
-         return !dynElementSettings.SharedInstance.Bench.DynamicRunEnabled;
-      }
-
-      protected override void OnTextChanged(TextChangedEventArgs e)
-      {
-         this.Pending = true;
-
-         if (this.IsNumeric)
-         {
-            var p = this.CaretIndex;
-
-            base.Text = dynBench.RemoveChars(
-               this.Text,
-               this.Text.ToCharArray()
-                  .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
-                  .Select(c => c.ToString())
-            );
-
-            this.CaretIndex = p;
-         }
-      }
-
-      protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
-      {
-         if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
-         {
-            this.commit();
-         }
-      }
-
-      protected override void OnLostFocus(RoutedEventArgs e)
-      {
-         this.commit();
-      }
-   }
-
-   [IsInteractive(true)]
-   public abstract class dynBasicInteractive<T> : dynElement
-   {
-      private T _value = default(T);
-      public virtual T Value
-      {
-         get
-         {
-            return this._value;
-         }
-         set
-         {
-            if (this._value == null || !this._value.Equals(value))
+    [IsInteractive(true)]
+    public abstract class dynBasicInteractive<T> : dynElement
+    {
+        private T _value = default(T);
+        public virtual T Value
+        {
+            get
             {
-               this._value = value;
-               this.IsDirty = value != null;
+                return this._value;
             }
-         }
-      }
-
-      protected abstract T DeserializeValue(string val);
-
-      public dynBasicInteractive()
-      {
-         Type type = typeof(T);
-         OutPortData = new PortData("", type.Name, type);
-      }
-
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
-         outEl.SetAttribute("value", this.Value.ToString());
-         dynEl.AppendChild(outEl);
-      }
-
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name.Equals(typeof(T).FullName))
+            set
             {
-               this.Value = this.DeserializeValue(subNode.Attributes[0].Value);
+                if (this._value == null || !this._value.Equals(value))
+                {
+                    this._value = value;
+                    this.IsDirty = value != null;
+                }
             }
-         }
-      }
+        }
 
-      public override string PrintExpression()
-      {
-         return this.Value.ToString();
-      }
-   }
+        protected abstract T DeserializeValue(string val);
 
-   public abstract class dynDouble : dynBasicInteractive<double>
-   {
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewNumber(this.Value);
-      }
-   }
+        public dynBasicInteractive()
+        {
+            Type type = typeof(T);
+            OutPortData = new PortData("", type.Name, type);
+        }
 
-   public abstract class dynBool : dynBasicInteractive<bool>
-   {
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewNumber(this.Value ? 1 : 0);
-      }
-   }
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
+            outEl.SetAttribute("value", this.Value.ToString());
+            dynEl.AppendChild(outEl);
+        }
 
-   public abstract class dynString : dynBasicInteractive<string>
-   {
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewString(this.Value);
-      }
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(T).FullName))
+                {
+                    this.Value = this.DeserializeValue(subNode.Attributes[0].Value);
+                }
+            }
+        }
 
-      public override string PrintExpression()
-      {
-         return "\"" + base.PrintExpression() + "\"";
-      }
-   }
+        public override string PrintExpression()
+        {
+            return this.Value.ToString();
+        }
+    }
 
-   #endregion
+    public abstract class dynDouble : dynBasicInteractive<double>
+    {
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(this.Value);
+        }
+    }
 
-   [ElementName("Number")]
-   [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-   [ElementDescription("An element which creates an unsigned floating point number.")]
-   [RequiresTransaction(false)]
-   public class dynDoubleInput : dynDouble
-   {
-      dynTextBox tb;
+    public abstract class dynBool : dynBasicInteractive<bool>
+    {
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(this.Value ? 1 : 0);
+        }
+    }
 
-      public dynDoubleInput()
-      {
-         //add a text box to the input grid of the control
-         tb = new dynTextBox();
-         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         inputGrid.Children.Add(tb);
-         System.Windows.Controls.Grid.SetColumn(tb, 0);
-         System.Windows.Controls.Grid.SetRow(tb, 0);
-         tb.IsNumeric = true;
-         tb.Text = "0.0";
-         tb.OnChangeCommitted += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
+    public abstract class dynString : dynBasicInteractive<string>
+    {
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewString(this.Value);
+        }
 
-         base.RegisterInputsAndOutputs();
+        public override string PrintExpression()
+        {
+            return "\"" + base.PrintExpression() + "\"";
+        }
+    }
 
-         //take out the left and right margins
-         //and make this so it's not so wide
-         this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-         this.topControl.Width = 100;
+    #endregion
 
-         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-      }
+    [ElementName("Number")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementDescription("An element which creates an unsigned floating point number.")]
+    [RequiresTransaction(false)]
+    public class dynDoubleInput : dynDouble
+    {
+        dynTextBox tb;
 
-      public override double Value
-      {
-         get
-         {
-            return base.Value;
-         }
-         set
-         {
-            if (base.Value == value)
-               return;
+        public dynDoubleInput()
+        {
+            //add a text box to the input grid of the control
+            tb = new dynTextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.IsNumeric = true;
+            tb.Text = "0.0";
+            tb.OnChangeCommitted += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
 
-            base.Value = value;
-            this.tb.Text = value.ToString();
-            //this.tb.Pending = false;
-         }
-      }
+            base.RegisterInputsAndOutputs();
 
-      protected override double DeserializeValue(string val)
-      {
-         try
-         {
-            return Convert.ToDouble(val);
-         }
-         catch
-         {
-            return 0;
-         }
-      }
-   }
+            //take out the left and right margins
+            //and make this so it's not so wide
+            this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+            this.topControl.Width = 100;
 
-   //MDJ - added by Matt Jezyk 10.27.2011
-   [ElementName("Number Slider")]
-   [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-   [ElementDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
-   [RequiresTransaction(false)]
-   public class dynDoubleSliderInput : dynDouble
-   {
-      Slider tb_slider;
-      dynTextBox mintb;
-      dynTextBox maxtb;
+            this.UpdateLayout();
+        }
 
-      public dynDoubleSliderInput()
-      {
-         //add a slider control to the input grid of the control
-         tb_slider = new System.Windows.Controls.Slider();
-         tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         inputGrid.Children.Add(tb_slider);
-         System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
-         System.Windows.Controls.Grid.SetRow(tb_slider, 0);
-         tb_slider.Value = 0.0;
-         tb_slider.Maximum = 100.0;
-         tb_slider.Minimum = 0.0;
-         tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
-         tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
-         tb_slider.ValueChanged += delegate { this.Value = this.tb_slider.Value; };
+        public override double Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                if (base.Value == value)
+                    return;
 
-         mintb = new dynTextBox();
-         mintb.MaxLength = 3;
-         mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         mintb.Width = double.NaN;
-         mintb.IsNumeric = true;
-         mintb.Text = "0";
-         mintb.OnChangeCommitted += delegate
-         {
+                base.Value = value;
+                this.tb.Text = value.ToString();
+                //this.tb.Pending = false;
+            }
+        }
+
+        protected override double DeserializeValue(string val)
+        {
             try
             {
-               this.tb_slider.Minimum = Convert.ToDouble(mintb.Text);
+                return Convert.ToDouble(val);
             }
             catch
             {
-               this.tb_slider.Minimum = 0;
+                return 0;
             }
-         };
-         //mintb.Pending = false;
+        }
+    }
 
-         maxtb = new dynTextBox();
-         maxtb.MaxLength = 3;
-         maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         maxtb.Width = double.NaN;
-         maxtb.IsNumeric = true;
-         maxtb.Text = "100";
-         maxtb.OnChangeCommitted += delegate
-         {
+    //MDJ - added by Matt Jezyk 10.27.2011
+    [ElementName("Number Slider")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
+    [RequiresTransaction(false)]
+    public class dynDoubleSliderInput : dynDouble
+    {
+        Slider tb_slider;
+        dynTextBox mintb;
+        dynTextBox maxtb;
+
+        public dynDoubleSliderInput()
+        {
+            //add a slider control to the input grid of the control
+            tb_slider = new System.Windows.Controls.Slider();
+            tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb_slider);
+            System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
+            System.Windows.Controls.Grid.SetRow(tb_slider, 0);
+            tb_slider.Value = 0.0;
+            tb_slider.Maximum = 100.0;
+            tb_slider.Minimum = 0.0;
+            tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
+            tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
+            tb_slider.ValueChanged += delegate { this.Value = this.tb_slider.Value; };
+
+            mintb = new dynTextBox();
+            mintb.MaxLength = 3;
+            mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            mintb.Width = double.NaN;
+            mintb.IsNumeric = true;
+            mintb.Text = "0";
+            mintb.OnChangeCommitted += delegate
+            {
+                try
+                {
+                    this.tb_slider.Minimum = Convert.ToDouble(mintb.Text);
+                }
+                catch
+                {
+                    this.tb_slider.Minimum = 0;
+                }
+            };
+            //mintb.Pending = false;
+
+            maxtb = new dynTextBox();
+            maxtb.MaxLength = 3;
+            maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            maxtb.Width = double.NaN;
+            maxtb.IsNumeric = true;
+            maxtb.Text = "100";
+            maxtb.OnChangeCommitted += delegate
+            {
+                try
+                {
+                    this.tb_slider.Maximum = Convert.ToDouble(maxtb.Text);
+                }
+                catch
+                {
+                    this.tb_slider.Maximum = 0;
+                }
+            };
+            //maxtb.Pending = false;
+
+            this.SetColumnAmount(3);
+            inputGrid.Children.Add(mintb);
+            inputGrid.Children.Add(maxtb);
+
+            System.Windows.Controls.Grid.SetColumn(mintb, 0);
+            System.Windows.Controls.Grid.SetColumn(maxtb, 2);
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        protected override double DeserializeValue(string val)
+        {
             try
             {
-               this.tb_slider.Maximum = Convert.ToDouble(maxtb.Text);
+                return Convert.ToDouble(val);
             }
             catch
             {
-               this.tb_slider.Maximum = 0;
+                return 0;
             }
-         };
-         //maxtb.Pending = false;
+        }
 
-         this.SetColumnAmount(3);
-         inputGrid.Children.Add(mintb);
-         inputGrid.Children.Add(maxtb);
-
-         System.Windows.Controls.Grid.SetColumn(mintb, 0);
-         System.Windows.Controls.Grid.SetColumn(maxtb, 2);
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      protected override double DeserializeValue(string val)
-      {
-         try
-         {
-            return Convert.ToDouble(val);
-         }
-         catch
-         {
-            return 0;
-         }
-      }
-
-      public override double Value
-      {
-         set
-         {
-            if (base.Value == value)
-               return;
-
-            if (value > this.tb_slider.Maximum)
+        public override double Value
+        {
+            set
             {
-               this.maxtb.Text = value.ToString();
-               //this.maxtb.Pending = false;
+                if (base.Value == value)
+                    return;
+
+                if (value > this.tb_slider.Maximum)
+                {
+                    this.maxtb.Text = value.ToString();
+                    //this.maxtb.Pending = false;
+                }
+                if (value < this.tb_slider.Minimum)
+                {
+                    this.mintb.Text = value.ToString();
+                    //this.mintb.Pending = false;
+                }
+
+                base.Value = value;
+                this.tb_slider.Value = value;
             }
-            if (value < this.tb_slider.Minimum)
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", this.Value.ToString());
+            outEl.SetAttribute("min", this.tb_slider.Minimum.ToString());
+            outEl.SetAttribute("max", this.tb_slider.Maximum.ToString());
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
             {
-               this.mintb.Text = value.ToString();
-               //this.mintb.Pending = false;
+                if (subNode.Name.Equals(typeof(double).FullName))
+                {
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("value"))
+                            this.Value = this.DeserializeValue(attr.Value);
+                        else if (attr.Name.Equals("min"))
+                        {
+                            //this.tb_slider.Minimum = Convert.ToDouble(attr.Value);
+                            this.mintb.Text = attr.Value;
+                        }
+                        else if (attr.Name.Equals("max"))
+                        {
+                            //this.tb_slider.Maximum = Convert.ToDouble(attr.Value);
+                            this.maxtb.Text = attr.Value;
+                        }
+                    }
+                }
             }
+        }
+    }
 
-            base.Value = value;
-            this.tb_slider.Value = value;
-         }
-      }
+    [ElementName("Boolean")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementDescription("An element which allows selection between a true and false.")]
+    [ElementSearchTags("true", "truth", "false")]
+    [RequiresTransaction(false)]
+    public class dynBoolSelector : dynBool
+    {
+        System.Windows.Controls.RadioButton rbTrue;
+        System.Windows.Controls.RadioButton rbFalse;
 
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
-         outEl.SetAttribute("value", this.Value.ToString());
-         outEl.SetAttribute("min", this.tb_slider.Minimum.ToString());
-         outEl.SetAttribute("max", this.tb_slider.Maximum.ToString());
-         dynEl.AppendChild(outEl);
-      }
+        public dynBoolSelector()
+        {
+            //inputGrid.Margin = new System.Windows.Thickness(5,5,20,5);
 
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name.Equals(typeof(double).FullName))
+            //add a text box to the input grid of the control
+            rbTrue = new System.Windows.Controls.RadioButton();
+            rbFalse = new System.Windows.Controls.RadioButton();
+            rbTrue.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            rbFalse.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+            //use a unique name for the button group
+            //so other instances of this element don't get confused
+            string groupName = Guid.NewGuid().ToString();
+            rbTrue.GroupName = groupName;
+            rbFalse.GroupName = groupName;
+
+            rbTrue.Content = "1";
+            rbFalse.Content = "0";
+
+            RowDefinition rd = new RowDefinition();
+            ColumnDefinition cd1 = new ColumnDefinition();
+            ColumnDefinition cd2 = new ColumnDefinition();
+            inputGrid.ColumnDefinitions.Add(cd1);
+            inputGrid.ColumnDefinitions.Add(cd2);
+            inputGrid.RowDefinitions.Add(rd);
+
+            inputGrid.Children.Add(rbTrue);
+            inputGrid.Children.Add(rbFalse);
+
+            System.Windows.Controls.Grid.SetColumn(rbTrue, 0);
+            System.Windows.Controls.Grid.SetRow(rbTrue, 0);
+            System.Windows.Controls.Grid.SetColumn(rbFalse, 1);
+            System.Windows.Controls.Grid.SetRow(rbFalse, 0);
+
+            rbFalse.IsChecked = true;
+            rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
+            rbFalse.Checked += new System.Windows.RoutedEventHandler(rbFalse_Checked);
+            //OutPortData[0].Object = false;
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        protected override bool DeserializeValue(string val)
+        {
+            try
             {
-               foreach (XmlAttribute attr in subNode.Attributes)
-               {
-                  if (attr.Name.Equals("value"))
-                     this.Value = this.DeserializeValue(attr.Value);
-                  else if (attr.Name.Equals("min"))
-                  {
-                     //this.tb_slider.Minimum = Convert.ToDouble(attr.Value);
-                     this.mintb.Text = attr.Value;
-                  }
-                  else if (attr.Name.Equals("max"))
-                  {
-                     //this.tb_slider.Maximum = Convert.ToDouble(attr.Value);
-                     this.maxtb.Text = attr.Value;
-                  }
-               }
+                return val.ToLower().Equals("true");
             }
-         }
-      }
-   }
-
-   [ElementName("Boolean")]
-   [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-   [ElementDescription("An element which allows selection between a true and false.")]
-   [ElementSearchTags("true", "truth", "false")]
-   [RequiresTransaction(false)]
-   public class dynBoolSelector : dynBool
-   {
-      System.Windows.Controls.RadioButton rbTrue;
-      System.Windows.Controls.RadioButton rbFalse;
-
-      public dynBoolSelector()
-      {
-         //inputGrid.Margin = new System.Windows.Thickness(5,5,20,5);
-
-         //add a text box to the input grid of the control
-         rbTrue = new System.Windows.Controls.RadioButton();
-         rbFalse = new System.Windows.Controls.RadioButton();
-         rbTrue.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         rbFalse.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-         //use a unique name for the button group
-         //so other instances of this element don't get confused
-         string groupName = Guid.NewGuid().ToString();
-         rbTrue.GroupName = groupName;
-         rbFalse.GroupName = groupName;
-
-         rbTrue.Content = "1";
-         rbFalse.Content = "0";
-
-         RowDefinition rd = new RowDefinition();
-         ColumnDefinition cd1 = new ColumnDefinition();
-         ColumnDefinition cd2 = new ColumnDefinition();
-         inputGrid.ColumnDefinitions.Add(cd1);
-         inputGrid.ColumnDefinitions.Add(cd2);
-         inputGrid.RowDefinitions.Add(rd);
-
-         inputGrid.Children.Add(rbTrue);
-         inputGrid.Children.Add(rbFalse);
-
-         System.Windows.Controls.Grid.SetColumn(rbTrue, 0);
-         System.Windows.Controls.Grid.SetRow(rbTrue, 0);
-         System.Windows.Controls.Grid.SetColumn(rbFalse, 1);
-         System.Windows.Controls.Grid.SetRow(rbFalse, 0);
-
-         rbFalse.IsChecked = true;
-         rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
-         rbFalse.Checked += new System.Windows.RoutedEventHandler(rbFalse_Checked);
-         //OutPortData[0].Object = false;
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      protected override bool DeserializeValue(string val)
-      {
-         try
-         {
-            return val.ToLower().Equals("true");
-         }
-         catch
-         {
-            return false;
-         }
-      }
-
-      public override bool Value
-      {
-         set
-         {
-            base.Value = value;
-            if (value)
+            catch
             {
-               this.rbFalse.IsChecked = false;
-               this.rbTrue.IsChecked = true;
+                return false;
             }
-            else
+        }
+
+        public override bool Value
+        {
+            set
             {
-               this.rbFalse.IsChecked = true;
-               this.rbTrue.IsChecked = false;
+                base.Value = value;
+                if (value)
+                {
+                    this.rbFalse.IsChecked = false;
+                    this.rbTrue.IsChecked = true;
+                }
+                else
+                {
+                    this.rbFalse.IsChecked = true;
+                    this.rbTrue.IsChecked = false;
+                }
             }
-         }
-      }
+        }
 
-      void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
-      {
-         this.Value = false;
-      }
+        void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.Value = false;
+        }
 
-      void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
-      {
-         this.Value = true;
-      }
-   }
+        void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.Value = true;
+        }
+    }
 
-   [ElementName("String")]
-   [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-   [ElementDescription("An element which creates a string value.")]
-   [RequiresTransaction(false)]
-   public class dynStringInput : dynString
-   {
-      dynTextBox tb;
+    [ElementName("String")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementDescription("An element which creates a string value.")]
+    [RequiresTransaction(false)]
+    public class dynStringInput : dynString
+    {
+        dynTextBox tb;
 
-      public dynStringInput()
-      {
-         //add a text box to the input grid of the control
-         tb = new dynTextBox();
-         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         inputGrid.Children.Add(tb);
-         System.Windows.Controls.Grid.SetColumn(tb, 0);
-         System.Windows.Controls.Grid.SetRow(tb, 0);
-         tb.Text = "";
+        public dynStringInput()
+        {
+            //add a text box to the input grid of the control
+            tb = new dynTextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Text = "";
 
-         tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
+            tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
 
-         base.RegisterInputsAndOutputs();
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      public override string Value
-      {
-         set
-         {
-            if (base.Value == value)
-               return;
+        public override string Value
+        {
+            set
+            {
+                if (base.Value == value)
+                    return;
 
-            base.Value = value;
-            this.tb.Text = value;
-         }
-      }
+                base.Value = value;
+                this.tb.Text = value;
+            }
+        }
 
-      void tb_LostFocus(object sender, RoutedEventArgs e)
-      {
-         this.Value = this.tb.Text;
-      }
-
-      void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-      {
-         if (e.Key.Equals(Keys.Enter))
+        void tb_LostFocus(object sender, RoutedEventArgs e)
+        {
             this.Value = this.tb.Text;
-      }
+        }
 
-      protected override string DeserializeValue(string val)
-      {
-         return val;
-      }
-   }
+        void tb_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key.Equals(Keys.Enter))
+                this.Value = this.tb.Text;
+        }
 
-   [ElementName("Filename")]
-   [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-   [ElementDescription("Allows you to select a file on the system to get its filename.")]
-   [RequiresTransaction(false)]
-   public class dynStringFilename : dynString
-   {
-      System.Windows.Controls.TextBox tb;
-
-      public dynStringFilename()
-      {
-         //add a button to the inputGrid on the dynElement
-         System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
-         readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-         readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-         readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
-         readFileButton.Content = "Browse...";
-         readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-         tb = new TextBox();
-         tb.Text = "No file selected.";
-         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         tb.Background = backgroundBrush;
-         tb.BorderThickness = new Thickness(0);
-         tb.IsReadOnly = true;
-         tb.IsReadOnlyCaretVisible = false;
-         tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); };
-
-         this.SetRowAmount(2);
-
-         this.inputGrid.Children.Add(tb);
-         this.inputGrid.Children.Add(readFileButton);
-
-         System.Windows.Controls.Grid.SetRow(readFileButton, 0);
-         System.Windows.Controls.Grid.SetRow(tb, 1);
-
-         base.RegisterInputsAndOutputs();
-
-         this.topControl.Height = 60;
-         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
-      }
-
-      public override string Value
-      {
-         get
-         {
-            return base.Value;
-         }
-         set
-         {
-            base.Value = value;
-
-            this.tb.Text = string.IsNullOrEmpty(this.Value)
-               ? "No file selected."
-               : this.Value;
-         }
-      }
-
-      protected override string DeserializeValue(string val)
-      {
-         if (File.Exists(val))
-         {
+        protected override string DeserializeValue(string val)
+        {
             return val;
-         }
-         else
-         {
-            return "";
-         }
-      }
+        }
+    }
 
-      void readFileButton_Click(object sender, RoutedEventArgs e)
-      {
-         OpenFileDialog openDialog = new OpenFileDialog();
+    [ElementName("Filename")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementDescription("Allows you to select a file on the system to get its filename.")]
+    [RequiresTransaction(false)]
+    public class dynStringFilename : dynString
+    {
+        System.Windows.Controls.TextBox tb;
 
-         if (openDialog.ShowDialog() == DialogResult.OK)
-         {
-            this.Value = openDialog.FileName;
-         }
-      }
+        public dynStringFilename()
+        {
+            //add a button to the inputGrid on the dynElement
+            System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
+            readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
+            readFileButton.Content = "Browse...";
+            readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         if (string.IsNullOrEmpty(this.Value))
-            throw new Exception("No file selected.");
+            tb = new TextBox();
+            tb.Text = "No file selected.";
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+            tb.IsReadOnly = true;
+            tb.IsReadOnlyCaretVisible = false;
+            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); };
 
-         return base.Evaluate(args);
-      }
-   }
+            this.SetRowAmount(2);
 
-   #endregion
+            this.inputGrid.Children.Add(tb);
+            this.inputGrid.Children.Add(readFileButton);
+
+            System.Windows.Controls.Grid.SetRow(readFileButton, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 1);
+
+            base.RegisterInputsAndOutputs();
+
+            this.topControl.Height = 60;
+            this.UpdateLayout();
+        }
+
+        public override string Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = value;
+
+                this.tb.Text = string.IsNullOrEmpty(this.Value)
+                   ? "No file selected."
+                   : this.Value;
+            }
+        }
+
+        protected override string DeserializeValue(string val)
+        {
+            if (File.Exists(val))
+            {
+                return val;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        void readFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog();
+
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                this.Value = openDialog.FileName;
+            }
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            if (string.IsNullOrEmpty(this.Value))
+                throw new Exception("No file selected.");
+
+            return base.Evaluate(args);
+        }
+    }
+
+    #endregion
 }
 
