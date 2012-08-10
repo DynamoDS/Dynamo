@@ -85,6 +85,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy .\DragCanvas.dll ..\..\..\DynamoRevit\bin\Debug\DragCanvas.dll
+copy .\DragCanvas.pdb ..\..\..\DynamoRevit\bin\Debug\DragCanvas.pdb</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

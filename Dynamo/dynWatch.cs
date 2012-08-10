@@ -56,13 +56,22 @@ namespace Dynamo.Elements
             //take out the left and right margins
             //and make this so it's not so wide
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            this.topControl.Width = 500;
-            this.topControl.Height = 300;
+            this.topControl.Width = 300;
+            this.topControl.Height = 200;
 
             wt = new WatchTree();
             this.inputGrid.Children.Add(wt);
             wtb = wt.FindResource("Tree") as WatchTreeBranch;
 
+            foreach (dynPort p in this.InPorts)
+            {
+                p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+            }
+        }
+
+        void p_PortDisconnected(object sender, EventArgs e)
+        {
+            wtb.Clear();
         }
 
         /*
@@ -105,8 +114,6 @@ namespace Dynamo.Elements
                 delegate
                 {
                     wtb.Clear();
-                    //WatchNode wn = new WatchNode(args.GetType().ToString());
-                    //wtb.Add(wn);
 
                     foreach (Expression e in args)
                     {
@@ -118,6 +125,11 @@ namespace Dynamo.Elements
 
             //return the content that has been gathered
             return Expression.NewString(content);
+        }
+
+        public void ShowClickedElementInView()
+        {
+
         }
 
         WatchNode Process(Expression eIn, ref string content, string prefix, int count)
@@ -138,15 +150,16 @@ namespace Dynamo.Elements
                     id = revitEl.Id.ToString();
                 }
                 content += (eIn as Expression.Container).Item.ToString() + ":" + id + "\n";
-                node = new WatchNode((eIn as Expression.Container).Item.ToString() + ":" + id);
-                //node.Children.Add(n);
+
+                node = new WatchNode((eIn as Expression.Container).Item.ToString());
+                node.Link = id;
 
             }
             else if (eIn.IsFunction || eIn.IsSpecial)
             {
                 content += eIn.ToString() + "\n";
                 node = new WatchNode(eIn.ToString());
-                //node.Children.Add(n);
+
             }
             else if (eIn.IsList)
             {
@@ -156,7 +169,7 @@ namespace Dynamo.Elements
                 int innerCount = 0;
 
                 node = new WatchNode(eIn.GetType().ToString());
-                //node.Children.Add(n);
+
                 foreach(Expression eIn2 in (eIn as Expression.List).Item)
                 {
                     node.Children.Add(Process(eIn2, ref content, newPrefix, innerCount));
@@ -167,19 +180,16 @@ namespace Dynamo.Elements
             {
                 content += (eIn as Expression.Number).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Expression.Number).Item.ToString());
-                //node.Children.Add(n);
             }
             else if (eIn.IsString)
             {
                 content += (eIn as Expression.String).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Expression.String).Item.ToString());
-                //node.Children.Add(n);
             }
             else if (eIn.IsSymbol)
             {
                 content += (eIn as Expression.Symbol).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Expression.Symbol).Item.ToString());
-                //node.Children.Add(n);
             }
 
             return node;
