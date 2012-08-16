@@ -323,5 +323,59 @@ namespace Dynamo.Elements
          }
       }
    }
+
+   [ElementName("Reference Point By Normal")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("Create an element which owns a reference point which is projected from a point by normal and distance.")]
+   [RequiresTransaction(true)]
+   public class dynPointNormalDistance : dynElement
+   {
+       public dynPointNormalDistance()
+       {
+           InPortData.Add(new PortData("pt", "The point to reference", typeof(object)));
+           InPortData.Add(new PortData("norm", "The normal", typeof(object)));
+           InPortData.Add(new PortData("d", "The offset distance", typeof(object)));
+           OutPortData = new PortData("pt", "Point", typeof(ReferencePoint));
+
+           base.RegisterInputsAndOutputs();
+       }
+
+       public override Expression Evaluate(FSharpList<Expression> args)
+       {
+           foreach (ElementId el in this.Elements)
+           {
+               Element e;
+               if (dynUtils.TryGetElement(el, out e))
+               {
+                   this.UIDocument.Document.Delete(el);
+               }
+           }
+           ReferencePoint p = null;
+
+           ReferencePoint pt = ((Expression.Container)args[0]).Item as ReferencePoint;
+           XYZ norm = ((Expression.Container)args[1]).Item as XYZ;
+           double dist = ((Expression.Number)args[2]).Item;
+
+           XYZ location = null;
+           PointElementReference per = pt.GetPointElementReference();
+
+           if(pt.GetPointElementReference().GetType() == typeof(PointOnFace))
+           {
+               //gather information about the point
+               PointOnFace pof = per as PointOnFace;
+               Reference faceRef = pof.GetFaceReference();
+               Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+               location = f.Evaluate(pof.UV);
+
+               p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(location + norm.Normalize().Multiply(dist));
+               this.Elements.Add(p.Id);
+
+           }
+
+           return Expression.NewContainer(p);
+       }
+       
+   }
+    
 }
 
