@@ -561,82 +561,6 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// This method adds dynElements when selected in the menu
-        /// </summary>
-        /// <param name="elementType"></param>
-        /// <param name="nickName"></param>
-        /// <param name="guid"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        //public dynElement AddDynElement(Type elementType, Assembly assem, string nickName, Guid guid, double x, double y)
-        //{
-        //   try
-        //   {
-        //      //http://msdn.microsoft.com/en-us/library/ms173139.aspx
-        //      //http://stackoverflow.com/questions/4993098/wpf-control-throwing-resource-identified-by-the-uri-missing-exception
-        //      //http://www.matthidinger.com/archive/2008/10/12/managed-addin-framework-system.addin-with-wpf.aspx
-
-        //      //create a new object from a type
-        //      //that is passed in
-        //      //dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] { nickName });
-        //      var obj = Activator.CreateInstanceFrom(assem.Location, elementType.FullName);
-        //      //var obj = Activator.CreateInstanceFrom(
-        //      //   assem.Location,
-        //      //   elementType.FullName,
-        //      //   false,
-        //      //   BindingFlags.CreateInstance,
-        //      //   null,
-        //      //   new object[] { this },
-        //      //   null,
-        //      //   new object[] { }
-        //      //);
-        //      dynElement el = (dynElement)obj.Unwrap();
-
-        //      el.GUID = guid;
-
-        //      //store the element in the elements list
-        //      this.Elements.Add(el);
-
-        //      //Add the element to the workbench
-        //      workBench.Children.Add(el);
-
-        //      x -= el.Width / 2;
-        //      y -= el.Height / 2;
-
-        //      while (this.Elements.Any(
-        //         delegate(dynElement e)
-        //         {
-        //            var left = Canvas.GetLeft(e);
-        //            var top = Canvas.GetTop(e);
-
-        //            var absLeft = Math.Abs(left - x);
-        //            var absTop = Math.Abs(top - y);
-
-        //            return absLeft < 15 && absTop < 15;
-        //         }))
-        //      {
-        //         x += 15;
-        //         y += 15;
-        //      }
-
-        //      //Set its initial position based on the center of the element
-        //      Canvas.SetLeft(el, x);
-        //      Canvas.SetTop(el, y);
-
-        //      //create an event on the element itself
-        //      //to update the elements ports and connectors
-        //      el.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
-
-        //      return el;
-        //   }
-        //   catch (Exception e)
-        //   {
-        //      dynElementSettings.SharedInstance.Bench.Log(e.Message);
-        //      return null;
-        //   }
-        //}
-
-        /// <summary>
         /// This method adds dynElements when opening from a file
         /// </summary>
         /// <param name="elementType"></param>
@@ -645,7 +569,10 @@ namespace Dynamo.Controls
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public dynElement AddDynElement(Type elementType, string nickName, Guid guid, double x, double y, dynWorkspace ws, System.Windows.Visibility vis = System.Windows.Visibility.Visible)
+        public dynElement AddDynElement(
+            Type elementType, string nickName, Guid guid, 
+            double x, double y, dynWorkspace ws, 
+            System.Windows.Visibility vis = System.Windows.Visibility.Visible)
         {
             try
             {
