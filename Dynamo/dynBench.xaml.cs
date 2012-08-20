@@ -2022,21 +2022,28 @@ namespace Dynamo.Controls
 
         public void RunExpression(bool debug, bool showErrors = true)
         {
+            //If we're already running, do nothing.
             if (this.Running)
                 return;
 
             //TODO: Hack. Might cause things to break later on...
+            //Reset Cancel and Rerun flags
             this.CancelRun = false;
             this.runAgain = false;
 
+            //We are now considered running
             this.Running = true;
 
+            //Set run auto flag
             this.dynamicRun = !showErrors;
 
+            //Setup background worker
             BackgroundWorker worker = new BackgroundWorker();
-
             worker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
+                /* Execution Thread */
+
+                //Get our entry points (elements with nothing connected to output)
                 var topElements = this.homeSpace.Elements.Where(
                    x => !x.OutPort.Connectors.Any()
                 );
@@ -2048,12 +2055,16 @@ namespace Dynamo.Controls
                 //TODO: Flesh out error handling
                 try
                 {
+                    //Run Delegate
                     Action run = delegate
                     {
+                        //For each entry point...
                         foreach (dynElement topMost in topElements)
                         {
+                            //Build the expression from the entry point.
                             Expression runningExpression = topMost.Build().Compile();
 
+                            //Print some stuff if we're in debug mode
                             if (debug)
                             {
                                 //string exp = FScheme.print(runningExpression);
@@ -2068,8 +2079,10 @@ namespace Dynamo.Controls
 
                             try
                             {
+                                //Evaluate the expression
                                 var expr = this.Environment.Evaluate(runningExpression);
 
+                                //Print some more stuff if we're in debug mode
                                 if (debug && expr != null)
                                 {
                                     this.Dispatcher.Invoke(new Action(
@@ -2079,14 +2092,21 @@ namespace Dynamo.Controls
                             }
                             catch (CancelEvaluationException ex)
                             {
+                                /* Evaluation was cancelled */
+
                                 this.CancelTransaction();
                                 this.CancelRun = false;
                                 if (ex.Force)
                                     this.runAgain = false;
+
+                                //Stop evaluation of other entry points.
                                 break;
                             }
                             catch (Exception ex)
                             {
+                                /* Evaluation failed due to error */
+
+                                //Print unhandled exception
                                 if (ex.Message.Length > 0)
                                 {
                                     this.Dispatcher.Invoke(new Action(
@@ -2096,65 +2116,88 @@ namespace Dynamo.Controls
                                 this.CancelTransaction();
                                 this.CancelRun = false;
                                 this.runAgain = false;
+
+                                //Stop evaluation of other entry points.
                                 break;
                             }
                         }
 
-                        Action delete = delegate
+                        //Cleanup Delegate
+                        Action cleanup = delegate
                         {
-                            this.InitTransaction();
+                            this.InitTransaction(); //Initialize a transaction (if one hasn't been aleady)
 
+                            //Reset all elements
                             foreach (var element in this.AllElements)
                                 element.ResetRuns();
 
-                            this.EndTransaction();
+                            //////
+                            /* FOR NON-DEBUG RUNS, THIS IS THE ACTUAL END POINT FOR DYNAMO TRANSACTION */
+                            //////
+
+                            this.EndTransaction(); //Close global transaction.
                         };
 
+                        //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
+                        //from the idle thread. Otherwise, just run it in this thread.
                         if (debug || !this.InIdleThread)
-                            IdlePromise.ExecuteOnIdle(delete, false);
+                            IdlePromise.ExecuteOnIdle(cleanup, false);
                         else
-                            delete();
+                            cleanup();
                     };
 
+                    //If we are not running in debug...
                     if (!debug)
                     {
-                        bool manTran = topElements.Any(x => x.RequiresManualTransaction());
-                        bool allInIdleThread = manTran || topElements.All(x => !x.RequiresTransaction());
+                        //Do we need manual transaction control?
+                        bool manualTrans = topElements.Any(x => x.RequiresManualTransaction());
+                        
+                        //Can we avoid running everything in the Revit Idle thread?
+                        bool noIdleThread = manualTrans || topElements.All(x => !x.RequiresTransaction());
 
-                        if (allInIdleThread)
+                        //If we don't need to be in the idle thread...
+                        if (noIdleThread)
                         {
-                            this.TransMode = TransactionMode.Manual;
-                            this.InIdleThread = false;
-                            run();
+                            this.TransMode = TransactionMode.Manual; //Manual transaction control
+                            this.InIdleThread = false; //Not in idle thread at the moment
+                            run(); //Just run the Run Delegate
                         }
-                        else
+                        else //otherwise...
                         {
-                            this.TransMode = TransactionMode.Automatic;
-                            this.InIdleThread = true;
-                            IdlePromise.ExecuteOnIdle(run, false);
+                            this.TransMode = TransactionMode.Automatic; //Automatic transaction control
+                            this.InIdleThread = true; //Now in the idle thread.
+                            IdlePromise.ExecuteOnIdle(run, false); //Execute the Run Delegate in the Idle thread.
                         }
                     }
-                    else
+                    else //If we are in debug mode...
                     {
-                        this.TransMode = TransactionMode.Debug;
-                        this.InIdleThread = true;
+                        this.TransMode = TransactionMode.Debug; //Debug transaction control
+                        this.InIdleThread = true; //Everything will be evaluated in the idle thread.
 
                         this.Dispatcher.Invoke(new Action(
                            () => Log("Running expression in debug.")
                         ));
 
+                        //Execute the Run Delegate.
                         run();
                     }
                 }
                 catch (CancelEvaluationException ex)
                 {
+                    /* Evaluation was cancelled */
+
                     this.CancelTransaction();
-                    this.CancelRun = false;
+                    this.CancelRun = false; //Reset cancel flag
+                    
+                    //If we are forcing this, then make sure we don't run again either.
                     if (ex.Force)
                         this.runAgain = false;
                 }
                 catch (Exception ex)
                 {
+                    /* Evaluation has an error */
+
+                    //Catch unhandled exception
                     if (ex.Message.Length > 0)
                     {
                         this.Dispatcher.Invoke(new Action(
@@ -2163,11 +2206,16 @@ namespace Dynamo.Controls
                     }
 
                     this.CancelTransaction();
+
+                    //Reset the flags
                     this.runAgain = false;
                     this.CancelRun = false;
                 }
                 finally
                 {
+                    /* Post-evaluation cleanup */
+
+                    //Re-enable run button
                     this.runButton.Dispatcher.Invoke(new Action(
                        delegate
                        {
@@ -2175,10 +2223,16 @@ namespace Dynamo.Controls
                        }
                     ));
 
+                    //No longer running
                     this.Running = false;
+
+                    //If we should run again...
                     if (this.runAgain)
                     {
+                        //Reset flag
                         this.runAgain = false;
+                        
+                        //Run this method again from the main thread
                         this.Dispatcher.BeginInvoke(new Action(
                            delegate
                            {
@@ -2189,10 +2243,12 @@ namespace Dynamo.Controls
                 }
             };
 
+            //Disable Run Button
             this.runButton.Dispatcher.Invoke(new Action(
                delegate { this.runButton.IsEnabled = false; }
             ));
 
+            //Let's start
             worker.RunWorkerAsync();
         }
 

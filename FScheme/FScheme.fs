@@ -441,7 +441,7 @@ and environment =
        "<", ref (Function(LT))
        ">", ref (Function(GT))
        "=", ref (Function(EQ))
-       "empty", ref (List(List.Empty))
+       "empty", ref (List([]))
        "empty?", ref (Function(IsEmpty))
        "reverse", ref (Function(Rev))
        "rev", ref (Function(Rev))

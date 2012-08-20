@@ -1026,7 +1026,43 @@ namespace Dynamo.Elements
         /// <returns>The INode representation of this Element.</returns>
         protected internal virtual INode Build()
         {
-            return this.compile(this.InPortData.Select(x => x.NickName));
+            //Fetch the names of input ports.
+            var portNames = this.InPortData.Select(x => x.NickName);
+            
+            //Compile the procedure for this node.
+            ProcedureCallNode node = this.Compile(portNames);
+
+            //Is this a partial application?
+            var partial = false;
+
+            //For each index in InPortData
+            for (int i = 0; i < this.InPortData.Count; i++)
+            {
+                //Fetch the corresponding port
+                var port = this.InPorts[i];
+
+                //If this port has connectors...
+                if (port.Connectors.Any())
+                {
+                    //Fetch the corresponding info for the port.
+                    var data = this.InPortData[i];
+
+                    //Compile input and connect it
+                    node.ConnectInput(
+                       data.NickName,
+                       port.Connectors[0].Start.Owner.Build()
+                    );
+                }
+                else //othwise, remember that this is a partial application
+                    partial = true;
+            }
+
+            //If this is a partial application, then remember not to re-eval.
+            if (partial)
+                this.IsDirty = false;
+
+            //And we're done
+            return node;
         }
 
         /// <summary>
@@ -1037,15 +1073,18 @@ namespace Dynamo.Elements
         /// <returns>A ProcedureCallNode which will then be processed recursively to be connected to its inputs.</returns>
         protected internal virtual ProcedureCallNode Compile(IEnumerable<string> portNames)
         {
+            //If we are optimizing re-calcs...
             if (this.SaveResult)
             {
+                //Return a Macro that calls evalIfDirty
                 return new ExternalMacroNode(
                    new ExternMacro(this.evalIfDirty),
                    portNames
                 );
             }
-            else
+            else //otherwise...
             {
+                //Return a Function that calls eval.
                 return new ExternalFunctionNode(
                    new FScheme.ExternFunc(this.eval),
                    portNames
@@ -1079,9 +1118,13 @@ namespace Dynamo.Elements
 
         private Expression evalIfDirty(FSharpList<Expression> args, ExecutionEnvironment environment)
         {
+            //If this node requires a re-calc or if we haven't calc'd yet...
             if (this.IsDirty || this.oldValue == null)
             {
+                //Store the environment
                 this.macroEnvironment = environment;
+                
+                //Evaluate arguments, then evaluate this.
                 this.oldValue = this.eval(
                    Utils.convertSequence(
                       args.Select(
@@ -1090,42 +1133,17 @@ namespace Dynamo.Elements
                    )
                 );
             }
-            else
+            else //Otherwise, just increment the run counter.
                 this.runCount++;
+
+            //We're done here
             return this.oldValue;
-        }
-
-
-        private INode compile(IEnumerable<string> portNames)
-        {
-            var node = this.Compile(portNames);
-
-            var partial = false;
-
-            for (int i = 0; i < this.InPortData.Count; i++)
-            {
-                var port = this.InPorts[i];
-                if (port.Connectors.Count > 0)
-                {
-                    var data = this.InPortData[i];
-                    node.ConnectInput(
-                       data.NickName,
-                       port.Connectors[0].Start.Owner.Build()
-                    );
-                }
-                else
-                    partial = true;
-            }
-
-            if (partial)
-                this.IsDirty = false;
-
-            return node;
         }
 
 
         protected internal Expression eval(FSharpList<Expression> args)
         {
+            //For convenience, store the bench.
             var bench = dynElementSettings.SharedInstance.Bench;
 
             if (this.SaveResult)
