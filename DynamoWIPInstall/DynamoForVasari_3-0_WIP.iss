@@ -56,8 +56,8 @@ Source: Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
 Source: readme.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoForVasariWIP
 Source: fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP
 ;Training Files
-Source: Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
-Source: Definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
+Source: samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
+Source: definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
 
 [UninstallDelete]
 Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\TP2.5\DynamoforVasari_2.5_WIP.addin"
