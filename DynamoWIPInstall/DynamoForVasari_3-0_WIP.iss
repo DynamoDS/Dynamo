@@ -60,7 +60,7 @@ Source: samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereado
 Source: definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
 
 [UninstallDelete]
-Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\TP2.5\DynamoforVasari_2.5_WIP.addin"
+Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\2013\DynamoforVasari_3-0_WIP.addin"
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
