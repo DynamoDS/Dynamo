@@ -3107,11 +3107,6 @@ namespace Dynamo.Controls
       {
          this.dynamicCheckBox.IsEnabled = true;
       }
-
-      private void _this_Loaded(object sender, RoutedEventArgs e)
-      {
-          WindowState = WindowState.Maximized;
-      }
    }
 
     public class dynSelection : ObservableCollection<dynElement>

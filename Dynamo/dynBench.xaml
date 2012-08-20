@@ -15,8 +15,7 @@
         Closed="WindowClosed" 
         MinHeight="600" 
         MinWidth="800" 
-        Title="Dynamo"
-        Loaded="_this_Loaded">
+        Title="Dynamo">
    <Grid>
       <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Name="menu1">
          <MenuItem Header="_File" Name="fileMenu">

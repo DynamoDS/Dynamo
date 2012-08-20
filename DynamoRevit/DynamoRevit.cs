@@ -166,7 +166,7 @@ namespace Dynamo.Applications
                     delegate
                     {
                         //get window handle
-                        IntPtr h = Process.GetCurrentProcess().MainWindowHandle;
+                        IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
                         //prepare and show splash
                         splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
@@ -176,21 +176,23 @@ namespace Dynamo.Applications
                         dynamoForm = new dynBench(DynamoRevitApp.updater, splashScreen);
 
                         //set window handle and show dynamo
-                        new System.Windows.Interop.WindowInteropHelper(dynamoForm).Owner = h;
-
-                        dynamoForm.WindowStartupLocation = WindowStartupLocation.Manual;
+                        new System.Windows.Interop.WindowInteropHelper(dynamoForm).Owner = mwHandle;
 
                         if (System.Windows.Forms.SystemInformation.MonitorCount > 1)
                         {
+                            dynamoForm.WindowStartupLocation = WindowStartupLocation.Manual;
+
                             System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[1].Bounds;
                             dynamoForm.Left = bounds.X;
                             dynamoForm.Top = bounds.Y;
+                            dynamoForm.Loaded += new RoutedEventHandler(dynamoForm_Loaded);
                         }
                         else
                         {
-                            System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[0].Bounds;
-                            dynamoForm.Left = bounds.X;
-                            dynamoForm.Top = bounds.Y;
+                            //System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[0].Bounds;
+                            //dynamoForm.Left = bounds.X;
+                            //dynamoForm.Top = bounds.Y;
+                            dynamoForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                         }
 
                         dynamoForm.Show();
@@ -207,6 +209,11 @@ namespace Dynamo.Applications
             }
 
             return Autodesk.Revit.UI.Result.Succeeded;
+        }
+
+        void dynamoForm_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((dynBench)sender).WindowState = WindowState.Maximized;
         }
     }
 
