@@ -278,11 +278,7 @@ namespace Dynamo.Elements
             inPortTextBlocks = new Dictionary<dynPort, TextBlock>();
 
             stateSetter = new SetStateDelegate(SetState);
-            Dispatcher.BeginInvoke(
-               stateSetter,
-               System.Windows.Threading.DispatcherPriority.Background,
-               new object[] { this, ElementState.DEAD }
-            );
+            this.State = ElementState.DEAD;
 
             //Fetch the element name from the custom attribute.
             var nameArray = this.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true);
