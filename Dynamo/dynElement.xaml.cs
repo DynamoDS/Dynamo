@@ -1173,6 +1173,7 @@ namespace Dynamo.Elements
                 if (useTransaction)
                 {
                     #region using transaction
+
                     if (!debug)
                     {
                         #region no debug
@@ -1260,7 +1261,9 @@ namespace Dynamo.Elements
 
                                    bench.EndTransaction();
 
-                                   this.ValidateConnections();
+                                   Dispatcher.BeginInvoke(new Action(
+                                       () => this.ValidateConnections()
+                                   ));
 
                                    return exp;
                                }
@@ -1314,7 +1317,9 @@ namespace Dynamo.Elements
 
                         elementsHaveBeenDeleted = false;
 
-                        this.ValidateConnections();
+                        Dispatcher.BeginInvoke(new Action(
+                            () => this.ValidateConnections()
+                        ));
                     }
                     catch (CancelEvaluationException ex)
                     {
