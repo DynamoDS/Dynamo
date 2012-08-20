@@ -52,6 +52,54 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("XYZ Scale")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("An element which multiplies each component of an XYZ by a number.")]
+    [RequiresTransaction(false)]
+    public class dynXYZScale : dynElement
+    {
+        public dynXYZScale()
+        {
+            InPortData.Add(new PortData("XYZ", "XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("n", "Scale value.", typeof(double)));
+            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            XYZ xyz = (XYZ)((Expression.Container)args[0]).Item;
+            double n = ((Expression.Number)args[1]).Item;
+
+            return Expression.NewContainer(xyz.Multiply(n));
+        }
+    }
+
+    [ElementName("XYZ Add")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("An element which adds the components of two XYZs.")]
+    [RequiresTransaction(false)]
+    public class dynXYZAdd : dynElement
+    {
+        public dynXYZAdd()
+        {
+            InPortData.Add(new PortData("XYZa", "XYZ a", typeof(XYZ)));
+            InPortData.Add(new PortData("XYZb", "XYZ b", typeof(XYZ)));
+            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            XYZ xyza = (XYZ)((Expression.Container)args[0]).Item;
+            XYZ xyzb = (XYZ)((Expression.Container)args[1]).Item;
+
+            return Expression.NewContainer(xyza + xyzb);
+        }
+    }
+
     [ElementName("XYZ Grid")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a grid of reference points.")]

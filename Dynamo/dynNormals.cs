@@ -21,23 +21,24 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Elements
 {
-    [ElementName("Normal")]
+    [ElementName("Evaluate Normal")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Evaluate a point on a face to find the normal.")]
     [RequiresTransaction(false)]
-    class dynNormals:dynElement
+    class dynNormalEvaluate:dynElement
     {
-        public dynNormals()
+        public dynNormalEvaluate()
         {
-            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
             InPortData.Add(new PortData("pt", "The point to evaluate.", typeof(object)));
+            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
+            
             OutPortData = new PortData("XYZ", "The normal.", typeof(string));
             base.RegisterInputsAndOutputs();
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            Reference faceRef = (args[0] as Expression.Container).Item as Reference;
+            Reference faceRef = (args[1] as Expression.Container).Item as Reference;
             
             Face f = this.UIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
             XYZ norm = null;
@@ -45,7 +46,7 @@ namespace Dynamo.Elements
             if (f != null)
             {
                 //each item in the list will be a reference point
-                ReferencePoint rp = (args[1] as Expression.Container).Item as ReferencePoint;
+                ReferencePoint rp = (args[0] as Expression.Container).Item as ReferencePoint;
 
                 if (rp != null)
                 {
@@ -62,23 +63,46 @@ namespace Dynamo.Elements
         }
     }
 
-    /*
-    class dynNormal : dynElement
+    [ElementName("Evaluate XYZ")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Evaluate a point on a face to find the XYZ location.")]
+    [RequiresTransaction(false)]
+    class dynXYZEvaluate : dynElement
     {
-        public dynNormal()
+        public dynXYZEvaluate()
         {
+            InPortData.Add(new PortData("pt", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
-            InPortData.Add(new PortData("XYZs", "List of XYZ locations to evaluate.", typeof(object)));
-            OutPortData = new PortData("", "Watch contents.", typeof(string));
+            
+            OutPortData = new PortData("XYZ", "The location.", typeof(string));
             base.RegisterInputsAndOutputs();
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            //the first input will be a list of XYZs 
-            //find the corresponding UV point and normal
-            return Expression.NewList(normals);
+            Reference faceRef = (args[1] as Expression.Container).Item as Reference;
+
+            Face f = this.UIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
+            XYZ loc = null;
+
+            if (f != null)
+            {
+                //each item in the list will be a reference point
+                ReferencePoint rp = (args[0] as Expression.Container).Item as ReferencePoint;
+
+                if (rp != null)
+                {
+                    PointOnFace pof = rp.GetPointElementReference() as PointOnFace;
+
+                    if (pof != null)
+                    {
+                        loc = f.Evaluate(pof.UV);
+                    }
+                }
+            }
+
+            return Expression.NewContainer(loc);
         }
     }
-      */
+
 }

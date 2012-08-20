@@ -73,11 +73,9 @@ limitations under the License.
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>..\..\..\..\vDev\ReleaseWin32\RevitAPI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>..\..\..\..\vDev\ReleaseWin32\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
