@@ -30,7 +30,7 @@ limitations under the License.
 
 Autodesk has contributed new concepts, features and implementation into the Dynamo Open Source project. 
 
-The current version will run on top of Revit 2013 and Project Vasari 3.0. It will be released as a new Project Vasari WIP soon but is available now experimental form on github.
+The current version will run on top of Revit 2013 and Project Vasari Beta 1. It will be released as a new Project Vasari WIP soon but is available now experimental form on github.
 
 Key new features :
 
@@ -39,7 +39,7 @@ Key new features :
 - Python Scripting node – we have integrated a python scripting node into 
 - Math, logic and other nodes – many new nodes added to support evaluation,  iteration and looping
 
-Dynamo For Vasari 3.0 WIP: Integrating Dynamo into Project Vasari and extending Dynamo to support integrated analysis and performance-based design.
+Dynamo For Vasari Beta 1 WIP: Integrating Dynamo into Project Vasari and extending Dynamo to support integrated analysis and performance-based design.
 
 
 
