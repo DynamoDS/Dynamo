@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=Vasari 3.0 WIP Dynamo Add-In
+AppName=Vasari Beta 1 WIP Dynamo Add-In
 AppVerName=Dynamo For Vasari 0.2
 AppPublisher=Autodesk, Inc.
 AppID={{5F61EC1C-39EF-4E21-80DA-55621BB20B2A}
@@ -13,13 +13,13 @@ AppUpdatesURL=
 AppVersion=2013
 VersionInfoVersion=2013.0
 VersionInfoCompany=
-VersionInfoDescription==Vasari 3.0 WIP Dynamo Add-In
-VersionInfoTextVersion==Vasari 3.0 WIP Dynamo Add-In
+VersionInfoDescription==Vasari Beta 1 WIP Dynamo Add-In
+VersionInfoTextVersion==Vasari Beta 1 WIP Dynamo Add-In
 VersionInfoCopyright=
-DefaultDirName=C:\VasariWIP\3-0\Dynamo
+DefaultDirName=C:\VasariWIP\Beta-1\Dynamo
 DefaultGroupName=
 OutputDir=.
-OutputBaseFilename=Vasari_3-0_WIP_Dynamo_Add-In
+OutputBaseFilename=Vasari_Beta-1_WIP_Dynamo_Add-In
 SetupIconFile=Nodes_32_32.ico
 Compression=lzma
 SolidCompression=true
@@ -29,7 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\Nodes_32_32.ico
-UninstallDisplayName=Vasari 3.0 WIP Dynamo Add-In
+UninstallDisplayName=Vasari Beta 1 WIP Dynamo Add-In
 PrivilegesRequired=admin
 UsePreviousAppDir=no
 
@@ -61,7 +61,7 @@ Source: samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereado
 Source: definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
 
 [UninstallDelete]
-Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\2013\DynamoforVasari_3-0_WIP.addin"
+Type: files; Name: "{userappdata}\Autodesk\Vasari\Addins\2013\DynamoforVasari_Beta-1_WIP.addin"
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
@@ -79,7 +79,7 @@ begin
   begin
 
 	{ GET LOCATION OF USER AppData (Roaming) }
-	AddInFilePath := ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2013\DynamoforVasari_3-0_WIP.addin');
+	AddInFilePath := ExpandConstant('{userappdata}\Autodesk\Vasari\Addins\2013\DynamoforVasari_Beta-1_WIP.addin');
 
 	{ CREATE NEW ADDIN FILE }
 	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
