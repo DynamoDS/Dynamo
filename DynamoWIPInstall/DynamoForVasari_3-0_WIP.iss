@@ -31,6 +31,7 @@ UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\Nodes_32_32.ico
 UninstallDisplayName=Vasari 3.0 WIP Dynamo Add-In
 PrivilegesRequired=admin
+UsePreviousAppDir=no
 
 [Types]
 Name: "full"; Description: "Full installation"

@@ -31,6 +31,7 @@ UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\Nodes_32_32.ico   
 UninstallDisplayName=Revit 2013 WIP Dynamo Add-In
 PrivilegesRequired=admin
+UsePreviousAppDir=no
 
 [Types]
 Name: "full"; Description: "Full installation"
