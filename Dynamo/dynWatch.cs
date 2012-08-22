@@ -13,27 +13,14 @@
 //limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Media;
-using System.Xml;
-using Autodesk.Revit.UI;
+
 using Autodesk.Revit.DB;
+
 using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
-using Dynamo.FSchemeInterop.Node;
-using Dynamo.Utilities;
+
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
-using TextBox = System.Windows.Controls.TextBox;
-using Dynamo.Controls;
-using System.Windows.Documents;
-using System.ComponentModel;
 
 namespace Dynamo.Elements
 {
@@ -73,35 +60,6 @@ namespace Dynamo.Elements
         {
             wtb.Clear();
         }
-
-        /*
-        private void generateContent(Expression eIn, System.Text.StringBuilder sb, string linePrefix="")
-        {
-           sb.Append(linePrefix);
-           if (eIn.IsContainer)
-           {
-              sb.AppendLine((eIn as Expression.Container).Item.ToString());
-           }
-           //else if (eIn.IsFunction)
-           //{
-           //   sb.AppendLine((eIn as Expression.Function).Item.ToString());
-           //}
-           else if (eIn.IsList)
-           {
-              sb.AppendLine("List:");
-              foreach (Expression subExp in (eIn as Expression.List).Item)
-                 this.generateContent(subExp, sb, linePrefix + "    ");
-           }
-           else if (eIn.IsNumber)
-           {
-              sb.AppendLine((eIn as Expression.Number).Item.ToString());
-           }
-           else if (eIn.IsString)
-           {
-              sb.AppendLine((eIn as Expression.String).Item.ToString());
-           }
-        }
-         * */
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
@@ -153,13 +111,11 @@ namespace Dynamo.Elements
 
                 node = new WatchNode((eIn as Expression.Container).Item.ToString());
                 node.Link = id;
-
             }
             else if (eIn.IsFunction || eIn.IsSpecial)
             {
                 content += eIn.ToString() + "\n";
                 node = new WatchNode(eIn.ToString());
-
             }
             else if (eIn.IsList)
             {
