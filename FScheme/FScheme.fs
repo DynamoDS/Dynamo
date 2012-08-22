@@ -72,7 +72,7 @@ let tokenize source =
       | [] -> List.rev acc // end of list terminates
    tokenize' [] source
 
-//Types of FScheme Expressions
+///Types of FScheme Expressions
 type Expression =
    | Container of obj //.NET objects
    | Number of double //numbers
@@ -500,50 +500,188 @@ type ErrorLog = delegate of string -> unit
 let test (log : ErrorLog) =
    let case source expected =
       try
-//         printfn "TEST: %s" source
+         //printfn "TEST: %s" source
          let output = rep environment source
          //Console.WriteLine(sprintf "TESTING: %s" source)
          if output <> expected then
             sprintf "TEST FAILED: %s [Expected: %s, Actual: %s]" source expected output |> log.Invoke
       with ex -> sprintf "TEST CRASHED: %s [%s]" ex.Message source |> log.Invoke
+   
+   //And
+   case "(define and 
+            (macro (a b) 
+               '(if ,a (if ,b 1 0) 0)))" ""
+   case "(and 0 0)" "0" // or (false)
+   case "(and 1 0)" "0" // or (false)
+   case "(and 0 1)" "0" // or (false)
+   case "(and 1 1)" "1" // or (true)
+   
+   //Or
+   case "(define or 
+            (macro (a b) 
+               '(if ,a 1 (if ,b 1 0))))" ""
+   case "(or 0 0)" "0" // or (false)
+   case "(or 1 0)" "1" // or (true)
+   case "(or 0 1)" "1" // or (true)
+   case "(or 1 1)" "1" // or (true)
+
+   //Xor
+   case "(define xor 
+            (lambda (a b) 
+               (and (or a b) 
+                    (not (and a b)))))" ""
+   case "(xor 0 0)" "0" // xor (false)
+   case "(xor 1 0)" "1" // xor (true)
+   case "(xor 0 1)" "1" // xor (true)
+   case "(xor 1 1)" "0" // xor (false)
+   
+   //Apply
+   case "(define apply 
+            (macro (f args) 
+               '(eval (cons ,f ,args))))" ""
+   case "(apply + '(1 2))" "3"
+   case "(apply append '((1) (2)))" "(1 2)"
+   
+   //Fold
+   case "(begin 
+            (define fold 
+               (lambda (f a xs) 
+                  (if (empty? xs) 
+                      a 
+                      (fold f (f (first xs) a) (rest xs))))) 
+            (fold + 0 '(1 2 3)))" 
+        "6"
+   case "(fold * 1 '(2 3 4 5))" "120" // fold
+   
+   //Map
+   case "(begin 
+            (define map 
+               (lambda (f lst) 
+                  (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) 
+                                 empty
+                                 lst)))) 
+            (map (lambda (x) x) '(1 2 3)))" 
+        "(1 2 3)"
+   
+   //Filter
+   case "(begin 
+            (define filter 
+               (lambda (p lst) 
+                  (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) 
+                                 empty 
+                                 lst)))) 
+            (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))"
+        "(0 1)"
+   
+   //Not
+   case "(define not 
+            (lambda (x) (if x 0 1)))" ""
+   case "(not true)" "0"
+   case "(not false)" "1"
+   case "(not 0)" "1" // or (true)
+   case "(not 1)" "0" // or (false)
+   
+   //Build-Seq
+   case "(define build-seq 
+            (lambda (s e st) 
+               (letrec ((bs* (lambda (start end step a) 
+                                 (if (or (<= step 0) (>= start end))
+                                     (rev a) 
+                                     (bs* (+ start step) end step (cons start a)))))) 
+                  (bs* s e st empty))))" ""
+   case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9)"
+   
+   //Cartesian Product
+   case "(begin 
+            (define cp-atom-list 
+               (lambda (at lst) 
+                  (letrec ((cal* (lambda (x l a) 
+                                    (if (empty? l) 
+                                        (reverse a) 
+                                        (cal* x (rest l) (cons (cons x (first l)) a)))))) 
+                     (cal* at lst empty)))) 
+            
+            (define cp-list-list 
+               (lambda (l1 l2) 
+                  (letrec ((cll* (lambda (m n a) 
+                                    (if (or (empty? m) (empty? n))
+                                        a 
+                                        (cll* (rest m) n (append a (cp-atom-list (first m) n)))))))
+                     (cll* l1 l2 empty)))) 
+                     
+            (define cartesian-product 
+               (lambda (comb lsts) 
+                  (let* ((lofls (reverse lsts)) 
+                         (rst (rest lofls))
+                         (cp (lambda (lsts) 
+                                 (fold cp-list-list 
+                                       (map list (first lofls))
+                                       rst))))
+                     (map (lambda (args) (apply comb args)) (cp lofls))))))" ""
+   case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))" "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
+   
+   //Sorting
+   case "(begin 
+            (define qs 
+               (lambda (lst f c) 
+                  (if (empty? lst) 
+                      empty 
+                      (let* ((pivot (f (first lst))) 
+                            (lt (filter (lambda (x) (c (f x) pivot)) (rest lst)))
+                            (gt (filter (lambda (x) (not (c (f x) pivot))) (rest lst))))
+                        (append (qs lt f c) (cons (first lst) (qs gt f c))))))) 
+            
+            (define sort-with 
+               (lambda (lst comp) 
+                  (qs lst 
+                      (lambda (x) x)
+                      (lambda (a b) 
+                      (< (comp a b) 0))))) 
+                      
+            (define sort-by 
+               (lambda (lst proj) 
+                  (map (lambda (x) (first x)) 
+                       (qs (map (lambda (x) (list x (proj x))) lst)
+                           (lambda (y) (first (rest y)))
+                           <)))))" ""
+   case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
+   case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
+   
+   //Combine
+   case "(define zip 
+            (lambda (lofls) 
+               (letrec ((zip'' (lambda (lofls a al) 
+                                 (if (empty? lofls) 
+                                     (list (reverse a) (reverse al)) 
+                                     (if (empty? (first lofls)) 
+                                         (list empty al) 
+                                         (zip'' (rest lofls) (cons (first (first lofls)) a) (cons (rest (first lofls)) al)))))) 
+                        (zip' (lambda (lofls acc) 
+                                 (let ((result (zip'' lofls empty empty))) 
+                                    (if (empty? (first result)) 
+                                        (reverse acc) 
+                                        (let ((p (first result)) 
+                                              (t (first (rest result)))) 
+                                          (zip' t (cons p acc)))))))) 
+                  (zip' lofls empty))))" ""
+   case "(define combine 
+            (lambda (f lofls) 
+               (map (lambda (x) (apply f x)) 
+                    (zip lofls))))" ""
+   case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
+   case "(combine (lambda (x y) (begin (display x) (display y) (append x y))) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
+   
+   //Engine Tests
    case "(quote (* 2 3))" "(* 2 3)" // quote primitive
    case "(eval '(* 2 3))" "6" // eval quoted expression
    case "(quote (* 2 (- 5 2)))" "(* 2 (- 5 2))" // quote nested
    case "(quote (* 2 (unquote (- 5 2))))" "(* 2 3)" // quote nested unquote
    case "(let ((a 1)) (begin (set! a 2) a))" "2" // begin and assign
    case "(let* ((a 5) (dummy (set! a 10))) a)" "10" // re-assign after let
-   case "(define and (macro (a b) '(if ,a (if ,b 1 0) 0)))" ""
-   case "(define or (macro (a b) '(if ,a 1 (if ,b 1 0))))" ""
-   case "(define xor (lambda (a b) (and (or a b) (not (and a b)))))" ""
-   case "(define apply (macro (f args) (let ((x '(eval (cons ,f ,args)))) (begin (display x) x))))" ""
-   case "(apply + '(1 2))" "3"
-   case "(apply append '((1) (2)))" "(1 2)"
-   case "(append '(1) '(2))" "(1 2)"
    case "(begin (define too-many (lambda (a x) x)) (too-many 1 2 3))" "(2 3)"
    case "(too-many '(1 1) '(2 2) '(3 3))" "((2 2) (3 3))"
-   case "(and 0 0)" "0" // or (false)
-   case "(and 1 0)" "0" // or (false)
-   case "(and 0 1)" "0" // or (false)
-   case "(and 1 1)" "1" // or (true)
-   case "(begin (define fold (lambda (f a xs) (if (empty? xs) a (fold f (f (first xs) a) (rest xs))))) (fold + 0 '(1 2 3)))" "6"
-   case "(fold * 1 '(2 3 4 5))" "120" // fold
    case "(reverse '(1 2 3))" "(3 2 1)" // reverse
-   case "(begin (define map (lambda (f lst) (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) empty lst)))) (map (lambda (x) x) '(1 2 3)))" "(1 2 3)"
-   case "(begin (define filter (lambda (p lst) (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) empty lst)))) (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))" "(0 1)"
    case "(list 1 2 3)" "(1 2 3)"
-   case "(define not (lambda (x) (if x 0 1)))" ""
-   case "(not true)" "0"
-   case "(not false)" "1"
-   case "(or 0 0)" "0" // or (false)
-   case "(or 1 0)" "1" // or (true)
-   case "(or 0 1)" "1" // or (true)
-   case "(or 1 1)" "1" // or (true)
-   case "(not 0)" "1" // or (true)
-   case "(not 1)" "0" // or (false)
-   case "(xor 0 0)" "0" // xor (false)
-   case "(xor 1 0)" "1" // xor (true)
-   case "(xor 0 1)" "1" // xor (true)
-   case "(xor 1 1)" "0" // xor (false)
    case "(let ((square (lambda (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
    case "(let ((square (lambda (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
    case "(let ((square (lambda (x) (* x x)))) (map square '()))" "()" // mapping empty
@@ -551,14 +689,3 @@ let test (log : ErrorLog) =
    case "(call/cc (lambda (c) (if (c 10) 20 30)))" "10" // call/cc bailing out of 'if'
    case "(+ 8 (call/cc (lambda (k^) (* (k^ 5) 100))))" "13" // call/cc bailing out of multiplication
    case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
-   case "(define build-seq (lambda (s e st) (letrec ((bs* (lambda (start end step a) (if (or (<= step 0) (>= start end)) (rev a) (bs* (+ start step) end step (cons start a)))))) (bs* s e st empty))))" ""
-   case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9)"
-   case "(begin (define cp-atom-list (lambda (at lst) (letrec ((cal* (lambda (x l a) (if (empty? l) (reverse a) (cal* x (rest l) (cons (cons x (first l)) a)))))) (cal* at lst empty)))) (define cp-list-list (lambda (l1 l2) (letrec ((cll* (lambda (m n a) (if (or (empty? m) (empty? n)) a (cll* (rest m) n (append a (cp-atom-list (first m) n))))))) (cll* l1 l2 empty)))) (define cartesian-product (lambda (comb lsts) (let* ((lofls (reverse lsts)) (rst (rest lofls)) (cp (lambda (lsts) (fold cp-list-list (map list (first lofls)) rst)))) (map (lambda (args) (apply comb args)) (cp lofls))))))" ""
-   case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))" "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
-   case "(begin (define qs (lambda (lst f c) (if (empty? lst) empty (let* ((pivot (f (first lst))) (lt (filter (lambda (x) (c (f x) pivot)) (rest lst))) (gt (filter (lambda (x) (not (c (f x) pivot))) (rest lst)))) (append (qs lt f c) (cons (first lst) (qs gt f c))))))) (define sort-with (lambda (lst comp) (qs lst (lambda (x) x) (lambda (a b) (< (comp a b) 0))))) (define sort-by (lambda (lst proj) (map (lambda (x) (first x)) (qs (map (lambda (x) (list x (proj x))) lst) (lambda (y) (first (rest y))) <)))))" ""
-   case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
-   case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
-   case "(define zip (lambda (lofls) (letrec ((zip'' (lambda (lofls a al) (if (empty? lofls) (list (reverse a) (reverse al)) (if (empty? (first lofls)) (list empty al) (zip'' (rest lofls) (cons (first (first lofls)) a) (cons (rest (first lofls)) al)))))) (zip' (lambda (lofls acc) (let ((result (zip'' lofls empty empty))) (if (empty? (first result)) (reverse acc) (let ((p (first result)) (t (first (rest result)))) (zip' t (cons p acc)))))))) (zip' lofls empty))))" ""
-   case "(define combine (lambda (f lofls) (map (lambda (x) (apply f x)) (zip lofls))))" ""
-   case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
-   case "(combine (lambda (x y) (begin (display x) (display y) (append x y))) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
