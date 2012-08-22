@@ -74,16 +74,28 @@ let tokenize source =
 
 ///Types of FScheme Expressions
 type Expression =
-   | Container of obj //.NET objects
-   | Number of double //numbers
-   | String of string //strings
-   | Symbol of string //symbols (commonly known as variables)
-   | List of Expression list //lists, also used to represent function calls
-   | Function of (Continuation -> Expression list -> Expression) //function objects
-   | Special of (Continuation -> Environment -> Expression list -> Expression) //special forms (function objects where the arguments are unevaluated)
-   | Current of Continuation //continuations (used by call/cc in Scheme)
-   | Dummy of string //Dummy values for mutation, should NOT be used except for internally by this interpreter.
+   ///Expression representing any .NET object.
+   | Container of obj
+   ///Expression representing a number (double).
+   | Number of double
+   ///Expression representing a string.
+   | String of string
+   ///Expression representing a variable.
+   | Symbol of string
+   ///Expression representing a list of sub expressions.
+   | List of Expression list
+   ///Expression representing a function.
+   | Function of (Continuation -> Expression list -> Expression)
+   ///Expression representing a "macro".
+   | Special of (Continuation -> Environment -> Expression list -> Expression)
+   ///Expression representing a continuation (used by call/cc in Scheme).
+   | Current of Continuation
+   ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
+   ///Should NOT be used except internally by this interpreter.
+   | Dummy of string
+///A Continuation is a function that takes an Expression and returns an Expression.
 and Continuation = Expression -> Expression
+///An Environment is a reference to a Map that maps strings to references to Expressions.
 and Environment = Map<string, Expression ref> ref
 
 ///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
