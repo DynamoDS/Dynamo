@@ -519,6 +519,14 @@ let test (log : ErrorLog) =
             sprintf "TEST FAILED: %s [Expected: %s, Actual: %s]" source expected output |> log.Invoke
       with ex -> sprintf "TEST CRASHED: %s [%s]" ex.Message source |> log.Invoke
    
+   //Not
+   case "(define not 
+            (lambda (x) (if x 0 1)))" ""
+   case "(not true)" "0"
+   case "(not false)" "1"
+   case "(not 0)" "1" // or (true)
+   case "(not 1)" "0" // or (false)
+   
    //And
    case "(define and 
             (macro (a b) 
@@ -549,6 +557,7 @@ let test (log : ErrorLog) =
    
    //Apply
    case "(define apply 
+            ;; apply :: (X Y ... Z -> A) [list X Y ... Z] -> A
             (macro (f args) 
                '(eval (cons ,f ,args))))" ""
    case "(apply + '(1 2))" "3"
@@ -557,6 +566,7 @@ let test (log : ErrorLog) =
    //Fold
    case "(begin 
             (define fold 
+               ;; fold :: (X Y -> Y) Y [listof X] -> Y
                (lambda (f a xs) 
                   (if (empty? xs) 
                       a 
@@ -567,7 +577,8 @@ let test (log : ErrorLog) =
    
    //Map
    case "(begin 
-            (define map 
+            (define map
+               ;; map :: (X -> Y) [listof X] -> [listof Y] 
                (lambda (f lst) 
                   (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) 
                                  empty
@@ -578,20 +589,13 @@ let test (log : ErrorLog) =
    //Filter
    case "(begin 
             (define filter 
+               ;; filter :: (X -> bool) [listof X] -> [listof X]
                (lambda (p lst) 
                   (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) 
                                  empty 
                                  lst)))) 
             (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))"
         "(0 1)"
-   
-   //Not
-   case "(define not 
-            (lambda (x) (if x 0 1)))" ""
-   case "(not true)" "0"
-   case "(not false)" "1"
-   case "(not 0)" "1" // or (true)
-   case "(not 1)" "0" // or (false)
    
    //Build-Seq
    case "(define build-seq 
@@ -614,7 +618,7 @@ let test (log : ErrorLog) =
                      (cal* at lst empty)))) 
             
             (define cp-list-list 
-               (lambda (l1 l2) 
+               (lambda (l1 l2)
                   (letrec ((cll* (lambda (m n a) 
                                     (if (or (empty? m) (empty? n))
                                         a 
@@ -622,6 +626,7 @@ let test (log : ErrorLog) =
                      (cll* l1 l2 empty)))) 
                      
             (define cartesian-product 
+               ;; cartesian-product :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
                (lambda (comb lsts) 
                   (let* ((lofls (reverse lsts)) 
                          (rst (rest lofls))
@@ -635,6 +640,7 @@ let test (log : ErrorLog) =
    //Sorting
    case "(begin 
             (define qs 
+               ;; qs :: [listof X] (X -> Y) (Y Y -> bool) -> [listof X]
                (lambda (lst f c) 
                   (if (empty? lst) 
                       empty 
@@ -644,13 +650,14 @@ let test (log : ErrorLog) =
                         (append (qs lt f c) (cons (first lst) (qs gt f c))))))) 
             
             (define sort-with 
+               ;; sort-with :: [listof X] (X X -> int) -> [listof X]
                (lambda (lst comp) 
                   (qs lst 
                       (lambda (x) x)
-                      (lambda (a b) 
-                      (< (comp a b) 0))))) 
+                      (lambda (a b) (< (comp a b) 0))))) 
                       
-            (define sort-by 
+            (define sort-by
+               ;; sort-by :: [listof X] (X -> IComparable) -> [listof X]
                (lambda (lst proj) 
                   (map (lambda (x) (first x)) 
                        (qs (map (lambda (x) (list x (proj x))) lst)
@@ -660,7 +667,8 @@ let test (log : ErrorLog) =
    case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
    
    //Combine
-   case "(define zip 
+   case "(define zip
+            ;; zip :: [listof X] [listof Y] ... [listof Z] -> [listof [listof X Y ... Z]]
             (lambda (lofls) 
                (letrec ((zip'' (lambda (lofls a al) 
                                  (if (empty? lofls) 
@@ -677,6 +685,7 @@ let test (log : ErrorLog) =
                                           (zip' t (cons p acc)))))))) 
                   (zip' lofls empty))))" ""
    case "(define combine 
+            ;; combine :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
             (lambda (f lofls) 
                (map (lambda (x) (apply f x)) 
                     (zip lofls))))" ""
@@ -701,3 +710,4 @@ let test (log : ErrorLog) =
    case "(call/cc (lambda (c) (if (c 10) 20 30)))" "10" // call/cc bailing out of 'if'
    case "(+ 8 (call/cc (lambda (k^) (* (k^ 5) 100))))" "13" // call/cc bailing out of multiplication
    case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
+   case "(let ((divide (lambda (x y) (call/cc (lambda (k^) (if (= y 0) (k^ \"error\") (/ x y))))))) (divide 1 0))" "\"error\"" // call/cc as an error handler
