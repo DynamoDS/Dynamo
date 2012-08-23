@@ -27,6 +27,7 @@ namespace Dynamo.Elements
     [ElementName("Watch")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Visualize the output of node.")]
+    [ElementSearchTags("print", "output", "display")]
     [RequiresTransaction(false)]
     class dynWatch : dynElement
     {

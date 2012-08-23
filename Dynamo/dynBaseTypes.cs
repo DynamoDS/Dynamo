@@ -391,7 +391,7 @@ namespace Dynamo.Elements
     [ElementDescription("Creates a sequence of numbers")]
     [ElementSearchTags("range")]
     [RequiresTransaction(false)]
-    public class dynBuildSeq : dynBuiltinMacro
+    public class dynBuildSeq : dynBuiltinFunction
     {
         public dynBuildSeq()
             : base("build-seq")
