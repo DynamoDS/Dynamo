@@ -93,15 +93,15 @@ type Expression =
    ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
    ///Should NOT be used except internally by this interpreter.
    | Dummy of string
-///A Continuation is a function that takes an Expression and returns an Expression.
+///Function that takes an Expression and returns an Expression.
 and Continuation = Expression -> Expression
-///An Environment is a reference to a Map that maps strings to references to Expressions.
+///Reference to a Map that maps strings to references to Expressions.
 and Environment = Map<string, Expression ref> ref
 
 ///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
 type ExternFunc = delegate of Expression list -> Expression
 
-///FScheme Macro delegate. takes a list of unevaluated Expressions and an Environment as arguments, and returns an Expression.
+///FScheme Macro delegate. Takes a list of unevaluated Expressions and an Environment as arguments, and returns an Expression.
 type ExternMacro = delegate of Expression list * Environment -> Expression
 
 ///Makes an Expression.Function out of an ExternFunc
@@ -659,10 +659,10 @@ let test (log : ErrorLog) =
             (define sort-by
                ;; sort-by :: [listof X] (X -> IComparable) -> [listof X]
                (lambda (lst proj) 
-                  (map (lambda (x) (first x)) 
-                       (qs (map (lambda (x) (list x (proj x))) lst)
-                           (lambda (y) (first (rest y)))
-                           <)))))" ""
+                  (map (lambda (x) (first x))                       ;; Convert back to original list
+                       (qs (map (lambda (x) (list x (proj x))) lst) ;; Sort list of original element/projection pairs
+                           (lambda (y) (first (rest y)))            ;; Sort based on the second element in the sub-lists
+                           <)))))                                   ;; Compare using less-than" ""
    case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
    case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
    
