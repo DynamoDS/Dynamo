@@ -23,15 +23,17 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
-using Autodesk.Revit.UI;
+
 using Dynamo.Connectors;
+using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
+
 using Microsoft.FSharp.Collections;
+
 using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
-using Dynamo.Controls;
 
 namespace Dynamo.Elements
 {
