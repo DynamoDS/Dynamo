@@ -29,7 +29,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
    [RequiresTransaction(false)]
-   public class dynFileReader : dynElement
+   public class dynFileReader : dynNode
    {
       public dynFileReader()
       {
@@ -59,7 +59,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
    [RequiresTransaction(false)]
-   public class dynFileWatcher : dynElement
+   public class dynFileWatcher : dynNode
    {
       public dynFileWatcher()
       {
@@ -80,7 +80,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Checks if the file watched by the given FileWatcher has changed.")]
    [RequiresTransaction(false)]
-   public class dynFileWatcherChanged : dynElement
+   public class dynFileWatcherChanged : dynNode
    {
       public dynFileWatcherChanged()
       {
@@ -103,7 +103,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Waits for the specified watched file to change.")]
    [RequiresTransaction(false)]
-   public class dynFileWatcherWait : dynElement
+   public class dynFileWatcherWait : dynNode
    {
       public dynFileWatcherWait()
       {
@@ -139,7 +139,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Resets state of FileWatcher so that it watches again.")]
    [RequiresTransaction(false)]
-   public class dynFileWatcherReset : dynElement
+   public class dynFileWatcherReset : dynNode
    {
       public dynFileWatcherReset()
       {

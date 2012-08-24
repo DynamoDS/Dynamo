@@ -35,7 +35,7 @@ namespace Dynamo.Elements
    [ElementDescription("An element which allows you to select a Family Type from a drop down list.")]
    [RequiresTransaction(false)]
    [IsInteractive(true)]
-   public class dynFamilyTypeSelector : dynElement
+   public class dynFamilyTypeSelector : dynNode
    {
       ComboBox combo;
       Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
@@ -111,7 +111,7 @@ namespace Dynamo.Elements
    [ElementDescription("Given a family instance, allows the user to select a paramter as a string.")]
    [RequiresTransaction(false)]
    [IsInteractive(true)]
-   public class dynFamilyInstanceParameterSelector : dynElement
+   public class dynFamilyInstanceParameterSelector : dynNode
    {
       ComboBox paramBox = new ComboBox();
       ElementId storedId = null;
@@ -662,7 +662,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to create family instances.")]
    [RequiresTransaction(true)]
-   public class dynFamilyInstanceCreatorXYZ : dynElement
+   public class dynFamilyInstanceCreatorXYZ : dynNode
    {
       public dynFamilyInstanceCreatorXYZ()
       {
@@ -775,7 +775,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which allows you to modify parameters on family instances.")]
    [RequiresTransaction(true)]
-   public class dynFamilyInstanceParameterSetter : dynElement
+   public class dynFamilyInstanceParameterSetter : dynNode
    {
       public dynFamilyInstanceParameterSetter()
       {
@@ -853,7 +853,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Fetches the value of a parameter of a Family Instance.")]
    [RequiresTransaction(true)]
-   public class dynFamilyInstanceParameterGetter : dynElement
+   public class dynFamilyInstanceParameterGetter : dynNode
    {
       public dynFamilyInstanceParameterGetter()
       {

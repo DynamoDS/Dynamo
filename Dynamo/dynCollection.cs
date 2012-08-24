@@ -21,9 +21,9 @@ namespace Dynamo.Elements
 {
     public class dynCollection
     {
-        List<List<dynElement>> elements = new List<List<dynElement>>();
+        List<List<dynNode>> elements = new List<List<dynNode>>();
 
-        public List<List<dynElement>> Elements
+        public List<List<dynNode>> Elements
         {
             get { return elements; }
         }

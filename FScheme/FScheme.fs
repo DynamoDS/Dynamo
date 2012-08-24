@@ -221,6 +221,23 @@ let Sort cont = function
    //Otherwise, fail.
    | m -> malformed "sort" (List(m))
 
+let String2Num cont = function
+    | [String(s)] -> Number(Convert.ToDouble(s)) |> cont
+    | m -> malformed "string" (List(m))
+
+let Num2String cont = function
+    | [Number(n)] -> String(n.ToString()) |> cont
+    | m -> malformed "number" (List(m))
+
+let Concat cont = function
+    | [List(l)] -> 
+        let rec concat a = function
+            | String(s) :: l -> concat (a + s) l
+            | [] -> String(a) |> cont
+            | m :: _ -> malformed "string" m
+        concat "" l
+    | m -> malformed "concat" (List(m))
+
 ///Extends the given environment with the given bindings.
 let rec extend (env : Environment) = function
    | [] -> env
@@ -449,6 +466,9 @@ and environment =
        "sort", ref (Function(Sort))
        "throw", ref (Function(Throw))
        "rand", ref (Function(RandomDbl))
+       "string->num", ref (Function(String2Num))
+       "num->string", ref (Function(Num2String))
+       "concat-strings", ref (Function(Concat))
       ] |> ref
 
 ///Our eval loop

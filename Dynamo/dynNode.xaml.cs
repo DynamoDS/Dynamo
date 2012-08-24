@@ -49,7 +49,7 @@ namespace Dynamo.Elements
     }
     #endregion
 
-    public partial class dynElement : UserControl, IDynamic, INotifyPropertyChanged
+    public partial class dynNode : UserControl, IDynamic, INotifyPropertyChanged
     {
         #region delegates
         public delegate void dynElementUpdatedHandler(object sender, EventArgs e);
@@ -91,7 +91,7 @@ namespace Dynamo.Elements
         public delegate void SetToolTipDelegate(string message);
         public delegate void MarkConnectionStateDelegate(bool bad);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
-        public delegate void SetStateDelegate(dynElement el, ElementState state);
+        public delegate void SetStateDelegate(dynNode el, ElementState state);
 
         #region public members
         private dynWorkspace _workspace;
@@ -107,7 +107,7 @@ namespace Dynamo.Elements
             }
         }
 
-        public dynElement TopControl
+        public dynNode TopControl
         {
             get { return this.topControl; }
         }
@@ -259,7 +259,7 @@ namespace Dynamo.Elements
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="nickName"></param>
-        public dynElement()
+        public dynNode()
         {
             InitializeComponent();
             //System.Uri resourceLocater = new System.Uri("/DynamoElements;component/dynElement.xaml", UriKind.Relative);
@@ -770,14 +770,14 @@ namespace Dynamo.Elements
             }
         }
 
-        Dictionary<dynPort, dynElement> previousEvalPortMappings = new Dictionary<dynPort, dynElement>();
+        Dictionary<dynPort, dynNode> previousEvalPortMappings = new Dictionary<dynPort, dynNode>();
 
         void CheckPortsForRecalc()
         {
             this.IsDirty = this.InPorts.Any(
                delegate(dynPort port)
                {
-                   dynElement oldInput;
+                   dynNode oldInput;
                    var connectors = port.Connectors;
                    return !this.previousEvalPortMappings.TryGetValue(port, out oldInput)
                       || (oldInput == null && connectors.Any())
@@ -1577,7 +1577,7 @@ namespace Dynamo.Elements
             //aggregate the unique output nodes
             //this avoids multiple updates of the same node
             //if a node has the same node connected to several of its outputs
-            var uniqueNodes = new HashSet<dynElement>();
+            var uniqueNodes = new HashSet<dynNode>();
             foreach (dynConnector c in outPort.Connectors)
             {
                 //if (!uniqueNodes.Contains(c.End.Owner))
@@ -1587,13 +1587,13 @@ namespace Dynamo.Elements
             }
 
             //update the unique nodes
-            foreach (dynElement el in uniqueNodes)
+            foreach (dynNode el in uniqueNodes)
             {
                 el.Update();
             }
         }
 
-        public void FindDownstreamElements(ref List<dynElement> downStream)
+        public void FindDownstreamElements(ref List<dynNode> downStream)
         {
             foreach (dynConnector c in outPort.Connectors)
             {
@@ -1665,7 +1665,7 @@ namespace Dynamo.Elements
             this.ValidateConnections();
         }
 
-        void SetState(dynElement el, ElementState state)
+        void SetState(dynNode el, ElementState state)
         {
             el.State = state;
         }

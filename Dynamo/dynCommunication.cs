@@ -27,7 +27,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("An element which gathers data from the web using a URL.")]
    [RequiresTransaction(false)]
-   public class dynWebRequest : dynElement
+   public class dynWebRequest : dynNode
    {
       public dynWebRequest()
       {

@@ -41,7 +41,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Visualize the output of node.")]
     [RequiresTransaction(false)]
-    class dynWatch : dynElement
+    class dynWatch : dynNode
     {
         //System.Windows.Controls.TextBlock watchBlock;
         WatchTree wt;
