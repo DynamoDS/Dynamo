@@ -883,7 +883,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Fetches the value of a parameter of a Family Instance.")]
     [RequiresTransaction(true)]
-    public class dynFamilyInstanceParameterGetter : dynElement
+    public class dynFamilyInstanceParameterGetter : dynNode
     {
         public dynFamilyInstanceParameterGetter()
         {
