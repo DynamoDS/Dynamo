@@ -31,7 +31,7 @@ using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.DB.Analysis;//MDJ needed for spatialfeildmanager
 
 using Dynamo;
-using Dynamo.Elements;
+using Dynamo.Nodes;
 using Dynamo.Controls;
 using System.Xml.Serialization;
 using Dynamo.Utilities;

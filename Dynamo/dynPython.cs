@@ -20,7 +20,7 @@ using System.Text;
 using System.Windows.Controls;
 
 using Dynamo;
-using Dynamo.Elements;
+using Dynamo.Nodes;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
@@ -36,7 +36,7 @@ using Microsoft.Scripting.Hosting;
 using System.Windows;
 using System.Xml;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    internal static class Converters
    {
@@ -209,7 +209,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Runs an embedded IronPython script")]
    [RequiresTransaction(true)]
-   public class dynPython : dynNode
+   public class dynPython : dynNodeUI
    {
       private DynPythonEngine engine = new DynPythonEngine();
       private bool dirty = true;

@@ -23,7 +23,7 @@ limitations under the License.
     <ProjectGuid>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.Elements</RootNamespace>
+    <RootNamespace>Dynamo.Nodes</RootNamespace>
     <AssemblyName>DynamoElements</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -119,8 +119,9 @@ limitations under the License.
     <Compile Include="dynFunction.cs" />
     <Compile Include="dynGeometry.cs" />
     <Compile Include="dynModelUpdater.cs" />
-    <Compile Include="dynNode.xaml.cs">
-      <DependentUpon>dynNode.xaml</DependentUpon>
+    <Compile Include="dynNode.cs" />
+    <Compile Include="dynNodeUI.xaml.cs">
+      <DependentUpon>dynNodeUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynNormals.cs" />
     <Compile Include="dynPoints.cs" />
@@ -175,7 +176,7 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="dynNode.xaml">
+    <Page Include="dynNodeUI.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

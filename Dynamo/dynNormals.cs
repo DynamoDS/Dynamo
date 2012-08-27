@@ -19,13 +19,13 @@ using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     [ElementName("Evaluate Normal")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Evaluate a point on a face to find the normal.")]
     [RequiresTransaction(false)]
-    class dynNormalEvaluate:dynNode
+    class dynNormalEvaluate:dynNodeUI
     {
         public dynNormalEvaluate()
         {
@@ -67,7 +67,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Evaluate a point on a face to find the XYZ location.")]
     [RequiresTransaction(false)]
-    class dynXYZEvaluate : dynNode
+    class dynXYZEvaluate : dynNodeUI
     {
         public dynXYZEvaluate()
         {

@@ -23,13 +23,13 @@ using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using Dynamo.FSchemeInterop;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    [ElementName("Model Curve")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a model curve.")]
    [RequiresTransaction(true)]
-   public class dynModelCurve : dynNode
+   public class dynModelCurve : dynNodeUI
    {
       public dynModelCurve()
       {
@@ -80,7 +80,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
    [RequiresTransaction(true)]
-   public class dynLoftForm : dynNode
+   public class dynLoftForm : dynNodeUI
    {
       public dynLoftForm()
       {
@@ -171,7 +171,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("doc.FamilyCreate.NewCurveByPoints")]
    [RequiresTransaction(true)]
-   public class dynCurveByPoints : dynNode
+   public class dynCurveByPoints : dynNodeUI
    {
       public dynCurveByPoints()
       {
@@ -230,7 +230,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("CurveyPoints.GeometryCurve.Reference")]
    [RequiresTransaction(true)]
-   public class dynCurveRef : dynNode
+   public class dynCurveRef : dynNodeUI
    {
       public dynCurveRef()
       {

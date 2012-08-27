@@ -29,10 +29,10 @@ using Microsoft.FSharp.Core;
 using Expression = Dynamo.FScheme.Expression;
 using Dynamo.FSchemeInterop;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynElementSelection : dynNode
+    public abstract class dynElementSelection : dynNodeUI
     {
         TextBox tb;
         System.Windows.Controls.Button selectButton;
@@ -219,7 +219,7 @@ namespace Dynamo.Elements
         Expression data;
 
         public dynDividedSurfaceBySelection()
-            : base(new PortData("srf", "The divided surface family instance(s)", typeof(dynNode)))
+            : base(new PortData("srf", "The divided surface family instance(s)", typeof(dynNodeUI)))
         { }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -316,7 +316,7 @@ namespace Dynamo.Elements
         Reference f;
 
         public dynFormElementBySelection()
-            : base(new PortData("face", "The face", typeof(dynNode)))
+            : base(new PortData("face", "The face", typeof(dynNodeUI)))
         { }
 
         protected override void OnSelectClick()
@@ -388,7 +388,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which returns the current Sun Path direction.")]
     [RequiresTransaction(false)]
-    public class dynSunPathDirection : dynNode
+    public class dynSunPathDirection : dynNodeUI
     {
         System.Windows.Controls.TextBox tb;
         System.Windows.Controls.Button sunPathButt;

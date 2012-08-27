@@ -1,6 +1,6 @@
-﻿<UserControl x:Class="Dynamo.Elements.dynNode"
+﻿<UserControl x:Class="Dynamo.Nodes.dynNodeUI"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:local="clr-namespace:Dynamo.Elements"
+    xmlns:local="clr-namespace:Dynamo.Nodes"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dropShadow="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
     Height="300" Width="160" Name="topControl" Loaded="topControl_Loaded" KeyUp="OnKeyUp" PreviewKeyUp="OnPreviewKeyUp">

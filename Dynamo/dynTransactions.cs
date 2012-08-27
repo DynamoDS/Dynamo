@@ -28,13 +28,13 @@ using Autodesk.Revit.DB;
 using System.Diagnostics;
 using Dynamo.Controls;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    [ElementName("Transaction")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Executes Expression inside of a Revit API transaction")]
    [RequiresTransaction(false)]
-   public class dynTransaction : dynNode
+   public class dynTransaction : dynNodeUI
    {
       public dynTransaction()
       {

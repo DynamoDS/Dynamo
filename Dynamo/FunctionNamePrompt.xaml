@@ -1,4 +1,4 @@
-﻿<Window x:Class="Dynamo.Elements.FunctionNamePrompt"
+﻿<Window x:Class="Dynamo.Nodes.FunctionNamePrompt"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="New Node" Height="197" Width="238" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">

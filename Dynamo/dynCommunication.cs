@@ -21,13 +21,13 @@ using System.IO;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    [ElementName("Web Request")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("An element which gathers data from the web using a URL.")]
    [RequiresTransaction(false)]
-   public class dynWebRequest : dynNode
+   public class dynWebRequest : dynNodeUI
    {
       public dynWebRequest()
       {

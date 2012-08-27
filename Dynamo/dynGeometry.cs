@@ -22,13 +22,13 @@ using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using Dynamo.FSchemeInterop;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     [ElementName("XYZ")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates an XYZ from three double values.")]
     [RequiresTransaction(false)]
-    public class dynXYZ : dynNode
+    public class dynXYZ : dynNodeUI
     {
         public dynXYZ()
         {
@@ -56,7 +56,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which multiplies each component of an XYZ by a number.")]
     [RequiresTransaction(false)]
-    public class dynXYZScale : dynNode
+    public class dynXYZScale : dynNodeUI
     {
         public dynXYZScale()
         {
@@ -80,7 +80,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which adds the components of two XYZs.")]
     [RequiresTransaction(false)]
-    public class dynXYZAdd : dynNode
+    public class dynXYZAdd : dynNodeUI
     {
         public dynXYZAdd()
         {
@@ -104,7 +104,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a grid of reference points.")]
     [RequiresTransaction(false)]
-    public class dynReferencePtGrid : dynNode
+    public class dynReferencePtGrid : dynNodeUI
     {
         public dynReferencePtGrid()
         {
@@ -169,7 +169,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates an array of XYZs along a curve.")]
     [RequiresTransaction(false)]
-    public class dynXYZArrayAlongCurve : dynNode
+    public class dynXYZArrayAlongCurve : dynNodeUI
     {
         public dynXYZArrayAlongCurve()
         {
@@ -221,7 +221,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a geometric plane.")]
     [RequiresTransaction(false)]
-    public class dynPlane : dynNode
+    public class dynPlane : dynNodeUI
     {
         public dynPlane()
         {
@@ -249,7 +249,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a geometric sketch plane.")]
     [RequiresTransaction(true)]
-    public class dynSketchPlane : dynNode
+    public class dynSketchPlane : dynNodeUI
     {
         public dynSketchPlane()
         {
@@ -306,7 +306,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a geometric line.")]
     [RequiresTransaction(false)]
-    public class dynLineBound : dynNode
+    public class dynLineBound : dynNodeUI
     {
         public dynLineBound()
         {
@@ -336,7 +336,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a UV from two double values.")]
     [RequiresTransaction(false)]
-    public class dynUV : dynNode
+    public class dynUV : dynNodeUI
     {
         public dynUV()
         {
@@ -363,7 +363,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which returns a line in the direction of an XYZ normal.")]
     [RequiresTransaction(true)]
-    public class dynLineVectorfromXYZ : dynNode
+    public class dynLineVectorfromXYZ : dynNodeUI
     {
         public dynLineVectorfromXYZ()
         {

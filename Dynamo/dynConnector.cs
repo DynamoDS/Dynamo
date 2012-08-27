@@ -17,7 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Dynamo.Elements;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.Connectors
@@ -140,7 +140,7 @@ namespace Dynamo.Connectors
 
       }
 
-      public dynConnector(dynNode start, dynNode end, int startIndex, int endIndex, int portType, bool visible)
+      public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType, bool visible)
       {
          //this.workBench = settings.WorkBench;
 
@@ -215,7 +215,7 @@ namespace Dynamo.Connectors
          this.Connect(endPort);
       }
 
-      public dynConnector(dynNode start, dynNode end, int startIndex, int endIndex, int portType)
+      public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType)
          : this(start, end, startIndex, endIndex, portType, true)
       { }
 
@@ -462,20 +462,20 @@ namespace Dynamo.Connectors
          }
       }
 
-      public dynNode FindDynElementByGuid(Guid guid)
+      public dynNodeUI FindDynElementByGuid(Guid guid)
       {
          foreach (UIElement uiel in dynElementSettings.SharedInstance.Workbench.Children)
          {
-            dynNode testEl = null;
+            dynNodeUI testEl = null;
 
             //walk up through the inheritance to find whether the base type is a dynElement
             Type startType = uiel.GetType();
             while (startType.BaseType != null)
             {
                startType = startType.BaseType;
-               if (startType == typeof(dynNode))
+               if (startType == typeof(dynNodeUI))
                {
-                  testEl = uiel as dynNode;
+                  testEl = uiel as dynNodeUI;
                   break;
                }
             }

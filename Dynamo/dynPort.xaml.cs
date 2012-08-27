@@ -18,7 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Dynamo.Elements;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.Connectors
@@ -54,7 +54,7 @@ namespace Dynamo.Connectors
       List<dynConnector> connectors;
       Point center;
 
-      dynNode owner;
+      dynNodeUI owner;
       int index;
       PortType portType;
 
@@ -85,7 +85,7 @@ namespace Dynamo.Connectors
          set { portType = value; }
       }
 
-      public dynNode Owner
+      public dynNodeUI Owner
       {
          get { return owner; }
          set { owner = value; }

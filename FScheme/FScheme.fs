@@ -555,7 +555,7 @@ let test (log : ErrorLog) =
    
    //And
    case "(define and 
-            (macro (a b) 
+            (macro (a b)
                '(if ,a (if ,b 1 0) 0)))" ""
    case "(and 0 0)" "0" // or (false)
    case "(and 1 0)" "0" // or (false)

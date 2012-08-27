@@ -22,14 +22,14 @@ using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     [ElementName("Watch")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Visualize the output of node.")]
     [ElementSearchTags("print", "output", "display")]
     [RequiresTransaction(false)]
-    class dynWatch : dynNode
+    class dynWatch : dynNodeUI
     {
         //System.Windows.Controls.TextBlock watchBlock;
         WatchTree wt;

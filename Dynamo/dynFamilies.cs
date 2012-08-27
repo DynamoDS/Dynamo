@@ -29,14 +29,14 @@ using Microsoft.FSharp.Collections;
 
 using Expression = Dynamo.FScheme.Expression;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     [ElementName("Family Type Selector")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows you to select a Family Type from a drop down list.")]
     [RequiresTransaction(false)]
     [IsInteractive(true)]
-    public class dynFamilyTypeSelector : dynNode
+    public class dynFamilyTypeSelector : dynNodeUI
     {
         ComboBox combo;
         Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
@@ -126,7 +126,7 @@ namespace Dynamo.Elements
     [ElementDescription("Given a family instance, allows the user to select a paramter as a string.")]
     [RequiresTransaction(false)]
     [IsInteractive(true)]
-    public class dynFamilyInstanceParameterSelector : dynNode
+    public class dynFamilyInstanceParameterSelector : dynNodeUI
     {
         ComboBox paramBox = new ComboBox();
         ElementId storedId = null;
@@ -693,7 +693,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows you to create family instances.")]
     [RequiresTransaction(true)]
-    public class dynFamilyInstanceCreatorXYZ : dynNode
+    public class dynFamilyInstanceCreatorXYZ : dynNodeUI
     {
         public dynFamilyInstanceCreatorXYZ()
         {
@@ -806,7 +806,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows you to modify parameters on family instances.")]
     [RequiresTransaction(true)]
-    public class dynFamilyInstanceParameterSetter : dynNode
+    public class dynFamilyInstanceParameterSetter : dynNodeUI
     {
         public dynFamilyInstanceParameterSetter()
         {
@@ -884,7 +884,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Fetches the value of a parameter of a Family Instance.")]
     [RequiresTransaction(true)]
-    public class dynFamilyInstanceParameterGetter : dynNode
+    public class dynFamilyInstanceParameterGetter : dynNodeUI
     {
         public dynFamilyInstanceParameterGetter()
         {

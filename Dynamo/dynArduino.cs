@@ -21,7 +21,7 @@ using System.IO.Ports;
 using Dynamo.Connectors;
 using Expression = Dynamo.FScheme.Expression;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    public enum COMPort { COM3, COM4 };
 
@@ -29,7 +29,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("An element which allows you to read from an Arduino microcontroller.")]
    [RequiresTransaction(false)]
-   public class dynArduino : dynNode
+   public class dynArduino : dynNodeUI
    {
       SerialPort port;
       //string lastData = "";

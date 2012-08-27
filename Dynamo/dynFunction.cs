@@ -27,7 +27,7 @@ using Expression = Dynamo.FScheme.Expression;
 using Dynamo.FSchemeInterop;
 using System.Windows.Media.Effects;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    [RequiresTransaction(false)]
    [IsInteractive(false)]
@@ -132,12 +132,12 @@ namespace Dynamo.Elements
          return manualInternals;
       }
 
-      public override bool IsDirty
+      public override bool RequiresRecalc
       {
          get
          {
             //Do we already know we're dirty?
-            bool baseDirty = base.IsDirty;
+            bool baseDirty = base.RequiresRecalc;
             if (baseDirty)
                return true;
 
@@ -168,7 +168,7 @@ namespace Dynamo.Elements
          set
          {
             //Set the base value.
-            base.IsDirty = value;
+            base.RequiresRecalc = value;
             //If we're clean, then notify all internals.
             if (!value)
             {
@@ -350,7 +350,7 @@ namespace Dynamo.Elements
    [ElementDescription("A function variable")]
    [RequiresTransaction(false)]
    [IsInteractive(false)]
-   public class dynSymbol : dynNode
+   public class dynSymbol : dynNodeUI
    {
       TextBox tb;
 

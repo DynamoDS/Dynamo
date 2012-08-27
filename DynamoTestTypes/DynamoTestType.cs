@@ -16,12 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Dynamo.Elements;
+using Dynamo.Nodes;
 using Dynamo.Controls;
 using Dynamo.Connectors;
 
 //PUT YOUR ELEMENT IN THE Dynamo.Elements NAMESPACE!!
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     //Every dynamo type has three attributes
     //1. The name of the node which will appear above the node on the workbench

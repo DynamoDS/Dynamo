@@ -28,7 +28,7 @@ using System.Windows.Shapes;
 using System.Reflection;
 using Dynamo.Utilities;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     public delegate void ToolFinderFinishedHandler(object sender, EventArgs e);
 

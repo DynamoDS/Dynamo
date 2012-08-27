@@ -21,7 +21,7 @@ using Autodesk.Revit.DB.Analysis; //MDJ  - added for spatialfeildmanager access
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Dynamo.Controls;
-using Dynamo.Elements;
+using Dynamo.Nodes;
 
 namespace Dynamo.Utilities
 {

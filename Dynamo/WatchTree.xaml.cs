@@ -31,7 +31,7 @@ using System.Globalization;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     //http://blogs.msdn.com/b/chkoenig/archive/2008/05/24/hierarchical-databinding-in-wpf.aspx
 

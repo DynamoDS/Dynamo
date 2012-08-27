@@ -23,13 +23,13 @@ using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using System.Windows.Forms;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    [ElementName("Read File")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
    [RequiresTransaction(false)]
-   public class dynFileReader : dynNode
+   public class dynFileReader : dynNodeUI
    {
       public dynFileReader()
       {
@@ -59,7 +59,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
    [RequiresTransaction(false)]
-   public class dynFileWatcher : dynNode
+   public class dynFileWatcher : dynNodeUI
    {
       public dynFileWatcher()
       {
@@ -80,7 +80,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Checks if the file watched by the given FileWatcher has changed.")]
    [RequiresTransaction(false)]
-   public class dynFileWatcherChanged : dynNode
+   public class dynFileWatcherChanged : dynNodeUI
    {
       public dynFileWatcherChanged()
       {
@@ -103,7 +103,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Waits for the specified watched file to change.")]
    [RequiresTransaction(false)]
-   public class dynFileWatcherWait : dynNode
+   public class dynFileWatcherWait : dynNodeUI
    {
       public dynFileWatcherWait()
       {
@@ -139,7 +139,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Resets state of FileWatcher so that it watches again.")]
    [RequiresTransaction(false)]
-   public class dynFileWatcherReset : dynNode
+   public class dynFileWatcherReset : dynNodeUI
    {
       public dynFileWatcherReset()
       {

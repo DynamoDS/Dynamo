@@ -22,13 +22,13 @@ using Dynamo.FSchemeInterop;
 
 using Expression = Dynamo.FScheme.Expression;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    [ElementName("Reference Point")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a reference point.")]
    [RequiresTransaction(true)]
-   public class dynReferencePointByXYZ : dynNode
+   public class dynReferencePointByXYZ : dynNodeUI
    {
       public dynReferencePointByXYZ()
       {
@@ -157,7 +157,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which measures a distance between point(s).")]
    [RequiresTransaction(false)]
-   public class dynDistanceBetweenPoints : dynNode
+   public class dynDistanceBetweenPoints : dynNodeUI
    {
       public dynDistanceBetweenPoints()
       {
@@ -204,7 +204,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Create an element which owns a reference point on a selected edge.")]
    [RequiresTransaction(true)]
-   public class dynPointOnEdge : dynNode
+   public class dynPointOnEdge : dynNodeUI
    {
       public dynPointOnEdge()
       {
@@ -259,7 +259,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Create an element which owns a reference point on a selected face.")]
    [RequiresTransaction(true)]
-   public class dynPointOnFace : dynNode
+   public class dynPointOnFace : dynNodeUI
    {
       public dynPointOnFace()
       {
@@ -328,7 +328,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Create an element which owns a reference point which is projected from a point by normal and distance.")]
    [RequiresTransaction(true)]
-   public class dynPointNormalDistance : dynNode
+   public class dynPointNormalDistance : dynNodeUI
    {
        public dynPointNormalDistance()
        {
