@@ -72,10 +72,12 @@ limitations under the License.
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\vDev\ReleaseWin32\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\vDev\ReleaseWin32\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -123,6 +125,9 @@ limitations under the License.
     <Compile Include="dynGeometry.cs" />
     <Compile Include="dynModelUpdater.cs" />
     <Compile Include="dynNormals.cs" />
+    <Compile Include="dynNote.xaml.cs">
+      <DependentUpon>dynNote.xaml</DependentUpon>
+    </Compile>
     <Compile Include="dynPoints.cs" />
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
@@ -178,6 +183,10 @@ limitations under the License.
     <Page Include="dynElement.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="dynNote.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="dynPort.xaml">
       <Generator>MSBuild:Compile</Generator>

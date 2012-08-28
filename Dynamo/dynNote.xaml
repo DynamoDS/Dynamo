@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="Dynamo.Elements.dynNote"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="200"
+             Height="Auto" Width="Auto">
+    <Grid>
+        <Canvas Background="{x:Null}">
+            <Ellipse
+                Name="moveDot"
+                Height="15"
+                Width="15"
+                StrokeThickness="5"
+                Stroke="DarkGray"
+                Canvas.Left="-6"
+                Canvas.Top="-6" Fill="#0AFFFFFF" />
+        </Canvas>
+        <TextBox 
+            Name="noteText"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center" 
+            Text="New Note" 
+            FontFamily="Arial" 
+            FontSize="14" 
+            Foreground="#FFEAD871"
+            Padding="2" 
+            Background="{x:Null}" 
+            BorderBrush="{x:Null}"></TextBox> 
+    </Grid>
+</UserControl>

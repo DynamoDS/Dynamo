@@ -1752,6 +1752,15 @@ namespace Dynamo.Controls
                 e.Handled = true;
             }
 
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
+            {
+                dynNote note = new dynNote();
+                dynElementSettings.SharedInstance.Workbench.Children.Add(note);
+                Canvas.SetLeft(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Width/2);
+                Canvas.SetRight(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Height/2);
+                e.Handled = true;
+            }
+
             if (editingName)
             {
                 if (Keyboard.IsKeyDown(Key.Enter))
