@@ -622,6 +622,18 @@ namespace Dynamo.Controls
             }
         }
 
+        public dynNote AddNote(string noteText, double x, double y, dynWorkspace workspace)
+        {
+            dynNote n = new dynNote();
+            Canvas.SetLeft(n, x);
+            Canvas.SetTop(n, y);
+            n.noteText.Text = noteText;
+
+            this.CurrentSpace.Notes.Add(n);
+            this.workBench.Children.Add(n);
+
+            return n;
+        }
 
         /// <summary>
         /// Adds the given element to the selection.
@@ -1091,6 +1103,18 @@ namespace Dynamo.Controls
                     }
                 }
 
+                //save the notes
+                XmlElement noteList = xmlDoc.CreateElement("dynNotes");  //write the root element
+                root.AppendChild(noteList);
+                foreach (dynNote n in workSpace.Notes)
+                {
+                    XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
+                    noteList.AppendChild(note);
+                    note.SetAttribute("text", n.noteText.Text);
+                    note.SetAttribute("x", Canvas.GetLeft(n).ToString());
+                    note.SetAttribute("y", Canvas.GetTop(n).ToString());
+                }
+
                 xmlDoc.Save(xmlPath);
             }
             catch (Exception ex)
@@ -1163,10 +1187,13 @@ namespace Dynamo.Controls
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
 
                 XmlNode elNodesList = elNodes[0] as XmlNode;
                 XmlNode cNodesList = cNodes[0] as XmlNode;
+                XmlNode nNodesList = nNodes[0] as XmlNode;
 
+                #region instantiate nodes
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes[0];
@@ -1192,9 +1219,11 @@ namespace Dynamo.Controls
                     el.DisableReporting();
                     el.LoadElement(elNode);
                 }
+                #endregion
 
                 this.workBench.UpdateLayout();
 
+                #region instantiate connectors
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
                     XmlAttribute guidStartAttrib = connector.Attributes[0];
@@ -1247,6 +1276,22 @@ namespace Dynamo.Controls
                         ws.Connectors.Add(newConnector);
                     }
                 }
+                #endregion
+
+                #region instantiate notes
+                foreach (XmlNode note in nNodesList.ChildNodes)
+                {
+                    XmlAttribute textAttrib = note.Attributes[0];
+                    XmlAttribute xAttrib = note.Attributes[1];
+                    XmlAttribute yAttrib = note.Attributes[2];
+
+                    string text = textAttrib.Value.ToString();
+                    double x = Convert.ToDouble(xAttrib.Value.ToString());
+                    double y = Convert.ToDouble(yAttrib.Value.ToString());
+
+                    dynNote n = AddNote(text, x, y, ws);
+                }
+                #endregion
 
                 foreach (var e in ws.Elements)
                     e.EnableReporting();
@@ -1300,9 +1345,11 @@ namespace Dynamo.Controls
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
 
                 XmlNode elNodesList = elNodes[0] as XmlNode;
                 XmlNode cNodesList = cNodes[0] as XmlNode;
+                XmlNode nNodesList = nNodes[0] as XmlNode;
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
@@ -1406,6 +1453,22 @@ namespace Dynamo.Controls
                         this.CurrentSpace.Connectors.Add(newConnector);
                     }
                 }
+
+                #region instantiate notes
+                foreach (XmlNode note in nNodesList.ChildNodes)
+                {
+                    XmlAttribute textAttrib = note.Attributes[0];
+                    XmlAttribute xAttrib = note.Attributes[1];
+                    XmlAttribute yAttrib = note.Attributes[2];
+
+                    string text = textAttrib.Value.ToString();
+                    double x = Convert.ToDouble(xAttrib.Value.ToString());
+                    double y = Convert.ToDouble(yAttrib.Value.ToString());
+
+                    dynNote n = AddNote(text, x, y, this.CurrentSpace);
+                    
+                }
+                #endregion
 
                 foreach (var e in this.CurrentSpace.Elements)
                     e.EnableReporting();
@@ -1758,6 +1821,9 @@ namespace Dynamo.Controls
                 dynElementSettings.SharedInstance.Workbench.Children.Add(note);
                 Canvas.SetLeft(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Width/2);
                 Canvas.SetRight(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Height/2);
+                
+                CurrentSpace.Notes.Add(note);
+
                 e.Handled = true;
             }
 
