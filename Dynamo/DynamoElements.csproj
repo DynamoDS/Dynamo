@@ -116,14 +116,14 @@ limitations under the License.
     <Compile Include="dynCommunication.cs" />
     <Compile Include="dynConnector.cs" />
     <Compile Include="dynCurves.cs" />
-    <Compile Include="dynElement.xaml.cs">
-      <DependentUpon>dynElement.xaml</DependentUpon>
-    </Compile>
     <Compile Include="dynFamilies.cs" />
     <Compile Include="dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
     <Compile Include="dynGeometry.cs" />
     <Compile Include="dynModelUpdater.cs" />
+    <Compile Include="dynNode.xaml.cs">
+      <DependentUpon>dynNode.xaml</DependentUpon>
+    </Compile>
     <Compile Include="dynNormals.cs" />
     <Compile Include="dynNote.xaml.cs">
       <DependentUpon>dynNote.xaml</DependentUpon>
@@ -180,7 +180,7 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="dynElement.xaml">
+    <Page Include="dynNode.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

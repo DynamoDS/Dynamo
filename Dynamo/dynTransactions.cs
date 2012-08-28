@@ -34,7 +34,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Executes Expression inside of a Revit API transaction")]
    [RequiresTransaction(false)]
-   public class dynTransaction : dynElement
+   public class dynTransaction : dynNode
    {
       public dynTransaction()
       {

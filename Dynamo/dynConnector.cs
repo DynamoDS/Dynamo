@@ -140,7 +140,7 @@ namespace Dynamo.Connectors
 
       }
 
-      public dynConnector(dynElement start, dynElement end, int startIndex, int endIndex, int portType, bool visible)
+      public dynConnector(dynNode start, dynNode end, int startIndex, int endIndex, int portType, bool visible)
       {
          //this.workBench = settings.WorkBench;
 
@@ -215,7 +215,7 @@ namespace Dynamo.Connectors
          this.Connect(endPort);
       }
 
-      public dynConnector(dynElement start, dynElement end, int startIndex, int endIndex, int portType)
+      public dynConnector(dynNode start, dynNode end, int startIndex, int endIndex, int portType)
          : this(start, end, startIndex, endIndex, portType, true)
       { }
 
@@ -462,20 +462,20 @@ namespace Dynamo.Connectors
          }
       }
 
-      public dynElement FindDynElementByGuid(Guid guid)
+      public dynNode FindDynElementByGuid(Guid guid)
       {
          foreach (UIElement uiel in dynElementSettings.SharedInstance.Workbench.Children)
          {
-            dynElement testEl = null;
+            dynNode testEl = null;
 
             //walk up through the inheritance to find whether the base type is a dynElement
             Type startType = uiel.GetType();
             while (startType.BaseType != null)
             {
                startType = startType.BaseType;
-               if (startType == typeof(dynElement))
+               if (startType == typeof(dynNode))
                {
-                  testEl = uiel as dynElement;
+                  testEl = uiel as dynNode;
                   break;
                }
             }

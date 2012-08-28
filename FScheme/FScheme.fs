@@ -233,6 +233,28 @@ let Sort cont = function
    //Otherwise, fail.
    | m -> malformed "sort" (List(m))
 
+///Build Sequence
+let BuildSeq cont = function
+   | [Number(start); Number(stop); Number(step)] -> [start .. step .. stop] |> List.map Number |> List |> cont
+   | m -> malformed "build-seq" (List(m))
+
+let String2Num cont = function
+    | [String(s)] -> Number(Convert.ToDouble(s)) |> cont
+    | m -> malformed "string" (List(m))
+
+let Num2String cont = function
+    | [Number(n)] -> String(n.ToString()) |> cont
+    | m -> malformed "number" (List(m))
+
+let Concat cont = function
+    | [List(l)] -> 
+        let rec concat a = function
+            | String(s) :: l -> concat (a + s) l
+            | [] -> String(a) |> cont
+            | m :: _ -> malformed "string" m
+        concat "" l
+    | m -> malformed "concat" (List(m))
+
 ///Extends the given environment with the given bindings.
 let rec extend (env : Environment) = function
    | [] -> env
@@ -437,6 +459,7 @@ and environment =
        "take", ref (Function(Take))
        "get", ref (Function(Get))
        "drop", ref (Function(Drop))
+       "build-seq", ref (Function(BuildSeq))
        "quote", ref (Special(Quote))
        "eval", ref (Special(Eval))
        "macro", ref (Special(Macro))
@@ -461,6 +484,9 @@ and environment =
        "sort", ref (Function(Sort))
        "throw", ref (Function(Throw))
        "rand", ref (Function(RandomDbl))
+       "string->num", ref (Function(String2Num))
+       "num->string", ref (Function(Num2String))
+       "concat-strings", ref (Function(Concat))
       ] |> ref
 
 ///Our eval loop
@@ -597,16 +623,6 @@ let test (log : ErrorLog) =
             (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))"
         "(0 1)"
    
-   //Build-Seq
-   case "(define build-seq 
-            (lambda (s e st) 
-               (letrec ((bs* (lambda (start end step a) 
-                                 (if (or (<= step 0) (>= start end))
-                                     (rev a) 
-                                     (bs* (+ start step) end step (cons start a)))))) 
-                  (bs* s e st empty))))" ""
-   case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9)"
-   
    //Cartesian Product
    case "(begin 
             (define cp-atom-list 
@@ -711,3 +727,19 @@ let test (log : ErrorLog) =
    case "(+ 8 (call/cc (lambda (k^) (* (k^ 5) 100))))" "13" // call/cc bailing out of multiplication
    case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
    case "(let ((divide (lambda (x y) (call/cc (lambda (k^) (if (= y 0) (k^ \"error\") (/ x y))))))) (divide 1 0))" "\"error\"" // call/cc as an error handler
+   
+   //Built-in Tests
+   case "(cons 1 (cons 5 (cons \"hello\" empty)))" "(1 5 \"hello\")" // cons and empty
+   case "(car (list 5 6 2))" "5" // car / first
+   case "(cdr (list 5 6 2))" "(6 2)" // cdr / rest
+   case "(len (list 5 6 2))" "3" // len
+   case "(append '(1 2 3) '(4 5 6))" "(1 2 3 4 5 6)" // append
+   case "(take 2 '(1 2 3))" "(1 2)" // take
+   case "(get 2 '(1 2 3))" "3" // get
+   case "(drop 2 '(1 2 3))" "(3)" // drop
+   case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9 10)" // build-seq
+   case "(reverse '(1 2 3))" "(3 2 1)" // reverse
+   case "(empty? '())" "1" // empty?
+   case "(empty? '(1))" "0" // empty?
+   case "(sort '(8 4 7 6 1 0 2 9))" "(0 1 2 4 6 7 8 9)" // sort
+   case "(sort (list \"b\" \"c\" \"a\"))" "(\"a\" \"b\" \"c\")" // sort

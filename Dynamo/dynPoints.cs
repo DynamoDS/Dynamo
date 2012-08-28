@@ -28,7 +28,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a reference point.")]
    [RequiresTransaction(true)]
-   public class dynReferencePointByXYZ : dynElement
+   public class dynReferencePointByXYZ : dynNode
    {
       public dynReferencePointByXYZ()
       {
@@ -157,7 +157,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which measures a distance between point(s).")]
    [RequiresTransaction(false)]
-   public class dynDistanceBetweenPoints : dynElement
+   public class dynDistanceBetweenPoints : dynNode
    {
       public dynDistanceBetweenPoints()
       {
@@ -204,7 +204,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Create an element which owns a reference point on a selected edge.")]
    [RequiresTransaction(true)]
-   public class dynPointOnEdge : dynElement
+   public class dynPointOnEdge : dynNode
    {
       public dynPointOnEdge()
       {
@@ -259,7 +259,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Create an element which owns a reference point on a selected face.")]
    [RequiresTransaction(true)]
-   public class dynPointOnFace : dynElement
+   public class dynPointOnFace : dynNode
    {
       public dynPointOnFace()
       {
@@ -328,7 +328,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Create an element which owns a reference point which is projected from a point by normal and distance.")]
    [RequiresTransaction(true)]
-   public class dynPointNormalDistance : dynElement
+   public class dynPointNormalDistance : dynNode
    {
        public dynPointNormalDistance()
        {

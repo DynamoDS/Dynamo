@@ -106,6 +106,7 @@ namespace Dynamo.Elements
         public WatchNode()
         {
         }
+
         public WatchNode(string label)
         {
             _label = label;

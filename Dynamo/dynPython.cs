@@ -209,7 +209,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("Runs an embedded IronPython script")]
    [RequiresTransaction(true)]
-   public class dynPython : dynElement
+   public class dynPython : dynNode
    {
       private DynPythonEngine engine = new DynPythonEngine();
       private bool dirty = true;

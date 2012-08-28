@@ -53,7 +53,7 @@ namespace Dynamo.Elements
 
     #region FScheme Builtin Interop
 
-    public abstract class dynBuiltinFunction : dynElement
+    public abstract class dynBuiltinFunction : dynNode
     {
         public string Symbol;
 
@@ -120,7 +120,7 @@ namespace Dynamo.Elements
 
     #endregion
 
-    public abstract class dynVariableInput : dynElement
+    public abstract class dynVariableInput : dynNode
     {
         protected dynVariableInput()
             : base()
@@ -229,7 +229,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Identity function")]
     [RequiresTransaction(false)]
-    public class dynIdentity : dynElement
+    public class dynIdentity : dynNode
     {
         public dynIdentity()
         {
@@ -391,7 +391,7 @@ namespace Dynamo.Elements
     [ElementDescription("Creates a sequence of numbers")]
     [ElementSearchTags("range")]
     [RequiresTransaction(false)]
-    public class dynBuildSeq : dynBuiltinMacro
+    public class dynBuildSeq : dynBuiltinFunction
     {
         public dynBuildSeq()
             : base("build-seq")
@@ -681,7 +681,7 @@ namespace Dynamo.Elements
     [ElementDescription("An empty list")]
     [RequiresTransaction(false)]
     [IsInteractive(false)]
-    public class dynEmpty : dynElement
+    public class dynEmpty : dynNode
     {
         public dynEmpty()
         {
@@ -1024,7 +1024,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Rounds a number to the nearest integer value.")]
     [RequiresTransaction(false)]
-    public class dynRound : dynElement
+    public class dynRound : dynNode
     {
         public dynRound()
         {
@@ -1047,7 +1047,7 @@ namespace Dynamo.Elements
     [ElementDescription("Rounds a number to the nearest smaller integer.")]
     [ElementSearchTags("round")]
     [RequiresTransaction(false)]
-    public class dynFloor : dynElement
+    public class dynFloor : dynNode
     {
         public dynFloor()
         {
@@ -1070,7 +1070,7 @@ namespace Dynamo.Elements
     [ElementDescription("Rounds a number to the nearest larger integer value.")]
     [ElementSearchTags("round")]
     [RequiresTransaction(false)]
-    public class dynCeiling : dynElement
+    public class dynCeiling : dynNode
     {
         public dynCeiling()
         {
@@ -1092,7 +1092,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     [RequiresTransaction(false)]
-    public class dynRandom : dynElement
+    public class dynRandom : dynNode
     {
         public dynRandom()
         {
@@ -1124,7 +1124,7 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     [ElementSearchTags("pi", "trigonometry", "circle")]
     [IsInteractive(false)]
-    public class dynPi : dynElement
+    public class dynPi : dynNode
     {
         public dynPi()
         {
@@ -1154,7 +1154,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Computes the sine of the given angle.")]
     [RequiresTransaction(false)]
-    public class dynSin : dynElement
+    public class dynSin : dynNode
     {
         public dynSin()
         {
@@ -1191,7 +1191,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Computes the cosine of the given angle.")]
     [RequiresTransaction(false)]
-    public class dynCos : dynElement
+    public class dynCos : dynNode
     {
         public dynCos()
         {
@@ -1228,7 +1228,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Computes the tangent of the given angle.")]
     [RequiresTransaction(false)]
-    public class dynTan : dynElement
+    public class dynTan : dynNode
     {
         public dynTan()
         {
@@ -1368,7 +1368,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Conditional statement")]
     [RequiresTransaction(false)]
-    public class dynConditional : dynElement
+    public class dynConditional : dynNode
     {
         public dynConditional()
         {
@@ -1393,7 +1393,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Halts execution until user clicks button.")]
     [RequiresTransaction(false)]
-    public class dynBreakpoint : dynElement
+    public class dynBreakpoint : dynNode
     {
         System.Windows.Controls.Button button;
 
@@ -1477,7 +1477,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
     [RequiresTransaction(false)]
-    public class dynOptimizer : dynElement
+    public class dynOptimizer : dynNode
     {
         TextBox tb;
 
@@ -1560,7 +1560,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
     [RequiresTransaction(false)]
-    public class dynIncrementer : dynElement
+    public class dynIncrementer : dynNode
     {
         TextBox tb;
 
@@ -1754,7 +1754,7 @@ namespace Dynamo.Elements
     }
 
     [IsInteractive(true)]
-    public abstract class dynBasicInteractive<T> : dynElement
+    public abstract class dynBasicInteractive<T> : dynNode
     {
         private T _value = default(T);
         public virtual T Value
@@ -2280,6 +2280,115 @@ namespace Dynamo.Elements
                 throw new Exception("No file selected.");
 
             return base.Evaluate(args);
+        }
+    }
+
+    #endregion
+
+    #region Strings and Conversions
+
+    [ElementName("Concatenate Strings")]
+    [ElementDescription("Concatenates two or more strings")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [RequiresTransaction(false)]
+    public class dynConcatStrings : dynVariableInput
+    {
+        public dynConcatStrings()
+        {
+            InPortData.Add(new PortData("s1", "First string", typeof(object)));
+            InPortData.Add(new PortData("s2", "Second string", typeof(object)));
+            OutPortData = new PortData("combined", "Combined lists", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        protected override string getInputRootName()
+        {
+            return "s";
+        }
+
+        protected override int getNewInputIndex()
+        {
+            return this.InPortData.Count + 1;
+        }
+
+        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count > 2)
+                base.RemoveInput(sender, args);
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            foreach (var inport in InPortData.Skip(2))
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+
+                input.SetAttribute("name", inport.NickName);
+
+                dynEl.AppendChild(input);
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == "Input")
+                {
+                    var attr = subNode.Attributes["name"].Value;
+
+                    this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                }
+            }
+            base.ReregisterInputs();
+        }
+
+        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        {
+            if (this.SaveResult)
+                return base.Compile(portNames);
+            else
+                return new FunctionNode("concat-strings", portNames);
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol("concat-strings")).Item;
+            return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
+        }
+    }
+
+    [ElementName("String -> Number")]
+    [ElementDescription("Converts a string to a number")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [RequiresTransaction(false)]
+    public class dynString2Num : dynBuiltinFunction
+    {
+        public dynString2Num()
+            : base("string->num")
+        {
+            this.InPortData.Add(new PortData("s", "A string", typeof(string)));
+            this.OutPortData = new PortData("n", "A number", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Number -> String")]
+    [ElementDescription("Converts a number to a string")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [RequiresTransaction(false)]
+    public class dynNum2String : dynBuiltinFunction
+    {
+        public dynNum2String()
+            : base("num->string")
+        {
+            this.InPortData.Add(new PortData("n", "A number", typeof(double)));
+            this.OutPortData = new PortData("s", "A string", typeof(string));
+
+            base.RegisterInputsAndOutputs();
         }
     }
 

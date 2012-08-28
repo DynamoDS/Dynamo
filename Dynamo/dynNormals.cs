@@ -25,7 +25,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Evaluate a point on a face to find the normal.")]
     [RequiresTransaction(false)]
-    class dynNormalEvaluate:dynElement
+    class dynNormalEvaluate:dynNode
     {
         public dynNormalEvaluate()
         {
@@ -67,7 +67,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Evaluate a point on a face to find the XYZ location.")]
     [RequiresTransaction(false)]
-    class dynXYZEvaluate : dynElement
+    class dynXYZEvaluate : dynNode
     {
         public dynXYZEvaluate()
         {

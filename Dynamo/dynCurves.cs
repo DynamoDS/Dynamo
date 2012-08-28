@@ -29,7 +29,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("An element which creates a model curve.")]
    [RequiresTransaction(true)]
-   public class dynModelCurve : dynElement
+   public class dynModelCurve : dynNode
    {
       public dynModelCurve()
       {
@@ -80,7 +80,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
    [RequiresTransaction(true)]
-   public class dynLoftForm : dynElement
+   public class dynLoftForm : dynNode
    {
       public dynLoftForm()
       {
@@ -171,7 +171,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("doc.FamilyCreate.NewCurveByPoints")]
    [RequiresTransaction(true)]
-   public class dynCurveByPoints : dynElement
+   public class dynCurveByPoints : dynNode
    {
       public dynCurveByPoints()
       {
@@ -230,7 +230,7 @@ namespace Dynamo.Elements
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("CurveyPoints.GeometryCurve.Reference")]
    [RequiresTransaction(true)]
-   public class dynCurveRef : dynElement
+   public class dynCurveRef : dynNode
    {
       public dynCurveRef()
       {

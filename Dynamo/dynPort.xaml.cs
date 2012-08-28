@@ -54,7 +54,7 @@ namespace Dynamo.Connectors
       List<dynConnector> connectors;
       Point center;
 
-      dynElement owner;
+      dynNode owner;
       int index;
       PortType portType;
 
@@ -85,7 +85,7 @@ namespace Dynamo.Connectors
          set { portType = value; }
       }
 
-      public dynElement Owner
+      public dynNode Owner
       {
          get { return owner; }
          set { owner = value; }
