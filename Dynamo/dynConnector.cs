@@ -22,67 +22,145 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Connectors
 {
-   public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
+    public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
 
-   public class dynConnector : UIElement
-   {
-      public event ConnectorConnectedHandler Connected;
+    public class dynConnector : UIElement
+    {
+        public event ConnectorConnectedHandler Connected;
 
-      protected virtual void OnConnected(EventArgs e)
-      {
-         if (Connected != null)
-            Connected(this, e);
-      }
+        protected virtual void OnConnected(EventArgs e)
+        {
+            if (Connected != null)
+                Connected(this, e);
+        }
 
-      const int STROKE_THICKNESS = 1;
-      const double STROKE_OPACITY = .6;
+        const int STROKE_THICKNESS = 1;
+        const double STROKE_OPACITY = .6;
 
-      dynPort pStart;
-      dynPort pEnd;
+        dynPort pStart;
+        dynPort pEnd;
 
-      PathFigure connectorPoints;
-      BezierSegment connectorCurve;
-      Ellipse endDot;
-      const int END_DOT_SIZE = 6;
-      Path connector;
+        PathFigure connectorPoints;
+        BezierSegment connectorCurve;
+        Ellipse endDot;
+        const int END_DOT_SIZE = 6;
+        Path connector;
 
-      double bezOffset = 100;
+        double bezOffset = 100;
 
-      //Canvas workBench;
-      bool isDrawing = false;
+        //Canvas workBench;
+        bool isDrawing = false;
 
-      public bool IsDrawing
-      {
-         get { return isDrawing; }
-      }
-      public dynPort Start
-      {
-         get { return pStart; }
-         set { pStart = value; }
-      }
-      public dynPort End
-      {
-         get { return pEnd; }
-         set
-         {
-            pEnd = value;
-         }
-      }
+        public bool IsDrawing
+        {
+            get { return isDrawing; }
+        }
+        public dynPort Start
+        {
+            get { return pStart; }
+            set { pStart = value; }
+        }
+        public dynPort End
+        {
+            get { return pEnd; }
+            set
+            {
+                pEnd = value;
+            }
+        }
 
-      public dynConnector(dynPort port, Canvas workBench, Point mousePt)
-      {
-         //don't allow connections to start at an input port
-         if (port.PortType != PortType.INPUT)
-         {
+        public dynConnector(dynPort port, Canvas workBench, Point mousePt)
+        {
+            //don't allow connections to start at an input port
+            if (port.PortType != PortType.INPUT)
+            {
+                //get start point
+                //this.workBench = workBench;
+                pStart = port;
+
+                pStart.Connect(this);
+
+                //Create a Bezier;
+                connector = new Path();
+
+                connector.Stroke = Brushes.Black;
+                connector.StrokeThickness = STROKE_THICKNESS;
+                connector.Opacity = STROKE_OPACITY;
+
+                DoubleCollection dashArray = new DoubleCollection();
+                dashArray.Add(5); dashArray.Add(2);
+                connector.StrokeDashArray = dashArray;
+
+                PathGeometry connectorGeometry = new PathGeometry();
+                connectorPoints = new PathFigure();
+                connectorCurve = new BezierSegment();
+
+                connectorPoints.StartPoint = new Point(pStart.Center.X, pStart.Center.Y);
+                connectorCurve.Point1 = connectorPoints.StartPoint;
+                connectorCurve.Point2 = connectorPoints.StartPoint;
+                connectorCurve.Point3 = connectorPoints.StartPoint;
+
+                connectorPoints.Segments.Add(connectorCurve);
+                connectorGeometry.Figures.Add(connectorPoints);
+                connector.Data = connectorGeometry;
+                workBench.Children.Add(connector);
+
+                endDot = new Ellipse();
+                endDot.Height = 6;
+                endDot.Width = 6;
+                endDot.Fill = Brushes.Black;
+                endDot.StrokeThickness = 2;
+                endDot.Stroke = Brushes.Black;
+                Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
+                Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
+                dynSettings.Instance.Workbench.Children.Add(endDot);
+                endDot.Opacity = STROKE_OPACITY;
+
+                connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
+                connector.MouseLeave += delegate { Unhighlight(); };
+
+                isDrawing = true;
+
+                //set this to not draggable
+                Dynamo.Controls.DragCanvas.SetCanBeDragged(this, false);
+                Dynamo.Controls.DragCanvas.SetCanBeDragged(connector, false);
+
+                //set the z order to the front
+                Canvas.SetZIndex(this, 300);
+
+                //register an event listener for the start port update
+                //this will tell the connector to set the elements at either
+                //end to be equal if pStart and pEnd are not null
+                //pStart.Owner.Outputs[pStart.Index].dynElementUpdated += new Dynamo.Elements.dynElementUpdatedHandler(StartPortUpdated);
+            }
+            else
+            {
+                throw new InvalidPortException();
+            }
+
+        }
+
+        public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType, bool visible)
+        {
+            //this.workBench = settings.WorkBench;
+
+            //if (start != null && end != null && start != end)
+            //{
+            //in the start element, find the out port at the startIndex
+            pStart = start.OutPort;
+
+            dynPort endPort = null;
+
+            if (portType == 0)
+                endPort = end.InPorts[endIndex];
+
+            //connect the two ports
             //get start point
-            //this.workBench = workBench;
-            pStart = port;
 
             pStart.Connect(this);
 
-            //Create a Bezier;
+            #region bezier creation
             connector = new Path();
-
             connector.Stroke = Brushes.Black;
             connector.StrokeThickness = STROKE_THICKNESS;
             connector.Opacity = STROKE_OPACITY;
@@ -103,7 +181,7 @@ namespace Dynamo.Connectors
             connectorPoints.Segments.Add(connectorCurve);
             connectorGeometry.Figures.Add(connectorPoints);
             connector.Data = connectorGeometry;
-            workBench.Children.Add(connector);
+            dynSettings.Instance.Workbench.Children.Add(connector);
 
             endDot = new Ellipse();
             endDot.Height = 6;
@@ -111,13 +189,17 @@ namespace Dynamo.Connectors
             endDot.Fill = Brushes.Black;
             endDot.StrokeThickness = 2;
             endDot.Stroke = Brushes.Black;
-            Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
-            Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
+            Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
+            Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
             dynSettings.Instance.Workbench.Children.Add(endDot);
             endDot.Opacity = STROKE_OPACITY;
 
+            this.Visible = visible;
+
             connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
             connector.MouseLeave += delegate { Unhighlight(); };
+
+            #endregion
 
             isDrawing = true;
 
@@ -128,361 +210,281 @@ namespace Dynamo.Connectors
             //set the z order to the front
             Canvas.SetZIndex(this, 300);
 
-            //register an event listener for the start port update
-            //this will tell the connector to set the elements at either
-            //end to be equal if pStart and pEnd are not null
-            //pStart.Owner.Outputs[pStart.Index].dynElementUpdated += new Dynamo.Elements.dynElementUpdatedHandler(StartPortUpdated);
-         }
-         else
-         {
-            throw new InvalidPortException();
-         }
+            this.Connect(endPort);
 
-      }
+            this.Redraw();
+        }
 
-      public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType, bool visible)
-      {
-         //this.workBench = settings.WorkBench;
+        public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType)
+            : this(start, end, startIndex, endIndex, portType, true)
+        { }
 
-         //if (start != null && end != null && start != end)
-         //{
-         //in the start element, find the out port at the startIndex
-         pStart = start.OutPort;
+        public void Highlight()
+        {
+            if (connector != null)
+                connector.StrokeThickness = STROKE_THICKNESS * 3;
+        }
 
-         dynPort endPort = null;
+        public void Unhighlight()
+        {
+            if (connector != null)
+                connector.StrokeThickness = STROKE_THICKNESS;
+        }
 
-         if (portType == 0)
-            endPort = end.InPorts[endIndex];
+        public void SendMessage()
+        {
 
-         //connect the two ports
-         //get start point
-
-         pStart.Connect(this);
-
-         #region bezier creation
-         connector = new Path();
-         connector.Stroke = Brushes.Black;
-         connector.StrokeThickness = STROKE_THICKNESS;
-         connector.Opacity = STROKE_OPACITY;
-
-         DoubleCollection dashArray = new DoubleCollection();
-         dashArray.Add(5); dashArray.Add(2);
-         connector.StrokeDashArray = dashArray;
-
-         PathGeometry connectorGeometry = new PathGeometry();
-         connectorPoints = new PathFigure();
-         connectorCurve = new BezierSegment();
-
-         connectorPoints.StartPoint = new Point(pStart.Center.X, pStart.Center.Y);
-         connectorCurve.Point1 = connectorPoints.StartPoint;
-         connectorCurve.Point2 = connectorPoints.StartPoint;
-         connectorCurve.Point3 = connectorPoints.StartPoint;
-
-         connectorPoints.Segments.Add(connectorCurve);
-         connectorGeometry.Figures.Add(connectorPoints);
-         connector.Data = connectorGeometry;
-         dynSettings.Instance.Workbench.Children.Add(connector);
-
-         endDot = new Ellipse();
-         endDot.Height = 6;
-         endDot.Width = 6;
-         endDot.Fill = Brushes.Black;
-         endDot.StrokeThickness = 2;
-         endDot.Stroke = Brushes.Black;
-         Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
-         Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
-         dynSettings.Instance.Workbench.Children.Add(endDot);
-         endDot.Opacity = STROKE_OPACITY;
-
-         this.Visible = visible;
-
-         connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
-         connector.MouseLeave += delegate { Unhighlight(); };
-
-         #endregion
-
-         isDrawing = true;
-
-         //set this to not draggable
-         Dynamo.Controls.DragCanvas.SetCanBeDragged(this, false);
-         Dynamo.Controls.DragCanvas.SetCanBeDragged(connector, false);
-
-         //set the z order to the front
-         Canvas.SetZIndex(this, 300);
-
-         this.Connect(endPort);
-      }
-
-      public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType)
-         : this(start, end, startIndex, endIndex, portType, true)
-      { }
-
-      public void Highlight()
-      {
-         if (connector != null)
-            connector.StrokeThickness = STROKE_THICKNESS * 3;
-      }
-
-      public void Unhighlight()
-      {
-         if (connector != null)
-            connector.StrokeThickness = STROKE_THICKNESS;
-      }
-
-      public void SendMessage()
-      {
-
-         if (pEnd != null)
-         {
-            if (pEnd.Owner != null)
+            if (pEnd != null)
             {
-               //if (pEnd.PortType == PortType.INPUT)
-               //   pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
-               //else if (pEnd.PortType == PortType.STATE)
-               //   pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
+                if (pEnd.Owner != null)
+                {
+                    //if (pEnd.PortType == PortType.INPUT)
+                    //   pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
+                    //else if (pEnd.PortType == PortType.STATE)
+                    //   pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
 
-               //tell the end port's ownder to update
-               //pEnd.Owner.Update();
+                    //tell the end port's ownder to update
+                    //pEnd.Owner.Update();
+                }
             }
-         }
 
-      }
+        }
 
-      public bool Connect(dynPort p)
-      {
-         //test if the port that you are connecting too is not the start port or the end port
-         //of the current connector
-         if (p.Equals(pStart) || p.Equals(pEnd))
-         {
-            return false;
-         }
+        public bool Connect(dynPort p)
+        {
+            //test if the port that you are connecting too is not the start port or the end port
+            //of the current connector
+            if (p.Equals(pStart) || p.Equals(pEnd))
+            {
+                return false;
+            }
 
-         //if the selected connector is also an output connector, return false
-         //output ports can't be connected to eachother
-         if (p.PortType == PortType.OUTPUT)
-         {
-            return false;
-         }
+            //if the selected connector is also an output connector, return false
+            //output ports can't be connected to eachother
+            if (p.PortType == PortType.OUTPUT)
+            {
+                return false;
+            }
 
-         //test if the port that you are connecting to is an input and 
-         //already has other connectors
-         if (p.PortType == PortType.INPUT && p.Connectors.Count > 0)
-         {
-            return false;
-         }
+            //test if the port that you are connecting to is an input and 
+            //already has other connectors
+            if (p.PortType == PortType.INPUT && p.Connectors.Count > 0)
+            {
+                return false;
+            }
 
-         //TODO: Re-enable
-         //test if the port element at B can connect to the port at A
-         //test if you can convert the element at A to the element at b
-         //if (p.PortType == PortType.INPUT)
-         //{
-         //    if (!p.Owner.InPortData[p.Index].PortType.IsAssignableFrom(pStart.Owner.OutPortData[pStart.Index].PortType))
-         //    {
-         //        return false;
-         //    }
-         //}
-         //else if (p.PortType == PortType.STATE)
-         //{
-         //    if (!p.Owner.StatePortData[p.Index].PortType.IsAssignableFrom(pStart.Owner.OutPortData[pStart.Index].PortType))
-         //    {
-         //        return false;
-         //    }
-         //}
+            //TODO: Re-enable
+            //test if the port element at B can connect to the port at A
+            //test if you can convert the element at A to the element at b
+            //if (p.PortType == PortType.INPUT)
+            //{
+            //    if (!p.Owner.InPortData[p.Index].PortType.IsAssignableFrom(pStart.Owner.OutPortData[pStart.Index].PortType))
+            //    {
+            //        return false;
+            //    }
+            //}
+            //else if (p.PortType == PortType.STATE)
+            //{
+            //    if (!p.Owner.StatePortData[p.Index].PortType.IsAssignableFrom(pStart.Owner.OutPortData[pStart.Index].PortType))
+            //    {
+            //        return false;
+            //    }
+            //}
 
-         //turn the line solid
-         connector.StrokeDashArray.Clear();
+            //turn the line solid
+            connector.StrokeDashArray.Clear();
 
-         pEnd = p;
+            pEnd = p;
 
-         if (pEnd != null)
-         {
-            //set the start and end values to equal so this 
-            //starts evaulating immediately
-            //pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
-            p.Connect(this);
-         }
+            if (pEnd != null)
+            {
+                //set the start and end values to equal so this 
+                //starts evaulating immediately
+                //pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
+                p.Connect(this);
+            }
 
-         return true;
-      }
+            return true;
+        }
 
-      public bool Visible
-      {
-         get
-         {
-            return connector.Opacity > 0;
-         }
-         set
-         {
-             if (value)
-             {
-                 connector.Opacity = STROKE_OPACITY;
-                 endDot.Opacity = STROKE_OPACITY;
-             }
-             else
-             {
-                 connector.Opacity = 0;
-                 endDot.Opacity = 0;
-             }
-         }
-      }
+        public bool Visible
+        {
+            get
+            {
+                return connector.Opacity > 0;
+            }
+            set
+            {
+                if (value)
+                {
+                    connector.Opacity = STROKE_OPACITY;
+                    endDot.Opacity = STROKE_OPACITY;
+                }
+                else
+                {
+                    connector.Opacity = 0;
+                    endDot.Opacity = 0;
+                }
+            }
+        }
 
-      public void Disconnect(dynPort p)
-      {
-         if (p.Equals(pStart))
-         {
-            //pStart.Owner.Outputs[pStart.Index] = null;
+        public void Disconnect(dynPort p)
+        {
+            if (p.Equals(pStart))
+            {
+                //pStart.Owner.Outputs[pStart.Index] = null;
+                pStart = null;
+            }
+
+            if (p.Equals(pEnd))
+            {
+                //if (pEnd.PortType == PortType.INPUT)
+                //{
+                //   if (pEnd.Index < pEnd.Owner.InPortData.Count)
+                //   {
+                //      pEnd.Owner.InPortData[pEnd.Index].Object = null;
+                //   }
+                //}
+                //else if (pEnd.PortType == PortType.STATE)
+                //   pEnd.Owner.StatePortData[pEnd.Index].Object = null;
+                pEnd = null;
+            }
+
+            p.Disconnect(this);
+
+            //turn the connector back to dashed
+            connector.StrokeDashArray.Add(5);
+            connector.StrokeDashArray.Add(2);
+
+        }
+
+        public void Kill()
+        {
+            if (pStart != null && pStart.Connectors.Contains(this))
+            {
+                pStart.Disconnect(this);
+                //pStart.Connectors.Remove(this);
+                //do not remove the owner's output element
+            }
+            if (pEnd != null && pEnd.Connectors.Contains(this))
+            {
+                pEnd.Disconnect(this);
+                //remove the reference to the
+                //dynElement attached to port A
+
+                //if (pEnd.Index < pEnd.Owner.InPortData.Count)
+                //{
+                //   pEnd.Owner.InPortData[pEnd.Index].Object = null;
+                //}
+            }
+
             pStart = null;
-         }
-
-         if (p.Equals(pEnd))
-         {
-            //if (pEnd.PortType == PortType.INPUT)
-            //{
-            //   if (pEnd.Index < pEnd.Owner.InPortData.Count)
-            //   {
-            //      pEnd.Owner.InPortData[pEnd.Index].Object = null;
-            //   }
-            //}
-            //else if (pEnd.PortType == PortType.STATE)
-            //   pEnd.Owner.StatePortData[pEnd.Index].Object = null;
             pEnd = null;
-         }
 
-         p.Disconnect(this);
+            dynSettings.Instance.Workbench.Children.Remove(connector);
+            dynSettings.Instance.Workbench.Children.Remove(endDot);
 
-         //turn the connector back to dashed
-         connector.StrokeDashArray.Add(5);
-         connector.StrokeDashArray.Add(2);
+            isDrawing = false;
 
-      }
+            dynSettings.Instance.Bench.RemoveConnector(this);
+        }
 
-      public void Kill()
-      {
-         if (pStart != null && pStart.Connectors.Contains(this))
-         {
-            pStart.Disconnect(this);
-            //pStart.Connectors.Remove(this);
-            //do not remove the owner's output element
-         }
-         if (pEnd != null && pEnd.Connectors.Contains(this))
-         {
-            pEnd.Disconnect(this);
-            //remove the reference to the
-            //dynElement attached to port A
-
-            //if (pEnd.Index < pEnd.Owner.InPortData.Count)
-            //{
-            //   pEnd.Owner.InPortData[pEnd.Index].Object = null;
-            //}
-         }
-
-         pStart = null;
-         pEnd = null;
-
-         dynSettings.Instance.Workbench.Children.Remove(connector);
-         dynSettings.Instance.Workbench.Children.Remove(endDot);
-
-         isDrawing = false;
-
-         dynSettings.Instance.Bench.RemoveConnector(this);
-      }
-
-      public void Redraw(Point p2)
-      {
-          if (isDrawing)
-          {
-              if (pStart != null)
-              {
-                  connectorPoints.StartPoint = pStart.Center;
-
-                  //calculate the bezier offset based on the distance
-                  //between ports. if the distance is less than 2 * 100,
-                  //make the offset 1/3 of the distance
-                  double distance = Math.Sqrt(Math.Pow(p2.X - pStart.Center.X, 2) + Math.Pow(p2.Y - pStart.Center.Y, 2));
-                  bezOffset = .3 * distance;
-
-                  connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
-                  connectorCurve.Point2 = new Point(p2.X - bezOffset, p2.Y);
-                  connectorCurve.Point3 = p2;
-
-                  Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
-                  Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
-              }
-
-          }
-      }
-
-      public void Redraw()
-      {
-          double distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
-          bezOffset = .3 * distance;
-
-         //don't redraw with null end points;
-         if (pStart != null)
-         {
-            connectorPoints.StartPoint = pStart.Center;
-            connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
-         }
-         if (pEnd != null)
-         {
-
-            if (pEnd.PortType == PortType.INPUT)
+        public void Redraw(Point p2)
+        {
+            if (isDrawing)
             {
-               connectorCurve.Point2 = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
+                if (pStart != null)
+                {
+                    connectorPoints.StartPoint = pStart.Center;
+
+                    //calculate the bezier offset based on the distance
+                    //between ports. if the distance is less than 2 * 100,
+                    //make the offset 1/3 of the distance
+                    double distance = Math.Sqrt(Math.Pow(p2.X - pStart.Center.X, 2) + Math.Pow(p2.Y - pStart.Center.Y, 2));
+                    bezOffset = .3 * distance;
+
+                    connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
+                    connectorCurve.Point2 = new Point(p2.X - bezOffset, p2.Y);
+                    connectorCurve.Point3 = p2;
+
+                    Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
+                    Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
+                }
+
             }
-            else if (pEnd.PortType == PortType.STATE)
+        }
+
+        public void Redraw()
+        {
+            double distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
+            bezOffset = .3 * distance;
+
+            //don't redraw with null end points;
+            if (pStart != null)
             {
-               connectorCurve.Point2 = new Point(pEnd.Center.X, pEnd.Center.Y + bezOffset);
+                connectorPoints.StartPoint = pStart.Center;
+                connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
             }
-            connectorCurve.Point3 = pEnd.Center;
-
-            Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
-            Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
-         }
-      }
-
-      public dynNodeUI FindDynElementByGuid(Guid guid)
-      {
-         foreach (UIElement uiel in dynSettings.Instance.Workbench.Children)
-         {
-            dynNodeUI testEl = null;
-
-            //walk up through the inheritance to find whether the base type is a dynElement
-            Type startType = uiel.GetType();
-            while (startType.BaseType != null)
+            if (pEnd != null)
             {
-               startType = startType.BaseType;
-               if (startType == typeof(dynNodeUI))
-               {
-                  testEl = uiel as dynNodeUI;
-                  break;
-               }
+
+                if (pEnd.PortType == PortType.INPUT)
+                {
+                    connectorCurve.Point2 = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
+                }
+                else if (pEnd.PortType == PortType.STATE)
+                {
+                    connectorCurve.Point2 = new Point(pEnd.Center.X, pEnd.Center.Y + bezOffset);
+                }
+                connectorCurve.Point3 = pEnd.Center;
+
+                Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
+                Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
+            }
+        }
+
+        public dynNodeUI FindDynElementByGuid(Guid guid)
+        {
+            foreach (UIElement uiel in dynSettings.Instance.Workbench.Children)
+            {
+                dynNodeUI testEl = null;
+
+                //walk up through the inheritance to find whether the base type is a dynElement
+                Type startType = uiel.GetType();
+                while (startType.BaseType != null)
+                {
+                    startType = startType.BaseType;
+                    if (startType == typeof(dynNodeUI))
+                    {
+                        testEl = uiel as dynNodeUI;
+                        break;
+                    }
+                }
+
+                if (testEl != null)
+                {
+                    if (testEl.GUID == guid)
+                    {
+                        return testEl;
+                    }
+                }
             }
 
-            if (testEl != null)
-            {
-               if (testEl.GUID == guid)
-               {
-                  return testEl;
-               }
-            }
-         }
+            return null;
+        }
+    }
 
-         return null;
-      }
-   }
+    public class InvalidPortException : ApplicationException
+    {
+        private string message;
+        public override string Message
+        {
+            get { return message; }
+        }
 
-   public class InvalidPortException : ApplicationException
-   {
-      private string message;
-      public override string Message
-      {
-         get { return message; }
-      }
-
-      public InvalidPortException()
-      {
-         message = "Connection port is not valid.";
-      }
-   }
+        public InvalidPortException()
+        {
+            message = "Connection port is not valid.";
+        }
+    }
 }
