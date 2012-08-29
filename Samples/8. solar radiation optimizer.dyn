@@ -15,17 +15,17 @@ limitations under the License.
 -->
 <dynWorkspace X="10" Y="55">
   <dynElements>
-    <Dynamo.Elements.dynFamilyInstanceCreatorSelection type="Dynamo.Elements.dynFamilyInstanceCreatorSelection" guid="190adeab-697e-4975-aead-5570f742aa85" nickname="Family Instance Selection" x="0" y="0" />
-    <Dynamo.Elements.dynStringInput type="Dynamo.Elements.dynStringInput" guid="c223c0ca-50bf-4a36-852d-340e4645cfd1" nickname="String" x="0" y="97.1">
+    <Dynamo.Nodes.dynFamilyInstanceCreatorSelection type="Dynamo.Nodes.dynFamilyInstanceCreatorSelection" guid="190adeab-697e-4975-aead-5570f742aa85" nickname="Family Instance Selection" x="0" y="0" />
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="c223c0ca-50bf-4a36-852d-340e4645cfd1" nickname="String" x="0" y="97.1">
       <System.String value="increment" />
-    </Dynamo.Elements.dynStringInput>
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="7b71c2d1-3c12-4fae-a9a5-5f889dea8878" nickname="Number" x="0" y="152.3">
+    </Dynamo.Nodes.dynStringInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="7b71c2d1-3c12-4fae-a9a5-5f889dea8878" nickname="Number" x="0" y="152.3">
       <System.Double value="1" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="49c62c74-0706-47b4-ae79-ac6a0ec269c1" nickname="Number" x="0" y="202.9">
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="49c62c74-0706-47b4-ae79-ac6a0ec269c1" nickname="Number" x="0" y="202.9">
       <System.Double value="36" />
-    </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="4e7b027c-030c-4f18-8e83-a70d88b09a7e" nickname="Solar Radiation Optimizer" x="339.1" y="68.2">
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="4e7b027c-030c-4f18-8e83-a70d88b09a7e" nickname="Solar Radiation Optimizer" x="339.1" y="68.2">
       <Symbol value="Solar Radiation Optimizer" />
       <Output value="out" />
       <Inputs>
@@ -35,10 +35,10 @@ limitations under the License.
         <Input value="max" />
         <Input value="path" />
       </Inputs>
-    </Dynamo.Elements.dynFunction>
-    <Dynamo.Elements.dynStringFilename type="Dynamo.Elements.dynStringFilename" guid="656038e2-c46d-4f71-9df9-e7dbbf749046" nickname="Filename" x="62.3" y="273.75">
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="656038e2-c46d-4f71-9df9-e7dbbf749046" nickname="Filename" x="62.3" y="273.75">
       <System.String value="C:\Users\t_ellist\Desktop\solar.csv" />
-    </Dynamo.Elements.dynStringFilename>
+    </Dynamo.Nodes.dynStringFilename>
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnector start="190adeab-697e-4975-aead-5570f742aa85" start_index="0" end="4e7b027c-030c-4f18-8e83-a70d88b09a7e" end_index="0" portType="0" />

@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
     /// categories, then use these constants. This ensures that if the names of the categories
     /// change down the road, your node will still be placed there.
     /// </summary>
-    public static class BuiltinElementCategories
+    public static class BuiltinNodeCategories
     {
         public const string MATH = "Math";
         public const string COMPARISON = "Comparison";
@@ -226,9 +226,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Identity")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Identity function")]
+    [NodeName("Identity")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Identity function")]
     public class dynIdentity : dynNode
     {
         public dynIdentity()
@@ -252,9 +252,9 @@ namespace Dynamo.Nodes
 
     #region Lists
 
-    [ElementName("Reverse")]
-    [ElementDescription("Reverses a list")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
+    [NodeName("Reverse")]
+    [NodeDescription("Reverses a list")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
     public class dynReverse : dynBuiltinFunction
     {
         public dynReverse()
@@ -272,9 +272,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("List")]
-    [ElementDescription("Makes a new list out of the given inputs")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
+    [NodeName("List")]
+    [NodeDescription("Makes a new list out of the given inputs")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
     public class dynNewList : dynVariableInput
     {
         public dynNewList()
@@ -308,9 +308,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Sort-With")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Returns a sorted list, using the given comparitor.")]
+    [NodeName("Sort-With")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Returns a sorted list, using the given comparitor.")]
     public class dynSortWith : dynBuiltinMacro
     {
         public dynSortWith()
@@ -329,9 +329,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Sort-By")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Returns a sorted list, using the given key mapper.")]
+    [NodeName("Sort-By")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Returns a sorted list, using the given key mapper.")]
     public class dynSortBy : dynBuiltinMacro
     {
         public dynSortBy()
@@ -350,9 +350,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Sort")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Returns a sorted list of numbers or strings.")]
+    [NodeName("Sort")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Returns a sorted list of numbers or strings.")]
     public class dynSort : dynBuiltinFunction
     {
         public dynSort()
@@ -370,10 +370,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Reduce")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Reduces a sequence.")]
-    [ElementSearchTags("fold")]
+    [NodeName("Reduce")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Reduces a sequence.")]
+    [NodeSearchTags("fold")]
     public class dynFold : dynBuiltinMacro
     {
         public dynFold()
@@ -393,9 +393,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Filter")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Filters a sequence by a given predicate")]
+    [NodeName("Filter")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Filters a sequence by a given predicate")]
     public class dynFilter : dynBuiltinMacro
     {
         public dynFilter()
@@ -414,10 +414,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Build Sequence")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Creates a sequence of numbers")]
-    [ElementSearchTags("range")]
+    [NodeName("Build Sequence")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Creates a sequence of numbers")]
+    [NodeSearchTags("range")]
     public class dynBuildSeq : dynBuiltinFunction
     {
         public dynBuildSeq()
@@ -437,10 +437,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Combine")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Applies a combinator to each element in two sequences")]
-    [ElementSearchTags("zip")]
+    [NodeName("Combine")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Applies a combinator to each element in two sequences")]
+    [NodeSearchTags("zip")]
     public class dynCombine : dynVariableInput
     {
         public dynCombine()
@@ -534,10 +534,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Cartesian Product")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
-    [ElementSearchTags("cross")]
+    [NodeName("Cartesian Product")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
+    [NodeSearchTags("cross")]
     public class dynCartProd : dynVariableInput
     {
         public dynCartProd()
@@ -631,9 +631,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Map")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Maps a sequence")]
+    [NodeName("Map")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Maps a sequence")]
     public class dynMap : dynBuiltinMacro
     {
         public dynMap()
@@ -652,9 +652,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Cons")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Creates a pair")]
+    [NodeName("Cons")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Creates a pair")]
     public class dynList : dynBuiltinFunction
     {
         public dynList()
@@ -673,9 +673,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Take")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Takes elements from a list")]
+    [NodeName("Take")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Takes elements from a list")]
     public class dynTakeList : dynBuiltinFunction
     {
         public dynTakeList()
@@ -694,9 +694,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Drop")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Drops elements from a list")]
+    [NodeName("Drop")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Drops elements from a list")]
     public class dynDropList : dynBuiltinFunction
     {
         public dynDropList()
@@ -715,9 +715,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Get")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Gets an element from a list at a specified index.")]
+    [NodeName("Get")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Gets an element from a list at a specified index.")]
     public class dynGetFromList : dynBuiltinFunction
     {
         public dynGetFromList()
@@ -736,9 +736,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Empty")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("An empty list")]
+    [NodeName("Empty")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("An empty list")]
     [IsInteractive(false)]
     public class dynEmpty : dynNode
     {
@@ -773,9 +773,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Is Empty?")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Checks to see if the given list is empty.")]
+    [NodeName("Is Empty?")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Checks to see if the given list is empty.")]
     public class dynIsEmpty : dynBuiltinFunction
     {
         public dynIsEmpty()
@@ -793,10 +793,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Length")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Gets the length of a list")]
-    [ElementSearchTags("count")]
+    [NodeName("Length")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Gets the length of a list")]
+    [NodeSearchTags("count")]
     public class dynLength : dynBuiltinFunction
     {
         public dynLength()
@@ -814,9 +814,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Append")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Appends two list")]
+    [NodeName("Append")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Appends two list")]
     public class dynAppend : dynBuiltinFunction
     {
         public dynAppend()
@@ -835,9 +835,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("First")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Gets the first element of a list")]
+    [NodeName("First")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Gets the first element of a list")]
     public class dynFirst : dynBuiltinFunction
     {
         public dynFirst()
@@ -855,9 +855,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Rest")]
-    [ElementCategory(BuiltinElementCategories.LIST)]
-    [ElementDescription("Gets the list with the first element removed.")]
+    [NodeName("Rest")]
+    [NodeCategory(BuiltinNodeCategories.LIST)]
+    [NodeDescription("Gets the list with the first element removed.")]
     public class dynRest : dynBuiltinFunction
     {
         public dynRest()
@@ -902,53 +902,53 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("<")]
-    [ElementCategory(BuiltinElementCategories.COMPARISON)]
-    [ElementDescription("Compares two numbers.")]
-    [ElementSearchTags("less", "than")]
+    [NodeName("<")]
+    [NodeCategory(BuiltinNodeCategories.COMPARISON)]
+    [NodeDescription("Compares two numbers.")]
+    [NodeSearchTags("less", "than")]
     public class dynLessThan : dynComparison
     {
         public dynLessThan() : base("<") { }
     }
 
-    [ElementName("≤")]
-    [ElementCategory(BuiltinElementCategories.COMPARISON)]
-    [ElementDescription("Compares two numbers.")]
-    [ElementSearchTags("<=", "less", "than", "equal")]
+    [NodeName("≤")]
+    [NodeCategory(BuiltinNodeCategories.COMPARISON)]
+    [NodeDescription("Compares two numbers.")]
+    [NodeSearchTags("<=", "less", "than", "equal")]
     public class dynLessThanEquals : dynComparison
     {
         public dynLessThanEquals() : base("<=", "≤") { }
     }
 
-    [ElementName(">")]
-    [ElementCategory(BuiltinElementCategories.COMPARISON)]
-    [ElementDescription("Compares two numbers.")]
-    [ElementSearchTags("greater", "than")]
+    [NodeName(">")]
+    [NodeCategory(BuiltinNodeCategories.COMPARISON)]
+    [NodeDescription("Compares two numbers.")]
+    [NodeSearchTags("greater", "than")]
     public class dynGreaterThan : dynComparison
     {
         public dynGreaterThan() : base(">") { }
     }
 
-    [ElementName("≥")]
-    [ElementCategory(BuiltinElementCategories.COMPARISON)]
-    [ElementDescription("Compares two numbers.")]
-    [ElementSearchTags(">=", "greater", "than", "equal")]
+    [NodeName("≥")]
+    [NodeCategory(BuiltinNodeCategories.COMPARISON)]
+    [NodeDescription("Compares two numbers.")]
+    [NodeSearchTags(">=", "greater", "than", "equal")]
     public class dynGreaterThanEquals : dynComparison
     {
         public dynGreaterThanEquals() : base(">=", "≥") { }
     }
 
-    [ElementName("=")]
-    [ElementCategory(BuiltinElementCategories.COMPARISON)]
-    [ElementDescription("Compares two numbers.")]
+    [NodeName("=")]
+    [NodeCategory(BuiltinNodeCategories.COMPARISON)]
+    [NodeDescription("Compares two numbers.")]
     public class dynEqual : dynComparison
     {
         public dynEqual() : base("=") { }
     }
 
-    [ElementName("And")]
-    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-    [ElementDescription("Boolean AND.")]
+    [NodeName("And")]
+    [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
+    [NodeDescription("Boolean AND.")]
     public class dynAnd : dynBuiltinMacro
     {
         public dynAnd()
@@ -969,9 +969,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Or")]
-    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-    [ElementDescription("Boolean OR.")]
+    [NodeName("Or")]
+    [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
+    [NodeDescription("Boolean OR.")]
     public class dynOr : dynBuiltinMacro
     {
         public dynOr()
@@ -992,9 +992,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Xor")]
-    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-    [ElementDescription("Boolean XOR.")]
+    [NodeName("Xor")]
+    [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
+    [NodeDescription("Boolean XOR.")]
     public class dynXor : dynBuiltinMacro
     {
         public dynXor()
@@ -1015,9 +1015,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Not")]
-    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-    [ElementDescription("Boolean NOT.")]
+    [NodeName("Not")]
+    [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
+    [NodeDescription("Boolean NOT.")]
     public class dynNot : dynBuiltinMacro
     {
         public dynNot()
@@ -1041,10 +1041,10 @@ namespace Dynamo.Nodes
 
     #region Math
 
-    [ElementName("+")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Adds two numbers.")]
-    [ElementSearchTags("plus", "addition", "sum")]
+    [NodeName("+")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Adds two numbers.")]
+    [NodeSearchTags("plus", "addition", "sum")]
     public class dynAddition : dynBuiltinFunction
     {
         public dynAddition()
@@ -1065,10 +1065,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("−")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Subtracts two numbers.")]
-    [ElementSearchTags("subtraction", "minus", "difference", "-")]
+    [NodeName("−")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Subtracts two numbers.")]
+    [NodeSearchTags("subtraction", "minus", "difference", "-")]
     public class dynSubtraction : dynBuiltinFunction
     {
         public dynSubtraction()
@@ -1089,10 +1089,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("×")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Multiplies two numbers.")]
-    [ElementSearchTags("times", "multiply", "multiplication", "product", "*", "x")]
+    [NodeName("×")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Multiplies two numbers.")]
+    [NodeSearchTags("times", "multiply", "multiplication", "product", "*", "x")]
     public class dynMultiplication : dynBuiltinFunction
     {
         public dynMultiplication()
@@ -1113,10 +1113,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("÷")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Divides two numbers.")]
-    [ElementSearchTags("divide", "division", "quotient", "/")]
+    [NodeName("÷")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Divides two numbers.")]
+    [NodeSearchTags("divide", "division", "quotient", "/")]
     public class dynDivision : dynBuiltinFunction
     {
         public dynDivision()
@@ -1137,9 +1137,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Round")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Rounds a number to the nearest integer value.")]
+    [NodeName("Round")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Rounds a number to the nearest integer value.")]
     public class dynRound : dynNode
     {
         public dynRound()
@@ -1163,10 +1163,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Floor")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Rounds a number to the nearest smaller integer.")]
-    [ElementSearchTags("round")]
+    [NodeName("Floor")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Rounds a number to the nearest smaller integer.")]
+    [NodeSearchTags("round")]
     public class dynFloor : dynNode
     {
         public dynFloor()
@@ -1190,10 +1190,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Ceiling")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Rounds a number to the nearest larger integer value.")]
-    [ElementSearchTags("round")]
+    [NodeName("Ceiling")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Rounds a number to the nearest larger integer value.")]
+    [NodeSearchTags("round")]
     public class dynCeiling : dynNode
     {
         public dynCeiling()
@@ -1217,9 +1217,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Random")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Generates a uniform random number in the range [0.0, 1.0).")]
+    [NodeName("Random")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class dynRandom : dynNode
     {
         public dynRandom()
@@ -1250,10 +1250,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("π")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Pi constant")]
-    [ElementSearchTags("pi", "trigonometry", "circle")]
+    [NodeName("π")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Pi constant")]
+    [NodeSearchTags("pi", "trigonometry", "circle")]
     [IsInteractive(false)]
     public class dynPi : dynNode
     {
@@ -1285,9 +1285,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Sine")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Computes the sine of the given angle.")]
+    [NodeName("Sine")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Computes the sine of the given angle.")]
     public class dynSin : dynNode
     {
         public dynSin()
@@ -1326,9 +1326,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Cosine")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Computes the cosine of the given angle.")]
+    [NodeName("Cosine")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Computes the cosine of the given angle.")]
     public class dynCos : dynNode
     {
         public dynCos()
@@ -1367,9 +1367,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Tangent")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("Computes the tangent of the given angle.")]
+    [NodeName("Tangent")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Computes the tangent of the given angle.")]
     public class dynTan : dynNode
     {
         public dynTan()
@@ -1413,9 +1413,9 @@ namespace Dynamo.Nodes
     #region Control Flow
 
     //TODO: Setup proper IsDirty smart execution management
-    [ElementName("Perform All")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Executes expressions in a sequence")]
+    [NodeName("Perform All")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Executes expressions in a sequence")]
     public class dynBegin : dynVariableInput
     {
         public dynBegin()
@@ -1455,9 +1455,9 @@ namespace Dynamo.Nodes
     }
 
     //TODO: Setup proper IsDirty smart execution management
-    [ElementName("Apply")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Applies arguments to a function")]
+    [NodeName("Apply")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Applies arguments to a function")]
     public class dynApply1 : dynVariableInput
     {
         public dynApply1()
@@ -1519,9 +1519,9 @@ namespace Dynamo.Nodes
     }
 
     //TODO: Setup proper IsDirty smart execution management
-    [ElementName("If")]
-    [ElementCategory(BuiltinElementCategories.BOOLEAN)]
-    [ElementDescription("Conditional statement")]
+    [NodeName("If")]
+    [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
+    [NodeDescription("Conditional statement")]
     public class dynConditional : dynNode
     {
         public dynConditional()
@@ -1547,9 +1547,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Debug Breakpoint")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Halts execution until user clicks button.")]
+    [NodeName("Debug Breakpoint")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Halts execution until user clicks button.")]
     public class dynBreakpoint : dynNode
     {
         System.Windows.Controls.Button button;
@@ -1635,9 +1635,9 @@ namespace Dynamo.Nodes
     #region Mutative Math
 
     //MDJ dynOptimizer added 11/22-11 (or dynEvaluate?)
-    [ElementName("Optimizer")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
+    [NodeName("Optimizer")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
     public class dynOptimizer : dynNode
     {
         TextBox tb;
@@ -1718,9 +1718,9 @@ namespace Dynamo.Nodes
     }
 
     //MDJ dynIncrementer added 11/22-11
-    [ElementName("Incrementer")]
-    [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
+    [NodeName("Incrementer")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
     public class dynIncrementer : dynNode
     {
         TextBox tb;
@@ -2004,9 +2004,9 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    [ElementName("Number")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("An element which creates an unsigned floating point number.")]
+    [NodeName("Number")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeDescription("An element which creates an unsigned floating point number.")]
     public class dynDoubleInput : dynDouble
     {
         dynTextBox tb;
@@ -2065,9 +2065,9 @@ namespace Dynamo.Nodes
     }
 
     //MDJ - added by Matt Jezyk 10.27.2011
-    [ElementName("Number Slider")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
+    [NodeName("Number Slider")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
     public class dynDoubleSliderInput : dynDouble
     {
         Slider tb_slider;
@@ -2210,10 +2210,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Boolean")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("An element which allows selection between a true and false.")]
-    [ElementSearchTags("true", "truth", "false")]
+    [NodeName("Boolean")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeDescription("An element which allows selection between a true and false.")]
+    [NodeSearchTags("true", "truth", "false")]
     public class dynBoolSelector : dynBool
     {
         System.Windows.Controls.RadioButton rbTrue;
@@ -2302,9 +2302,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("String")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("An element which creates a string value.")]
+    [NodeName("String")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeDescription("An element which creates a string value.")]
     public class dynStringInput : dynString
     {
         dynTextBox tb;
@@ -2354,9 +2354,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Filename")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("Allows you to select a file on the system to get its filename.")]
+    [NodeName("Filename")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeDescription("Allows you to select a file on the system to get its filename.")]
     public class dynStringFilename : dynString
     {
         System.Windows.Controls.TextBox tb;
@@ -2449,9 +2449,9 @@ namespace Dynamo.Nodes
 
     #region Strings and Conversions
 
-    [ElementName("Concatenate Strings")]
-    [ElementDescription("Concatenates two or more strings")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [NodeName("Concatenate Strings")]
+    [NodeDescription("Concatenates two or more strings")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
     public class dynConcatStrings : dynVariableInput
     {
         public dynConcatStrings()
@@ -2526,9 +2526,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("String -> Number")]
-    [ElementDescription("Converts a string to a number")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [NodeName("String -> Number")]
+    [NodeDescription("Converts a string to a number")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
     public class dynString2Num : dynBuiltinFunction
     {
         public dynString2Num()
@@ -2546,9 +2546,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Number -> String")]
-    [ElementDescription("Converts a number to a string")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [NodeName("Number -> String")]
+    [NodeDescription("Converts a number to a string")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
     public class dynNum2String : dynBuiltinFunction
     {
         public dynNum2String()
@@ -2566,9 +2566,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Split String")]
-    [ElementDescription("Separates a string based on the given delimiter")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [NodeName("Split String")]
+    [NodeDescription("Separates a string based on the given delimiter")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
     public class dynSplitString : dynNode
     {
         public dynSplitString()

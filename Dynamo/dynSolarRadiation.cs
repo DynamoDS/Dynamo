@@ -26,9 +26,9 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Nodes
 {
-    [ElementName("Extract Solar Radiation Value")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Create an element for extracting and computing the average solar radiation value based on a csv file.")]
+    [NodeName("Extract Solar Radiation Value")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Create an element for extracting and computing the average solar radiation value based on a csv file.")]
     public class dynComputeSolarRadiationValue : dynNode
     {
         public dynComputeSolarRadiationValue()
@@ -69,9 +69,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Analysis Results by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to select an analysis result object from the document and reference it in Dynamo.")]
+    [NodeName("Analysis Results by Selection")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows you to select an analysis result object from the document and reference it in Dynamo.")]
     public class dynAnalysisResultsBySelection : dynRevitNode
     {
         public dynAnalysisResultsBySelection()

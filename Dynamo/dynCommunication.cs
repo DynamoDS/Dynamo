@@ -24,9 +24,9 @@ using Dynamo.Connectors;
 
 namespace Dynamo.Nodes
 {
-   [ElementName("Web Request")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("An element which gathers data from the web using a URL.")]
+   [NodeName("Web Request")]
+   [NodeCategory(BuiltinNodeCategories.MISC)]
+   [NodeDescription("An element which gathers data from the web using a URL.")]
    public class dynWebRequest : dynNode
    {
       public dynWebRequest()

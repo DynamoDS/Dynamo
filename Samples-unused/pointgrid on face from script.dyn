@@ -1,7 +1,7 @@
 <dynWorkspace X="10" Y="55">
   <dynElements>
-    <Dynamo.Elements.dynFormElementBySelection type="Dynamo.Elements.dynFormElementBySelection" guid="85264aa3-8dcc-4cdf-9d1a-d70b7e30b8af" nickname="Face by Selection" x="64.75" y="264.5" />
-    <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="24966bbd-ff25-4a2d-a6a0-c4d75c52cd36" nickname="Python Script" x="270.75" y="341.25">
+    <Dynamo.Nodes.dynFormElementBySelection type="Dynamo.Nodes.dynFormElementBySelection" guid="85264aa3-8dcc-4cdf-9d1a-d70b7e30b8af" nickname="Face by Selection" x="64.75" y="264.5" />
+    <Dynamo.Nodes.dynPython type="Dynamo.Nodes.dynPython" guid="24966bbd-ff25-4a2d-a6a0-c4d75c52cd36" nickname="Python Script" x="270.75" y="341.25">
       <Script>import math
 import clr
 clr.AddReference('RevitAPI') 
@@ -27,7 +27,7 @@ for i in range(0,10):
         refPt = doc.FamilyCreate.NewReferencePoint(facePoint)
         refptarr.Append(refPt) 
         OUT = refptarr</Script>
-    </Dynamo.Elements.dynPython>
+    </Dynamo.Nodes.dynPython>
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnector start="85264aa3-8dcc-4cdf-9d1a-d70b7e30b8af" start_index="0" end="24966bbd-ff25-4a2d-a6a0-c4d75c52cd36" end_index="0" portType="0" />

@@ -31,9 +31,9 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Nodes
 {
-    [ElementName("Family Type Selector")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to select a Family Type from a drop down list.")]
+    [NodeName("Family Type Selector")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows you to select a Family Type from a drop down list.")]
     [IsInteractive(true)]
     public class dynFamilyTypeSelector : dynNode
     {
@@ -125,9 +125,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Family Instance Parameter Selector")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Given a family instance, allows the user to select a paramter as a string.")]
+    [NodeName("Family Instance Parameter Selector")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Given a family instance, allows the user to select a paramter as a string.")]
     [IsInteractive(true)]
     public class dynFamilyInstanceParameterSelector : dynNode
     {
@@ -700,9 +700,9 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    [ElementName("Family Instance Creator")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to create family instances.")]
+    [NodeName("Family Instance Creator")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows you to create family instances.")]
     public class dynFamilyInstanceCreatorXYZ : dynRevitNode
     {
         public dynFamilyInstanceCreatorXYZ()
@@ -816,9 +816,9 @@ namespace Dynamo.Nodes
     }
 
     //TODO: In Destroy(), have code that resets Elements back to their default.
-    [ElementName("Set Instance Parameter")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to modify parameters on family instances.")]
+    [NodeName("Set Instance Parameter")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows you to modify parameters on family instances.")]
     public class dynFamilyInstanceParameterSetter : dynRevitNode
     {
         public dynFamilyInstanceParameterSetter()
@@ -897,9 +897,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Get Instance Parameter")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Fetches the value of a parameter of a Family Instance.")]
+    [NodeName("Get Instance Parameter")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
     public class dynFamilyInstanceParameterGetter : dynRevitNode
     {
         public dynFamilyInstanceParameterGetter()

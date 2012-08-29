@@ -15,26 +15,26 @@ limitations under the License.
 -->
 <dynWorkspace X="-165" Y="-189.75">
   <dynElements>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" nickname="Curves by Selection" x="172" y="222.75">
-    </Dynamo.Elements.dynCurvesBySelection>
-    <Dynamo.Elements.dynCurveRef type="Dynamo.Elements.dynCurveRef" guid="936ac174-79bd-4fdd-9c26-29a91d49f26b" nickname="Curve Reference" x="354" y="316.25" />
-    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="e77adb5b-c9db-403c-92a1-fe083b22674f" nickname="list" x="585" y="508.5">
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" nickname="Curves by Selection" x="172" y="222.75">
+    </Dynamo.Nodes.dynCurvesBySelection>
+    <Dynamo.Nodes.dynCurveRef type="Dynamo.Nodes.dynCurveRef" guid="936ac174-79bd-4fdd-9c26-29a91d49f26b" nickname="Curve Reference" x="354" y="316.25" />
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="e77adb5b-c9db-403c-92a1-fe083b22674f" nickname="list" x="585" y="508.5">
       <Input name="index0" />
       <Input name="index1" />
-    </Dynamo.Elements.dynNewList>
-    <Dynamo.Elements.dynLoftForm type="Dynamo.Elements.dynLoftForm" guid="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" nickname="Loft Form" x="769.5" y="396.75" />
-    <Dynamo.Elements.dynBoolSelector type="Dynamo.Elements.dynBoolSelector" guid="cc57c2ac-f690-41de-9c6f-f4e01a88bffb" nickname="Boolean" x="543.75" y="234.25">
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynLoftForm type="Dynamo.Nodes.dynLoftForm" guid="5ddaa2b8-21e9-4fda-9cb8-b9fd317dbde0" nickname="Loft Form" x="769.5" y="396.75" />
+    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="cc57c2ac-f690-41de-9c6f-f4e01a88bffb" nickname="Boolean" x="543.75" y="234.25">
       <System.Boolean value="True" />
-    </Dynamo.Elements.dynBoolSelector>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="fbb24bdf-101c-4002-b6bc-64b301905521" nickname="Curves by Selection" x="184" y="532.25">
-    </Dynamo.Elements.dynCurvesBySelection>
-    <Dynamo.Elements.dynCurveRef type="Dynamo.Elements.dynCurveRef" guid="3ba117d7-3980-4d1d-a07f-b48110012812" nickname="Curve Reference" x="359" y="461.75" />
-    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="eecdaf74-8ea3-47bb-8fea-3be4b4a97b14" nickname="list" x="429.25" y="361.75">
+    </Dynamo.Nodes.dynBoolSelector>
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="fbb24bdf-101c-4002-b6bc-64b301905521" nickname="Curves by Selection" x="184" y="532.25">
+    </Dynamo.Nodes.dynCurvesBySelection>
+    <Dynamo.Nodes.dynCurveRef type="Dynamo.Nodes.dynCurveRef" guid="3ba117d7-3980-4d1d-a07f-b48110012812" nickname="Curve Reference" x="359" y="461.75" />
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="eecdaf74-8ea3-47bb-8fea-3be4b4a97b14" nickname="list" x="429.25" y="361.75">
       <Input name="index0" />
-    </Dynamo.Elements.dynNewList>
-    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="344c1cac-aa12-4908-857b-fee6876f4888" nickname="list" x="429.5" y="392.75">
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="344c1cac-aa12-4908-857b-fee6876f4888" nickname="list" x="429.5" y="392.75">
       <Input name="index0" />
-    </Dynamo.Elements.dynNewList>
+    </Dynamo.Nodes.dynNewList>
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnector start="a2cdfed6-8c03-4573-a790-b1a8c1b3a401" start_index="0" end="936ac174-79bd-4fdd-9c26-29a91d49f26b" end_index="0" portType="0" />

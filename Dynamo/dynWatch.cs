@@ -24,10 +24,10 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Nodes
 {
-    [ElementName("Watch")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Visualize the output of node.")]
-    [ElementSearchTags("print", "output", "display")]
+    [NodeName("Watch")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Visualize the output of node.")]
+    [NodeSearchTags("print", "output", "display")]
     class dynWatch : dynNode
     {
         //System.Windows.Controls.TextBlock watchBlock;

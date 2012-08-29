@@ -352,9 +352,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Variable")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("A function variable")]
+    [NodeName("Variable")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeDescription("A function variable")]
     [IsInteractive(false)]
     public class dynSymbol : dynNode
     {

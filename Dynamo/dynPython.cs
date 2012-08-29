@@ -205,9 +205,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Python Script")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Runs an embedded IronPython script")]
+    [NodeName("Python Script")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Runs an embedded IronPython script")]
     public class dynPython : dynRevitNode
     {
         private DynPythonEngine engine = new DynPythonEngine();

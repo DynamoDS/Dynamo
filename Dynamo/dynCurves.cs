@@ -25,9 +25,9 @@ using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Nodes
 {
-    [ElementName("Model Curve")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a model curve.")]
+    [NodeName("Model Curve")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates a model curve.")]
     public class dynModelCurve : dynRevitNode
     {
         public dynModelCurve()
@@ -80,9 +80,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Loft Form")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
+    [NodeName("Loft Form")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
     public class dynLoftForm : dynRevitNode
     {
         public dynLoftForm()
@@ -174,9 +174,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Curve By Points")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("doc.FamilyCreate.NewCurveByPoints")]
+    [NodeName("Curve By Points")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("doc.FamilyCreate.NewCurveByPoints")]
     public class dynCurveByPoints : dynRevitNode
     {
         public dynCurveByPoints()
@@ -237,9 +237,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("CurveElement Reference")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("CurveyPoints.GeometryCurve.Reference")]
+    [NodeName("CurveElement Reference")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("CurveyPoints.GeometryCurve.Reference")]
     public class dynCurveRef : dynNode
     {
         public dynCurveRef()

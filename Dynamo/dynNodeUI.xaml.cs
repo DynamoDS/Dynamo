@@ -40,15 +40,7 @@ namespace Dynamo.Nodes
     public enum ElementState { DEAD, ACTIVE, SELECTED, ERROR };
     public enum LacingType { SHORTEST, LONGEST, FULL };
 
-    #region interfaces
-    public interface IDynamic
-    {
-        void Draw();
-        void Destroy();
-    }
-    #endregion
-
-    public partial class dynNodeUI : UserControl, IDynamic, INotifyPropertyChanged
+    public partial class dynNodeUI : UserControl, INotifyPropertyChanged
     {
         #region delegates
         public delegate void dynElementUpdatedHandler(object sender, EventArgs e);
@@ -221,11 +213,11 @@ namespace Dynamo.Nodes
             this.State = ElementState.DEAD;
 
             //Fetch the element name from the custom attribute.
-            var nameArray = this.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true);
+            var nameArray = nodeLogic.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
 
             if (nameArray.Length > 0)
             {
-                ElementNameAttribute elNameAttrib = nameArray[0] as ElementNameAttribute;
+                NodeNameAttribute elNameAttrib = nameArray[0] as NodeNameAttribute;
                 if (elNameAttrib != null)
                 {
                     NickName = elNameAttrib.ElementName;
@@ -689,10 +681,10 @@ namespace Dynamo.Nodes
 
         void SetTooltip()
         {
-            object[] rtAttribs = this.GetType().GetCustomAttributes(typeof(ElementDescriptionAttribute), false);
+            object[] rtAttribs = this.GetType().GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
             if (rtAttribs.Length > 0)
             {
-                string description = ((ElementDescriptionAttribute)rtAttribs[0]).ElementDescription;
+                string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
                 this.ToolTip = description;
             }
         }
@@ -790,20 +782,6 @@ namespace Dynamo.Nodes
             Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
                 new object[] { p });
         }
-
-        #region IDynamic Members
-
-        public void Draw()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Destroy()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 
     [ValueConversion(typeof(double), typeof(Thickness))]

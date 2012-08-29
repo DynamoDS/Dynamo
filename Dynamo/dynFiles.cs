@@ -25,9 +25,9 @@ using System.Windows.Forms;
 
 namespace Dynamo.Nodes
 {
-    [ElementName("Read File")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
+    [NodeName("Read File")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Create an element for reading and watching data in a file on disk.")]
     public class dynFileReader : dynNode
     {
         public dynFileReader()
@@ -59,9 +59,9 @@ namespace Dynamo.Nodes
 
     //SJE
     //TODO: Update (or make different versions)
-    [ElementName("Watch File")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
+    [NodeName("Watch File")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Create an element for reading and watching data in a file on disk.")]
     public class dynFileWatcher : dynNode
     {
         public dynFileWatcher()
@@ -84,9 +84,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Watched File Changed?")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Checks if the file watched by the given FileWatcher has changed.")]
+    [NodeName("Watched File Changed?")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Checks if the file watched by the given FileWatcher has changed.")]
     public class dynFileWatcherChanged : dynNode
     {
         public dynFileWatcherChanged()
@@ -111,9 +111,9 @@ namespace Dynamo.Nodes
     }
 
     //TODO: Add UI for specifying whether should error or continue (checkbox?)
-    [ElementName("Wait for Change")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Waits for the specified watched file to change.")]
+    [NodeName("Wait for Change")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Waits for the specified watched file to change.")]
     public class dynFileWatcherWait : dynNode
     {
         public dynFileWatcherWait()
@@ -151,9 +151,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Reset File Watcher")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Resets state of FileWatcher so that it watches again.")]
+    [NodeName("Reset File Watcher")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Resets state of FileWatcher so that it watches again.")]
     public class dynFileWatcherReset : dynNode
     {
         public dynFileWatcherReset()

@@ -15,15 +15,15 @@ limitations under the License.
 -->
 <dynWorkspace X="10" Y="55">
   <dynElements>
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="849bb853-81b8-4b63-bb86-5546794a9087" nickname="Curve by Selection" x="0" y="0">
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="849bb853-81b8-4b63-bb86-5546794a9087" nickname="Curve by Selection" x="0" y="0">
       <instance id="32741" />
-    </Dynamo.Elements.dynCurvesBySelection>
-    <Dynamo.Elements.dynXYZArrayAlongCurve type="Dynamo.Elements.dynXYZArrayAlongCurve" guid="c9433b83-f998-4027-a81e-136581967ea0" nickname="XYZ Array Along Curve" x="295.8" y="49.05" />
-    <Dynamo.Elements.dynCurvesBySelection type="Dynamo.Elements.dynCurvesBySelection" guid="5dbb1369-04cd-42e3-89c3-2156f05675c4" nickname="Curve by Selection" x="0" y="173.25">
+    </Dynamo.Nodes.dynCurvesBySelection>
+    <Dynamo.Nodes.dynXYZArrayAlongCurve type="Dynamo.Nodes.dynXYZArrayAlongCurve" guid="c9433b83-f998-4027-a81e-136581967ea0" nickname="XYZ Array Along Curve" x="295.8" y="49.05" />
+    <Dynamo.Nodes.dynCurvesBySelection type="Dynamo.Nodes.dynCurvesBySelection" guid="5dbb1369-04cd-42e3-89c3-2156f05675c4" nickname="Curve by Selection" x="0" y="173.25">
       <instance id="32722" />
-    </Dynamo.Elements.dynCurvesBySelection>
-    <Dynamo.Elements.dynXYZArrayAlongCurve type="Dynamo.Elements.dynXYZArrayAlongCurve" guid="b6bc233e-226a-4672-bc18-bf5cb2d3ee84" nickname="XYZ Array Along Curve" x="293.1" y="149.75" />
-    <Dynamo.Elements.dynPython type="Dynamo.Elements.dynPython" guid="587d4b00-7ea4-40ed-8a1b-b92044417ee1" nickname="Python Script" x="567.1" y="225.2">
+    </Dynamo.Nodes.dynCurvesBySelection>
+    <Dynamo.Nodes.dynXYZArrayAlongCurve type="Dynamo.Nodes.dynXYZArrayAlongCurve" guid="b6bc233e-226a-4672-bc18-bf5cb2d3ee84" nickname="XYZ Array Along Curve" x="293.1" y="149.75" />
+    <Dynamo.Nodes.dynPython type="Dynamo.Nodes.dynPython" guid="587d4b00-7ea4-40ed-8a1b-b92044417ee1" nickname="Python Script" x="567.1" y="225.2">
       <Script>import math
 
 doc = __revit__.ActiveUIDocument.Document
@@ -46,17 +46,17 @@ for i in range(0,max):
     refptarr.Append(pt1)
     refptarr.Append(pt2)
     crv = doc.FamilyCreate.NewCurveByPoints(refptarr)</Script>
-    </Dynamo.Elements.dynPython>
-    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="8e12b0df-e8da-4a7c-9994-60371ce20914" nickname="list" x="634.85" y="59">
+    </Dynamo.Nodes.dynPython>
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="8e12b0df-e8da-4a7c-9994-60371ce20914" nickname="list" x="634.85" y="59">
       <Input name="index0" />
       <Input name="index1" />
       <Input name="index2" />
-    </Dynamo.Elements.dynNewList>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="5e122a73-d6b0-4ccc-bb01-f238e4cb2604" nickname="Number Slider" x="0" y="98.9">
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="5e122a73-d6b0-4ccc-bb01-f238e4cb2604" nickname="Number Slider" x="0" y="98.9">
       <System.Double value="20" min="0" max="20" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="27f17d64-7590-42c2-86f1-e95c9a750a59" nickname="Reference Point" x="439.95" y="58.9" />
-    <Dynamo.Elements.dynReferencePointByXYZ type="Dynamo.Elements.dynReferencePointByXYZ" guid="fe41ce19-4c4d-4796-9e96-cb91466ba9ec" nickname="Reference Point" x="438.2" y="160" />
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="27f17d64-7590-42c2-86f1-e95c9a750a59" nickname="Reference Point" x="439.95" y="58.9" />
+    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="fe41ce19-4c4d-4796-9e96-cb91466ba9ec" nickname="Reference Point" x="438.2" y="160" />
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnector start="849bb853-81b8-4b63-bb86-5546794a9087" start_index="0" end="c9433b83-f998-4027-a81e-136581967ea0" end_index="0" portType="0" />

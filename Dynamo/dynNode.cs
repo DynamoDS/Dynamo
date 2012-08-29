@@ -831,33 +831,33 @@ namespace Dynamo.Nodes
 
     #region class attributes
     [AttributeUsage(AttributeTargets.All)]
-    public class ElementNameAttribute : System.Attribute
+    public class NodeNameAttribute : System.Attribute
     {
         public string ElementName { get; set; }
 
-        public ElementNameAttribute(string elementName)
+        public NodeNameAttribute(string elementName)
         {
             this.ElementName = elementName;
         }
     }
 
     [AttributeUsage(AttributeTargets.All)]
-    public class ElementCategoryAttribute : System.Attribute
+    public class NodeCategoryAttribute : System.Attribute
     {
         public string ElementCategory { get; set; }
 
-        public ElementCategoryAttribute(string category)
+        public NodeCategoryAttribute(string category)
         {
             this.ElementCategory = category;
         }
     }
 
     [AttributeUsage(AttributeTargets.All)]
-    public class ElementSearchTagsAttribute : System.Attribute
+    public class NodeSearchTagsAttribute : System.Attribute
     {
         public List<string> Tags { get; set; }
 
-        public ElementSearchTagsAttribute(params string[] tags)
+        public NodeSearchTagsAttribute(params string[] tags)
         {
             this.Tags = tags.ToList();
         }
@@ -875,7 +875,7 @@ namespace Dynamo.Nodes
     }
 
     [AttributeUsage(AttributeTargets.All)]
-    public class ElementDescriptionAttribute : System.Attribute
+    public class NodeDescriptionAttribute : System.Attribute
     {
         private string description;
 
@@ -885,10 +885,66 @@ namespace Dynamo.Nodes
             set { description = value; }
         }
 
-        public ElementDescriptionAttribute(string description)
+        public NodeDescriptionAttribute(string description)
         {
             this.description = description;
         }
     }
     #endregion
+
+    public class PredicateTraverser
+    {
+        Predicate<dynNode> predicate;
+
+        Dictionary<dynNode, bool> resultDict = new Dictionary<dynNode, bool>();
+
+        public PredicateTraverser(Predicate<dynNode> p)
+        {
+            this.predicate = p;
+        }
+
+        public bool TraverseUntilAny(dynNode entry)
+        {
+            bool result = traverseAny(entry);
+            resultDict.Clear();
+            return result;
+        }
+
+        private bool traverseAny(dynNode entry)
+        {
+            bool result;
+            if (resultDict.TryGetValue(entry, out result))
+                return result;
+
+            result = predicate(entry);
+            if (result)
+            {
+                return result;
+            }
+            resultDict[entry] = result;
+
+            return entry.Inputs.Values.Any(x => x != null && traverseAny(x));
+        }
+
+        public bool TraverseForAll(dynNode entry)
+        {
+            bool result = traverseAll(entry);
+            resultDict.Clear();
+            return result;
+        }
+
+        private bool traverseAll(dynNode entry)
+        {
+            bool result;
+            if (resultDict.TryGetValue(entry, out result))
+                return result;
+
+            result = predicate(entry);
+            if (!result)
+                return result;
+            resultDict[entry] = result;
+
+            return entry.Inputs.Values.Any(x => x != null && traverseAll(x));
+        }
+    }
 }

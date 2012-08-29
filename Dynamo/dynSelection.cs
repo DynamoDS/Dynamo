@@ -74,6 +74,7 @@ namespace Dynamo.Nodes
             NodeUI.RegisterInputsAndOutput();
 
             NodeUI.topControl.Height = 60;
+            NodeUI.topControl.Width = 200;
             NodeUI.UpdateLayout();
         }
 
@@ -195,9 +196,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Family Instance by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to select a family instance from the document and reference it in Dynamo.")]
+    [NodeName("Family Instance by Selection")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows you to select a family instance from the document and reference it in Dynamo.")]
     public class dynFamilyInstanceCreatorSelection : dynElementSelection
     {
         public dynFamilyInstanceCreatorSelection()
@@ -217,9 +218,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Divided Surface by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows the user to select a divided surface.")]
+    [NodeName("Divided Surface by Selection")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows the user to select a divided surface.")]
     public class dynDividedSurfaceBySelection : dynElementSelection
     {
         Expression data;
@@ -313,9 +314,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Face by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows the user to select a face.")]
+    [NodeName("Face by Selection")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows the user to select a face.")]
     public class dynFormElementBySelection : dynElementSelection
     {
         Reference f;
@@ -345,9 +346,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Curve by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows the user to select a curve.")] //or set of curves in the future
+    [NodeName("Curve by Selection")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows the user to select a curve.")] //or set of curves in the future
     public class dynCurvesBySelection : dynElementSelection
     {
         public dynCurvesBySelection()
@@ -367,9 +368,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Point by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows the user to select a reference point.")]
+    [NodeName("Point by Selection")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which allows the user to select a reference point.")]
     public class dynPointBySelection : dynElementSelection
     {
         public dynPointBySelection() :
@@ -389,9 +390,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("SunPath Direction")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which returns the current Sun Path direction.")]
+    [NodeName("SunPath Direction")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which returns the current Sun Path direction.")]
     public class dynSunPathDirection : dynNode
     {
         System.Windows.Controls.TextBox tb;

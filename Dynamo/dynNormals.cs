@@ -22,9 +22,9 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-    [ElementName("Evaluate Normal")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Evaluate a point on a face to find the normal.")]
+    [NodeName("Evaluate Normal")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Evaluate a point on a face to find the normal.")]
     class dynNormalEvaluate : dynNode
     {
         public dynNormalEvaluate()
@@ -68,9 +68,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Evaluate XYZ")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Evaluate a point on a face to find the XYZ location.")]
+    [NodeName("Evaluate XYZ")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("Evaluate a point on a face to find the XYZ location.")]
     class dynXYZEvaluate : dynNode
     {
         public dynXYZEvaluate()

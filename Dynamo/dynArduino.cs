@@ -25,9 +25,9 @@ namespace Dynamo.Nodes
 {
     public enum COMPort { COM3, COM4 };
 
-    [ElementName("Arduino")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("An element which allows you to read from an Arduino microcontroller.")]
+    [NodeName("Arduino")]
+    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeDescription("An element which allows you to read from an Arduino microcontroller.")]
     public class dynArduino : dynNode
     {
         SerialPort port;

@@ -313,14 +313,11 @@ namespace Dynamo.Controls
             {
                 //only load types that are in the right namespace, are not abstract
                 //and have the elementname attribute
-                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+                object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
-                if (t.Namespace == "Dynamo.Elements" &&
-                    !t.IsAbstract &&
-                    attribs.Length > 0 &&
-                    t.IsSubclassOf(typeof(dynNodeUI)))
+                if (!t.IsAbstract && attribs.Length > 0 && t.IsSubclassOf(typeof(dynNode)))
                 {
-                    string typeName = (attribs[0] as ElementNameAttribute).ElementName;
+                    string typeName = (attribs[0] as NodeNameAttribute).ElementName;
                     builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
                 }
             }
@@ -349,11 +346,11 @@ namespace Dynamo.Controls
 
                 //---------------------//
 
-                var catAtts = kvp.Value.t.GetCustomAttributes(typeof(ElementCategoryAttribute), false);
+                var catAtts = kvp.Value.t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
                 string categoryName;
                 if (catAtts.Length > 0)
                 {
-                    categoryName = ((ElementCategoryAttribute)catAtts[0]).ElementCategory;
+                    categoryName = ((NodeCategoryAttribute)catAtts[0]).ElementCategory;
                 }
                 else
                 {
@@ -361,13 +358,13 @@ namespace Dynamo.Controls
                     continue;
                 }
 
-                dynNodeUI newEl = null;
+                dynNode newNode = null;
 
                 try
                 {
                     var obj = Activator.CreateInstance(kvp.Value.t);
                     //var obj = Activator.CreateInstanceFrom(kvp.Value.assembly.Location, kvp.Value.t.FullName);
-                    newEl = (dynNodeUI)obj;//.Unwrap();
+                    newNode = (dynNode)obj;//.Unwrap();
                 }
                 catch (Exception e) //TODO: Narrow down
                 {
@@ -377,28 +374,30 @@ namespace Dynamo.Controls
 
                 try
                 {
-                    newEl.DisableInteraction();
+                    var nodeUI = newNode.NodeUI;
+
+                    nodeUI.DisableInteraction();
 
                     string name = kvp.Key;
 
                     //newEl.MouseDoubleClick += delegate { AddElement(name); };
 
-                    newEl.MouseDown += delegate
+                    nodeUI.MouseDown += delegate
                     {
-                        draggedElementMenuItem = newEl;
-                        BeginDragElement(name, Mouse.GetPosition(newEl));
-                        newEl.Visibility = System.Windows.Visibility.Hidden;
+                        draggedElementMenuItem = nodeUI;
+                        BeginDragElement(name, Mouse.GetPosition(nodeUI));
+                        nodeUI.Visibility = System.Windows.Visibility.Hidden;
                     };
 
-                    newEl.GUID = new Guid();
-                    newEl.Margin = new Thickness(5, 30, 5, 5);
+                    nodeUI.GUID = new Guid();
+                    nodeUI.Margin = new Thickness(5, 30, 5, 5);
 
                     var target = this.sidebarGrid.Width - 30;
-                    var width = newEl.ActualWidth != 0 ? newEl.ActualWidth : newEl.Width;
+                    var width = nodeUI.ActualWidth != 0 ? nodeUI.ActualWidth : nodeUI.Width;
                     var scale = Math.Min(target / width, .8);
 
-                    newEl.LayoutTransform = new ScaleTransform(scale, scale);
-                    newEl.nickNameBlock.FontSize *= .8 / scale;
+                    nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
+                    nodeUI.nickNameBlock.FontSize *= .8 / scale;
 
                     Tuple<Expander, SortedList<string, dynNodeUI>> expander;
 
@@ -430,26 +429,26 @@ namespace Dynamo.Controls
                     }
 
                     var sortedElements = expander.Item2;
-                    sortedElements.Add(kvp.Key, newEl);
+                    sortedElements.Add(kvp.Key, nodeUI);
 
-                    addMenuItemsDictNew[kvp.Key] = newEl;
+                    addMenuItemsDictNew[kvp.Key] = nodeUI;
 
                     //--------------//
 
-                    var tagAtts = kvp.Value.t.GetCustomAttributes(typeof(ElementSearchTagsAttribute), false);
+                    var tagAtts = kvp.Value.t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
                     List<string> tags = null;
                     if (tagAtts.Length > 0)
                     {
-                        tags = ((ElementSearchTagsAttribute)tagAtts[0]).Tags;
+                        tags = ((NodeSearchTagsAttribute)tagAtts[0]).Tags;
                     }
 
                     if (tags != null)
                     {
-                        searchDict.Add(newEl, tags.Where(x => x.Length > 0));
+                        searchDict.Add(nodeUI, tags.Where(x => x.Length > 0));
                     }
 
-                    searchDict.Add(newEl, kvp.Key.Split(' ').Where(x => x.Length > 0));
-                    searchDict.Add(newEl, kvp.Key);
+                    searchDict.Add(nodeUI, kvp.Key.Split(' ').Where(x => x.Length > 0));
+                    searchDict.Add(nodeUI, kvp.Key);
                 }
                 catch (Exception e)
                 {
@@ -560,14 +559,14 @@ namespace Dynamo.Controls
                 {
                     //only load types that are in the right namespace, are not abstract
                     //and have the elementname attribute
-                    object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
                     if (t.Namespace == "Dynamo.Elements" &&
                         !t.IsAbstract &&
                         attribs.Length > 0 &&
-                        t.IsSubclassOf(typeof(dynNodeUI)))
+                        t.IsSubclassOf(typeof(dynNode)))
                     {
-                        string typeName = (attribs[0] as ElementNameAttribute).ElementName;
+                        string typeName = (attribs[0] as NodeNameAttribute).ElementName;
                         //System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
                         //mi.Header = typeName;
                         //mi.Click += new RoutedEventHandler(AddElement_Click);
@@ -600,43 +599,43 @@ namespace Dynamo.Controls
                 //create a new object from a type
                 //that is passed in
                 //dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] { nickName });
-                dynNode el = (dynNode)Activator.CreateInstance(elementType);
+                dynNode node = (dynNode)Activator.CreateInstance(elementType);
 
-                var elUI = el.NodeUI;
+                var nodeUI = node.NodeUI;
 
                 if (!string.IsNullOrEmpty(nickName))
                 {
-                    elUI.NickName = nickName;
+                    nodeUI.NickName = nickName;
                 }
                 else
                 {
-                    ElementNameAttribute elNameAttrib = el.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true)[0] as ElementNameAttribute;
+                    NodeNameAttribute elNameAttrib = node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
                     if (elNameAttrib != null)
                     {
-                        elUI.NickName = elNameAttrib.ElementName;
+                        nodeUI.NickName = elNameAttrib.ElementName;
                     }
                 }
 
-                elUI.GUID = guid;
+                nodeUI.GUID = guid;
 
-                string name = elUI.NickName;
+                string name = nodeUI.NickName;
 
                 //store the element in the elements list
-                ws.Elements.Add(el);
-                el.WorkSpace = ws;
+                ws.Elements.Add(node);
+                node.WorkSpace = ws;
 
-                elUI.Visibility = vis;
+                nodeUI.Visibility = vis;
 
-                this.workBench.Children.Add(elUI);
+                this.workBench.Children.Add(nodeUI);
 
-                Canvas.SetLeft(elUI, x);
-                Canvas.SetTop(elUI, y);
+                Canvas.SetLeft(nodeUI, x);
+                Canvas.SetTop(nodeUI, y);
 
                 //create an event on the element itself
                 //to update the elements ports and connectors
-                elUI.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
+                nodeUI.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
 
-                return el;
+                return node;
             }
             catch (Exception)
             {
@@ -1175,7 +1174,7 @@ namespace Dynamo.Controls
                    funName,
                    category.Length > 0
                       ? category
-                      : BuiltinElementCategories.MISC,
+                      : BuiltinNodeCategories.MISC,
                    false
                 );
 
@@ -1561,7 +1560,7 @@ namespace Dynamo.Controls
 
             dynPort p = null;
             DragCanvas dc = null;
-            dynNode element = null;
+            dynNodeUI elementUI = null;
 
             bool hit = false;
 
@@ -1583,8 +1582,8 @@ namespace Dynamo.Controls
 
                     //traverse the tree through all the
                     //hit elements to see if you get an element
-                    element = (ElementClicked(depObj, typeof(dynNodeUI)) as dynNodeUI).NodeLogic;
-                    if (element != null && element.NodeUI.IsVisible)
+                    elementUI = ElementClicked(depObj, typeof(dynNodeUI)) as dynNodeUI;
+                    if (elementUI != null && elementUI.IsVisible)
                     {
                         hit = true;
                         break;
@@ -1679,10 +1678,10 @@ namespace Dynamo.Controls
             }
             #endregion
 
-            if (element != null)
+            if (elementUI != null)
             {
                 Debug.WriteLine("Element clicked");
-                SelectElement(element);
+                SelectElement(elementUI.NodeLogic);
             }
 
             if (dc != null)
@@ -2602,7 +2601,6 @@ namespace Dynamo.Controls
                 con.Visible = true;
             }
 
-
             //this.saveFuncItem.IsEnabled = true;
             this.homeButton.IsEnabled = true;
             //this.varItem.IsEnabled = true;
@@ -3199,62 +3197,6 @@ namespace Dynamo.Controls
             : base("Run Cancelled")
         {
             this.Force = force;
-        }
-    }
-
-    public class PredicateTraverser
-    {
-        Predicate<dynNode> predicate;
-
-        Dictionary<dynNode, bool> resultDict = new Dictionary<dynNode, bool>();
-
-        public PredicateTraverser(Predicate<dynNode> p)
-        {
-            this.predicate = p;
-        }
-
-        public bool TraverseUntilAny(dynNode entry)
-        {
-            bool result = traverseAny(entry);
-            resultDict.Clear();
-            return result;
-        }
-
-        private bool traverseAny(dynNode entry)
-        {
-            bool result;
-            if (resultDict.TryGetValue(entry, out result))
-                return result;
-
-            result = predicate(entry);
-            if (result)
-            {
-                return result;
-            }
-            resultDict[entry] = result;
-
-            return entry.Inputs.Values.Any(traverseAny);
-        }
-
-        public bool TraverseForAll(dynNode entry)
-        {
-            bool result = traverseAll(entry);
-            resultDict.Clear();
-            return result;
-        }
-
-        private bool traverseAll(dynNode entry)
-        {
-            bool result;
-            if (resultDict.TryGetValue(entry, out result))
-                return result;
-
-            result = predicate(entry);
-            if (!result)
-                return result;
-            resultDict[entry] = result;
-
-            return entry.Inputs.Values.Any(traverseAll);
         }
     }
 }

@@ -24,9 +24,9 @@ using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Nodes
 {
-    [ElementName("XYZ")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates an XYZ from three double values.")]
+    [NodeName("XYZ")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates an XYZ from three double values.")]
     public class dynXYZ : dynNode
     {
         public dynXYZ()
@@ -55,9 +55,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("XYZ Scale")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which multiplies each component of an XYZ by a number.")]
+    [NodeName("XYZ Scale")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which multiplies each component of an XYZ by a number.")]
     public class dynXYZScale : dynNode
     {
         public dynXYZScale()
@@ -83,9 +83,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("XYZ Add")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which adds the components of two XYZs.")]
+    [NodeName("XYZ Add")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which adds the components of two XYZs.")]
     public class dynXYZAdd : dynNode
     {
         public dynXYZAdd()
@@ -111,9 +111,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("XYZ Grid")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a grid of reference points.")]
+    [NodeName("XYZ Grid")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates a grid of reference points.")]
     public class dynReferencePtGrid : dynNode
     {
         public dynReferencePtGrid()
@@ -179,9 +179,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("XYZ Array Along Curve")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates an array of XYZs along a curve.")]
+    [NodeName("XYZ Array Along Curve")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates an array of XYZs along a curve.")]
     public class dynXYZArrayAlongCurve : dynNode
     {
         public dynXYZArrayAlongCurve()
@@ -234,9 +234,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Plane")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a geometric plane.")]
+    [NodeName("Plane")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates a geometric plane.")]
     public class dynPlane : dynNode
     {
         public dynPlane()
@@ -266,9 +266,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Sketch Plane")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a geometric sketch plane.")]
+    [NodeName("Sketch Plane")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates a geometric sketch plane.")]
     public class dynSketchPlane : dynRevitNode
     {
         public dynSketchPlane()
@@ -327,9 +327,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Line")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a geometric line.")]
+    [NodeName("Line")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates a geometric line.")]
     public class dynLineBound : dynNode
     {
         public dynLineBound()
@@ -361,9 +361,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("UV")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a UV from two double values.")]
+    [NodeName("UV")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates a UV from two double values.")]
     public class dynUV : dynNode
     {
         public dynUV()
@@ -391,9 +391,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Line Vector ")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which returns a line in the direction of an XYZ normal.")]
+    [NodeName("Line Vector ")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which returns a line in the direction of an XYZ normal.")]
     public class dynLineVectorfromXYZ : dynRevitNode
     {
         public dynLineVectorfromXYZ()

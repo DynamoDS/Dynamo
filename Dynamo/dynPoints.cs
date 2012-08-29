@@ -24,9 +24,9 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Nodes
 {
-    [ElementName("Reference Point")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a reference point.")]
+    [NodeName("Reference Point")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which creates a reference point.")]
     public class dynReferencePointByXYZ : dynRevitNode
     {
         public dynReferencePointByXYZ()
@@ -157,9 +157,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Reference Point Distance")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which measures a distance between point(s).")]
+    [NodeName("Reference Point Distance")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("An element which measures a distance between point(s).")]
     public class dynDistanceBetweenPoints : dynNode
     {
         public dynDistanceBetweenPoints()
@@ -207,9 +207,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Reference Point On Edge")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Create an element which owns a reference point on a selected edge.")]
+    [NodeName("Reference Point On Edge")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Create an element which owns a reference point on a selected edge.")]
     public class dynPointOnEdge : dynRevitNode
     {
         public dynPointOnEdge()
@@ -266,9 +266,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Reference Point On Face")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Create an element which owns a reference point on a selected face.")]
+    [NodeName("Reference Point On Face")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Create an element which owns a reference point on a selected face.")]
     public class dynPointOnFace : dynRevitNode
     {
         public dynPointOnFace()
@@ -339,9 +339,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Reference Point By Normal")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Create an element which owns a reference point which is projected from a point by normal and distance.")]
+    [NodeName("Reference Point By Normal")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Create an element which owns a reference point which is projected from a point by normal and distance.")]
     public class dynPointNormalDistance : dynRevitNode
     {
         public dynPointNormalDistance()
