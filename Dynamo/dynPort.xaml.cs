@@ -154,7 +154,7 @@ namespace Dynamo.Connectors
       #region private methods
       Point UpdateCenter()
       {
-         GeneralTransform transform = this.TransformToAncestor(dynElementSettings.SharedInstance.Workbench);
+         GeneralTransform transform = this.TransformToAncestor(dynSettings.Instance.Workbench);
          Point rootPoint = transform.Transform(new Point(0, 0));
 
          double x = rootPoint.X + this.Width / 2;

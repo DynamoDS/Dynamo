@@ -34,9 +34,8 @@ namespace Dynamo.Nodes
     [ElementName("Family Type Selector")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows you to select a Family Type from a drop down list.")]
-    [RequiresTransaction(false)]
     [IsInteractive(true)]
-    public class dynFamilyTypeSelector : dynNodeUI
+    public class dynFamilyTypeSelector : dynNode
     {
         ComboBox combo;
         Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
@@ -44,13 +43,13 @@ namespace Dynamo.Nodes
         public dynFamilyTypeSelector()
         {
             //widen the control
-            this.topControl.Width = 300;
+            NodeUI.topControl.Width = 300;
 
             //add a drop down list to the window
             combo = new ComboBox();
             combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            this.inputGrid.Children.Add(combo);
+            NodeUI.inputGrid.Children.Add(combo);
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
 
@@ -58,13 +57,18 @@ namespace Dynamo.Nodes
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
-                    this.IsDirty = true;
+                    this.RequiresRecalc = true;
             };
 
             PopulateComboBox();
 
-            OutPortData = new PortData("", "Family type", typeof(FamilySymbol));
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("", "Family type", typeof(FamilySymbol));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         void combo_DropDownOpened(object sender, EventArgs e)
@@ -78,7 +82,7 @@ namespace Dynamo.Nodes
             combo.Items.Clear();
 
             //load all the currently loaded types into the combo list
-            FilteredElementCollector fec = new FilteredElementCollector(this.UIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(dynSettings.Instance.Doc.Document);
             fec.OfClass(typeof(Family));
             foreach (Family f in fec.ToElements())
             {
@@ -124,9 +128,8 @@ namespace Dynamo.Nodes
     [ElementName("Family Instance Parameter Selector")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Given a family instance, allows the user to select a paramter as a string.")]
-    [RequiresTransaction(false)]
     [IsInteractive(true)]
-    public class dynFamilyInstanceParameterSelector : dynNodeUI
+    public class dynFamilyInstanceParameterSelector : dynNode
     {
         ComboBox paramBox = new ComboBox();
         ElementId storedId = null;
@@ -136,12 +139,12 @@ namespace Dynamo.Nodes
         public dynFamilyInstanceParameterSelector()
         {
             //widen the control
-            this.topControl.Height = 175;
+            NodeUI.topControl.Height = 175;
 
             //add a drop down list to the window
             paramBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             paramBox.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            this.inputGrid.Children.Add(paramBox);
+            NodeUI.inputGrid.Children.Add(paramBox);
             System.Windows.Controls.Grid.SetColumn(paramBox, 0);
             System.Windows.Controls.Grid.SetRow(paramBox, 0);
 
@@ -150,15 +153,21 @@ namespace Dynamo.Nodes
                 if (paramBox.SelectedIndex != -1)
                 {
                     this.value = this.values[this.paramBox.SelectedIndex];
-                    this.IsDirty = true;
+                    this.RequiresRecalc = true;
                 }
             };
 
             paramBox.IsEnabled = false;
 
             InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Element)));
-            OutPortData = new PortData("", "Parameter Name", typeof(string));
-            base.RegisterInputsAndOutputs();
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("", "Parameter Name", typeof(string));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private static string getStorageTypeString(StorageType st)
@@ -227,7 +236,7 @@ namespace Dynamo.Nodes
                     foreach (dynamic p in fs.Parameters)
                         paramDict[p.Definition.Name] = p;
 
-                    var fd = this.UIDocument.Document.EditFamily(fs.Family);
+                    var fd = dynSettings.Instance.Doc.Document.EditFamily(fs.Family);
                     var ps = fd.FamilyManager.Parameters;
 
                     foreach (dynamic p in ps)
@@ -259,6 +268,8 @@ namespace Dynamo.Nodes
 
         public override void LoadElement(XmlNode elNode)
         {
+            var doc = dynSettings.Instance.Doc.Document;
+
             int selection = -1;
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
@@ -274,7 +285,7 @@ namespace Dynamo.Nodes
                         continue;
                     }
                     this.storedId = new ElementId(id);
-                    Element e = this.UIDocument.Document.GetElement(this.storedId);
+                    Element e = doc.GetElement(this.storedId);
                     if (e is FamilySymbol)
                     {
                         var paramDict = new Dictionary<string, dynamic>();
@@ -284,7 +295,7 @@ namespace Dynamo.Nodes
                         foreach (dynamic p in fs.Parameters)
                             paramDict[p.Definition.Name] = p;
 
-                        var fd = this.UIDocument.Document.EditFamily(fs.Family);
+                        var fd = doc.EditFamily(fs.Family);
                         var ps = fd.FamilyManager.Parameters;
 
                         foreach (dynamic p in ps)
@@ -692,17 +703,20 @@ namespace Dynamo.Nodes
     [ElementName("Family Instance Creator")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows you to create family instances.")]
-    [RequiresTransaction(true)]
-    public class dynFamilyInstanceCreatorXYZ : dynNodeUI
+    public class dynFamilyInstanceCreatorXYZ : dynRevitNode
     {
         public dynFamilyInstanceCreatorXYZ()
         {
             InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
             InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
 
-            OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private Expression makeFamilyInstance(object location, FamilySymbol fs, int count)
@@ -805,8 +819,7 @@ namespace Dynamo.Nodes
     [ElementName("Set Instance Parameter")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows you to modify parameters on family instances.")]
-    [RequiresTransaction(true)]
-    public class dynFamilyInstanceParameterSetter : dynNodeUI
+    public class dynFamilyInstanceParameterSetter : dynRevitNode
     {
         public dynFamilyInstanceParameterSetter()
         {
@@ -814,9 +827,13 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(object)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
 
-            OutPortData = new PortData("fi", "Modified family instance.", typeof(object));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("fi", "Modified family instance.", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private static Expression setParam(FamilyInstance fi, string paramName, Expression valueExpr)
@@ -883,17 +900,20 @@ namespace Dynamo.Nodes
     [ElementName("Get Instance Parameter")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Fetches the value of a parameter of a Family Instance.")]
-    [RequiresTransaction(true)]
-    public class dynFamilyInstanceParameterGetter : dynNodeUI
+    public class dynFamilyInstanceParameterGetter : dynRevitNode
     {
         public dynFamilyInstanceParameterGetter()
         {
             InPortData.Add(new PortData("fi", "Family instance.", typeof(FamilyInstance)));
             InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
 
-            OutPortData = new PortData("val", "Parameter value.", typeof(object));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("val", "Parameter value.", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private static Expression getParam(FamilyInstance fi, string paramName)

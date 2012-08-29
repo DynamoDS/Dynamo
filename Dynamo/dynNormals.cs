@@ -18,29 +18,34 @@ using Dynamo.Connectors;
 
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
+using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
     [ElementName("Evaluate Normal")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Evaluate a point on a face to find the normal.")]
-    [RequiresTransaction(false)]
-    class dynNormalEvaluate:dynNodeUI
+    class dynNormalEvaluate : dynNode
     {
         public dynNormalEvaluate()
         {
             InPortData.Add(new PortData("pt", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
-            
-            OutPortData = new PortData("XYZ", "The normal.", typeof(string));
-            base.RegisterInputsAndOutputs();
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("XYZ", "The normal.", typeof(string));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
             Reference faceRef = (args[1] as Expression.Container).Item as Reference;
-            
-            Face f = this.UIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
+
+            Face f = dynSettings.Instance.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
             XYZ norm = null;
 
             if (f != null)
@@ -55,7 +60,7 @@ namespace Dynamo.Nodes
                     if (pof != null)
                     {
                         norm = f.ComputeNormal(pof.UV);
-                    } 
+                    }
                 }
             }
 
@@ -66,23 +71,27 @@ namespace Dynamo.Nodes
     [ElementName("Evaluate XYZ")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Evaluate a point on a face to find the XYZ location.")]
-    [RequiresTransaction(false)]
-    class dynXYZEvaluate : dynNodeUI
+    class dynXYZEvaluate : dynNode
     {
         public dynXYZEvaluate()
         {
             InPortData.Add(new PortData("pt", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
-            
-            OutPortData = new PortData("XYZ", "The location.", typeof(string));
-            base.RegisterInputsAndOutputs();
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("XYZ", "The location.", typeof(string));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
             Reference faceRef = (args[1] as Expression.Container).Item as Reference;
 
-            Face f = this.UIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
+            Face f = dynSettings.Instance.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
             XYZ loc = null;
 
             if (f != null)

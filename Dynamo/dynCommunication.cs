@@ -20,22 +20,26 @@ using System.Net;
 using System.IO;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
+using Dynamo.Connectors;
 
 namespace Dynamo.Nodes
 {
    [ElementName("Web Request")]
    [ElementCategory(BuiltinElementCategories.MISC)]
    [ElementDescription("An element which gathers data from the web using a URL.")]
-   [RequiresTransaction(false)]
-   public class dynWebRequest : dynNodeUI
+   public class dynWebRequest : dynNode
    {
       public dynWebRequest()
       {
-         InPortData.Add(new Connectors.PortData("url", "A URL to query.", typeof(dynString)));
-         OutPortData = new Connectors.PortData("str", "The string returned from the web request.", typeof(dynString));
-         //OutPortData[0].Object = this.Tree;
+         InPortData.Add(new PortData("url", "A URL to query.", typeof(dynString)));
 
-         base.RegisterInputsAndOutputs();
+         NodeUI.RegisterInputsAndOutput();
+      }
+
+      private PortData outPortData = new PortData("str", "The string returned from the web request.", typeof(dynString));
+      public override PortData OutPortData
+      {
+          get { return outPortData; }
       }
 
       public override Expression Evaluate(FSharpList<Expression> args)

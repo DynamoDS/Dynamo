@@ -98,7 +98,7 @@ namespace Dynamo.Nodes
                .Invoke(ExecutionEnvironment.IDENT)
                .Invoke(
                   Utils.convertSequence(args.Select(
-                     x => this.macroEnvironment.Evaluate(x)
+                     this.macroEnvironment.Evaluate
                   ))
                );
         }
@@ -229,14 +229,13 @@ namespace Dynamo.Nodes
     [ElementName("Identity")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Identity function")]
-    [RequiresTransaction(false)]
     public class dynIdentity : dynNode
     {
         public dynIdentity()
         {
             InPortData.Add(new PortData("x", "in", typeof(bool)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("x", "out", typeof(object));
@@ -256,7 +255,6 @@ namespace Dynamo.Nodes
     [ElementName("Reverse")]
     [ElementDescription("Reverses a list")]
     [ElementCategory(BuiltinElementCategories.LIST)]
-    [RequiresTransaction(false)]
     public class dynReverse : dynBuiltinFunction
     {
         public dynReverse()
@@ -264,7 +262,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("list", "List to sort", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("rev", "Reversed list", typeof(object));
@@ -277,12 +275,11 @@ namespace Dynamo.Nodes
     [ElementName("List")]
     [ElementDescription("Makes a new list out of the given inputs")]
     [ElementCategory(BuiltinElementCategories.LIST)]
-    [RequiresTransaction(false)]
     public class dynNewList : dynVariableInput
     {
         public dynNewList()
         {
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("list", "A list", typeof(object));
@@ -314,7 +311,6 @@ namespace Dynamo.Nodes
     [ElementName("Sort-With")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Returns a sorted list, using the given comparitor.")]
-    [RequiresTransaction(false)]
     public class dynSortWith : dynBuiltinMacro
     {
         public dynSortWith()
@@ -323,7 +319,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("list", "List to sort", typeof(object)));
             InPortData.Add(new PortData("c(x, y)", "Comparitor", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("sorted", "Sorted list", typeof(object));
@@ -336,7 +332,6 @@ namespace Dynamo.Nodes
     [ElementName("Sort-By")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Returns a sorted list, using the given key mapper.")]
-    [RequiresTransaction(false)]
     public class dynSortBy : dynBuiltinMacro
     {
         public dynSortBy()
@@ -345,7 +340,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("list", "List to sort", typeof(object)));
             InPortData.Add(new PortData("c(x)", "Key Mapper", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("sorted", "Sorted list", typeof(object));
@@ -358,7 +353,6 @@ namespace Dynamo.Nodes
     [ElementName("Sort")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Returns a sorted list of numbers or strings.")]
-    [RequiresTransaction(false)]
     public class dynSort : dynBuiltinFunction
     {
         public dynSort()
@@ -366,7 +360,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("list", "List of numbers or strings to sort", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("sorted", "Sorted list", typeof(object));
@@ -380,7 +374,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Reduces a sequence.")]
     [ElementSearchTags("fold")]
-    [RequiresTransaction(false)]
     public class dynFold : dynBuiltinMacro
     {
         public dynFold()
@@ -390,7 +383,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("a", "Seed", typeof(object)));
             InPortData.Add(new PortData("seq", "Sequence", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("out", "Result", typeof(object));
@@ -403,7 +396,6 @@ namespace Dynamo.Nodes
     [ElementName("Filter")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Filters a sequence by a given predicate")]
-    [RequiresTransaction(false)]
     public class dynFilter : dynBuiltinMacro
     {
         public dynFilter()
@@ -412,7 +404,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("p(x)", "Predicate", typeof(object)));
             InPortData.Add(new PortData("seq", "Sequence to filter", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("filtered", "Filtered Sequence", typeof(object));
@@ -426,7 +418,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Creates a sequence of numbers")]
     [ElementSearchTags("range")]
-    [RequiresTransaction(false)]
     public class dynBuildSeq : dynBuiltinFunction
     {
         public dynBuildSeq()
@@ -436,7 +427,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(double)));
             InPortData.Add(new PortData("step", "Space between numbers", typeof(double)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("seq", "New sequence", typeof(object));
@@ -450,7 +441,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Applies a combinator to each element in two sequences")]
     [ElementSearchTags("zip")]
-    [RequiresTransaction(false)]
     public class dynCombine : dynVariableInput
     {
         public dynCombine()
@@ -459,7 +449,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("list1", "First list", typeof(object)));
             InPortData.Add(new PortData("list2", "Second list", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("combined", "Combined lists", typeof(object));
@@ -548,7 +538,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
     [ElementSearchTags("cross")]
-    [RequiresTransaction(false)]
     public class dynCartProd : dynVariableInput
     {
         public dynCartProd()
@@ -557,7 +546,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("list1", "First list", typeof(object)));
             InPortData.Add(new PortData("list2", "Second list", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("combined", "Combined lists", typeof(object));
@@ -645,7 +634,6 @@ namespace Dynamo.Nodes
     [ElementName("Map")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Maps a sequence")]
-    [RequiresTransaction(false)]
     public class dynMap : dynBuiltinMacro
     {
         public dynMap()
@@ -654,7 +642,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("f(x)", "The procedure used to map elements", typeof(object)));
             InPortData.Add(new PortData("seq", "The sequence to map over.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("mapped", "Mapped sequence", typeof(object));
@@ -667,7 +655,6 @@ namespace Dynamo.Nodes
     [ElementName("Cons")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Creates a pair")]
-    [RequiresTransaction(false)]
     public class dynList : dynBuiltinFunction
     {
         public dynList()
@@ -676,7 +663,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("first", "The new Head of the list", typeof(object)));
             InPortData.Add(new PortData("rest", "The new Tail of the list", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("list", "Result List", typeof(object));
@@ -689,7 +676,6 @@ namespace Dynamo.Nodes
     [ElementName("Take")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Takes elements from a list")]
-    [RequiresTransaction(false)]
     public class dynTakeList : dynBuiltinFunction
     {
         public dynTakeList()
@@ -698,7 +684,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("amt", "Amount of elements to extract", typeof(object)));
             InPortData.Add(new PortData("list", "The list to extract elements from", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("elements", "List of extraced elements", typeof(object));
@@ -711,7 +697,6 @@ namespace Dynamo.Nodes
     [ElementName("Drop")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Drops elements from a list")]
-    [RequiresTransaction(false)]
     public class dynDropList : dynBuiltinFunction
     {
         public dynDropList()
@@ -720,7 +705,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("amt", "Amount of elements to drop", typeof(object)));
             InPortData.Add(new PortData("list", "The list to drop elements from", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("elements", "List of remaining elements", typeof(object));
@@ -733,7 +718,6 @@ namespace Dynamo.Nodes
     [ElementName("Get")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Gets an element from a list at a specified index.")]
-    [RequiresTransaction(false)]
     public class dynGetFromList : dynBuiltinFunction
     {
         public dynGetFromList()
@@ -742,7 +726,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("index", "Index of the element to extract", typeof(object)));
             InPortData.Add(new PortData("list", "The list to extract elements from", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("element", "Extracted element", typeof(object));
@@ -755,13 +739,12 @@ namespace Dynamo.Nodes
     [ElementName("Empty")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("An empty list")]
-    [RequiresTransaction(false)]
     [IsInteractive(false)]
     public class dynEmpty : dynNode
     {
         public dynEmpty()
         {
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("empty", "An empty list", typeof(object));
@@ -770,7 +753,7 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override bool IsDirty
+        public override bool RequiresRecalc
         {
             get
             {
@@ -793,7 +776,6 @@ namespace Dynamo.Nodes
     [ElementName("Is Empty?")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Checks to see if the given list is empty.")]
-    [RequiresTransaction(false)]
     public class dynIsEmpty : dynBuiltinFunction
     {
         public dynIsEmpty()
@@ -801,7 +783,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("list", "A list", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("empty?", "Is the given list empty?", typeof(bool));
@@ -811,10 +793,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [ElementName("Count")]
+    [ElementName("Length")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Gets the length of a list")]
-    [RequiresTransaction(false)]
+    [ElementSearchTags("count")]
     public class dynLength : dynBuiltinFunction
     {
         public dynLength()
@@ -822,7 +804,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("list", "A list", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("length", "Length of the list", typeof(object));
@@ -835,7 +817,6 @@ namespace Dynamo.Nodes
     [ElementName("Append")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Appends two list")]
-    [RequiresTransaction(false)]
     public class dynAppend : dynBuiltinFunction
     {
         public dynAppend()
@@ -844,7 +825,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("listA", "First list", typeof(object)));
             InPortData.Add(new PortData("listB", "Second list", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("A+B", "A appended onto B", typeof(object));
@@ -857,7 +838,6 @@ namespace Dynamo.Nodes
     [ElementName("First")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Gets the first element of a list")]
-    [RequiresTransaction(false)]
     public class dynFirst : dynBuiltinFunction
     {
         public dynFirst()
@@ -865,7 +845,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("list", "A list", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("first", "First element in the list", typeof(object));
@@ -878,7 +858,6 @@ namespace Dynamo.Nodes
     [ElementName("Rest")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Gets the list with the first element removed.")]
-    [RequiresTransaction(false)]
     public class dynRest : dynBuiltinFunction
     {
         public dynRest()
@@ -886,7 +865,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("list", "A list", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("rest", "List without the first element.", typeof(object));
@@ -913,7 +892,7 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData;
@@ -927,7 +906,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
     [ElementSearchTags("less", "than")]
-    [RequiresTransaction(false)]
     public class dynLessThan : dynComparison
     {
         public dynLessThan() : base("<") { }
@@ -937,7 +915,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
     [ElementSearchTags("<=", "less", "than", "equal")]
-    [RequiresTransaction(false)]
     public class dynLessThanEquals : dynComparison
     {
         public dynLessThanEquals() : base("<=", "≤") { }
@@ -947,7 +924,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
     [ElementSearchTags("greater", "than")]
-    [RequiresTransaction(false)]
     public class dynGreaterThan : dynComparison
     {
         public dynGreaterThan() : base(">") { }
@@ -957,7 +933,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
     [ElementSearchTags(">=", "greater", "than", "equal")]
-    [RequiresTransaction(false)]
     public class dynGreaterThanEquals : dynComparison
     {
         public dynGreaterThanEquals() : base(">=", "≥") { }
@@ -966,7 +941,6 @@ namespace Dynamo.Nodes
     [ElementName("=")]
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
-    [RequiresTransaction(false)]
     public class dynEqual : dynComparison
     {
         public dynEqual() : base("=") { }
@@ -975,7 +949,6 @@ namespace Dynamo.Nodes
     [ElementName("And")]
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Boolean AND.")]
-    [RequiresTransaction(false)]
     public class dynAnd : dynBuiltinMacro
     {
         public dynAnd()
@@ -986,7 +959,7 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("a∧b", "result", typeof(double));
@@ -999,7 +972,6 @@ namespace Dynamo.Nodes
     [ElementName("Or")]
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Boolean OR.")]
-    [RequiresTransaction(false)]
     public class dynOr : dynBuiltinMacro
     {
         public dynOr()
@@ -1010,7 +982,7 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("a∨b", "result", typeof(bool));
@@ -1023,7 +995,6 @@ namespace Dynamo.Nodes
     [ElementName("Xor")]
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Boolean XOR.")]
-    [RequiresTransaction(false)]
     public class dynXor : dynBuiltinMacro
     {
         public dynXor()
@@ -1034,10 +1005,10 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData =  new PortData("a⊻b", "result", typeof(bool));
+        private PortData outPortData = new PortData("a⊻b", "result", typeof(bool));
         public override PortData OutPortData
         {
             get { return outPortData; }
@@ -1047,7 +1018,6 @@ namespace Dynamo.Nodes
     [ElementName("Not")]
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Boolean NOT.")]
-    [RequiresTransaction(false)]
     public class dynNot : dynBuiltinMacro
     {
         public dynNot()
@@ -1057,7 +1027,7 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("!a", "result", typeof(bool));
@@ -1075,7 +1045,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Adds two numbers.")]
     [ElementSearchTags("plus", "addition", "sum")]
-    [RequiresTransaction(false)]
     public class dynAddition : dynBuiltinFunction
     {
         public dynAddition()
@@ -1086,7 +1055,7 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("x+y", "sum", typeof(double));
@@ -1100,7 +1069,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Subtracts two numbers.")]
     [ElementSearchTags("subtraction", "minus", "difference", "-")]
-    [RequiresTransaction(false)]
     public class dynSubtraction : dynBuiltinFunction
     {
         public dynSubtraction()
@@ -1111,7 +1079,7 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("x-y", "difference", typeof(double));
@@ -1125,7 +1093,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Multiplies two numbers.")]
     [ElementSearchTags("times", "multiply", "multiplication", "product", "*", "x")]
-    [RequiresTransaction(false)]
     public class dynMultiplication : dynBuiltinFunction
     {
         public dynMultiplication()
@@ -1136,7 +1103,7 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("x∙y", "product", typeof(double));
@@ -1150,7 +1117,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Divides two numbers.")]
     [ElementSearchTags("divide", "division", "quotient", "/")]
-    [RequiresTransaction(false)]
     public class dynDivision : dynBuiltinFunction
     {
         public dynDivision()
@@ -1161,7 +1127,7 @@ namespace Dynamo.Nodes
 
             this.NodeUI.nickNameBlock.FontSize = 20;
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("x÷y", "result", typeof(double));
@@ -1174,14 +1140,13 @@ namespace Dynamo.Nodes
     [ElementName("Round")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Rounds a number to the nearest integer value.")]
-    [RequiresTransaction(false)]
     public class dynRound : dynNode
     {
         public dynRound()
         {
             InPortData.Add(new PortData("dbl", "A number", typeof(double)));
 
-            NodeUI.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         private PortData outPortData = new PortData("int", "Rounded number", typeof(double));
@@ -1202,15 +1167,19 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Rounds a number to the nearest smaller integer.")]
     [ElementSearchTags("round")]
-    [RequiresTransaction(false)]
-    public class dynFloor : dynNodeUI
+    public class dynFloor : dynNode
     {
         public dynFloor()
         {
             InPortData.Add(new PortData("dbl", "A number", typeof(double)));
-            OutPortData = new PortData("int", "Number rounded down", typeof(double));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("int", "Number rounded down", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -1225,15 +1194,19 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Rounds a number to the nearest larger integer value.")]
     [ElementSearchTags("round")]
-    [RequiresTransaction(false)]
-    public class dynCeiling : dynNodeUI
+    public class dynCeiling : dynNode
     {
         public dynCeiling()
         {
             InPortData.Add(new PortData("dbl", "A number", typeof(double)));
-            OutPortData = new PortData("int", "Number rounded up", typeof(double));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("int", "Number rounded up", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -1247,19 +1220,22 @@ namespace Dynamo.Nodes
     [ElementName("Random")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Generates a uniform random number in the range [0.0, 1.0).")]
-    [RequiresTransaction(false)]
-    public class dynRandom : dynNodeUI
+    public class dynRandom : dynNode
     {
         public dynRandom()
         {
-            OutPortData = new PortData("rand", "Random number between 0.0 and 1.0.", typeof(double));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("rand", "Random number between 0.0 and 1.0.", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private static Random random = new Random();
 
-        public override bool IsDirty
+        public override bool RequiresRecalc
         {
             get
             {
@@ -1277,21 +1253,24 @@ namespace Dynamo.Nodes
     [ElementName("π")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Pi constant")]
-    [RequiresTransaction(false)]
     [ElementSearchTags("pi", "trigonometry", "circle")]
     [IsInteractive(false)]
-    public class dynPi : dynNodeUI
+    public class dynPi : dynNode
     {
         public dynPi()
         {
-            OutPortData = new PortData("3.14159...", "pi", typeof(double));
+            this.NodeUI.nickNameBlock.FontSize = 20;
 
-            this.nickNameBlock.FontSize = 20;
-
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
-        public override bool IsDirty
+        private PortData outPortData = new PortData("3.14159...", "pi", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
+
+        public override bool RequiresRecalc
         {
             get
             {
@@ -1309,15 +1288,19 @@ namespace Dynamo.Nodes
     [ElementName("Sine")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Computes the sine of the given angle.")]
-    [RequiresTransaction(false)]
-    public class dynSin : dynNodeUI
+    public class dynSin : dynNode
     {
         public dynSin()
         {
             InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("sin(θ)", "Sine value of the given angle", typeof(double));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("sin(θ)", "Sine value of the given angle", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -1346,15 +1329,19 @@ namespace Dynamo.Nodes
     [ElementName("Cosine")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Computes the cosine of the given angle.")]
-    [RequiresTransaction(false)]
-    public class dynCos : dynNodeUI
+    public class dynCos : dynNode
     {
         public dynCos()
         {
             InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("cos(θ)", "Cosine value of the given angle", typeof(double));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("cos(θ)", "Cosine value of the given angle", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -1383,15 +1370,19 @@ namespace Dynamo.Nodes
     [ElementName("Tangent")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Computes the tangent of the given angle.")]
-    [RequiresTransaction(false)]
-    public class dynTan : dynNodeUI
+    public class dynTan : dynNode
     {
         public dynTan()
         {
             InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("tan(θ)", "Tangent value of the given angle", typeof(double));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("tan(θ)", "Tangent value of the given angle", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -1425,16 +1416,20 @@ namespace Dynamo.Nodes
     [ElementName("Perform All")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Executes expressions in a sequence")]
-    [RequiresTransaction(false)]
     public class dynBegin : dynVariableInput
     {
         public dynBegin()
         {
             InPortData.Add(new PortData("expr1", "Expression #1", typeof(object)));
             InPortData.Add(new PortData("expr2", "Expression #2", typeof(object)));
-            OutPortData = new PortData("last", "Result of final expression", typeof(object));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("last", "Result of final expression", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         protected override void RemoveInput(object sender, RoutedEventArgs args)
@@ -1463,15 +1458,19 @@ namespace Dynamo.Nodes
     [ElementName("Apply")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Applies arguments to a function")]
-    [RequiresTransaction(false)]
     public class dynApply1 : dynVariableInput
     {
         public dynApply1()
         {
             InPortData.Add(new PortData("func", "Procedure", typeof(object)));
-            OutPortData = new PortData("result", "Result", typeof(object));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("result", "Result", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         protected override string getInputRootName()
@@ -1515,7 +1514,7 @@ namespace Dynamo.Nodes
                         this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
                 }
             }
-            base.ReregisterInputs();
+            NodeUI.ReregisterInputs();
         }
     }
 
@@ -1523,8 +1522,7 @@ namespace Dynamo.Nodes
     [ElementName("If")]
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Conditional statement")]
-    [RequiresTransaction(false)]
-    public class dynConditional : dynNodeUI
+    public class dynConditional : dynNode
     {
         public dynConditional()
         {
@@ -1532,11 +1530,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("true", "True block", typeof(object)));
             InPortData.Add(new PortData("false", "False block", typeof(object)));
 
-            OutPortData = new PortData("result", "Result", typeof(object));
+            NodeUI.nickNameBlock.FontSize = 20;
 
-            this.nickNameBlock.FontSize = 20;
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("result", "Result", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
@@ -1548,8 +1550,7 @@ namespace Dynamo.Nodes
     [ElementName("Debug Breakpoint")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Halts execution until user clicks button.")]
-    [RequiresTransaction(false)]
-    public class dynBreakpoint : dynNodeUI
+    public class dynBreakpoint : dynNode
     {
         System.Windows.Controls.Button button;
 
@@ -1560,7 +1561,7 @@ namespace Dynamo.Nodes
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             button.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             //inputGrid.RowDefinitions.Add(new RowDefinition());
-            inputGrid.Children.Add(button);
+            NodeUI.inputGrid.Children.Add(button);
             System.Windows.Controls.Grid.SetColumn(button, 0);
             System.Windows.Controls.Grid.SetRow(button, 0);
             button.Content = "Continue";
@@ -1570,9 +1571,14 @@ namespace Dynamo.Nodes
             button.Click += new RoutedEventHandler(button_Click);
 
             InPortData.Add(new PortData("", "Object to inspect", typeof(object)));
-            OutPortData = new PortData("", "Object inspected", typeof(object));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("", "Object inspected", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private bool _enabled;
@@ -1588,7 +1594,7 @@ namespace Dynamo.Nodes
 
         void button_Click(object sender, RoutedEventArgs e)
         {
-            this.Deselect();
+            this.NodeUI.Deselect();
             enabled = false;
         }
 
@@ -1596,21 +1602,21 @@ namespace Dynamo.Nodes
         {
             var result = args[0];
 
-            this.Dispatcher.Invoke(new Action(
+            dynSettings.Instance.Bench.Dispatcher.Invoke(new Action(
                delegate
                {
-                   dynElementSettings.SharedInstance.Bench.Log(FScheme.print(result));
+                   dynSettings.Instance.Bench.Log(FScheme.print(result));
                }
             ));
 
-            if (dynElementSettings.SharedInstance.Bench.RunInDebug)
+            if (dynSettings.Instance.Bench.RunInDebug)
             {
                 button.Dispatcher.Invoke(new Action(
                    delegate
                    {
                        enabled = true;
-                       this.Select();
-                       dynElementSettings.SharedInstance.Bench.ShowElement(this);
+                       this.NodeUI.Select();
+                       dynSettings.Instance.Bench.ShowElement(this);
                    }
                 ));
 
@@ -1632,8 +1638,7 @@ namespace Dynamo.Nodes
     [ElementName("Optimizer")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
-    [RequiresTransaction(false)]
-    public class dynOptimizer : dynNodeUI
+    public class dynOptimizer : dynNode
     {
         TextBox tb;
 
@@ -1643,14 +1648,14 @@ namespace Dynamo.Nodes
             tb = new System.Windows.Controls.TextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "0.0";
             //tb.IsReadOnly = true;
             //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
             //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
-            tb.TextChanged += delegate { this.IsDirty = true; };
+            tb.TextChanged += delegate { this.RequiresRecalc = true; };
 
             //turn off the border
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
@@ -1660,12 +1665,13 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("N", "New Value", typeof(double)));
             //InPortData.Add(new PortData(null, "I", "Initial Value", typeof(dynDouble)));
 
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            //outport declared in the abstract
-
-            OutPortData = new PortData("dbl", "The larger value of the input vs. the current value", typeof(double));
-
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("dbl", "The larger value of the input vs. the current value", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -1715,8 +1721,7 @@ namespace Dynamo.Nodes
     [ElementName("Incrementer")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
-    [RequiresTransaction(false)]
-    public class dynIncrementer : dynNodeUI
+    public class dynIncrementer : dynNode
     {
         TextBox tb;
 
@@ -1726,11 +1731,11 @@ namespace Dynamo.Nodes
             tb = new System.Windows.Controls.TextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "0";
-            tb.TextChanged += delegate { this.IsDirty = true; };
+            tb.TextChanged += delegate { this.RequiresRecalc = true; };
             //tb.IsReadOnly = true;
             //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
             //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
@@ -1743,14 +1748,14 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("m", "Max Iterations", typeof(double)));
             InPortData.Add(new PortData("v", "Value", typeof(double)));
 
-            OutPortData = new PortData("v", "Value", typeof(double));
-
-            base.RegisterInputsAndOutputs();
-
-            //OutPortData[0].Object = numIterations;
-            //OutPortData[1].Object = currentValue;
+            NodeUI.RegisterInputsAndOutput();
         }
 
+        private PortData outPortData = new PortData("v", "Value", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
 
         public double currentValue = 0.0;// instead of initialValue for now
 
@@ -1873,7 +1878,7 @@ namespace Dynamo.Nodes
 
         private bool shouldCommit()
         {
-            return !dynElementSettings.SharedInstance.Bench.DynamicRunEnabled;
+            return !dynSettings.Instance.Bench.DynamicRunEnabled;
         }
 
         protected override void OnTextChanged(TextChangedEventArgs e)
@@ -1910,7 +1915,7 @@ namespace Dynamo.Nodes
     }
 
     [IsInteractive(true)]
-    public abstract class dynBasicInteractive<T> : dynNodeUI
+    public abstract class dynBasicInteractive<T> : dynNode
     {
         private T _value = default(T);
         public virtual T Value
@@ -1924,7 +1929,7 @@ namespace Dynamo.Nodes
                 if (this._value == null || !this._value.Equals(value))
                 {
                     this._value = value;
-                    this.IsDirty = value != null;
+                    this.RequiresRecalc = value != null;
                 }
             }
         }
@@ -1934,7 +1939,13 @@ namespace Dynamo.Nodes
         public dynBasicInteractive()
         {
             Type type = typeof(T);
-            OutPortData = new PortData("", type.Name, type);
+            outPortData = new PortData("", type.Name, type);
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -1996,7 +2007,6 @@ namespace Dynamo.Nodes
     [ElementName("Number")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
     [ElementDescription("An element which creates an unsigned floating point number.")]
-    [RequiresTransaction(false)]
     public class dynDoubleInput : dynDouble
     {
         dynTextBox tb;
@@ -2007,21 +2017,21 @@ namespace Dynamo.Nodes
             tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
             tb.Text = "0.0";
             tb.OnChangeCommitted += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
 
             //take out the left and right margins
             //and make this so it's not so wide
-            this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            this.topControl.Width = 100;
+            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+            NodeUI.topControl.Width = 100;
 
-            this.UpdateLayout();
+            NodeUI.UpdateLayout();
         }
 
         public override double Value
@@ -2058,7 +2068,6 @@ namespace Dynamo.Nodes
     [ElementName("Number Slider")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
     [ElementDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
-    [RequiresTransaction(false)]
     public class dynDoubleSliderInput : dynDouble
     {
         Slider tb_slider;
@@ -2071,7 +2080,7 @@ namespace Dynamo.Nodes
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            inputGrid.Children.Add(tb_slider);
+            NodeUI.inputGrid.Children.Add(tb_slider);
             System.Windows.Controls.Grid.SetColumn(tb_slider, 1);
             System.Windows.Controls.Grid.SetRow(tb_slider, 0);
             tb_slider.Value = 0.0;
@@ -2121,14 +2130,14 @@ namespace Dynamo.Nodes
             };
             //maxtb.Pending = false;
 
-            this.SetColumnAmount(3);
-            inputGrid.Children.Add(mintb);
-            inputGrid.Children.Add(maxtb);
+            NodeUI.SetColumnAmount(3);
+            NodeUI.inputGrid.Children.Add(mintb);
+            NodeUI.inputGrid.Children.Add(maxtb);
 
             System.Windows.Controls.Grid.SetColumn(mintb, 0);
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         protected override double DeserializeValue(string val)
@@ -2205,7 +2214,6 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
     [ElementDescription("An element which allows selection between a true and false.")]
     [ElementSearchTags("true", "truth", "false")]
-    [RequiresTransaction(false)]
     public class dynBoolSelector : dynBool
     {
         System.Windows.Controls.RadioButton rbTrue;
@@ -2233,12 +2241,12 @@ namespace Dynamo.Nodes
             RowDefinition rd = new RowDefinition();
             ColumnDefinition cd1 = new ColumnDefinition();
             ColumnDefinition cd2 = new ColumnDefinition();
-            inputGrid.ColumnDefinitions.Add(cd1);
-            inputGrid.ColumnDefinitions.Add(cd2);
-            inputGrid.RowDefinitions.Add(rd);
+            NodeUI.inputGrid.ColumnDefinitions.Add(cd1);
+            NodeUI.inputGrid.ColumnDefinitions.Add(cd2);
+            NodeUI.inputGrid.RowDefinitions.Add(rd);
 
-            inputGrid.Children.Add(rbTrue);
-            inputGrid.Children.Add(rbFalse);
+            NodeUI.inputGrid.Children.Add(rbTrue);
+            NodeUI.inputGrid.Children.Add(rbFalse);
 
             System.Windows.Controls.Grid.SetColumn(rbTrue, 0);
             System.Windows.Controls.Grid.SetRow(rbTrue, 0);
@@ -2250,7 +2258,7 @@ namespace Dynamo.Nodes
             rbFalse.Checked += new System.Windows.RoutedEventHandler(rbFalse_Checked);
             //OutPortData[0].Object = false;
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         protected override bool DeserializeValue(string val)
@@ -2297,7 +2305,6 @@ namespace Dynamo.Nodes
     [ElementName("String")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
     [ElementDescription("An element which creates a string value.")]
-    [RequiresTransaction(false)]
     public class dynStringInput : dynString
     {
         dynTextBox tb;
@@ -2308,14 +2315,14 @@ namespace Dynamo.Nodes
             tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(tb);
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "";
 
             tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
         }
 
         public override string Value
@@ -2350,7 +2357,6 @@ namespace Dynamo.Nodes
     [ElementName("Filename")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
     [ElementDescription("Allows you to select a file on the system to get its filename.")]
-    [RequiresTransaction(false)]
     public class dynStringFilename : dynString
     {
         System.Windows.Controls.TextBox tb;
@@ -2378,18 +2384,18 @@ namespace Dynamo.Nodes
             tb.IsReadOnlyCaretVisible = false;
             tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); };
 
-            this.SetRowAmount(2);
+            NodeUI.SetRowAmount(2);
 
-            this.inputGrid.Children.Add(tb);
-            this.inputGrid.Children.Add(readFileButton);
+            NodeUI.inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(readFileButton);
 
             System.Windows.Controls.Grid.SetRow(readFileButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
 
-            this.topControl.Height = 60;
-            this.UpdateLayout();
+            NodeUI.topControl.Height = 60;
+            NodeUI.UpdateLayout();
         }
 
         public override string Value
@@ -2446,16 +2452,20 @@ namespace Dynamo.Nodes
     [ElementName("Concatenate Strings")]
     [ElementDescription("Concatenates two or more strings")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [RequiresTransaction(false)]
     public class dynConcatStrings : dynVariableInput
     {
         public dynConcatStrings()
         {
-            InPortData.Add(new PortData("s1", "First string", typeof(object)));
-            InPortData.Add(new PortData("s2", "Second string", typeof(object)));
-            OutPortData = new PortData("combined", "Combined lists", typeof(object));
+            InPortData.Add(new PortData("s1", "First string", typeof(string)));
+            InPortData.Add(new PortData("s2", "Second string", typeof(string)));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("combined", "Combined lists", typeof(string));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         protected override string getInputRootName()
@@ -2498,7 +2508,7 @@ namespace Dynamo.Nodes
                     this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
                 }
             }
-            base.ReregisterInputs();
+            NodeUI.ReregisterInputs();
         }
 
         protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
@@ -2519,32 +2529,71 @@ namespace Dynamo.Nodes
     [ElementName("String -> Number")]
     [ElementDescription("Converts a string to a number")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [RequiresTransaction(false)]
     public class dynString2Num : dynBuiltinFunction
     {
         public dynString2Num()
             : base("string->num")
         {
-            this.InPortData.Add(new PortData("s", "A string", typeof(string)));
-            this.OutPortData = new PortData("n", "A number", typeof(double));
+            InPortData.Add(new PortData("s", "A string", typeof(string)));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("n", "A number", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
     }
 
     [ElementName("Number -> String")]
     [ElementDescription("Converts a number to a string")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [RequiresTransaction(false)]
     public class dynNum2String : dynBuiltinFunction
     {
         public dynNum2String()
             : base("num->string")
         {
-            this.InPortData.Add(new PortData("n", "A number", typeof(double)));
-            this.OutPortData = new PortData("s", "A string", typeof(string));
+            InPortData.Add(new PortData("n", "A number", typeof(double)));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("s", "A string", typeof(string));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
+    }
+
+    [ElementName("Split String")]
+    [ElementDescription("Separates a string based on the given delimiter")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    public class dynSplitString : dynNode
+    {
+        public dynSplitString()
+        {
+            InPortData.Add(new PortData("str", "String to split", typeof(string)));
+            InPortData.Add(new PortData("del", "Delimiter", typeof(string)));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("strs", "A list of strings", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewList(
+                Utils.convertSequence(
+                    ((Expression.String)args[0]).Item.Split(
+                        ((Expression.String)args[1]).Item.ToCharArray()
+                    ).Select(Expression.NewString)
+                )
+            );
         }
     }
 

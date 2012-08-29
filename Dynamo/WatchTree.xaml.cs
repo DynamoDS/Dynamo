@@ -53,10 +53,10 @@ namespace Dynamo.Nodes
             FrameworkElement fe = sender as FrameworkElement;
             int elId = Convert.ToInt32(((WatchNode)fe.DataContext).Link);  
             
-            Element el = dynElementSettings.SharedInstance.Doc.Document.GetElement(new ElementId(elId));
+            Element el = dynSettings.Instance.Doc.Document.GetElement(new ElementId(elId));
             if (el != null)
             {
-                dynElementSettings.SharedInstance.Doc.ShowElements(el);
+                dynSettings.Instance.Doc.ShowElements(el);
             }
         }
     }

@@ -25,296 +25,311 @@ using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Nodes
 {
-   [ElementName("Model Curve")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which creates a model curve.")]
-   [RequiresTransaction(true)]
-   public class dynModelCurve : dynNodeUI
-   {
-      public dynModelCurve()
-      {
-         InPortData.Add(new PortData("c", "A curve.", typeof(Curve)));
-         InPortData.Add(new PortData("sp", "The sketch plane.", typeof(SketchPlane)));
-         OutPortData = new PortData("mc", "ModelCurve", typeof(ModelCurve));
+    [ElementName("Model Curve")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("An element which creates a model curve.")]
+    public class dynModelCurve : dynRevitNode
+    {
+        public dynModelCurve()
+        {
+            InPortData.Add(new PortData("c", "A curve.", typeof(Curve)));
+            InPortData.Add(new PortData("sp", "The sketch plane.", typeof(SketchPlane)));
 
-         base.RegisterInputsAndOutputs();
-      }
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         Curve c = (Curve)((Expression.Container)args[0]).Item;
-         SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
+        private PortData outPortData = new PortData("mc", "ModelCurve", typeof(ModelCurve));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
 
-         ModelCurve mc;
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            Curve c = (Curve)((Expression.Container)args[0]).Item;
+            SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
 
-         if (this.Elements.Any())
-         {
-            Element e;
-            if (dynUtils.TryGetElement(this.Elements[0], out e))
+            ModelCurve mc;
+
+            if (this.Elements.Any())
             {
-               mc = e as ModelCurve;
-               var loc = mc.Location as LocationCurve;
-               loc.Curve = c;
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], out e))
+                {
+                    mc = e as ModelCurve;
+                    var loc = mc.Location as LocationCurve;
+                    loc.Curve = c;
+                }
+                else
+                {
+                    mc = this.UIDocument.Document.IsFamilyDocument
+                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                    this.Elements[0] = mc.Id;
+                }
             }
             else
             {
-               mc = this.UIDocument.Document.IsFamilyDocument
-                  ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                  : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-               this.Elements[0] = mc.Id;
+                mc = this.UIDocument.Document.IsFamilyDocument
+                   ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                   : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                this.Elements.Add(mc.Id);
             }
-         }
-         else
-         {
-            mc = this.UIDocument.Document.IsFamilyDocument
-               ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-               : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-            this.Elements.Add(mc.Id);
-         }
 
-         return Expression.NewContainer(mc);
-      }
-   }
+            return Expression.NewContainer(mc);
+        }
+    }
 
-   [ElementName("Loft Form")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
-   [RequiresTransaction(true)]
-   public class dynLoftForm : dynNodeUI
-   {
-      public dynLoftForm()
-      {
-         InPortData.Add(new PortData("solid?", "Is solid?", typeof(object)));
-         InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(object)));
+    [ElementName("Loft Form")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
+    public class dynLoftForm : dynRevitNode
+    {
+        public dynLoftForm()
+        {
+            InPortData.Add(new PortData("solid?", "Is solid?", typeof(object)));
+            InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(object)));
 
-         OutPortData = new PortData("form", "Loft Form", typeof(object));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-         base.RegisterInputsAndOutputs();
-      }
+        private PortData outPortData = new PortData("form", "Loft Form", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         //If we already have a form stored...
-         if (this.Elements.Any())
-         {
-            //Dissolve it, we will re-make it later.
-            FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
-            //And register the form for deletion. Since we've already deleted it here manually, we can 
-            //pass "true" as the second argument.
-            this.DeleteElement(this.Elements[0], true);
-         }
-
-         //Solid argument
-         bool isSolid = ((Expression.Number)args[0]).Item == 1;
-
-         //Build up our list of list of references for the form by...
-         IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
-            //...first selecting everything in the topmost list...
-            delegate(Expression x)
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            //If we already have a form stored...
+            if (this.Elements.Any())
             {
-               //If the element in the topmost list is a sub-list...
-               if (x.IsList)
-               {
-                  //...then we return a new IEnumerable of References by converting the sub list.
-                  return (x as Expression.List).Item.Select(
-                     delegate(Expression y)
-                     {
-                        //Since we're in a sub-list, we can assume it's a container.
-                        var item = ((Expression.Container)y).Item;
-                        if (item is CurveElement)
-                           return (item as CurveElement).GeometryCurve.Reference;
-                        else
-                           return (Reference)item;
-                     }
-                  );
-               }
-               //If the element is not a sub-list, then just assume it's a container.
-               else
-               {
-                  var obj = ((Expression.Container)x).Item;
-                  Reference r;
-                  if (obj is CurveElement)
-                  {
-                     r = (obj as CurveElement).GeometryCurve.Reference;
-                  }
-                  else
-                  {
-                     r = (Reference)obj;
-                  }
-                  //We return a list here since it's expecting an IEnumerable<Reference>. In reality,
-                  //just passing the element by itself instead of a sub-list is a shortcut for having
-                  //a list with one element, so this is just performing that for the user.
-                  return new List<Reference>() { r };
-               }
+                //Dissolve it, we will re-make it later.
+                FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
+                //And register the form for deletion. Since we've already deleted it here manually, we can 
+                //pass "true" as the second argument.
+                this.DeleteElement(this.Elements[0], true);
             }
-         );
 
-         //Now we add all of those references into ReferenceArrays
-         ReferenceArrayArray refArrArr = new ReferenceArrayArray();
-         foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
-         {
-            var refArr = new ReferenceArray();
-            foreach (Reference r in refs)
-               refArr.Append(r);
-            refArrArr.Append(refArr);
-         }
+            //Solid argument
+            bool isSolid = ((Expression.Number)args[0]).Item == 1;
 
-         //We use the ReferenceArrayArray to make the form, and we store it for later runs.
-         Form f = this.UIDocument.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr);
-         this.Elements.Add(f.Id);
+            //Build up our list of list of references for the form by...
+            IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
+                //...first selecting everything in the topmost list...
+               delegate(Expression x)
+               {
+                   //If the element in the topmost list is a sub-list...
+                   if (x.IsList)
+                   {
+                       //...then we return a new IEnumerable of References by converting the sub list.
+                       return (x as Expression.List).Item.Select(
+                          delegate(Expression y)
+                          {
+                              //Since we're in a sub-list, we can assume it's a container.
+                              var item = ((Expression.Container)y).Item;
+                              if (item is CurveElement)
+                                  return (item as CurveElement).GeometryCurve.Reference;
+                              else
+                                  return (Reference)item;
+                          }
+                       );
+                   }
+                   //If the element is not a sub-list, then just assume it's a container.
+                   else
+                   {
+                       var obj = ((Expression.Container)x).Item;
+                       Reference r;
+                       if (obj is CurveElement)
+                       {
+                           r = (obj as CurveElement).GeometryCurve.Reference;
+                       }
+                       else
+                       {
+                           r = (Reference)obj;
+                       }
+                       //We return a list here since it's expecting an IEnumerable<Reference>. In reality,
+                       //just passing the element by itself instead of a sub-list is a shortcut for having
+                       //a list with one element, so this is just performing that for the user.
+                       return new List<Reference>() { r };
+                   }
+               }
+            );
 
-         return Expression.NewContainer(f);
-      }
-   }
-
-   [ElementName("Curve By Points")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("doc.FamilyCreate.NewCurveByPoints")]
-   [RequiresTransaction(true)]
-   public class dynCurveByPoints : dynNodeUI
-   {
-      public dynCurveByPoints()
-      {
-         InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
-         OutPortData = new PortData("curve", "Curve from ref points", typeof(object));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         //Our eventual output.
-         CurveByPoints c;
-
-         //Build a sequence that unwraps the input list from it's Expression form.
-         IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
-            x => (ReferencePoint)((Expression.Container)x).Item
-         );
-
-         //Add all of the elements in the sequence to a ReferencePointArray.
-         ReferencePointArray refPtArr = new ReferencePointArray();
-         foreach (var refPt in refPts)
-         {
-            refPtArr.Append(refPt);
-         }
-
-         //Standard logic for updating an old result, if it exists.
-         if (this.Elements.Any())
-         {
-            Element e;
-            if (dynUtils.TryGetElement(this.Elements[0], out e))
+            //Now we add all of those references into ReferenceArrays
+            ReferenceArrayArray refArrArr = new ReferenceArrayArray();
+            foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
             {
-               c = e as CurveByPoints;
-               c.SetPoints(refPtArr);
+                var refArr = new ReferenceArray();
+                foreach (Reference r in refs)
+                    refArr.Append(r);
+                refArrArr.Append(refArr);
+            }
+
+            //We use the ReferenceArrayArray to make the form, and we store it for later runs.
+            Form f = this.UIDocument.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr);
+            this.Elements.Add(f.Id);
+
+            return Expression.NewContainer(f);
+        }
+    }
+
+    [ElementName("Curve By Points")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("doc.FamilyCreate.NewCurveByPoints")]
+    public class dynCurveByPoints : dynRevitNode
+    {
+        public dynCurveByPoints()
+        {
+            InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("curve", "Curve from ref points", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            //Our eventual output.
+            CurveByPoints c;
+
+            //Build a sequence that unwraps the input list from it's Expression form.
+            IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
+               x => (ReferencePoint)((Expression.Container)x).Item
+            );
+
+            //Add all of the elements in the sequence to a ReferencePointArray.
+            ReferencePointArray refPtArr = new ReferencePointArray();
+            foreach (var refPt in refPts)
+            {
+                refPtArr.Append(refPt);
+            }
+
+            //Standard logic for updating an old result, if it exists.
+            if (this.Elements.Any())
+            {
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[0], out e))
+                {
+                    c = e as CurveByPoints;
+                    c.SetPoints(refPtArr);
+                }
+                else
+                {
+                    //TODO: This method of handling bad elements may cause problems. Instead of overwriting
+                    //      index in Elements, might be better to just add it the Elements and then do
+                    //      this.DeleteElement(id, true) on the old index.
+                    c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                    this.Elements[0] = c.Id;
+                }
             }
             else
             {
-               //TODO: This method of handling bad elements may cause problems. Instead of overwriting
-               //      index in Elements, might be better to just add it the Elements and then do
-               //      this.DeleteElement(id, true) on the old index.
-               c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-               this.Elements[0] = c.Id;
+                c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                this.Elements.Add(c.Id);
             }
-         }
-         else
-         {
-            c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
-            this.Elements.Add(c.Id);
-         }
 
-         return Expression.NewContainer(c);
-      }
-   }
+            return Expression.NewContainer(c);
+        }
+    }
 
-   [ElementName("CurveElement Reference")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("CurveyPoints.GeometryCurve.Reference")]
-   [RequiresTransaction(true)]
-   public class dynCurveRef : dynNodeUI
-   {
-      public dynCurveRef()
-      {
-         InPortData.Add(new PortData("curve", "CurveByPoints", typeof(object)));
-         OutPortData = new PortData("curveRef", "Reference", typeof(object));
+    [ElementName("CurveElement Reference")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("CurveyPoints.GeometryCurve.Reference")]
+    public class dynCurveRef : dynNode
+    {
+        public dynCurveRef()
+        {
+            InPortData.Add(new PortData("curve", "CurveByPoints", typeof(object)));
 
-         base.RegisterInputsAndOutputs();
-      }
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var input = args[0];
+        private PortData outPortData = new PortData("curveRef", "Reference", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
 
-         if (input.IsList)
-         {
-            return Expression.NewList(
-               Utils.convertSequence(
-                  (input as Expression.List).Item.Select(
-                     x =>
-                        Expression.NewContainer(
-                           ((CurveElement)((Expression.Container)x).Item).GeometryCurve.Reference
-                        )
-                  )
-               )
-            );
-         }
-         else
-         {
-            return Expression.NewContainer(
-               ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference
-            );
-         }
-      }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var input = args[0];
 
-   }
+            if (input.IsList)
+            {
+                return Expression.NewList(
+                   Utils.convertSequence(
+                      (input as Expression.List).Item.Select(
+                         x =>
+                            Expression.NewContainer(
+                               ((CurveElement)((Expression.Container)x).Item).GeometryCurve.Reference
+                            )
+                      )
+                   )
+                );
+            }
+            else
+            {
+                return Expression.NewContainer(
+                   ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference
+                );
+            }
+        }
 
-   //[ElementName("Planar Curve By Points")]
-   //[ElementCategory(BuiltinElementCategories.REVIT)]
-   //[ElementDescription("Node to create a planar model curve.")]
-   //[RequiresTransaction(true)]
-   //public class dynModelCurveByPoints : dynElement
-   //{
-   //   public dynModelCurveByPoints()
-   //   {
-   //      InPortData.Add(new PortData("pts", "The points from which to create the curve", typeof(object)));
-   //      OutPortData = new PortData("cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline));
+    }
 
-   //      base.RegisterInputsAndOutputs();
-   //   }
+    //[ElementName("Planar Curve By Points")]
+    //[ElementCategory(BuiltinElementCategories.REVIT)]
+    //[ElementDescription("Node to create a planar model curve.")]
+    //[RequiresTransaction(true)]
+    //public class dynModelCurveByPoints : dynElement
+    //{
+    //   public dynModelCurveByPoints()
+    //   {
+    //      InPortData.Add(new PortData("pts", "The points from which to create the curve", typeof(object)));
+    //      OutPortData = new PortData("cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline));
 
-   //   public override Expression Evaluate(FSharpList<Expression> args)
-   //   {
-   //      var pts = ((Expression.List)args[0]).Item.Select(
-   //         e => ((ReferencePoint)((Expression.Container)e).Item).Position
-   //      ).ToList();
+    //      base.RegisterInputsAndOutputs();
+    //   }
 
-   //      if (pts.Count <= 1)
-   //      {
-   //         throw new Exception("Not enough reference points to make a curve.");
-   //      }
+    //   public override Expression Evaluate(FSharpList<Expression> args)
+    //   {
+    //      var pts = ((Expression.List)args[0]).Item.Select(
+    //         e => ((ReferencePoint)((Expression.Container)e).Item).Position
+    //      ).ToList();
 
-   //      //make a curve
-   //      NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
-   //         pts, Enumerable.Repeat(1.0, pts.Count).ToList()
-   //      );
+    //      if (pts.Count <= 1)
+    //      {
+    //         throw new Exception("Not enough reference points to make a curve.");
+    //      }
 
-   //      double rawParam = ns.ComputeRawParameter(.5);
-   //      Transform t = ns.ComputeDerivatives(rawParam, false);
+    //      //make a curve
+    //      NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
+    //         pts, Enumerable.Repeat(1.0, pts.Count).ToList()
+    //      );
 
-   //      XYZ norm = t.BasisZ;
+    //      double rawParam = ns.ComputeRawParameter(.5);
+    //      Transform t = ns.ComputeDerivatives(rawParam, false);
 
-   //      if (norm.GetLength() == 0)
-   //      {
-   //         norm = XYZ.BasisZ;
-   //      }
+    //      XYZ norm = t.BasisZ;
 
-   //      Plane p = new Plane(norm, t.Origin);
-   //      SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
-   //      //sps.Add(sp);
+    //      if (norm.GetLength() == 0)
+    //      {
+    //         norm = XYZ.BasisZ;
+    //      }
 
-   //      ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+    //      Plane p = new Plane(norm, t.Origin);
+    //      SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
+    //      //sps.Add(sp);
 
-   //      return Expression.NewContainer(c);
-   //   }
-   //}
+    //      ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+
+    //      return Expression.NewContainer(c);
+    //   }
+    //}
 }
 

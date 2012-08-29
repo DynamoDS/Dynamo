@@ -157,10 +157,10 @@ namespace Dynamo.Applications
 
                 #endregion
 
-                dynElementSettings.SharedInstance.Revit = m_revit;
-                dynElementSettings.SharedInstance.Doc = m_doc;
-                dynElementSettings.SharedInstance.DefaultLevel = defaultLevel;
-                dynElementSettings.SharedInstance.Writer = tw;
+                dynSettings.Instance.Revit = m_revit;
+                dynSettings.Instance.Doc = m_doc;
+                dynSettings.Instance.DefaultLevel = defaultLevel;
+                dynSettings.Instance.Writer = tw;
 
                 IdlePromise.ExecuteOnIdle(new Action(
                     delegate

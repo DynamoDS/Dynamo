@@ -62,7 +62,7 @@ namespace Dynamo
       private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
       {
          //Document doc = data.GetDocument();
-         var bench = dynElementSettings.SharedInstance.Bench; // MDJ HOOK
+         var bench = dynSettings.Instance.Bench; // MDJ HOOK
 
          #region Modified
          var modDict = this.updateDict[ChangeTypeEnum.Modify];
@@ -148,7 +148,7 @@ namespace Dynamo
 
       void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
       {
-         if (args.GetDocument().Equals(dynElementSettings.SharedInstance.Doc.Document))
+         if (args.GetDocument().Equals(dynSettings.Instance.Doc.Document))
          {
             this.processUpdates(
                args.GetModifiedElementIds(),

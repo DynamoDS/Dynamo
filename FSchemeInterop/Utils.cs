@@ -35,7 +35,7 @@ namespace Dynamo.FSchemeInterop
             return mkExprList(
                Expression.NewSymbol("lambda"),
                Expression.NewList(convertSequence(
-                  inputSyms.Select(x => Expression.NewSymbol(x))
+                  inputSyms.Select(Expression.NewSymbol)
                )),
                body
             );

@@ -26,128 +26,132 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Nodes
 {
-   [ElementName("Extract Solar Radiation Value")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("Create an element for extracting and computing the average solar radiation value based on a csv file.")]
-   [RequiresTransaction(false)]
-   public class dynComputeSolarRadiationValue : dynNodeUI
-   {
-      public dynComputeSolarRadiationValue()
-      {
-         InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
-         OutPortData = new PortData("data", "The solar radiation computed data", typeof(double));
+    [ElementName("Extract Solar Radiation Value")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Create an element for extracting and computing the average solar radiation value based on a csv file.")]
+    public class dynComputeSolarRadiationValue : dynNode
+    {
+        public dynComputeSolarRadiationValue()
+        {
+            InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
 
-         base.RegisterInputsAndOutputs();
-      }
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         string data = ((Expression.String)args[0]).Item;
+        private PortData outPortData = new PortData("data", "The solar radiation computed data", typeof(double));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
 
-         var SumValue = 0.0;
-         double doubleSRValue = 0;
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            string data = ((Expression.String)args[0]).Item;
 
-         foreach (string line in data.Split(new char[] { '\r', '\n' }).Where(x => x.Length > 0))
-         {
-            string[] values = line.Split(',');
+            var SumValue = 0.0;
+            double doubleSRValue = 0;
 
-            //int i = 0;
-            int intTest = 0;// used in TryParse below. returns 0 if not an int and >0 if an int.
-
-            if (int.TryParse(values[0], out intTest)) // test the first value. if the first value is an int, then we know we are passed the header lines and into data
+            foreach (string line in data.Split(new char[] { '\r', '\n' }).Where(x => x.Length > 0))
             {
-               doubleSRValue = double.Parse(values[1]); // the 2nd value is the one we want
-               SumValue += doubleSRValue; // compute the sum but adding current value with previous values
+                string[] values = line.Split(',');
+
+                //int i = 0;
+                int intTest = 0;// used in TryParse below. returns 0 if not an int and >0 if an int.
+
+                if (int.TryParse(values[0], out intTest)) // test the first value. if the first value is an int, then we know we are passed the header lines and into data
+                {
+                    doubleSRValue = double.Parse(values[1]); // the 2nd value is the one we want
+                    SumValue += doubleSRValue; // compute the sum but adding current value with previous values
+                }
             }
-         }
 
-         return Expression.NewNumber(SumValue);
-      }
-   }
+            return Expression.NewNumber(SumValue);
+        }
+    }
 
-   [ElementName("Analysis Results by Selection")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which allows you to select an analysis result object from the document and reference it in Dynamo.")]
-   [RequiresTransaction(true)]
-   public class dynAnalysisResultsBySelection : dynNodeUI
-   {
-      public dynAnalysisResultsBySelection()
-      {
-         OutPortData = new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element));
+    [ElementName("Analysis Results by Selection")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("An element which allows you to select an analysis result object from the document and reference it in Dynamo.")]
+    public class dynAnalysisResultsBySelection : dynRevitNode
+    {
+        public dynAnalysisResultsBySelection()
+        {
+            //add a button to the inputGrid on the dynElement
+            Button analysisResultButt = new Button();
+            NodeUI.inputGrid.Children.Add(analysisResultButt);
+            analysisResultButt.Margin = new Thickness(0, 0, 0, 0);
+            analysisResultButt.HorizontalAlignment = HorizontalAlignment.Center;
+            analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
+            analysisResultButt.Click += new RoutedEventHandler(analysisResultButt_Click);
+            analysisResultButt.Content = "Select AR";
+            analysisResultButt.HorizontalAlignment = HorizontalAlignment.Stretch;
+            analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
 
-         //add a button to the inputGrid on the dynElement
-         Button analysisResultButt = new Button();
-         this.inputGrid.Children.Add(analysisResultButt);
-         analysisResultButt.Margin = new Thickness(0, 0, 0, 0);
-         analysisResultButt.HorizontalAlignment = HorizontalAlignment.Center;
-         analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
-         analysisResultButt.Click += new RoutedEventHandler(analysisResultButt_Click);
-         analysisResultButt.Content = "Select AR";
-         analysisResultButt.HorizontalAlignment = HorizontalAlignment.Stretch;
-         analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-         base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
 
-      }
+        public Element pickedAnalysisResult;
 
-      public Element pickedAnalysisResult;
-
-      public Element PickedAnalysisResult
-      {
-         get { return pickedAnalysisResult; }
-         set
-         {
-            pickedAnalysisResult = value;
-            NotifyPropertyChanged("PickedAnalysisResult");
-            this.IsDirty = true;
-         }
-      }
-
-      private ElementId analysisResultID;
-
-      private ElementId AnalysisResultID
-      {
-         get { return analysisResultID; }
-         set
-         {
-            analysisResultID = value;
-            NotifyPropertyChanged("AnalysisResultID");
-         }
-      }
-      void analysisResultButt_Click(object sender, RoutedEventArgs e)
-      {
-         PickedAnalysisResult =
-            Dynamo.Utilities.SelectionHelper.RequestAnalysisResultInstanceSelection(
-               this.UIDocument,
-               "Select Analysis Result Object",
-               dynElementSettings.SharedInstance
-            );
-
-         if (PickedAnalysisResult != null)
-         {
-            AnalysisResultID = PickedAnalysisResult.Id;
-         }
-      }
-
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         if (PickedAnalysisResult != null)
-         {
-            if (PickedAnalysisResult.Id.IntegerValue == AnalysisResultID.IntegerValue) // sanity check
+        public Element PickedAnalysisResult
+        {
+            get { return pickedAnalysisResult; }
+            set
             {
-               SpatialFieldManager dmu_sfm = dynElementSettings.SharedInstance.SpatialFieldManagerUpdated as SpatialFieldManager;
-
-               if (pickedAnalysisResult.Id.IntegerValue == dmu_sfm.Id.IntegerValue)
-               {
-                  TaskDialog.Show("ah hah", "picked sfm equals saved one from dmu");
-               }
-
-               return Expression.NewContainer(this.PickedAnalysisResult);
+                pickedAnalysisResult = value;
+                this.RequiresRecalc = true;
             }
-         }
+        }
 
-         throw new Exception("No data selected!");
-      }
-   }
+        private ElementId analysisResultID;
+
+        private ElementId AnalysisResultID
+        {
+            get { return analysisResultID; }
+            set
+            {
+                analysisResultID = value;
+            }
+        }
+
+        void analysisResultButt_Click(object sender, RoutedEventArgs e)
+        {
+            PickedAnalysisResult =
+               Dynamo.Utilities.SelectionHelper.RequestAnalysisResultInstanceSelection(
+                  this.UIDocument,
+                  "Select Analysis Result Object",
+                  dynSettings.Instance
+               );
+
+            if (PickedAnalysisResult != null)
+            {
+                AnalysisResultID = PickedAnalysisResult.Id;
+            }
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            if (PickedAnalysisResult != null)
+            {
+                if (PickedAnalysisResult.Id.IntegerValue == AnalysisResultID.IntegerValue) // sanity check
+                {
+                    SpatialFieldManager dmu_sfm = dynSettings.Instance.SpatialFieldManagerUpdated as SpatialFieldManager;
+
+                    if (pickedAnalysisResult.Id.IntegerValue == dmu_sfm.Id.IntegerValue)
+                    {
+                        TaskDialog.Show("ah hah", "picked sfm equals saved one from dmu");
+                    }
+
+                    return Expression.NewContainer(this.PickedAnalysisResult);
+                }
+            }
+
+            throw new Exception("No data selected!");
+        }
+    }
 }

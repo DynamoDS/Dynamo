@@ -23,115 +23,108 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-   public interface dynWorkspace
-   {
-      List<dynNodeUI> Elements { get; }
-      List<dynConnector> Connectors { get; }
+    public class dynWorkspace
+    {
+        public List<dynNode> Elements { get; private set; }
+        public List<dynConnector> Connectors { get; private set; }
 
-      double PositionX { get; set; }
-      double PositionY { get; set; }
+        public double PositionX { get; set; }
+        public double PositionY { get; set; }
 
-      String Name { get; }
+        public String Name { get; set; }
 
-      void Modified();
+        public event Action OnModified;
 
-      event Action OnModified;
-   }
+        //Hide default constructor.
+        private dynWorkspace() { }
 
-   public class FuncWorkspace : dynWorkspace
-   {
-      public List<dynNodeUI> Elements { get; private set; }
-      public List<dynConnector> Connectors { get; private set; }
+        protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y)
+        {
+            this.Name = name;
+            this.Elements = e;
+            this.Connectors = c;
+            this.PositionX = x;
+            this.PositionY = y;
+        }
 
-      public double PositionX { get; set; }
-      public double PositionY { get; set; }
+        public virtual void Modified()
+        {
+            if (OnModified != null)
+                OnModified();
+        }
 
-      public String Name { get; set; }
-      public String Category { get; set; }
+        public IEnumerable<dynNode> GetTopMostElements()
+        {
+            return this.Elements.Where(
+               x => !x.NodeUI.OutPort.Connectors.Any()
+            );
+        }
+    }
 
-      #region Contructors
+    public class FuncWorkspace : dynWorkspace
+    {
+        public String Category { get; set; }
 
-      public FuncWorkspace()
-         : this("", "", new List<dynNodeUI>(), new List<dynConnector>(), 0, 0)
-      { }
+        #region Contructors
 
-      public FuncWorkspace(String name, String category)
-         : this(name, category, new List<dynNodeUI>(), new List<dynConnector>(), 0, 0)
-      { }
+        public FuncWorkspace()
+            : this("", "", new List<dynNode>(), new List<dynConnector>(), 0, 0)
+        { }
 
-      public FuncWorkspace(String name, String category, double x, double y)
-         : this(name, category, new List<dynNodeUI>(), new List<dynConnector>(), x, y)
-      { }
+        public FuncWorkspace(String name, String category)
+            : this(name, category, new List<dynNode>(), new List<dynConnector>(), 0, 0)
+        { }
 
-      public FuncWorkspace(String name, String category, List<dynNodeUI> e, List<dynConnector> c, double x, double y)
-      {
-         this.Name = name;
-         this.Category = category;
-         this.Elements = e;
-         this.Connectors = c;
-         this.PositionX = x;
-         this.PositionY = y;
-      }
+        public FuncWorkspace(String name, String category, double x, double y)
+            : this(name, category, new List<dynNode>(), new List<dynConnector>(), x, y)
+        { }
 
-      #endregion
+        public FuncWorkspace(String name, String category, List<dynNode> e, List<dynConnector> c, double x, double y)
+            : base(name, e, c, x, y)
+        {
+            this.Category = category;
+        }
 
-      public event Action OnModified;
+        #endregion
 
-      public void Modified()
-      {
-         if (OnModified != null)
-            OnModified();
-         dynElementSettings.SharedInstance.Bench.SaveFunction(this);
-      }
-   }
+        public override void Modified()
+        {
+            base.Modified();
 
-   public class HomeWorkspace : dynWorkspace
-   {
-      public List<dynNodeUI> Elements { get; private set; }
-      public List<dynConnector> Connectors { get; private set; }
+            dynSettings.Instance.Bench.SaveFunction(this);
+        }
+    }
 
-      public double PositionX { get; set; }
-      public double PositionY { get; set; }
+    public class HomeWorkspace : dynWorkspace
+    {
+        #region Contructors
 
-      public String Name 
-      {
-         get { return "Home"; } 
-      }
+        public HomeWorkspace()
+            : this(new List<dynNode>(), new List<dynConnector>(), 0, 0)
+        { }
 
-      #region Contructors
+        public HomeWorkspace(double x, double y)
+            : this(new List<dynNode>(), new List<dynConnector>(), x, y)
+        { }
 
-      public HomeWorkspace()
-         : this(new List<dynNodeUI>(), new List<dynConnector>(), 0, 0)
-      { }
+        public HomeWorkspace(List<dynNode> e, List<dynConnector> c, double x, double y)
+            : base("Home", e, c, x, y)
+        { }
 
-      public HomeWorkspace(double x, double y)
-         : this(new List<dynNodeUI>(), new List<dynConnector>(), x, y)
-      { }
+        #endregion
 
-      public HomeWorkspace(List<dynNodeUI> e, List<dynConnector> c, double x, double y)
-      {
-         this.Elements = e;
-         this.Connectors = c;
-         this.PositionX = x;
-         this.PositionY = y;
-      }
+        public override void Modified()
+        {
+            base.Modified();
 
-      #endregion
-
-      public event Action OnModified;
-
-      public void Modified()
-      {
-         if (OnModified != null)
-            OnModified();
-         var bench = dynElementSettings.SharedInstance.Bench;
-         if (bench.DynamicRunEnabled)
-         {
-            if (!bench.Running)
-               bench.RunExpression(false, false);
-            else
-               bench.QueueRun();
-         }
-      }
-   }
+            var bench = dynSettings.Instance.Bench;
+            if (bench.DynamicRunEnabled)
+            {
+                if (!bench.Running)
+                    bench.RunExpression(false, false);
+                else
+                    bench.QueueRun();
+            }
+        }
+    }
 }

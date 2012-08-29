@@ -24,6 +24,8 @@ using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 
+using Dynamo.Nodes.SyncedNodeExtensions; //Gives the RegisterEval... methods
+
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using Expression = Dynamo.FScheme.Expression;
@@ -32,14 +34,14 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynElementSelection : dynNodeUI
+    public abstract class dynElementSelection : dynNode
     {
         TextBox tb;
         System.Windows.Controls.Button selectButton;
 
         protected dynElementSelection(PortData outPortData)
         {
-            this.OutPortData = outPortData;
+            this.outPortData = outPortData;
 
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
@@ -61,18 +63,24 @@ namespace Dynamo.Nodes
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
 
-            this.SetRowAmount(2);
+            NodeUI.SetRowAmount(2);
 
-            this.inputGrid.Children.Add(tb);
-            this.inputGrid.Children.Add(selectButton);
+            NodeUI.inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(selectButton);
 
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
 
-            this.topControl.Height = 60;
-            this.UpdateLayout();
+            NodeUI.topControl.Height = 60;
+            NodeUI.UpdateLayout();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -136,7 +144,7 @@ namespace Dynamo.Nodes
                 }
 
                 if (dirty)
-                    this.IsDirty = true;
+                    this.RequiresRecalc = true;
             }
         }
 
@@ -175,7 +183,7 @@ namespace Dynamo.Nodes
                     var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
                     try
                     {
-                        saved = this.UIDocument.Document.GetElement(id) as FamilyInstance;
+                        saved = dynSettings.Instance.Doc.Document.GetElement(id) as FamilyInstance;
                     }
                     catch
                     {
@@ -190,7 +198,6 @@ namespace Dynamo.Nodes
     [ElementName("Family Instance by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows you to select a family instance from the document and reference it in Dynamo.")]
-    [RequiresTransaction(false)]
     public class dynFamilyInstanceCreatorSelection : dynElementSelection
     {
         public dynFamilyInstanceCreatorSelection()
@@ -200,7 +207,7 @@ namespace Dynamo.Nodes
         protected override void OnSelectClick()
         {
             this.SelectedElement = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(
-               this.UIDocument, "Select Massing Family Instance", dynElementSettings.SharedInstance
+               dynSettings.Instance.Doc, "Select Massing Family Instance", dynSettings.Instance
             );
         }
 
@@ -213,7 +220,6 @@ namespace Dynamo.Nodes
     [ElementName("Divided Surface by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows the user to select a divided surface.")]
-    [RequiresTransaction(false)]
     public class dynDividedSurfaceBySelection : dynElementSelection
     {
         Expression data;
@@ -302,7 +308,7 @@ namespace Dynamo.Nodes
         protected override void OnSelectClick()
         {
             this.SelectedElement = SelectionHelper.RequestFormSelection(
-               dynElementSettings.SharedInstance.Doc, "Select a form element.", dynElementSettings.SharedInstance
+               dynSettings.Instance.Doc, "Select a form element.", dynSettings.Instance
             );
         }
     }
@@ -310,7 +316,6 @@ namespace Dynamo.Nodes
     [ElementName("Face by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows the user to select a face.")]
-    [RequiresTransaction(false)]
     public class dynFormElementBySelection : dynElementSelection
     {
         Reference f;
@@ -321,10 +326,12 @@ namespace Dynamo.Nodes
 
         protected override void OnSelectClick()
         {
+            var doc = dynSettings.Instance.Doc;
+
             f = SelectionHelper.RequestFaceReferenceSelection(
-               this.UIDocument, "Select a face.", dynElementSettings.SharedInstance
+               doc, "Select a face.", dynSettings.Instance
             );
-            this.SelectedElement = this.UIDocument.Document.GetElement(f);
+            this.SelectedElement = doc.Document.GetElement(f);
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -341,7 +348,6 @@ namespace Dynamo.Nodes
     [ElementName("Curve by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows the user to select a curve.")] //or set of curves in the future
-    [RequiresTransaction(false)]
     public class dynCurvesBySelection : dynElementSelection
     {
         public dynCurvesBySelection()
@@ -351,7 +357,7 @@ namespace Dynamo.Nodes
         protected override void OnSelectClick()
         {
             this.SelectedElement = SelectionHelper.RequestCurveElementSelection(
-               dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance
+               dynSettings.Instance.Doc, "Select a curve.", dynSettings.Instance
             );
         }
 
@@ -364,7 +370,6 @@ namespace Dynamo.Nodes
     [ElementName("Point by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which allows the user to select a reference point.")]
-    [RequiresTransaction(false)]
     public class dynPointBySelection : dynElementSelection
     {
         public dynPointBySelection() :
@@ -374,7 +379,7 @@ namespace Dynamo.Nodes
         protected override void OnSelectClick()
         {
             this.SelectedElement = SelectionHelper.RequestReferencePointSelection(
-               dynElementSettings.SharedInstance.Doc, "Select a reference point.", dynElementSettings.SharedInstance
+               dynSettings.Instance.Doc, "Select a reference point.", dynSettings.Instance
             );
         }
 
@@ -387,8 +392,7 @@ namespace Dynamo.Nodes
     [ElementName("SunPath Direction")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which returns the current Sun Path direction.")]
-    [RequiresTransaction(false)]
-    public class dynSunPathDirection : dynNodeUI
+    public class dynSunPathDirection : dynNode
     {
         System.Windows.Controls.TextBox tb;
         System.Windows.Controls.Button sunPathButt;
@@ -397,9 +401,6 @@ namespace Dynamo.Nodes
 
         public dynSunPathDirection()
         {
-
-            OutPortData = new PortData("XYZ", "XYZ", typeof(XYZ));
-
             //add a button to the inputGrid on the dynElement
             sunPathButt = new System.Windows.Controls.Button();
             //this.inputGrid.Children.Add(sunPathButt);
@@ -421,21 +422,26 @@ namespace Dynamo.Nodes
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
 
-            this.inputGrid.RowDefinitions.Add(new RowDefinition());
-            this.inputGrid.RowDefinitions.Add(new RowDefinition());
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
-            this.inputGrid.Children.Add(tb);
-            this.inputGrid.Children.Add(sunPathButt);
+            NodeUI.inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(sunPathButt);
 
             System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
 
-            this.topControl.Height = 60;
-            this.UpdateLayout();
+            NodeUI.topControl.Height = 60;
+            NodeUI.UpdateLayout();
         }
 
+        private PortData outPortData = new PortData("XYZ", "XYZ", typeof(XYZ));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
 
         /// <summary>
         /// Description of ShadowCalculatorUtils.
@@ -462,46 +468,22 @@ namespace Dynamo.Nodes
             XYZ scaledSunVector = sunDirection.Multiply(100);
 
             return scaledSunVector;
-
         }
 
-        public SunAndShadowSettings pickedSunAndShadowSettings;
-
-        public SunAndShadowSettings PickedSunAndShadowSettings
-        {
-            get { return pickedSunAndShadowSettings; }
-            set
-            {
-                pickedSunAndShadowSettings = value;
-                NotifyPropertyChanged("PickedSunAndShadowSettings");
-            }
-        }
+        public SunAndShadowSettings PickedSunAndShadowSettings;
 
         private ElementId sunAndShadowSettingsID;
 
-        private ElementId SunAndShadowSettingsID
-        {
-            get { return sunAndShadowSettingsID; }
-            set
-            {
-                sunAndShadowSettingsID = value;
-                NotifyPropertyChanged("SunAndShadowSettingsID");
-            }
-        }
         void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            //data = Expression.NewList(FSharpList<Expression>.Empty);
-
-            View activeView = this.UIDocument.ActiveView;
+            View activeView = dynSettings.Instance.Doc.ActiveView;
             PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
-
 
             if (PickedSunAndShadowSettings != null)
             {
                 sunAndShadowSettingsID = activeView.SunAndShadowSettings.Id;
                 this.RegisterEvalOnModified(sunAndShadowSettingsID); // register with the DMU, TODO - watch out for view changes, as sun is view specific
                 XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
-
 
                 this.data = Expression.NewContainer(sunVector);
 
@@ -518,7 +500,6 @@ namespace Dynamo.Nodes
         {
             if (PickedSunAndShadowSettings.Id.IntegerValue == sunAndShadowSettingsID.IntegerValue) // sanity check
             {
-
                 XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
                 this.data = Expression.NewContainer(sunVector);
                 return data;
@@ -546,7 +527,7 @@ namespace Dynamo.Nodes
                 {
                     try
                     {
-                        this.PickedSunAndShadowSettings = dynElementSettings.SharedInstance.Doc.Document.GetElement(
+                        this.PickedSunAndShadowSettings = dynSettings.Instance.Doc.Document.GetElement(
                            new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
                         ) as SunAndShadowSettings;
                         if (this.PickedSunAndShadowSettings != null)

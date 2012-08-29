@@ -27,8 +27,7 @@ namespace Dynamo.Nodes
     [ElementName("XYZ")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates an XYZ from three double values.")]
-    [RequiresTransaction(false)]
-    public class dynXYZ : dynNodeUI
+    public class dynXYZ : dynNode
     {
         public dynXYZ()
         {
@@ -36,9 +35,13 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Y", "Y", typeof(double)));
             InPortData.Add(new PortData("Z", "Z", typeof(double)));
 
-            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -55,16 +58,20 @@ namespace Dynamo.Nodes
     [ElementName("XYZ Scale")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which multiplies each component of an XYZ by a number.")]
-    [RequiresTransaction(false)]
-    public class dynXYZScale : dynNodeUI
+    public class dynXYZScale : dynNode
     {
         public dynXYZScale()
         {
             InPortData.Add(new PortData("XYZ", "XYZ", typeof(XYZ)));
             InPortData.Add(new PortData("n", "Scale value.", typeof(double)));
-            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -79,16 +86,20 @@ namespace Dynamo.Nodes
     [ElementName("XYZ Add")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which adds the components of two XYZs.")]
-    [RequiresTransaction(false)]
-    public class dynXYZAdd : dynNodeUI
+    public class dynXYZAdd : dynNode
     {
         public dynXYZAdd()
         {
             InPortData.Add(new PortData("XYZa", "XYZ a", typeof(XYZ)));
             InPortData.Add(new PortData("XYZb", "XYZ b", typeof(XYZ)));
-            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -103,8 +114,7 @@ namespace Dynamo.Nodes
     [ElementName("XYZ Grid")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a grid of reference points.")]
-    [RequiresTransaction(false)]
-    public class dynReferencePtGrid : dynNodeUI
+    public class dynReferencePtGrid : dynNode
     {
         public dynReferencePtGrid()
         {
@@ -118,9 +128,13 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("y-space", "The Y spacing.", typeof(double)));
             InPortData.Add(new PortData("z-space", "The Z spacing.", typeof(double)));
 
-            OutPortData = new PortData("XYZs", "List of XYZs in the grid", typeof(XYZ));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("XYZs", "List of XYZs in the grid", typeof(XYZ));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -168,8 +182,7 @@ namespace Dynamo.Nodes
     [ElementName("XYZ Array Along Curve")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates an array of XYZs along a curve.")]
-    [RequiresTransaction(false)]
-    public class dynXYZArrayAlongCurve : dynNodeUI
+    public class dynXYZArrayAlongCurve : dynNode
     {
         public dynXYZArrayAlongCurve()
         {
@@ -178,9 +191,13 @@ namespace Dynamo.Nodes
             //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
             //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
 
-            OutPortData = new PortData("XYZs", "List of XYZs in the array", typeof(XYZ));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("XYZs", "List of XYZs in the array", typeof(XYZ));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -220,16 +237,20 @@ namespace Dynamo.Nodes
     [ElementName("Plane")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a geometric plane.")]
-    [RequiresTransaction(false)]
-    public class dynPlane : dynNodeUI
+    public class dynPlane : dynNode
     {
         public dynPlane()
         {
             InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
             InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
-            OutPortData = new PortData("P", "Plane", typeof(Plane));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("P", "Plane", typeof(Plane));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -237,7 +258,7 @@ namespace Dynamo.Nodes
             XYZ ptA = (XYZ)((Expression.Container)args[0]).Item;
             XYZ ptB = (XYZ)((Expression.Container)args[1]).Item;
 
-            var plane = this.UIDocument.Application.Application.Create.NewPlane(
+            var plane = dynSettings.Instance.Doc.Application.Application.Create.NewPlane(
                ptA, ptB
             );
 
@@ -248,15 +269,19 @@ namespace Dynamo.Nodes
     [ElementName("Sketch Plane")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a geometric sketch plane.")]
-    [RequiresTransaction(true)]
-    public class dynSketchPlane : dynNodeUI
+    public class dynSketchPlane : dynRevitNode
     {
         public dynSketchPlane()
         {
             InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(dynPlane)));
-            OutPortData = new PortData("SP", "SketchPlane", typeof(dynSketchPlane));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("SP", "SketchPlane", typeof(dynSketchPlane));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -305,17 +330,21 @@ namespace Dynamo.Nodes
     [ElementName("Line")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a geometric line.")]
-    [RequiresTransaction(false)]
-    public class dynLineBound : dynNodeUI
+    public class dynLineBound : dynNode
     {
         public dynLineBound()
         {
             InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
             InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
             InPortData.Add(new PortData("bound?", "Boolean: Is this line bounded?", typeof(bool)));
-            OutPortData = new PortData("line", "Line", typeof(Line));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("line", "Line", typeof(Line));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -325,7 +354,7 @@ namespace Dynamo.Nodes
             var bound = ((Expression.Number)args[2]).Item == 1;
 
             return Expression.NewContainer(
-               this.UIDocument.Application.Application.Create.NewLine(
+               dynSettings.Instance.Doc.Application.Application.Create.NewLine(
                   ptA, ptB, bound
                )
             );
@@ -335,17 +364,20 @@ namespace Dynamo.Nodes
     [ElementName("UV")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which creates a UV from two double values.")]
-    [RequiresTransaction(false)]
-    public class dynUV : dynNodeUI
+    public class dynUV : dynNode
     {
         public dynUV()
         {
             InPortData.Add(new PortData("U", "U", typeof(double)));
             InPortData.Add(new PortData("V", "V", typeof(double)));
 
-            OutPortData = new PortData("uv", "UV", typeof(UV));
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-            base.RegisterInputsAndOutputs();
+        private PortData outPortData = new PortData("uv", "UV", typeof(UV));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -362,17 +394,21 @@ namespace Dynamo.Nodes
     [ElementName("Line Vector ")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which returns a line in the direction of an XYZ normal.")]
-    [RequiresTransaction(true)]
-    public class dynLineVectorfromXYZ : dynNodeUI
+    public class dynLineVectorfromXYZ : dynRevitNode
     {
         public dynLineVectorfromXYZ()
         {
 
             InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
             InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
-            OutPortData = new PortData("C", "Curve", typeof(CurveElement));
 
-            base.RegisterInputsAndOutputs();
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("C", "Curve", typeof(CurveElement));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)

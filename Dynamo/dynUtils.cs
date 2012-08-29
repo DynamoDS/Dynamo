@@ -37,7 +37,7 @@ namespace Dynamo.Utilities
         {
             try
             {
-                e = dynElementSettings.SharedInstance.Doc.Document.GetElement(id);
+                e = dynSettings.Instance.Doc.Document.GetElement(id);
                 _testid = e.Id;
                 return true;
             }
@@ -98,7 +98,7 @@ namespace Dynamo.Utilities
         }
     }
 
-    public class dynElementSettings
+    public class dynSettings
     {
         Autodesk.Revit.UI.UIApplication revit;
         Autodesk.Revit.UI.UIDocument doc;
@@ -113,7 +113,7 @@ namespace Dynamo.Utilities
         Element spatialFieldManagerUpdated;
         HashSet<ElementId> userSelectedElements = new HashSet<ElementId>();
 
-        private static dynElementSettings sharedInstance;
+        private static dynSettings sharedInstance;
 
         LinearGradientBrush errorBrush;
         LinearGradientBrush activeBrush;
@@ -215,13 +215,13 @@ namespace Dynamo.Utilities
             get { return tw; }
             set { tw = value; }
         }
-        public static dynElementSettings SharedInstance
+        public static dynSettings Instance
         {
             get
             {
                 if (sharedInstance == null)
                 {
-                    sharedInstance = new dynElementSettings();
+                    sharedInstance = new dynSettings();
                     sharedInstance.SetupBrushes();
                 }
                 return sharedInstance;
@@ -328,7 +328,7 @@ namespace Dynamo.Utilities
     {
 
         //RequestReferencePointSelection
-        public static ReferencePoint RequestReferencePointSelection(UIDocument doc, string message, dynElementSettings settings)
+        public static ReferencePoint RequestReferencePointSelection(UIDocument doc, string message, dynSettings settings)
         {
             try
             {
@@ -367,7 +367,7 @@ namespace Dynamo.Utilities
 
 
         }
-        public static CurveElement RequestCurveElementSelection(UIDocument doc, string message, dynElementSettings settings)
+        public static CurveElement RequestCurveElementSelection(UIDocument doc, string message, dynSettings settings)
         {
             try
             {
@@ -379,12 +379,12 @@ namespace Dynamo.Utilities
                 choices.Elements.Clear();
 
                 //MessageBox.Show(message);
-                dynElementSettings.SharedInstance.Bench.Log(message);
+                dynSettings.Instance.Bench.Log(message);
 
                 Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
                 //c = curveRef.Element as ModelCurve;
-                c = dynElementSettings.SharedInstance.Revit.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
+                c = dynSettings.Instance.Revit.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
 
                 if (c != null)
                 {
@@ -399,7 +399,7 @@ namespace Dynamo.Utilities
             }
         }
 
-        public static Face RequestFaceSelection(UIDocument doc, string message, dynElementSettings settings)
+        public static Face RequestFaceSelection(UIDocument doc, string message, dynSettings settings)
         {
             try
             {
@@ -441,7 +441,7 @@ namespace Dynamo.Utilities
 
         // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
 
-        public static Reference RequestFaceReferenceSelection(UIDocument doc, string message, dynElementSettings settings)
+        public static Reference RequestFaceReferenceSelection(UIDocument doc, string message, dynSettings settings)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace Dynamo.Utilities
 
 
         }
-        public static Form RequestFormSelection(UIDocument doc, string message, dynElementSettings settings)
+        public static Form RequestFormSelection(UIDocument doc, string message, dynSettings settings)
         {
             try
             {
@@ -520,7 +520,7 @@ namespace Dynamo.Utilities
 
 
         public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message,
-            dynElementSettings settings, ref FamilyInstance fi)
+            dynSettings settings, ref FamilyInstance fi)
         {
             try
             {
@@ -555,7 +555,7 @@ namespace Dynamo.Utilities
         }
 
         public static FamilyInstance RequestFamilyInstanceSelection(UIDocument doc, string message,
-            dynElementSettings settings)
+            dynSettings settings)
         {
             try
             {
@@ -583,7 +583,7 @@ namespace Dynamo.Utilities
         }
 
 
-        public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message, dynElementSettings settings)
+        public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message, dynSettings settings)
         {
             try
             {

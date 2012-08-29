@@ -28,8 +28,7 @@ namespace Dynamo.Nodes
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Visualize the output of node.")]
     [ElementSearchTags("print", "output", "display")]
-    [RequiresTransaction(false)]
-    class dynWatch : dynNodeUI
+    class dynWatch : dynNode
     {
         //System.Windows.Controls.TextBlock watchBlock;
         WatchTree wt;
@@ -38,23 +37,29 @@ namespace Dynamo.Nodes
         public dynWatch()
         {
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
-            OutPortData = new PortData("", "Watch contents.", typeof(string));
-            base.RegisterInputsAndOutputs();
+
+            NodeUI.RegisterInputsAndOutput();
 
             //take out the left and right margins
             //and make this so it's not so wide
-            this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-            this.topControl.Width = 300;
-            this.topControl.Height = 200;
+            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+            NodeUI.topControl.Width = 300;
+            NodeUI.topControl.Height = 200;
 
             wt = new WatchTree();
-            this.inputGrid.Children.Add(wt);
+            NodeUI.inputGrid.Children.Add(wt);
             wtb = wt.FindResource("Tree") as WatchTreeBranch;
 
-            foreach (dynPort p in this.InPorts)
+            foreach (dynPort p in NodeUI.InPorts)
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
+        }
+
+        private PortData outPortData = new PortData("", "Watch contents.", typeof(string));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         void p_PortDisconnected(object sender, EventArgs e)
@@ -69,7 +74,7 @@ namespace Dynamo.Nodes
 
             int count = 0;
 
-            this.Dispatcher.Invoke(new Action(
+            NodeUI.Dispatcher.Invoke(new Action(
                 delegate
                 {
                     wtb.Clear();

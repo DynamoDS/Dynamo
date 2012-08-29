@@ -33,7 +33,10 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="args">Arguments to the node. You are guaranteed to have as many arguments as you have InPorts at the time it is run.</param>
         /// <returns>An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is connected to.</returns>
-        public abstract Expression Evaluate(FSharpList<Expression> args);
+        public virtual Expression Evaluate(FSharpList<Expression> args)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
@@ -41,8 +44,8 @@ namespace Dynamo.Nodes
 
         public List<PortData> InPortData { get; private set; }
         public dynNodeUI NodeUI;
+        public Dictionary<PortData, dynNode> Inputs = new Dictionary<PortData, dynNode>();
 
-        private Dictionary<PortData, dynNode> inputs = new Dictionary<PortData, dynNode>();
         private Dictionary<PortData, dynNode> previousEvalPortMappings = new Dictionary<PortData, dynNode>();
         private bool _report = true;
 
@@ -52,7 +55,7 @@ namespace Dynamo.Nodes
         //TODO: don't make this static (maybe)
         protected dynBench Bench
         {
-            get { return dynElementSettings.SharedInstance.Bench; }
+            get { return dynSettings.Instance.Bench; }
         }
 
         protected internal static HashSet<string> _taggedSymbols = new HashSet<string>();
@@ -86,7 +89,7 @@ namespace Dynamo.Nodes
                     bool start = _startTag;
                     _startTag = true;
 
-                    bool dirty = this.inputs.Values.Any(x => x.RequiresRecalc);
+                    bool dirty = this.Inputs.Values.Any(x => x.RequiresRecalc);
                     this._isDirty = dirty;
 
                     if (!start)
@@ -122,7 +125,7 @@ namespace Dynamo.Nodes
             get
             {
                 return this._saveResult
-                   && this.InPortData.All(x => this.HasInput(x));
+                   && this.InPortData.All(this.HasInput);
             }
             set
             {
@@ -180,7 +183,7 @@ namespace Dynamo.Nodes
         public void MarkDirty()
         {
             bool dirty = false;
-            foreach (var input in this.inputs.Values)
+            foreach (var input in this.Inputs.Values)
             {
                 input.MarkDirty();
                 if (input.RequiresRecalc)
@@ -305,7 +308,7 @@ namespace Dynamo.Nodes
                 this.oldValue = this.eval(
                    Utils.convertSequence(
                       args.Select(
-                         input => environment.Evaluate(input)
+                         environment.Evaluate
                       )
                    )
                 );
@@ -333,7 +336,7 @@ namespace Dynamo.Nodes
             {
                 Expression expr = null;
 
-                if (dynElementSettings.SharedInstance.Bench.CancelRun)
+                if (dynSettings.Instance.Bench.CancelRun)
                     throw new CancelEvaluationException(false);
 
                 try
@@ -354,16 +357,16 @@ namespace Dynamo.Nodes
                 }
                 catch (Exception ex)
                 {
-                    dynElementSettings.SharedInstance.Bench.Dispatcher.Invoke(new Action(
+                    dynSettings.Instance.Bench.Dispatcher.Invoke(new Action(
                        delegate
                        {
                            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                           dynElementSettings.SharedInstance.Bench.Log(ex.Message);
+                           dynSettings.Instance.Bench.Log(ex.Message);
 
-                           dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-                           dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
+                           dynSettings.Instance.Writer.WriteLine(ex.Message);
+                           dynSettings.Instance.Writer.WriteLine(ex.StackTrace);
 
-                           dynElementSettings.SharedInstance.Bench.ShowElement(this.NodeUI);
+                           dynSettings.Instance.Bench.ShowElement(this);
                        }
                     ));
 
@@ -418,12 +421,12 @@ namespace Dynamo.Nodes
         {
             var nick = this.NodeUI.NickName.Replace(' ', '_');
 
-            if (!this.InPortData.Any(x => this.HasInput(x)))
+            if (!this.InPortData.Any(this.HasInput))
                 return nick;
 
             string s = "";
 
-            if (this.InPortData.All(x => this.HasInput(x)))
+            if (this.InPortData.All(this.HasInput))
             {
                 s += "(" + nick;
                 //for (int i = 0; i < this.InPortData.Count; i++)
@@ -458,13 +461,13 @@ namespace Dynamo.Nodes
 
         internal void Connect(PortData data, dynNode node)
         {
-            this.inputs[data] = node;
+            this.Inputs[data] = node;
             this.CheckPortsForRecalc();
         }
 
         internal void Disconnect(PortData data)
         {
-            this.inputs[data] = null;
+            this.Inputs[data] = null;
             this.CheckPortsForRecalc();
         }
 
@@ -476,7 +479,7 @@ namespace Dynamo.Nodes
         /// <returns>True if there is an input, false otherwise.</returns>
         protected bool TryGetInput(PortData data, out dynNode input)
         {
-            return this.inputs.TryGetValue(data, out input) && input != null;
+            return this.Inputs.TryGetValue(data, out input) && input != null;
         }
 
         /// <summary>
@@ -493,6 +496,12 @@ namespace Dynamo.Nodes
 
     public abstract class dynRevitNode : dynNode
     {
+        //TODO: Move from dynElementSettings to another static area in DynamoRevit
+        protected Autodesk.Revit.UI.UIDocument UIDocument
+        {
+            get { return dynSettings.Instance.Doc; }
+        }
+
         private List<List<ElementId>> elements;
         public List<ElementId> Elements
         {
@@ -528,12 +537,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        //TODO: Move from dynElementSettings to another static area in DynamoRevit
-        protected Autodesk.Revit.UI.UIDocument UIDocument
-        {
-            get { return dynElementSettings.SharedInstance.Doc; }
-        }
-
         protected override void OnEvaluate()
         {
             base.OnEvaluate();
@@ -561,7 +564,7 @@ namespace Dynamo.Nodes
         //          );
         //}
 
-        internal override void PruneRuns(int runCount)
+        internal void PruneRuns(int runCount)
         {
             for (int i = this.elements.Count - 1; i >= runCount; i--)
             {
@@ -582,10 +585,10 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected internal override Expression __eval_intenal(FSharpList<Expression> args)
+        protected internal override Expression __eval_internal(FSharpList<Expression> args)
         {
             //For convenience, store the bench.
-            var bench = dynElementSettings.SharedInstance.Bench;
+            var bench = dynSettings.Instance.Bench;
 
             Expression result = null;
 
@@ -691,7 +694,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public override void Destroy()
         {
-            var bench = dynElementSettings.SharedInstance.Bench;
+            var bench = dynSettings.Instance.Bench;
 
             IdlePromise.ExecuteOnIdle(
                delegate
@@ -706,7 +709,7 @@ namespace Dynamo.Nodes
                            {
                                try
                                {
-                                   dynElementSettings.SharedInstance.Doc.Document.Delete(e);
+                                   dynSettings.Instance.Doc.Document.Delete(e);
                                }
                                catch (Autodesk.Revit.Exceptions.InvalidOperationException)
                                {
@@ -742,76 +745,11 @@ namespace Dynamo.Nodes
             int count = 0;
             foreach (var els in this.elements)
             {
-                count += els.RemoveAll(x => deleted.Contains(x));
+                count += els.RemoveAll(deleted.Contains);
             }
 
             if (!this.isDirty)
                 this.isDirty = count > 0;
-        }
-
-
-        /// <summary>
-        /// Registers the given element id with the DMU such that any change in the element will
-        /// trigger a workspace modification event (dynamic running and saving).
-        /// </summary>
-        /// <param name="id">ElementId of the element to watch.</param>
-        public void RegisterEvalOnModified(ElementId id, Action modAction = null, Action delAction = null)
-        {
-            var u = this.Bench.Updater;
-            u.RegisterChangeHook(
-               id,
-               ChangeTypeEnum.Modify,
-               this.ReEvalOnModified(modAction)
-            );
-            u.RegisterChangeHook(
-               id,
-               ChangeTypeEnum.Delete,
-               this.UnRegOnDelete(delAction)
-            );
-        }
-
-        /// <summary>
-        /// Unregisters the given element id with the DMU. Should not be called unless it has already
-        /// been registered with RegisterEvalOnModified
-        /// </summary>
-        /// <param name="id">ElementId of the element to stop watching.</param>
-        public void UnregisterEvalOnModified(ElementId id)
-        {
-            var u = this.Bench.Updater;
-            u.UnRegisterChangeHook(
-               id, ChangeTypeEnum.Modify
-            );
-            u.UnRegisterChangeHook(
-               id, ChangeTypeEnum.Delete
-            );
-        }
-
-        DynElementUpdateDelegate UnRegOnDelete(Action deleteAction)
-        {
-            return delegate(List<ElementId> deleted)
-            {
-                foreach (var d in deleted)
-                {
-                    var u = this.Bench.Updater;
-                    u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
-                    u.UnRegisterChangeHook(d, ChangeTypeEnum.Modify);
-                }
-                if (deleteAction != null)
-                    deleteAction();
-            };
-        }
-
-        DynElementUpdateDelegate ReEvalOnModified(Action modifiedAction)
-        {
-            return delegate(List<ElementId> modified)
-            {
-                if (!this.RequiresRecalc && !this.Bench.Running)
-                {
-                    if (modifiedAction != null)
-                        modifiedAction();
-                    this.RequiresRecalc = true;
-                }
-            };
         }
 
         void onSuccessfulDelete(List<ElementId> deleted)
@@ -820,4 +758,137 @@ namespace Dynamo.Nodes
                 els.RemoveAll(x => deleted.Contains(x));
         }
     }
+
+    namespace SyncedNodeExtensions
+    {
+        public static class ElementSync
+        {
+            /// <summary>
+            /// Registers the given element id with the DMU such that any change in the element will
+            /// trigger a workspace modification event (dynamic running and saving).
+            /// </summary>
+            /// <param name="id">ElementId of the element to watch.</param>
+            public static void RegisterEvalOnModified(this dynNode node, ElementId id, Action modAction = null, Action delAction = null)
+            {
+                var u = dynSettings.Instance.Bench.Updater;
+                u.RegisterChangeHook(
+                   id,
+                   ChangeTypeEnum.Modify,
+                   ReEvalOnModified(node, modAction)
+                );
+                u.RegisterChangeHook(
+                   id,
+                   ChangeTypeEnum.Delete,
+                   UnRegOnDelete(delAction)
+                );
+            }
+
+            /// <summary>
+            /// Unregisters the given element id with the DMU. Should not be called unless it has already
+            /// been registered with RegisterEvalOnModified
+            /// </summary>
+            /// <param name="id">ElementId of the element to stop watching.</param>
+            public static void UnregisterEvalOnModified(this dynNode node, ElementId id)
+            {
+                var u = dynSettings.Instance.Bench.Updater;
+                u.UnRegisterChangeHook(
+                   id, ChangeTypeEnum.Modify
+                );
+                u.UnRegisterChangeHook(
+                   id, ChangeTypeEnum.Delete
+                );
+            }
+
+            static DynElementUpdateDelegate UnRegOnDelete(Action deleteAction)
+            {
+                return delegate(List<ElementId> deleted)
+                {
+                    foreach (var d in deleted)
+                    {
+                        var u = dynSettings.Instance.Bench.Updater;
+                        u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
+                        u.UnRegisterChangeHook(d, ChangeTypeEnum.Modify);
+                    }
+                    if (deleteAction != null)
+                        deleteAction();
+                };
+            }
+
+            static DynElementUpdateDelegate ReEvalOnModified(dynNode node, Action modifiedAction)
+            {
+                return delegate(List<ElementId> modified)
+                {
+                    if (!node.RequiresRecalc && !dynSettings.Instance.Bench.Running)
+                    {
+                        if (modifiedAction != null)
+                            modifiedAction();
+                        node.RequiresRecalc = true;
+                    }
+                };
+            }
+        }
+    }
+
+    #region class attributes
+    [AttributeUsage(AttributeTargets.All)]
+    public class ElementNameAttribute : System.Attribute
+    {
+        public string ElementName { get; set; }
+
+        public ElementNameAttribute(string elementName)
+        {
+            this.ElementName = elementName;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class ElementCategoryAttribute : System.Attribute
+    {
+        public string ElementCategory { get; set; }
+
+        public ElementCategoryAttribute(string category)
+        {
+            this.ElementCategory = category;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class ElementSearchTagsAttribute : System.Attribute
+    {
+        public List<string> Tags { get; set; }
+
+        public ElementSearchTagsAttribute(params string[] tags)
+        {
+            this.Tags = tags.ToList();
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All, Inherited = true)]
+    public class IsInteractiveAttribute : System.Attribute
+    {
+        public bool IsInteractive { get; set; }
+
+        public IsInteractiveAttribute(bool isInteractive)
+        {
+            this.IsInteractive = isInteractive;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class ElementDescriptionAttribute : System.Attribute
+    {
+        private string description;
+
+        public string ElementDescription
+        {
+            get { return description; }
+            set { description = value; }
+        }
+
+        public ElementDescriptionAttribute(string description)
+        {
+            this.description = description;
+        }
+    }
+    #endregion
 }

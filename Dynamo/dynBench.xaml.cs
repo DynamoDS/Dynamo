@@ -56,7 +56,7 @@ namespace Dynamo.Controls
         double oldY = 0.0;
         double oldX = 0.0;
 
-        dynSelection selectedElements;
+        dynSelection selectedNodes;
         bool isConnecting = false;
         dynConnector activeConnector;
         List<DependencyObject> hitResultsList = new List<DependencyObject>();
@@ -87,13 +87,34 @@ namespace Dynamo.Controls
 
         SplashScreen splashScreen;
 
+        PredicateTraverser checkManualTransaction = null;
+        PredicateTraverser checkRequiresTransaction = null;
+
         public dynBench(DynamoUpdater updater, SplashScreen splash)
         {
             this.splashScreen = splash;
-
             this.Updater = updater;
-
             this.homeSpace = this.CurrentSpace = new HomeWorkspace();
+
+            Predicate<dynNode> manualTransactionPredicate = delegate(dynNode node)
+            {
+                return node is dynTransaction
+                    || node is dynFunction
+                        && this.dynFunctionDict[((dynFunction)node).Symbol]
+                            .GetTopMostElements()
+                            .Any(checkManualTransaction.TraverseUntilAny);
+            };
+            checkManualTransaction = new PredicateTraverser(manualTransactionPredicate);
+
+            Predicate<dynNode> requiresTransactionPredicate = delegate(dynNode node)
+            {
+                return node is dynRevitNode
+                    || node is dynFunction
+                        && this.dynFunctionDict[((dynFunction)node).Symbol]
+                            .GetTopMostElements()
+                            .Any(checkRequiresTransaction.TraverseUntilAny);
+            };
+            checkRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
 
             InitializeComponent();
 
@@ -102,8 +123,8 @@ namespace Dynamo.Controls
             sw = new StringWriter();
             Log(String.Format("Dynamo -- Build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
 
-            dynElementSettings.SharedInstance.Workbench = workBench;
-            dynElementSettings.SharedInstance.Bench = this;
+            dynSettings.Instance.Workbench = workBench;
+            dynSettings.Instance.Bench = this;
 
             //run tests, also load core library
             bool wasError = false;
@@ -119,7 +140,7 @@ namespace Dynamo.Controls
 
             this.Environment = new ExecutionEnvironment();
 
-            selectedElements = new dynSelection();
+            selectedNodes = new dynSelection();
 
             this.CurrentX = CANVAS_OFFSET_X;
             this.CurrentY = CANVAS_OFFSET_Y;
@@ -144,8 +165,8 @@ namespace Dynamo.Controls
                     //MessageBox.Show("Workbench could not be opened.");
                     Log("Workbench could not be opened.");
 
-                    dynElementSettings.SharedInstance.Writer.WriteLine("Workbench could not be opened.");
-                    dynElementSettings.SharedInstance.Writer.WriteLine(this.UnlockLoadPath);
+                    dynSettings.Instance.Writer.WriteLine("Workbench could not be opened.");
+                    dynSettings.Instance.Writer.WriteLine(this.UnlockLoadPath);
                 }
 
                 this.UnlockLoadPath = null;
@@ -184,13 +205,13 @@ namespace Dynamo.Controls
             //this.workBench.Visibility = System.Windows.Visibility.Visible;
         }
 
-        public IEnumerable<dynNodeUI> AllElements
+        public IEnumerable<dynNode> AllElements
         {
             get
             {
                 return this.homeSpace.Elements.Concat(
                    this.dynFunctionDict.Values.Aggregate(
-                      (IEnumerable<dynNodeUI>)new List<dynNodeUI>(),
+                      (IEnumerable<dynNode>)new List<dynNode>(),
                       (a, x) => a.Concat(x.Elements)
                    )
                 );
@@ -259,15 +280,15 @@ namespace Dynamo.Controls
         //   get { return (this.CurrentY * -1) + ((this.outerCanvas.ActualHeight / 2) / this.Zoom); }
         //}
 
-        public List<dynNodeUI> Elements
+        public List<dynNode> Nodes
         {
             get { return this.CurrentSpace.Elements; }
         }
 
         public dynSelection SelectedElements
         {
-            get { return selectedElements; }
-            set { selectedElements = value; }
+            get { return selectedNodes; }
+            set { selectedNodes = value; }
         }
 
         public bool ViewingHomespace
@@ -569,9 +590,9 @@ namespace Dynamo.Controls
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public dynNodeUI AddDynElement(
-            Type elementType, string nickName, Guid guid, 
-            double x, double y, dynWorkspace ws, 
+        public dynNode AddDynElement(
+            Type elementType, string nickName, Guid guid,
+            double x, double y, dynWorkspace ws,
             System.Windows.Visibility vis = System.Windows.Visibility.Visible)
         {
             try
@@ -579,45 +600,47 @@ namespace Dynamo.Controls
                 //create a new object from a type
                 //that is passed in
                 //dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] { nickName });
-                dynNodeUI el = (dynNodeUI)Activator.CreateInstance(elementType);
+                dynNode el = (dynNode)Activator.CreateInstance(elementType);
+
+                var elUI = el.NodeUI;
 
                 if (!string.IsNullOrEmpty(nickName))
                 {
-                    el.NickName = nickName;
+                    elUI.NickName = nickName;
                 }
                 else
                 {
                     ElementNameAttribute elNameAttrib = el.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true)[0] as ElementNameAttribute;
                     if (elNameAttrib != null)
                     {
-                        el.NickName = elNameAttrib.ElementName;
+                        elUI.NickName = elNameAttrib.ElementName;
                     }
                 }
 
-                el.GUID = guid;
+                elUI.GUID = guid;
 
-                string name = el.NickName;
+                string name = elUI.NickName;
 
                 //store the element in the elements list
                 ws.Elements.Add(el);
                 el.WorkSpace = ws;
 
-                el.Visibility = vis;
+                elUI.Visibility = vis;
 
-                this.workBench.Children.Add(el);
+                this.workBench.Children.Add(elUI);
 
-                Canvas.SetLeft(el, x);
-                Canvas.SetTop(el, y);
+                Canvas.SetLeft(elUI, x);
+                Canvas.SetTop(elUI, y);
 
                 //create an event on the element itself
                 //to update the elements ports and connectors
-                el.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
+                elUI.PreviewMouseRightButtonDown += new MouseButtonEventHandler(UpdateElement);
 
                 return el;
             }
             catch (Exception)
             {
-                dynElementSettings.SharedInstance.Bench.Log("Could not create an instance of the selected type.");
+                dynSettings.Instance.Bench.Log("Could not create an instance of the selected type.");
                 return null;
             }
         }
@@ -627,14 +650,14 @@ namespace Dynamo.Controls
         /// Adds the given element to the selection.
         /// </summary>
         /// <param name="sel">The element to select.</param>
-        public void SelectElement(dynNodeUI sel)
+        public void SelectElement(dynNode sel)
         {
-            if (!selectedElements.Contains(sel))
+            if (!selectedNodes.Contains(sel))
             {
                 //set all other items to the unselected state
                 ClearSelection();
-                selectedElements.Add(sel);
-                sel.Select();
+                selectedNodes.Add(sel);
+                sel.NodeUI.Select();
             }
         }
 
@@ -644,11 +667,11 @@ namespace Dynamo.Controls
         public void ClearSelection()
         {
             //set all other items to the unselected state
-            foreach (dynNodeUI el in selectedElements.ToList())
+            foreach (dynNode el in selectedNodes.ToList())
             {
-                el.Deselect();
+                el.NodeUI.Deselect();
             }
-            selectedElements.Clear();
+            selectedNodes.Clear();
         }
 
 
@@ -972,7 +995,7 @@ namespace Dynamo.Controls
 
             this.dragOffset = eleOffset;
 
-            dynNodeUI newEl;
+            dynNode newEl;
 
             if (this.dynFunctionDict.ContainsKey(name))
             {
@@ -992,7 +1015,7 @@ namespace Dynamo.Controls
                 try
                 {
                     var obj = Activator.CreateInstanceFrom(tld.assembly.Location, tld.t.FullName);
-                    newEl = (dynNodeUI)obj.Unwrap();
+                    newEl = (dynNode)obj.Unwrap();
 
                     if (newEl is dynDouble)
                         (newEl as dynDouble).Value = this.storedSearchNum;
@@ -1001,30 +1024,30 @@ namespace Dynamo.Controls
                     else if (newEl is dynBool)
                         (newEl as dynBool).Value = this.storedSearchBool;
 
-                    newEl.DisableInteraction();
+                    newEl.NodeUI.DisableInteraction();
                 }
                 catch (Exception e)
                 {
-                    dynElementSettings.SharedInstance.Bench.Log(e.Message);
+                    dynSettings.Instance.Bench.Log(e.Message);
                     return;
                 }
             }
 
-            newEl.GUID = Guid.NewGuid();
+            newEl.NodeUI.GUID = Guid.NewGuid();
 
             //Add the element to the workbench
-            overlayCanvas.Children.Add(newEl);
+            overlayCanvas.Children.Add(newEl.NodeUI);
 
-            newEl.Opacity = 0.7;
+            newEl.NodeUI.Opacity = 0.7;
 
             x -= eleOffset.X;
             y -= eleOffset.Y;
 
             //Set its initial position
-            Canvas.SetLeft(newEl, x);
-            Canvas.SetTop(newEl, y);
+            Canvas.SetLeft(newEl.NodeUI, x);
+            Canvas.SetTop(newEl.NodeUI, y);
 
-            this.draggedElement = newEl;
+            this.draggedElement = newEl.NodeUI;
 
             this.overlayCanvas.IsHitTestVisible = true;
         }
@@ -1054,19 +1077,19 @@ namespace Dynamo.Controls
                 XmlElement elementList = xmlDoc.CreateElement("dynElements");  //write the root element
                 root.AppendChild(elementList);
 
-                foreach (dynNodeUI el in workSpace.Elements)
+                foreach (dynNode el in workSpace.Elements)
                 {
-                    Point relPoint = el.TransformToAncestor(workBench).Transform(new Point(0, 0));
+                    Point relPoint = el.NodeUI.TransformToAncestor(workBench).Transform(new Point(0, 0));
 
                     XmlElement dynEl = xmlDoc.CreateElement(el.GetType().ToString());
                     elementList.AppendChild(dynEl);
 
                     //set the type attribute
                     dynEl.SetAttribute("type", el.GetType().ToString());
-                    dynEl.SetAttribute("guid", el.GUID.ToString());
-                    dynEl.SetAttribute("nickname", el.NickName);
-                    dynEl.SetAttribute("x", Canvas.GetLeft(el).ToString());
-                    dynEl.SetAttribute("y", Canvas.GetTop(el).ToString());
+                    dynEl.SetAttribute("guid", el.NodeUI.GUID.ToString());
+                    dynEl.SetAttribute("nickname", el.NodeUI.NickName);
+                    dynEl.SetAttribute("x", Canvas.GetLeft(el.NodeUI).ToString());
+                    dynEl.SetAttribute("y", Canvas.GetTop(el.NodeUI).ToString());
 
                     el.SaveElement(xmlDoc, dynEl);
                 }
@@ -1075,9 +1098,9 @@ namespace Dynamo.Controls
                 XmlElement connectorList = xmlDoc.CreateElement("dynConnectors");  //write the root element
                 root.AppendChild(connectorList);
 
-                foreach (dynNodeUI el in workSpace.Elements)
+                foreach (dynNode el in workSpace.Elements)
                 {
-                    foreach (dynConnector c in el.OutPort.Connectors)
+                    foreach (dynConnector c in el.NodeUI.OutPort.Connectors)
                     {
                         XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
                         connectorList.AppendChild(connector);
@@ -1184,7 +1207,7 @@ namespace Dynamo.Controls
 
                     Type t = Type.GetType(typeName);
 
-                    dynNodeUI el = AddDynElement(t, nickname, guid, x, y, ws, System.Windows.Visibility.Hidden);
+                    dynNode el = AddDynElement(t, nickname, guid, x, y, ws, System.Windows.Visibility.Hidden);
 
                     if (el == null)
                         return false;
@@ -1210,16 +1233,16 @@ namespace Dynamo.Controls
                     int portType = Convert.ToInt16(portTypeAttrib.Value.ToString());
 
                     //find the elements to connect
-                    dynNodeUI start = null;
-                    dynNodeUI end = null;
+                    dynNode start = null;
+                    dynNode end = null;
 
-                    foreach (dynNodeUI e in ws.Elements)
+                    foreach (dynNode e in ws.Elements)
                     {
-                        if (e.GUID == guidStart)
+                        if (e.NodeUI.GUID == guidStart)
                         {
                             start = e;
                         }
-                        else if (e.GUID == guidEnd)
+                        else if (e.NodeUI.GUID == guidEnd)
                         {
                             end = e;
                         }
@@ -1241,7 +1264,7 @@ namespace Dynamo.Controls
                     if (start != null && end != null && start != end)
                     {
                         dynConnector newConnector = new dynConnector(
-                           start, end, startIndex, endIndex, portType, false
+                           start.NodeUI, end.NodeUI, startIndex, endIndex, portType, false
                         );
 
                         ws.Connectors.Add(newConnector);
@@ -1270,7 +1293,7 @@ namespace Dynamo.Controls
         void hideWorkspace(dynWorkspace ws)
         {
             foreach (var e in ws.Elements)
-                e.Visibility = System.Windows.Visibility.Collapsed;
+                e.NodeUI.Visibility = System.Windows.Visibility.Collapsed;
             foreach (var c in ws.Connectors)
                 c.Visible = false;
         }
@@ -1321,7 +1344,7 @@ namespace Dynamo.Controls
 
                     Type t = Type.GetType(typeName);
 
-                    dynNodeUI el = AddDynElement(
+                    dynNode el = AddDynElement(
                        t, nickname, guid, x, y,
                        this.CurrentSpace
                     );
@@ -1353,7 +1376,7 @@ namespace Dynamo.Controls
 
                 }
 
-                dynElementSettings.SharedInstance.Workbench.UpdateLayout();
+                dynSettings.Instance.Workbench.UpdateLayout();
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
@@ -1370,16 +1393,16 @@ namespace Dynamo.Controls
                     int portType = Convert.ToInt16(portTypeAttrib.Value.ToString());
 
                     //find the elements to connect
-                    dynNodeUI start = null;
-                    dynNodeUI end = null;
+                    dynNode start = null;
+                    dynNode end = null;
 
-                    foreach (dynNodeUI e in dynElementSettings.SharedInstance.Bench.Elements)
+                    foreach (dynNode e in dynSettings.Instance.Bench.Nodes)
                     {
-                        if (e.GUID == guidStart)
+                        if (e.NodeUI.GUID == guidStart)
                         {
                             start = e;
                         }
-                        else if (e.GUID == guidEnd)
+                        else if (e.NodeUI.GUID == guidEnd)
                         {
                             end = e;
                         }
@@ -1400,8 +1423,8 @@ namespace Dynamo.Controls
 
                     if (start != null && end != null && start != end)
                     {
-                        dynConnector newConnector = new dynConnector(start, end, startIndex,
-                            endIndex, portType);
+                        dynConnector newConnector = new dynConnector(start.NodeUI, end.NodeUI,
+                            startIndex, endIndex, portType);
 
                         this.CurrentSpace.Connectors.Add(newConnector);
                     }
@@ -1429,14 +1452,14 @@ namespace Dynamo.Controls
             Log("Clearing workflow...");
 
             //Copy locally
-            var elements = this.Elements.ToList();
+            var elements = this.Nodes.ToList();
 
             IdlePromise.ExecuteOnIdle(
                delegate
                {
                    InitTransaction();
 
-                   foreach (dynNodeUI el in elements)
+                   foreach (dynNode el in elements)
                    {
                        el.DisableReporting();
                        try
@@ -1451,17 +1474,17 @@ namespace Dynamo.Controls
                true
             );
 
-            foreach (dynNodeUI el in elements)
+            foreach (dynNode el in elements)
             {
-                foreach (dynPort p in el.InPorts)
+                foreach (dynPort p in el.NodeUI.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
                         p.Connectors[i].Kill();
                 }
-                for (int i = el.OutPort.Connectors.Count - 1; i >= 0; i--)
-                    el.OutPort.Connectors[i].Kill();
+                for (int i = el.NodeUI.OutPort.Connectors.Count - 1; i >= 0; i--)
+                    el.NodeUI.OutPort.Connectors[i].Kill();
 
-                dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
+                dynSettings.Instance.Workbench.Children.Remove(el.NodeUI);
             }
 
             this.CurrentSpace.Elements.Clear();
@@ -1498,8 +1521,8 @@ namespace Dynamo.Controls
                     //MessageBox.Show("Workbench could not be opened.");
                     Log("Workbench could not be opened.");
 
-                    dynElementSettings.SharedInstance.Writer.WriteLine("Workbench could not be opened.");
-                    dynElementSettings.SharedInstance.Writer.WriteLine(xmlPath);
+                    dynSettings.Instance.Writer.WriteLine("Workbench could not be opened.");
+                    dynSettings.Instance.Writer.WriteLine(xmlPath);
                 }
                 UnlockUI();
             }
@@ -1510,8 +1533,8 @@ namespace Dynamo.Controls
             if (sw != null)
             {
                 sw.Close();
-                dynElementSettings.SharedInstance.Writer.WriteLine("Dynamo ended " + System.DateTime.Now.ToString());
-                dynElementSettings.SharedInstance.Writer.Close();
+                dynSettings.Instance.Writer.WriteLine("Dynamo ended " + System.DateTime.Now.ToString());
+                dynSettings.Instance.Writer.Close();
             }
 
             //end the transaction 
@@ -1524,7 +1547,7 @@ namespace Dynamo.Controls
             LogText = sw.ToString();
             //LogScroller.ScrollToEnd();
 
-            dynElementSettings.SharedInstance.Writer.WriteLine(message);
+            dynSettings.Instance.Writer.WriteLine(message);
 
             LogScroller.ScrollToBottom();
         }
@@ -1538,7 +1561,7 @@ namespace Dynamo.Controls
 
             dynPort p = null;
             DragCanvas dc = null;
-            dynNodeUI element = null;
+            dynNode element = null;
 
             bool hit = false;
 
@@ -1560,8 +1583,8 @@ namespace Dynamo.Controls
 
                     //traverse the tree through all the
                     //hit elements to see if you get an element
-                    element = ElementClicked(depObj, typeof(dynNodeUI)) as dynNodeUI;
-                    if (element != null && element.IsVisible)
+                    element = (ElementClicked(depObj, typeof(dynNodeUI)) as dynNodeUI).NodeLogic;
+                    if (element != null && element.NodeUI.IsVisible)
                     {
                         hit = true;
                         break;
@@ -1729,7 +1752,7 @@ namespace Dynamo.Controls
                 //get the mouse position
 
                 toolFinder = new dynToolFinder();
-                dynElementSettings.SharedInstance.Workbench.Children.Add(toolFinder);
+                dynSettings.Instance.Workbench.Children.Add(toolFinder);
                 toolFinder.ToolFinderFinished += new ToolFinderFinishedHandler(toolFinder_ToolFinderFinished);
 
                 Canvas.SetLeft(toolFinder, 100);
@@ -1745,9 +1768,9 @@ namespace Dynamo.Controls
                 //this keeps us from deleting nodes when the
                 //user is deleting text
 
-                for (int i = selectedElements.Count - 1; i >= 0; i--)
+                for (int i = selectedNodes.Count - 1; i >= 0; i--)
                 {
-                    DeleteElement(selectedElements[i]);
+                    DeleteElement(selectedNodes[i]);
                 }
                 e.Handled = true;
             }
@@ -1773,13 +1796,14 @@ namespace Dynamo.Controls
             }
         }
 
-        internal void DeleteElement(dynNodeUI el)
+        internal void DeleteElement(dynNode el)
         {
-            for (int i = el.OutPort.Connectors.Count - 1; i >= 0; i--)
+            var elUI = el.NodeUI;
+            for (int i = elUI.OutPort.Connectors.Count - 1; i >= 0; i--)
             {
-                el.OutPort.Connectors[i].Kill();
+                elUI.OutPort.Connectors[i].Kill();
             }
-            foreach (dynPort p in el.InPorts)
+            foreach (dynPort p in elUI.InPorts)
             {
                 for (int i = p.Connectors.Count - 1; i >= 0; i--)
                 {
@@ -1787,15 +1811,15 @@ namespace Dynamo.Controls
                 }
             }
 
-            selectedElements.Remove(el);
-            this.Elements.Remove(el);
-            dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
-            el = null;
+            selectedNodes.Remove(el);
+            this.Nodes.Remove(el);
+            dynSettings.Instance.Workbench.Children.Remove(elUI);
+            elUI = null;
         }
 
         void toolFinder_ToolFinderFinished(object sender, EventArgs e)
         {
-            dynElementSettings.SharedInstance.Workbench.Children.Remove(toolFinder);
+            dynSettings.Instance.Workbench.Children.Remove(toolFinder);
             toolFinder = null;
         }
 
@@ -1854,7 +1878,7 @@ namespace Dynamo.Controls
                 {
                     try
                     {
-                        valid.Add(dynElementSettings.SharedInstance.Doc.Document.GetElement(delId).Id);
+                        valid.Add(dynSettings.Instance.Doc.Document.GetElement(delId).Id);
                     }
                     catch
                     {
@@ -1873,7 +1897,7 @@ namespace Dynamo.Controls
 
             DynElementUpdateDelegate mod = delegate(List<Autodesk.Revit.DB.ElementId> modded)
             {
-                _transElements.RemoveAll(x => modded.Contains(x));
+                _transElements.RemoveAll(modded.Contains);
 
                 foreach (var mid in modded)
                 {
@@ -1900,7 +1924,7 @@ namespace Dynamo.Controls
             if (_trans == null || _trans.GetStatus() != TransactionStatus.Started)
             {
                 _trans = new Transaction(
-                   dynElementSettings.SharedInstance.Doc.Document,
+                   dynSettings.Instance.Doc.Document,
                    "Dynamo Script"
                 );
                 _trans.Start();
@@ -1972,7 +1996,7 @@ namespace Dynamo.Controls
 
                 //Get our entry points (elements with nothing connected to output)
                 var topElements = this.homeSpace.Elements.Where(
-                   x => !x.OutPort.Connectors.Any()
+                   x => !x.NodeUI.OutPort.Connectors.Any()
                 );
 
                 //Mark the topmost as dirty/clean
@@ -1986,7 +2010,7 @@ namespace Dynamo.Controls
                     Action run = delegate
                     {
                         //For each entry point...
-                        foreach (dynNodeUI topMost in topElements)
+                        foreach (dynNode topMost in topElements)
                         {
                             //Build the expression from the entry point.
                             Expression runningExpression = topMost.Build().Compile();
@@ -2056,7 +2080,10 @@ namespace Dynamo.Controls
 
                             //Reset all elements
                             foreach (var element in this.AllElements)
-                                element.ResetRuns();
+                            {
+                                if (element is dynRevitNode)
+                                    (element as dynRevitNode).ResetRuns();
+                            }
 
                             //////
                             /* FOR NON-DEBUG RUNS, THIS IS THE ACTUAL END POINT FOR DYNAMO TRANSACTION */
@@ -2077,10 +2104,10 @@ namespace Dynamo.Controls
                     if (!debug)
                     {
                         //Do we need manual transaction control?
-                        bool manualTrans = topElements.Any(x => x.RequiresManualTransaction());
-                        
+                        bool manualTrans = topElements.Any(checkManualTransaction.TraverseUntilAny);
+
                         //Can we avoid running everything in the Revit Idle thread?
-                        bool noIdleThread = manualTrans || topElements.All(x => !x.RequiresTransaction());
+                        bool noIdleThread = manualTrans || !topElements.Any(checkRequiresTransaction.TraverseUntilAny);
 
                         //If we don't need to be in the idle thread...
                         if (noIdleThread)
@@ -2115,7 +2142,7 @@ namespace Dynamo.Controls
 
                     this.CancelTransaction();
                     this.CancelRun = false; //Reset cancel flag
-                    
+
                     //If we are forcing this, then make sure we don't run again either.
                     if (ex.Force)
                         this.runAgain = false;
@@ -2158,7 +2185,7 @@ namespace Dynamo.Controls
                     {
                         //Reset flag
                         this.runAgain = false;
-                        
+
                         //Run this method again from the main thread
                         this.Dispatcher.BeginInvoke(new Action(
                            delegate
@@ -2266,19 +2293,19 @@ namespace Dynamo.Controls
                "out",
                name
             );
-            newEl.DisableInteraction();
-            newEl.MouseDown += delegate
+            newEl.NodeUI.DisableInteraction();
+            newEl.NodeUI.MouseDown += delegate
             {
-                draggedElementMenuItem = newEl;
+                draggedElementMenuItem = newEl.NodeUI;
 
-                BeginDragElement(newEl.Symbol, Mouse.GetPosition(newEl));
+                BeginDragElement(newEl.Symbol, Mouse.GetPosition(newEl.NodeUI));
 
-                newEl.Visibility = System.Windows.Visibility.Hidden;
+                newEl.NodeUI.Visibility = System.Windows.Visibility.Hidden;
             };
-            newEl.GUID = Guid.NewGuid();
-            newEl.Margin = new Thickness(5, 30, 5, 5);
-            newEl.LayoutTransform = new ScaleTransform(.8, .8);
-            newEl.State = ElementState.DEAD;
+            newEl.NodeUI.GUID = Guid.NewGuid();
+            newEl.NodeUI.Margin = new Thickness(5, 30, 5, 5);
+            newEl.NodeUI.LayoutTransform = new ScaleTransform(.8, .8);
+            newEl.NodeUI.State = ElementState.DEAD;
 
             Expander expander;
 
@@ -2326,7 +2353,7 @@ namespace Dynamo.Controls
             {
                 sortedElements.Add(child.NickName, child);
             }
-            sortedElements.Add(name, newEl);
+            sortedElements.Add(name, newEl.NodeUI);
 
             wp.Children.Clear();
 
@@ -2335,8 +2362,8 @@ namespace Dynamo.Controls
                 wp.Children.Add(child);
             }
 
-            addMenuItemsDictNew[name] = newEl;
-            searchDict.Add(newEl, name.Split(' ').Where(x => x.Length > 0));
+            addMenuItemsDictNew[name] = newEl.NodeUI;
+            searchDict.Add(newEl.NodeUI, name.Split(' ').Where(x => x.Length > 0));
 
             if (display)
             {
@@ -2353,9 +2380,9 @@ namespace Dynamo.Controls
                 }
 
                 //Make old workspace invisible
-                foreach (dynNodeUI dynE in this.Elements)
+                foreach (dynNode dynE in this.Nodes)
                 {
-                    dynE.Visibility = System.Windows.Visibility.Collapsed;
+                    dynE.NodeUI.Visibility = System.Windows.Visibility.Collapsed;
                 }
                 foreach (dynConnector dynC in this.CurrentSpace.Connectors)
                 {
@@ -2394,9 +2421,9 @@ namespace Dynamo.Controls
         private void Home_Click(object sender, RoutedEventArgs e)
         {
             //Step 1: Make function workspace invisible
-            foreach (var ele in this.Elements)
+            foreach (var ele in this.Nodes)
             {
-                ele.Visibility = System.Windows.Visibility.Collapsed;
+                ele.NodeUI.Visibility = System.Windows.Visibility.Collapsed;
             }
             foreach (var con in this.CurrentSpace.Connectors)
             {
@@ -2418,9 +2445,9 @@ namespace Dynamo.Controls
             //this.CurrentY = this.homeSpace.savedY;
             this.CurrentSpace = this.homeSpace;
 
-            foreach (var ele in this.Elements)
+            foreach (var ele in this.Nodes)
             {
-                ele.Visibility = System.Windows.Visibility.Visible;
+                ele.NodeUI.Visibility = System.Windows.Visibility.Visible;
             }
             foreach (var con in this.CurrentSpace.Connectors)
             {
@@ -2461,31 +2488,31 @@ namespace Dynamo.Controls
             }
 
             //Find compile errors
-            var topMost = funcWorkspace.Elements.Where(x => !x.OutPort.Connectors.Any()).ToList();
+            var topMost = funcWorkspace.Elements.Where(x => !x.NodeUI.OutPort.Connectors.Any()).ToList();
             if (topMost.Count > 1)
             {
                 foreach (var ele in topMost)
                 {
-                    ele.Error("Nodes can have only one output.");
+                    ele.NodeUI.Error("Nodes can have only one output.");
                 }
             }
             else
             {
                 foreach (var ele in topMost)
                 {
-                    ele.ValidateConnections();
+                    ele.NodeUI.ValidateConnections();
                 }
             }
 
             //Find function entry point, and then compile the function and add it to our environment
-            dynNodeUI top = topMost.FirstOrDefault();
+            dynNode top = topMost.FirstOrDefault();
 
             var variables = funcWorkspace.Elements.Where(x => x is dynSymbol);
             var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
 
             try
             {
-                if (top != default(dynNodeUI))
+                if (top != default(dynNode))
                 {
                     Expression expression = Utils.MakeAnon(
                        variableNames,
@@ -2511,7 +2538,7 @@ namespace Dynamo.Controls
                         continue;
 
                     node.SetInputs(variableNames);
-                    el.ReregisterInputs();
+                    el.NodeUI.ReregisterInputs();
                     //el.IsDirty = true;
                 }
             }
@@ -2521,10 +2548,10 @@ namespace Dynamo.Controls
                 el.onSave();
 
             //Update new add menu
-            var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name];
+            var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name].NodeLogic;
             addItem.SetInputs(variableNames);
-            addItem.ReregisterInputs();
-            addItem.State = ElementState.DEAD;
+            addItem.NodeUI.ReregisterInputs();
+            addItem.NodeUI.State = ElementState.DEAD;
         }
 
         internal void DisplayFunction(string symbol)
@@ -2539,9 +2566,9 @@ namespace Dynamo.Controls
             workBench.ignoreClick = true;
 
             //Step 1: Make function workspace invisible
-            foreach (var ele in this.Elements)
+            foreach (var ele in this.Nodes)
             {
-                ele.Visibility = System.Windows.Visibility.Collapsed;
+                ele.NodeUI.Visibility = System.Windows.Visibility.Collapsed;
             }
             foreach (var con in this.CurrentSpace.Connectors)
             {
@@ -2566,9 +2593,9 @@ namespace Dynamo.Controls
             //this.CurrentY = newWs.savedY;
             this.CurrentSpace = newWs;
 
-            foreach (var ele in this.Elements)
+            foreach (var ele in this.Nodes)
             {
-                ele.Visibility = System.Windows.Visibility.Visible;
+                ele.NodeUI.Visibility = System.Windows.Visibility.Visible;
             }
             foreach (var con in this.CurrentSpace.Connectors)
             {
@@ -2614,10 +2641,10 @@ namespace Dynamo.Controls
 
         private void Print_Click(object sender, RoutedEventArgs e)
         {
-            foreach (dynNodeUI el in this.Elements)
+            foreach (dynNode el in this.Nodes)
             {
-                dynNodeUI topMost = null;
-                if (!el.OutPort.Connectors.Any())
+                dynNode topMost = null;
+                if (!el.NodeUI.OutPort.Connectors.Any())
                 {
                     topMost = el;
 
@@ -2642,12 +2669,12 @@ namespace Dynamo.Controls
             this.CurrentSpace.Connectors.Remove(c);
         }
 
-        internal void ShowElement(dynNodeUI e)
+        internal void ShowElement(dynNode e)
         {
             if (dynamicRun)
                 return;
 
-            if (!this.Elements.Contains(e))
+            if (!this.Nodes.Contains(e))
             {
                 if (this.homeSpace != null && this.homeSpace.Elements.Contains(e))
                 {
@@ -2667,7 +2694,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            CenterViewOnElement(e);
+            CenterViewOnElement(e.NodeUI);
         }
 
         private void CenterViewOnElement(dynNodeUI e)
@@ -2763,16 +2790,16 @@ namespace Dynamo.Controls
 
             //------------------//
 
-            var newAddItem = (dynFunction)this.addMenuItemsDictNew[this.CurrentSpace.Name];
-            if (newAddItem.NickName.Equals(this.CurrentSpace.Name))
-                newAddItem.NickName = newName;
+            var newAddItem = (dynFunction)this.addMenuItemsDictNew[this.CurrentSpace.Name].NodeLogic;
+            if (newAddItem.NodeUI.NickName.Equals(this.CurrentSpace.Name))
+                newAddItem.NodeUI.NickName = newName;
             newAddItem.Symbol = newName;
             this.addMenuItemsDictNew.Remove(this.CurrentSpace.Name);
-            this.addMenuItemsDictNew[newName] = newAddItem;
+            this.addMenuItemsDictNew[newName] = newAddItem.NodeUI;
 
             //Sort the menu after a rename
             Expander unsorted = this.addMenuCategoryDict.Values.FirstOrDefault(
-               ex => ((WrapPanel)ex.Content).Children.Contains(newAddItem)
+               ex => ((WrapPanel)ex.Content).Children.Contains(newAddItem.NodeUI)
             );
 
             var wp = (WrapPanel)unsorted.Content;
@@ -2792,10 +2819,10 @@ namespace Dynamo.Controls
 
             //Update search dictionary after a rename
             var oldTags = this.CurrentSpace.Name.Split(' ').Where(x => x.Length > 0);
-            this.searchDict.Remove(newAddItem, oldTags);
+            this.searchDict.Remove(newAddItem.NodeUI, oldTags);
 
             var newTags = newName.Split(' ').Where(x => x.Length > 0);
-            this.searchDict.Add(newAddItem, newTags);
+            this.searchDict.Add(newAddItem.NodeUI, newTags);
 
             //------------------//
 
@@ -2812,8 +2839,8 @@ namespace Dynamo.Controls
                     node.Symbol = newName;
 
                     //Rename nickname only if it's still referring to the old name
-                    if (node.NickName.Equals(this.CurrentSpace.Name))
-                        node.NickName = newName;
+                    if (node.NodeUI.NickName.Equals(this.CurrentSpace.Name))
+                        node.NodeUI.NickName = newName;
                 }
             }
 
@@ -2921,9 +2948,9 @@ namespace Dynamo.Controls
             {
                 this.workBench.Children.Add(el);
 
-                this.Elements.Add(el);
+                this.Nodes.Add(el.NodeLogic);
 
-                el.WorkSpace = this.CurrentSpace;
+                el.NodeLogic.WorkSpace = this.CurrentSpace;
 
                 el.Opacity = 1;
 
@@ -2933,7 +2960,7 @@ namespace Dynamo.Controls
                 el.EnableInteraction();
 
                 if (this.ViewingHomespace)
-                    el.SaveResult = true;
+                    el.NodeLogic.SaveResult = true;
             }
 
             dragOffset = new Point();
@@ -3064,11 +3091,7 @@ namespace Dynamo.Controls
         {
             get
             {
-                var topElements = this.homeSpace.Elements.Where(
-                   x => !x.OutPort.Connectors.Any()
-                );
-
-                bool manTran = topElements.Any(x => x.RequiresManualTransaction());
+                bool manTran = ExecutionRequiresManualTransaction();
 
                 this.dynamicCheckBox.IsEnabled = !manTran && this.debugCheckBox.IsChecked == false;
                 if (manTran)
@@ -3079,6 +3102,13 @@ namespace Dynamo.Controls
                    && this.debugCheckBox.IsChecked == false
                    && this.dynamicCheckBox.IsChecked == true;
             }
+        }
+
+        bool ExecutionRequiresManualTransaction()
+        {
+            return this.homeSpace.GetTopMostElements().Any(
+                checkManualTransaction.TraverseUntilAny
+            );
         }
 
         internal void QueueRun()
@@ -3103,13 +3133,13 @@ namespace Dynamo.Controls
             this.dynamicCheckBox.IsEnabled = false;
         }
 
-      private void debugCheckBox_Unchecked(object sender, RoutedEventArgs e)
-      {
-         this.dynamicCheckBox.IsEnabled = true;
-      }
-   }
+        private void debugCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.dynamicCheckBox.IsEnabled = true;
+        }
+    }
 
-    public class dynSelection : ObservableCollection<dynNodeUI>
+    public class dynSelection : ObservableCollection<dynNode>
     {
         public dynSelection() : base() { }
     }
@@ -3172,4 +3202,59 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PredicateTraverser
+    {
+        Predicate<dynNode> predicate;
+
+        Dictionary<dynNode, bool> resultDict = new Dictionary<dynNode, bool>();
+
+        public PredicateTraverser(Predicate<dynNode> p)
+        {
+            this.predicate = p;
+        }
+
+        public bool TraverseUntilAny(dynNode entry)
+        {
+            bool result = traverseAny(entry);
+            resultDict.Clear();
+            return result;
+        }
+
+        private bool traverseAny(dynNode entry)
+        {
+            bool result;
+            if (resultDict.TryGetValue(entry, out result))
+                return result;
+
+            result = predicate(entry);
+            if (result)
+            {
+                return result;
+            }
+            resultDict[entry] = result;
+
+            return entry.Inputs.Values.Any(traverseAny);
+        }
+
+        public bool TraverseForAll(dynNode entry)
+        {
+            bool result = traverseAll(entry);
+            resultDict.Clear();
+            return result;
+        }
+
+        private bool traverseAll(dynNode entry)
+        {
+            bool result;
+            if (resultDict.TryGetValue(entry, out result))
+                return result;
+
+            result = predicate(entry);
+            if (!result)
+                return result;
+            resultDict[entry] = result;
+
+            return entry.Inputs.Values.Any(traverseAll);
+        }
+    }
 }

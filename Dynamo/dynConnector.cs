@@ -113,7 +113,7 @@ namespace Dynamo.Connectors
             endDot.Stroke = Brushes.Black;
             Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
             Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
-            dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
+            dynSettings.Instance.Workbench.Children.Add(endDot);
             endDot.Opacity = STROKE_OPACITY;
 
             connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
@@ -153,8 +153,6 @@ namespace Dynamo.Connectors
 
          if (portType == 0)
             endPort = end.InPorts[endIndex];
-         else if (portType == 1)
-            endPort = end.StatePorts[endIndex];
 
          //connect the two ports
          //get start point
@@ -183,7 +181,7 @@ namespace Dynamo.Connectors
          connectorPoints.Segments.Add(connectorCurve);
          connectorGeometry.Figures.Add(connectorPoints);
          connector.Data = connectorGeometry;
-         dynElementSettings.SharedInstance.Workbench.Children.Add(connector);
+         dynSettings.Instance.Workbench.Children.Add(connector);
 
          endDot = new Ellipse();
          endDot.Height = 6;
@@ -193,7 +191,7 @@ namespace Dynamo.Connectors
          endDot.Stroke = Brushes.Black;
          Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
          Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
-         dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
+         dynSettings.Instance.Workbench.Children.Add(endDot);
          endDot.Opacity = STROKE_OPACITY;
 
          this.Visible = visible;
@@ -229,23 +227,6 @@ namespace Dynamo.Connectors
       {
          if (connector != null)
             connector.StrokeThickness = STROKE_THICKNESS;
-      }
-
-      void StartPortUpdated(object sender, EventArgs e)
-      {
-
-         if (pEnd != null)
-         {
-            if (pEnd.Owner != null)
-            {
-               //set the end equal to the start
-               //pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
-
-               //tell the end to update
-               pEnd.Owner.Update();
-            }
-         }
-
       }
 
       public void SendMessage()
@@ -319,8 +300,6 @@ namespace Dynamo.Connectors
             //starts evaulating immediately
             //pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
             p.Connect(this);
-            pEnd.Update();
-            pEnd.Owner.Update();
          }
 
          return true;
@@ -400,12 +379,12 @@ namespace Dynamo.Connectors
          pStart = null;
          pEnd = null;
 
-         dynElementSettings.SharedInstance.Workbench.Children.Remove(connector);
-         dynElementSettings.SharedInstance.Workbench.Children.Remove(endDot);
+         dynSettings.Instance.Workbench.Children.Remove(connector);
+         dynSettings.Instance.Workbench.Children.Remove(endDot);
 
          isDrawing = false;
 
-         dynElementSettings.SharedInstance.Bench.RemoveConnector(this);
+         dynSettings.Instance.Bench.RemoveConnector(this);
       }
 
       public void Redraw(Point p2)
@@ -464,7 +443,7 @@ namespace Dynamo.Connectors
 
       public dynNodeUI FindDynElementByGuid(Guid guid)
       {
-         foreach (UIElement uiel in dynElementSettings.SharedInstance.Workbench.Children)
+         foreach (UIElement uiel in dynSettings.Instance.Workbench.Children)
          {
             dynNodeUI testEl = null;
 
