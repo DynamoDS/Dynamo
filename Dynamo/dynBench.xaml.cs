@@ -629,7 +629,7 @@ namespace Dynamo.Controls
             Canvas.SetTop(n, y);
             n.noteText.Text = noteText;
 
-            this.CurrentSpace.Notes.Add(n);
+            workspace.Notes.Add(n);
             this.workBench.Children.Add(n);
 
             return n;
@@ -1279,17 +1279,20 @@ namespace Dynamo.Controls
                 #endregion
 
                 #region instantiate notes
-                foreach (XmlNode note in nNodesList.ChildNodes)
+                if (nNodesList != null)
                 {
-                    XmlAttribute textAttrib = note.Attributes[0];
-                    XmlAttribute xAttrib = note.Attributes[1];
-                    XmlAttribute yAttrib = note.Attributes[2];
+                    foreach (XmlNode note in nNodesList.ChildNodes)
+                    {
+                        XmlAttribute textAttrib = note.Attributes[0];
+                        XmlAttribute xAttrib = note.Attributes[1];
+                        XmlAttribute yAttrib = note.Attributes[2];
 
-                    string text = textAttrib.Value.ToString();
-                    double x = Convert.ToDouble(xAttrib.Value.ToString());
-                    double y = Convert.ToDouble(yAttrib.Value.ToString());
+                        string text = textAttrib.Value.ToString();
+                        double x = Convert.ToDouble(xAttrib.Value.ToString());
+                        double y = Convert.ToDouble(yAttrib.Value.ToString());
 
-                    dynNote n = AddNote(text, x, y, ws);
+                        dynNote n = AddNote(text, x, y, ws);
+                    }
                 }
                 #endregion
 
@@ -1318,6 +1321,8 @@ namespace Dynamo.Controls
                 e.Visibility = System.Windows.Visibility.Collapsed;
             foreach (var c in ws.Connectors)
                 c.Visible = false;
+            foreach (var n in ws.Notes)
+                n.Visibility = System.Windows.Visibility.Hidden;
         }
 
         bool OpenWorkbench(string xmlPath)
@@ -1823,6 +1828,8 @@ namespace Dynamo.Controls
                 Canvas.SetRight(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Height/2);
                 
                 CurrentSpace.Notes.Add(note);
+                if(!ViewingHomespace)
+                    CurrentSpace.Modified(); //tell the workspace to save
 
                 e.Handled = true;
             }
@@ -2436,6 +2443,10 @@ namespace Dynamo.Controls
                 {
                     dynC.Visible = false;
                 }
+                foreach (dynNote note in this.CurrentSpace.Notes)
+                {
+                    note.Visibility = System.Windows.Visibility.Hidden;
+                }
 
                 //this.currentFunctionName = name;
 
@@ -2477,7 +2488,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = false;
             }
-
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Hidden;
+            }
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             //Step 2: Store function workspace in the function dictionary
@@ -2500,6 +2514,10 @@ namespace Dynamo.Controls
             foreach (var con in this.CurrentSpace.Connectors)
             {
                 con.Visible = true;
+            }
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Visible;
             }
 
             //this.saveFuncItem.IsEnabled = false;
@@ -2622,7 +2640,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = false;
             }
-
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Hidden;
+            }
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             if (!this.ViewingHomespace)
@@ -2649,7 +2670,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = true;
             }
-
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Visible;
+            }
 
             //this.saveFuncItem.IsEnabled = true;
             this.homeButton.IsEnabled = true;
