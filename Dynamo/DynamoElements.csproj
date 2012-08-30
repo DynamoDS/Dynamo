@@ -116,6 +116,7 @@ limitations under the License.
     <Compile Include="dynCommunication.cs" />
     <Compile Include="dynConnector.cs" />
     <Compile Include="dynCurves.cs" />
+    <Compile Include="dynDatums.cs" />
     <Compile Include="dynFamilies.cs" />
     <Compile Include="dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
