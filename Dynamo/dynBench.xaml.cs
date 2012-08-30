@@ -1209,6 +1209,11 @@ namespace Dynamo.Controls
                     double x = Convert.ToDouble(xAttrib.Value.ToString());
                     double y = Convert.ToDouble(yAttrib.Value.ToString());
 
+                    //Compatibility with old namespace for nodes
+                    var namespaces = typeName.Split('.');
+                    if (namespaces[0].Equals("Dynamo") && namespaces[1].Equals("Elements"))
+                        typeName = "Dynamo.Nodes" + string.Join(".", namespaces.Skip(2));
+
                     Type t = Type.GetType(typeName);
 
                     dynNode el = AddDynElement(t, nickname, guid, x, y, ws, System.Windows.Visibility.Hidden);
