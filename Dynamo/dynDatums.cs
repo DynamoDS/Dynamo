@@ -106,7 +106,7 @@ namespace Dynamo.Elements
                    )
                 );
 
-                //Now that we've created all the Reference Points from this run, we delete all of the
+                //Now that we've created all the Levels from this run, we delete all of the
                 //extra ones from the previous run.
                 foreach (var e in this.Elements.Skip(count))
                 {
@@ -116,9 +116,10 @@ namespace Dynamo.Elements
                 //Fin
                 return Expression.NewList(result);
             }
-            //If we're not receiving a list, we will just assume we received one XYZ.
+            //If we're not receiving a list, we will just assume we received one double height.
             else
             {
+                //Level elements take in one double for the z elevation (height)f
                 double h = (double)((Expression.Number)args[0]).Item;
 
                 Level lev;
