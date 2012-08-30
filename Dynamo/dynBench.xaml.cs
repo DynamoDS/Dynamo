@@ -350,7 +350,8 @@ namespace Dynamo.Controls
                 }
                 catch (Exception e) //TODO: Narrow down
                 {
-                    Log("Error loading \"" + kvp.Key + "\": " + e.InnerException.Message);
+                    Log("Error loading \"" + kvp.Key);
+                    Log(e.InnerException);
                     continue;
                 }
 
@@ -432,7 +433,8 @@ namespace Dynamo.Controls
                 }
                 catch (Exception e)
                 {
-                    Log("Error loading \"" + kvp.Key + "\": " + e.Message);
+                    Log("Error loading \"" + kvp.Key);
+                    Log(e);
                 }
             }
 
@@ -570,8 +572,8 @@ namespace Dynamo.Controls
         /// <param name="y"></param>
         /// <returns></returns>
         public dynNode AddDynElement(
-            Type elementType, string nickName, Guid guid, 
-            double x, double y, dynWorkspace ws, 
+            Type elementType, string nickName, Guid guid,
+            double x, double y, dynWorkspace ws,
             System.Windows.Visibility vis = System.Windows.Visibility.Visible)
         {
             try
@@ -615,9 +617,10 @@ namespace Dynamo.Controls
 
                 return el;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 dynElementSettings.SharedInstance.Bench.Log("Could not create an instance of the selected type.");
+                Log(e);
                 return null;
             }
         }
@@ -972,6 +975,14 @@ namespace Dynamo.Controls
         }
 
 
+        public void Log(Exception e)
+        {
+            Log(e.GetType().ToString() + ":");
+            Log(e.Message);
+            Log(e.StackTrace);
+        }
+
+
         private void BeginDragElement(string name, Point eleOffset)
         {
             if (this.uiLocked)
@@ -1017,7 +1028,7 @@ namespace Dynamo.Controls
                 }
                 catch (Exception e)
                 {
-                    dynElementSettings.SharedInstance.Bench.Log(e.Message);
+                    Log(e);
                     return;
                 }
             }
@@ -1119,6 +1130,7 @@ namespace Dynamo.Controls
             }
             catch (Exception ex)
             {
+                Log(ex);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
@@ -1306,8 +1318,7 @@ namespace Dynamo.Controls
             catch (Exception ex)
             {
                 Log("There was an error opening the workbench.");
-                Log(ex.Message);
-                Log(ex.StackTrace);
+                Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
                 return false;
@@ -1460,18 +1471,21 @@ namespace Dynamo.Controls
                 }
 
                 #region instantiate notes
-                foreach (XmlNode note in nNodesList.ChildNodes)
+                if (nNodesList != null)
                 {
-                    XmlAttribute textAttrib = note.Attributes[0];
-                    XmlAttribute xAttrib = note.Attributes[1];
-                    XmlAttribute yAttrib = note.Attributes[2];
+                    foreach (XmlNode note in nNodesList.ChildNodes)
+                    {
+                        XmlAttribute textAttrib = note.Attributes[0];
+                        XmlAttribute xAttrib = note.Attributes[1];
+                        XmlAttribute yAttrib = note.Attributes[2];
 
-                    string text = textAttrib.Value.ToString();
-                    double x = Convert.ToDouble(xAttrib.Value.ToString());
-                    double y = Convert.ToDouble(yAttrib.Value.ToString());
+                        string text = textAttrib.Value.ToString();
+                        double x = Convert.ToDouble(xAttrib.Value.ToString());
+                        double y = Convert.ToDouble(yAttrib.Value.ToString());
 
-                    dynNote n = AddNote(text, x, y, this.CurrentSpace);
-                    
+                        dynNote n = AddNote(text, x, y, this.CurrentSpace);
+
+                    }
                 }
                 #endregion
 
@@ -1483,8 +1497,7 @@ namespace Dynamo.Controls
             catch (Exception ex)
             {
                 Log("There was an error opening the workbench.");
-                Log(ex.Message);
-                Log(ex.StackTrace);
+                Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
                 return false;
@@ -1824,11 +1837,11 @@ namespace Dynamo.Controls
             {
                 dynNote note = new dynNote();
                 dynElementSettings.SharedInstance.Workbench.Children.Add(note);
-                Canvas.SetLeft(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Width/2);
-                Canvas.SetRight(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Height/2);
-                
+                Canvas.SetLeft(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Width / 2);
+                Canvas.SetRight(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Height / 2);
+
                 CurrentSpace.Notes.Add(note);
-                if(!ViewingHomespace)
+                if (!ViewingHomespace)
                     CurrentSpace.Modified(); //tell the workspace to save
 
                 e.Handled = true;
@@ -2119,7 +2132,11 @@ namespace Dynamo.Controls
                                 if (ex.Message.Length > 0)
                                 {
                                     this.Dispatcher.Invoke(new Action(
-                                       () => Log("ERROR: " + ex.Message)
+                                       delegate
+                                       {
+                                           Log("ERROR!");
+                                           Log(ex);
+                                       }
                                     ));
                                 }
                                 this.CancelTransaction();
@@ -2160,7 +2177,7 @@ namespace Dynamo.Controls
                     {
                         //Do we need manual transaction control?
                         bool manualTrans = topElements.Any(x => x.RequiresManualTransaction());
-                        
+
                         //Can we avoid running everything in the Revit Idle thread?
                         bool noIdleThread = manualTrans || topElements.All(x => !x.RequiresTransaction());
 
@@ -2197,7 +2214,7 @@ namespace Dynamo.Controls
 
                     this.CancelTransaction();
                     this.CancelRun = false; //Reset cancel flag
-                    
+
                     //If we are forcing this, then make sure we don't run again either.
                     if (ex.Force)
                         this.runAgain = false;
@@ -2210,7 +2227,11 @@ namespace Dynamo.Controls
                     if (ex.Message.Length > 0)
                     {
                         this.Dispatcher.Invoke(new Action(
-                           () => Log("ERROR: " + ex.Message)
+                            delegate
+                            {
+                                Log("ERROR!");
+                                Log(ex);
+                            }
                         ));
                     }
 
@@ -2240,7 +2261,7 @@ namespace Dynamo.Controls
                     {
                         //Reset flag
                         this.runAgain = false;
-                        
+
                         //Run this method again from the main thread
                         this.Dispatcher.BeginInvoke(new Action(
                            delegate
@@ -2549,7 +2570,8 @@ namespace Dynamo.Controls
                 }
                 catch (Exception e)
                 {
-                    Log("Error saving:" + e.GetType() + ": " + e.Message);
+                    Log("Error saving:" + e.GetType());
+                    Log(e);
                 }
             }
 
@@ -2730,7 +2752,7 @@ namespace Dynamo.Controls
                     }
                     catch (Exception ex)
                     {
-                        Log("ERROR: " + ex.Message);
+                        Log(ex);
                     }
                 }
             }
@@ -3202,11 +3224,11 @@ namespace Dynamo.Controls
             this.dynamicCheckBox.IsEnabled = false;
         }
 
-      private void debugCheckBox_Unchecked(object sender, RoutedEventArgs e)
-      {
-         this.dynamicCheckBox.IsEnabled = true;
-      }
-   }
+        private void debugCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.dynamicCheckBox.IsEnabled = true;
+        }
+    }
 
     public class dynSelection : ObservableCollection<dynNode>
     {
