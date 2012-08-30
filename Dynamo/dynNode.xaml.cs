@@ -1055,7 +1055,10 @@ namespace Dynamo.Elements
 
             //If this is a partial application, then remember not to re-eval.
             if (partial)
+            {
                 this.IsDirty = false;
+                this.OnEvaluate();
+            }
 
             //And we're done
             return node;

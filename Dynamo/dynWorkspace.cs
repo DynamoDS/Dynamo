@@ -27,6 +27,7 @@ namespace Dynamo.Elements
    {
       List<dynNode> Elements { get; }
       List<dynConnector> Connectors { get; }
+      List<dynNote> Notes { get; }
 
       double PositionX { get; set; }
       double PositionY { get; set; }
@@ -42,7 +43,7 @@ namespace Dynamo.Elements
    {
       public List<dynNode> Elements { get; private set; }
       public List<dynConnector> Connectors { get; private set; }
-
+      public List<dynNote> Notes {get; private set;}
       public double PositionX { get; set; }
       public double PositionY { get; set; }
 
@@ -52,18 +53,18 @@ namespace Dynamo.Elements
       #region Contructors
 
       public FuncWorkspace()
-         : this("", "", new List<dynNode>(), new List<dynConnector>(), 0, 0)
+         : this("", "", new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
       { }
 
       public FuncWorkspace(String name, String category)
-         : this(name, category, new List<dynNode>(), new List<dynConnector>(), 0, 0)
+         : this(name, category, new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
       { }
 
       public FuncWorkspace(String name, String category, double x, double y)
-         : this(name, category, new List<dynNode>(), new List<dynConnector>(), x, y)
+         : this(name, category, new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), x, y)
       { }
 
-      public FuncWorkspace(String name, String category, List<dynNode> e, List<dynConnector> c, double x, double y)
+      public FuncWorkspace(String name, String category, List<dynNode> e, List<dynConnector> c, List<dynNote> n, double x, double y)
       {
          this.Name = name;
          this.Category = category;
@@ -71,6 +72,7 @@ namespace Dynamo.Elements
          this.Connectors = c;
          this.PositionX = x;
          this.PositionY = y;
+         this.Notes = n;
       }
 
       #endregion
@@ -89,7 +91,7 @@ namespace Dynamo.Elements
    {
       public List<dynNode> Elements { get; private set; }
       public List<dynConnector> Connectors { get; private set; }
-
+      public List<dynNote> Notes {get; private set;}
       public double PositionX { get; set; }
       public double PositionY { get; set; }
 
@@ -101,19 +103,20 @@ namespace Dynamo.Elements
       #region Contructors
 
       public HomeWorkspace()
-         : this(new List<dynNode>(), new List<dynConnector>(), 0, 0)
+         : this(new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
       { }
 
       public HomeWorkspace(double x, double y)
-         : this(new List<dynNode>(), new List<dynConnector>(), x, y)
+         : this(new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), x, y)
       { }
 
-      public HomeWorkspace(List<dynNode> e, List<dynConnector> c, double x, double y)
+      public HomeWorkspace(List<dynNode> e, List<dynConnector> c, List<dynNote> n, double x, double y)
       {
          this.Elements = e;
          this.Connectors = c;
          this.PositionX = x;
          this.PositionY = y;
+         this.Notes = n;
       }
 
       #endregion

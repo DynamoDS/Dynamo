@@ -622,6 +622,18 @@ namespace Dynamo.Controls
             }
         }
 
+        public dynNote AddNote(string noteText, double x, double y, dynWorkspace workspace)
+        {
+            dynNote n = new dynNote();
+            Canvas.SetLeft(n, x);
+            Canvas.SetTop(n, y);
+            n.noteText.Text = noteText;
+
+            workspace.Notes.Add(n);
+            this.workBench.Children.Add(n);
+
+            return n;
+        }
 
         /// <summary>
         /// Adds the given element to the selection.
@@ -1091,6 +1103,18 @@ namespace Dynamo.Controls
                     }
                 }
 
+                //save the notes
+                XmlElement noteList = xmlDoc.CreateElement("dynNotes");  //write the root element
+                root.AppendChild(noteList);
+                foreach (dynNote n in workSpace.Notes)
+                {
+                    XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
+                    noteList.AppendChild(note);
+                    note.SetAttribute("text", n.noteText.Text);
+                    note.SetAttribute("x", Canvas.GetLeft(n).ToString());
+                    note.SetAttribute("y", Canvas.GetTop(n).ToString());
+                }
+
                 xmlDoc.Save(xmlPath);
             }
             catch (Exception ex)
@@ -1163,10 +1187,13 @@ namespace Dynamo.Controls
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
 
                 XmlNode elNodesList = elNodes[0] as XmlNode;
                 XmlNode cNodesList = cNodes[0] as XmlNode;
+                XmlNode nNodesList = nNodes[0] as XmlNode;
 
+                #region instantiate nodes
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes[0];
@@ -1192,9 +1219,11 @@ namespace Dynamo.Controls
                     el.DisableReporting();
                     el.LoadElement(elNode);
                 }
+                #endregion
 
                 this.workBench.UpdateLayout();
 
+                #region instantiate connectors
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
                     XmlAttribute guidStartAttrib = connector.Attributes[0];
@@ -1247,6 +1276,25 @@ namespace Dynamo.Controls
                         ws.Connectors.Add(newConnector);
                     }
                 }
+                #endregion
+
+                #region instantiate notes
+                if (nNodesList != null)
+                {
+                    foreach (XmlNode note in nNodesList.ChildNodes)
+                    {
+                        XmlAttribute textAttrib = note.Attributes[0];
+                        XmlAttribute xAttrib = note.Attributes[1];
+                        XmlAttribute yAttrib = note.Attributes[2];
+
+                        string text = textAttrib.Value.ToString();
+                        double x = Convert.ToDouble(xAttrib.Value.ToString());
+                        double y = Convert.ToDouble(yAttrib.Value.ToString());
+
+                        dynNote n = AddNote(text, x, y, ws);
+                    }
+                }
+                #endregion
 
                 foreach (var e in ws.Elements)
                     e.EnableReporting();
@@ -1273,6 +1321,8 @@ namespace Dynamo.Controls
                 e.Visibility = System.Windows.Visibility.Collapsed;
             foreach (var c in ws.Connectors)
                 c.Visible = false;
+            foreach (var n in ws.Notes)
+                n.Visibility = System.Windows.Visibility.Hidden;
         }
 
         bool OpenWorkbench(string xmlPath)
@@ -1300,9 +1350,11 @@ namespace Dynamo.Controls
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
 
                 XmlNode elNodesList = elNodes[0] as XmlNode;
                 XmlNode cNodesList = cNodes[0] as XmlNode;
+                XmlNode nNodesList = nNodes[0] as XmlNode;
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
@@ -1406,6 +1458,22 @@ namespace Dynamo.Controls
                         this.CurrentSpace.Connectors.Add(newConnector);
                     }
                 }
+
+                #region instantiate notes
+                foreach (XmlNode note in nNodesList.ChildNodes)
+                {
+                    XmlAttribute textAttrib = note.Attributes[0];
+                    XmlAttribute xAttrib = note.Attributes[1];
+                    XmlAttribute yAttrib = note.Attributes[2];
+
+                    string text = textAttrib.Value.ToString();
+                    double x = Convert.ToDouble(xAttrib.Value.ToString());
+                    double y = Convert.ToDouble(yAttrib.Value.ToString());
+
+                    dynNote n = AddNote(text, x, y, this.CurrentSpace);
+                    
+                }
+                #endregion
 
                 foreach (var e in this.CurrentSpace.Elements)
                     e.EnableReporting();
@@ -1749,6 +1817,20 @@ namespace Dynamo.Controls
                 {
                     DeleteElement(selectedElements[i]);
                 }
+                e.Handled = true;
+            }
+
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
+            {
+                dynNote note = new dynNote();
+                dynElementSettings.SharedInstance.Workbench.Children.Add(note);
+                Canvas.SetLeft(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Width/2);
+                Canvas.SetRight(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Height/2);
+                
+                CurrentSpace.Notes.Add(note);
+                if(!ViewingHomespace)
+                    CurrentSpace.Modified(); //tell the workspace to save
+
                 e.Handled = true;
             }
 
@@ -2361,6 +2443,10 @@ namespace Dynamo.Controls
                 {
                     dynC.Visible = false;
                 }
+                foreach (dynNote note in this.CurrentSpace.Notes)
+                {
+                    note.Visibility = System.Windows.Visibility.Hidden;
+                }
 
                 //this.currentFunctionName = name;
 
@@ -2402,7 +2488,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = false;
             }
-
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Hidden;
+            }
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             //Step 2: Store function workspace in the function dictionary
@@ -2425,6 +2514,10 @@ namespace Dynamo.Controls
             foreach (var con in this.CurrentSpace.Connectors)
             {
                 con.Visible = true;
+            }
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Visible;
             }
 
             //this.saveFuncItem.IsEnabled = false;
@@ -2547,7 +2640,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = false;
             }
-
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Hidden;
+            }
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             if (!this.ViewingHomespace)
@@ -2574,7 +2670,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = true;
             }
-
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Visible;
+            }
 
             //this.saveFuncItem.IsEnabled = true;
             this.homeButton.IsEnabled = true;
