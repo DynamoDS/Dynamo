@@ -105,6 +105,7 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dynDatums.cs" />
     <Compile Include="dynArduino.cs" />
     <Compile Include="dynBaseTypes.cs" />
     <Compile Include="dynBench.xaml.cs">
