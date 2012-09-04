@@ -93,7 +93,7 @@ namespace Dynamo.Elements
                            delegate
                            {
                               Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                              this.Bench.Log(ex.Message);
+                              this.Bench.Log(ex);
                               this.Bench.ShowElement(this);
 
                               dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);

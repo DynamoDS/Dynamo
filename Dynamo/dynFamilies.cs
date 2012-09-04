@@ -14,19 +14,20 @@
 
 using System;
 using System.Collections;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Xml;
-using Autodesk.Revit.DB;
-using Dynamo.Connectors;
-using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
-using TextBox = System.Windows.Controls.TextBox;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
+using System.Xml;
+
+using Autodesk.Revit.DB;
+
+using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
+using Dynamo.Utilities;
+
+using Microsoft.FSharp.Collections;
+
+using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Elements
 {

@@ -361,7 +361,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
 
@@ -394,7 +394,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
         }
@@ -431,7 +431,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
 
@@ -475,7 +475,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
 
@@ -511,7 +511,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
 
@@ -549,7 +549,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
         }
@@ -577,7 +577,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
         }
@@ -622,7 +622,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
         }

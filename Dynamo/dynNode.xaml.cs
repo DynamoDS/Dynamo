@@ -1055,7 +1055,10 @@ namespace Dynamo.Elements
 
             //If this is a partial application, then remember not to re-eval.
             if (partial)
+            {
                 this.IsDirty = false;
+                this.OnEvaluate();
+            }
 
             //And we're done
             return node;
@@ -1214,7 +1217,7 @@ namespace Dynamo.Elements
                                delegate
                                {
                                    Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                                   bench.Log(ex.Message);
+                                   bench.Log(ex);
                                    bench.ShowElement(this);
 
                                    dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
@@ -1277,7 +1280,7 @@ namespace Dynamo.Elements
                                       delegate
                                       {
                                           Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                                          bench.Log(ex.Message);
+                                          bench.Log(ex);
                                           bench.ShowElement(this);
                                       }
                                    ));
@@ -1331,12 +1334,12 @@ namespace Dynamo.Elements
                            delegate
                            {
                                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                               dynElementSettings.SharedInstance.Bench.Log(ex.Message);
+
+                               bench.Log(ex);
+                               bench.ShowElement(this);
 
                                dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
                                dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-
-                               dynElementSettings.SharedInstance.Bench.ShowElement(this);
                            }
                         ));
 
@@ -1743,11 +1746,8 @@ namespace Dynamo.Elements
                    }
                    catch (Exception ex)
                    {
-                       bench.Log(
-                          "Error deleting elements: "
-                          + ex.GetType().Name
-                          + " -- " + ex.Message
-                       );
+                       bench.Log("Error deleting elements:");
+                       bench.Log(ex);
                    }
                    bench.EndTransaction();
 

@@ -23,15 +23,17 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
-using Autodesk.Revit.UI;
+
 using Dynamo.Connectors;
+using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
+
 using Microsoft.FSharp.Collections;
+
 using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
-using Dynamo.Controls;
 
 namespace Dynamo.Elements
 {
@@ -272,6 +274,7 @@ namespace Dynamo.Elements
     {
         public dynNewList()
         {
+            InPortData.Add(new PortData("item(s)", "Item(s) to build a list out of", typeof(object)));
             OutPortData = new PortData("list", "A list", typeof(object));
 
             base.RegisterInputsAndOutputs();
@@ -280,6 +283,21 @@ namespace Dynamo.Elements
         protected override string getInputRootName()
         {
             return "index";
+        }
+
+        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count == 2)
+                InPortData[0] = new PortData("item(s)", "Item(s) to build a list out of", typeof(object));
+            if (InPortData.Count > 1)
+                base.RemoveInput(sender, args);
+        }
+
+        protected override void AddInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count == 1)
+                InPortData[0] = new PortData("index0", "First item", typeof(object));
+            base.AddInput(sender, args);
         }
 
         protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
@@ -429,8 +447,17 @@ namespace Dynamo.Elements
 
         protected override void RemoveInput(object sender, RoutedEventArgs args)
         {
-            if (InPortData.Count > 3)
+            if (InPortData.Count == 3)
+                InPortData[1] = new PortData("lists", "List of lists to combine", typeof(object));
+            if (InPortData.Count > 2)
                 base.RemoveInput(sender, args);
+        }
+
+        protected override void AddInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count == 2)
+                InPortData[1] = new PortData("list1", "First list", typeof(object));
+            base.AddInput(sender, args);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -522,8 +549,17 @@ namespace Dynamo.Elements
 
         protected override void RemoveInput(object sender, RoutedEventArgs args)
         {
-            if (InPortData.Count > 3)
+            if (InPortData.Count == 3)
+                InPortData[1] = new PortData("lists", "List of lists to combine", typeof(object));
+            if (InPortData.Count > 2)
                 base.RemoveInput(sender, args);
+        }
+
+        protected override void AddInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count == 2)
+                InPortData[1] = new PortData("list1", "First list", typeof(object));
+            base.AddInput(sender, args);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
