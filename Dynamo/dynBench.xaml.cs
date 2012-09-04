@@ -1848,6 +1848,29 @@ namespace Dynamo.Controls
                 e.Handled = true;
             }
 
+            if (Keyboard.IsKeyDown(Key.Left) ||
+                Keyboard.IsKeyDown(Key.Right) ||
+                Keyboard.IsKeyDown(Key.Up) ||
+                Keyboard.IsKeyDown(Key.Down))
+            {
+                if(Keyboard.IsKeyDown(Key.Left))
+                {
+                    this.CurrentX += -10;
+                }
+                else if (Keyboard.IsKeyDown(Key.Right))
+                {
+                    this.CurrentX += 10;
+                }
+                else if (Keyboard.IsKeyDown(Key.Up))
+                {
+                    this.CurrentY += 10;
+                }
+                else if (Keyboard.IsKeyDown(Key.Down))
+                {
+                    this.CurrentY -= 10;
+                }
+            }
+
             if (editingName)
             {
                 if (Keyboard.IsKeyDown(Key.Enter))
