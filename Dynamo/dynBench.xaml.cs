@@ -1848,26 +1848,29 @@ namespace Dynamo.Controls
                 e.Handled = true;
             }
 
-            if (Keyboard.IsKeyDown(Key.Left) ||
-                Keyboard.IsKeyDown(Key.Right) ||
-                Keyboard.IsKeyDown(Key.Up) ||
-                Keyboard.IsKeyDown(Key.Down))
+            IInputElement focusElement = FocusManager.GetFocusedElement(this);
+
+            if (focusElement != null && focusElement.GetType() != typeof(System.Windows.Controls.TextBox) )
             {
-                if(Keyboard.IsKeyDown(Key.Left))
+                if (Keyboard.IsKeyDown(Key.Left))
                 {
-                    this.CurrentX += -10;
+                    this.CurrentX += 20;
+                    e.Handled = true;
                 }
-                else if (Keyboard.IsKeyDown(Key.Right))
+                if (Keyboard.IsKeyDown(Key.Right))
                 {
-                    this.CurrentX += 10;
+                    this.CurrentX -= 20;
+                    e.Handled = true;
                 }
-                else if (Keyboard.IsKeyDown(Key.Up))
+                if (Keyboard.IsKeyDown(Key.Up))
                 {
-                    this.CurrentY += 10;
+                    this.CurrentY += 20;
+                    e.Handled = true;
                 }
-                else if (Keyboard.IsKeyDown(Key.Down))
+                if (Keyboard.IsKeyDown(Key.Down))
                 {
-                    this.CurrentY -= 10;
+                    this.CurrentY -= 20;
+                    e.Handled = true;
                 }
             }
 
@@ -3263,6 +3266,7 @@ namespace Dynamo.Controls
         {
             this.dynamicCheckBox.IsEnabled = true;
         }
+
     }
 
     public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>
