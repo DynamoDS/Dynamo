@@ -14,8 +14,8 @@
                 Width="15"
                 StrokeThickness="5"
                 Stroke="DarkGray"
-                Canvas.Left="-6"
-                Canvas.Top="-6" Fill="#0AFFFFFF" />
+                Canvas.Left="-15"
+                Canvas.Top="-15" Fill="#0AFFFFFF" />
         </Canvas>
         <TextBox 
             Name="noteText"

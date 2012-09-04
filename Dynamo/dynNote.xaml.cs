@@ -25,6 +25,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Dynamo.Utilities;
+using Dynamo.Controls;
 
 namespace Dynamo.Elements
 {
@@ -47,7 +49,7 @@ namespace Dynamo.Elements
             noteText.GotFocus += new RoutedEventHandler(noteText_GotFocus);
             noteText.PreviewGotKeyboardFocus += new KeyboardFocusChangedEventHandler(noteText_GotKeyboardFocus);
             //noteText.GotMouseCapture += new MouseEventHandler(noteText_GotMouseCapture);
-
+            
         }
 
         void noteText_GotMouseCapture(object sender, MouseEventArgs e)
@@ -58,26 +60,42 @@ namespace Dynamo.Elements
         void noteText_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             moveDot.Visibility = System.Windows.Visibility.Visible;
+            if (!dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
+            {
+                dynElementSettings.SharedInstance.Bench.SelectedElements.Add(this);
+            }
         }
 
         void noteText_GotFocus(object sender, RoutedEventArgs e)
         {
             moveDot.Visibility = System.Windows.Visibility.Visible;
+            if (!dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
+            {
+                dynElementSettings.SharedInstance.Bench.SelectedElements.Add(this);
+            }
         }
 
         void noteText_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             moveDot.Visibility = System.Windows.Visibility.Hidden;
+            if (dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
+            {
+                dynElementSettings.SharedInstance.Bench.SelectedElements.Remove(this);
+            }
         }
 
         void noteText_LostMouseCapture(object sender, MouseEventArgs e)
         {
             moveDot.Visibility = System.Windows.Visibility.Hidden;
-        }
 
+        }
         void noteText_LostFocus(object sender, RoutedEventArgs e)
         {
             moveDot.Visibility = System.Windows.Visibility.Hidden;
+            if (dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
+            {
+                dynElementSettings.SharedInstance.Bench.SelectedElements.Remove(this);
+            }
         }
 
         void noteText_MouseDoubleClick(object sender, MouseButtonEventArgs e)

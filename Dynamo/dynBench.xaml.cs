@@ -65,7 +65,7 @@ namespace Dynamo.Controls
         string logText;
 
         dynWorkspace _cspace;
-        dynWorkspace CurrentSpace
+        internal dynWorkspace CurrentSpace
         {
             get { return _cspace; }
             set
@@ -639,14 +639,16 @@ namespace Dynamo.Controls
         /// Adds the given element to the selection.
         /// </summary>
         /// <param name="sel">The element to select.</param>
-        public void SelectElement(dynNode sel)
+        public void SelectElement(System.Windows.Controls.UserControl sel)
         {
             if (!selectedElements.Contains(sel))
             {
                 //set all other items to the unselected state
                 ClearSelection();
                 selectedElements.Add(sel);
-                sel.Select();
+
+                if(sel is dynNode)
+                    (sel as dynNode).Select();
             }
         }
 
@@ -656,9 +658,10 @@ namespace Dynamo.Controls
         public void ClearSelection()
         {
             //set all other items to the unselected state
-            foreach (dynNode el in selectedElements.ToList())
+            foreach (System.Windows.Controls.UserControl el in selectedElements.ToList())
             {
-                el.Deselect();
+                if(el is dynNode)
+                    (el as dynNode).Deselect();
             }
             selectedElements.Clear();
         }
@@ -1809,14 +1812,12 @@ namespace Dynamo.Controls
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Back) ||
                 Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Delete))
             {
-                //don't do this if an input element has focus
-                //this keeps us from deleting nodes when the
-                //user is deleting text
 
                 for (int i = selectedElements.Count - 1; i >= 0; i--)
                 {
                     DeleteElement(selectedElements[i]);
                 }
+
                 e.Handled = true;
             }
 
@@ -1855,22 +1856,33 @@ namespace Dynamo.Controls
             }
         }
 
-        internal void DeleteElement(dynNode el)
+        internal void DeleteElement(System.Windows.Controls.UserControl el)
         {
-            for (int i = el.OutPort.Connectors.Count - 1; i >= 0; i--)
+            dynNote note = el as dynNote;
+            dynNode node = el as dynNode;
+            if (node != null)
             {
-                el.OutPort.Connectors[i].Kill();
-            }
-            foreach (dynPort p in el.InPorts)
-            {
-                for (int i = p.Connectors.Count - 1; i >= 0; i--)
+                for (int i = node.OutPort.Connectors.Count - 1; i >= 0; i--)
                 {
-                    p.Connectors[i].Kill();
+                    node.OutPort.Connectors[i].Kill();
                 }
+                foreach (dynPort p in node.InPorts)
+                {
+                    for (int i = p.Connectors.Count - 1; i >= 0; i--)
+                    {
+                        p.Connectors[i].Kill();
+                    }
+                }
+
+                this.Elements.Remove(node);
+            }
+            else if (note != null)
+            {
+                this.CurrentSpace.Notes.Remove(note);
             }
 
+            //remove the item from the selection set
             selectedElements.Remove(el);
-            this.Elements.Remove(el);
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
             el = null;
         }
@@ -3208,7 +3220,7 @@ namespace Dynamo.Controls
       }
    }
 
-    public class dynSelection : ObservableCollection<dynNode>
+    public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>
     {
         public dynSelection() : base() { }
     }
