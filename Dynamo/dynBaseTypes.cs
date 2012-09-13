@@ -2325,7 +2325,7 @@ namespace Dynamo.Elements
 
     [ElementName("Concatenate Strings")]
     [ElementDescription("Concatenates two or more strings")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementCategory(BuiltinElementCategories.MISC)]
     [RequiresTransaction(false)]
     public class dynConcatStrings : dynVariableInput
     {
@@ -2398,7 +2398,7 @@ namespace Dynamo.Elements
 
     [ElementName("String -> Number")]
     [ElementDescription("Converts a string to a number")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementCategory(BuiltinElementCategories.MISC)]
     [RequiresTransaction(false)]
     public class dynString2Num : dynBuiltinFunction
     {
@@ -2414,7 +2414,7 @@ namespace Dynamo.Elements
 
     [ElementName("Number -> String")]
     [ElementDescription("Converts a number to a string")]
-    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementCategory(BuiltinElementCategories.MISC)]
     [RequiresTransaction(false)]
     public class dynNum2String : dynBuiltinFunction
     {
@@ -2425,6 +2425,84 @@ namespace Dynamo.Elements
             this.OutPortData = new PortData("s", "A string", typeof(string));
 
             base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Split String")]
+    [ElementDescription("Splits given string around given delimiter into a list of sub strings.")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    public class dynSplitString : dynNode
+    {
+        public dynSplitString()
+        {
+            InPortData.Add(new PortData("str", "String to split", typeof(string)));
+            InPortData.Add(new PortData("del", "Delimiter", typeof(string)));
+            OutPortData = new PortData("strs", "List of split strings", typeof(IList<string>));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            string str = ((Expression.String)args[0]).Item;
+            string del = ((Expression.String)args[1]).Item;
+
+            return Expression.NewList(
+                Utils.convertSequence(
+                    str.Split(new string[] { del }, StringSplitOptions.None)
+                       .Select(Expression.NewString)
+                )
+            );
+        }
+    }
+
+    [ElementName("Join Strings")]
+    [ElementDescription("Joins the given list of strings around the given delimiter.")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    public class dynJoinStrings : dynNode
+    {
+        public dynJoinStrings()
+        {
+            InPortData.Add(new PortData("strs", "List of strings to join.", typeof(IList<string>)));
+            InPortData.Add(new PortData("del", "Delimier", typeof(string)));
+            OutPortData = new PortData("str", "Joined string", typeof(string));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var strs = ((Expression.List)args[0]).Item;
+            var del = ((Expression.String)args[1]).Item;
+
+            return Expression.NewString(
+                string.Join(del, strs.Select(x => ((Expression.String)x).Item))
+            );
+        }
+    }
+
+    [ElementName("String Case")]
+    [ElementDescription("Converts a string to uppercase or lowercase")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    public class dynStringCase : dynNode
+    {
+        public dynStringCase()
+        {
+            InPortData.Add(new PortData("str", "String to convert", typeof(string)));
+            InPortData.Add(new PortData("upper?", "True = Uppercase, False = Lowercase", typeof(bool)));
+            OutPortData = new PortData("s", "Converted string", typeof(string));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            string s = ((Expression.String)args[0]).Item;
+            bool upper = ((Expression.Number)args[1]).Item == 1.0;
+
+            return Expression.NewString(
+                upper ? s.ToUpper() : s.ToLower()
+            );
         }
     }
 
