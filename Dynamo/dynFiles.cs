@@ -16,12 +16,14 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Controls;
+using System.Linq;
 using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Dynamo.Elements
 {
@@ -75,6 +77,47 @@ namespace Dynamo.Elements
             {
                 StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write));
                 writer.Write(text);
+                writer.Close();
+            }
+            catch (Exception e)
+            {
+                this.Bench.Log(e);
+                return Expression.NewNumber(0);
+            }
+
+            return Expression.NewNumber(1);
+        }
+    }
+
+
+    [ElementName("Write CSV File")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Writes a list of lists into a file using a comma-separated values format. Outer list represents rows, inner lists represent column.")]
+    public class dynListToCSV : dynNode
+    {
+        public dynListToCSV()
+        {
+            InPortData.Add(new PortData("path", "Filename to write to", typeof(string)));
+            InPortData.Add(new PortData("data", "List of lists to write into CSV", typeof(IList<IList<string>>)));
+            OutPortData = new PortData("success?", "Whether or not the file writing was successful", typeof(bool));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            string path = ((Expression.String)args[0]).Item;
+            var data = ((Expression.List)args[1]).Item;
+
+            try
+            {
+                StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write));
+
+                foreach (Expression line in data)
+                {
+                    writer.WriteLine(string.Join(",", ((Expression.List)line).Item.Select(x => ((Expression.String)x))));
+                }
+
                 writer.Close();
             }
             catch (Exception e)
