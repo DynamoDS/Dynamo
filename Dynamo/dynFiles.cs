@@ -25,180 +25,222 @@ using System.Windows.Forms;
 
 namespace Dynamo.Elements
 {
-   [ElementName("Read File")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Create an element for reading and watching data in a file on disk.")]
-   [RequiresTransaction(false)]
-   public class dynFileReader : dynNode
-   {
-      public dynFileReader()
-      {
-         InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
-         OutPortData = new PortData("contents", "File contents", typeof(string));
+    [ElementName("Read File")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
+    [RequiresTransaction(false)]
+    public class dynFileReader : dynNode
+    {
+        public dynFileReader()
+        {
+            InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
+            OutPortData = new PortData("contents", "File contents", typeof(string));
 
-         base.RegisterInputsAndOutputs();
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         string arg = ((Expression.String)args[0]).Item;
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            string arg = ((Expression.String)args[0]).Item;
 
-         StreamReader reader = new StreamReader(new FileStream(arg, FileMode.Open, FileAccess.Read, FileShare.Read));
-         string contents = reader.ReadToEnd();
-         reader.Close();
+            StreamReader reader = new StreamReader(new FileStream(arg, FileMode.Open, FileAccess.Read, FileShare.Read));
+            string contents = reader.ReadToEnd();
+            reader.Close();
 
-         return Expression.NewString(contents);
-      }
-   }
+            return Expression.NewString(contents);
+        }
+    }
 
-   #region File Watcher
 
-   //SJE
-   //TODO: Update (or make different versions)
-   [ElementName("Watch File")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Create an element for reading and watching data in a file on disk.")]
-   [RequiresTransaction(false)]
-   public class dynFileWatcher : dynNode
-   {
-      public dynFileWatcher()
-      {
-         this.InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
-         this.OutPortData = new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher));
+    [ElementName("Write File")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Writes the given string to the given file. Creates the file if it doesn't exist.")]
+    public class dynFileWriter : dynNode
+    {
+        public dynFileWriter()
+        {
+            InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
+            InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
+            OutPortData = new PortData("success?", "Whether or not the operation was successful.", typeof(bool));
 
-         base.RegisterInputsAndOutputs();
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         string fileName = ((Expression.String)args[0]).Item;
-         return Expression.NewContainer(new FileWatcher(fileName));
-      }
-   }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            string path = ((Expression.String)args[0]).Item;
+            string text = ((Expression.String)args[1]).Item;
 
-   [ElementName("Watched File Changed?")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Checks if the file watched by the given FileWatcher has changed.")]
-   [RequiresTransaction(false)]
-   public class dynFileWatcherChanged : dynNode
-   {
-      public dynFileWatcherChanged()
-      {
-         this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
-         this.OutPortData = new PortData("changed?", "Whether or not the file has been changed.", typeof(bool));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
-
-         return Expression.NewNumber(watcher.Changed ? 1 : 0);
-      }
-   }
-
-   //TODO: Add UI for specifying whether should error or continue (checkbox?)
-   [ElementName("Wait for Change")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Waits for the specified watched file to change.")]
-   [RequiresTransaction(false)]
-   public class dynFileWatcherWait : dynNode
-   {
-      public dynFileWatcherWait()
-      {
-         this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
-         this.InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(double)));
-         this.OutPortData = new PortData("changed?", "True: File was changed. False: Timed out.", typeof(bool));
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
-         double timeout = ((Expression.Number)args[1]).Item;
-
-         int tick = 0;
-         while (!watcher.Changed)
-         {
-            Thread.Sleep(10);
-            tick += 10;
-
-            if (tick >= timeout)
+            try
             {
-               throw new Exception("File watcher timeout!");
+                StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write));
+                writer.Write(text);
+                writer.Close();
             }
-         }
+            catch (Exception e)
+            {
+                this.Bench.Log(e);
+                return Expression.NewNumber(0);
+            }
 
-         return Expression.NewNumber(1);
-      }
-   }
+            return Expression.NewNumber(1);
+        }
+    }
 
-   [ElementName("Reset File Watcher")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Resets state of FileWatcher so that it watches again.")]
-   [RequiresTransaction(false)]
-   public class dynFileWatcherReset : dynNode
-   {
-      public dynFileWatcherReset()
-      {
-         this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
-         this.OutPortData = new PortData("fw", "Updated watcher.", typeof(FileWatcher));
 
-         base.RegisterInputsAndOutputs();
-      }
+    #region File Watcher
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
+    //SJE
+    //TODO: Update (or make different versions)
+    [ElementName("Watch File")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
+    [RequiresTransaction(false)]
+    public class dynFileWatcher : dynNode
+    {
+        public dynFileWatcher()
+        {
+            this.InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
+            this.OutPortData = new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher));
 
-         watcher.Reset();
+            base.RegisterInputsAndOutputs();
+        }
 
-         return Expression.NewContainer(watcher);
-      }
-   }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            string fileName = ((Expression.String)args[0]).Item;
+            return Expression.NewContainer(new FileWatcher(fileName));
+        }
+    }
 
-   class FileWatcher : IDisposable
-   {
-      public bool Changed = false;
+    [ElementName("Watched File Changed?")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Checks if the file watched by the given FileWatcher has changed.")]
+    [RequiresTransaction(false)]
+    public class dynFileWatcherChanged : dynNode
+    {
+        public dynFileWatcherChanged()
+        {
+            this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
+            this.OutPortData = new PortData("changed?", "Whether or not the file has been changed.", typeof(bool));
 
-      private FileSystemWatcher watcher;
-      private FileSystemEventHandler handler;
+            base.RegisterInputsAndOutputs();
+        }
 
-      public FileWatcher(string filePath)
-      {
-         this.watcher = new FileSystemWatcher(
-            Path.GetDirectoryName(filePath),
-            Path.GetFileName(filePath)
-         );
-         this.handler = new FileSystemEventHandler(watcher_Changed);
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
 
-         this.watcher.Changed += handler;
-         this.watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite;
-         this.watcher.EnableRaisingEvents = true;
-      }
+            return Expression.NewNumber(watcher.Changed ? 1 : 0);
+        }
+    }
 
-      void watcher_Changed(object sender, FileSystemEventArgs e)
-      {
-         this.Changed = true;
-      }
+    //TODO: Add UI for specifying whether should error or continue (checkbox?)
+    [ElementName("Wait for Change")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Waits for the specified watched file to change.")]
+    [RequiresTransaction(false)]
+    public class dynFileWatcherWait : dynNode
+    {
+        public dynFileWatcherWait()
+        {
+            this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
+            this.InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(double)));
+            this.OutPortData = new PortData("changed?", "True: File was changed. False: Timed out.", typeof(bool));
 
-      public void Reset()
-      {
-         this.Changed = false;
-      }
+            base.RegisterInputsAndOutputs();
+        }
 
-      #region IDisposable Members
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
+            double timeout = ((Expression.Number)args[1]).Item;
 
-      public void Dispose()
-      {
-         this.watcher.Changed -= handler;
-         this.watcher.Dispose();
-      }
+            timeout = timeout == 0 ? double.PositiveInfinity : timeout;
 
-      #endregion
-   }
+            int tick = 0;
+            while (!watcher.Changed)
+            {
+                if (Bench.CancelRun)
+                    throw new Dynamo.Controls.CancelEvaluationException(false);
 
-   #endregion
+                Thread.Sleep(10);
+                tick += 10;
+
+                if (tick >= timeout)
+                {
+                    throw new Exception("File watcher timeout!");
+                }
+            }
+
+            return Expression.NewNumber(1);
+        }
+    }
+
+    [ElementName("Reset File Watcher")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Resets state of FileWatcher so that it watches again.")]
+    [RequiresTransaction(false)]
+    public class dynFileWatcherReset : dynNode
+    {
+        public dynFileWatcherReset()
+        {
+            this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
+            this.OutPortData = new PortData("fw", "Updated watcher.", typeof(FileWatcher));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
+
+            watcher.Reset();
+
+            return Expression.NewContainer(watcher);
+        }
+    }
+
+    class FileWatcher : IDisposable
+    {
+        public bool Changed = false;
+
+        private FileSystemWatcher watcher;
+        private FileSystemEventHandler handler;
+
+        public FileWatcher(string filePath)
+        {
+            this.watcher = new FileSystemWatcher(
+               Path.GetDirectoryName(filePath),
+               Path.GetFileName(filePath)
+            );
+            this.handler = new FileSystemEventHandler(watcher_Changed);
+
+            this.watcher.Changed += handler;
+            this.watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite;
+            this.watcher.EnableRaisingEvents = true;
+        }
+
+        void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            this.Changed = true;
+        }
+
+        public void Reset()
+        {
+            this.Changed = false;
+        }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            this.watcher.Changed -= handler;
+            this.watcher.Dispose();
+        }
+
+        #endregion
+    }
+
+    #endregion
 }
