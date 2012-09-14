@@ -247,27 +247,28 @@ namespace Dynamo.Elements
             DividedPath divPath;
             List<Reference> refList = new List<Reference>();
 
-            // this node can take one or more curve elements and create a single divided path element
+            // this node can take one or more curve elements and create one or more divided path elements
             // input is one or more user-selected curves for now
             // todo: - create a utility function that can handle curve loops and convert them into lists, perhaps makes this a node or just an allowed input of this node
             //       - enhance curve by selection node to handle multiple picks
             //       - allow selection of a family instance to extract a curve loop or reference list
-            // init a list to hold on to curve references
+            //
             // process input curve elements
             // - if we pass in a single curve element, we will extract it's reference and pass that into the divided path creation method
-            // - if we pass in a collection of curve elements, we want to make a single divided curve from that collection
+            // - if we pass in a collection of curve elements, we want to make a divided path for each curve from that collection
             //    for each curve element in list, 
             //      manage curve list (determine whether we already had used that curve before to make this divided path, add new curves, remove old curves)
-            //      extract curve refs for each curve element and add to  list of references
-            //  pass reference list into the divided path creation method
-            //  question: how to hold on to the divided path element? put it in last in the element list?
+            //      extract curve refs for each curve element and create divided path
+            //      update params of for the div path
+            //  this.Elements should only hold divided paths not curves.
+            // node should return a list of divided paths
 
             if (input.IsList)
             {
                 refList.Clear();
 
                 var curveList = (input as Expression.List).Item;
-
+                
                 //Counter to keep track of how many references and divided path. We'll use this to delete old
                 //elements later.
                 int count = 0;
@@ -282,7 +283,7 @@ namespace Dynamo.Elements
                           Reference r;
                           CurveElement c;
                           
-                          //...if we already have reference made by this node in a previous run, presume we have a divided path and a list of refs.
+                          //...check to see if we already have a divided node made by this curve in a previous run
                           if (this.Elements.Count > count)
                           {
                               Element e;
@@ -290,30 +291,43 @@ namespace Dynamo.Elements
                               //...we attempt to fetch it from the document...
                               if (dynUtils.TryGetElement(this.Elements[count], out e))
                               {
-                                  //...if we find a curve and if we're successful matching it to the doc, add it to the reference list... 
-                                  c = e as CurveElement;
-                                  
-                                  if (c!= null)
+                                  //...if we find a divided path and if we're successful matching it to the doc, update it's properties... 
+                                  divPath = e as DividedPath;
+
+                                  if (divPath!= null)
                                   {
-                                      Curve crvRef = c.GeometryCurve;
-                                      refList.Add(crvRef.Reference);
+                                      divPath.FixedNumberOfPoints = (int)xi;
                                      
                                   }
                                   else
                                   {
-                                      //...if we find a divided path and if we're successful matching it to the doc, we will use it and update the list of refs it needs.
-                                      divPath = e as DividedPath;
+                                      //...otherwise, we can make a new divided path and replace it in the list of
+                                      //previously created divided paths.
+                                      //...we extract a curve element from the container.
+                                      c = (CurveElement)((Expression.Container)x).Item;
+                                      //...we create a new curve ref
+                                      Curve crvRef = c.GeometryCurve;
+                                      refList.Add(crvRef.Reference);
+                                      divPath = Autodesk.Revit.DB.DividedPath.Create(this.UIDocument.Document, refList);
                                       divPath.FixedNumberOfPoints = (int)xi;
+                                      this.Elements[count] = divPath.Id;
+                                      refList.Clear();
                                       
                                   }
                               }
                               else
                               {
-                                  //...otherwise, we have a new curve we need to populate into the list of refs 
+                                  //...otherwise, we can make a new divided path and replace it in the list of
+                                  //previously created divided paths.
+                                  //...we extract a curve element from the container.
                                   c = (CurveElement)((Expression.Container)x).Item;
+                                  //...we create a new curve ref
                                   Curve crvRef = c.GeometryCurve;
                                   refList.Add(crvRef.Reference);
-                                  //this.Elements[count] = c.Id;
+                                  divPath = Autodesk.Revit.DB.DividedPath.Create(this.UIDocument.Document, refList);
+                                  divPath.FixedNumberOfPoints = (int)xi;
+                                  this.Elements[count] = divPath.Id;
+                                  refList.Clear();
                               }
 
                           }
@@ -325,56 +339,27 @@ namespace Dynamo.Elements
                               //...we create a new curve ref
                               Curve crvRef = c.GeometryCurve;
                               refList.Add(crvRef.Reference);
+                              divPath = Autodesk.Revit.DB.DividedPath.Create(this.UIDocument.Document, refList);
+                              divPath.FixedNumberOfPoints = (int)xi;
                               //...and store the element in the element list for future runs.
-                              this.Elements.Add(c.Id);
+                              this.Elements.Add(divPath.Id);
+                              refList.Clear();
                           }
                           //Finally, we update the counter, and return a new Expression containing the reference list.
 
                           count++;
-                          return Expression.NewContainer(refList);
+                          return Expression.NewContainer(divPath);
                       }
                    )
                 );
 
-                //Now that we've added all the curve references from this run, we delete all of the
+                //Now that we've added all the divided paths from this run, we delete all of the
                 //extra ones from the previous run.
                 foreach (var eid in this.Elements.Skip(count))
                 {
-                    Element e;
-                    CurveElement c;
-                    dynUtils.TryGetElement(eid, out e);
-                    c = e as CurveElement;
-                    refList.Remove(c.GeometryCurve.Reference);
-                    // this.DeleteElement(e); // remove reference to curve element not curve element itself.
-                }
-
-
-                Element d;
-                //If we've made any elements previously...
-                if (this.Elements.Any())
-                {
-                    //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0], out d))
-                    {
-                        //..and if we do, update it's data.
-                        divPath = d as DividedPath;
-                        divPath.FixedNumberOfPoints = (int)xi;
-                    }
-                    else
-                    {
-                        //...otherwise, just make a new one and replace it in the list.
-                        divPath = Autodesk.Revit.DB.DividedPath.Create(this.UIDocument.Document, refList);
-                        divPath.FixedNumberOfPoints = (int)xi;
-                        this.Elements[0] = divPath.Id;
-                    }
-                    //Finally, we return a new Expression containing the divided path.
-                    //This Expression will be placed in the Expression.List that will be passed downstream from this
-                    //node.
-                    return Expression.NewContainer(divPath);
                     
+                    this.DeleteElement(eid); // remove unused divided paths
                 }
-
-
 
 
                 return Expression.NewList(result);
@@ -393,11 +378,7 @@ namespace Dynamo.Elements
                 //double x = x0;
                 Curve crvRef = c.GeometryCurve;
 
-                //List<Reference> refList = new List<Reference>();
-                refList.Add(crvRef.Reference); // TODO handle multiple curve refs in list manager above
-
-                //DividedPath divPath;
-
+                refList.Add(crvRef.Reference); 
 
                 //If we've made any elements previously...
                 if (this.Elements.Any())
@@ -422,8 +403,7 @@ namespace Dynamo.Elements
                     foreach (var el in this.Elements.Skip(1))
                     {
                         this.DeleteElement(el);
-                        //todo - this could get us into trouble - if there was a list of curve elements and we delete them when we really just need to delete the reference
-                    }
+                                           }
                 }
                 //...otherwise...
                 else
@@ -433,6 +413,7 @@ namespace Dynamo.Elements
                     divPath.FixedNumberOfPoints = (int)xi;
                     this.Elements.Add(divPath.Id);
                 }
+                refList.Clear();
 
                 //Fin
                 return Expression.NewContainer(divPath);
