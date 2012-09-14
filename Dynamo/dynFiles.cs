@@ -283,7 +283,7 @@ namespace Dynamo.Elements
 
     class FileWatcher : IDisposable
     {
-        public bool Changed = false;
+        public bool Changed { get; private set; }
 
         private FileSystemWatcher watcher;
         private FileSystemEventHandler handler;
@@ -292,6 +292,8 @@ namespace Dynamo.Elements
 
         public FileWatcher(string filePath)
         {
+            this.Changed = false;
+
             this.watcher = new FileSystemWatcher(
                Path.GetDirectoryName(filePath),
                Path.GetFileName(filePath)
