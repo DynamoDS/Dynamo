@@ -107,6 +107,9 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
+    <Compile Include="ParticleSystem\dynParticleSpring.cs" />
+    <Compile Include="ParticleSystem\dynParticle.cs" />
     <Compile Include="dynArduino.cs" />
     <Compile Include="dynBaseTypes.cs" />
     <Compile Include="dynBench.xaml.cs">
@@ -129,6 +132,7 @@ limitations under the License.
     <Compile Include="dynNote.xaml.cs">
       <DependentUpon>dynNote.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ParticleSystem\dynParticleSystem.cs" />
     <Compile Include="dynPoints.cs" />
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
@@ -161,6 +165,7 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SearchDictionary.cs" />
+    <Compile Include="ParticleSystem\VerletIntegrator.cs" />
     <Compile Include="WatchTree.xaml.cs">
       <DependentUpon>WatchTree.xaml</DependentUpon>
     </Compile>
