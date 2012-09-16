@@ -68,9 +68,9 @@ namespace Dynamo.Elements
 
         public enum IntegratorType { Verlet, RK4 };
 
-        public void step()
+        public void step(double t)
         {
-            integrator.step(1);
+            integrator.step(t); //.0002 should be stable
         }
 
         //public void SetIntegrator(IntegratorType integrator )
@@ -96,7 +96,7 @@ namespace Dynamo.Elements
 
         void setDrag(double d)
         {
-
+            drag = d;
         }
 
         public dynParticle makeParticle(double mass, XYZ position, bool fix)

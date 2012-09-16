@@ -59,6 +59,21 @@ namespace Dynamo.Elements
             return m_Damping;
         }
 
+        public void setSpringConstant(double springConstant)
+        {
+            m_springConstant = springConstant;
+        }
+
+        public void setRestLength(double restLength)
+        {
+            m_restLength = restLength;
+        }
+
+        public void setDamping(double damping)
+        {
+            m_Damping = damping;
+        }
+
         public double getSpringConstant()
         {
             return m_springConstant;
