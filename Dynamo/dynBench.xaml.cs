@@ -1548,8 +1548,14 @@ namespace Dynamo.Controls
                 dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
             }
 
+            foreach (dynNote n in this.CurrentSpace.Notes)
+            {
+                dynElementSettings.SharedInstance.Workbench.Children.Remove(n);
+            }
+
             this.CurrentSpace.Elements.Clear();
             this.CurrentSpace.Connectors.Clear();
+            this.CurrentSpace.Notes.Clear();
             this.CurrentSpace.Modified();
         }
 
