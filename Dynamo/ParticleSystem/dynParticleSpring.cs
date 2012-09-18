@@ -29,6 +29,7 @@ namespace Dynamo.Elements
         protected double m_restLength;
         protected double m_springConstant;
         protected double m_Damping;
+        protected ElementId m_ElementId;
 
         public dynParticleSpring(dynParticle particleA, dynParticle particleB, double restLength, double springConstant, double damping)
         {
@@ -38,6 +39,18 @@ namespace Dynamo.Elements
             m_springConstant = springConstant;
             m_Damping = damping;
         }
+
+        public dynParticleSpring(ElementId eid, dynParticle particleA, dynParticle particleB, double restLength, double springConstant, double damping)
+        {
+            m_ElementId = eid;
+            m_particleA = particleA;
+            m_particleB = particleB;
+            m_restLength = restLength;
+            m_springConstant = springConstant;
+            m_Damping = damping;
+        }
+
+        
 
         public dynParticle getOneEnd()
         {
@@ -114,6 +127,17 @@ namespace Dynamo.Elements
                 if (m_particleB.isFree())
                     m_particleB.addForce(-a2b);
             }
+
+        }
+
+        public ElementId getElementID()
+        {
+            return m_ElementId;
+        }
+
+        public void setElementID(ElementId eid)
+        {
+            m_ElementId = eid;
         }
     }
 }

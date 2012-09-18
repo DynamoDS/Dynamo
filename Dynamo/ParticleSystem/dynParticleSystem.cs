@@ -106,9 +106,23 @@ namespace Dynamo.Elements
             return p;
         }
 
+        public dynParticle makeParticleFromElementID(ElementId eid, double mass, XYZ position, bool fix)
+        {
+            dynParticle p = new dynParticle( eid, mass, position, fix);
+            particles.Add(p);
+            return p;
+        }
+
         public dynParticleSpring makeSpring(dynParticle a, dynParticle b, double restLength, double springConstant, double damping)
         {
             dynParticleSpring s = new dynParticleSpring(a, b, restLength, springConstant, damping);
+            springs.Add(s);
+            return s;
+        }
+
+        public dynParticleSpring makeSpringFromElementID(ElementId eid, dynParticle a, dynParticle b, double restLength, double springConstant, double damping)
+        {
+            dynParticleSpring s = new dynParticleSpring(eid, a, b, restLength, springConstant, damping);
             springs.Add(s);
             return s;
         }
@@ -172,6 +186,90 @@ namespace Dynamo.Elements
             return springs[i];
         }
 
+        public dynParticle getParticleByElementID(ElementId eid)
+        {
+            for (int i = 0; i < particles.Count(); ++i)
+            {
+                if (eid != null && particles.Count > 0 && (particles[i].getElementID() != null))
+                {
+                    if (eid == particles[i].getElementID())
+                    {
+                        return particles[i];
+                    }
+                }
+            }
+            return null;
+        }
+
+        public bool deleteParticleByElementID(ElementId eid)
+        {
+            for (int i = 0; i < particles.Count(); ++i)
+            {
+                if (eid != null && particles.Count > 0 && (particles[i].getElementID() != null))
+                {
+                    if (eid == particles[i].getElementID())
+                    {
+                        particles.Remove(particles[i]);
+                        return true; //found and deleted
+                    }
+                }
+            }
+            return false; //did not delete
+        }
+
+        public dynParticleSpring getSpringByElementID(ElementId eid)
+        {
+            for (int i = 0; i < springs.Count(); ++i)
+            {
+                if (eid != null && springs.Count > 0 && (springs[i].getElementID() != null))
+                {
+                    if (eid == springs[i].getElementID())
+                    {
+                        return springs[i];
+                    }
+                }
+            }
+            return null;
+        }
+
+        public bool deleteSpringByElementID(ElementId eid)
+        {
+            for (int i = 0; i < springs.Count(); ++i)
+            {
+                if (eid != null && springs.Count > 0 && (springs[i].getElementID() != null))
+                {
+                    if (eid == springs[i].getElementID())
+                    {
+                        springs.Remove(springs[i]);
+                        return true; //found and deleted
+                    }
+                }
+            }
+            return false; //did not delete
+        }
+
+        public dynParticle getParticleByXYZ(XYZ xyz)
+        {
+            bool found = false;
+            for (int i = 0; i < particles.Count(); ++i)
+            {
+                if (xyz != null && particles.Count > 0 && (particles[i].getElementID() != null))
+                {
+                    if (xyz.IsAlmostEqualTo(particles[i].getPosition()))
+                    {
+                        return particles[i];
+                        found = true;
+                    }
+                }
+            }
+            if (found == false)//if we did not find one make a new one
+            {
+               dynParticle part = makeParticle(.5, xyz, false);
+               return part;
+            }
+
+            return null;
+        }
     }
 }
 
