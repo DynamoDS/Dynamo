@@ -441,7 +441,8 @@ namespace Dynamo.Elements
                                   {
                                       partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
                                       partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
-                                      particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
+                                      //particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
+                                      particleSystem.makeSpring(partA, partB, r, s, d);
                                   }
 
                               }
