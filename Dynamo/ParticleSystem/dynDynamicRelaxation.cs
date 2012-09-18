@@ -400,13 +400,55 @@ namespace Dynamo.Elements
                               );
                               this.Elements.Add(c.Id);
 
-                              //dynParticleSpring spring = particleSystem.getSpringByElementID(c.Id);
-                              ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
-                              ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
+                              try
+                              {
 
-                              dynParticle partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
-                              dynParticle partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
-                              particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
+
+                                  //dynParticle partA = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(0).Id]);// we have the old point value here we need to find the new
+                                  //dynParticle partB = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(1).Id]);
+                                  // old point id, need to find new
+
+                                  ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
+                                  ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
+
+                                  //dynParticle partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
+                                  //dynParticle partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
+                                  //particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
+
+                                  ReferencePoint rpA = FindRefPointWithCoincidentXYZ(oldRefPointA);
+                                  ReferencePoint rpB = FindRefPointWithCoincidentXYZ(oldRefPointB);
+
+                                  dynParticle partA;
+                                  dynParticle partB;
+                                  //try and find the particles that are associated with these refpoints. 
+
+                                  //For some reason the dictionary is not working
+                                  //dynParticle partA = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(0).Id]);// we have the old point value here we need to find the new
+                                  //dynParticle partB = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(1).Id]);
+
+                                  if (rpA != null || rpB != null)
+                                  {
+                                      partA = particleSystem.getParticleByXYZ(rpA.Position);
+                                      partB = particleSystem.getParticleByXYZ(rpB.Position);
+
+
+                                      if (partA != null || partB != null)
+                                      {
+                                          particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
+                                      }
+                                  }
+                                  else
+                                  {
+                                      partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
+                                      partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
+                                      particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
+                                  }
+
+                              }
+                              catch (Exception ex)
+                              {
+                              }
+                                              
 
 
                           }
