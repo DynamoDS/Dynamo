@@ -23,7 +23,7 @@ using Autodesk.Revit.DB;
 
 namespace Dynamo.Elements
 {
-    class dynParticle
+    class Particle
     {
        protected XYZ m_Position;
        protected XYZ m_oldPosition;
@@ -35,7 +35,7 @@ namespace Dynamo.Elements
        protected ElementId m_ElementId;
 
 
-        public dynParticle(double mass, XYZ position, bool fix)
+        public Particle(double mass, XYZ position, bool fix)
         {
             m_Position = position;
             m_oldPosition = position;
@@ -46,7 +46,7 @@ namespace Dynamo.Elements
 
         }
 
-        public dynParticle(ElementId eid, double mass, XYZ position, bool fix) // added to handle backfinding the right refpoint without an expensive search
+        public Particle(ElementId eid, double mass, XYZ position, bool fix) // added to handle backfinding the right refpoint without an expensive search
         {
             m_ElementId = eid;
             m_Position = position;

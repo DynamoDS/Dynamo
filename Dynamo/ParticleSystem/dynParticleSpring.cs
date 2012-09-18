@@ -22,16 +22,16 @@ using Autodesk.Revit.DB;
 
 namespace Dynamo.Elements
 {
-    class dynParticleSpring
+    class ParticleSpring
     {
-        protected dynParticle m_particleA;
-        protected dynParticle m_particleB;
+        protected Particle m_particleA;
+        protected Particle m_particleB;
         protected double m_restLength;
         protected double m_springConstant;
         protected double m_Damping;
         protected ElementId m_ElementId;
 
-        public dynParticleSpring(dynParticle particleA, dynParticle particleB, double restLength, double springConstant, double damping)
+        public ParticleSpring(Particle particleA, Particle particleB, double restLength, double springConstant, double damping)
         {
             m_particleA = particleA;
             m_particleB = particleB;
@@ -40,7 +40,7 @@ namespace Dynamo.Elements
             m_Damping = damping;
         }
 
-        public dynParticleSpring(ElementId eid, dynParticle particleA, dynParticle particleB, double restLength, double springConstant, double damping)
+        public ParticleSpring(ElementId eid, Particle particleA, Particle particleB, double restLength, double springConstant, double damping)
         {
             m_ElementId = eid;
             m_particleA = particleA;
@@ -52,12 +52,12 @@ namespace Dynamo.Elements
 
         
 
-        public dynParticle getOneEnd()
+        public Particle getOneEnd()
         {
             return m_particleA;
         }
 
-        public dynParticle getTheOtherEnd()
+        public Particle getTheOtherEnd()
         {
             return m_particleB;
         }

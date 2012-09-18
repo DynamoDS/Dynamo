@@ -32,30 +32,29 @@ using System.Threading;
 
 namespace Dynamo.Elements
 {
-    [ElementName("Dynamic Relaxation")]
+    [ElementName("Create Particle System")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("A node which allows you to drive the position of elmenets via a particle system .")]
     [RequiresTransaction(true)]
-
     class dynDynamicRelaxation : dynNode
     {
-        dynParticleSystem particleSystem;
+        ParticleSystem particleSystem;
         Dictionary<ElementId, ElementId> pointDictionary;
         List<ReferencePoint> rPoints;
 
         public dynDynamicRelaxation()
         {
-            InPortData.Add(new PortData("points", "The point to drive.", typeof(dynReferencePointByXYZ)));
-            InPortData.Add(new PortData( "curves", "The curves to make into springs", typeof(dynCurveByPoints)));
+            InPortData.Add(new PortData("points", "The point to drive.", typeof(ReferencePoint)));
+            InPortData.Add(new PortData("curves", "The curves to make into springs", typeof(IList<CurveByPoints>)));
             InPortData.Add(new PortData("tim", "Timer results to trigger updates.", typeof(double)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(double)));
             InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
             InPortData.Add(new PortData("r", "Rest Length.", typeof(double)));
 
-            OutPortData = new PortData("points", "the outputed points", typeof(dynReferencePointByXYZ));
+            OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
             base.RegisterInputsAndOutputs();
 
-            particleSystem = new dynParticleSystem();
+            particleSystem = new ParticleSystem();
 
             // need a dictionary to hold reference between old points and new to handle spring mapping and mutation
             // curve input is curve by point which references two original ref points. in order to make a new curve by point 
@@ -74,19 +73,19 @@ namespace Dynamo.Elements
 
 
             XYZ basePoint = new XYZ(0, 0, 0);
-            dynParticle a = particleSystem.makeParticle(0.5, basePoint, true);
+            Particle a = particleSystem.makeParticle(0.5, basePoint, true);
             a.makeFixed();
 
-            List<dynParticle> particles = new List<dynParticle>();
+            List<Particle> particles = new List<Particle>();
             particles.Add(a);
 
             for (int i = 1; i < 10; i++)
             {
-                dynParticle s = particles[i - 1];
+                Particle s = particles[i - 1];
 
                 //XYZ pendPoint = new XYZ(0, ((double)i) * Math.Sin(0.5), ((double)i) * Math.Sin(0.5));
                 XYZ pendPoint = new XYZ((double)100*i, 0, 0); // straight line in x axis
-                dynParticle b = particleSystem.makeParticle(0.5, pendPoint, false);
+                Particle b = particleSystem.makeParticle(0.5, pendPoint, false);
           
 
                 particles.Add(b);
@@ -136,7 +135,6 @@ namespace Dynamo.Elements
                 if (rp != null && rp2 != null && rp.Position.IsAlmostEqualTo(rp2.Position))// note this is not gauranteed to be unique. there may be mulitple coincident refpoints and this utill will only return the first found
                 {
                     return rp2; // found a match
-
                 }
             }
 
@@ -153,122 +151,14 @@ namespace Dynamo.Elements
             double s = ((Expression.Number)args[4]).Item;//spring constant
             double r = ((Expression.Number)args[5]).Item;//rest length
             
-            dynParticle p;
-            dynParticleSpring a;
+            //Particle p;
+            //ParticleSpring a;
             
             ReferencePointArray refPtArr = new ReferencePointArray();
             ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
-
-            
-
             //process refpoint inputs and convert to dynParticles in particlesystem. for now we will copy the ref points and only update the position of the copied points.
 
-            //If we are receiving a list of reference points, we must create a new ref point and a dynParticle for each refpoint in the input list.
-
-
-            //If we are receiving a list of reference points, we must create a new ref point and a dynParticle for each refpoint in the input list.
-            //if (points.IsList)
-            //{
-            //    var pointList = (points as Expression.List).Item;
-
-            //    //Counter to keep track of how many ref points we've made. We'll use this to delete old
-            //    //elements later.
-            //    int count = 0;
-
-            //    //We create our output by...
-            //    var resultPoints = Utils.convertSequence(
-            //       pointList.Select(
-            //        //..taking each element in the list and...
-            //          delegate(Expression x)
-            //          {
-            //              ReferencePoint pt;
-            //              //...if we already have elements made by this node in a previous run...
-            //              if (this.Elements.Count > count)
-            //              {
-            //                  Element e;
-            //                  //...we attempt to fetch it from the document...
-            //                  if (dynUtils.TryGetElement(this.Elements[count], out e))
-            //                  {
-            //                      //...and if we're successful, update it's properties as needed
-
-            //                      pt = e as ReferencePoint;
-                                  
-            //                      // - find the matching dynParticle (just updated dynParticle to keep it's refpoint id)
-            //                      // - the rest is a no-op beause the dynParticle will update this refpoints position after the next step.
-            //                      dynParticle part = particleSystem.getParticleByElementID(e.Id);
-
-
-            //                  }
-            //                  else
-            //                  {
-            //                      //...otherwise, we can make a new reference point and replace it in the list of
-            //                      //previously created points.
-            //                      ReferencePoint origPoint = (ReferencePoint)((Expression.Container)x).Item;
-            //                      pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-            //                         origPoint.Position
-            //                      );
-            //                      this.Elements[count] = pt.Id;
-            //                      pointDictionary.Add(origPoint.Id, pt.Id);// we are going to key off the old point to find the new point
-
-            //                      dynParticle part = particleSystem.getParticleByElementID(e.Id);
-            //                      //if we find this ref point does not have a matching particle, make a new particle
-            //                      if (part == null)
-            //                      {
-            //                          particleSystem.makeParticleFromElementID(e.Id, 0.5, pt.Position, false);
-            //                      }
-            //                      else
-            //                      {
-            //                          part.setElementID(pt.Id);//we found a particle that matches the original element id but not the new point we just made, add new point id to part
-            //                      }
-            //                  }
-            //              }
-            //              //...otherwise...
-            //              else
-            //              {
-            //                  //...we create a new point...
-            //                      ReferencePoint origPoint = (ReferencePoint)((Expression.Container)x).Item;
-            //                      pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-            //                         origPoint.Position
-            //                      );
-            //                  //...and store it in the element list for future runs.
-            //                  this.Elements.Add(pt.Id);
-            //                  pointDictionary.Add(origPoint.Id, pt.Id);// we are going to key off the old point to find the new point
-
-            //                  //make a new particle that matches the new point we just made
-            //                  particleSystem.makeParticleFromElementID(pt.Id, 0.5, pt.Position, false);
-
-
-            //              }
-            //              //Finally, we update the counter, and return a new Expression containing the reference point.
-            //              //This Expression will be placed in the Expression.List that will be passed downstream from this
-            //              //node.
-            //              count++;
-            //              return Expression.NewContainer(pt);
-            //          }
-            //       )
-            //    );
-
-            //    //Now that we've created all the Reference Points and particles from this run, we delete all of the
-            //    //extra ones from the previous run.
-            //    foreach (var e in this.Elements.Skip(count))
-            //    {
-            //        this.DeleteElement(e);
-            //        particleSystem.deleteParticleByElementID(e);
-            //        //if(pointDictionary.ContainsValue(e))
-            //        //{
-            //        //    pointDictionary.Remove
-            //        //}
-            //    }
-
-            //    //Fin
-            //    //return Expression.NewList(result);
-            //}
-
-
-            //process curve inputs and convert to dynParticleSprings in particlesystem. for now we will copy the curves and only update the position of the copied points.
-
-            
             if (curves.IsList)
             {
                 var curvesList = (curves as Expression.List).Item;
@@ -296,7 +186,7 @@ namespace Dynamo.Elements
 
                                     //...and if we're successful, set properties of the spring
                                     c = e as CurveByPoints;
-                                    dynParticleSpring spring = particleSystem.getSpringByElementID(e.Id);
+                                    ParticleSpring spring = particleSystem.getSpringByElementID(e.Id);
                                     spring.setDamping(d);
                                     spring.setRestLength(r);
                                     spring.setSpringConstant(s);
@@ -318,14 +208,10 @@ namespace Dynamo.Elements
                                       tempRefPtArr.Clear();
                                       tempRefPtArr = (ReferencePointArray)((CurveByPoints)((Expression.Container)x).Item).GetPoints();
 
-                                      c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(
-
-                                          tempRefPtArr
-
-                                      );
+                                      c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(tempRefPtArr);
                                       this.Elements[count] = c.Id;
 
-                                      dynParticleSpring spring = particleSystem.getSpringByElementID(c.Id);
+                                      ParticleSpring spring = particleSystem.getSpringByElementID(c.Id);
                                       //if we find this cbp does not have a matching spring, make a new spring
                                       if (spring == null)
                                       {
@@ -347,8 +233,8 @@ namespace Dynamo.Elements
                                               ReferencePoint rpA = FindRefPointWithCoincidentXYZ(oldRefPointA);
                                               ReferencePoint rpB = FindRefPointWithCoincidentXYZ(oldRefPointB);
 
-                                              dynParticle partA;
-                                              dynParticle partB;
+                                              Particle partA;
+                                              Particle partB;
                                               //try and find the particles that are associated with these refpoints. 
 
                                               //For some reason the dictionary is not working
@@ -418,8 +304,8 @@ namespace Dynamo.Elements
                                   ReferencePoint rpA = FindRefPointWithCoincidentXYZ(oldRefPointA);
                                   ReferencePoint rpB = FindRefPointWithCoincidentXYZ(oldRefPointB);
 
-                                  dynParticle partA;
-                                  dynParticle partB;
+                                  Particle partA;
+                                  Particle partB;
                                   //try and find the particles that are associated with these refpoints. 
 
                                   //For some reason the dictionary is not working
@@ -449,10 +335,8 @@ namespace Dynamo.Elements
                               catch (Exception ex)
                               {
                               }
-                                              
-
-
                           }
+
                           //Finally, we update the counter, and return a new Expression containing the reference point.
                           //This Expression will be placed in the Expression.List that will be passed downstream from this
                           //node.
@@ -483,7 +367,7 @@ namespace Dynamo.Elements
 
             //actually run the simulation, TODO this should probaly move out of evaluate and into the timer event callback. 
 
-            particleSystem.step(.004); // step size - .004 is fairly stable, TODO - generalize to take double ms in in the future. 
+            //particleSystem.step(.004); // step size - .004 is fairly stable, TODO - generalize to take double ms in in the future. 
 
 
 
@@ -540,106 +424,132 @@ namespace Dynamo.Elements
             //}
 
 
-            return Expression.NewNumber(1);
+            return Expression.NewContainer(particleSystem);
         }
     }
-    [ElementName("Timer")]
+
+    [ElementName("Dynamic Relaxation Step")]
+    [ElementDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("A node which represents a stopwatch.")]
-    [RequiresTransaction(false)]
-
-    public class dynTimer : dynNode
+    [RequiresTransaction(true)]
+    public class dynDynamicRelaxationStep : dynNode
     {
-        Stopwatch sw;
-        bool timing = false;
-        System.Timers.Timer timer; 
-
-        public dynTimer()
+        public dynDynamicRelaxationStep()
         {
-            InPortData.Add(new PortData("n", "How often to receive updates in milliseconds.", typeof(double)));
-            InPortData.Add(new PortData("i/o", "Turn the timer on or off", typeof(dynBool)));
-            OutPortData = new PortData("tim", "The timer, counting in milliseconds.", typeof(int));
+            InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(ParticleSystem)));
+            InPortData.Add(new PortData("step", "Time to step.", typeof(double)));
+            OutPortData = new PortData("", "Success?", typeof(bool));
 
             base.RegisterInputsAndOutputs();
-
-            sw = new Stopwatch();
-            //timer = new System.Timers.Timer();
-
-
-        }
-
-        void StartTimer(int interval)
-        {
-
-            timer = new System.Timers.Timer(interval); 
-
-            timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
-            timer.Enabled = true; // Enable it
-        }
-
-        static void _timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-           //figure out how to trigger Evaluate of the Timer node
-           // Dynamo.Utilities.dynElementSettings.SharedInstance.Workbench
-        }
-
-        int KeepTime(int interval)
-        {
-
-            if (sw.ElapsedMilliseconds > interval)
-            {
-                sw.Stop();
-                sw.Reset();
-                sw.Start();
-                return interval;
-
-            }
-            else
-            {
-                return 0;
-            }
-
-            //return (int)sw.ElapsedMilliseconds;
-
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            
-            double result = 0;
-            int interval = Convert.ToInt16(((Expression.Number)args[0]).Item);
+            ParticleSystem ps = (ParticleSystem)((Expression.Container)args[0]).Item;
+            double timeStep = ((Expression.Number)args[1]).Item;
 
+            ps.step(timeStep);
 
-            bool isTiming = Convert.ToBoolean(((Expression.Number)args[1]).Item);
-
-
-            if (timing)
-            {
-                if (!isTiming)  //if you are timing and we turn off the timer
-                {
-                    timing = false; //stop
-                    sw.Stop();
-                    sw.Reset();
-                }
-            }
-            else
-            {
-                if (isTiming)
-                {
-                    timing = true;  //if you are not timing and we turn on the timer
-                    sw.Start();
-                    StartTimer(interval);
-                    while (timing)
-                    {
-                        result = KeepTime(interval);
-                        break;
-                    }
-                }
-            }
-
-            IsDirty = true;// stephen suggesting hitting this with a larger hammer. 
-            return Expression.NewNumber(result);
+            return Expression.NewNumber(1);
         }
     }
+
+    //[ElementName("Timer")]
+    //[ElementCategory(BuiltinElementCategories.MISC)]
+    //[ElementDescription("A node which represents a stopwatch.")]
+    //[RequiresTransaction(false)]
+    //public class dynTimer : dynNode
+    //{
+    //    Stopwatch sw;
+    //    bool timing = false;
+    //    System.Timers.Timer timer; 
+
+    //    public dynTimer()
+    //    {
+    //        InPortData.Add(new PortData("n", "How often to receive updates in milliseconds.", typeof(double)));
+    //        InPortData.Add(new PortData("i/o", "Turn the timer on or off", typeof(dynBool)));
+    //        OutPortData = new PortData("tim", "The timer, counting in milliseconds.", typeof(int));
+
+    //        base.RegisterInputsAndOutputs();
+
+    //        sw = new Stopwatch();
+    //        //timer = new System.Timers.Timer();
+
+
+    //    }
+
+    //    void StartTimer(int interval)
+    //    {
+
+    //        timer = new System.Timers.Timer(interval); 
+
+    //        timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
+    //        timer.Enabled = true; // Enable it
+    //    }
+
+    //    static void _timer_Elapsed(object sender, ElapsedEventArgs e)
+    //    {
+    //       //figure out how to trigger Evaluate of the Timer node
+    //       // Dynamo.Utilities.dynElementSettings.SharedInstance.Workbench
+    //    }
+
+    //    int KeepTime(int interval)
+    //    {
+
+    //        if (sw.ElapsedMilliseconds > interval)
+    //        {
+    //            sw.Stop();
+    //            sw.Reset();
+    //            sw.Start();
+    //            return interval;
+
+    //        }
+    //        else
+    //        {
+    //            return 0;
+    //        }
+
+    //        //return (int)sw.ElapsedMilliseconds;
+
+    //    }
+
+    //    public override Expression Evaluate(FSharpList<Expression> args)
+    //    {
+            
+    //        double result = 0;
+    //        int interval = Convert.ToInt16(((Expression.Number)args[0]).Item);
+
+
+    //        bool isTiming = Convert.ToBoolean(((Expression.Number)args[1]).Item);
+
+
+    //        if (timing)
+    //        {
+    //            if (!isTiming)  //if you are timing and we turn off the timer
+    //            {
+    //                timing = false; //stop
+    //                sw.Stop();
+    //                sw.Reset();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            if (isTiming)
+    //            {
+    //                timing = true;  //if you are not timing and we turn on the timer
+    //                sw.Start();
+    //                StartTimer(interval);
+    //                while (timing)
+    //                {
+    //                    result = KeepTime(interval);
+    //                    break;
+    //                }
+    //            }
+    //        }
+
+    //        IsDirty = true;// stephen suggesting hitting this with a larger hammer. 
+    //        return Expression.NewNumber(result);
+    //    }
+    //}
 
 }

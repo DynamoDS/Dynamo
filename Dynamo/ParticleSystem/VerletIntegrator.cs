@@ -26,7 +26,7 @@ namespace Dynamo.Elements
 
     class Integrator
     {
-        public Integrator(dynParticleSystem s)
+        public Integrator(ParticleSystem s)
         {
 
         }
@@ -39,9 +39,9 @@ namespace Dynamo.Elements
 
     class VerletIntegrator
     {
-        dynParticleSystem s;
+        ParticleSystem s;
 
-        public VerletIntegrator(dynParticleSystem ps)
+        public VerletIntegrator(ParticleSystem ps)
         {
             s = ps;
         }
@@ -56,7 +56,7 @@ namespace Dynamo.Elements
 
             for (int i = 0; i < s.numberOfParticles(); i++)
             {
-                dynParticle p = s.getParticle(i);
+                Particle p = s.getParticle(i);
                 if (p.isFree())
                 {
                     XYZ a = p.getForce() / p.getMass();
