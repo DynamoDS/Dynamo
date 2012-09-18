@@ -1844,8 +1844,12 @@ namespace Dynamo.Controls
             {
                 dynNote note = new dynNote();
                 dynElementSettings.SharedInstance.Workbench.Children.Add(note);
-                Canvas.SetLeft(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Width / 2);
-                Canvas.SetRight(note, dynElementSettings.SharedInstance.Bench.outerCanvas.Height / 2);
+
+                //convert the current position of the mouse into canvas coordinates
+                Point p = Mouse.GetPosition(dynElementSettings.SharedInstance.Workbench);
+
+                Canvas.SetLeft(note, p.X);
+                Canvas.SetTop(note, p.Y);
 
                 CurrentSpace.Notes.Add(note);
                 if (!ViewingHomespace)
