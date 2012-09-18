@@ -35,10 +35,10 @@ namespace Dynamo.Elements
     course, which is also quite similar to that found in Traer Physics.
     */
 
-     class dynParticleSystem
+     class ParticleSystem
     {
-        protected List<dynParticle> particles;
-        protected List<dynParticleSpring> springs;
+        protected List<Particle> particles;
+        protected List<ParticleSpring> springs;
 
         protected const double DEFAULT_GRAVITY = -9.8f;
         protected const double DEFAULT_DRAG = 0.15f;
@@ -51,13 +51,13 @@ namespace Dynamo.Elements
         protected bool hasDeadParticles;
 
 
-        public dynParticleSystem()
+        public ParticleSystem()
         {
             hasDeadParticles = false;
             integrator = new VerletIntegrator(this);
 
-            particles = new List<dynParticle>();
-            springs = new List<dynParticleSpring>();
+            particles = new List<Particle>();
+            springs = new List<ParticleSpring>();
 
 
             gravity = new XYZ(0, 0, DEFAULT_GRAVITY);
@@ -99,14 +99,14 @@ namespace Dynamo.Elements
             drag = d;
         }
 
-        public dynParticle makeParticle(double mass, XYZ position, bool fix)
+        public Particle makeParticle(double mass, XYZ position, bool fix)
         {
-            dynParticle p = new dynParticle(mass, position, fix);
+            Particle p = new Particle(mass, position, fix);
             particles.Add(p);
             return p;
         }
 
-        public dynParticle makeParticleFromElementID(ElementId eid, double mass, XYZ position, bool fix)
+        public Particle makeParticleFromElementID(ElementId eid, double mass, XYZ position, bool fix)
         {
             bool found = false;
             for (int i = 0; i < particles.Count(); ++i)
@@ -123,7 +123,7 @@ namespace Dynamo.Elements
             }
             if (found == false)//if we did not find one make a new one
             {
-                dynParticle part = new dynParticle(eid, .5, position, fix);
+                Particle part = new Particle(eid, .5, position, fix);
                 particles.Add(part);
                 return part;
             }
@@ -132,15 +132,15 @@ namespace Dynamo.Elements
 
         }
 
-        public dynParticleSpring makeSpring(dynParticle a, dynParticle b, double restLength, double springConstant, double damping)
+        public ParticleSpring makeSpring(Particle a, Particle b, double restLength, double springConstant, double damping)
         {
 
-            dynParticleSpring s = new dynParticleSpring(a, b, restLength, springConstant, damping);
+            ParticleSpring s = new ParticleSpring(a, b, restLength, springConstant, damping);
             springs.Add(s);
             return s;
         }
 
-        public dynParticleSpring makeSpringFromElementID(ElementId eid, dynParticle a, dynParticle b, double restLength, double springConstant, double damping)
+        public ParticleSpring makeSpringFromElementID(ElementId eid, Particle a, Particle b, double restLength, double springConstant, double damping)
         {
             bool found = false;
             for (int i = 0; i < springs.Count(); ++i)
@@ -157,7 +157,7 @@ namespace Dynamo.Elements
             }
             if (found == false)
             {
-                dynParticleSpring s = new dynParticleSpring(eid, a, b, restLength, springConstant, damping);
+                ParticleSpring s = new ParticleSpring(eid, a, b, restLength, springConstant, damping);
                 springs.Add(s);
                 return s;
             }
@@ -179,7 +179,7 @@ namespace Dynamo.Elements
             for (int i = 0; i < particles.Count(); ++i)
             {
 
-                dynParticle p = particles[i];
+                Particle p = particles[i];
                 p.addForce(p.getVelocity() * -drag);
 
             }
@@ -187,7 +187,7 @@ namespace Dynamo.Elements
             for (int i = 0; i < springs.Count(); i++)
             {
 
-                dynParticleSpring f = springs[i];
+                ParticleSpring f = springs[i];
                 f.apply();
 
             }
@@ -215,17 +215,17 @@ namespace Dynamo.Elements
             return springs.Count();
         }
 
-        public dynParticle getParticle(int i)
+        public Particle getParticle(int i)
         {
             return particles[i];
         }
 
-        public dynParticleSpring getSpring(int i)
+        public ParticleSpring getSpring(int i)
         {
             return springs[i];
         }
 
-        public dynParticle getParticleByElementID(ElementId eid)
+        public Particle getParticleByElementID(ElementId eid)
         {
             for (int i = 0; i < particles.Count(); ++i)
             {
@@ -256,7 +256,7 @@ namespace Dynamo.Elements
             return false; //did not delete
         }
 
-        public dynParticleSpring getSpringByElementID(ElementId eid)
+        public ParticleSpring getSpringByElementID(ElementId eid)
         {
             for (int i = 0; i < springs.Count(); ++i)
             {
@@ -287,7 +287,7 @@ namespace Dynamo.Elements
             return false; //did not delete
         }
 
-        public dynParticle getParticleByXYZ(XYZ xyz)
+        public Particle getParticleByXYZ(XYZ xyz)
         {
 
             for (int i = 0; i < particles.Count(); ++i)
