@@ -33,19 +33,58 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     public class dynFileReader : dynNode
     {
+        FileSystemEventHandler handler;
+
+        string _path;
+        string storedPath
+        {
+            get { return _path; }
+            set
+            {
+                if (value != null && !value.Equals(_path))
+                {
+                    if (watcher != null)
+                        watcher.FileChanged -= handler;
+
+                    _path = value;
+                    watcher = new FileWatcher(_path);
+                    watcher.FileChanged += handler;
+                }
+            }
+        }
+
+        FileWatcher watcher;
+
         public dynFileReader()
         {
+            this.handler = new FileSystemEventHandler(watcher_FileChanged);
+
             InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
             OutPortData = new PortData("contents", "File contents", typeof(string));
 
             base.RegisterInputsAndOutputs();
         }
 
+        void watcher_FileChanged(object sender, FileSystemEventArgs e)
+        {
+            if (!this.Bench.Running)
+                this.IsDirty = true;
+            else
+            {
+                //TODO: Refactor
+                this.DisableReporting();
+                this.IsDirty = true;
+                this.EnableReporting();
+            }
+        }
+
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            string arg = ((Expression.String)args[0]).Item;
+            storedPath = ((Expression.String)args[0]).Item;
 
-            StreamReader reader = new StreamReader(new FileStream(arg, FileMode.Open, FileAccess.Read, FileShare.Read));
+            StreamReader reader = new StreamReader(
+                new FileStream(storedPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+            );
             string contents = reader.ReadToEnd();
             reader.Close();
 
@@ -133,8 +172,6 @@ namespace Dynamo.Elements
 
     #region File Watcher
 
-    //SJE
-    //TODO: Update (or make different versions)
     [ElementName("Watch File")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Create an element for reading and watching data in a file on disk.")]
@@ -251,6 +288,8 @@ namespace Dynamo.Elements
         private FileSystemWatcher watcher;
         private FileSystemEventHandler handler;
 
+        public event FileSystemEventHandler FileChanged;
+
         public FileWatcher(string filePath)
         {
             this.watcher = new FileSystemWatcher(
@@ -260,13 +299,15 @@ namespace Dynamo.Elements
             this.handler = new FileSystemEventHandler(watcher_Changed);
 
             this.watcher.Changed += handler;
-            this.watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite;
+            this.watcher.NotifyFilter = NotifyFilters.LastWrite;
             this.watcher.EnableRaisingEvents = true;
         }
 
         void watcher_Changed(object sender, FileSystemEventArgs e)
         {
             this.Changed = true;
+            if (FileChanged != null)
+                FileChanged(sender, e);
         }
 
         public void Reset()

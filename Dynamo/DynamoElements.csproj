@@ -107,6 +107,7 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dynTimer.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
