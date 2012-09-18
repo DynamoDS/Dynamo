@@ -32,6 +32,7 @@ namespace Dynamo.Elements
 
        protected double m_Mass;
        protected bool m_Fixed;
+       protected ElementId m_ElementId;
 
 
         public dynParticle(double mass, XYZ position, bool fix)
@@ -42,6 +43,19 @@ namespace Dynamo.Elements
             m_Force = new XYZ(0, 0, 0);
             m_Mass = mass;
             m_Fixed = fix;
+
+        }
+
+        public dynParticle(ElementId eid, double mass, XYZ position, bool fix) // added to handle backfinding the right refpoint without an expensive search
+        {
+            m_ElementId = eid;
+            m_Position = position;
+            m_oldPosition = position;
+            m_Velocity = new XYZ(0, 0, 0);
+            m_Force = new XYZ(0, 0, 0);
+            m_Mass = mass;
+            m_Fixed = fix;
+
 
         }
 
@@ -124,6 +138,16 @@ namespace Dynamo.Elements
             m_Position = new XYZ(0, 0, 0);
             m_Force = new XYZ(0, 0, 0);
             m_Velocity = new XYZ(0, 0, 0);
+        }
+
+        public ElementId getElementID()
+        {
+            return m_ElementId;
+        }
+
+        public void setElementID(ElementId eid)
+        {
+            m_ElementId = eid;
         }
     }
 }
