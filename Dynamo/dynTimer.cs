@@ -47,4 +47,56 @@ namespace Dynamo.Elements
             return Expression.NewNumber(1);
         }
     }
+
+    [ElementName("Execution Interval")]
+    [ElementDescription("Forces an Execution after every interval")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    public class dynExecuteInterval : dynNode
+    {
+        public dynExecuteInterval()
+        {
+            InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
+            OutPortData = new PortData("", "Success?", typeof(bool));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        Thread delayThread;
+
+        //protected override void OnRunCancelled()
+        //{
+        //    if (delayThread != null && delayThread.IsAlive)
+        //        delayThread.Abort();
+        //}
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            int delay = (int)((Expression.Number)args[0]).Item;
+
+            if (delayThread == null || !delayThread.IsAlive)
+            {
+                delayThread = new Thread(new ThreadStart(
+                    delegate
+                    {
+                        Thread.Sleep(delay);
+
+                        if (this.Bench.RunCancelled)
+                            return;
+
+                        while (this.Bench.Running)
+                        {
+                            Thread.Sleep(1);
+                            if (this.Bench.RunCancelled)
+                                return;
+                        }
+
+                        this.IsDirty = true;
+                    }
+                ));
+            }
+
+            return Expression.NewNumber(1);
+        }
+    }
+
 }

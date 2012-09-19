@@ -2098,7 +2098,7 @@ namespace Dynamo.Controls
 
             //TODO: Hack. Might cause things to break later on...
             //Reset Cancel and Rerun flags
-            this.CancelRun = false;
+            this.RunCancelled = false;
             this.runAgain = false;
 
             //We are now considered running
@@ -2165,7 +2165,7 @@ namespace Dynamo.Controls
                                 /* Evaluation was cancelled */
 
                                 this.CancelTransaction();
-                                this.CancelRun = false;
+                                //this.RunCancelled = false;
                                 if (ex.Force)
                                     this.runAgain = false;
 
@@ -2188,7 +2188,7 @@ namespace Dynamo.Controls
                                     ));
                                 }
                                 this.CancelTransaction();
-                                this.CancelRun = false;
+                                this.RunCancelled = true;
                                 this.runAgain = false;
 
                                 //Stop evaluation of other entry points.
@@ -2261,7 +2261,7 @@ namespace Dynamo.Controls
                     /* Evaluation was cancelled */
 
                     this.CancelTransaction();
-                    this.CancelRun = false; //Reset cancel flag
+                    this.RunCancelled = true;
 
                     //If we are forcing this, then make sure we don't run again either.
                     if (ex.Force)
@@ -2287,7 +2287,7 @@ namespace Dynamo.Controls
 
                     //Reset the flags
                     this.runAgain = false;
-                    this.CancelRun = false;
+                    this.RunCancelled = true;
                 }
                 finally
                 {
@@ -2309,6 +2309,7 @@ namespace Dynamo.Controls
                     {
                         //Reset flag
                         this.runAgain = false;
+                        //this.RunCancelled = false;
 
                         //Run this method again from the main thread
                         this.Dispatcher.BeginInvoke(new Action(
@@ -3218,7 +3219,7 @@ namespace Dynamo.Controls
             //   this.searchBox.Text = "Search";
         }
 
-        public bool CancelRun
+        public bool RunCancelled
         {
             get;
             private set;
@@ -3226,7 +3227,7 @@ namespace Dynamo.Controls
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.CancelRun = true;
+            this.RunCancelled = true;
         }
 
         public bool DynamicRunEnabled
@@ -3252,7 +3253,7 @@ namespace Dynamo.Controls
 
         internal void QueueRun()
         {
-            this.CancelRun = true;
+            this.RunCancelled = true;
             this.runAgain = true;
         }
 
