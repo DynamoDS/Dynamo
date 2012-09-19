@@ -62,11 +62,11 @@ namespace Dynamo.Elements
                     XYZ a = p.getForce() / p.getMass();
                     XYZ xmm = p.getOldPosition();
                     XYZ xm = p.getPosition();
-                    XYZ x = xm.Add(xm.Subtract(xmm)) + a * tt;
+                    XYZ x = xm.Add(xm - xmm) + a * tt;
                     XYZ vm = p.getVelocity();
 
                     p.setPosition(x);
-                    p.setVelocity((x.Subtract(xmm)) / (2 * t));
+                    p.setVelocity((x - xmm) / (2 * t));
 
                 }
 

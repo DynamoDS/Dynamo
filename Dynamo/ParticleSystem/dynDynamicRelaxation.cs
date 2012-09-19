@@ -63,7 +63,7 @@ namespace Dynamo.Elements
 
 
             rPoints = new List<ReferencePoint>();
-            //setupLineTest();
+
 
             
         }
@@ -71,6 +71,7 @@ namespace Dynamo.Elements
         void setupLineTest()
         {
 
+            int max = 10;
 
             XYZ basePoint = new XYZ(0, 0, 0);
             Particle a = particleSystem.makeParticle(0.5, basePoint, true);
@@ -79,19 +80,25 @@ namespace Dynamo.Elements
             List<Particle> particles = new List<Particle>();
             particles.Add(a);
 
-            for (int i = 1; i < 10; i++)
+            for (int i = 1; i < max ; i++)
             {
                 Particle s = particles[i - 1];
 
                 //XYZ pendPoint = new XYZ(0, ((double)i) * Math.Sin(0.5), ((double)i) * Math.Sin(0.5));
                 XYZ pendPoint = new XYZ((double)100*i, 0, 0); // straight line in x axis
                 Particle b = particleSystem.makeParticle(0.5, pendPoint, false);
-          
+
+                if (i == max - 1)
+                {
+                    b.makeFixed();
+                }
 
                 particles.Add(b);
 
 
                 particleSystem.makeSpring(s, b, 1, 800, 0.8); // dynParticleSpring(dynParticle particleA, dynParticle particleB, double restLength, double springConstant, double damping)
+            
+            
             }
 
             
@@ -158,123 +165,123 @@ namespace Dynamo.Elements
             ReferencePointArray refPtArr = new ReferencePointArray();
             ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
+            setupLineTest();
 
+            //if (points.IsList)
+            //{
+            //    var pointsList = (points as Expression.List).Item;
 
-            if (points.IsList)
-            {
-                var pointsList = (points as Expression.List).Item;
+            //    int count = 0;
 
-                int count = 0;
+            //    //We create our output by...
+            //    var resultPoints = Utils.convertSequence(
+            //       pointsList.Select(
+            //        //..taking each element in the list and...
+            //          delegate(Expression x)
+            //          {
+            //              ReferencePoint p = ((ReferencePoint)((Expression.Container)x).Item);
 
-                //We create our output by...
-                var resultPoints = Utils.convertSequence(
-                   pointsList.Select(
-                    //..taking each element in the list and...
-                      delegate(Expression x)
-                      {
-                          ReferencePoint p = ((ReferencePoint)((Expression.Container)x).Item);
+            //              refPtArr.Append(p);
 
-                          refPtArr.Append(p);
+            //              Particle partA;
+            //              partA = particleSystem.makeParticleFromElementID(p.Id, .5, p.Position, false);
+            //              //partA = particleSystem.getParticleByXYZ(p.Position);
 
-                          Particle partA;
-                          partA = particleSystem.makeParticleFromElementID(p.Id, .5, p.Position, false);
-                          //partA = particleSystem.getParticleByXYZ(p.Position);
-
-                          if (partA != null)
-                          {
+            //              if (partA != null)
+            //              {
                               
-                              string name = p.Name;
-                              //if (name.Contains("Fixed"))
-                              //{
-                              //    partA.makeFixed();
-                              //}
+            //                  string name = p.Name;
+            //                  //if (name.Contains("Fixed"))
+            //                  //{
+            //                  //    partA.makeFixed();
+            //                  //}
 
-                              p.Name = count.ToString(); // mark the point
-                          }
+            //                  p.Name = count.ToString(); // mark the point
+            //              }
 
-                          count++;
-                          return Expression.NewContainer(p);
-                      }
+            //              count++;
+            //              return Expression.NewContainer(p);
+            //          }
 
-                    )
-                );
-
-
-            }
+            //        )
+            //    );
 
 
-            for (int i = 0; i < refPtArr.Size; i++)
-            {
-                if (i == 0 || i == refPtArr.Size-1) // set the first and the last to fixed (test that will only work for linear things now)
-                {
-                    ReferencePoint p = refPtArr.get_Item(i);
-                    p.CoordinatePlaneVisibility = (CoordinatePlaneVisibility)2;
-                    Particle part = particleSystem.getParticleByElementID(p.Id);
-                    if (part != null)
-                    {
-                        part.makeFixed();
-                    }
-                }
-
-            }
-
-            //process curve inputs and convert to dynParticleSprings and dynParticles in particlesystem.
-            //Note this now will NOT make any user visible elements, just populate the particlesystem
-
-            if (curves.IsList)
-            {
-                var curvesList = (curves as Expression.List).Item;
-
-                //We create our output by...
-                var resultCurves = Utils.convertSequence(
-                   curvesList.Select(
-                    //..taking each element in the list and...
-                      delegate(Expression x)
-                      {
-
-                          // check each point.position xyz extracted from cbp against all other particles position
-                          // if there is a match use existing.
-
-                          tempRefPtArr.Clear();
-                          existingCurve = ((CurveByPoints)((Expression.Container)x).Item);
-                          tempRefPtArr = existingCurve.GetPoints();
-
-                          try
-                          {
+            //}
 
 
-                              ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
-                              ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
+            //for (int i = 0; i < refPtArr.Size; i++)
+            //{
+            //    if (i == 0 || i == refPtArr.Size-1) // set the first and the last to fixed (test that will only work for linear things now)
+            //    {
+            //        ReferencePoint p = refPtArr.get_Item(i);
+            //        p.CoordinatePlaneVisibility = (CoordinatePlaneVisibility)2;
+            //        Particle part = particleSystem.getParticleByElementID(p.Id);
+            //        if (part != null)
+            //        {
+            //            part.makeFixed();
+            //        }
+            //    }
 
-                              Particle partA;
-                              Particle partB;
+            //}
 
-                              partA = particleSystem.makeParticleFromXYZ(oldRefPointA.Id, .5, oldRefPointA.Position, false);
-                              partB = particleSystem.makeParticleFromXYZ(oldRefPointB.Id, .5, oldRefPointB.Position, false);
+            ////process curve inputs and convert to dynParticleSprings and dynParticles in particlesystem.
+            ////Note this now will NOT make any user visible elements, just populate the particlesystem
 
-                              //if (partA == null)
-                              //{
-                              //    partA = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(0).Id, .5, tempRefPtArr.get_Item(0).Position, false);
-                              //}
+            //if (curves.IsList)
+            //{
+            //    var curvesList = (curves as Expression.List).Item;
 
-                              //if (partB == null)
-                              //{
-                              //    partB = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(1).Id, .5, tempRefPtArr.get_Item(0).Position, false);
+            //    //We create our output by...
+            //    var resultCurves = Utils.convertSequence(
+            //       curvesList.Select(
+            //        //..taking each element in the list and...
+            //          delegate(Expression x)
+            //          {
 
-                              //}
-                              particleSystem.makeSpringFromElementID(existingCurve.Id, partA, partB, r, s, d);
+            //              // check each point.position xyz extracted from cbp against all other particles position
+            //              // if there is a match use existing.
+
+            //              tempRefPtArr.Clear();
+            //              existingCurve = ((CurveByPoints)((Expression.Container)x).Item);
+            //              tempRefPtArr = existingCurve.GetPoints();
+
+            //              try
+            //              {
 
 
-                          }
-                          catch (Exception ex)
-                          {
-                          }
+            //                  ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
+            //                  ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
 
-                          return Expression.NewContainer(existingCurve);
-                      }
-                   )
-                );
-            }
+            //                  Particle partA;
+            //                  Particle partB;
+
+            //                  partA = particleSystem.makeParticleFromXYZ(oldRefPointA.Id, .5, oldRefPointA.Position, false);
+            //                  partB = particleSystem.makeParticleFromXYZ(oldRefPointB.Id, .5, oldRefPointB.Position, false);
+
+            //                  //if (partA == null)
+            //                  //{
+            //                  //    partA = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(0).Id, .5, tempRefPtArr.get_Item(0).Position, false);
+            //                  //}
+
+            //                  //if (partB == null)
+            //                  //{
+            //                  //    partB = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(1).Id, .5, tempRefPtArr.get_Item(0).Position, false);
+
+            //                  //}
+            //                  particleSystem.makeSpringFromElementID(existingCurve.Id, partA, partB, r, s, d);
+
+
+            //              }
+            //              catch (Exception ex)
+            //              {
+            //              }
+
+            //              return Expression.NewContainer(existingCurve);
+            //          }
+            //       )
+            //    );
+            //}
 
             
 
