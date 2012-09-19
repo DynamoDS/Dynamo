@@ -158,6 +158,66 @@ namespace Dynamo.Elements
             ReferencePointArray refPtArr = new ReferencePointArray();
             ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
+
+
+            if (points.IsList)
+            {
+                var pointsList = (points as Expression.List).Item;
+
+                int count = 0;
+
+                //We create our output by...
+                var resultPoints = Utils.convertSequence(
+                   pointsList.Select(
+                    //..taking each element in the list and...
+                      delegate(Expression x)
+                      {
+                          ReferencePoint p = ((ReferencePoint)((Expression.Container)x).Item);
+
+                          refPtArr.Append(p);
+
+                          Particle partA;
+                          partA = particleSystem.makeParticleFromElementID(p.Id, .5, p.Position, false);
+                          //partA = particleSystem.getParticleByXYZ(p.Position);
+
+                          if (partA != null)
+                          {
+                              
+                              string name = p.Name;
+                              //if (name.Contains("Fixed"))
+                              //{
+                              //    partA.makeFixed();
+                              //}
+
+                              p.Name = count.ToString(); // mark the point
+                          }
+
+                          count++;
+                          return Expression.NewContainer(p);
+                      }
+
+                    )
+                );
+
+
+            }
+
+
+            for (int i = 0; i < refPtArr.Size; i++)
+            {
+                if (i == 0 || i == refPtArr.Size-1) // set the first and the last to fixed (test that will only work for linear things now)
+                {
+                    ReferencePoint p = refPtArr.get_Item(i);
+                    p.CoordinatePlaneVisibility = (CoordinatePlaneVisibility)2;
+                    Particle part = particleSystem.getParticleByElementID(p.Id);
+                    if (part != null)
+                    {
+                        part.makeFixed();
+                    }
+                }
+
+            }
+
             //process curve inputs and convert to dynParticleSprings and dynParticles in particlesystem.
             //Note this now will NOT make any user visible elements, just populate the particlesystem
 
@@ -183,16 +243,25 @@ namespace Dynamo.Elements
                           {
 
 
-                              //ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
-                              //ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
+                              ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
+                              ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
 
                               Particle partA;
                               Particle partB;
-                              //try and find the particles that are associated with these refpoints. if they exist, use them, else make a new one
-                              //partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
-                              //partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
-                              partA = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(0).Id, .5, tempRefPtArr.get_Item(0).Position, false);
-                              partB = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(1).Id, .5, tempRefPtArr.get_Item(0).Position, false);
+
+                              partA = particleSystem.makeParticleFromXYZ(oldRefPointA.Id, .5, oldRefPointA.Position, false);
+                              partB = particleSystem.makeParticleFromXYZ(oldRefPointB.Id, .5, oldRefPointB.Position, false);
+
+                              //if (partA == null)
+                              //{
+                              //    partA = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(0).Id, .5, tempRefPtArr.get_Item(0).Position, false);
+                              //}
+
+                              //if (partB == null)
+                              //{
+                              //    partB = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(1).Id, .5, tempRefPtArr.get_Item(0).Position, false);
+
+                              //}
                               particleSystem.makeSpringFromElementID(existingCurve.Id, partA, partB, r, s, d);
 
 
@@ -207,44 +276,7 @@ namespace Dynamo.Elements
                 );
             }
 
-            if (points.IsList)
-            {
-                var pointsList = (points as Expression.List).Item;
-
-                int count = 0;
-
-                //We create our output by...
-                var resultPoints = Utils.convertSequence(
-                   pointsList.Select(
-                    //..taking each element in the list and...
-                      delegate(Expression x)
-                      {
-                            ReferencePoint p = ((ReferencePoint)((Expression.Container)x).Item);
-                            refPtArr.Clear();
-                            refPtArr.Append(p);
-                            Particle partA;
-                            partA = particleSystem.getParticleByXYZ(p.Position);
-
-                          if(partA != null)//found a hit
-                          {
-                              string name = p.Name;
-                              if (name.Contains("Fixed"))
-                              {
-                                  partA.makeFixed();
-                              }
-
-                              p.Name = name + count.ToString(); // mark the point
-                          }
-
-                          count++;
-                          return Expression.NewContainer(p);
-                        }
-
-                    )
-                );
-
-
-            }
+            
 
 
             return Expression.NewContainer(particleSystem);

@@ -77,7 +77,7 @@ namespace Dynamo.Elements
         }
         public void addForce(XYZ f)
         {
-            m_Force = m_Force + f;
+            m_Force = m_Force.Add(f);
         }
 
         public void setForce(XYZ f)
@@ -87,7 +87,7 @@ namespace Dynamo.Elements
 
         public void addVelocity(XYZ v)
         {
-            m_Velocity = m_Velocity + v;
+            m_Velocity = m_Velocity.Add(v);
         }
 
         public XYZ getVelocity()
@@ -120,7 +120,7 @@ namespace Dynamo.Elements
         public void addPosition(XYZ m)
         {
             m_oldPosition = m_Position;
-            m_Position = m_Position + m;
+            m_Position = m_Position.Add(m);
         }
 
         public double getMass()

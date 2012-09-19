@@ -132,6 +132,31 @@ namespace Dynamo.Elements
 
         }
 
+        public Particle makeParticleFromXYZ(ElementId eid, double mass, XYZ position, bool fix)
+        {
+            bool found = false;
+            for (int i = 0; i < particles.Count(); ++i)
+            {
+                if (eid != null && (particles[i].getElementID() != null)&& position!=null)
+                {
+                    if (position.IsAlmostEqualTo(particles[i].getPosition()))
+                    {
+                        found = true;
+                        return particles[i];
+
+                    }
+                }
+            }
+            if (found == false)//if we did not find one make a new one
+            {
+                Particle part = new Particle(eid, .5, position, fix);
+                particles.Add(part);
+                return part;
+            }
+
+            return null;
+
+        }
         public ParticleSpring makeSpring(Particle a, Particle b, double restLength, double springConstant, double damping)
         {
 
