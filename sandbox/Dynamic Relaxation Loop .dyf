@@ -1,0 +1,36 @@
+<dynWorkspace X="-69" Y="55" Name="Dynamic Relaxation Loop " Category="Miscellaneous">
+  <dynElements>
+    <Dynamo.Elements.dynDynamicRelaxationStep type="Dynamo.Elements.dynDynamicRelaxationStep" guid="c14da9fd-2099-4567-ad43-5f0bc798dba4" nickname="Dynamic Relaxation Step" x="254.25" y="133.75" />
+    <Dynamo.Elements.dynTransaction type="Dynamo.Elements.dynTransaction" guid="f75afe23-0e9b-4b12-9838-f38cf6c8b9c0" nickname="Transaction" x="376.5" y="22.75" />
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="4ae485f9-78ad-4d8a-8b49-6150fc74c6d9" nickname="Variable" x="0" y="204.5">
+      <Symbol value="ps" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynPause type="Dynamo.Elements.dynPause" guid="6f0025df-cfc3-4ae3-abbc-ff5e30c55d58" nickname="Pause" x="237.75" y="336.5" />
+    <Dynamo.Elements.dynBegin type="Dynamo.Elements.dynBegin" guid="45838c3c-d1dc-4f17-9ddf-367748ef6ef6" nickname="Perform All" x="654.25" y="205">
+      <Input name="expr1" />
+      <Input name="expr2" />
+      <Input name="expr3" />
+    </Dynamo.Elements.dynBegin>
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="08cfadbc-21d4-4be6-a699-8dbb233eb86d" nickname="Dynamic Relaxation Loop " x="422.252297090352" y="218.344180704441">
+      <Symbol value="Dynamic Relaxation Loop " />
+      <Output value="out" />
+      <Inputs>
+        <Input value="ps" />
+      </Inputs>
+    </Dynamo.Elements.dynFunction>
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="11efe860-28f8-4e7c-b93f-714160f4dbcc" nickname="Number" x="0" y="277.25">
+      <System.Double value="1" />
+    </Dynamo.Elements.dynDoubleInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="c14da9fd-2099-4567-ad43-5f0bc798dba4" start_index="0" end="f75afe23-0e9b-4b12-9838-f38cf6c8b9c0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="f75afe23-0e9b-4b12-9838-f38cf6c8b9c0" start_index="0" end="45838c3c-d1dc-4f17-9ddf-367748ef6ef6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="4ae485f9-78ad-4d8a-8b49-6150fc74c6d9" start_index="0" end="c14da9fd-2099-4567-ad43-5f0bc798dba4" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="4ae485f9-78ad-4d8a-8b49-6150fc74c6d9" start_index="0" end="08cfadbc-21d4-4be6-a699-8dbb233eb86d" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="6f0025df-cfc3-4ae3-abbc-ff5e30c55d58" start_index="0" end="c14da9fd-2099-4567-ad43-5f0bc798dba4" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="6f0025df-cfc3-4ae3-abbc-ff5e30c55d58" start_index="0" end="45838c3c-d1dc-4f17-9ddf-367748ef6ef6" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="08cfadbc-21d4-4be6-a699-8dbb233eb86d" start_index="0" end="45838c3c-d1dc-4f17-9ddf-367748ef6ef6" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="11efe860-28f8-4e7c-b93f-714160f4dbcc" start_index="0" end="6f0025df-cfc3-4ae3-abbc-ff5e30c55d58" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

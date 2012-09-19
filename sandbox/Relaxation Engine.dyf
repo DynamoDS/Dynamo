@@ -1,54 +1,32 @@
-<dynWorkspace X="10" Y="55" Name="Relaxation Engine" Category="Miscellaneous">
+<dynWorkspace X="10" Y="-68.25" Name="Relaxation Engine" Category="Miscellaneous">
   <dynElements>
-    <Dynamo.Elements.dynTransaction type="Dynamo.Elements.dynTransaction" guid="1ffd9eb3-6ee1-4be0-92df-9f3f06bbf457" nickname="Transaction" x="117" y="18" />
-    <Dynamo.Elements.dynBegin type="Dynamo.Elements.dynBegin" guid="edc9e5bc-5094-4da7-9b88-a57b6861b924" nickname="Perform All" x="391" y="26">
-      <Input name="expr1" />
-      <Input name="expr2" />
-      <Input name="expr3" />
-    </Dynamo.Elements.dynBegin>
-    <Dynamo.Elements.dynPause type="Dynamo.Elements.dynPause" guid="2083cbd7-6f98-442d-a415-bb859abfee30" nickname="Pause" x="111.25" y="68.25" />
-    <Dynamo.Elements.dynDynamicRelaxation type="Dynamo.Elements.dynDynamicRelaxation" guid="6fa984e7-b875-4fdd-9b5a-5ae809d81c2a" nickname="Dynamic Relaxation" x="346.5" y="282.5" />
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="5bcec8e0-0f4b-4201-8a1b-235f0ca29846" nickname="Relaxation Engine" x="491.75" y="188.75">
-      <Symbol value="Relaxation Engine" />
-      <Output value="out" />
-      <Inputs>
-        <Input value="points" />
-        <Input value="curves" />
-      </Inputs>
-    </Dynamo.Elements.dynFunction>
     <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="597b3ffe-426a-460c-b49a-ddde14add408" nickname="Number" x="0" y="104.75">
-      <System.Double value="10" />
+      <System.Double value="1" />
     </Dynamo.Elements.dynDoubleInput>
-    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="3304eb09-d8be-4d7d-a725-8599eb380092" nickname="Variable" x="0" y="190.75">
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="3304eb09-d8be-4d7d-a725-8599eb380092" nickname="Variable" x="3" y="174.75">
       <Symbol value="points" />
     </Dynamo.Elements.dynSymbol>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="a9dfc874-1bd8-407f-b394-8bdd6ed1edce" nickname="Variable" x="0" y="246.25">
       <Symbol value="curves" />
     </Dynamo.Elements.dynSymbol>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="b57a7591-c19a-4c34-b943-c79da6f77329" nickname="Number Slider" x="36.75" y="323.5">
-      <System.Double value="0.566666666666667" min="0" max="1" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="2086b9b8-a5f0-4461-a45c-ac98c673c7c4" nickname="Number Slider" x="33" y="372.75">
-      <System.Double value="800" min="0" max="800" />
-    </Dynamo.Elements.dynDoubleSliderInput>
-    <Dynamo.Elements.dynDoubleSliderInput type="Dynamo.Elements.dynDoubleSliderInput" guid="bb292e1c-ac3a-467d-874a-004537f664a2" nickname="Number Slider" x="34.75" y="431.75">
-      <System.Double value="10" min="0" max="10" />
-    </Dynamo.Elements.dynDoubleSliderInput>
+    <Dynamo.Elements.dynDynamicRelaxation type="Dynamo.Elements.dynDynamicRelaxation" guid="43a383d0-233c-480a-a944-e98eecb931d3" nickname="Create Particle System" x="357.5" y="271.25" />
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="2db3d12a-22ed-40bd-8671-ccfc540369b2" nickname="Variable" x="3.25" y="308.75">
+      <Symbol value="d" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="f7b8ed3b-d37d-4beb-a798-68dbdf358be5" nickname="Variable" x="0" y="360.25">
+      <Symbol value="s" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="5c880934-073e-41df-a5b4-3e087ed6c851" nickname="Variable" x="0" y="412.5">
+      <Symbol value="r" />
+    </Dynamo.Elements.dynSymbol>
   </dynElements>
   <dynConnectors>
-    <Dynamo.Connectors.dynConnector start="1ffd9eb3-6ee1-4be0-92df-9f3f06bbf457" start_index="0" end="edc9e5bc-5094-4da7-9b88-a57b6861b924" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="2083cbd7-6f98-442d-a415-bb859abfee30" start_index="0" end="edc9e5bc-5094-4da7-9b88-a57b6861b924" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="6fa984e7-b875-4fdd-9b5a-5ae809d81c2a" start_index="0" end="1ffd9eb3-6ee1-4be0-92df-9f3f06bbf457" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="5bcec8e0-0f4b-4201-8a1b-235f0ca29846" start_index="0" end="edc9e5bc-5094-4da7-9b88-a57b6861b924" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnector start="597b3ffe-426a-460c-b49a-ddde14add408" start_index="0" end="2083cbd7-6f98-442d-a415-bb859abfee30" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="597b3ffe-426a-460c-b49a-ddde14add408" start_index="0" end="6fa984e7-b875-4fdd-9b5a-5ae809d81c2a" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnector start="3304eb09-d8be-4d7d-a725-8599eb380092" start_index="0" end="6fa984e7-b875-4fdd-9b5a-5ae809d81c2a" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="3304eb09-d8be-4d7d-a725-8599eb380092" start_index="0" end="5bcec8e0-0f4b-4201-8a1b-235f0ca29846" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnector start="a9dfc874-1bd8-407f-b394-8bdd6ed1edce" start_index="0" end="6fa984e7-b875-4fdd-9b5a-5ae809d81c2a" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="a9dfc874-1bd8-407f-b394-8bdd6ed1edce" start_index="0" end="5bcec8e0-0f4b-4201-8a1b-235f0ca29846" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnector start="b57a7591-c19a-4c34-b943-c79da6f77329" start_index="0" end="6fa984e7-b875-4fdd-9b5a-5ae809d81c2a" end_index="3" portType="0" />
-    <Dynamo.Connectors.dynConnector start="2086b9b8-a5f0-4461-a45c-ac98c673c7c4" start_index="0" end="6fa984e7-b875-4fdd-9b5a-5ae809d81c2a" end_index="4" portType="0" />
-    <Dynamo.Connectors.dynConnector start="bb292e1c-ac3a-467d-874a-004537f664a2" start_index="0" end="6fa984e7-b875-4fdd-9b5a-5ae809d81c2a" end_index="5" portType="0" />
+    <Dynamo.Connectors.dynConnector start="597b3ffe-426a-460c-b49a-ddde14add408" start_index="0" end="43a383d0-233c-480a-a944-e98eecb931d3" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="3304eb09-d8be-4d7d-a725-8599eb380092" start_index="0" end="43a383d0-233c-480a-a944-e98eecb931d3" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a9dfc874-1bd8-407f-b394-8bdd6ed1edce" start_index="0" end="43a383d0-233c-480a-a944-e98eecb931d3" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="2db3d12a-22ed-40bd-8671-ccfc540369b2" start_index="0" end="43a383d0-233c-480a-a944-e98eecb931d3" end_index="3" portType="0" />
+    <Dynamo.Connectors.dynConnector start="f7b8ed3b-d37d-4beb-a798-68dbdf358be5" start_index="0" end="43a383d0-233c-480a-a944-e98eecb931d3" end_index="4" portType="0" />
+    <Dynamo.Connectors.dynConnector start="5c880934-073e-41df-a5b4-3e087ed6c851" start_index="0" end="43a383d0-233c-480a-a944-e98eecb931d3" end_index="5" portType="0" />
   </dynConnectors>
   <dynNotes />
 </dynWorkspace>

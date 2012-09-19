@@ -1,0 +1,31 @@
+<dynWorkspace X="10" Y="55" Name="GraphFunction" Category="Revit">
+  <dynElements>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="e058111a-0c58-4dbf-9293-6ab711f530bf" nickname="Variable" x="0" y="65.5">
+      <Symbol value="x-start" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="81ecddc3-e0c6-4df5-a1ae-195bea0d9554" nickname="Variable" x="0" y="122">
+      <Symbol value="x-end" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="2601b801-c8af-413b-9c58-f8b100d62ed8" nickname="Variable" x="0" y="177.25">
+      <Symbol value="x-step" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynBuildSeq type="Dynamo.Elements.dynBuildSeq" guid="0c04ff78-cc17-4a5b-9f27-87bb3d848862" nickname="build-sequence" x="344.75" y="65.5" />
+    <Dynamo.Elements.dynMap type="Dynamo.Elements.dynMap" guid="71f6da55-9cd3-4d6d-b644-bebf556febc1" nickname="map" x="393.5" y="189.25" />
+    <Dynamo.Elements.dynCombine type="Dynamo.Elements.dynCombine" guid="260ae2e6-fe30-4280-9e29-f11fa01e5403" nickname="combine" x="637" y="108" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="cd7f28b9-d96d-4458-b5f6-7d92c3021f48" nickname="Number" x="210.25" y="0">
+      <System.Double value="0" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynAddition type="Dynamo.Elements.dynAddition" guid="12a9c20e-6a7b-4b9d-baf1-db9537e41835" nickname="+" x="160.5" y="257" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="e058111a-0c58-4dbf-9293-6ab711f530bf" start_index="0" end="0c04ff78-cc17-4a5b-9f27-87bb3d848862" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="81ecddc3-e0c6-4df5-a1ae-195bea0d9554" start_index="0" end="0c04ff78-cc17-4a5b-9f27-87bb3d848862" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="2601b801-c8af-413b-9c58-f8b100d62ed8" start_index="0" end="0c04ff78-cc17-4a5b-9f27-87bb3d848862" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="0c04ff78-cc17-4a5b-9f27-87bb3d848862" start_index="0" end="71f6da55-9cd3-4d6d-b644-bebf556febc1" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="0c04ff78-cc17-4a5b-9f27-87bb3d848862" start_index="0" end="260ae2e6-fe30-4280-9e29-f11fa01e5403" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="71f6da55-9cd3-4d6d-b644-bebf556febc1" start_index="0" end="260ae2e6-fe30-4280-9e29-f11fa01e5403" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="cd7f28b9-d96d-4458-b5f6-7d92c3021f48" start_index="0" end="260ae2e6-fe30-4280-9e29-f11fa01e5403" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="12a9c20e-6a7b-4b9d-baf1-db9537e41835" start_index="0" end="71f6da55-9cd3-4d6d-b644-bebf556febc1" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

@@ -549,9 +549,15 @@ namespace Dynamo.Elements
                this.UIDocument, "Select a set of curves.", dynElementSettings.SharedInstance
             );
             this.SelectedElements.Clear();
-            foreach (Element e in curves)
+            try
             {
-                this.SelectedElements.Add(e);
+                foreach (Element e in curves)
+                {
+                    this.SelectedElements.Add(e);
+                }
+            }
+            catch(Exception ex)
+            {
             }
         }
 

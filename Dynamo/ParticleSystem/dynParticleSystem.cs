@@ -307,6 +307,13 @@ namespace Dynamo.Elements
             return null;
 
         }
+
+        public void Clear()
+        {
+            particles.Clear();
+            springs.Clear();
+        }
+
     }
 }
 

@@ -113,7 +113,7 @@ namespace Dynamo.Elements
 
                 double springForce = -(a2bDistance - m_restLength) * m_springConstant;
 
-                XYZ Va2b = m_particleA.getVelocity() - m_particleB.getVelocity();
+                XYZ Va2b = m_particleA.getVelocity().Subtract(m_particleB.getVelocity());
 
                 double dampingForce = -m_Damping * (a2b.DotProduct(Va2b));
 
