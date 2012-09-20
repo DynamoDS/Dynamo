@@ -22,6 +22,9 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Dynamo.Controls;
 using Dynamo.Elements;
+using Microsoft.FSharp.Collections;
+using Expression = Dynamo.FScheme.Expression;
+using System.Collections;
 
 namespace Dynamo.Utilities
 {
@@ -45,6 +48,21 @@ namespace Dynamo.Utilities
             {
                 e = null;
                 return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Makes a new generic IEnumerable instance out of a non-generic one.
+        /// </summary>
+        /// <typeparam name="T">The out-type of the new IEnumerable</typeparam>
+        /// <param name="en">Non-generic IEnumerable</param>
+        /// <returns></returns>
+        public static IEnumerable<T> MakeEnumerable<T>(IEnumerable en)
+        {
+            foreach (T item in en)
+            {
+                yield return item;
             }
         }
 
@@ -351,7 +369,7 @@ namespace Dynamo.Utilities
                 //Reference pointRef = IdlePromise<Reference>.ExecuteOnIdle(
                 //    () => doc.Selection.PickObject(ObjectType.Element)
                 //);
-                
+
 
                 if (pointRef != null)
                 {
