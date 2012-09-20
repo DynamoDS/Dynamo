@@ -1028,8 +1028,10 @@ namespace Dynamo.Elements
             }
             else // single instance passed in
             {
+                int count = 0;
                 var result = this.GetCurvesFromFamily(
                    (FamilyInstance)((Expression.Container)input).Item,
+                   count,
                    opts
                 );
 
