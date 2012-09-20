@@ -241,7 +241,7 @@ namespace Dynamo.Elements
             int tick = 0;
             while (!watcher.Changed)
             {
-                if (Bench.CancelRun)
+                if (Bench.RunCancelled)
                     throw new Dynamo.Controls.CancelEvaluationException(false);
 
                 Thread.Sleep(10);

@@ -1166,7 +1166,7 @@ namespace Dynamo.Elements
 
             Action evaluation = delegate
             {
-                if (bench.CancelRun)
+                if (bench.RunCancelled)
                     throw new CancelEvaluationException(false);
 
                 bool debug = bench.RunInDebug;
@@ -1209,6 +1209,7 @@ namespace Dynamo.Elements
                         }
                         catch (CancelEvaluationException ex)
                         {
+                            this.OnRunCancelled();
                             throw ex;
                         }
                         catch (Exception ex)
@@ -1272,6 +1273,7 @@ namespace Dynamo.Elements
                                }
                                catch (CancelEvaluationException ex)
                                {
+                                   this.OnRunCancelled();
                                    throw ex;
                                }
                                catch (Exception ex)
@@ -1326,6 +1328,7 @@ namespace Dynamo.Elements
                     }
                     catch (CancelEvaluationException ex)
                     {
+                        this.OnRunCancelled();
                         throw ex;
                     }
                     catch (Exception ex)
@@ -1373,6 +1376,11 @@ namespace Dynamo.Elements
                 return result;
             else
                 throw new Exception("");
+        }
+
+        protected virtual void OnRunCancelled()
+        {
+            
         }
 
         private List<ElementId> deletedIds = new List<ElementId>();

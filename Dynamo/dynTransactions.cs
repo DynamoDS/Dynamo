@@ -54,7 +54,7 @@ namespace Dynamo.Elements
          ExternMacro m = new ExternMacro(
             delegate(FSharpList<Expression> args, ExecutionEnvironment environment)
             {
-               if (this.Bench.CancelRun)
+               if (this.Bench.RunCancelled)
                   throw new CancelEvaluationException(false);
 
                var arg = args[0]; //Get the only argument
