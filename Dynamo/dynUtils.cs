@@ -66,6 +66,16 @@ namespace Dynamo.Utilities
             }
         }
 
+        /// <summary>
+        /// Makes a new generic IEnumerable instance out of a non-generic one.
+        /// </summary>
+        /// <param name="en">Non-generic IEnumerable</param>
+        /// <returns></returns>
+        public static IEnumerable<object> MakeEnumerable(IEnumerable en)
+        {
+            return MakeEnumerable<object>(en);
+        }
+
 
         /// <summary>
         /// Creates a sketch plane by projecting one point's z coordinate down to the other's z coordinate.
