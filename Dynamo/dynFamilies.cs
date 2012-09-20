@@ -939,18 +939,26 @@ namespace Dynamo.Elements
         private Expression GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, int count,
                                    Autodesk.Revit.DB.Options options)
         {
+            FamilySymbol fs = fi.Symbol;
+            //Autodesk.Revit.DB.GeometryElement geomElem = fs.get_Geometry(options);
             Autodesk.Revit.DB.GeometryElement geomElem = fi.get_Geometry(options);
 
             Autodesk.Revit.DB.CurveArray curves = new CurveArray();
+            Autodesk.Revit.DB.ReferenceArray curveRefs = new ReferenceArray();
 
 
             //Find all curves and insert them into curve array
             AddCurves(geomElem, count, ref curves);
 
+            //extract references for downstream use
+            foreach (Curve c in curves)
+            {
+                curveRefs.Append(c.Reference);
+            }
 
             //convert curvearray into list using Stephens MakeEnumerable
             Expression result = Expression.NewList(Utils.convertSequence(
-                            dynUtils.MakeEnumerable(curves).Select(Expression.NewContainer)
+                            dynUtils.MakeEnumerable(curveRefs).Select(Expression.NewContainer)
                         ));
 
 
@@ -975,9 +983,13 @@ namespace Dynamo.Elements
                 Autodesk.Revit.DB.GeometryInstance geomInst = geomObj as Autodesk.Revit.DB.GeometryInstance;
                 if (null != geomInst)
                 {
-                    Autodesk.Revit.DB.GeometryElement transformedGeomElem
-                      = geomInst.GetInstanceGeometry(geomInst.Transform);
-                    AddCurves(transformedGeomElem, count, ref curves);
+                    //Autodesk.Revit.DB.GeometryElement transformedGeomElem
+                    //  = geomInst.GetInstanceGeometry(geomInst.Transform);
+                    //AddCurves(transformedGeomElem, count, ref curves);
+
+                    Autodesk.Revit.DB.GeometryElement symbolTransformedGeomElem
+                        = geomInst.GetSymbolGeometry(geomInst.Transform);
+                    AddCurves(symbolTransformedGeomElem, count, ref curves);
                 }
                 
             }
@@ -986,9 +998,9 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            FamilySymbol fs = (FamilySymbol)((Expression.Container)args[1]).Item;
+            
             var input = args[0];
-            Level level = (Level)((Expression.Container)args[2]).Item;
+
 
             //create some geometry options so that we compute references
             Autodesk.Revit.DB.Options opts = new Options();
