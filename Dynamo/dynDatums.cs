@@ -149,6 +149,14 @@ namespace Dynamo.Elements
                     this.Elements.Add(lev.Id);
                 }
 
+                //Now that we've created this single Level from this run, we delete all of the
+                // potential extra ones from the previous run.
+                // this is to handle going from a list down to a simgle element.
+                foreach (var e in this.Elements.Skip(1))
+                {
+                    this.DeleteElement(e);
+                }
+
                 return Expression.NewContainer(lev);
             }
         }

@@ -113,6 +113,7 @@ namespace Dynamo.Elements
 
             foreach(ElementId id in this.Elements)
             {
+
                 dynUtils.TryGetElement(id, out el);
                 rp = el as ReferencePoint;
 
@@ -184,20 +185,20 @@ namespace Dynamo.Elements
             //              refPtArr.Append(p);
 
             //              Particle partA;
-            //              partA = particleSystem.makeParticleFromElementID(p.Id, .5, p.Position, false);
+            //              partA = particleSystem.makeParticle(.5, p.Position, false);
             //              //partA = particleSystem.getParticleByXYZ(p.Position);
 
-            //              if (partA != null)
-            //              {
+            ////              if (partA != null)
+            ////              {
                               
-            //                  string name = p.Name;
-            //                  //if (name.Contains("Fixed"))
-            //                  //{
-            //                  //    partA.makeFixed();
-            //                  //}
+            ////                  string name = p.Name;
+            ////                  //if (name.Contains("Fixed"))
+            ////                  //{
+            ////                  //    partA.makeFixed();
+            ////                  //}
 
-            //                  p.Name = count.ToString(); // mark the point
-            //              }
+            ////                  p.Name = count.ToString(); // mark the point
+            ////              }
 
             //              count++;
             //              return Expression.NewContainer(p);
@@ -210,20 +211,7 @@ namespace Dynamo.Elements
             //}
 
 
-            //for (int i = 0; i < refPtArr.Size; i++)
-            //{
-            //    if (i == 0 || i == refPtArr.Size-1) // set the first and the last to fixed (test that will only work for linear things now)
-            //    {
-            //        ReferencePoint p = refPtArr.get_Item(i);
-            //        p.CoordinatePlaneVisibility = (CoordinatePlaneVisibility)2;
-            //        Particle part = particleSystem.getParticleByElementID(p.Id);
-            //        if (part != null)
-            //        {
-            //            part.makeFixed();
-            //        }
-            //    }
 
-            //}
 
             ////process curve inputs and convert to dynParticleSprings and dynParticles in particlesystem.
             ////Note this now will NOT make any user visible elements, just populate the particlesystem
@@ -317,22 +305,83 @@ namespace Dynamo.Elements
             ReferencePointArray refPtArr = new ReferencePointArray();
             ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
-            //temporarily create ref points and curves for visualization
 
-            foreach (var el in this.Elements)
+            //Create and update ref points based on particle system passed in from the Create PS node
+            // if element list / refPtArr is empty, hande creation
+            //  for each particle, 
+            //   create a new ref point
+            //   assign the new ref point element id to the particle that generated it
+            //   if it is the first or the last, make it fixed
+            // if element list is not empty
+            //   for each particle,
+            //     find the related ref point va element id
+            //       ReferencePoint rp = refPtArr.get_Item(i);
+            //       ReferencePoint p = dynUtils.TryGetElement(part.elementID(), out e);
+            //       ReferencePoint p = refPtArr.Find(dynUtils.TryGetElement(part.elementID());
+            //      if found, update p.Position = part.Position
+
+            if (this.Elements.Count == 0 && refPtArr.Size == 0)
             {
-                this.DeleteElement(el);
+                for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+                {
+                    p = particleSystem.getParticle(i);
+                    ReferencePoint rp = this.UIDocument.Document.FamilyCreate.NewReferencePoint(p.getPosition()); // update ref point position based on current particle position.
+                    p.setElementID(rp.Id);
+                    this.Elements.Add(rp.Id);
+                    refPtArr.Append(rp);
+
+                    if (i == 0 || i == particleSystem.numberOfParticles() - 1) // set the first and the last to fixed (test that will only work for linear things now)
+                    {
+                        rp = refPtArr.get_Item(i);
+                        rp.CoordinatePlaneVisibility = (CoordinatePlaneVisibility)2;
+                        p.makeFixed();
+
+                    }
+                }
+
+               
+            }
+            else
+            {
+
+                // couple of diffrent methods here - particles[] and refPtArr matching, looks like refPtArr does not persist
+                //ReferencePoint rp;
+                //for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+                //{
+                //    p = particleSystem.getParticle(i);
+                //    rp = refPtArr.get_Item(i); // if we found the corresponding point
+                //    if (rp != null && p != null)
+                //    {
+                //        rp.Position = p.getPosition(); //set the point position to the newly computed part position
+
+                //    }
+
+                //}
+
+                // couple of diffrent methods here - this.Elements and particles[] matching
+
+                ReferencePoint rp;
+                Element e;
+                foreach (ElementId id in this.Elements)
+                {
+
+                    dynUtils.TryGetElement(id, out e);
+                    rp = e as ReferencePoint;
+                    if (rp != null)
+                    {
+                        p = particleSystem.getParticleByElementID(rp.Id); // if we found the corresponding point
+
+                        if (p != null)
+                        {
+                            rp.Position = p.getPosition(); //set the point position to the newly computed part position
+
+                        }
+                    }
+                }
+
             }
 
-            //update ref points - purely destructive for now
-
-            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
-            {
-                p = particleSystem.getParticle(i);
-                ReferencePoint rp = this.UIDocument.Document.FamilyCreate.NewReferencePoint(p.getPosition()); // update ref point position based on current particle position.
-                this.Elements.Add(rp.Id);
-                refPtArr.Append(rp);
-            }
+           
 
             ////update lines - purely destructive for now
 
@@ -364,7 +413,7 @@ namespace Dynamo.Elements
 
             //}
 
-            return Expression.NewNumber(1);
+            return Expression.NewContainer(refPtArr);
         }
     }
 
