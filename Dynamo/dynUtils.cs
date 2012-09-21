@@ -323,25 +323,15 @@ namespace Dynamo.Utilities
                 FailureDefinitionId id
                     = f.GetFailureDefinitionId();
 
-                //      BuiltInFailures.JoinElementsFailures.CannotKeepJoined == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructural == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructuralError == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsWarn == id
-
                 if (BuiltInFailures.InaccurateFailures.InaccurateLine == id ||
                     BuiltInFailures.OverlapFailures.DuplicateInstances == id ||
                     BuiltInFailures.InaccurateFailures.InaccurateCurveBasedFamily == id ||
-                    BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id
+                    BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id ||
+                    BuiltInFailures.InaccurateFailures.InaccurateLine == id
                     )
                 {
                     a.DeleteWarning(f);
                 }
-                //else if(BuiltInFailures.CurveFailures.LineTooShortError == id ||
-                //    BuiltInFailures.CurveFailures.LineTooShortWarning == id
-                //    )
-                //{
-                //    a.RollBackPendingTransaction();
-                //}
                 else
                 {
                     a.RollBackPendingTransaction();
