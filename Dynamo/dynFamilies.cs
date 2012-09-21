@@ -941,14 +941,19 @@ namespace Dynamo.Elements
         {
             FamilySymbol fs = fi.Symbol;
             //Autodesk.Revit.DB.GeometryElement geomElem = fs.get_Geometry(options);
-            Autodesk.Revit.DB.GeometryElement geomElem = fi.get_Geometry(options);
+            Autodesk.Revit.DB.GeometryElement geomElem = fi.get_Geometry(options); // our particular case of a loaded mass family with no joins has no geom in the instance
+
+            //fi.GetOriginalGeometry(options);
+            //fi.GetTransform()
 
             Autodesk.Revit.DB.CurveArray curves = new CurveArray();
             Autodesk.Revit.DB.ReferenceArray curveRefs = new ReferenceArray();
 
 
             //Find all curves and insert them into curve array
-            AddCurves(geomElem, count, ref curves);
+            AddCurves(fi, geomElem, count, ref curves);
+
+            //curves.Append(GetCurve(fi, options)); //test 
 
             //extract references for downstream use
             foreach (Curve c in curves)
@@ -958,7 +963,7 @@ namespace Dynamo.Elements
 
             //convert curvearray into list using Stephens MakeEnumerable
             Expression result = Expression.NewList(Utils.convertSequence(
-                            dynUtils.MakeEnumerable(curveRefs).Select(Expression.NewContainer)
+                            dynUtils.MakeEnumerable(curves).Select(Expression.NewContainer)
                         ));
 
 
@@ -966,7 +971,63 @@ namespace Dynamo.Elements
 
         }
 
-        private Expression AddCurves(Autodesk.Revit.DB.GeometryElement geomElem, int count,
+        /// <summary>
+        /// Retrieve the first curve found for 
+        /// the given element. In case the element is a 
+        /// family instance, it may have its own non-empty
+        /// solid, in which case we use that. Otherwise we 
+        /// search the symbol geometry. If we use the 
+        /// symbol geometry, we have to keep track of the 
+        /// instance transform to map it to the actual
+        /// instance project location.
+        /// </summary>
+        Curve GetCurve(Element e, Options opt)
+        {
+            GeometryElement geo = e.get_Geometry(opt);
+
+            Curve curve = null;
+            GeometryInstance inst = null;
+            Transform t = Transform.Identity;
+
+            // Some columns have no solids, and we have to 
+            // retrieve the geometry from the symbol; 
+            // others do have solids on the instance itself 
+            // and no contents in the instance geometry 
+            // (e.g. in rst_basic_sample_project.rvt).
+
+            foreach (GeometryObject obj in geo)
+            {
+                curve = obj as Curve;
+
+                if (null != curve)
+                {
+                    break;
+                }
+
+                inst = obj as GeometryInstance;
+            }
+
+            if (null == curve && null != inst)
+            {
+                geo = inst.GetSymbolGeometry();
+                t = inst.Transform;
+
+                foreach (GeometryObject obj in geo)
+                {
+                    curve = obj as Curve;
+
+                    if (null != curve)
+                    {
+                        break;
+                    }
+                }
+            }
+            return curve;
+        }
+
+
+
+        private Expression AddCurves(FamilyInstance fi, Autodesk.Revit.DB.GeometryElement geomElem, int count,
                                         ref Autodesk.Revit.DB.CurveArray curves)
         {
             foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem.Objects)
@@ -975,26 +1036,39 @@ namespace Dynamo.Elements
                 if (null != curve)
                 {
                     curves.Append(curve);
-                    
+
                     continue;
                 }
-               
+
+
                 //If this GeometryObject is Instance, call AddCurve
                 Autodesk.Revit.DB.GeometryInstance geomInst = geomObj as Autodesk.Revit.DB.GeometryInstance;
                 if (null != geomInst)
                 {
-                    //Autodesk.Revit.DB.GeometryElement transformedGeomElem
-                    //  = geomInst.GetInstanceGeometry(geomInst.Transform);
-                    //AddCurves(transformedGeomElem, count, ref curves);
+                    //curve live in family symbol in this case, need to apply the correct transform to get them in to 
+                    //the project coordinate system lining up with the instance
+                    // http://wikihelp.autodesk.com/Revit/enu/2012/Help/API_Dev_Guide/0074-Revit_Ge74/0108-Geometry108/0110-Geometry110/GeometryInstances
 
-                    Autodesk.Revit.DB.GeometryElement symbolTransformedGeomElem
-                        = geomInst.GetSymbolGeometry(geomInst.Transform);
-                    AddCurves(symbolTransformedGeomElem, count, ref curves);
+                    //Autodesk.Revit.DB.GeometryElement transformedGeomElem // curves transformed into project coords
+                    //  = geomInst.GetInstanceGeometry(geomInst.Transform);
+                    //AddCurves(fi, transformedGeomElem, count, ref curves);
+
+                    Autodesk.Revit.DB.GeometryElement transformedGeomElem // curves transformed into project coords
+                    = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
+                    AddCurves(fi, transformedGeomElem, count, ref curves);
+
+                    //Autodesk.Revit.DB.GeometryElement symbolTransformedGeomElem // curves in symbol coords
+                    //    = geomInst.GetSymbolGeometry(geomInst.Transform);
+                    //AddCurves(fi, symbolTransformedGeomElem, count, ref curves);
                 }
-                
+
+
+
             }
+
             return Expression.NewContainer(curves);
         }
+        
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
