@@ -1,0 +1,22 @@
+<dynWorkspace X="10" Y="55" Name="y=Mx+b" Category="Math">
+  <dynElements>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="757f7554-a772-43a9-8acb-49af18255237" nickname="Variable" x="75.5" y="75.75">
+      <Symbol value="M" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="860fc3ee-1027-4b17-a4c3-3bbbb67f800a" nickname="Variable" x="75" y="187.75">
+      <Symbol value="b" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="d19d6c86-3c75-4efd-b8c6-f72593e93152" nickname="×" x="411.25" y="79" />
+    <Dynamo.Elements.dynAddition type="Dynamo.Elements.dynAddition" guid="bf56c065-2b06-49da-92b1-ab00919a8a2b" nickname="+" x="561.75" y="126.75" />
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="a8c3c075-2c96-4139-a93b-684d2b901bf9" nickname="Variable" x="78" y="128">
+      <Symbol value="x" />
+    </Dynamo.Elements.dynSymbol>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="757f7554-a772-43a9-8acb-49af18255237" start_index="0" end="d19d6c86-3c75-4efd-b8c6-f72593e93152" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="860fc3ee-1027-4b17-a4c3-3bbbb67f800a" start_index="0" end="bf56c065-2b06-49da-92b1-ab00919a8a2b" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d19d6c86-3c75-4efd-b8c6-f72593e93152" start_index="0" end="bf56c065-2b06-49da-92b1-ab00919a8a2b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a8c3c075-2c96-4139-a93b-684d2b901bf9" start_index="0" end="d19d6c86-3c75-4efd-b8c6-f72593e93152" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
