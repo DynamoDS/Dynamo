@@ -84,8 +84,9 @@ namespace Dynamo.Elements
    {
       public dynLoftForm()
       {
-         InPortData.Add(new PortData("solid?", "Is solid?", typeof(object)));
+         InPortData.Add(new PortData("solid/void", "True creates a solid, false a void", typeof(object)));
          InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(object)));
+         InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(object)));
 
          OutPortData = new PortData("form", "Loft Form", typeof(object));
 
@@ -106,6 +107,9 @@ namespace Dynamo.Elements
 
          //Solid argument
          bool isSolid = ((Expression.Number)args[0]).Item == 1;
+
+         //Surface argument
+         bool isSurface = ((Expression.Number)args[2]).Item == 1;
 
          //Build up our list of list of references for the form by...
          IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
@@ -160,7 +164,29 @@ namespace Dynamo.Elements
          }
 
          //We use the ReferenceArrayArray to make the form, and we store it for later runs.
-         Form f = this.UIDocument.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr);
+
+         Form f;
+          //if we only have a single refArr, we can make a capping surface or an extrusion
+         if (refArrArr.Size == 1)
+         {
+             ReferenceArray refArr = refArrArr.get_Item(0);
+
+             if (isSurface) // make a capping surface
+             {
+                 f = this.UIDocument.Document.FamilyCreate.NewFormByCap(true, refArr);
+             }
+             else  // make an extruded surface
+             {
+                 // The extrusion form direction
+                 XYZ direction = new XYZ(0, 0, 50);
+                 f = this.UIDocument.Document.FamilyCreate.NewExtrusionForm(true, refArr, direction);
+             }
+         }
+         else // make a lofted surface
+         {
+             f = this.UIDocument.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr);
+         }
+
          this.Elements.Add(f.Id);
 
          return Expression.NewContainer(f);
@@ -240,28 +266,72 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
+      private Expression makeCurveRef(object c, int count)
+      {
+          Reference r = c is CurveElement
+             ? (c as CurveElement).GeometryCurve.Reference // curve element
+             : (c as Curve).Reference; // geometry curve
+
+          //Reference r;
+          //if (c is CurveElement)
+          //{
+          //    r = (c as CurveElement).GeometryCurve.Reference;
+          //    return Expression.NewContainer(r);
+          //}
+          //else if (c is Curve)
+          //{
+          //    r = (c as Curve).Reference;
+          //    return Expression.NewContainer(r);
+          //}
+          //else if (c is Reference)
+          //{
+          //    r = c as Reference;
+          //    return Expression.NewContainer(r);
+          //}
+      
+          return Expression.NewContainer(r);
+      }
+
+
       public override Expression Evaluate(FSharpList<Expression> args)
       {
          var input = args[0];
 
          if (input.IsList)
          {
-            return Expression.NewList(
+            int count = 0;
+            var result =  Expression.NewList(
                Utils.convertSequence(
                   (input as Expression.List).Item.Select(
                      x =>
-                        Expression.NewContainer(
-                           ((CurveElement)((Expression.Container)x).Item).GeometryCurve.Reference
+                            this.makeCurveRef(
+                            ((Expression.Container)x).Item,
+                            count++
                         )
                   )
                )
             );
+            foreach (var e in this.Elements.Skip(count))
+            {
+                this.DeleteElement(e);
+            }
+
+            return result;
          }
          else
          {
-            return Expression.NewContainer(
-               ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference
-            );
+            var result = this.makeCurveRef(
+                   ((Expression.Container)input).Item,
+                   0
+
+                );
+
+                foreach (var e in this.Elements.Skip(1))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
          }
       }
 

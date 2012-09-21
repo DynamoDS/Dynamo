@@ -801,6 +801,336 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Family Instance By Level Creator")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("An element which allows you to create family instances.")]
+    [RequiresTransaction(true)]
+    public class dynFamilyInstanceCreatorLevel : dynNode
+    {
+        public dynFamilyInstanceCreatorLevel()
+        {
+            InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
+            InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
+            InPortData.Add(new PortData("lev", "The Level to use for instantiation.", typeof(FamilySymbol)));
+
+            OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        private Expression makeFamilyInstance(object location, FamilySymbol fs, int count, Level level)
+        {
+            XYZ pos = location is ReferencePoint
+               ? (location as ReferencePoint).Position
+               : (XYZ)location;
+
+            FamilyInstance fi;
+
+            if (this.Elements.Count > count)
+            {
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[count], out e))
+                {
+                    fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
+                    fi.Symbol = fs;
+                    LocationPoint lp = fi.Location as LocationPoint;
+                    lp.Point = pos;
+                    //fi.Level = level;
+
+                }
+                else
+                {
+                    fi = this.UIDocument.Document.IsFamilyDocument
+                       ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                       pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                          
+                       )
+                       : this.UIDocument.Document.Create.NewFamilyInstance(
+                          pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                       );
+
+                    this.Elements[count] = fi.Id;
+                }
+            }
+            else
+            {
+                fi = this.UIDocument.Document.IsFamilyDocument
+                   ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                      pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                   )
+                   : this.UIDocument.Document.Create.NewFamilyInstance(
+                      pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                   );
+
+                this.Elements.Add(fi.Id);
+            }
+
+            return Expression.NewContainer(fi);
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            FamilySymbol fs = (FamilySymbol)((Expression.Container)args[1]).Item;
+            var input = args[0];
+            Level level = (Level)((Expression.Container)args[2]).Item;
+
+            if (input.IsList)
+            {
+                var locList = (input as Expression.List).Item;
+
+                int count = 0;
+
+                var result = Expression.NewList(
+                   Utils.convertSequence(
+                      locList.Select(
+                         x =>
+                            this.makeFamilyInstance(
+                               ((Expression.Container)x).Item,
+                               fs,
+                               count++,
+                               level
+                            )
+                      )
+                   )
+                );
+
+                foreach (var e in this.Elements.Skip(count))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
+            }
+            else
+            {
+                var result = this.makeFamilyInstance(
+                   ((Expression.Container)input).Item,
+                   fs,
+                   0,
+                   level
+                );
+
+                foreach (var e in this.Elements.Skip(1))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
+            }
+        }
+    }
+
+    [ElementName("Curves from Family")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("An element which allows you to extract curves from family instances.")]
+    [RequiresTransaction(true)]
+    public class dynCurvesFromFamilyInstance : dynNode
+    {
+        public dynCurvesFromFamilyInstance()
+        {
+            InPortData.Add(new PortData("fi", "family instance", typeof(object)));
+
+
+            OutPortData = new PortData("curves", "Curves extracted by this operation.", typeof(Curve));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        private Expression GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, int count,
+                                   Autodesk.Revit.DB.Options options)
+        {
+            FamilySymbol fs = fi.Symbol;
+            //Autodesk.Revit.DB.GeometryElement geomElem = fs.get_Geometry(options);
+            Autodesk.Revit.DB.GeometryElement geomElem = fi.get_Geometry(options); // our particular case of a loaded mass family with no joins has no geom in the instance
+
+            //fi.GetOriginalGeometry(options);
+            //fi.GetTransform()
+
+            Autodesk.Revit.DB.CurveArray curves = new CurveArray();
+            Autodesk.Revit.DB.ReferenceArray curveRefs = new ReferenceArray();
+
+
+            //Find all curves and insert them into curve array
+            AddCurves(fi, geomElem, count, ref curves);
+
+            //curves.Append(GetCurve(fi, options)); //test 
+
+            //extract references for downstream use
+            foreach (Curve c in curves)
+            {
+                curveRefs.Append(c.Reference);
+            }
+
+            //convert curvearray into list using Stephens MakeEnumerable
+            Expression result = Expression.NewList(Utils.convertSequence(
+                            dynUtils.MakeEnumerable(curves).Select(Expression.NewContainer)
+                        ));
+
+
+            return result;
+
+        }
+
+        /// <summary>
+        /// Retrieve the first curve found for 
+        /// the given element. In case the element is a 
+        /// family instance, it may have its own non-empty
+        /// solid, in which case we use that. Otherwise we 
+        /// search the symbol geometry. If we use the 
+        /// symbol geometry, we have to keep track of the 
+        /// instance transform to map it to the actual
+        /// instance project location.
+        /// </summary>
+        Curve GetCurve(Element e, Options opt)
+        {
+            GeometryElement geo = e.get_Geometry(opt);
+
+            Curve curve = null;
+            GeometryInstance inst = null;
+            Transform t = Transform.Identity;
+
+            // Some columns have no solids, and we have to 
+            // retrieve the geometry from the symbol; 
+            // others do have solids on the instance itself 
+            // and no contents in the instance geometry 
+            // (e.g. in rst_basic_sample_project.rvt).
+
+            foreach (GeometryObject obj in geo)
+            {
+                curve = obj as Curve;
+
+                if (null != curve)
+                {
+                    break;
+                }
+
+                inst = obj as GeometryInstance;
+            }
+
+            if (null == curve && null != inst)
+            {
+                geo = inst.GetSymbolGeometry();
+                t = inst.Transform;
+
+                foreach (GeometryObject obj in geo)
+                {
+                    curve = obj as Curve;
+
+                    if (null != curve)
+                    {
+                        break;
+                    }
+                }
+            }
+            return curve;
+        }
+
+
+
+        private Expression AddCurves(FamilyInstance fi, Autodesk.Revit.DB.GeometryElement geomElem, int count,
+                                        ref Autodesk.Revit.DB.CurveArray curves)
+        {
+            foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem.Objects)
+            {
+                Autodesk.Revit.DB.Curve curve = geomObj as Autodesk.Revit.DB.Curve;
+                if (null != curve)
+                {
+                    curves.Append(curve);
+
+                    continue;
+                }
+
+
+                //If this GeometryObject is Instance, call AddCurve
+                Autodesk.Revit.DB.GeometryInstance geomInst = geomObj as Autodesk.Revit.DB.GeometryInstance;
+                if (null != geomInst)
+                {
+                    //curve live in family symbol in this case, need to apply the correct transform to get them in to 
+                    //the project coordinate system lining up with the instance
+                    // http://wikihelp.autodesk.com/Revit/enu/2012/Help/API_Dev_Guide/0074-Revit_Ge74/0108-Geometry108/0110-Geometry110/GeometryInstances
+
+                    //Autodesk.Revit.DB.GeometryElement transformedGeomElem // curves transformed into project coords
+                    //  = geomInst.GetInstanceGeometry(geomInst.Transform);
+                    //AddCurves(fi, transformedGeomElem, count, ref curves);
+
+                    Autodesk.Revit.DB.GeometryElement transformedGeomElem // curves transformed into project coords
+                    = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
+                    AddCurves(fi, transformedGeomElem, count, ref curves);
+
+                    //Autodesk.Revit.DB.GeometryElement symbolTransformedGeomElem // curves in symbol coords
+                    //    = geomInst.GetSymbolGeometry(geomInst.Transform);
+                    //AddCurves(fi, symbolTransformedGeomElem, count, ref curves);
+                }
+
+
+
+            }
+
+            return Expression.NewContainer(curves);
+        }
+        
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            
+            var input = args[0];
+
+
+            //create some geometry options so that we compute references
+            Autodesk.Revit.DB.Options opts = new Options();
+            opts.ComputeReferences = true;
+            opts.DetailLevel = ViewDetailLevel.Medium;
+            opts.IncludeNonVisibleObjects = false;
+
+
+            if (input.IsList)
+            {
+                var familyList = (input as Expression.List).Item;
+
+                int count = 0;
+
+
+                 var result = Expression.NewList(
+                   Utils.convertSequence(
+                      familyList.Select(
+                         x =>
+                            this.GetCurvesFromFamily(
+                               (FamilyInstance)((Expression.Container)x).Item,
+                               count++,
+                               opts
+                            )
+                      )
+                   )
+
+                );
+
+
+                foreach (var e in this.Elements.Skip(count))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
+            }
+            else // single instance passed in
+            {
+                int count = 0;
+                var result = this.GetCurvesFromFamily(
+                   (FamilyInstance)((Expression.Container)input).Item,
+                   count,
+                   opts
+                );
+
+                foreach (var e in this.Elements.Skip(1)) // cleanup in case of going from list to single instance.
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
+            }
+        }
+    }
+
     //TODO: In Destroy(), have code that resets Elements back to their default.
     [ElementName("Set Instance Parameter")]
     [ElementCategory(BuiltinElementCategories.REVIT)]

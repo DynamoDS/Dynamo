@@ -187,6 +187,175 @@ namespace Dynamo.Elements
         }
     }
 
+    [IsInteractive(true)]
+    public abstract class dynMultipleElementSelection : dynNode
+    {
+        TextBox tb;
+        System.Windows.Controls.Button selectButton;
+
+        protected dynMultipleElementSelection(PortData outPortData)
+        {
+            this.OutPortData = outPortData;
+
+            //add a button to the inputGrid on the dynElement
+            selectButton = new System.Windows.Controls.Button();
+            selectButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            selectButton.Click += new System.Windows.RoutedEventHandler(selectButton_Click);
+            selectButton.Content = "Select Instances";
+            selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+            tb = new TextBox();
+            tb.Text = "Nothing Selected";
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+            tb.IsReadOnly = true;
+            tb.IsReadOnlyCaretVisible = false;
+
+            this.SetRowAmount(2);
+
+            this.inputGrid.Children.Add(tb);
+            this.inputGrid.Children.Add(selectButton);
+
+            System.Windows.Controls.Grid.SetRow(selectButton, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 1);
+
+            base.RegisterInputsAndOutputs();
+
+            this.topControl.Height = 60;
+            this.UpdateLayout();
+        }
+
+        private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.selectButton.IsEnabled = false;
+            IdlePromise.ExecuteOnIdle(new Action(
+                delegate
+                {
+                    this.OnSelectClick();
+                    this.selectButton.IsEnabled = true;
+                }
+            ));
+        }
+
+        /// <summary>
+        /// Callback for when the "Select" button has been clicked.
+        /// </summary>
+        /// 
+        /// 
+        protected abstract void OnSelectClick();
+
+        private IList<Element> selected;
+        /// <summary>
+        /// The Element which is selected. Setting this property will automatically register the Element
+        /// for proper updating, and will update this node's IsDirty value.
+        /// </summary>
+        public virtual IList<Element> SelectedElements
+        {
+            get { return selected; }
+            set
+            {
+                var dirty = false;
+                if (this.selected != null)
+                {
+                    foreach (Element selectedElement in this.selected)
+                    {
+                        foreach (Element previousElement in value)
+                        {
+
+                            if (previousElement != null && previousElement.Id.Equals(selectedElement.Id))
+                                return;
+
+                            dirty = true;
+                            this.UnregisterEvalOnModified(selectedElement.Id);
+                        }
+                    }
+                }
+                else
+                {
+                    dirty = value != null;
+                }
+
+                this.selected = value;
+                if (value != null)
+                {
+                    foreach (Element previousElement in value)
+                    {
+                        this.RegisterEvalOnModified(
+                           previousElement.Id,
+                           delAction: delegate { this.selected = null; this.SelectedElements = null; }
+                        );
+                    }
+
+                    this.tb.Text = this.SelectionText;
+                    this.selectButton.Content = "Change";
+                }
+                else
+                {
+                    this.tb.Text = "Nothing Selected.";
+                    this.selectButton.Content = "Select";
+                }
+
+                if (dirty)
+                    this.IsDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Determines what the text should read on the node when the selection has been changed.
+        /// Is ignored in the case where nothing is selected.
+        /// </summary>
+        protected abstract string SelectionText { get; }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            if (this.SelectedElements == null)
+                throw new Exception("Nothing selected.");
+
+            return Expression.NewContainer(this.SelectedElements);
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            if (this.SelectedElements != null)
+            {
+                foreach (Element selectedElement in this.SelectedElements)
+                {
+                    XmlElement outEl = xmlDoc.CreateElement("instance");
+                    outEl.SetAttribute("id", selectedElement.Id.ToString());
+                    dynEl.AppendChild(outEl);
+                }
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals("instance"))
+                {
+                    Element saved = null;
+                    var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
+                    try
+                    {
+                        saved = this.UIDocument.Document.GetElement(id) as FamilyInstance;
+                    }
+                    catch
+                    {
+                        this.Bench.Log("Unable to find element with ID: " + id.IntegerValue);
+                    }
+                    this.SelectedElements.Add(saved);
+                }
+            }
+        }
+    }
+
     [ElementName("Family Instance by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Select a family instance from the document.")]
@@ -353,6 +522,7 @@ namespace Dynamo.Elements
             this.SelectedElement = SelectionHelper.RequestCurveElementSelection(
                dynElementSettings.SharedInstance.Doc, "Select a curve.", dynElementSettings.SharedInstance
             );
+
         }
 
         protected override string SelectionText
@@ -361,6 +531,55 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Curves by Selection")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("An element which allows the user to select a set of curves.")]
+    [RequiresTransaction(false)]
+    public class dynMultipleCurvesBySelection : dynMultipleElementSelection
+    {
+        CurveArray curves;
+
+        public dynMultipleCurvesBySelection()
+            : base(new PortData("curves", "The curves", typeof(CurveElement)))
+        { }
+
+        protected override void OnSelectClick()
+        {
+            curves = SelectionHelper.RequestMultipleCurveElementsSelection(
+               this.UIDocument, "Select a set of curves.", dynElementSettings.SharedInstance
+            );
+            this.SelectedElements.Clear();
+            try
+            {
+                foreach (Element e in curves)
+                {
+                    this.SelectedElements.Add(e);
+                }
+            }
+            catch(Exception ex)
+            {
+            }
+        }
+
+        string formatSelectionText(IList<Element> elements)
+        {
+            string selectionText = null;
+            foreach (Element e in elements)
+            {
+                selectionText = selectionText + " " + e.Id.ToString();
+            }
+            return selectionText;
+        }
+
+        protected override string SelectionText
+        {
+
+            get
+            {
+                return "Curve ID: " + formatSelectionText(this.SelectedElements);
+            }
+        }
+    }
     [ElementName("Point by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Select a reference point from the document.")]
@@ -383,7 +602,7 @@ namespace Dynamo.Elements
             get { return this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")"; }
         }
     }
-
+    
     [ElementName("SunPath Direction")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Returns the current Sun Path direction.")]
@@ -563,3 +782,5 @@ namespace Dynamo.Elements
 
     }
 }
+
+

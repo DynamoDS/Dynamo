@@ -323,25 +323,15 @@ namespace Dynamo.Utilities
                 FailureDefinitionId id
                     = f.GetFailureDefinitionId();
 
-                //      BuiltInFailures.JoinElementsFailures.CannotKeepJoined == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructural == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructuralError == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsWarn == id
-
                 if (BuiltInFailures.InaccurateFailures.InaccurateLine == id ||
                     BuiltInFailures.OverlapFailures.DuplicateInstances == id ||
                     BuiltInFailures.InaccurateFailures.InaccurateCurveBasedFamily == id ||
-                    BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id
+                    BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id ||
+                    BuiltInFailures.InaccurateFailures.InaccurateLine == id
                     )
                 {
                     a.DeleteWarning(f);
                 }
-                //else if(BuiltInFailures.CurveFailures.LineTooShortError == id ||
-                //    BuiltInFailures.CurveFailures.LineTooShortWarning == id
-                //    )
-                //{
-                //    a.RollBackPendingTransaction();
-                //}
                 else
                 {
                     a.RollBackPendingTransaction();
@@ -424,6 +414,61 @@ namespace Dynamo.Utilities
             {
                 settings.Bench.Log(ex);
                 return null;
+            }
+        }
+
+
+        public static CurveArray RequestMultipleCurveElementsSelection(UIDocument doc, string message, dynElementSettings settings)
+        {
+            try
+            {
+                //CurveElement c = null;
+                Curve cv = null;
+
+                Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+
+                //MessageBox.Show(message);
+                dynElementSettings.SharedInstance.Bench.Log(message);
+
+                CurveArray ca = new CurveArray();
+                ISelectionFilter selFilter = new CurveSelectionFilter();
+                IList<Element> eList = doc.Selection.PickElementsByRectangle(//selFilter,
+                    "Select multiple curves") as IList<Element>;
+
+
+                foreach (CurveElement c in eList)
+                {
+                    if (c != null)
+                    {
+                        ca.Append(c.GeometryCurve as Curve);
+                    }
+                }
+                return ca;
+            }
+            catch (Exception ex)
+            {
+                settings.Bench.Log(ex);
+                return null;
+            }
+        }
+
+        public class CurveSelectionFilter : ISelectionFilter
+        {
+            public bool AllowElement(Element element)
+            {
+                if (element.Category.Name == "Model Lines" || element.Category.Name == "Lines")
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public bool AllowReference(Reference refer, XYZ point)
+            {
+                return false;
             }
         }
 

@@ -63,7 +63,7 @@ namespace Dynamo.Elements
 
 
             rPoints = new List<ReferencePoint>();
-            //setupLineTest();
+
 
             
         }
@@ -71,6 +71,7 @@ namespace Dynamo.Elements
         void setupLineTest()
         {
 
+            int max = 10;
 
             XYZ basePoint = new XYZ(0, 0, 0);
             Particle a = particleSystem.makeParticle(0.5, basePoint, true);
@@ -79,26 +80,32 @@ namespace Dynamo.Elements
             List<Particle> particles = new List<Particle>();
             particles.Add(a);
 
-            for (int i = 1; i < 10; i++)
+            for (int i = 1; i < max ; i++)
             {
                 Particle s = particles[i - 1];
 
                 //XYZ pendPoint = new XYZ(0, ((double)i) * Math.Sin(0.5), ((double)i) * Math.Sin(0.5));
                 XYZ pendPoint = new XYZ((double)100*i, 0, 0); // straight line in x axis
                 Particle b = particleSystem.makeParticle(0.5, pendPoint, false);
-          
+
+                if (i == max - 1)
+                {
+                    b.makeFixed();
+                }
 
                 particles.Add(b);
 
 
                 particleSystem.makeSpring(s, b, 1, 800, 0.8); // dynParticleSpring(dynParticle particleA, dynParticle particleB, double restLength, double springConstant, double damping)
+            
+            
             }
 
             
 
         }
 
-        // geomtric test, fairly expensive. obsoleted by CreateParticleByElementID and GetParticleFromElementID
+        // geometric test, fairly expensive. obsoleted by CreateParticleByElementID and GetParticleFromElementID
         public ReferencePoint FindRefPointFromXYZ(XYZ xyz)         
         {
             Element el;
@@ -106,6 +113,7 @@ namespace Dynamo.Elements
 
             foreach(ElementId id in this.Elements)
             {
+
                 dynUtils.TryGetElement(id, out el);
                 rp = el as ReferencePoint;
 
@@ -121,7 +129,7 @@ namespace Dynamo.Elements
 
         public override bool IsDirty { get { return true; } set { } } 
 
-        // geomtric test, fairly expensive. 
+        // geometric test, fairly expensive. 
         public ReferencePoint FindRefPointWithCoincidentXYZ(ReferencePoint rp)
         {
             Element el;
@@ -150,278 +158,120 @@ namespace Dynamo.Elements
             double d = ((Expression.Number)args[3]).Item;//dampening
             double s = ((Expression.Number)args[4]).Item;//spring constant
             double r = ((Expression.Number)args[5]).Item;//rest length
+
+            particleSystem.Clear();
             
-            //Particle p;
-            //ParticleSpring a;
+            CurveByPoints existingCurve;
             
             ReferencePointArray refPtArr = new ReferencePointArray();
             ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
-            //process refpoint inputs and convert to dynParticles in particlesystem. for now we will copy the ref points and only update the position of the copied points.
+            setupLineTest();
 
-            if (curves.IsList)
-            {
-                var curvesList = (curves as Expression.List).Item;
-
-                //Counter to keep track of how many curves we've made. We'll use this to delete old
-                //elements later.
-                int count = 0;
-
-                //We create our output by...
-                var resultCurves = Utils.convertSequence(
-                   curvesList.Select(
-                    //..taking each element in the list and...
-                      delegate(Expression x)
-                      {
-                          CurveByPoints c;
-
- 
-                          //...if we already have cpb elements made by this node in a previous run...
-                          if (this.Elements.Count > count)
-                          {
-                              Element e;
-                              //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out e) && e is CurveByPoints)
-                              {
-
-                                    //...and if we're successful, set properties of the spring
-                                    c = e as CurveByPoints;
-                                    ParticleSpring spring = particleSystem.getSpringByElementID(e.Id);
-                                    spring.setDamping(d);
-                                    spring.setRestLength(r);
-                                    spring.setSpringConstant(s);
-
-                                  // - find the matching dynParticleSpring (just updated dynParticleSpring to keep it's curvebypoint id)
-                                  // - the rest is a no-op because the dynParticleSpring will update based on the refpoints position after the next step.
-
-                              }
-                              else
-                              {
-                                  //if (e is CurveByPoints)
-                                  //{
-                                      //...otherwise, we can make a new curve by points using the passed-in CBPs points and replace it in the list of
-                                      //previously created curve by points.
-
-                                      // todo - ensure that we don't make coincident points
-                                      // check each point extracted from cbp against all other points in element list, there should be a match for each element id.
-                                      // 
-                                      tempRefPtArr.Clear();
-                                      tempRefPtArr = (ReferencePointArray)((CurveByPoints)((Expression.Container)x).Item).GetPoints();
-
-                                      c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(tempRefPtArr);
-                                      this.Elements[count] = c.Id;
-
-                                      ParticleSpring spring = particleSystem.getSpringByElementID(c.Id);
-                                      //if we find this cbp does not have a matching spring, make a new spring
-                                      if (spring == null)
-                                      {
-                                          try
-                                          {
-
-
-                                              //dynParticle partA = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(0).Id]);// we have the old point value here we need to find the new
-                                              //dynParticle partB = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(1).Id]);
-                                              // old point id, need to find new
-
-                                              ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
-                                              ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
-
-                                              //dynParticle partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
-                                              //dynParticle partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
-                                              //particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
-
-                                              ReferencePoint rpA = FindRefPointWithCoincidentXYZ(oldRefPointA);
-                                              ReferencePoint rpB = FindRefPointWithCoincidentXYZ(oldRefPointB);
-
-                                              Particle partA;
-                                              Particle partB;
-                                              //try and find the particles that are associated with these refpoints. 
-
-                                              //For some reason the dictionary is not working
-                                              //dynParticle partA = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(0).Id]);// we have the old point value here we need to find the new
-                                              //dynParticle partB = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(1).Id]);
-
-                                              if (rpA != null || rpB != null)
-                                              {
-                                                  partA = particleSystem.getParticleByXYZ(rpA.Position);
-                                                  partB = particleSystem.getParticleByXYZ(rpB.Position);
-
-
-                                                  if (partA != null || partB != null)
-                                                  {
-                                                      particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
-                                                  }
-                                              }
-                                              else
-                                              {
-                                                  partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
-                                                  partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
-                                                  particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
-                                              }
-
-                                          }
-                                          catch (Exception ex)
-                                          {
-                                          }
-                                              
-                                      }
-                                      else
-                                      {
-                                          spring.setElementID(c.Id);//we found a spring that matches the original element id but not the new cbp we just made, add new spring id to part
-                                      }
-                                  //}
-                              }
-                          }
-                          //...otherwise...
-                          else
-                          {
-                              //...we create a new cbp...
-                              tempRefPtArr.Clear();
-                              tempRefPtArr = (ReferencePointArray)((CurveByPoints)((Expression.Container)x).Item).GetPoints();
-
-                              c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(
-
-                                  tempRefPtArr
-
-                              );
-                              this.Elements.Add(c.Id);
-
-                              try
-                              {
-
-
-                                  //dynParticle partA = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(0).Id]);// we have the old point value here we need to find the new
-                                  //dynParticle partB = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(1).Id]);
-                                  // old point id, need to find new
-
-                                  ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
-                                  ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
-
-                                  //dynParticle partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
-                                  //dynParticle partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
-                                  //particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
-
-                                  ReferencePoint rpA = FindRefPointWithCoincidentXYZ(oldRefPointA);
-                                  ReferencePoint rpB = FindRefPointWithCoincidentXYZ(oldRefPointB);
-
-                                  Particle partA;
-                                  Particle partB;
-                                  //try and find the particles that are associated with these refpoints. 
-
-                                  //For some reason the dictionary is not working
-                                  //dynParticle partA = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(0).Id]);// we have the old point value here we need to find the new
-                                  //dynParticle partB = particleSystem.getParticleByElementID(pointDictionary[tempRefPtArr.get_Item(1).Id]);
-
-                                  if (rpA != null || rpB != null)
-                                  {
-                                      partA = particleSystem.getParticleByXYZ(rpA.Position);
-                                      partB = particleSystem.getParticleByXYZ(rpB.Position);
-
-
-                                      if (partA != null || partB != null)
-                                      {
-                                          particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
-                                      }
-                                  }
-                                  else
-                                  {
-                                      partA = particleSystem.makeParticleFromElementID(oldRefPointA.Id, .5, oldRefPointA.Position, false);
-                                      partB = particleSystem.makeParticleFromElementID(oldRefPointB.Id, .5, oldRefPointA.Position, false);
-                                      //particleSystem.makeSpringFromElementID(c.Id, partA, partB, r, s, d);
-                                      particleSystem.makeSpring(partA, partB, r, s, d);
-                                  }
-
-                              }
-                              catch (Exception ex)
-                              {
-                              }
-                          }
-
-                          //Finally, we update the counter, and return a new Expression containing the reference point.
-                          //This Expression will be placed in the Expression.List that will be passed downstream from this
-                          //node.
-                          count++;
-                          return Expression.NewContainer(c);
-                      }
-                   )
-                );
-
-                //Now that we've created all the Reference Points and particles from this run, we delete all of the
-                //extra ones from the previous run.
-                foreach (var e in this.Elements.Skip(count))
-                {
-                    this.DeleteElement(e);
-                    particleSystem.deleteSpringByElementID(e);
-                }
-
-                //Fin
-                //return Expression.NewList(result);
-            }
-
-
-
-
-
-
-
-
-            //actually run the simulation, TODO this should probaly move out of evaluate and into the timer event callback. 
-
-            //particleSystem.step(.004); // step size - .004 is fairly stable, TODO - generalize to take double ms in in the future. 
-
-
-
-
-
-
-
-
-            //temporarily create ref points and curves for visualization
-
-            //foreach (var el in this.Elements)
+            //if (points.IsList)
             //{
-            //    this.DeleteElement(el);
+            //    var pointsList = (points as Expression.List).Item;
+
+            //    int count = 0;
+
+            //    //We create our output by...
+            //    var resultPoints = Utils.convertSequence(
+            //       pointsList.Select(
+            //        //..taking each element in the list and...
+            //          delegate(Expression x)
+            //          {
+            //              ReferencePoint p = ((ReferencePoint)((Expression.Container)x).Item);
+
+            //              refPtArr.Append(p);
+
+            //              Particle partA;
+            //              partA = particleSystem.makeParticle(.5, p.Position, false);
+            //              //partA = particleSystem.getParticleByXYZ(p.Position);
+
+            ////              if (partA != null)
+            ////              {
+                              
+            ////                  string name = p.Name;
+            ////                  //if (name.Contains("Fixed"))
+            ////                  //{
+            ////                  //    partA.makeFixed();
+            ////                  //}
+
+            ////                  p.Name = count.ToString(); // mark the point
+            ////              }
+
+            //              count++;
+            //              return Expression.NewContainer(p);
+            //          }
+
+            //        )
+            //    );
+
+
             //}
 
 
 
-            ////update ref points - purely destructive for now
 
-            //for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+            ////process curve inputs and convert to dynParticleSprings and dynParticles in particlesystem.
+            ////Note this now will NOT make any user visible elements, just populate the particlesystem
+
+            //if (curves.IsList)
             //{
-            //    p = particleSystem.getParticle(i);
-            //    ReferencePoint rp = this.UIDocument.Document.FamilyCreate.NewReferencePoint(p.getPosition()); // update ref point position based on current particle position.
-            //    this.Elements.Add(rp.Id);
-            //    refPtArr.Append(rp);
+            //    var curvesList = (curves as Expression.List).Item;
+
+            //    //We create our output by...
+            //    var resultCurves = Utils.convertSequence(
+            //       curvesList.Select(
+            //        //..taking each element in the list and...
+            //          delegate(Expression x)
+            //          {
+
+            //              // check each point.position xyz extracted from cbp against all other particles position
+            //              // if there is a match use existing.
+
+            //              tempRefPtArr.Clear();
+            //              existingCurve = ((CurveByPoints)((Expression.Container)x).Item);
+            //              tempRefPtArr = existingCurve.GetPoints();
+
+            //              try
+            //              {
+
+
+            //                  ReferencePoint oldRefPointA = tempRefPtArr.get_Item(0);
+            //                  ReferencePoint oldRefPointB = tempRefPtArr.get_Item(1);
+
+            //                  Particle partA;
+            //                  Particle partB;
+
+            //                  partA = particleSystem.makeParticleFromXYZ(oldRefPointA.Id, .5, oldRefPointA.Position, false);
+            //                  partB = particleSystem.makeParticleFromXYZ(oldRefPointB.Id, .5, oldRefPointB.Position, false);
+
+            //                  //if (partA == null)
+            //                  //{
+            //                  //    partA = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(0).Id, .5, tempRefPtArr.get_Item(0).Position, false);
+            //                  //}
+
+            //                  //if (partB == null)
+            //                  //{
+            //                  //    partB = particleSystem.makeParticleFromElementID(tempRefPtArr.get_Item(1).Id, .5, tempRefPtArr.get_Item(0).Position, false);
+
+            //                  //}
+            //                  particleSystem.makeSpringFromElementID(existingCurve.Id, partA, partB, r, s, d);
+
+
+            //              }
+            //              catch (Exception ex)
+            //              {
+            //              }
+
+            //              return Expression.NewContainer(existingCurve);
+            //          }
+            //       )
+            //    );
             //}
 
-            ////update lines - purely destructive for now
-
-            //if (particleSystem.numberOfParticles() == refPtArr.Size)
-            //{
-            //    for (int i = 0; i < particleSystem.numberOfSprings(); i++) // make lines between points in pendul
-            //    {
-
-            //        a = particleSystem.getSpring(i);
-            //        a.setDamping(d);
-            //        a.setRestLength(r);
-            //        a.setSpringConstant(s);
-
-            //        tempRefPtArr.Clear();
-            //        ReferencePoint end1 = FindRefPointFromXYZ(a.getOneEnd().getPosition());
-            //        ReferencePoint end2 = FindRefPointFromXYZ(a.getTheOtherEnd().getPosition());
-            //        if (end1 != null && end2 != null)
-            //        {
-            //            tempRefPtArr.Append(end1);
-
-            //            tempRefPtArr.Append(end2);
-
-            //           CurveByPoints c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(tempRefPtArr); // update curve position based on current particle position.
-            //           this.Elements.Add(c.Id);
-            //        }
-            //    }
-                
-            //}
+            
 
 
             return Expression.NewContainer(particleSystem);
@@ -445,14 +295,129 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            ParticleSystem ps = (ParticleSystem)((Expression.Container)args[0]).Item;
+            ParticleSystem particleSystem = (ParticleSystem)((Expression.Container)args[0]).Item;
             double timeStep = ((Expression.Number)args[1]).Item;
 
-            ps.step(timeStep);
+            particleSystem.step(timeStep);
 
-            return Expression.NewNumber(1);
+            Particle p;
+            ParticleSpring s;
+            ReferencePointArray refPtArr = new ReferencePointArray();
+            ReferencePointArray tempRefPtArr = new ReferencePointArray();
+
+
+            //Create and update ref points based on particle system passed in from the Create PS node
+            // if element list / refPtArr is empty, hande creation
+            //  for each particle, 
+            //   create a new ref point
+            //   assign the new ref point element id to the particle that generated it
+            //   if it is the first or the last, make it fixed
+            // if element list is not empty
+            //   for each particle,
+            //     find the related ref point va element id
+            //       ReferencePoint rp = refPtArr.get_Item(i);
+            //       ReferencePoint p = dynUtils.TryGetElement(part.elementID(), out e);
+            //       ReferencePoint p = refPtArr.Find(dynUtils.TryGetElement(part.elementID());
+            //      if found, update p.Position = part.Position
+
+            if (this.Elements.Count == 0 && refPtArr.Size == 0)
+            {
+                for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+                {
+                    p = particleSystem.getParticle(i);
+                    ReferencePoint rp = this.UIDocument.Document.FamilyCreate.NewReferencePoint(p.getPosition()); // update ref point position based on current particle position.
+                    p.setElementID(rp.Id);
+                    this.Elements.Add(rp.Id);
+                    refPtArr.Append(rp);
+
+                    if (i == 0 || i == particleSystem.numberOfParticles() - 1) // set the first and the last to fixed (test that will only work for linear things now)
+                    {
+                        rp = refPtArr.get_Item(i);
+                        rp.CoordinatePlaneVisibility = (CoordinatePlaneVisibility)2;
+                        p.makeFixed();
+
+                    }
+                }
+
+               
+            }
+            else
+            {
+
+                // couple of diffrent methods here - particles[] and refPtArr matching, looks like refPtArr does not persist
+                //ReferencePoint rp;
+                //for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+                //{
+                //    p = particleSystem.getParticle(i);
+                //    rp = refPtArr.get_Item(i); // if we found the corresponding point
+                //    if (rp != null && p != null)
+                //    {
+                //        rp.Position = p.getPosition(); //set the point position to the newly computed part position
+
+                //    }
+
+                //}
+
+                // couple of diffrent methods here - this.Elements and particles[] matching
+
+                ReferencePoint rp;
+                Element e;
+                foreach (ElementId id in this.Elements)
+                {
+
+                    dynUtils.TryGetElement(id, out e);
+                    rp = e as ReferencePoint;
+                    if (rp != null)
+                    {
+                        p = particleSystem.getParticleByElementID(rp.Id); // if we found the corresponding point
+
+                        if (p != null)
+                        {
+                            rp.Position = p.getPosition(); //set the point position to the newly computed part position
+
+                        }
+                    }
+                }
+
+            }
+
+           
+
+            ////update lines - purely destructive for now
+
+            //if (particleSystem.numberOfParticles() == refPtArr.Size)
+            //{
+            //    for (int i = 0; i < particleSystem.numberOfSprings(); i++) // make lines between points
+            //    {
+
+            //        s = particleSystem.getSpring(i);
+            //        //s.setDamping(d);
+            //        //s.setRestLength(r);
+            //        //s.setSpringConstant(s);
+
+            //        tempRefPtArr.Clear();
+            //        ReferencePoint end1 = this.UIDocument.Document.FamilyCreate.NewReferencePoint(s.getOneEnd().getPosition());
+            //        this.Elements.Add(end1.Id);
+            //        ReferencePoint end2 = this.UIDocument.Document.FamilyCreate.NewReferencePoint(s.getTheOtherEnd().getPosition());
+            //        this.Elements.Add(end2.Id);
+            //        if (end1 != null && end2 != null)
+            //        {
+            //            tempRefPtArr.Append(end1);
+
+            //            tempRefPtArr.Append(end2);
+
+            //           CurveByPoints c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(tempRefPtArr); // update curve position based on current particle position.
+            //           this.Elements.Add(c.Id);
+            //        }
+            //    }
+
+            //}
+
+            return Expression.NewContainer(refPtArr);
         }
     }
+
+
 
     //[ElementName("Timer")]
     //[ElementCategory(BuiltinElementCategories.MISC)]
