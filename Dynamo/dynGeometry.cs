@@ -563,6 +563,56 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Domain")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("An element which returns the domain for a surface.")]
+    [RequiresTransaction(false)]
+    public class dynDomain : dynNode
+    {
+        public dynDomain()
+        {
+            InPortData.Add(new PortData("face", "Face", typeof(double)));
+
+            OutPortData = new PortData("dom", "Domain", typeof(UV));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            Reference faceRef = ((Expression.Container)args[0]).Item as Reference;
+            GeometryObject geob = dynElementSettings.SharedInstance.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+            Face f = geob as Face;
+            double periodU = 1.0;
+            double periodV = 1.0;
+
+            try
+            {
+                periodU = f.get_Period(0);
+            }
+            catch
+            {
+                periodU = 1.0;
+            }
+
+
+            try
+            {
+                periodV = f.get_Period(1);
+            }
+            catch 
+            {
+                periodV = 1.0;
+            }
+
+            Expression result = Expression.NewList(Utils.convertSequence(
+                            (new double[]{periodU, periodV}).Select(Expression.NewNumber)
+                        ));
+
+            return result;
+        }
+    }
+
     [ElementName("Line Vector ")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("An element which returns a line in the direction of an XYZ normal.")]
