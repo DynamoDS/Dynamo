@@ -893,32 +893,59 @@ namespace Dynamo.Controls
 
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
+            SaveAs(string.Empty);
+        }
+
+        private void SaveAs(string xmlPath)
+        {
             //string xmlPath = "C:\\test\\myWorkbench.xml";
-            string xmlPath = "";
+            //string xmlPath = "";
 
-            string ext, fltr;
-            if (this.ViewingHomespace)
+            //if the incoming path is empty
+            //present the user with save options
+            if (string.IsNullOrEmpty(xmlPath))
             {
-                ext = ".dyn";
-                fltr = "Dynamo Workspace (*.dyn)|*.dyn";
-            }
-            else
-            {
-                ext = ".dyf";
-                fltr = "Dynamo Function (*.dyf)|*.dyf";
-            }
-            fltr += "|All files (*.*)|*.*";
+                string ext, fltr;
+                if (this.ViewingHomespace)
+                {
+                    ext = ".dyn";
+                    fltr = "Dynamo Workspace (*.dyn)|*.dyn";
+                }
+                else
+                {
+                    ext = ".dyf";
+                    fltr = "Dynamo Function (*.dyf)|*.dyf";
+                }
+                fltr += "|All files (*.*)|*.*";
 
-            System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog()
-            {
-                AddExtension = true,
-                DefaultExt = ext,
-                Filter = fltr
-            };
+                
+                
+                System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog()
+                {
+                    AddExtension = true,
+                    DefaultExt = ext,
+                    Filter = fltr,
+                };
 
-            if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                xmlPath = saveDialog.FileName;
+                //if the xmlPath is not empty set the default directory
+                if (!string.IsNullOrEmpty(xmlPath))
+                {
+                    FileInfo fi = new FileInfo(xmlPath);
+                    saveDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else if (!string.IsNullOrEmpty(CurrentSpace.FilePath))
+                {
+                    //if you've got the file location of the current
+                    //space cached then use its directory 
+                    FileInfo fi = new FileInfo(CurrentSpace.FilePath);
+                    saveDialog.InitialDirectory = fi.DirectoryName;
+                }
+
+                if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    xmlPath = saveDialog.FileName;
+                    CurrentSpace.FilePath = xmlPath;
+                }
             }
 
             if (!string.IsNullOrEmpty(xmlPath))
@@ -931,6 +958,11 @@ namespace Dynamo.Controls
             }
         }
 
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            //save the active file
+            SaveAs(CurrentSpace.FilePath);
+        }
 
         /// <summary>
         /// Called when a mouse button is pressed.
@@ -1060,6 +1092,7 @@ namespace Dynamo.Controls
             Log("Saving " + xmlPath + "...");
             try
             {
+ 
                 //create the xml document
                 //create the xml document
                 XmlDocument xmlDoc = new XmlDocument();
@@ -1130,6 +1163,9 @@ namespace Dynamo.Controls
                 }
 
                 xmlDoc.Save(xmlPath);
+
+                //cache the file path for future save operations
+                workSpace.FilePath = xmlPath;
             }
             catch (Exception ex)
             {
@@ -1316,7 +1352,10 @@ namespace Dynamo.Controls
 
                 this.hideWorkspace(ws);
                 this.SaveFunction(ws, false);
+
                 #endregion
+
+                ws.FilePath = xmlPath;
             }
             catch (Exception ex)
             {
@@ -1496,6 +1535,8 @@ namespace Dynamo.Controls
                     e.EnableReporting();
 
                 #endregion
+
+                homeSpace.FilePath = xmlPath;
             }
             catch (Exception ex)
             {
@@ -1946,6 +1987,10 @@ namespace Dynamo.Controls
         {
             LockUI();
             CleanWorkbench();
+
+            //don't save the file path
+            CurrentSpace.FilePath = "";
+
             UnlockUI();
         }
 
@@ -2616,6 +2661,7 @@ namespace Dynamo.Controls
 
                     string path = Path.Combine(pluginsPath, FormatFileName(funcWorkspace.Name) + ".dyf");
                     SaveWorkspace(path, funcWorkspace);
+
                 }
                 catch (Exception e)
                 {
@@ -3277,6 +3323,8 @@ namespace Dynamo.Controls
         {
             this.dynamicCheckBox.IsEnabled = true;
         }
+
+        
 
     }
 

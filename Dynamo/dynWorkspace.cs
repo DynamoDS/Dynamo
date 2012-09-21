@@ -31,6 +31,7 @@ namespace Dynamo.Elements
 
       double PositionX { get; set; }
       double PositionY { get; set; }
+      string FilePath { get; set; }
 
       String Name { get; }
 
@@ -46,7 +47,7 @@ namespace Dynamo.Elements
       public List<dynNote> Notes {get; private set;}
       public double PositionX { get; set; }
       public double PositionY { get; set; }
-
+      public string FilePath { get; set; }
       public String Name { get; set; }
       public String Category { get; set; }
 
@@ -89,11 +90,13 @@ namespace Dynamo.Elements
 
    public class HomeWorkspace : dynWorkspace
    {
+
       public List<dynNode> Elements { get; private set; }
       public List<dynConnector> Connectors { get; private set; }
       public List<dynNote> Notes {get; private set;}
       public double PositionX { get; set; }
       public double PositionY { get; set; }
+      public string FilePath { get; set; }
 
       public String Name 
       {
