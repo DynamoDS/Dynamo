@@ -29,7 +29,7 @@ namespace Dynamo.Elements
 {
     [ElementName("Read File")]
     [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
+    [ElementDescription("Reads data from a file.")]
     [RequiresTransaction(false)]
     public class dynFileReader : dynNode
     {
@@ -174,7 +174,7 @@ namespace Dynamo.Elements
 
     [ElementName("Watch File")]
     [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Create an element for reading and watching data in a file on disk.")]
+    [ElementDescription("Creates a FileWatcher for watching changes in a file.")]
     [RequiresTransaction(false)]
     public class dynFileWatcher : dynNode
     {

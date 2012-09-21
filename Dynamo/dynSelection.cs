@@ -189,7 +189,7 @@ namespace Dynamo.Elements
 
     [ElementName("Family Instance by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to select a family instance from the document and reference it in Dynamo.")]
+    [ElementDescription("Select a family instance from the document.")]
     [RequiresTransaction(false)]
     public class dynFamilyInstanceCreatorSelection : dynElementSelection
     {
@@ -212,7 +212,7 @@ namespace Dynamo.Elements
 
     [ElementName("Divided Surface by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows the user to select a divided surface.")]
+    [ElementDescription("Select a divided surface from the document.")]
     [RequiresTransaction(false)]
     public class dynDividedSurfaceBySelection : dynElementSelection
     {
@@ -309,7 +309,7 @@ namespace Dynamo.Elements
 
     [ElementName("Face by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows the user to select a face.")]
+    [ElementDescription("Select a face from the document.")]
     [RequiresTransaction(false)]
     public class dynFormElementBySelection : dynElementSelection
     {
@@ -340,7 +340,7 @@ namespace Dynamo.Elements
 
     [ElementName("Curve by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows the user to select a curve.")] //or set of curves in the future
+    [ElementDescription("Select a curve from the document.")] //or set of curves in the future
     [RequiresTransaction(false)]
     public class dynCurvesBySelection : dynElementSelection
     {
@@ -363,7 +363,7 @@ namespace Dynamo.Elements
 
     [ElementName("Point by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows the user to select a reference point.")]
+    [ElementDescription("Select a reference point from the document.")]
     [RequiresTransaction(false)]
     public class dynPointBySelection : dynElementSelection
     {
@@ -386,7 +386,7 @@ namespace Dynamo.Elements
 
     [ElementName("SunPath Direction")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which returns the current Sun Path direction.")]
+    [ElementDescription("Returns the current Sun Path direction.")]
     [RequiresTransaction(false)]
     public class dynSunPathDirection : dynNode
     {

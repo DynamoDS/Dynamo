@@ -33,7 +33,7 @@ namespace Dynamo.Elements
 {
     [ElementName("Family Type Selector")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to select a Family Type from a drop down list.")]
+    [ElementDescription("Select a Family Type from a drop down list.")]
     [RequiresTransaction(false)]
     [IsInteractive(true)]
     public class dynFamilyTypeSelector : dynNode
@@ -321,7 +321,7 @@ namespace Dynamo.Elements
 
     //[ElementName("Instance Parameter Mapper")]
     //[ElementCategory(BuiltinElementCategories.REVIT)]
-    //[ElementDescription("An element which maps the parameters of a Family Type.")]
+    //[ElementDescription("Maps the parameters of a Family Type.")]
     //[RequiresTransaction(true)]
     //public class dynInstanceParameterMapper : dynElement
     //{
@@ -606,7 +606,7 @@ namespace Dynamo.Elements
 
     //[ElementName("Family Instance Parameter Evaluation")]
     //[ElementCategory(BuiltinElementCategories.REVIT)]
-    //[ElementDescription("An element which allows you to modify parameters on family instances.")]
+    //[ElementDescription("Modifies parameters on family instances.")]
     //[RequiresTransaction(true)]
     //public class dynFamilyInstanceParameterEvaluation : dynElement
     //{
@@ -691,14 +691,14 @@ namespace Dynamo.Elements
 
     [ElementName("Family Instance Creator")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to create family instances.")]
+    [ElementDescription("Creates family instances at a given XYZ location.")]
     [RequiresTransaction(true)]
     public class dynFamilyInstanceCreatorXYZ : dynNode
     {
         public dynFamilyInstanceCreatorXYZ()
         {
             InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
-            InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
+            InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
 
             OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
 
@@ -804,7 +804,7 @@ namespace Dynamo.Elements
     //TODO: In Destroy(), have code that resets Elements back to their default.
     [ElementName("Set Instance Parameter")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which allows you to modify parameters on family instances.")]
+    [ElementDescription("Modifies a parameter on a family instance.")]
     [RequiresTransaction(true)]
     public class dynFamilyInstanceParameterSetter : dynNode
     {

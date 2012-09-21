@@ -27,7 +27,7 @@ namespace Dynamo.Elements
 {
     [ElementName("Level")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a level datum.")]
+    [ElementDescription("Creates a level datum.")]
     [RequiresTransaction(true)]
     public class dynLevel : dynNode
     {

@@ -28,7 +28,7 @@ namespace Dynamo.Elements
 {
    [ElementName("Extract Solar Radiation Value")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("Create an element for extracting and computing the average solar radiation value based on a csv file.")]
+   [ElementDescription("Extracts and computs the average solar radiation value based on a CSV file.")]
    [RequiresTransaction(false)]
    public class dynComputeSolarRadiationValue : dynNode
    {
@@ -67,7 +67,7 @@ namespace Dynamo.Elements
 
    [ElementName("Analysis Results by Selection")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which allows you to select an analysis result object from the document and reference it in Dynamo.")]
+   [ElementDescription("Select an analysis result object from the document.")]
    [RequiresTransaction(true)]
    public class dynAnalysisResultsBySelection : dynNode
    {

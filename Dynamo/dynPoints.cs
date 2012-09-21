@@ -26,7 +26,7 @@ namespace Dynamo.Elements
 {
     [ElementName("Reference Point")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which creates a reference point.")]
+    [ElementDescription("Creates a reference point.")]
     [RequiresTransaction(true)]
     public class dynReferencePointByXYZ : dynNode
     {
@@ -155,7 +155,7 @@ namespace Dynamo.Elements
 
     [ElementName("Reference Point Distance")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which measures a distance between point(s).")]
+    [ElementDescription("Measures a distance between point(s).")]
     [RequiresTransaction(false)]
     public class dynDistanceBetweenPoints : dynNode
     {
@@ -202,7 +202,7 @@ namespace Dynamo.Elements
 
     [ElementName("Reference Point On Edge")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Create an element which owns a reference point on a selected edge.")]
+    [ElementDescription("Creates an element which owns a reference point on a selected edge.")]
     [RequiresTransaction(true)]
     public class dynPointOnEdge : dynNode
     {
@@ -257,7 +257,7 @@ namespace Dynamo.Elements
 
     [ElementName("Reference Point On Face")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Create an element which owns a reference point on a selected face.")]
+    [ElementDescription("Creates an element which owns a reference point on a selected face.")]
     [RequiresTransaction(true)]
     public class dynPointOnFace : dynNode
     {
@@ -326,7 +326,7 @@ namespace Dynamo.Elements
 
     [ElementName("Reference Point By Normal")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Create an element which owns a reference point which is projected from a point by normal and distance.")]
+    [ElementDescription("Creates an element which owns a reference point which is projected from a point by normal and distance.")]
     [RequiresTransaction(true)]
     public class dynPointNormalDistance : dynNode
     {

@@ -27,7 +27,7 @@ namespace Dynamo.Elements
 {
    [ElementName("Model Curve")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("An element which creates a model curve.")]
+   [ElementDescription("Creates a model curve.")]
    [RequiresTransaction(true)]
    public class dynModelCurve : dynNode
    {

@@ -1511,7 +1511,7 @@ namespace Dynamo.Elements
     //MDJ dynOptimizer added 11/22-11 (or dynEvaluate?)
     [ElementName("Optimizer")]
     [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
+    [ElementDescription("Evaluates one input against another and passes out the larger of the two values.")]
     [RequiresTransaction(false)]
     public class dynOptimizer : dynNode
     {
@@ -1594,7 +1594,7 @@ namespace Dynamo.Elements
     //MDJ dynIncrementer added 11/22-11
     [ElementName("Incrementer")]
     [ElementCategory(BuiltinElementCategories.MATH)]
-    [ElementDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
+    [ElementDescription("Watches one input then if that changes, increments the output integer until it hits a max value.")]
     [RequiresTransaction(false)]
     public class dynIncrementer : dynNode
     {
@@ -1875,7 +1875,7 @@ namespace Dynamo.Elements
 
     [ElementName("Number")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("An element which creates an unsigned floating point number.")]
+    [ElementDescription("Creates a number.")]
     [RequiresTransaction(false)]
     public class dynDoubleInput : dynDouble
     {
@@ -1937,7 +1937,7 @@ namespace Dynamo.Elements
     //MDJ - added by Matt Jezyk 10.27.2011
     [ElementName("Number Slider")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
+    [ElementDescription("Creates a number, but using SLIDERS!.")]
     [RequiresTransaction(false)]
     public class dynDoubleSliderInput : dynDouble
     {
@@ -2083,7 +2083,7 @@ namespace Dynamo.Elements
 
     [ElementName("Boolean")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("An element which allows selection between a true and false.")]
+    [ElementDescription("Selection between a true and false.")]
     [ElementSearchTags("true", "truth", "false")]
     [RequiresTransaction(false)]
     public class dynBoolSelector : dynBool
@@ -2176,7 +2176,7 @@ namespace Dynamo.Elements
 
     [ElementName("String")]
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-    [ElementDescription("An element which creates a string value.")]
+    [ElementDescription("Creates a string.")]
     [RequiresTransaction(false)]
     public class dynStringInput : dynString
     {

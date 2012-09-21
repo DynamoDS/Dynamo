@@ -27,7 +27,7 @@ namespace Dynamo.Elements
 
    [ElementName("Arduino")]
    [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("An element which allows you to read from an Arduino microcontroller.")]
+   [ElementDescription("Reads values from an Arduino microcontroller.")]
    [RequiresTransaction(false)]
    public class dynArduino : dynNode
    {
