@@ -37,6 +37,11 @@
                </MenuItem.Icon>
             </MenuItem>
             <Separator />
+            <MenuItem Header="_Save" Click="saveButton_Click" Name="saveThisButton">
+                <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+            </MenuItem>
             <MenuItem Header="_Save As..." Click="SaveAs_Click" Name="saveButton">
                <MenuItem.Icon>
                   <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />

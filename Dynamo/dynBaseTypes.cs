@@ -2506,6 +2506,31 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Substring")]
+    [ElementDescription("Gets a substring of a given string")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    public class dynSubstring : dynNode
+    {
+        public dynSubstring()
+        {
+            InPortData.Add(new PortData("str", "String to take substring from", typeof(string)));
+            InPortData.Add(new PortData("start", "Starting index of substring", typeof(double)));
+            InPortData.Add(new PortData("length", "Length of substring", typeof(double)));
+            OutPortData = new PortData("sub", "Substring", typeof(string));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            string s = ((Expression.String)args[0]).Item;
+            double start = ((Expression.Number)args[1]).Item;
+            double length = ((Expression.Number)args[2]).Item;
+
+            return Expression.NewString(s.Substring((int)start, (int)length));
+        }
+    }
+
     #endregion
 }
 
