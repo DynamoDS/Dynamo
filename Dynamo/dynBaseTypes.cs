@@ -34,6 +34,8 @@ using Microsoft.FSharp.Collections;
 
 using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
+using System.Diagnostics.Contracts;
+using System.Text;
 
 namespace Dynamo.Elements
 {
@@ -1860,6 +1862,56 @@ namespace Dynamo.Elements
 
     public abstract class dynString : dynBasicInteractive<string>
     {
+        public override string Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = EscapeString(value);
+            }
+        }
+
+        // Taken from:
+        // http://stackoverflow.com/questions/6378681/how-can-i-use-net-style-escape-sequences-in-runtime-values
+        private static string EscapeString(string s)
+        {
+            Contract.Requires(s != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == '\\')
+                {
+                    i++;
+                    if (i == s.Length)
+                        throw new ArgumentException("Escape sequence starting at end of string", s);
+                    switch (s[i])
+                    {
+                        case '\\':
+                            sb.Append('\\');
+                            break;
+                        case 't':
+                            sb.Append('\t');
+                            break;
+                        case 'n':
+                            sb.Append('\n');
+                            break;
+                        case 'r':
+                            sb.Append('\r');
+                            break;
+                        //TODO: ADD MORE CASES HERE
+                    }
+                }
+                else 
+                    sb.Append(s[i]);
+            }
+            return sb.ToString();
+        }
+
         public override Expression Evaluate(FSharpList<Expression> args)
         {
             return Expression.NewString(this.Value);
