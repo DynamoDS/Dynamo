@@ -1027,22 +1027,19 @@ namespace Dynamo.Elements
 
 
 
-        private Expression AddCurves(FamilyInstance fi, Autodesk.Revit.DB.GeometryElement geomElem, int count,
-                                        ref Autodesk.Revit.DB.CurveArray curves)
+        private Expression AddCurves(FamilyInstance fi, GeometryElement geomElem, int count, ref CurveArray curves)
         {
-            foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem.Objects)
+            foreach (GeometryObject geomObj in geomElem)
             {
-                Autodesk.Revit.DB.Curve curve = geomObj as Autodesk.Revit.DB.Curve;
+                Curve curve = geomObj as Curve;
                 if (null != curve)
                 {
                     curves.Append(curve);
-
                     continue;
                 }
 
-
                 //If this GeometryObject is Instance, call AddCurve
-                Autodesk.Revit.DB.GeometryInstance geomInst = geomObj as Autodesk.Revit.DB.GeometryInstance;
+                GeometryInstance geomInst = geomObj as GeometryInstance;
                 if (null != geomInst)
                 {
                     //curve live in family symbol in this case, need to apply the correct transform to get them in to 
@@ -1053,28 +1050,21 @@ namespace Dynamo.Elements
                     //  = geomInst.GetInstanceGeometry(geomInst.Transform);
                     //AddCurves(fi, transformedGeomElem, count, ref curves);
 
-                    Autodesk.Revit.DB.GeometryElement transformedGeomElem // curves transformed into project coords
-                    = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
+                    GeometryElement transformedGeomElem // curves transformed into project coords
+                        = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
                     AddCurves(fi, transformedGeomElem, count, ref curves);
 
                     //Autodesk.Revit.DB.GeometryElement symbolTransformedGeomElem // curves in symbol coords
                     //    = geomInst.GetSymbolGeometry(geomInst.Transform);
                     //AddCurves(fi, symbolTransformedGeomElem, count, ref curves);
                 }
-
-
-
             }
-
             return Expression.NewContainer(curves);
         }
         
-
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            
             var input = args[0];
-
 
             //create some geometry options so that we compute references
             Autodesk.Revit.DB.Options opts = new Options();
@@ -1086,9 +1076,7 @@ namespace Dynamo.Elements
             if (input.IsList)
             {
                 var familyList = (input as Expression.List).Item;
-
                 int count = 0;
-
 
                  var result = Expression.NewList(
                    Utils.convertSequence(
@@ -1101,9 +1089,7 @@ namespace Dynamo.Elements
                             )
                       )
                    )
-
                 );
-
 
                 foreach (var e in this.Elements.Skip(count))
                 {

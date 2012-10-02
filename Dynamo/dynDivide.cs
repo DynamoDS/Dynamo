@@ -88,7 +88,7 @@ namespace Dynamo.Elements
                     //..taking each curve in the list and...
                       delegate(Expression x)
                       {
-                          Reference r;
+                          //Reference r;
                           CurveElement c;
 
                           //...check to see if we already have a divided node made by this curve in a previous run
