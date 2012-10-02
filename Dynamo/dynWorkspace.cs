@@ -23,121 +23,126 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Elements
 {
-   public interface dynWorkspace
-   {
-      List<dynNode> Elements { get; }
-      List<dynConnector> Connectors { get; }
-      List<dynNote> Notes { get; }
+    public interface dynWorkspace
+    {
+        List<dynNode> Elements { get; }
+        List<dynConnector> Connectors { get; }
+        List<dynNote> Notes { get; }
 
-      double PositionX { get; set; }
-      double PositionY { get; set; }
-      string FilePath { get; set; }
+        double PositionX { get; set; }
+        double PositionY { get; set; }
+        string FilePath { get; set; }
 
-      String Name { get; }
+        String Name { get; }
 
-      void Modified();
+        void Modified();
 
-      event Action OnModified;
-   }
+        event Action OnModified;
+    }
 
-   public class FuncWorkspace : dynWorkspace
-   {
-      public List<dynNode> Elements { get; private set; }
-      public List<dynConnector> Connectors { get; private set; }
-      public List<dynNote> Notes {get; private set;}
-      public double PositionX { get; set; }
-      public double PositionY { get; set; }
-      public string FilePath { get; set; }
-      public String Name { get; set; }
-      public String Category { get; set; }
+    public class FuncWorkspace : dynWorkspace
+    {
+        public List<dynNode> Elements { get; private set; }
+        public List<dynConnector> Connectors { get; private set; }
+        public List<dynNote> Notes { get; private set; }
+        public double PositionX { get; set; }
+        public double PositionY { get; set; }
+        public string FilePath { get; set; }
+        public String Name { get; set; }
+        public String Category { get; set; }
 
-      #region Contructors
+        #region Contructors
 
-      public FuncWorkspace()
-         : this("", "", new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
-      { }
+        public FuncWorkspace()
+            : this("", "", new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
+        { }
 
-      public FuncWorkspace(String name, String category)
-         : this(name, category, new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
-      { }
+        public FuncWorkspace(String name, String category)
+            : this(name, category, new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
+        { }
 
-      public FuncWorkspace(String name, String category, double x, double y)
-         : this(name, category, new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), x, y)
-      { }
+        public FuncWorkspace(String name, String category, double x, double y)
+            : this(name, category, new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), x, y)
+        { }
 
-      public FuncWorkspace(String name, String category, List<dynNode> e, List<dynConnector> c, List<dynNote> n, double x, double y)
-      {
-         this.Name = name;
-         this.Category = category;
-         this.Elements = e;
-         this.Connectors = c;
-         this.PositionX = x;
-         this.PositionY = y;
-         this.Notes = n;
-      }
+        public FuncWorkspace(String name, String category, List<dynNode> e, List<dynConnector> c, List<dynNote> n, double x, double y)
+        {
+            this.Name = name;
+            this.Category = category;
+            this.Elements = e;
+            this.Connectors = c;
+            this.PositionX = x;
+            this.PositionY = y;
+            this.Notes = n;
+        }
 
-      #endregion
+        #endregion
 
-      public event Action OnModified;
+        public event Action OnModified;
 
-      public void Modified()
-      {
-         if (OnModified != null)
-            OnModified();
-         dynElementSettings.SharedInstance.Bench.SaveFunction(this);
-      }
-   }
+        public void Modified()
+        {
+            if (OnModified != null)
+                OnModified();
+            dynElementSettings.SharedInstance.Bench.SaveFunction(this);
+        }
+    }
 
-   public class HomeWorkspace : dynWorkspace
-   {
+    public class HomeWorkspace : dynWorkspace
+    {
 
-      public List<dynNode> Elements { get; private set; }
-      public List<dynConnector> Connectors { get; private set; }
-      public List<dynNote> Notes {get; private set;}
-      public double PositionX { get; set; }
-      public double PositionY { get; set; }
-      public string FilePath { get; set; }
+        public List<dynNode> Elements { get; private set; }
+        public List<dynConnector> Connectors { get; private set; }
+        public List<dynNote> Notes { get; private set; }
+        public double PositionX { get; set; }
+        public double PositionY { get; set; }
+        public string FilePath { get; set; }
 
-      public String Name 
-      {
-         get { return "Home"; } 
-      }
+        public String Name
+        {
+            get { return "Home"; }
+        }
 
-      #region Contructors
+        #region Contructors
 
-      public HomeWorkspace()
-         : this(new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
-      { }
+        public HomeWorkspace()
+            : this(new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), 0, 0)
+        { }
 
-      public HomeWorkspace(double x, double y)
-         : this(new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), x, y)
-      { }
+        public HomeWorkspace(double x, double y)
+            : this(new List<dynNode>(), new List<dynConnector>(), new List<dynNote>(), x, y)
+        { }
 
-      public HomeWorkspace(List<dynNode> e, List<dynConnector> c, List<dynNote> n, double x, double y)
-      {
-         this.Elements = e;
-         this.Connectors = c;
-         this.PositionX = x;
-         this.PositionY = y;
-         this.Notes = n;
-      }
+        public HomeWorkspace(List<dynNode> e, List<dynConnector> c, List<dynNote> n, double x, double y)
+        {
+            this.Elements = e;
+            this.Connectors = c;
+            this.PositionX = x;
+            this.PositionY = y;
+            this.Notes = n;
+        }
 
-      #endregion
+        #endregion
 
-      public event Action OnModified;
+        public event Action OnModified;
 
-      public void Modified()
-      {
-         if (OnModified != null)
-            OnModified();
-         var bench = dynElementSettings.SharedInstance.Bench;
-         if (bench.DynamicRunEnabled)
-         {
-            if (!bench.Running)
-               bench.RunExpression(false, false);
-            else
-               bench.QueueRun();
-         }
-      }
-   }
+        public void Modified()
+        {
+            if (OnModified != null)
+                OnModified();
+            var bench = dynElementSettings.SharedInstance.Bench;
+            bench.Dispatcher.BeginInvoke(new Action(
+                delegate
+                {
+                    if (bench.DynamicRunEnabled)
+                    {
+                        if (!bench.Running)
+                            bench.RunExpression(false, false);
+                        else
+                            bench.QueueRun();
+                    }
+                }
+            ));
+        }
+    }
 }
