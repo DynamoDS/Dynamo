@@ -430,15 +430,11 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            if (this.dirty)
-            {
-                this.engine.ProcessCode(
-                   ((Expression.String)args[0]).Item
-                );
-                this.dirty = false;
-            }
+            this.engine.ProcessCode(
+                ((Expression.String)args[0]).Item
+            );
 
-            var bindings = this.makeBindings(args.Skip(1));
+            var bindings = this.makeBindings(args).Skip(1);
 
             bool transactionRunning
                = dynElementSettings.SharedInstance.Bench.Transaction != null
