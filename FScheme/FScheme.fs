@@ -349,11 +349,15 @@ and Lambda cont (env : Environment) = function
             | (Symbol(p), a) :: t -> eval (fun x -> mapbind ((p, ref x) :: acc) t) env' a
             //If the list is empty...
             | [] ->
-               let env'' = Map.fold (fun state key value -> Map.add key value state) env'.Value env.Value |> ref
-                //extend the captured definition-time environment
+               // env :: definition-time environment
+               // env' :: run-time environment (for evaluating arguments)
+               
+               //let env'' = Map.fold (fun state key value -> Map.add key value state) env'.Value env.Value |> ref
+               
+               //extend the captured definition-time environment
                let env''' = if not acc.IsEmpty
-                            then List.rev acc |> extend env''
-                            else env''
+                            then List.rev acc |> extend env//''
+                            else env//''
                //and evaluate the body with the new environment
                eval cont' env''' body
             | _ -> failwith "Malformed lambda param."
@@ -743,3 +747,6 @@ let test (log : ErrorLog) =
    case "(empty? '(1))" "0" // empty?
    case "(sort '(8 4 7 6 1 0 2 9))" "(0 1 2 4 6 7 8 9)" // sort
    case "(sort (list \"b\" \"c\" \"a\"))" "(\"a\" \"b\" \"c\")" // sort
+
+   //Scope
+   //case "(let ((f (lambda (x) (+ x y)))) (let ((y 5)) (f 4)))" "9"
