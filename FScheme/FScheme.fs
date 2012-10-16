@@ -749,4 +749,4 @@ let test (log : ErrorLog) =
    case "(sort (list \"b\" \"c\" \"a\"))" "(\"a\" \"b\" \"c\")" // sort
 
    //Scope
-   //case "(let ((f (lambda (x) (+ x y)))) (let ((y 5)) (f 4)))" "9"
+   case "(let ((y 6)) (let ((f (lambda (x) (+ x y)))) (let ((y 5)) (f 4))))" "10"
