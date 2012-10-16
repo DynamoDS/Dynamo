@@ -26,10 +26,9 @@ using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
 {
-
     [ElementName("Divided Path")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which divides curves or edges and makes a collection")]
+    [ElementDescription("Divides curves or edges and makes a DividedPath.")]
     [RequiresTransaction(true)]
     public class dynDividedPath : dynNode
     {

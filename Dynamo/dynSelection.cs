@@ -556,7 +556,7 @@ namespace Dynamo.Elements
                     this.SelectedElements.Add(e);
                 }
             }
-            catch(Exception ex)
+            catch (Exception)
             {
             }
         }

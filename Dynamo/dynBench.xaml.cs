@@ -619,7 +619,9 @@ namespace Dynamo.Controls
             }
             catch (Exception e)
             {
-                dynElementSettings.SharedInstance.Bench.Log("Could not create an instance of the selected type.");
+                dynElementSettings.SharedInstance.Bench.Log(
+                    "Could not create an instance of the selected type: " + elementType
+                );
                 Log(e);
                 return null;
             }
@@ -1261,6 +1263,12 @@ namespace Dynamo.Controls
                     double y = Convert.ToDouble(yAttrib.Value.ToString());
 
                     Type t = Type.GetType(typeName);
+
+                    if (t == null)
+                    {
+                        Log("Error loading defintion. Could not load node of type: " + typeName);
+                        return false;
+                    }
 
                     dynNode el = AddDynElement(t, nickname, guid, x, y, ws, System.Windows.Visibility.Hidden);
 
