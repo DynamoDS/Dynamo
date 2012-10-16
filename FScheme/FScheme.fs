@@ -283,7 +283,7 @@ let Throw cont = function
    | m -> malformed "throw" (List(m))
 
 ///If construct
-let rec If cont (env : Environment) = function
+let rec If cont env = function
    | [condition; t; f] -> //(if [condition] [t] [f])
       eval (function
          | List([]) | String("") -> 
@@ -294,7 +294,7 @@ let rec If cont (env : Environment) = function
    | m -> malformed "if" (List(m))
 
 ///Let construct
-and Let cont (env : Environment) = function
+and Let cont env = function
    | [List(bindings); body] ->
       let rec mapbind acc = function
          | List([Symbol(s); e]) :: t -> eval (fun x -> mapbind ((s, ref x) :: acc) t) env e
@@ -307,7 +307,7 @@ and Let cont (env : Environment) = function
    | m -> malformed "let" (List(m))
 
 ///LetRec (Recursive Let) construct
-and LetRec cont (env : Environment) = function
+and LetRec cont env = function
    //Input is two arguments, a list of bindings and the letrec body
    | [List(bindings); body] -> 
       //bind is a function that takes a Expression.List of two arguments, the second of which is ignored
@@ -329,7 +329,7 @@ and LetRec cont (env : Environment) = function
    | m -> malformed "letrec" (List(m))
 
 ///Let* construct
-and LetStar cont (env : Environment) = function
+and LetStar cont env = function
    | [List(bindings); body] ->
       let rec foldbind env' = function
          | List([Symbol(s); e]) :: t -> eval (fun x -> foldbind ([s, ref x] |> extend env') t) env' e
@@ -339,7 +339,7 @@ and LetStar cont (env : Environment) = function
    | m -> malformed "let*" (List(m))
 
 ///Anonymous function (lambda) construct
-and Lambda cont (env : Environment) = function
+and Lambda cont env = function
    | [List(parameters); body] ->
       let closure cont' env' args =
          // bind parameters to actual arguments (evaluated in the caller's environment)
@@ -368,7 +368,7 @@ and Lambda cont (env : Environment) = function
    | m -> malformed "lambda" (List(m))
 
 ///Code quotation construct
-and Quote cont (env : Environment) =
+and Quote cont env =
    let rec unquote cont' = function
       | List([Symbol("unquote"); e]) -> eval cont' env e
       | List(Symbol("unquote") :: _) as m -> malformed "unquote (too many args)" m
@@ -382,12 +382,12 @@ and Quote cont (env : Environment) =
    function [e] -> unquote cont e | m -> malformed "quote" (List(m))
 
 ///Eval construct -- evaluates code quotations
-and Eval cont (env : Environment) = function 
+and Eval cont env = function 
    | [args] -> eval (eval cont env) env args
    | m -> malformed "eval" (List(m))
 
 ///Macro construct -- similar to functions, but arguments are passed unevaluated. Useful for short-circuiting.
-and Macro cont (env : Environment) = function
+and Macro cont env = function
    | [List(parameters); body] ->
       let closure cont' env' args =
          // bind parameters to actual arguments (but unevaluated, unlike lambda)
@@ -402,19 +402,19 @@ and Macro cont (env : Environment) = function
    | m -> malformed "macro" (List(m))
 
 ///Set! construct -- mutation
-and Set cont (env : Environment) = function
+and Set cont env = function
    | [Symbol(s); e] -> eval (fun x -> (lookup env s) := x; Dummy(sprintf "Set %s" s) |> cont) env e
    | m -> malformed "set!" (List(m))
 
 ///Begin construct
-and Begin cont (env : Environment) =
+and Begin cont env =
    let rec foldeval last = function
       | h :: t -> eval (fun x -> foldeval x t) env h
       | [] -> last |> cont
    foldeval (Dummy("Empty 'begin'"))
   
 ///Define construct -- Mutates base environment to contain the given definition
-and Define cont (env : Environment) = function
+and Define cont env = function
    | [Symbol(s); e] ->
       let def = ref (Dummy("Dummy 'define'"))
       env := Map.add s def env.Value
