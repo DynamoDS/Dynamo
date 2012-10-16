@@ -108,6 +108,7 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dynDivide.cs" />
+    <Compile Include="dynGeometricForms.cs" />
     <Compile Include="dynTimer.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />

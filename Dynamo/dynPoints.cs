@@ -14,6 +14,7 @@
 
 using System;
 using System.Linq;
+using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
@@ -372,6 +373,131 @@ namespace Dynamo.Elements
 
             }
 
+            return Expression.NewContainer(p);
+        }
+
+    }
+    [ElementName("Plane from Reference Point")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
+    [RequiresTransaction(true)]
+    public class dynPlaneFromRefPoint : dynNode
+    {
+        ComboBox combo;
+
+        public dynPlaneFromRefPoint()
+        {
+            
+            InPortData.Add(new PortData("pt", "The point to extract the plane from", typeof(object)));
+            OutPortData = new PortData("pl", "Plane", typeof(Plane));
+
+            //add a drop down list to the window
+            combo = new ComboBox();
+            combo.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            combo.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            this.inputGrid.Children.Add(combo);
+            System.Windows.Controls.Grid.SetColumn(combo, 0);
+            System.Windows.Controls.Grid.SetRow(combo, 0);
+
+            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.SelectionChanged += delegate
+            {
+                if (combo.SelectedIndex != -1)
+                    this.IsDirty = true;
+            };
+
+            PopulateComboBox();
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        void combo_DropDownOpened(object sender, EventArgs e)
+        {
+            PopulateComboBox();
+        }
+        public enum RefPointReferencePlanes { XY, YZ, XZ };
+
+        private void PopulateComboBox()
+        {
+
+            combo.Items.Clear();
+
+            foreach (var plane in Enum.GetValues(typeof(RefPointReferencePlanes)))
+            {
+                ComboBoxItem cbi = new ComboBoxItem();
+                cbi.Content = plane.ToString();
+                combo.Items.Add(cbi);
+            }
+
+        }
+
+
+        public static XYZ TransformPoint(XYZ point, Transform transform)
+        {
+            double x = point.X;
+            double y = point.Y;
+            double z = point.Z;
+
+            //transform basis of the old coordinate system in the new coordinate // system
+            XYZ b0 = transform.get_Basis(0);
+            XYZ b1 = transform.get_Basis(1);
+            XYZ b2 = transform.get_Basis(2);
+            XYZ origin = transform.Origin;
+
+            //transform the origin of the old coordinate system in the new 
+            //coordinate system
+            double xTemp = x * b0.X + y * b1.X + z * b2.X + origin.X;
+            double yTemp = x * b0.Y + y * b1.Y + z * b2.Y + origin.Y;
+            double zTemp = x * b0.Z + y * b1.Z + z * b2.Z + origin.Z;
+
+            return new XYZ(xTemp, yTemp, zTemp);
+        }
+
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            foreach (ElementId el in this.Elements)
+            {
+                Element e;
+                if (dynUtils.TryGetElement(el, out e))
+                {
+                    this.UIDocument.Document.Delete(el);
+                }
+            }
+            Plane p = null;
+            Reference r = null;
+            ReferencePoint pt = ((Expression.Container)args[0]).Item as ReferencePoint;
+            Transform t = pt.GetCoordinateSystem();
+            XYZ norm = t.BasisZ;
+            XYZ origin = TransformPoint(XYZ.Zero, t); // origin in 'local' coordinates to handle point element orientation 
+
+            r = pt.GetCoordinatePlaneReferenceXY();// how to get a planar reference out of the point's ref planes and make sketchplane based on it? returns REFERENCE_TYPE_NONE The reference is to an element. 
+            //r = pt.GetCoordinatePlaneReferenceXZ();
+            //p = new Plane(r.GlobalPoint,origin);
+            XYZ test = r.GlobalPoint;
+            p = new Plane(norm,origin);
+            try
+            {
+                SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(r); // this seems to fail with a "Can't get Geometry" exception, need to cast ref as a plane?
+
+                //testing sketch plane creation by making a new model curve on it
+                //Line line = this.UIDocument.Document.Application.Create.NewLine(origin, origin.Add(new XYZ(0, 100, 0)), true);
+               // ModelCurve modelcurve = this.UIDocument.Document.FamilyCreate.NewModelCurve(line, sp);
+
+                this.Elements.Add(sp.Id);
+                //this.Elements.Add(modelcurve.Id);
+            }
+            catch (Exception e) //this sees to fail with a "Can't get Geometry" exception, seems like GetCoordinatePlaneReferenceXY just passes pack a ref to the point, not the underlying ref plane
+            {
+                SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);//try using plane created from ref instead of passing ref directly into sketchplane constructor
+
+                //testing sketchplane creation by making a new model curve on it
+                //Line line = this.UIDocument.Document.Application.Create.NewLine(origin, origin.Add(new XYZ(0, 100, 0)), true);
+                //ModelCurve modelcurve = this.UIDocument.Document.FamilyCreate.NewModelCurve(line, sp);
+
+                this.Elements.Add(sp.Id);
+                //this.Elements.Add(modelcurve.Id);
+            }
             return Expression.NewContainer(p);
         }
 

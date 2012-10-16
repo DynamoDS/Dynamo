@@ -423,7 +423,7 @@ namespace Dynamo.Utilities
             try
             {
                 //CurveElement c = null;
-                Curve cv = null;
+                //Curve cv = null;
 
                 Selection choices = doc.Selection;
 

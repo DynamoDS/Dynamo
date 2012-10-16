@@ -403,6 +403,13 @@ namespace Dynamo.Elements
                 periodV = 1.0;
             }
 
+            IList<UV> uvPts = new List<UV>();  
+            BoundingBoxUV bb = f.GetBoundingBox();
+            UV min = bb.Min;
+            UV max = bb.Max;
+            uvPts.Add(new UV(min.U, min.V));
+            uvPts.Add(new UV(max.U, max.V));  
+
             Expression result = Expression.NewList(Utils.convertSequence(
                             (new double[]{periodU, periodV}).Select(Expression.NewNumber)
                         ));

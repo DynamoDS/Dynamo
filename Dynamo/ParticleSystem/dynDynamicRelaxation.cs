@@ -22,7 +22,6 @@ using Microsoft.FSharp.Collections;
 using System.IO.Ports;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using Dynamo.FSchemeInterop;
 using Expression = Dynamo.FScheme.Expression;
 using Autodesk.Revit.DB;
@@ -161,7 +160,7 @@ namespace Dynamo.Elements
 
             particleSystem.Clear();
             
-            CurveByPoints existingCurve;
+            //CurveByPoints existingCurve;
             
             ReferencePointArray refPtArr = new ReferencePointArray();
             ReferencePointArray tempRefPtArr = new ReferencePointArray();
@@ -301,7 +300,7 @@ namespace Dynamo.Elements
             particleSystem.step(timeStep);
 
             Particle p;
-            ParticleSpring s;
+            //ParticleSpring s;
             ReferencePointArray refPtArr = new ReferencePointArray();
             ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
