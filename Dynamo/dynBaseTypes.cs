@@ -2283,7 +2283,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
     [ElementDescription("Allows you to select a file on the system to get its filename.")]
     [RequiresTransaction(false)]
-    public class dynStringFilename : dynString
+    public class dynStringFilename : dynBasicInteractive<string>
     {
         System.Windows.Controls.TextBox tb;
 
@@ -2368,6 +2368,11 @@ namespace Dynamo.Elements
                 throw new Exception("No file selected.");
 
             return base.Evaluate(args);
+        }
+
+        public override string PrintExpression()
+        {
+            return "\"" + base.PrintExpression() + "\"";
         }
     }
 
