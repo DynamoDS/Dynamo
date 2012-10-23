@@ -461,9 +461,11 @@ namespace Dynamo.Controls
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string samplesPath = Path.Combine(directory, "samples");
 
+            string[] dirPaths = Directory.GetDirectories(samplesPath);
+            string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
+
             if (System.IO.Directory.Exists(samplesPath))
             {
-                string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
                 if (filePaths.Any())
                 {
                     foreach (string path in filePaths)
@@ -476,10 +478,47 @@ namespace Dynamo.Controls
                         item.Click += new RoutedEventHandler(sample_Click);
                         samplesMenu.Items.Add(item);
                     }
-                    return;
+                    
                 }
-            }
-            this.fileMenu.Items.Remove(this.samplesMenu);
+                
+
+                if (dirPaths.Any())
+                {
+                    foreach (string dirPath in dirPaths)
+                    {
+                        var dirItem = new System.Windows.Controls.MenuItem()
+                        {
+                            Header = Path.GetDirectoryName(dirPath),
+                            Tag = dirPath
+                        };
+                        //item.Click += new RoutedEventHandler(sample_Click);
+                        //samplesMenu.Items.Add(dirItem);
+                        int menuItemCount = samplesMenu.Items.Count;
+
+                        filePaths = Directory.GetFiles(dirPath, "*.dyn");
+                        if (filePaths.Any())
+                        {
+                            foreach (string path in filePaths)
+                            {
+                                var item = new System.Windows.Controls.MenuItem()
+                                {
+                                    Header = Path.GetFileNameWithoutExtension(path),
+                                    Tag = path
+                                };
+                                item.Click += new RoutedEventHandler(sample_Click);
+                                //samplesMenu.Items.Add(item);
+                                 //samplesMenu.Items[menuItemCount].Items.Add(item) as System.Windows.Controls.MenuItem;
+                                 dirItem.Items.Add(item);
+                            }
+                            
+                        }
+                        samplesMenu.Items.Add(dirItem);
+                        return;
+                    }
+                    
+                }
+            } 
+            //this.fileMenu.Items.Remove(this.samplesMenu);
         }
 
         void sample_Click(object sender, RoutedEventArgs e)
