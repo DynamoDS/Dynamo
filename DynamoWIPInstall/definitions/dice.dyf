@@ -1,4 +1,4 @@
-<dynWorkspace X="10" Y="55" Name="Dice" Category="Lists">
+<dynWorkspace X="-82" Y="55" Name="Dice" Category="Lists">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="8199ef18-b7b8-4b1b-b133-7d7dc1ab1b5a" nickname="Variable" x="199.75" y="14">
       <Symbol value="lst" />

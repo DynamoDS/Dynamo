@@ -1,4 +1,4 @@
-<dynWorkspace X="10" Y="55" Name="Array" Category="Math">
+<dynWorkspace X="9" Y="54" Name="Array" Category="Math">
   <dynElements>
     <Dynamo.Elements.dynBuildSeq type="Dynamo.Elements.dynBuildSeq" guid="1391d05d-cb0d-42e5-9ddc-fe27cab5815d" nickname="Build Sequence" x="311.25" y="66.75" />
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="f47fb7b0-a095-4e98-915c-347869503f76" nickname="Variable" x="0" y="32.75">
