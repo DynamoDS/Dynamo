@@ -90,7 +90,11 @@ namespace Dynamo.Elements
                           else
                           {
                               //...we create a new level...
-                              lev = this.UIDocument.Document.FamilyCreate.NewLevel(
+                              lev = this.UIDocument.Document.IsFamilyDocument
+                              ? this.UIDocument.Document.FamilyCreate.NewLevel(
+                                 (double)((Expression.Number)x).Item
+                              )
+                              : this.UIDocument.Document.Create.NewLevel(
                                  (double)((Expression.Number)x).Item
                               );
                               //...and store it in the element list for future runs.

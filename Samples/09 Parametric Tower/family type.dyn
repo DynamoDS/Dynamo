@@ -1,0 +1,17 @@
+<dynWorkspace X="10" Y="55">
+  <dynElements>
+    <Dynamo.Elements.dynFamilyTypeSelector type="Dynamo.Elements.dynFamilyTypeSelector" guid="f3f5b7d9-d206-4752-9e28-a7e4f1a90c90" nickname="Family Type Selector" x="0" y="99.75" index="3" />
+    <Dynamo.Elements.dynFamilyTypeParameterGetter type="Dynamo.Elements.dynFamilyTypeParameterGetter" guid="1e398f23-abd8-42eb-9d32-9c3e1f7b081b" nickname="Get Type Parameter" x="279.25" y="112.75" />
+    <Dynamo.Elements.dynFamilyTypeParameterSetter type="Dynamo.Elements.dynFamilyTypeParameterSetter" guid="74297821-7594-44e2-a409-4f80582177e0" nickname="Set Type Parameter" x="353.5" y="237.5" />
+    <Dynamo.Elements.dynStringInput type="Dynamo.Elements.dynStringInput" guid="ad907007-fd00-46f2-83bf-37443e21c312" nickname="String" x="8.25" y="200">
+      <System.String value="Cost" />
+    </Dynamo.Elements.dynStringInput>
+    <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="e01a8ad1-7bae-4d8a-8528-ba76fd01a421" nickname="Watch" x="514.75" y="15.75" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="f3f5b7d9-d206-4752-9e28-a7e4f1a90c90" start_index="0" end="1e398f23-abd8-42eb-9d32-9c3e1f7b081b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="1e398f23-abd8-42eb-9d32-9c3e1f7b081b" start_index="0" end="e01a8ad1-7bae-4d8a-8528-ba76fd01a421" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="ad907007-fd00-46f2-83bf-37443e21c312" start_index="0" end="1e398f23-abd8-42eb-9d32-9c3e1f7b081b" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

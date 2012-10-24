@@ -466,6 +466,7 @@ namespace Dynamo.Controls
 
             if (System.IO.Directory.Exists(samplesPath))
             {
+                // handle top-level files
                 if (filePaths.Any())
                 {
                     foreach (string path in filePaths)
@@ -480,16 +481,16 @@ namespace Dynamo.Controls
                     }
                     
                 }
-                
 
+                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
                 if (dirPaths.Any())
                 {
                     foreach (string dirPath in dirPaths)
                     {
                         var dirItem = new System.Windows.Controls.MenuItem()
                         {
-                            Header = Path.GetDirectoryName(dirPath),
-                            Tag = dirPath
+                            Header = Path.GetFileName(dirPath),
+                            Tag = Path.GetFileName(dirPath)
                         };
                         //item.Click += new RoutedEventHandler(sample_Click);
                         //samplesMenu.Items.Add(dirItem);
@@ -506,15 +507,14 @@ namespace Dynamo.Controls
                                     Tag = path
                                 };
                                 item.Click += new RoutedEventHandler(sample_Click);
-                                //samplesMenu.Items.Add(item);
-                                 //samplesMenu.Items[menuItemCount].Items.Add(item) as System.Windows.Controls.MenuItem;
-                                 dirItem.Items.Add(item);
+                                dirItem.Items.Add(item);
                             }
                             
                         }
                         samplesMenu.Items.Add(dirItem);
-                        return;
+                        
                     }
+                    return;
                     
                 }
             } 

@@ -305,6 +305,7 @@ namespace Dynamo.Elements
                )
             ));
             bindings.Add(new Binding("__revit__", this.UIDocument.Application));
+            bindings.Add(new Binding("__doc__", this.UIDocument.Application.ActiveUIDocument.Document));
             bindings.Add(new Binding("__dynamo__", dynElementSettings.SharedInstance.Bench));
             bindings.Add(new Binding("__persistant__", this.stateDict));
 

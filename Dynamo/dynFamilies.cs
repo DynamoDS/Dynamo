@@ -1265,5 +1265,155 @@ namespace Dynamo.Elements
             }
         }
     }
+
+
+    [ElementName("Set Type Parameter")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Modifies a parameter on a family type.")]
+    [RequiresTransaction(true)]
+    public class dynFamilyTypeParameterSetter : dynNode
+    {
+        public dynFamilyTypeParameterSetter()
+        {
+            InPortData.Add(new PortData("ft", "Family type.", typeof(object)));
+            InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(object)));
+            InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
+
+            OutPortData = new PortData("ft", "Modified family type.", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        private static Expression setParam(FamilySymbol ft, string paramName, Expression valueExpr)
+        {
+            var p = ft.get_Parameter(paramName);
+            if (p != null)
+            {
+                if (p.StorageType == StorageType.Double)
+                {
+                    p.Set(((Expression.Number)valueExpr).Item);
+                }
+                else if (p.StorageType == StorageType.Integer)
+                {
+                    p.Set((int)((Expression.Number)valueExpr).Item);
+                }
+                else if (p.StorageType == StorageType.String)
+                {
+                    p.Set(((Expression.String)valueExpr).Item);
+                }
+                else if (valueExpr.IsNumber)
+                {
+                    p.Set(new ElementId((int)(valueExpr as Expression.Number).Item));
+                }
+                else
+                {
+                    p.Set((ElementId)((Expression.Container)valueExpr).Item);
+                }
+                return Expression.NewContainer(ft);
+            }
+            throw new Exception("Parameter \"" + paramName + "\" was not found!");
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var paramName = ((Expression.String)args[1]).Item;
+            var valueExpr = args[2];
+
+            var input = args[0];
+            if (input.IsList)
+            {
+                var fiList = (input as Expression.List).Item;
+                return Expression.NewList(
+                   Utils.convertSequence(
+                      fiList.Select(
+                         x =>
+                            setParam(
+                               (FamilySymbol)((Expression.Container)x).Item,
+                               paramName,
+                               valueExpr
+                            )
+                      )
+                   )
+                );
+            }
+            else
+            {
+                var ft = (FamilySymbol)((Expression.Container)input).Item;
+
+                return setParam(ft, paramName, valueExpr);
+            }
+        }
+    }
+
+    [ElementName("Get Type Parameter")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Fetches the value of a parameter of a Family Type.")]
+    [RequiresTransaction(true)]
+    public class dynFamilyTypeParameterGetter : dynNode
+    {
+        public dynFamilyTypeParameterGetter()
+        {
+            InPortData.Add(new PortData("ft", "Family type.", typeof(FamilySymbol)));
+            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
+
+            OutPortData = new PortData("val", "Parameter value.", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        private static Expression getParam(FamilySymbol ft, string paramName)
+        {
+            var p = ft.get_Parameter(paramName);
+            if (p != null)
+            {
+                if (p.StorageType == StorageType.Double)
+                {
+                    return Expression.NewNumber(p.AsDouble());
+                }
+                else if (p.StorageType == StorageType.Integer)
+                {
+                    return Expression.NewNumber(p.AsInteger());
+                }
+                else if (p.StorageType == StorageType.String)
+                {
+                    return Expression.NewString(p.AsString());
+                }
+                else
+                {
+                    return Expression.NewContainer(p.AsElementId());
+                }
+            }
+            throw new Exception("Parameter \"" + paramName + "\" was not found!");
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var paramName = ((Expression.String)args[1]).Item;
+
+            var input = args[0];
+            if (input.IsList)
+            {
+                var fiList = (input as Expression.List).Item;
+                return Expression.NewList(
+                   Utils.convertSequence(
+                      fiList.Select(
+                         x =>
+                            getParam(
+                               (FamilySymbol)((Expression.Container)x).Item,
+                               paramName
+                            )
+                      )
+                   )
+                );
+            }
+            else
+            {
+                var ft = (FamilySymbol)((Expression.Container)input).Item;
+
+                return getParam(ft, paramName);
+            }
+        }
+    }
 }
+
 
