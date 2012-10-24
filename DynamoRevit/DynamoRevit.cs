@@ -169,8 +169,8 @@ namespace Dynamo.Applications
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
                         //prepare and show splash
-                        //splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
-                        //splashScreen.Show(false, true);
+                        splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
+                        splashScreen.Show(false, true);
 
                         //show the window
                         dynamoForm = new dynBench(DynamoRevitApp.updater, splashScreen);
