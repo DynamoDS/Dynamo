@@ -2367,7 +2367,7 @@ namespace Dynamo.Elements
             if (string.IsNullOrEmpty(this.Value))
                 throw new Exception("No file selected.");
 
-            return base.Evaluate(args);
+            return Expression.NewString(this.Value);
         }
 
         public override string PrintExpression()
