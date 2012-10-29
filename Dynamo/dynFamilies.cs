@@ -121,17 +121,17 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("Family Instance Parameter Selector")]
+    [ElementName("Family Parameter Selector")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Given a family instance, allows the user to select a paramter as a string.")]
+    [ElementDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [RequiresTransaction(false)]
     [IsInteractive(true)]
     public class dynFamilyInstanceParameterSelector : dynNode
     {
         ComboBox paramBox = new ComboBox();
         ElementId storedId = null;
-        string value = "";
-        Dictionary<int, string> values = new Dictionary<int, string>();
+        Definition value;
+        List<Definition> values = new List<Definition>();
 
         public dynFamilyInstanceParameterSelector()
         {
@@ -182,7 +182,7 @@ namespace Dynamo.Elements
             this.values.Clear();
 
             SortedList<string, dynamic> paramList = new SortedList<string, dynamic>();
-            //var paramList = new List<string>();
+
             foreach (dynamic p in set)
             {
                 if ((readOnly && p.IsReadOnly) || p.StorageType == StorageType.None)
@@ -192,10 +192,9 @@ namespace Dynamo.Elements
                 paramList.Add(val, p);
             }
 
-            int i = 0;
             foreach (dynamic p in paramList.Values)
             {
-                this.values[i++] = p.Definition.Name;
+                this.values.Add(p.Definition);
             }
 
             this.paramBox.Dispatcher.Invoke(new Action(
@@ -220,18 +219,18 @@ namespace Dynamo.Elements
                 this.storedId = input.Id;
                 if (input is FamilySymbol)
                 {
-                    var paramDict = new Dictionary<string, dynamic>();
+                    var paramDict = new Dictionary<Definition, dynamic>();
 
                     var fs = input as FamilySymbol;
 
                     foreach (dynamic p in fs.Parameters)
-                        paramDict[p.Definition.Name] = p;
+                        paramDict[p.Definition] = p;
 
                     var fd = this.UIDocument.Document.EditFamily(fs.Family);
                     var ps = fd.FamilyManager.Parameters;
 
                     foreach (dynamic p in ps)
-                        paramDict[p.Definition.Name] = p;
+                        paramDict[p.Definition] = p;
 
                     //this.PopulateComboBox(fs.Parameters, false);
                     this.PopulateComboBox(paramDict.Values, false);
@@ -243,7 +242,7 @@ namespace Dynamo.Elements
                 }
             }
 
-            return Expression.NewString(this.value);
+            return Expression.NewContainer(this.value);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)

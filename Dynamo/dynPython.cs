@@ -377,7 +377,6 @@ namespace Dynamo.Elements
     public class dynPythonString : dynNode
     {
         private DynPythonEngine engine = new DynPythonEngine();
-        private bool dirty = true;
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         public dynPythonString()
