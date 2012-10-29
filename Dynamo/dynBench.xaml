@@ -104,9 +104,11 @@
                <MenuItem Header="Clear" Click="ClearLog_Click" />
             </ContextMenu>
          </ScrollViewer.ContextMenu>
-         <TextBlock Margin="5"
-                           Text="{Binding ElementName=_this, Path=LogText}" 
-                           Foreground="White" TextWrapping="Wrap"/>
+         <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
+                  Background="#00000000" BorderThickness="0" BorderBrush="#00000000" 
+                  Margin="5" Foreground="White" TextWrapping="Wrap" Focusable="True"
+                  IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
+                  IsTabStop="False" />
       </ScrollViewer>
       <Grid Height="Auto" HorizontalAlignment="Left" Margin="0,20,0,0" Name="sidebarGrid" VerticalAlignment="Stretch" Width="290">
          <ScrollViewer HorizontalAlignment="Stretch" Margin="0,33,0,90" Name="scrollViewer1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
