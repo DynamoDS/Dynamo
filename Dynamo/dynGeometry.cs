@@ -53,6 +53,66 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("XYZ -> X")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Fetches the X value of the given XYZ")]
+    [RequiresTransaction(false)]
+    public class dynXYZGetX : dynNode
+    { 
+        public dynXYZGetX()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
+            OutPortData = new PortData("X", "X value of given XYZ", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(((XYZ)((Expression.Container)args[0]).Item).X);
+        }
+    }
+
+    [ElementName("XYZ -> Y")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Fetches the Y value of the given XYZ")]
+    [RequiresTransaction(false)]
+    public class dynXYZGetY : dynNode
+    {
+        public dynXYZGetY()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
+            OutPortData = new PortData("Y", "Y value of given XYZ", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(((XYZ)((Expression.Container)args[0]).Item).Y);
+        }
+    }
+
+    [ElementName("XYZ -> Z")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Fetches the Z value of the given XYZ")]
+    [RequiresTransaction(false)]
+    public class dynXYZGetZ : dynNode
+    {
+        public dynXYZGetZ()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
+            OutPortData = new PortData("Z", "Z value of given XYZ", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(((XYZ)((Expression.Container)args[0]).Item).Z);
+        }
+    }
+
     [ElementName("XYZ Scale")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Multiplies each component of an XYZ by a number.")]
