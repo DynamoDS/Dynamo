@@ -23,182 +23,180 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Elements
 {
-   public enum COMPort { COM3, COM4 };
+    public enum COMPort { COM3, COM4 };
 
-   [ElementName("Arduino")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
-   [ElementDescription("Reads values from an Arduino microcontroller.")]
-   [RequiresTransaction(false)]
-   public class dynArduino : dynNode
-   {
-      SerialPort port;
-      //string lastData = "";
-      //COMPort portState;
-      System.Windows.Controls.MenuItem com4Item;
-      System.Windows.Controls.MenuItem com3Item;
+    [ElementName("Arduino")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Reads values from an Arduino microcontroller.")]
+    [RequiresTransaction(false)]
+    public class dynArduino : dynNode
+    {
+        SerialPort port;
+        //string lastData = "";
+        //COMPort portState;
+        System.Windows.Controls.MenuItem com4Item;
+        System.Windows.Controls.MenuItem com3Item;
 
-      public dynArduino()
-      {
-         //InPortData.Add(new PortData(null, "loop", "The loop to execute.", typeof(dynLoop)));
-         //InPortData.Add(new PortData(null, "i/o", "Switch Arduino on?", typeof(bool)));
-         //InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(double)));
+        public dynArduino()
+        {
+            //InPortData.Add(new PortData(null, "loop", "The loop to execute.", typeof(dynLoop)));
+            //InPortData.Add(new PortData(null, "i/o", "Switch Arduino on?", typeof(bool)));
+            //InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(double)));
 
-         OutPortData = new PortData("output", "Serial output", typeof(double));
-         //OutPortData[0].Object = this.Tree;
+            OutPortData = new PortData("output", "Serial output", typeof(double));
+            //OutPortData[0].Object = this.Tree;
 
-         base.RegisterInputsAndOutputs();
+            base.RegisterInputsAndOutputs();
 
-         port = new SerialPort("COM3", 9600);
-         port.NewLine = "\r\n";
-         port.DtrEnable = true;
-         //port.DataReceived += new SerialDataReceivedEventHandler(serialPort1_DataReceived);
+            port = new SerialPort("COM3", 9600);
+            port.NewLine = "\r\n";
+            port.DtrEnable = true;
+            //port.DataReceived += new SerialDataReceivedEventHandler(serialPort1_DataReceived);
 
-         com3Item = new System.Windows.Controls.MenuItem();
-         com3Item.Header = "COM3";
-         com3Item.IsCheckable = true;
-         com3Item.IsChecked = true;
-         com3Item.Checked += new System.Windows.RoutedEventHandler(com3Item_Checked);
+            com3Item = new System.Windows.Controls.MenuItem();
+            com3Item.Header = "COM3";
+            com3Item.IsCheckable = true;
+            com3Item.IsChecked = true;
+            com3Item.Checked += new System.Windows.RoutedEventHandler(com3Item_Checked);
 
-         com4Item = new System.Windows.Controls.MenuItem();
-         com4Item.Header = "COM4";
-         com4Item.IsCheckable = true;
-         com4Item.IsChecked = false;
-         com4Item.Checked += new System.Windows.RoutedEventHandler(com4Item_Checked);
+            com4Item = new System.Windows.Controls.MenuItem();
+            com4Item.Header = "COM4";
+            com4Item.IsCheckable = true;
+            com4Item.IsChecked = false;
+            com4Item.Checked += new System.Windows.RoutedEventHandler(com4Item_Checked);
 
-         this.MainContextMenu.Items.Add(com3Item);
-         this.MainContextMenu.Items.Add(com4Item);
-         //portState = COMPort.COM3;
-         port.PortName = "COM3";
-      }
+            this.MainContextMenu.Items.Add(com3Item);
+            this.MainContextMenu.Items.Add(com4Item);
+            //portState = COMPort.COM3;
+            port.PortName = "COM3";
+        }
 
-      void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
-      {
-         //portState = COMPort.COM4;
-         com4Item.IsChecked = true;
-         com3Item.IsChecked = false;
-      }
+        void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //portState = COMPort.COM4;
+            com4Item.IsChecked = true;
+            com3Item.IsChecked = false;
+        }
 
-      void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
-      {
-         //portState = COMPort.COM3;
-         com4Item.IsChecked = false;
-         com3Item.IsChecked = true;
-      }
+        void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //portState = COMPort.COM3;
+            com4Item.IsChecked = false;
+            com3Item.IsChecked = true;
+        }
 
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      //add one branch
-      //      //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-      //      //this.Tree.Trunk.Branches[0].Leaves.Add(null);
+        //public override void Draw()
+        //{
+        //   if (CheckInputs())
+        //   {
+        //      //add one branch
+        //      //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+        //      //this.Tree.Trunk.Branches[0].Leaves.Add(null);
 
-      //      if (port != null)
-      //      {
-      //         bool isOpen = Convert.ToBoolean(InPortData[0].Object);
+        //      if (port != null)
+        //      {
+        //         bool isOpen = Convert.ToBoolean(InPortData[0].Object);
 
-      //         if (isOpen == true)
-      //         {
-      //            if (!port.IsOpen)
-      //            {
-      //               if (portState == COMPort.COM3)
-      //                  port.PortName = "COM3";
-      //               else
-      //                  port.PortName = "COM4";
+        //         if (isOpen == true)
+        //         {
+        //            if (!port.IsOpen)
+        //            {
+        //               if (portState == COMPort.COM3)
+        //                  port.PortName = "COM3";
+        //               else
+        //                  port.PortName = "COM4";
 
-      //               port.Open();
-      //            }
+        //               port.Open();
+        //            }
 
-      //            //get the analog value from the serial port
-      //            GetArduinoData();
+        //            //get the analog value from the serial port
+        //            GetArduinoData();
 
-      //            //i don't know why this works 
-      //            //but OnDynElementReadyToBuild doesn't
-      //            //this.UpdateOutputs();
-      //            //OnDynElementReadyToBuild(EventArgs.Empty);
-      //         }
-      //         else if (isOpen == false)
-      //         {
-      //            if (port.IsOpen)
-      //               port.Close();
-      //         }
+        //            //i don't know why this works 
+        //            //but OnDynElementReadyToBuild doesn't
+        //            //this.UpdateOutputs();
+        //            //OnDynElementReadyToBuild(EventArgs.Empty);
+        //         }
+        //         else if (isOpen == false)
+        //         {
+        //            if (port.IsOpen)
+        //               port.Close();
+        //         }
 
-      //      }
+        //      }
 
-      //   }
-      //}
+        //   }
+        //}
 
-      private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
-      {
-         if (CheckInputs())
-         {
-            //add one branch
-            //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-            //this.Tree.Trunk.Branches[0].Leaves.Add(null);
-
-            if (port != null)
+        private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        {
+            if (CheckInputs())
             {
-               bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
+                //add one branch
+                //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
+                //this.Tree.Trunk.Branches[0].Leaves.Add(null);
 
-               if (isOpen == true)
-               {
-                  if (!port.IsOpen)
-                  {
-                     port.Open();
-                  }
+                if (port != null)
+                {
+                    bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
 
-                  //get the analog value from the serial port
-                  GetArduinoData();
+                    if (isOpen == true)
+                    {
+                        if (!port.IsOpen)
+                        {
+                            port.Open();
+                        }
 
-                  //i don't know why this works 
-                  //but OnDynElementReadyToBuild doesn't
-                  this.UpdateOutputs();
-                  //OnDynElementReadyToBuild(EventArgs.Empty);
-               }
-               else if (isOpen == false)
-               {
-                  if (port.IsOpen)
-                     port.Close();
-               }
+                        //get the analog value from the serial port
+                        GetArduinoData();
 
+                        //i don't know why this works 
+                        //but OnDynElementReadyToBuild doesn't
+                        this.UpdateOutputs();
+                        //OnDynElementReadyToBuild(EventArgs.Empty);
+                    }
+                    else if (isOpen == false)
+                    {
+                        if (port.IsOpen)
+                            port.Close();
+                    }
+                }
+            }
+        }
+
+        private void GetArduinoData()
+        {
+            //string data = port.ReadExisting();
+            //lastData += data;
+            //string[] allData = lastData.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            //if (allData.Length > 0)
+            //{
+            //lastData = allData[allData.Length - 1];
+            //this.Tree.Trunk.Branches[0].Leaves[0] = lastData;
+            //this.OutPortData[0].Object = Convert.ToDouble(lastData);
+            //}
+
+            //int data = 255;
+            while (port.BytesToRead > 0)
+            {
+                this.data = port.ReadByte();
+                this.IsDirty = true;
             }
 
-         }
-      }
+            //this.OutPortData[0].Object = Convert.ToDouble(data);
+        }
 
-      private void GetArduinoData()
-      {
-         //string data = port.ReadExisting();
-         //lastData += data;
-         //string[] allData = lastData.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-         //if (allData.Length > 0)
-         //{
-         //lastData = allData[allData.Length - 1];
-         //this.Tree.Trunk.Branches[0].Leaves[0] = lastData;
-         //this.OutPortData[0].Object = Convert.ToDouble(lastData);
-         //}
+        //public override void Update()
+        //{
+        //   OnDynElementReadyToBuild(EventArgs.Empty);
+        //}
 
-         //int data = 255;
-         while (port.BytesToRead > 0)
-         {
-            this.data = port.ReadByte();
-            this.IsDirty = true;
-         }
+        int data;
 
-         //this.OutPortData[0].Object = Convert.ToDouble(data);
-      }
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            return Expression.NewNumber(this.data);
+        }
 
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
-
-      int data;
-
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         return Expression.NewNumber(this.data);
-      }
-
-   }
+    }
 }
