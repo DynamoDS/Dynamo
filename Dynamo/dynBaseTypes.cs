@@ -464,30 +464,22 @@ namespace Dynamo.Elements
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData.Skip(3))
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                dynEl.AppendChild(input);
-            }
+            dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
         public override void LoadElement(XmlNode elNode)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            int inputs = Convert.ToInt32(elNode.Attributes["inputs"].Value);
+            if (inputs == 1)
+                this.RemoveInput(this, null);
+            else
             {
-                if (subNode.Name == "Input")
+                for (; inputs > 2; inputs--)
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
-                    if (!attr.Equals("comb"))
-                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    InPortData.Add(new PortData(this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
                 }
+                base.ReregisterInputs();
             }
-            base.ReregisterInputs();
         }
 
         protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
@@ -566,30 +558,22 @@ namespace Dynamo.Elements
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData.Skip(3))
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                dynEl.AppendChild(input);
-            }
+            dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
         public override void LoadElement(XmlNode elNode)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            int inputs = Convert.ToInt32(elNode.Attributes["inputs"].Value);
+            if (inputs == 1)
+                this.RemoveInput(this, null);
+            else
             {
-                if (subNode.Name == "Input")
+                for (; inputs > 2; inputs--)
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
-                    if (!attr.Equals("comb"))
-                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    InPortData.Add(new PortData(this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
                 }
+                base.ReregisterInputs();
             }
-            base.ReregisterInputs();
         }
 
         protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
