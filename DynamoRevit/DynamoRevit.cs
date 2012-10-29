@@ -127,11 +127,17 @@ namespace Dynamo.Applications
     {
         Autodesk.Revit.UI.UIApplication m_revit;
         Autodesk.Revit.UI.UIDocument m_doc;
-        dynBench dynamoForm;
+        static dynBench dynamoForm;
         TextWriter tw;
 
         public Autodesk.Revit.UI.Result Execute(Autodesk.Revit.UI.ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            if (dynamoForm != null)
+            {
+                dynamoForm.Focus();
+                return Result.Succeeded;
+            }
+
             SplashScreen splashScreen = null;
             try
             {
@@ -196,6 +202,8 @@ namespace Dynamo.Applications
                         }
 
                         dynamoForm.Show();
+
+                        dynamoForm.Closed += new EventHandler(dynamoForm_Closed);
                     }
                 ));
             }
@@ -209,6 +217,11 @@ namespace Dynamo.Applications
             }
 
             return Autodesk.Revit.UI.Result.Succeeded;
+        }
+
+        void dynamoForm_Closed(object sender, EventArgs e)
+        {
+            dynamoForm = null;
         }
 
         void dynamoForm_Loaded(object sender, RoutedEventArgs e)
