@@ -2261,6 +2261,32 @@ namespace Dynamo.Elements
         {
             return val;
         }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
+            outEl.SetAttribute("value", this.Value.ToString());
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(string).FullName))
+                {
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("value"))
+                        {
+                            this.Value = this.DeserializeValue(attr.Value);
+                            this.tb.Text = this.Value;
+                        }
+                            
+                    }
+                }
+            }
+        }
     }
 
     [ElementName("Filename")]
