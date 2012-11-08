@@ -82,13 +82,18 @@ namespace Dynamo.Elements
         {
             storedPath = ((Expression.String)args[0]).Item;
 
-            StreamReader reader = new StreamReader(
-                new FileStream(storedPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-            );
-            string contents = reader.ReadToEnd();
-            reader.Close();
+            if (File.Exists(storedPath))
+            {
+                StreamReader reader = new StreamReader(
+                    new FileStream(storedPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                );
+                string contents = reader.ReadToEnd();
+                reader.Close();
 
-            return Expression.NewString(contents);
+                return Expression.NewString(contents);
+            }
+            else
+                return Expression.NewString("");
         }
     }
 
