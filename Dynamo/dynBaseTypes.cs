@@ -2242,7 +2242,7 @@ namespace Dynamo.Elements
                     return;
 
                 base.Value = value;
-                this.tb.Text = value;
+                //this.tb.Text = value;
             }
         }
 
