@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
+using System.Web;
 
 using Dynamo.Connectors;
 using Dynamo.Controls;
@@ -2240,9 +2241,8 @@ namespace Dynamo.Elements
             {
                 if (base.Value == value)
                     return;
-
+                
                 base.Value = value;
-                //this.tb.Text = value;
             }
         }
 
@@ -2265,7 +2265,7 @@ namespace Dynamo.Elements
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
-            outEl.SetAttribute("value", this.Value.ToString());
+            outEl.SetAttribute("value", System.Web.HttpUtility.UrlEncode(this.Value.ToString()));
             dynEl.AppendChild(outEl);
         }
 
@@ -2279,7 +2279,7 @@ namespace Dynamo.Elements
                     {
                         if (attr.Name.Equals("value"))
                         {
-                            this.Value = this.DeserializeValue(attr.Value);
+                            this.Value = this.DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
                             this.tb.Text = this.Value;
                         }
                             
@@ -2513,7 +2513,7 @@ namespace Dynamo.Elements
         {
             string str = ((Expression.String)args[0]).Item;
             string del = ((Expression.String)args[1]).Item;
-
+            
             return Expression.NewList(
                 Utils.convertSequence(
                     str.Split(new string[] { del }, StringSplitOptions.None)
