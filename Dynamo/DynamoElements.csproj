@@ -108,6 +108,7 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dynAnalysis.cs" />
     <Compile Include="dynDivide.cs" />
     <Compile Include="dynGeometricForms.cs" />
     <Compile Include="dynTimer.cs" />

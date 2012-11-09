@@ -82,24 +82,20 @@ namespace Dynamo.Applications
                 updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
                 if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId())) UpdaterRegistry.RegisterUpdater(updater);
 
-                //ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
-                //ElementCategoryFilter massFilter = new ElementCategoryFilter(BuiltInCategory.OST_Mass);
-
+                ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
                 ElementClassFilter familyFilter = new ElementClassFilter(typeof(FamilyInstance));
                 ElementCategoryFilter refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
                 ElementClassFilter modelCurveFilter = new ElementClassFilter(typeof(CurveElement));
                 ElementClassFilter sunFilter = new ElementClassFilter(typeof(SunAndShadowSettings));
                 IList<ElementFilter> filterList = new List<ElementFilter>();
-                //filterList.Add(SpatialFieldFilter);
-
-                //filterList.Add(massFilter);
+                
+                filterList.Add(SpatialFieldFilter);
                 filterList.Add(familyFilter);
                 filterList.Add(modelCurveFilter);
                 filterList.Add(refPointFilter);
                 filterList.Add(sunFilter);
-                ElementFilter filter = new LogicalOrFilter(filterList);
 
-                //ElementFilter filter = new ElementClassFilter(typeof(Element));
+                ElementFilter filter = new LogicalOrFilter(filterList);
 
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());

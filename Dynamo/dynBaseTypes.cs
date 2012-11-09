@@ -54,6 +54,7 @@ namespace Dynamo.Elements
         public const string REVIT = "Revit";
         public const string MISC = "Miscellaneous";
         public const string LIST = "Lists";
+        public const string ANALYSIS = "Analysis";
     }
 
     #region FScheme Builtin Interop
