@@ -24,6 +24,7 @@ namespace Dynamo.Elements
 
         public dynSpatialFieldManager()
         {
+            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
             OutPortData = new PortData("sfm", "Spatial field manager for the active view", typeof(object));
 
             base.RegisterInputsAndOutputs();
@@ -47,7 +48,7 @@ namespace Dynamo.Elements
             }
             else
             {
-                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView, 1);
+                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView, Convert.ToInt16(((Expression.Number)args[0]).Item));
             }
 
             return Expression.NewContainer(sfm);
@@ -123,6 +124,7 @@ namespace Dynamo.Elements
 
         public dynAnalysisResults()
         {
+            InPortData.Add(new PortData("lst", "List of values.", typeof(object)));
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
             InPortData.Add(new PortData("face", "Face", typeof(Reference)));
             OutPortData = new PortData("idx", "Analysis results object index", typeof(object));
@@ -132,8 +134,7 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            
-            SpatialFieldManager sfm = ((Expression.Container)args[0]).Item as SpatialFieldManager;
+            SpatialFieldManager sfm = ((Expression.Container)args[1]).Item as SpatialFieldManager;
 
             //first, cleanup the old one
             if (idx != -1)
@@ -141,7 +142,7 @@ namespace Dynamo.Elements
                 sfm.RemoveSpatialFieldPrimitive(idx);
             }
 
-            Reference reference = ((Expression.Container)args[1]).Item as Reference;
+            Reference reference = ((Expression.Container)args[2]).Item as Reference;
             idx = sfm.AddSpatialFieldPrimitive(reference);
 
             Face face = dynElementSettings.SharedInstance.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
@@ -155,12 +156,18 @@ namespace Dynamo.Elements
 
             FieldDomainPointsByUV pnts = new FieldDomainPointsByUV(uvPts);
 
+            //Build a sequence that unwraps the input list from it's Expression form.
+            IEnumerable<double> nvals = ((Expression.List)args[0]).Item.Select(
+               x => (double)((Expression.Number)x).Item
+            );
+
             List<double> doubleList = new List<double>();
+            foreach (var n in nvals)
+            {
+                doubleList.Add(n);
+            }
+
             IList<ValueAtPoint> valList = new List<ValueAtPoint>();
-            doubleList.Add(0);
-            valList.Add(new ValueAtPoint(doubleList));
-            doubleList.Clear();
-            doubleList.Add(10);
             valList.Add(new ValueAtPoint(doubleList));
 
             FieldValues vals = new FieldValues(valList);
@@ -184,7 +191,6 @@ namespace Dynamo.Elements
                 AnalysisResultSchema ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
                 schemaIndex = sfm.RegisterResult(ars);
             }
-            
             
             sfm.UpdateSpatialFieldPrimitive(idx, pnts, vals, schemaIndex);
 
