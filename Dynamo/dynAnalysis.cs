@@ -73,19 +73,19 @@ namespace Dynamo.Elements
             {
                 AnalysisDisplayColoredSurfaceSettings coloredSurfaceSettings = new AnalysisDisplayColoredSurfaceSettings();
                 coloredSurfaceSettings.ShowGridLines = true;
-
+                
                 AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
                 Color orange = new Color(255, 205, 0);
                 Color purple = new Color(200, 0, 200);
                 colorSettings.MaxColor = orange;
                 colorSettings.MinColor = purple;
-
+                
                 AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
                 legendSettings.NumberOfSteps = 10;
                 legendSettings.Rounding = 0.05;
                 legendSettings.ShowDataDescription = false;
                 legendSettings.ShowLegend = true;
-
+                
                 FilteredElementCollector collector2 = new FilteredElementCollector(doc);
                 ICollection<Element> elementCollection = collector2.OfClass(typeof(TextNoteType)).ToElements();
                 //var textElements = from element in collector2
@@ -168,6 +168,7 @@ namespace Dynamo.Elements
             }
 
             IList<ValueAtPoint> valList = new List<ValueAtPoint>();
+            valList.Add(new ValueAtPoint(doubleList));
             valList.Add(new ValueAtPoint(doubleList));
 
             FieldValues vals = new FieldValues(valList);
