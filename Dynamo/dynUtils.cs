@@ -656,6 +656,34 @@ namespace Dynamo.Utilities
         }
 
 
+        public static Element RequestLevelSelection(UIDocument doc, string message, dynElementSettings settings)
+        {
+            try
+            {
+                Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+                //MessageBox.Show(message);
+                settings.Bench.Log(message);
+
+                Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (fsRef != null)
+                {
+                    return doc.Document.GetElement(fsRef.ElementId) as Level;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                settings.Bench.Log(ex);
+                return null;
+            }
+        }
+
+
         public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message, dynElementSettings settings)
         {
             try
@@ -699,7 +727,6 @@ namespace Dynamo.Utilities
                 return null;
             }
         }
-
     }
 
 }

@@ -461,11 +461,11 @@ namespace Dynamo.Controls
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string samplesPath = Path.Combine(directory, "samples");
 
-            string[] dirPaths = Directory.GetDirectories(samplesPath);
-            string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
-
             if (System.IO.Directory.Exists(samplesPath))
             {
+                string[] dirPaths = Directory.GetDirectories(samplesPath);
+                string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
+
                 // handle top-level files
                 if (filePaths.Any())
                 {

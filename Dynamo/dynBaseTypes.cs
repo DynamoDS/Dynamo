@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
+using System.Web;
 
 using Dynamo.Connectors;
 using Dynamo.Controls;
@@ -53,6 +54,7 @@ namespace Dynamo.Elements
         public const string REVIT = "Revit";
         public const string MISC = "Miscellaneous";
         public const string LIST = "Lists";
+        public const string ANALYSIS = "Analysis";
     }
 
     #region FScheme Builtin Interop
@@ -406,7 +408,7 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("Build Sequence")]
+    [ElementName("Number Sequence")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Creates a sequence of numbers")]
     [ElementSearchTags("range")]
@@ -464,30 +466,22 @@ namespace Dynamo.Elements
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData.Skip(3))
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                dynEl.AppendChild(input);
-            }
+            dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
         public override void LoadElement(XmlNode elNode)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            int inputs = Convert.ToInt32(elNode.Attributes["inputs"].Value);
+            if (inputs == 1)
+                this.RemoveInput(this, null);
+            else
             {
-                if (subNode.Name == "Input")
+                for (; inputs > 2; inputs--)
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
-                    if (!attr.Equals("comb"))
-                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    InPortData.Add(new PortData(this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
                 }
+                base.ReregisterInputs();
             }
-            base.ReregisterInputs();
         }
 
         protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
@@ -566,30 +560,22 @@ namespace Dynamo.Elements
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData.Skip(3))
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                dynEl.AppendChild(input);
-            }
+            dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
         public override void LoadElement(XmlNode elNode)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            int inputs = Convert.ToInt32(elNode.Attributes["inputs"].Value);
+            if (inputs == 1)
+                this.RemoveInput(this, null);
+            else
             {
-                if (subNode.Name == "Input")
+                for (; inputs > 2; inputs--)
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
-                    if (!attr.Equals("comb"))
-                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    InPortData.Add(new PortData(this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
                 }
+                base.ReregisterInputs();
             }
-            base.ReregisterInputs();
         }
 
         protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
@@ -2256,9 +2242,8 @@ namespace Dynamo.Elements
             {
                 if (base.Value == value)
                     return;
-
+                
                 base.Value = value;
-                this.tb.Text = value;
             }
         }
 
@@ -2276,6 +2261,32 @@ namespace Dynamo.Elements
         protected override string DeserializeValue(string val)
         {
             return val;
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
+            outEl.SetAttribute("value", System.Web.HttpUtility.UrlEncode(this.Value.ToString()));
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(string).FullName))
+                {
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("value"))
+                        {
+                            this.Value = this.DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
+                            this.tb.Text = this.Value;
+                        }
+                            
+                    }
+                }
+            }
         }
     }
 
@@ -2503,7 +2514,7 @@ namespace Dynamo.Elements
         {
             string str = ((Expression.String)args[0]).Item;
             string del = ((Expression.String)args[1]).Item;
-
+            
             return Expression.NewList(
                 Utils.convertSequence(
                     str.Split(new string[] { del }, StringSplitOptions.None)

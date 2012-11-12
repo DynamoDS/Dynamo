@@ -563,7 +563,7 @@ namespace Dynamo.Elements
 
         string formatSelectionText(IList<Element> elements)
         {
-            string selectionText = null;
+            string selectionText = "";
             foreach (Element e in elements)
             {
                 selectionText = selectionText + " " + e.Id.ToString();
@@ -573,13 +573,13 @@ namespace Dynamo.Elements
 
         protected override string SelectionText
         {
-
             get
             {
-                return "Curve ID: " + formatSelectionText(this.SelectedElements);
+                return "Curve IDs:" + formatSelectionText(this.SelectedElements);
             }
         }
     }
+
     [ElementName("Point by Selection")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Select a reference point from the document.")]
@@ -594,6 +594,29 @@ namespace Dynamo.Elements
         {
             this.SelectedElement = SelectionHelper.RequestReferencePointSelection(
                dynElementSettings.SharedInstance.Doc, "Select a reference point.", dynElementSettings.SharedInstance
+            );
+        }
+
+        protected override string SelectionText
+        {
+            get { return this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")"; }
+        }
+    }
+
+    [ElementName("Level by Selection")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Select a level from the document.")]
+    [RequiresTransaction(false)]
+    public class dynLevelBySelection : dynElementSelection
+    {
+        public dynLevelBySelection() :
+            base(new PortData("lvl", "The selected level", typeof(Level)))
+        { }
+
+        protected override void OnSelectClick()
+        {
+            this.SelectedElement = SelectionHelper.RequestLevelSelection(
+               dynElementSettings.SharedInstance.Doc, "Select a level.", dynElementSettings.SharedInstance
             );
         }
 

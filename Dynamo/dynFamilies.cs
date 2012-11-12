@@ -121,17 +121,17 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("Family Instance Parameter Selector")]
+    [ElementName("Family Parameter Selector")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Given a family instance, allows the user to select a paramter as a string.")]
+    [ElementDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [RequiresTransaction(false)]
     [IsInteractive(true)]
     public class dynFamilyInstanceParameterSelector : dynNode
     {
         ComboBox paramBox = new ComboBox();
         ElementId storedId = null;
-        string value = "";
-        Dictionary<int, string> values = new Dictionary<int, string>();
+        Definition value;
+        List<Definition> values = new List<Definition>();
 
         public dynFamilyInstanceParameterSelector()
         {
@@ -182,7 +182,7 @@ namespace Dynamo.Elements
             this.values.Clear();
 
             SortedList<string, dynamic> paramList = new SortedList<string, dynamic>();
-            //var paramList = new List<string>();
+
             foreach (dynamic p in set)
             {
                 if ((readOnly && p.IsReadOnly) || p.StorageType == StorageType.None)
@@ -192,10 +192,9 @@ namespace Dynamo.Elements
                 paramList.Add(val, p);
             }
 
-            int i = 0;
             foreach (dynamic p in paramList.Values)
             {
-                this.values[i++] = p.Definition.Name;
+                this.values.Add(p.Definition);
             }
 
             this.paramBox.Dispatcher.Invoke(new Action(
@@ -220,18 +219,18 @@ namespace Dynamo.Elements
                 this.storedId = input.Id;
                 if (input is FamilySymbol)
                 {
-                    var paramDict = new Dictionary<string, dynamic>();
+                    var paramDict = new Dictionary<Definition, dynamic>();
 
                     var fs = input as FamilySymbol;
 
                     foreach (dynamic p in fs.Parameters)
-                        paramDict[p.Definition.Name] = p;
+                        paramDict[p.Definition] = p;
 
                     var fd = this.UIDocument.Document.EditFamily(fs.Family);
                     var ps = fd.FamilyManager.Parameters;
 
                     foreach (dynamic p in ps)
-                        paramDict[p.Definition.Name] = p;
+                        paramDict[p.Definition] = p;
 
                     //this.PopulateComboBox(fs.Parameters, false);
                     this.PopulateComboBox(paramDict.Values, false);
@@ -243,7 +242,7 @@ namespace Dynamo.Elements
                 }
             }
 
-            return Expression.NewString(this.value);
+            return Expression.NewContainer(this.value);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -843,7 +842,7 @@ namespace Dynamo.Elements
                     fi = this.UIDocument.Document.IsFamilyDocument
                        ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
                        pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
-                          
+
                        )
                        : this.UIDocument.Document.Create.NewFamilyInstance(
                           pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
@@ -1061,7 +1060,7 @@ namespace Dynamo.Elements
             }
             return Expression.NewContainer(curves);
         }
-        
+
         public override Expression Evaluate(FSharpList<Expression> args)
         {
             var input = args[0];
@@ -1078,18 +1077,18 @@ namespace Dynamo.Elements
                 var familyList = (input as Expression.List).Item;
                 int count = 0;
 
-                 var result = Expression.NewList(
-                   Utils.convertSequence(
-                      familyList.Select(
-                         x =>
-                            this.GetCurvesFromFamily(
-                               (FamilyInstance)((Expression.Container)x).Item,
-                               count++,
-                               opts
-                            )
-                      )
-                   )
-                );
+                var result = Expression.NewList(
+                  Utils.convertSequence(
+                     familyList.Select(
+                        x =>
+                           this.GetCurvesFromFamily(
+                              (FamilyInstance)((Expression.Container)x).Item,
+                              count++,
+                              opts
+                           )
+                     )
+                  )
+               );
 
                 foreach (var e in this.Elements.Skip(count))
                 {
@@ -1140,58 +1139,106 @@ namespace Dynamo.Elements
             var p = fi.get_Parameter(paramName);
             if (p != null)
             {
-                if (p.StorageType == StorageType.Double)
-                {
-                    p.Set(((Expression.Number)valueExpr).Item);
-                }
-                else if (p.StorageType == StorageType.Integer)
-                {
-                    p.Set((int)((Expression.Number)valueExpr).Item);
-                }
-                else if (p.StorageType == StorageType.String)
-                {
-                    p.Set(((Expression.String)valueExpr).Item);
-                }
-                else if (valueExpr.IsNumber)
-                {
-                    p.Set(new ElementId((int)(valueExpr as Expression.Number).Item));
-                }
-                else
-                {
-                    p.Set((ElementId)((Expression.Container)valueExpr).Item);
-                }
-                return Expression.NewContainer(fi);
+                return _setParam(fi, p, valueExpr);
             }
             throw new Exception("Parameter \"" + paramName + "\" was not found!");
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        private static Expression setParam(FamilyInstance fi, Definition paramDef, Expression valueExpr)
         {
-            var paramName = ((Expression.String)args[1]).Item;
-            var valueExpr = args[2];
-
-            var input = args[0];
-            if (input.IsList)
+            var p = fi.get_Parameter(paramDef);
+            if (p != null)
             {
-                var fiList = (input as Expression.List).Item;
-                return Expression.NewList(
-                   Utils.convertSequence(
-                      fiList.Select(
-                         x =>
-                            setParam(
-                               (FamilyInstance)((Expression.Container)x).Item,
-                               paramName,
-                               valueExpr
-                            )
-                      )
-                   )
-                );
+                return _setParam(fi, p, valueExpr);
+            }
+            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
+        }
+
+        private static Expression _setParam(FamilyInstance ft, Parameter p, Expression valueExpr)
+        {
+            if (p.StorageType == StorageType.Double)
+            {
+                p.Set(((Expression.Number)valueExpr).Item);
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+                p.Set((int)((Expression.Number)valueExpr).Item);
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+                p.Set(((Expression.String)valueExpr).Item);
+            }
+            else if (valueExpr.IsNumber)
+            {
+                p.Set(new ElementId((int)(valueExpr as Expression.Number).Item));
             }
             else
             {
-                var fi = (FamilyInstance)((Expression.Container)input).Item;
+                p.Set((ElementId)((Expression.Container)valueExpr).Item);
+            }
+            return Expression.NewContainer(ft);
+        }
 
-                return setParam(fi, paramName, valueExpr);
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var valueExpr = args[2];
+
+            var param = args[1];
+            if (param.IsString)
+            {
+                var paramName = ((Expression.String)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Expression.List).Item;
+                    return Expression.NewList(
+                       Utils.convertSequence(
+                          fiList.Select(
+                             x =>
+                                setParam(
+                                   (FamilyInstance)((Expression.Container)x).Item,
+                                   paramName,
+                                   valueExpr
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fs = (FamilyInstance)((Expression.Container)input).Item;
+
+                    return setParam(fs, paramName, valueExpr);
+                }
+            }
+            else
+            {
+                var paramDef = (Definition)((Expression.Container)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Expression.List).Item;
+                    return Expression.NewList(
+                       Utils.convertSequence(
+                          fiList.Select(
+                             x =>
+                                setParam(
+                                   (FamilyInstance)((Expression.Container)x).Item,
+                                   paramDef,
+                                   valueExpr
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fs = (FamilyInstance)((Expression.Container)input).Item;
+
+                    return setParam(fs, paramDef, valueExpr);
+                }
             }
         }
     }
@@ -1205,7 +1252,7 @@ namespace Dynamo.Elements
         public dynFamilyInstanceParameterGetter()
         {
             InPortData.Add(new PortData("fi", "Family instance.", typeof(FamilyInstance)));
-            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
+            InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(string)));
 
             OutPortData = new PortData("val", "Parameter value.", typeof(object));
 
@@ -1217,51 +1264,97 @@ namespace Dynamo.Elements
             var p = fi.get_Parameter(paramName);
             if (p != null)
             {
-                if (p.StorageType == StorageType.Double)
-                {
-                    return Expression.NewNumber(p.AsDouble());
-                }
-                else if (p.StorageType == StorageType.Integer)
-                {
-                    return Expression.NewNumber(p.AsInteger());
-                }
-                else if (p.StorageType == StorageType.String)
-                {
-                    return Expression.NewString(p.AsString());
-                }
-                else
-                {
-                    return Expression.NewContainer(p.AsElementId());
-                }
+                return _getParam(fi, p);
             }
             throw new Exception("Parameter \"" + paramName + "\" was not found!");
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        private static Expression getParam(FamilyInstance fi, Definition paramDef)
         {
-            var paramName = ((Expression.String)args[1]).Item;
-
-            var input = args[0];
-            if (input.IsList)
+            var p = fi.get_Parameter(paramDef);
+            if (p != null)
             {
-                var fiList = (input as Expression.List).Item;
-                return Expression.NewList(
-                   Utils.convertSequence(
-                      fiList.Select(
-                         x =>
-                            getParam(
-                               (FamilyInstance)((Expression.Container)x).Item,
-                               paramName
-                            )
-                      )
-                   )
-                );
+                return _getParam(fi, p);
+            }
+            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
+        }
+
+        private static Expression _getParam(FamilyInstance fi, Parameter p)
+        {
+            if (p.StorageType == StorageType.Double)
+            {
+                return Expression.NewNumber(p.AsDouble());
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+                return Expression.NewNumber(p.AsInteger());
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+                return Expression.NewString(p.AsString());
             }
             else
             {
-                var fi = (FamilyInstance)((Expression.Container)input).Item;
+                return Expression.NewContainer(p.AsElementId());
+            }
+        }
 
-                return getParam(fi, paramName);
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var param = args[1];
+            if (param.IsString)
+            {
+                var paramName = ((Expression.String)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Expression.List).Item;
+                    return Expression.NewList(
+                       Utils.convertSequence(
+                          fiList.Select(
+                             x =>
+                                getParam(
+                                   (FamilyInstance)((Expression.Container)x).Item,
+                                   paramName
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fi = (FamilyInstance)((Expression.Container)input).Item;
+
+                    return getParam(fi, paramName);
+                }
+            }
+            else
+            {
+                var paramDef = (Definition)((Expression.Container)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Expression.List).Item;
+                    return Expression.NewList(
+                       Utils.convertSequence(
+                          fiList.Select(
+                             x =>
+                                getParam(
+                                   (FamilyInstance)((Expression.Container)x).Item,
+                                   paramDef
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fi = (FamilyInstance)((Expression.Container)input).Item;
+
+                    return getParam(fi, paramDef);
+                }
             }
         }
     }
@@ -1276,7 +1369,7 @@ namespace Dynamo.Elements
         public dynFamilyTypeParameterSetter()
         {
             InPortData.Add(new PortData("ft", "Family type.", typeof(object)));
-            InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(object)));
+            InPortData.Add(new PortData("param", "Parameter to modify.", typeof(object)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
 
             OutPortData = new PortData("ft", "Modified family type.", typeof(object));
@@ -1284,63 +1377,111 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        private static Expression setParam(FamilySymbol ft, string paramName, Expression valueExpr)
+        private static Expression setParam(FamilySymbol fi, string paramName, Expression valueExpr)
         {
-            var p = ft.get_Parameter(paramName);
+            var p = fi.get_Parameter(paramName);
             if (p != null)
             {
-                if (p.StorageType == StorageType.Double)
-                {
-                    p.Set(((Expression.Number)valueExpr).Item);
-                }
-                else if (p.StorageType == StorageType.Integer)
-                {
-                    p.Set((int)((Expression.Number)valueExpr).Item);
-                }
-                else if (p.StorageType == StorageType.String)
-                {
-                    p.Set(((Expression.String)valueExpr).Item);
-                }
-                else if (valueExpr.IsNumber)
-                {
-                    p.Set(new ElementId((int)(valueExpr as Expression.Number).Item));
-                }
-                else
-                {
-                    p.Set((ElementId)((Expression.Container)valueExpr).Item);
-                }
-                return Expression.NewContainer(ft);
+                return _setParam(fi, p, valueExpr);
             }
             throw new Exception("Parameter \"" + paramName + "\" was not found!");
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        private static Expression setParam(FamilySymbol fi, Definition paramDef, Expression valueExpr)
         {
-            var paramName = ((Expression.String)args[1]).Item;
-            var valueExpr = args[2];
-
-            var input = args[0];
-            if (input.IsList)
+            var p = fi.get_Parameter(paramDef);
+            if (p != null)
             {
-                var fiList = (input as Expression.List).Item;
-                return Expression.NewList(
-                   Utils.convertSequence(
-                      fiList.Select(
-                         x =>
-                            setParam(
-                               (FamilySymbol)((Expression.Container)x).Item,
-                               paramName,
-                               valueExpr
-                            )
-                      )
-                   )
-                );
+                return _setParam(fi, p, valueExpr);
+            }
+            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
+        }
+
+        private static Expression _setParam(FamilySymbol ft, Parameter p, Expression valueExpr)
+        {
+            if (p.StorageType == StorageType.Double)
+            {
+                p.Set(((Expression.Number)valueExpr).Item);
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+                p.Set((int)((Expression.Number)valueExpr).Item);
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+                p.Set(((Expression.String)valueExpr).Item);
+            }
+            else if (valueExpr.IsNumber)
+            {
+                p.Set(new ElementId((int)(valueExpr as Expression.Number).Item));
             }
             else
             {
-                var ft = (FamilySymbol)((Expression.Container)input).Item;
+                p.Set((ElementId)((Expression.Container)valueExpr).Item);
+            }
+            return Expression.NewContainer(ft);
+        }
 
-                return setParam(ft, paramName, valueExpr);
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var valueExpr = args[2];
+
+            var param = args[1];
+            if (param.IsString)
+            {
+                var paramName = ((Expression.String)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Expression.List).Item;
+                    return Expression.NewList(
+                       Utils.convertSequence(
+                          fiList.Select(
+                             x =>
+                                setParam(
+                                   (FamilySymbol)((Expression.Container)x).Item,
+                                   paramName,
+                                   valueExpr
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fs = (FamilySymbol)((Expression.Container)input).Item;
+
+                    return setParam(fs, paramName, valueExpr);
+                }
+            }
+            else
+            {
+                var paramDef = (Definition)((Expression.Container)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Expression.List).Item;
+                    return Expression.NewList(
+                       Utils.convertSequence(
+                          fiList.Select(
+                             x =>
+                                setParam(
+                                   (FamilySymbol)((Expression.Container)x).Item,
+                                   paramDef,
+                                   valueExpr
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fs = (FamilySymbol)((Expression.Container)input).Item;
+
+                    return setParam(fs, paramDef, valueExpr);
+                }
             }
         }
     }
@@ -1361,56 +1502,102 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        private static Expression getParam(FamilySymbol ft, string paramName)
+        private static Expression getParam(FamilySymbol fi, string paramName)
         {
-            var p = ft.get_Parameter(paramName);
+            var p = fi.get_Parameter(paramName);
             if (p != null)
             {
-                if (p.StorageType == StorageType.Double)
-                {
-                    return Expression.NewNumber(p.AsDouble());
-                }
-                else if (p.StorageType == StorageType.Integer)
-                {
-                    return Expression.NewNumber(p.AsInteger());
-                }
-                else if (p.StorageType == StorageType.String)
-                {
-                    return Expression.NewString(p.AsString());
-                }
-                else
-                {
-                    return Expression.NewContainer(p.AsElementId());
-                }
+                return _getParam(fi, p);
             }
             throw new Exception("Parameter \"" + paramName + "\" was not found!");
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        private static Expression getParam(FamilySymbol fi, Definition paramDef)
         {
-            var paramName = ((Expression.String)args[1]).Item;
-
-            var input = args[0];
-            if (input.IsList)
+            var p = fi.get_Parameter(paramDef);
+            if (p != null)
             {
-                var fiList = (input as Expression.List).Item;
-                return Expression.NewList(
-                   Utils.convertSequence(
-                      fiList.Select(
-                         x =>
-                            getParam(
-                               (FamilySymbol)((Expression.Container)x).Item,
-                               paramName
-                            )
-                      )
-                   )
-                );
+                return _getParam(fi, p);
+            }
+            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
+        }
+
+        private static Expression _getParam(FamilySymbol fi, Parameter p)
+        {
+            if (p.StorageType == StorageType.Double)
+            {
+                return Expression.NewNumber(p.AsDouble());
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+                return Expression.NewNumber(p.AsInteger());
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+                return Expression.NewString(p.AsString());
             }
             else
             {
-                var ft = (FamilySymbol)((Expression.Container)input).Item;
+                return Expression.NewContainer(p.AsElementId());
+            }
+        }
 
-                return getParam(ft, paramName);
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var param = args[1];
+            if (param.IsString)
+            {
+                var paramName = ((Expression.String)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Expression.List).Item;
+                    return Expression.NewList(
+                       Utils.convertSequence(
+                          fiList.Select(
+                             x =>
+                                getParam(
+                                   (FamilySymbol)((Expression.Container)x).Item,
+                                   paramName
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fi = (FamilySymbol)((Expression.Container)input).Item;
+
+                    return getParam(fi, paramName);
+                }
+            }
+            else
+            {
+                var paramDef = (Definition)((Expression.Container)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Expression.List).Item;
+                    return Expression.NewList(
+                       Utils.convertSequence(
+                          fiList.Select(
+                             x =>
+                                getParam(
+                                   (FamilySymbol)((Expression.Container)x).Item,
+                                   paramDef
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fi = (FamilySymbol)((Expression.Container)input).Item;
+
+                    return getParam(fi, paramDef);
+                }
             }
         }
     }
