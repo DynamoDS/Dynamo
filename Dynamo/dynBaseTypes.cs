@@ -408,7 +408,7 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("Build Sequence")]
+    [ElementName("Number Sequence")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Creates a sequence of numbers")]
     [ElementSearchTags("range")]
