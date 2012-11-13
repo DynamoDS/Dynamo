@@ -57,8 +57,8 @@ Source: Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
 Source: readme.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
 Source: fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
 ;Training Files
-Source: Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
-Source: Definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly; Components: DynamoTrainingFiles
+Source: Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
+Source: Definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 [UninstallDelete]
 Type: files; Name: "{userappdata}\Autodesk\Revit\Addins\2013\DynamoforRevit_2013_WIP.addin"
