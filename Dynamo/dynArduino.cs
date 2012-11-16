@@ -32,26 +32,20 @@ namespace Dynamo.Elements
     public class dynArduino : dynNode
     {
         SerialPort port;
-        //string lastData = "";
-        //COMPort portState;
+        COMPort portState;
         System.Windows.Controls.MenuItem com4Item;
         System.Windows.Controls.MenuItem com3Item;
 
         public dynArduino()
         {
-            //InPortData.Add(new PortData(null, "loop", "The loop to execute.", typeof(dynLoop)));
-            //InPortData.Add(new PortData(null, "i/o", "Switch Arduino on?", typeof(bool)));
-            //InPortData.Add(new PortData(null, "tim", "How often to receive updates.", typeof(double)));
-
+            InPortData.Add(new PortData("time", "Timer", typeof(object)));
             OutPortData = new PortData("output", "Serial output", typeof(double));
-            //OutPortData[0].Object = this.Tree;
 
             base.RegisterInputsAndOutputs();
 
             port = new SerialPort("COM3", 9600);
             port.NewLine = "\r\n";
             port.DtrEnable = true;
-            //port.DataReceived += new SerialDataReceivedEventHandler(serialPort1_DataReceived);
 
             com3Item = new System.Windows.Controls.MenuItem();
             com3Item.Header = "COM3";
@@ -67,114 +61,26 @@ namespace Dynamo.Elements
 
             this.MainContextMenu.Items.Add(com3Item);
             this.MainContextMenu.Items.Add(com4Item);
-            //portState = COMPort.COM3;
+            portState = COMPort.COM3;
             port.PortName = "COM3";
         }
 
         void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            //portState = COMPort.COM4;
+            portState = COMPort.COM4;
             com4Item.IsChecked = true;
             com3Item.IsChecked = false;
         }
 
         void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            //portState = COMPort.COM3;
+            portState = COMPort.COM3;
             com4Item.IsChecked = false;
             com3Item.IsChecked = true;
         }
 
-        //public override void Draw()
-        //{
-        //   if (CheckInputs())
-        //   {
-        //      //add one branch
-        //      //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-        //      //this.Tree.Trunk.Branches[0].Leaves.Add(null);
-
-        //      if (port != null)
-        //      {
-        //         bool isOpen = Convert.ToBoolean(InPortData[0].Object);
-
-        //         if (isOpen == true)
-        //         {
-        //            if (!port.IsOpen)
-        //            {
-        //               if (portState == COMPort.COM3)
-        //                  port.PortName = "COM3";
-        //               else
-        //                  port.PortName = "COM4";
-
-        //               port.Open();
-        //            }
-
-        //            //get the analog value from the serial port
-        //            GetArduinoData();
-
-        //            //i don't know why this works 
-        //            //but OnDynElementReadyToBuild doesn't
-        //            //this.UpdateOutputs();
-        //            //OnDynElementReadyToBuild(EventArgs.Empty);
-        //         }
-        //         else if (isOpen == false)
-        //         {
-        //            if (port.IsOpen)
-        //               port.Close();
-        //         }
-
-        //      }
-
-        //   }
-        //}
-
-        private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
-        {
-            if (CheckInputs())
-            {
-                //add one branch
-                //this.Tree.Trunk.Branches.Add(new DataTreeBranch());
-                //this.Tree.Trunk.Branches[0].Leaves.Add(null);
-
-                if (port != null)
-                {
-                    bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
-
-                    if (isOpen == true)
-                    {
-                        if (!port.IsOpen)
-                        {
-                            port.Open();
-                        }
-
-                        //get the analog value from the serial port
-                        GetArduinoData();
-
-                        //i don't know why this works 
-                        //but OnDynElementReadyToBuild doesn't
-                        this.UpdateOutputs();
-                        //OnDynElementReadyToBuild(EventArgs.Empty);
-                    }
-                    else if (isOpen == false)
-                    {
-                        if (port.IsOpen)
-                            port.Close();
-                    }
-                }
-            }
-        }
-
         private void GetArduinoData()
         {
-            //string data = port.ReadExisting();
-            //lastData += data;
-            //string[] allData = lastData.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            //if (allData.Length > 0)
-            //{
-            //lastData = allData[allData.Length - 1];
-            //this.Tree.Trunk.Branches[0].Leaves[0] = lastData;
-            //this.OutPortData[0].Object = Convert.ToDouble(lastData);
-            //}
 
             //int data = 255;
             while (port.BytesToRead > 0)
@@ -183,18 +89,34 @@ namespace Dynamo.Elements
                 this.IsDirty = true;
             }
 
-            //this.OutPortData[0].Object = Convert.ToDouble(data);
         }
-
-        //public override void Update()
-        //{
-        //   OnDynElementReadyToBuild(EventArgs.Empty);
-        //}
 
         int data;
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
+            if (port != null)
+            {
+                bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
+
+                if (isOpen == true)
+                {
+                    if (!port.IsOpen)
+                    {
+                        port.Open();
+                    }
+
+                    //get the analog value from the serial port
+                    GetArduinoData();
+
+                }
+                else if (isOpen == false)
+                {
+                    if (port.IsOpen)
+                        port.Close();
+                }
+            }
+
             return Expression.NewNumber(this.data);
         }
 
