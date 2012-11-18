@@ -81,10 +81,29 @@ namespace Dynamo.Elements
 
         private void GetArduinoData()
         {
-            while (port.BytesToRead > 0)
+            //data comes off this port looking like 
+            //sensor = xxx\toutput = xxx
+            //sensor = xxx\toutput = xxx
+
+            string data = port.ReadExisting();
+
+            string[] allData = data.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (allData.Length > 2)
             {
-                this.data = port.ReadByte();
-                this.IsDirty = true;
+                //get the second to last element
+                //the last is often truncated
+                string lastData = allData[allData.Length - 2];
+                string[] values = lastData.Split(new char[]{'\t'}, StringSplitOptions.RemoveEmptyEntries);
+
+                //get the sensor value
+                string sensorString = values[0];
+                string[] sensorValues = values[0].Split(new char[]{'='}, StringSplitOptions.RemoveEmptyEntries);
+
+                if (sensorValues.Length > 0)
+                {
+                    this.data = Convert.ToInt16(sensorValues[1]);
+                    this.IsDirty = true;
+                }
             }
 
         }
