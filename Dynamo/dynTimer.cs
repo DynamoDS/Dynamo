@@ -93,6 +93,8 @@ namespace Dynamo.Elements
                         this.IsDirty = true;
                     }
                 ));
+
+                delayThread.Start();
             }
 
             return Expression.NewNumber(1);

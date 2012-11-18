@@ -38,7 +38,7 @@ namespace Dynamo.Elements
 
         public dynArduino()
         {
-            InPortData.Add(new PortData("time", "Timer", typeof(object)));
+            InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
             OutPortData = new PortData("output", "Serial output", typeof(double));
 
             base.RegisterInputsAndOutputs();
@@ -81,8 +81,6 @@ namespace Dynamo.Elements
 
         private void GetArduinoData()
         {
-
-            //int data = 255;
             while (port.BytesToRead > 0)
             {
                 this.data = port.ReadByte();
@@ -95,25 +93,28 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            if (port != null)
+            if (((Expression.Number)args[0]).Item == 1)
             {
-                bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
-
-                if (isOpen == true)
+                if (port != null)
                 {
-                    if (!port.IsOpen)
+                    bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
+
+                    if (isOpen == true)
                     {
-                        port.Open();
+                        if (!port.IsOpen)
+                        {
+                            port.Open();
+                        }
+
+                        //get the analog value from the serial port
+                        GetArduinoData();
+
                     }
-
-                    //get the analog value from the serial port
-                    GetArduinoData();
-
-                }
-                else if (isOpen == false)
-                {
-                    if (port.IsOpen)
-                        port.Close();
+                    else if (isOpen == false)
+                    {
+                        if (port.IsOpen)
+                            port.Close();
+                    }
                 }
             }
 
