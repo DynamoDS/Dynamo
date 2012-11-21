@@ -471,7 +471,8 @@ namespace Dynamo.Elements
 
         public override void LoadElement(XmlNode elNode)
         {
-            int inputs = Convert.ToInt32(elNode.Attributes["inputs"].Value);
+            var inputAttr = elNode.Attributes["inputs"];
+            int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
             if (inputs == 1)
                 this.RemoveInput(this, null);
             else
@@ -565,7 +566,8 @@ namespace Dynamo.Elements
 
         public override void LoadElement(XmlNode elNode)
         {
-            int inputs = Convert.ToInt32(elNode.Attributes["inputs"].Value);
+            var inputAttr = elNode.Attributes["inputs"];
+            int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
             if (inputs == 1)
                 this.RemoveInput(this, null);
             else
