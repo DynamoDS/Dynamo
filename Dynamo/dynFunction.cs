@@ -29,424 +29,454 @@ using System.Windows.Media.Effects;
 
 namespace Dynamo.Elements
 {
-   [RequiresTransaction(false)]
-   [IsInteractive(false)]
-   public class dynFunction : dynBuiltinMacro
-   {
-      public dynFunction(IEnumerable<string> inputs, string output, string symbol)
-         : base(symbol)
-      {
-         //Set inputs and output
-         this.SetInputs(inputs);
-         OutPortData = new PortData(output, "function output", typeof(object));
-         
-         //Set the nickname
-         this.NickName = symbol;
+    [RequiresTransaction(false)]
+    [IsInteractive(false)]
+    public class dynFunction : dynBuiltinMacro
+    {
+        public dynFunction(IEnumerable<string> inputs, string output, string symbol)
+            : base(symbol)
+        {
+            //Set inputs and output
+            this.SetInputs(inputs);
+            OutPortData = new PortData(output, "function output", typeof(object));
 
-         //Add a drop-shadow.
-         ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
+            //Set the nickname
+            this.NickName = symbol;
 
-         //Setup double-click behavior
-         this.MouseDoubleClick += delegate
-         {
-            dynElementSettings.SharedInstance.Bench.DisplayFunction(symbol);
-         };
+            //Add a drop-shadow.
+            ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
 
-         base.RegisterInputsAndOutputs();
-      }
+            //Setup double-click behavior
+            this.MouseDoubleClick += delegate
+            {
+                dynElementSettings.SharedInstance.Bench.DisplayFunction(symbol);
+            };
 
-      public dynFunction()
-         : base(null)
-      {
-         //Setup double-click behavior
-         this.MouseDoubleClick += delegate
-         {
-            dynElementSettings.SharedInstance.Bench.DisplayFunction(this.Symbol);
-         };
+            base.RegisterInputsAndOutputs();
+        }
 
-         //Add a drop-shadow
-         ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
-      }
+        public dynFunction()
+            : base(null)
+        {
+            //Setup double-click behavior
+            this.MouseDoubleClick += delegate
+            {
+                dynElementSettings.SharedInstance.Bench.DisplayFunction(this.Symbol);
+            };
 
-      protected internal override bool RequiresManualTransaction()
-      {
-         //Check if we already know we require a Manual Transaction
-         bool baseManual = base.RequiresManualTransaction();
-         if (baseManual)
-            return true;
+            //Add a drop-shadow
+            ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
+        }
 
-         //Initialize our recursive function detection construct
-         bool start = _startTag;
-         _startTag = true;
+        protected internal override bool RequiresManualTransaction()
+        {
+            //Check if we already know we require a Manual Transaction
+            bool baseManual = base.RequiresManualTransaction();
+            if (baseManual)
+                return true;
 
-         //If we've already been here, then we know we're safe already, no need to check internals.
-         if (_taggedSymbols.Contains(this.Symbol))
-            return false;
-         //Remember we've been here.
-         _taggedSymbols.Add(this.Symbol);
-
-         //Grab the workspace inside this function, and check if any of it's internals require a manual transaction.
-         var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-         bool manualInternals = ws.Elements.Any(x => x.RequiresManualTransaction());
-
-         //If we started the traversal here, then end the recursive function detection.
-         if (!start)
-         {
-            _startTag = false;
-            _taggedSymbols.Clear();
-         }
-
-         //Fin
-         return manualInternals;
-      }
-
-      protected internal override bool RequiresTransaction()
-      {
-         //Check if we already know we require a Transaction
-         bool baseManual = base.RequiresTransaction();
-         if (baseManual)
-            return true;
-
-         //Initialize our recursive function detection construct
-         bool start = _startTag;
-         _startTag = true;
-
-         //If we've already been here, then we know we're safe already, no need to check internals.
-         if (_taggedSymbols.Contains(this.Symbol))
-            return false;
-         //Remember we've been here.
-         _taggedSymbols.Add(this.Symbol);
-
-         //Grab the workspace inside this function, and check if any of it's internals require a transaction.
-         var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-         bool manualInternals = ws.Elements.Any(x => x.RequiresTransaction());
-
-         //If we started the traversal here, then end the recursive function detection.
-         if (!start)
-         {
-            _startTag = false;
-            _taggedSymbols.Clear();
-         }
-
-         //Fin
-         return manualInternals;
-      }
-
-      public override bool IsDirty
-      {
-         get
-         {
-            //Do we already know we're dirty?
-            bool baseDirty = base.IsDirty;
-            if (baseDirty)
-               return true;
-
-            //Initialize recursive function detection construct.
+            //Initialize our recursive function detection construct
             bool start = _startTag;
             _startTag = true;
 
-            //If we've already been here, then we're not dirty.
+            //If we've already been here, then we know we're safe already, no need to check internals.
             if (_taggedSymbols.Contains(this.Symbol))
-               return false;
+                return false;
             //Remember we've been here.
             _taggedSymbols.Add(this.Symbol);
 
-            //TODO: bugged? 
-            //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
-            var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-            bool dirtyInternals = ws.Elements.Any(e => e.IsDirty);
+            if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
+            {
+                this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                return false;
+            }
 
-            //If we started the traversal here, clean up.
+            //Grab the workspace inside this function, and check if any of it's internals require a manual transaction.
+            var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+            bool manualInternals = ws.Elements.Any(x => x.RequiresManualTransaction());
+
+            //If we started the traversal here, then end the recursive function detection.
             if (!start)
             {
-               _startTag = false;
-               _taggedSymbols.Clear();
+                _startTag = false;
+                _taggedSymbols.Clear();
             }
 
-            return dirtyInternals;
-         }
-         set
-         {
-            //Set the base value.
-            base.IsDirty = value;
-            //If we're clean, then notify all internals.
-            if (!value)
+            //Fin
+            return manualInternals;
+        }
+
+        protected internal override bool RequiresTransaction()
+        {
+            //Check if we already know we require a Transaction
+            bool baseManual = base.RequiresTransaction();
+            if (baseManual)
+                return true;
+
+            //Initialize our recursive function detection construct
+            bool start = _startTag;
+            _startTag = true;
+
+            //If we've already been here, then we know we're safe already, no need to check internals.
+            if (_taggedSymbols.Contains(this.Symbol))
+                return false;
+            //Remember we've been here.
+            _taggedSymbols.Add(this.Symbol);
+
+            if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
             {
-               //Recursion detection start.
-               bool start = _startTag;
-               _startTag = true;
-
-               //If we've been here, then we're done.
-               if (_taggedSymbols.Contains(this.Symbol))
-                  return;
-               //Remember
-               _taggedSymbols.Add(this.Symbol);
-
-               //Notifiy all internals that we're clean.
-               var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-               foreach (var e in ws.Elements)
-                  e.IsDirty = false;
-
-               //If we started traversal here, cleanup.
-               if (!start)
-               {
-                  _startTag = false;
-                  _taggedSymbols.Clear();
-               }
+                this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                return false;
             }
-         }
-      }
 
-      /// <summary>
-      /// Sets the inputs of this function.
-      /// </summary>
-      /// <param name="inputs"></param>
-      public void SetInputs(IEnumerable<string> inputs)
-      {
-         int i = 0;
-         foreach (string input in inputs)
-         {
-            PortData data = new PortData(input, "Input #" + (i + 1), typeof(object));
+            //Grab the workspace inside this function, and check if any of it's internals require a transaction.
+            var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+            bool manualInternals = ws.Elements.Any(x => x.RequiresTransaction());
 
-            if (this.InPortData.Count > i)
+            //If we started the traversal here, then end the recursive function detection.
+            if (!start)
             {
-               InPortData[i] = data;
+                _startTag = false;
+                _taggedSymbols.Clear();
+            }
+
+            //Fin
+            return manualInternals;
+        }
+
+        public override bool IsDirty
+        {
+            get
+            {
+                //Do we already know we're dirty?
+                bool baseDirty = base.IsDirty;
+                if (baseDirty)
+                    return true;
+
+                //Initialize recursive function detection construct.
+                bool start = _startTag;
+                _startTag = true;
+
+                //If we've already been here, then we're not dirty.
+                if (_taggedSymbols.Contains(this.Symbol))
+                    return false;
+                //Remember we've been here.
+                _taggedSymbols.Add(this.Symbol);
+
+                if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
+                {
+                    this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                    return false;
+                }
+
+                //TODO: bugged? 
+                //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
+                var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+                bool dirtyInternals = ws.Elements.Any(e => e.IsDirty);
+
+                //If we started the traversal here, clean up.
+                if (!start)
+                {
+                    _startTag = false;
+                    _taggedSymbols.Clear();
+                }
+
+                return dirtyInternals;
+            }
+            set
+            {
+                //Set the base value.
+                base.IsDirty = value;
+                //If we're clean, then notify all internals.
+                if (!value)
+                {
+                    //Recursion detection start.
+                    bool start = _startTag;
+                    _startTag = true;
+
+                    //If we've been here, then we're done.
+                    if (_taggedSymbols.Contains(this.Symbol))
+                        return;
+                    //Remember
+                    _taggedSymbols.Add(this.Symbol);
+
+                    if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
+                    {
+                        this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                        return;
+                    }
+
+                    //Notifiy all internals that we're clean.
+                    var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+                    foreach (var e in ws.Elements)
+                        e.IsDirty = false;
+
+                    //If we started traversal here, cleanup.
+                    if (!start)
+                    {
+                        _startTag = false;
+                        _taggedSymbols.Clear();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the inputs of this function.
+        /// </summary>
+        /// <param name="inputs"></param>
+        public void SetInputs(IEnumerable<string> inputs)
+        {
+            int i = 0;
+            foreach (string input in inputs)
+            {
+                PortData data = new PortData(input, "Input #" + (i + 1), typeof(object));
+
+                if (this.InPortData.Count > i)
+                {
+                    InPortData[i] = data;
+                }
+                else
+                {
+                    InPortData.Add(data);
+                }
+
+                i++;
+            }
+
+            if (i < InPortData.Count)
+            {
+                InPortData.RemoveRange(i, InPortData.Count - i);
+            }
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement("Symbol");
+            outEl.SetAttribute("value", this.Symbol);
+            dynEl.AppendChild(outEl);
+
+            outEl = xmlDoc.CreateElement("Output");
+            outEl.SetAttribute("value", OutPortData.NickName);
+            dynEl.AppendChild(outEl);
+
+            outEl = xmlDoc.CreateElement("Inputs");
+            foreach (var input in InPortData.Select(x => x.NickName))
+            {
+                var inputEl = xmlDoc.CreateElement("Input");
+                inputEl.SetAttribute("value", input);
+                outEl.AppendChild(inputEl);
+            }
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals("Symbol"))
+                {
+                    this.Symbol = subNode.Attributes[0].Value;
+                }
+                else if (subNode.Name.Equals("Output"))
+                {
+                    var data = new PortData(subNode.Attributes[0].Value, "function output", typeof(object));
+
+                    OutPortData = data;
+                }
+                else if (subNode.Name.Equals("Inputs"))
+                {
+                    int i = 0;
+                    foreach (XmlNode inputNode in subNode.ChildNodes)
+                    {
+                        var data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1), typeof(object));
+
+                        if (InPortData.Count > i)
+                        {
+                            InPortData[i] = data;
+                        }
+                        else
+                        {
+                            InPortData.Add(data);
+                        }
+
+                        i++;
+                    }
+                }
+            }
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var procedure = this.Bench.Environment.LookupSymbol(this.Symbol);
+            if (procedure.IsFunction)
+            {
+                return (procedure as Expression.Function).Item
+                   .Invoke(ExecutionEnvironment.IDENT)
+                   .Invoke(
+                      Utils.convertSequence(
+                         args.Select(
+                            input => this.macroEnvironment.Evaluate(input)
+                         )
+                      )
+                   );
             }
             else
+                return base.Evaluate(args);
+        }
+
+        //protected internal override INode Build()
+        //{
+        //   if (this.SaveResult && !this.IsDirty)
+        //      return new ExpressionNode(this.oldValue);
+        //   else
+        //      return base.Build();
+        //}
+
+        //protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        //{
+        //   return new FunctionNode(this.Symbol, portNames);
+        //}
+
+        public override void Destroy()
+        {
+            bool start = _startTag;
+            _startTag = true;
+
+            if (_taggedSymbols.Contains(this.Symbol))
+                return;
+            _taggedSymbols.Add(this.Symbol);
+
+            if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
             {
-               InPortData.Add(data);
+                this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                return;
             }
 
-            i++;
-         }
+            var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+            foreach (var el in ws.Elements)
+                el.Destroy();
 
-         if (i < InPortData.Count)
-         {
-            InPortData.RemoveRange(i, InPortData.Count - i);
-         }
-      }
-
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         XmlElement outEl = xmlDoc.CreateElement("Symbol");
-         outEl.SetAttribute("value", this.Symbol);
-         dynEl.AppendChild(outEl);
-
-         outEl = xmlDoc.CreateElement("Output");
-         outEl.SetAttribute("value", OutPortData.NickName);
-         dynEl.AppendChild(outEl);
-
-         outEl = xmlDoc.CreateElement("Inputs");
-         foreach (var input in InPortData.Select(x => x.NickName))
-         {
-            var inputEl = xmlDoc.CreateElement("Input");
-            inputEl.SetAttribute("value", input);
-            outEl.AppendChild(inputEl);
-         }
-         dynEl.AppendChild(outEl);
-      }
-
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name.Equals("Symbol"))
+            if (!start)
             {
-               this.Symbol = subNode.Attributes[0].Value;
+                _startTag = false;
+                _taggedSymbols.Clear();
             }
-            else if (subNode.Name.Equals("Output"))
+
+            //var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+            //foreach (var el in ws.Elements)
+            //{
+            //   if (!(el is dynFunction) || !((dynFunction)el).Symbol.Equals(this.Symbol))
+            //      el.Destroy();
+            //}
+        }
+    }
+
+    [ElementName("Variable")]
+    [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
+    [ElementDescription("A function variable")]
+    [RequiresTransaction(false)]
+    [IsInteractive(false)]
+    public class dynSymbol : dynNode
+    {
+        TextBox tb;
+
+        public dynSymbol()
+        {
+            OutPortData = new PortData("", "Symbol", typeof(object));
+
+            //add a text box to the input grid of the control
+            tb = new TextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Text = "";
+            //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+            //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override bool IsDirty
+        {
+            get
             {
-               var data = new PortData(subNode.Attributes[0].Value, "function output", typeof(object));
-
-               OutPortData = data;
+                return false;
             }
-            else if (subNode.Name.Equals("Inputs"))
+            set { }
+        }
+
+        public string Symbol
+        {
+            get { return this.tb.Text; }
+            set { this.tb.Text = value; }
+        }
+
+        protected internal override INode Build()
+        {
+            return new SymbolNode(
+               (string)this.Dispatcher.Invoke(new Func<string>(
+                  () => this.Symbol
+               ))
+            );
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement("Symbol");
+            outEl.SetAttribute("value", this.Symbol);
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
             {
-               int i = 0;
-               foreach (XmlNode inputNode in subNode.ChildNodes)
-               {
-                  var data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1), typeof(object));
-
-                  if (InPortData.Count > i)
-                  {
-                     InPortData[i] = data;
-                  }
-                  else
-                  {
-                     InPortData.Add(data);
-                  }
-
-                  i++;
-               }
+                if (subNode.Name == "Symbol")
+                {
+                    this.Symbol = subNode.Attributes[0].Value;
+                }
             }
-         }
+        }
+    }
 
-         base.RegisterInputsAndOutputs();
-      }
+    #region Disabled Anonymous Function Node
+    //[RequiresTransaction(false)]
+    //[IsInteractive(false)]
+    //public class dynAnonFunction : dynElement
+    //{
+    //   private INode entryPoint;
 
-      public override Expression Evaluate(FSharpList<Expression> args)
-      {
-         var procedure = this.Bench.Environment.LookupSymbol(this.Symbol);
-         if (procedure.IsFunction)
-         {
-            return (procedure as Expression.Function).Item
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(
-                  Utils.convertSequence(
-                     args.Select(
-                        input => this.macroEnvironment.Evaluate(input)
-                     )
-                  )
-               );
-         }
-         else
-            return base.Evaluate(args);
-      }
+    //   public dynAnonFunction(IEnumerable<string> inputs, string output, INode entryPoint)
+    //   {
+    //      int i = 1;
+    //      foreach (string input in inputs)
+    //      {
+    //         InPortData.Add(new PortData(null, input, "Input #" + i++, typeof(object)));
+    //      }
 
-      //protected internal override INode Build()
-      //{
-      //   if (this.SaveResult && !this.IsDirty)
-      //      return new ExpressionNode(this.oldValue);
-      //   else
-      //      return base.Build();
-      //}
+    //      OutPortData = new PortData(null, output, "function output", typeof(object));
 
-      //protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-      //{
-      //   return new FunctionNode(this.Symbol, portNames);
-      //}
+    //      this.entryPoint = entryPoint;
 
-      public override void Destroy()
-      {
-         bool start = _startTag;
-         _startTag = true;
+    //      base.RegisterInputsAndOutputs();
+    //   }
 
-         if (_taggedSymbols.Contains(this.Symbol))
-            return;
-         _taggedSymbols.Add(this.Symbol);
-
-         var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-         foreach (var el in ws.Elements)
-            el.Destroy();
-
-         if (!start)
-         {
-            _startTag = false;
-            _taggedSymbols.Clear();
-         }
-
-         //var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-         //foreach (var el in ws.Elements)
-         //{
-         //   if (!(el is dynFunction) || !((dynFunction)el).Symbol.Equals(this.Symbol))
-         //      el.Destroy();
-         //}
-      }
-   }
-
-   [ElementName("Variable")]
-   [ElementCategory(BuiltinElementCategories.PRIMITIVES)]
-   [ElementDescription("A function variable")]
-   [RequiresTransaction(false)]
-   [IsInteractive(false)]
-   public class dynSymbol : dynNode
-   {
-      TextBox tb;
-
-      public dynSymbol()
-      {
-         OutPortData = new PortData("", "Symbol", typeof(object));
-
-         //add a text box to the input grid of the control
-         tb = new TextBox();
-         tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-         tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-         inputGrid.Children.Add(tb);
-         System.Windows.Controls.Grid.SetColumn(tb, 0);
-         System.Windows.Controls.Grid.SetRow(tb, 0);
-         tb.Text = "";
-         //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
-         //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
-
-         //turn off the border
-         SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-         tb.Background = backgroundBrush;
-         tb.BorderThickness = new Thickness(0);
-
-         base.RegisterInputsAndOutputs();
-      }
-
-      public override bool IsDirty
-      {
-         get
-         {
-            return false;
-         }
-         set { }
-      }
-
-      public string Symbol
-      {
-         get { return this.tb.Text; }
-         set { this.tb.Text = value; }
-      }
-
-      protected internal override INode Build()
-      {
-         return new SymbolNode(
-            (string)this.Dispatcher.Invoke(new Func<string>(
-               () => this.Symbol
-            ))
-         );
-      }
-
-      public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-      {
-         //Debug.WriteLine(pd.Object.GetType().ToString());
-         XmlElement outEl = xmlDoc.CreateElement("Symbol");
-         outEl.SetAttribute("value", this.Symbol);
-         dynEl.AppendChild(outEl);
-      }
-
-      public override void LoadElement(XmlNode elNode)
-      {
-         foreach (XmlNode subNode in elNode.ChildNodes)
-         {
-            if (subNode.Name == "Symbol")
-            {
-               this.Symbol = subNode.Attributes[0].Value;
-            }
-         }
-      }
-   }
-
-   #region Disabled Anonymous Function Node
-   //[RequiresTransaction(false)]
-   //[IsInteractive(false)]
-   //public class dynAnonFunction : dynElement
-   //{
-   //   private INode entryPoint;
-
-   //   public dynAnonFunction(IEnumerable<string> inputs, string output, INode entryPoint)
-   //   {
-   //      int i = 1;
-   //      foreach (string input in inputs)
-   //      {
-   //         InPortData.Add(new PortData(null, input, "Input #" + i++, typeof(object)));
-   //      }
-
-   //      OutPortData = new PortData(null, output, "function output", typeof(object));
-
-   //      this.entryPoint = entryPoint;
-
-   //      base.RegisterInputsAndOutputs();
-   //   }
-
-   //   protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-   //   {
-   //      return new AnonymousFunctionNode(portNames, this.entryPoint);
-   //   }
-   //}
-   #endregion
+    //   protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+    //   {
+    //      return new AnonymousFunctionNode(portNames, this.entryPoint);
+    //   }
+    //}
+    #endregion
 }
