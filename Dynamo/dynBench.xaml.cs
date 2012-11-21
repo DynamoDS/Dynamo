@@ -1133,7 +1133,6 @@ namespace Dynamo.Controls
             Log("Saving " + xmlPath + "...");
             try
             {
- 
                 //create the xml document
                 //create the xml document
                 XmlDocument xmlDoc = new XmlDocument();
@@ -2708,7 +2707,6 @@ namespace Dynamo.Controls
 
                     string path = Path.Combine(pluginsPath, FormatFileName(funcWorkspace.Name) + ".dyf");
                     SaveWorkspace(path, funcWorkspace);
-
                 }
                 catch (Exception e)
                 {
