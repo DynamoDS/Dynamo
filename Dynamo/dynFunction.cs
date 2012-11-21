@@ -88,6 +88,7 @@ namespace Dynamo.Elements
             if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
             {
                 this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                this.Error("Could not find .dyf definition file for this node.");
                 return false;
             }
 
@@ -126,6 +127,7 @@ namespace Dynamo.Elements
             if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
             {
                 this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                this.Error("Could not find .dyf definition file for this node.");
                 return false;
             }
 
@@ -166,6 +168,7 @@ namespace Dynamo.Elements
                 if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
                 {
                     this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                    this.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }
 
@@ -203,6 +206,7 @@ namespace Dynamo.Elements
                     if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
                     {
                         this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                        this.Error("Could not find .dyf definition file for this node.");
                         return;
                     }
 
@@ -353,6 +357,7 @@ namespace Dynamo.Elements
             if (!this.Bench.dynFunctionDict.ContainsKey(this.Symbol))
             {
                 this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
+                this.Error("Could not find .dyf definition file for this node.");
                 return;
             }
 
