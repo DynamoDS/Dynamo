@@ -11,7 +11,7 @@ class PortData(object):
         self.type = type
         
     def __str__(self):
-        return "**" + self.name + "** (*" + self.type + "*) - " + self.description
+        return "**" + self.name + "** *(" + self.type + ")* - " + self.description
 
 class Node(object):
     def __init__(self, name, desc, cat, ins, out):
