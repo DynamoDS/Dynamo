@@ -2,6 +2,7 @@ import os
 from os import path
 import re
 from pprint import pprint
+import itertools
 
 class PortData(object):
     def __init__(self, nick, desc, type):
@@ -39,7 +40,8 @@ CATEGORIES = {
     'BuiltinElementCategories.MATH': "Math",
     'BuiltinElementCategories.MISC': "Miscellaneous",
     'BuiltinElementCategories.PRIMITIVES': "Primitives",
-    'BuiltinElementCategories.REVIT': "Revit"
+    'BuiltinElementCategories.REVIT': "Revit",
+    'BuiltinElementCategories.ANALYSIS': "Analysis"
 }
 
 def getCat(key):
@@ -49,8 +51,8 @@ def getCat(key):
         return key
         
 cwd = os.getcwd()
-files = [f for f in os.listdir(cwd) if path.isfile(path.join(cwd, f)) and path.splitext(f)[1] == '.cs']
 
+files = itertools.chain(*([path.join(root, f) for f in files if path.isfile(path.join(root, f)) and path.splitext(f)[1] == '.cs'] for root, dirs, files in os.walk(cwd)))
 nodes = []
 
 for file in files:
@@ -103,13 +105,16 @@ for node in nodes:
         nodeDict[cat] = []
     nodeDict[cat].append(node)
     
-pprint(nodeDict)
+#pprint(nodeDict)
 
 resultDict = {}
 for key in sorted(list(nodeDict.keys())):
     catnodes = nodeDict[key]
     resultDict[key] = "\n\n".join([str(node) for node in sorted(catnodes, key=lambda x: x.name)])
+
+if not path.exists('out'):
+    os.makedirs('out')
     
 for cat, text in resultDict.iteritems():
-    with open("out/Category" + cat.replace(' ', '') + ".md", 'w+') as f:
+    with open("out/Category" + cat.replace(' ', '') + ".md", 'w') as f:
         f.write(text)
