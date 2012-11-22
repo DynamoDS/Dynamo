@@ -1,3 +1,18 @@
+<!--
+Copyright 2012 Ian Keough
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <dynWorkspace X="-82" Y="55" Name="Dice" Category="Lists">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="8199ef18-b7b8-4b1b-b133-7d7dc1ab1b5a" nickname="Variable" x="199.75" y="14">
