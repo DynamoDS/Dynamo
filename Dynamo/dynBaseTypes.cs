@@ -55,6 +55,7 @@ namespace Dynamo.Elements
         public const string MISC = "Miscellaneous";
         public const string LIST = "Lists";
         public const string ANALYSIS = "Analysis";
+        public const string MEASUREMENT = "Measurement";
     }
 
     #region FScheme Builtin Interop

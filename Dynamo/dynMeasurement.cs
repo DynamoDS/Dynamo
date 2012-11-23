@@ -11,7 +11,7 @@ using Microsoft.FSharp.Collections;
 namespace Dynamo.Elements
 {
     [ElementName("Surface Area")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.MEASUREMENT)]
     [ElementDescription("An element which measures the surface area of a face")]
     [RequiresTransaction(true)]
     public class dynSurfaceArea : dynNode
@@ -49,7 +49,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Surface Domain")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.MEASUREMENT)]
     [ElementDescription("An element which measures the domain of a surface in U and V.")]
     [RequiresTransaction(true)]
     public class dynSurfaceDomain : dynNode
