@@ -112,6 +112,7 @@ limitations under the License.
     <Compile Include="dynAnalysis.cs" />
     <Compile Include="dynDivide.cs" />
     <Compile Include="dynGeometricForms.cs" />
+    <Compile Include="dynMeasurement.cs" />
     <Compile Include="dynTimer.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
@@ -180,6 +181,7 @@ limitations under the License.
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
