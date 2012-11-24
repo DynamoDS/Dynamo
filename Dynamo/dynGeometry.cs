@@ -113,6 +113,26 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("XYZ Zero")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates an XYZ at the origin (0,0,0).")]
+    [RequiresTransaction(false)]
+    public class dynXYZZero : dynNode
+    {
+        public dynXYZZero()
+        {
+            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+
+            return Expression.NewContainer(XYZ.Zero);
+        }
+    }
+
     [ElementName("XYZ Scale")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Multiplies each component of an XYZ by a number.")]
