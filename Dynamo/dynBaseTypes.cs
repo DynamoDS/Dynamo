@@ -851,14 +851,14 @@ namespace Dynamo.Elements
         public dynLessThan() : base("<") { }
     }
 
-    [ElementName("=")]
+    [ElementName("≤")]
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
     [ElementSearchTags("<=", "less", "than", "equal")]
     [RequiresTransaction(false)]
     public class dynLessThanEquals : dynComparison
     {
-        public dynLessThanEquals() : base("<=", "=") { }
+        public dynLessThanEquals() : base("<=", "≤") { }
     }
 
     [ElementName(">")]
@@ -871,14 +871,14 @@ namespace Dynamo.Elements
         public dynGreaterThan() : base(">") { }
     }
 
-    [ElementName("=")]
+    [ElementName("≥")]
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
     [ElementSearchTags(">=", "greater", "than", "equal")]
     [RequiresTransaction(false)]
     public class dynGreaterThanEquals : dynComparison
     {
-        public dynGreaterThanEquals() : base(">=", "=") { }
+        public dynGreaterThanEquals() : base(">=", "≥") { }
     }
 
     [ElementName("=")]
@@ -901,7 +901,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("a", "operand", typeof(double)));
             InPortData.Add(new PortData("b", "operand", typeof(double)));
-            OutPortData = new PortData("a?b", "result", typeof(double));
+            OutPortData = new PortData("a∧b", "result", typeof(double));
 
             this.nickNameBlock.FontSize = 20;
 
@@ -920,7 +920,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
-            OutPortData = new PortData("a?b", "result", typeof(bool));
+            OutPortData = new PortData("a∨b", "result", typeof(bool));
 
             this.nickNameBlock.FontSize = 20;
 
@@ -939,7 +939,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
-            OutPortData = new PortData("a?b", "result", typeof(bool));
+            OutPortData = new PortData("a⊻b", "result", typeof(bool));
 
             this.nickNameBlock.FontSize = 20;
 
@@ -989,7 +989,7 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("-")]
+    [ElementName("−")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Subtracts two numbers.")]
     [ElementSearchTags("subtraction", "minus", "difference", "-")]
@@ -1021,7 +1021,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
-            OutPortData = new PortData("x·y", "product", typeof(double));
+            OutPortData = new PortData("x∙y", "product", typeof(double));
 
             this.nickNameBlock.FontSize = 20;
 
@@ -1147,7 +1147,7 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("p")]
+    [ElementName("π")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Pi constant")]
     [RequiresTransaction(false)]
@@ -1187,8 +1187,8 @@ namespace Dynamo.Elements
     {
         public dynSin()
         {
-            InPortData.Add(new PortData("?", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("sin(?)", "Sine value of the given angle", typeof(double));
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("sin(θ)", "Sine value of the given angle", typeof(double));
 
             base.RegisterInputsAndOutputs();
         }
@@ -1224,8 +1224,8 @@ namespace Dynamo.Elements
     {
         public dynCos()
         {
-            InPortData.Add(new PortData("?", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("cos(?)", "Cosine value of the given angle", typeof(double));
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("cos(θ)", "Cosine value of the given angle", typeof(double));
 
             base.RegisterInputsAndOutputs();
         }
@@ -1261,8 +1261,8 @@ namespace Dynamo.Elements
     {
         public dynTan()
         {
-            InPortData.Add(new PortData("?", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("tan(?)", "Tangent value of the given angle", typeof(double));
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("tan(θ)", "Tangent value of the given angle", typeof(double));
 
             base.RegisterInputsAndOutputs();
         }
