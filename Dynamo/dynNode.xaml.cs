@@ -925,7 +925,7 @@ namespace Dynamo.Elements
         protected internal static HashSet<string> _taggedSymbols = new HashSet<string>();
         protected internal static bool _startTag = false;
         //private bool __isDirty = true;
-        private bool _isDirty = true;
+        protected internal bool _isDirty = true;
         //{
         //    get { return __isDirty; }
         //    set
