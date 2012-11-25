@@ -76,8 +76,6 @@ namespace Dynamo.Elements
       }
    }
 
-   
-
    [ElementName("Curve By Points")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("doc.FamilyCreate.NewCurveByPoints")]
