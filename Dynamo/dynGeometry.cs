@@ -133,6 +133,66 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("XYZ BasisX")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates an XYZ representing the X basis (1,0,0).")]
+    [RequiresTransaction(false)]
+    public class dynXYZBasisX : dynNode
+    {
+        public dynXYZBasisX()
+        {
+            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+
+            return Expression.NewContainer(XYZ.BasisX);
+        }
+    }
+
+    [ElementName("XYZ BasisY")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates an XYZ representing the Y basis (0,1,0).")]
+    [RequiresTransaction(false)]
+    public class dynXYZBasisY : dynNode
+    {
+        public dynXYZBasisY()
+        {
+            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+
+            return Expression.NewContainer(XYZ.BasisY);
+        }
+    }
+
+    [ElementName("XYZ BasisZ")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates an XYZ representing the Z basis (0,0,1).")]
+    [RequiresTransaction(false)]
+    public class dynXYZBasisZ : dynNode
+    {
+        public dynXYZBasisZ()
+        {
+            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+
+            return Expression.NewContainer(XYZ.BasisZ);
+        }
+    }
+
     [ElementName("XYZ Scale")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Multiplies each component of an XYZ by a number.")]
