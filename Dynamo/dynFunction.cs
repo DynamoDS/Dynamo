@@ -94,7 +94,7 @@ namespace Dynamo.Elements
 
             //Grab the workspace inside this function, and check if any of it's internals require a manual transaction.
             var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-            bool manualInternals = ws.Elements.Any(x => x.RequiresManualTransaction());
+            bool manualInternals = ws.GetTopMostElements().Any(x => x.RequiresManualTransaction());
 
             //If we started the traversal here, then end the recursive function detection.
             if (!start)
@@ -133,7 +133,7 @@ namespace Dynamo.Elements
 
             //Grab the workspace inside this function, and check if any of it's internals require a transaction.
             var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-            bool manualInternals = ws.Elements.Any(x => x.RequiresTransaction());
+            bool manualInternals = ws.GetTopMostElements().Any(x => x.RequiresTransaction());
 
             //If we started the traversal here, then end the recursive function detection.
             if (!start)
@@ -175,7 +175,7 @@ namespace Dynamo.Elements
                 //TODO: bugged? 
                 //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
                 var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-                bool dirtyInternals = ws.Elements.Any(e => e.IsDirty);
+                bool dirtyInternals = ws.GetTopMostElements().Any(e => e.IsDirty);
 
                 //If we started the traversal here, clean up.
                 if (!start)

@@ -40,6 +40,14 @@ namespace Dynamo.Elements
         event Action OnModified;
     }
 
+    public static class WorkspaceExtensions
+    {
+        public static IEnumerable<dynNode> GetTopMostElements(this dynWorkspace ws)
+        {
+            return ws.Elements.Where(x => !x.OutPort.Connectors.Any());
+        }
+    }
+
     public class FuncWorkspace : dynWorkspace
     {
         public List<dynNode> Elements { get; private set; }
