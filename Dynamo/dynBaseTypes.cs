@@ -37,6 +37,8 @@ using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
 using System.Diagnostics.Contracts;
 using System.Text;
+using System.Windows.Input;
+using System.Windows.Data;
 
 namespace Dynamo.Elements
 {
@@ -849,14 +851,14 @@ namespace Dynamo.Elements
         public dynLessThan() : base("<") { }
     }
 
-    [ElementName("≤")]
+    [ElementName("=")]
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
     [ElementSearchTags("<=", "less", "than", "equal")]
     [RequiresTransaction(false)]
     public class dynLessThanEquals : dynComparison
     {
-        public dynLessThanEquals() : base("<=", "≤") { }
+        public dynLessThanEquals() : base("<=", "=") { }
     }
 
     [ElementName(">")]
@@ -869,14 +871,14 @@ namespace Dynamo.Elements
         public dynGreaterThan() : base(">") { }
     }
 
-    [ElementName("≥")]
+    [ElementName("=")]
     [ElementCategory(BuiltinElementCategories.COMPARISON)]
     [ElementDescription("Compares two numbers.")]
     [ElementSearchTags(">=", "greater", "than", "equal")]
     [RequiresTransaction(false)]
     public class dynGreaterThanEquals : dynComparison
     {
-        public dynGreaterThanEquals() : base(">=", "≥") { }
+        public dynGreaterThanEquals() : base(">=", "=") { }
     }
 
     [ElementName("=")]
@@ -899,7 +901,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("a", "operand", typeof(double)));
             InPortData.Add(new PortData("b", "operand", typeof(double)));
-            OutPortData = new PortData("a∧b", "result", typeof(double));
+            OutPortData = new PortData("a?b", "result", typeof(double));
 
             this.nickNameBlock.FontSize = 20;
 
@@ -918,7 +920,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
-            OutPortData = new PortData("a∨b", "result", typeof(bool));
+            OutPortData = new PortData("a?b", "result", typeof(bool));
 
             this.nickNameBlock.FontSize = 20;
 
@@ -937,7 +939,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
-            OutPortData = new PortData("a⊻b", "result", typeof(bool));
+            OutPortData = new PortData("a?b", "result", typeof(bool));
 
             this.nickNameBlock.FontSize = 20;
 
@@ -987,7 +989,7 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("−")]
+    [ElementName("-")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Subtracts two numbers.")]
     [ElementSearchTags("subtraction", "minus", "difference", "-")]
@@ -1019,7 +1021,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
-            OutPortData = new PortData("x∙y", "product", typeof(double));
+            OutPortData = new PortData("x·y", "product", typeof(double));
 
             this.nickNameBlock.FontSize = 20;
 
@@ -1145,7 +1147,7 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("π")]
+    [ElementName("p")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Pi constant")]
     [RequiresTransaction(false)]
@@ -1185,8 +1187,8 @@ namespace Dynamo.Elements
     {
         public dynSin()
         {
-            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("sin(θ)", "Sine value of the given angle", typeof(double));
+            InPortData.Add(new PortData("?", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("sin(?)", "Sine value of the given angle", typeof(double));
 
             base.RegisterInputsAndOutputs();
         }
@@ -1222,8 +1224,8 @@ namespace Dynamo.Elements
     {
         public dynCos()
         {
-            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("cos(θ)", "Cosine value of the given angle", typeof(double));
+            InPortData.Add(new PortData("?", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("cos(?)", "Cosine value of the given angle", typeof(double));
 
             base.RegisterInputsAndOutputs();
         }
@@ -1259,8 +1261,8 @@ namespace Dynamo.Elements
     {
         public dynTan()
         {
-            InPortData.Add(new PortData("θ", "Angle in radians", typeof(double)));
-            OutPortData = new PortData("tan(θ)", "Tangent value of the given angle", typeof(double));
+            InPortData.Add(new PortData("?", "Angle in radians", typeof(double)));
+            OutPortData = new PortData("tan(?)", "Tangent value of the given angle", typeof(double));
 
             base.RegisterInputsAndOutputs();
         }
@@ -1895,7 +1897,7 @@ namespace Dynamo.Elements
                         //TODO: ADD MORE CASES HERE
                     }
                 }
-                else 
+                else
                     sb.Append(s[i]);
             }
             return sb.ToString();
@@ -1985,6 +1987,7 @@ namespace Dynamo.Elements
         Slider tb_slider;
         dynTextBox mintb;
         dynTextBox maxtb;
+        TextBox displayBox;
 
         public dynDoubleSliderInput()
         {
@@ -2000,7 +2003,29 @@ namespace Dynamo.Elements
             tb_slider.Minimum = 0.0;
             tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
-            tb_slider.ValueChanged += delegate { this.Value = this.tb_slider.Value; };
+            tb_slider.ValueChanged += delegate
+            {
+                this.Value = this.tb_slider.Value;
+
+                var pos = Mouse.GetPosition(elementCanvas);
+                Canvas.SetLeft(displayBox, pos.X);
+            };
+            tb_slider.PreviewMouseDown += delegate
+            {
+                if (this.IsEnabled && !elementCanvas.Children.Contains(displayBox))
+                {
+                    elementCanvas.Children.Add(displayBox);
+
+                    var pos = Mouse.GetPosition(elementCanvas);
+                    Canvas.SetLeft(displayBox, pos.X);
+                }
+            };
+            tb_slider.PreviewMouseUp += delegate
+            {
+                if (elementCanvas.Children.Contains(displayBox))
+                    elementCanvas.Children.Remove(displayBox);
+            };
+
 
             mintb = new dynTextBox();
             mintb.MaxLength = 3;
@@ -2050,7 +2075,41 @@ namespace Dynamo.Elements
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
 
             base.RegisterInputsAndOutputs();
+
+            displayBox = new TextBox()
+            {
+                IsReadOnly = true,
+                Background = Brushes.White,
+                Foreground = Brushes.Black,
+                MaxLength = 5
+            };
+            Canvas.SetTop(displayBox, this.Height);
+            Canvas.SetZIndex(displayBox, int.MaxValue);
+
+            var binding = new System.Windows.Data.Binding("Value")
+            {
+                Source = tb_slider,
+                Mode = System.Windows.Data.BindingMode.OneWay,
+                Converter = new DoubleDisplay()
+            };
+            displayBox.SetBinding(TextBox.TextProperty, binding);
         }
+
+        #region Data Conversion
+        [ValueConversion(typeof(double), typeof(String))]
+        private class DoubleDisplay : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                return ((double)value).ToString("F4");
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+        #endregion
 
         protected override double DeserializeValue(string val)
         {
@@ -2245,7 +2304,7 @@ namespace Dynamo.Elements
             {
                 if (base.Value == value)
                     return;
-                
+
                 base.Value = value;
             }
         }
@@ -2286,7 +2345,7 @@ namespace Dynamo.Elements
                             this.Value = this.DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
                             this.tb.Text = this.Value;
                         }
-                            
+
                     }
                 }
             }
@@ -2517,7 +2576,7 @@ namespace Dynamo.Elements
         {
             string str = ((Expression.String)args[0]).Item;
             string del = ((Expression.String)args[1]).Item;
-            
+
             return Expression.NewList(
                 Utils.convertSequence(
                     str.Split(new string[] { del }, StringSplitOptions.None)
