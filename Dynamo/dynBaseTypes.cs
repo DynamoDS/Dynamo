@@ -1298,6 +1298,7 @@ namespace Dynamo.Elements
     [ElementName("Perform All")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Executes expressions in a sequence")]
+    [ElementSearchTags("begin")]
     [RequiresTransaction(false)]
     public class dynBegin : dynVariableInput
     {

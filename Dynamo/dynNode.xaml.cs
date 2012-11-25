@@ -1185,7 +1185,9 @@ namespace Dynamo.Elements
                         {
                             if (bench.TransMode == TransactionMode.Manual && !bench.IsTransactionActive())
                             {
-                                throw new Exception("A Revit transaction is required in order evaluate this element.");
+                                var msg = "A Revit transaction is required in order evaluate this element.";
+                                this.Error(msg);
+                                throw new Exception(msg);
                             }
 
                             bench.InitTransaction();
