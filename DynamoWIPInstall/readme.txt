@@ -59,16 +59,25 @@ New or updated nodes:
 - Updated Lofted Form node to handle surfaces vs solids and solids vs voids
 - Added Chomp, Dice, LaceForward and LoacBackwards definitions for working with 2D arrays.
 - Added new string utility nodes 
-- Added a file writer node
+- Added a CSV file writer and basic file writer nodes
 - Added a Watch node
 - Added Dynamic Relaxation node (still experimental)
+- Added Get/Set Type Parameter nodes
+- Updated Get/Set Instance Parameter nodes
 
 UI:
+- Added abilty to create Notes in graphics window
 - The built-in samples in File/Samples have been reorganized to use subfolders
 - added File/Save command
 - Pressing the Dynamo Ribbon button in Revit/Vasari while Dynamo is already running now simply makes Dynamo window visible again
 - It is now possible to move around the graphics screen with the arrow keys.
 - If second monitor is available, Dynamo will maximize to it.
+
+New Samples:
+
+- Get Set Family Params
+- Parametric Tower
+- Dynamic Python Editing
 
 
 

@@ -1,4 +1,20 @@
-<dynWorkspace X="-86" Y="0.746383363472006" Name="Family Instance Creator - Indexed - Offset - xyz" Category="Revit">
+<!--
+Copyright David Wood 2012. Derived from http://revitator.blogspot.co.uk/2012/10/dynamo-indexed-family-instances.html
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<dynWorkspace X="-86" Y="0.746383363472006" Name="Family Instance Creator - Indexed" Category="Revit">
   <dynElements>
     <Dynamo.Elements.dynFamilyInstanceCreatorXYZ type="Dynamo.Elements.dynFamilyInstanceCreatorXYZ" guid="c29d387a-0c14-4b9c-95c1-1e3439bebaef" nickname="Family Instance Creator" x="384.25" y="163.53743315508" />
     <Dynamo.Elements.dynFamilyInstanceParameterSetter type="Dynamo.Elements.dynFamilyInstanceParameterSetter" guid="2742db67-638a-438c-a472-19bc11607ba6" nickname="Set Instance Parameter" x="571.977272727273" y="217.258467023173" />
