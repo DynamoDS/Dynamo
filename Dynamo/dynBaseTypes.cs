@@ -1049,6 +1049,42 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Mod")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Remainder of division of two numbers.")]
+    [ElementSearchTags("%", "modulo", "remainder")]
+    [RequiresTransaction(false)]
+    public class dynModulo : dynBuiltinFunction
+    {
+        public dynModulo()
+            : base("%")
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x%y", "result", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
+    [ElementName("Pow")]
+    [ElementCategory(BuiltinElementCategories.MATH)]
+    [ElementDescription("Raises a number to the power of another.")]
+    [ElementSearchTags("power", "exponentiation", "^")]
+    [RequiresTransaction(false)]
+    public class dynPow : dynBuiltinFunction
+    {
+        public dynPow()
+            : base("pow")
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x^y", "result", typeof(double));
+
+            base.RegisterInputsAndOutputs();
+        }
+    }
+
     [ElementName("Round")]
     [ElementCategory(BuiltinElementCategories.MATH)]
     [ElementDescription("Rounds a number to the nearest integer value.")]
