@@ -1472,6 +1472,9 @@ namespace Dynamo.Controls
 
                     Type t = Type.GetType(typeName);
 
+                    if (t == null)
+                        throw new Exception("Could not find node of type: " + typeName);
+
                     dynNode el = AddDynElement(
                        t, nickname, guid, x, y,
                        this.CurrentSpace
