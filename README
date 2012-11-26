@@ -32,7 +32,7 @@ Autodesk has contributed new concepts, features and implementation into the Dyna
 
 The current version will run on top of Revit 2013 and Project Vasari Beta 1. It will be released as a new Project Vasari WIP soon but is available now experimental form on github.
 
-Key new features :
+Key new features in June 2012 Release:
 
 - User Interface - side panel to allow you to search and then drag and drop new nodes in to place
 - User-created nodes – you can make 'sub-nodes' and then reference them elsewhere, these act like writing a reusable function in a programming language
@@ -40,6 +40,36 @@ Key new features :
 - Math, logic and other nodes – many new nodes added to support evaluation,  iteration and looping
 
 Dynamo For Vasari Beta 1 WIP: Integrating Dynamo into Project Vasari and extending Dynamo to support integrated analysis and performance-based design.
+
+Key new features in November 2012 Release:
+
+New or updated nodes:
+
+- Added slider value display when slider is moved
+- Added XYZ utility nodes (XYZ Zero, XYZ Basis, XYZ Scale, XYZ Add, Evaluate Normal, Evaluate XYZ)
+- Added XYZ Number Extractor nodes (XYZ -> X, XYZ -> Y, XYZ -> Z)
+- Added Reference Point By Normal node
+- Fixed Arduino node, it now works with new framework
+- Added Execution Interval (Timer) node
+- Added Spatial Field Manager node and Analysis Results node
+- Added Level node and Level by Selection node
+- Added Planar Nurbs Spline node
+- Added Divided Surface node
+- Added Divided Path node
+- Updated Lofted Form node to handle surfaces vs solids and solids vs voids
+- Added Chomp, Dice, LaceForward and LoacBackwards definitions for working with 2D arrays.
+- Added new string utility nodes 
+- Added a file writer node
+- Added a Watch node
+- Added Dynamic Relaxation node (still experimental)
+
+UI:
+- The built-in samples in File/Samples have been reorganized to use subfolders
+- added File/Save command
+- Pressing the Dynamo Ribbon button in Revit/Vasari while Dynamo is already running now simply makes Dynamo window visible again
+- It is now possible to move around the graphics screen with the arrow keys.
+- If second monitor is available, Dynamo will maximize to it.
+
 
 
 
