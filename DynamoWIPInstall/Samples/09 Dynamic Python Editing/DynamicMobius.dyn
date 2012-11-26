@@ -1,3 +1,19 @@
+<!--
+Copyright Nathan Miller 2012.The Proving Ground http://nmillerarch.blogspot.com
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
 <dynWorkspace X="-199.75" Y="55">
   <dynElements>
     <Dynamo.Elements.dynStringFilename type="Dynamo.Elements.dynStringFilename" guid="21dd8059-05ed-4a98-8f91-2abceadfbd69" nickname="Filename" x="259.448863636364" y="70.9715909090909">
