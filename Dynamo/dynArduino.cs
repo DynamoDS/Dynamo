@@ -32,7 +32,6 @@ namespace Dynamo.Elements
     public class dynArduino : dynNode
     {
         SerialPort port;
-        COMPort portState;
         System.Windows.Controls.MenuItem com4Item;
         System.Windows.Controls.MenuItem com3Item;
 
@@ -61,20 +60,19 @@ namespace Dynamo.Elements
 
             this.MainContextMenu.Items.Add(com3Item);
             this.MainContextMenu.Items.Add(com4Item);
-            portState = COMPort.COM3;
             port.PortName = "COM3";
         }
 
         void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            portState = COMPort.COM4;
+            port.PortName = "COM4";
             com4Item.IsChecked = true;
             com3Item.IsChecked = false;
         }
 
         void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            portState = COMPort.COM3;
+            port.PortName = "COM3";
             com4Item.IsChecked = false;
             com3Item.IsChecked = true;
         }
