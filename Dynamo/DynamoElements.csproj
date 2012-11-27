@@ -111,6 +111,9 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="dynAnalysis.cs" />
     <Compile Include="dynDivide.cs" />
+    <Compile Include="dynEditWindow.xaml.cs">
+      <DependentUpon>dynEditWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="dynGeometricForms.cs" />
     <Compile Include="dynMeasurement.cs" />
     <Compile Include="dynTimer.cs" />
@@ -181,7 +184,6 @@ limitations under the License.
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -193,6 +195,10 @@ limitations under the License.
     <Page Include="dynBench.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="dynEditWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="dynNode.xaml">
       <Generator>MSBuild:Compile</Generator>
