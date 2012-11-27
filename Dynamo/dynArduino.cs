@@ -23,7 +23,6 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Elements
 {
-    public enum COMPort { COM3, COM4 };
 
     [ElementName("Arduino")]
     [ElementCategory(BuiltinElementCategories.MISC)]
