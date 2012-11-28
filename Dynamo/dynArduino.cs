@@ -23,6 +23,7 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.Elements
 {
+    public enum COMPort { COM3, COM4 };
 
     [ElementName("Arduino")]
     [ElementCategory(BuiltinElementCategories.MISC)]
@@ -31,6 +32,7 @@ namespace Dynamo.Elements
     public class dynArduino : dynNode
     {
         SerialPort port;
+        COMPort portState;
         System.Windows.Controls.MenuItem com4Item;
         System.Windows.Controls.MenuItem com3Item;
 
@@ -41,7 +43,7 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
 
-            port = new SerialPort("COM3", 9600);
+            port = new SerialPort("COM4", 9600);
             port.NewLine = "\r\n";
             port.DtrEnable = true;
 
@@ -59,21 +61,29 @@ namespace Dynamo.Elements
 
             this.MainContextMenu.Items.Add(com3Item);
             this.MainContextMenu.Items.Add(com4Item);
-            port.PortName = "COM3";
+            portState = COMPort.COM4;
+            port.PortName = "COM4";
         }
 
         void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            port.PortName = "COM4";
+            portState = COMPort.COM4;
             com4Item.IsChecked = true;
             com3Item.IsChecked = false;
+            var msg = "COM4 Checked";
+            this.Error(msg);
+            throw new Exception(msg);
+
         }
 
         void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            port.PortName = "COM3";
+            portState = COMPort.COM3;
             com4Item.IsChecked = false;
             com3Item.IsChecked = true;
+            var msg = "COM3 Checked";
+            this.Error(msg);
+            throw new Exception(msg);
         }
 
         private void GetArduinoData()

@@ -166,7 +166,6 @@ let Subtract = math (-) "subtraction"
 let Multiply = math (*) "multiplication"
 let Divide = math (/) "division"
 let Modulus = math (%) "modulus"
-let Exponent = math ( ** ) "exponent"
 
 ///Simple wrapper for comparison operations.
 let boolMath (op : (IComparable -> IComparable -> bool)) name cont args =
@@ -448,7 +447,6 @@ and environment =
        "%", ref (Function(Modulus))
        "+", ref (Function(Add))
        "-", ref (Function(Subtract))
-       "pow", ref (Function(Exponent))
        "if", ref (Special(If))
        "let", ref (Special(Let))
        "letrec", ref (Special(LetRec))
