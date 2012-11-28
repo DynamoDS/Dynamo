@@ -70,9 +70,7 @@ namespace Dynamo.Elements
             portState = COMPort.COM4;
             com4Item.IsChecked = true;
             com3Item.IsChecked = false;
-            var msg = "COM4 Checked";
-            this.Error(msg);
-            throw new Exception(msg);
+
 
         }
 
@@ -81,9 +79,7 @@ namespace Dynamo.Elements
             portState = COMPort.COM3;
             com4Item.IsChecked = false;
             com3Item.IsChecked = true;
-            var msg = "COM3 Checked";
-            this.Error(msg);
-            throw new Exception(msg);
+
         }
 
         private void GetArduinoData()
