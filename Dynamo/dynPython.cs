@@ -391,6 +391,8 @@ namespace Dynamo.Elements
 
             //set the value from the text in the box
             tb.Text = editWindow.editText.Text;
+
+            this.dirty = true;
         }
      }
 
