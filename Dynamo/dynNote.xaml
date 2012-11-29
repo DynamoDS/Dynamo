@@ -6,18 +6,17 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
              Height="Auto" Width="Auto">
+    
     <Grid>
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Name="deleteItem" Header="Delete" Click="deleteItem_Click"  />
+                <MenuItem Name="editItem" Header="Edit..." Click="editItem_Click" />
+            </ContextMenu>
+        </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
-            <Ellipse
-                Name="moveDot"
-                Height="15"
-                Width="15"
-                StrokeThickness="5"
-                Stroke="DarkGray"
-                Canvas.Left="-15"
-                Canvas.Top="-15" Fill="#0AFFFFFF" />
         </Canvas>
-        <TextBox 
+        <TextBlock 
             Name="noteText"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
@@ -26,7 +25,6 @@
             FontSize="14" 
             Foreground="#FFEAD871"
             Padding="2" 
-            Background="{x:Null}" 
-            BorderBrush="{x:Null}"></TextBox> 
+            Background="{x:Null}"/>
     </Grid>
 </UserControl>

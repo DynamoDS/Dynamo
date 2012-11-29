@@ -39,68 +39,44 @@ namespace Dynamo.Elements
         {
             InitializeComponent();
 
-            //noteText.IsReadOnly = true;
-            moveDot.Visibility = System.Windows.Visibility.Hidden;
-
-            noteText.PreviewMouseDoubleClick += new MouseButtonEventHandler(noteText_MouseDoubleClick);
-            noteText.LostFocus += new RoutedEventHandler(noteText_LostFocus);
-            //noteText.LostMouseCapture += new MouseEventHandler(noteText_LostMouseCapture);
-            noteText.PreviewLostKeyboardFocus += new KeyboardFocusChangedEventHandler(noteText_LostKeyboardFocus);
-            noteText.GotFocus += new RoutedEventHandler(noteText_GotFocus);
-            noteText.PreviewGotKeyboardFocus += new KeyboardFocusChangedEventHandler(noteText_GotKeyboardFocus);
-            //noteText.GotMouseCapture += new MouseEventHandler(noteText_GotMouseCapture);
-            
+            noteText.PreviewMouseDown += new MouseButtonEventHandler(noteText_PreviewMouseDown);
         }
 
-        void noteText_GotMouseCapture(object sender, MouseEventArgs e)
+        void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            moveDot.Visibility = System.Windows.Visibility.Visible;
-        }
-
-        void noteText_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            moveDot.Visibility = System.Windows.Visibility.Visible;
             if (!dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
             {
                 dynElementSettings.SharedInstance.Bench.SelectedElements.Add(this);
             }
         }
 
-        void noteText_GotFocus(object sender, RoutedEventArgs e)
+        private void editItem_Click(object sender, RoutedEventArgs e)
         {
-            moveDot.Visibility = System.Windows.Visibility.Visible;
-            if (!dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
+            dynEditWindow editWindow = new dynEditWindow();
+
+            //set the text of the edit window to begin
+            editWindow.editText.Text = noteText.Text;
+
+            if (editWindow.ShowDialog() != true)
             {
-                dynElementSettings.SharedInstance.Bench.SelectedElements.Add(this);
+                return;
             }
+
+            //set the value from the text in the box
+            noteText.Text = editWindow.editText.Text;
         }
 
-        void noteText_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
-            moveDot.Visibility = System.Windows.Visibility.Hidden;
-            if (dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
-            {
-                dynElementSettings.SharedInstance.Bench.SelectedElements.Remove(this);
-            }
-        }
+            var bench = dynElementSettings.SharedInstance.Bench;
 
-        void noteText_LostMouseCapture(object sender, MouseEventArgs e)
-        {
-            moveDot.Visibility = System.Windows.Visibility.Hidden;
-
-        }
-        void noteText_LostFocus(object sender, RoutedEventArgs e)
-        {
-            moveDot.Visibility = System.Windows.Visibility.Hidden;
-            if (dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
-            {
-                dynElementSettings.SharedInstance.Bench.SelectedElements.Remove(this);
-            }
-        }
-
-        void noteText_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            moveDot.Visibility = System.Windows.Visibility.Visible;
+            IdlePromise.ExecuteOnIdle(
+               delegate
+               {
+                   bench.DeleteElement(this);
+               },
+               true
+            );
         }
     }
 }
