@@ -1942,6 +1942,23 @@ namespace Dynamo.Elements
         {
             return "\"" + base.PrintExpression() + "\"";
         }
+
+        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+
+            dynEditWindow editWindow = new dynEditWindow();
+
+            //set the text of the edit window to begin
+            editWindow.editText.Text = base.Value.ToString();
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            //set the value from the text in the box
+            this.Value = this.DeserializeValue(editWindow.editText.Text);
+        }
     }
 
     #endregion
@@ -2276,12 +2293,14 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     public class dynStringInput : dynString
     {
-        dynTextBox tb;
+        //dynTextBox tb;
+        TextBlock tb;
 
         public dynStringInput()
         {
             //add a text box to the input grid of the control
-            tb = new dynTextBox();
+            //tb = new dynTextBox();
+            tb = new TextBlock();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             inputGrid.Children.Add(tb);
@@ -2289,9 +2308,12 @@ namespace Dynamo.Elements
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "";
 
-            tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
+            //tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
 
             base.RegisterInputsAndOutputs();
+
+            //remove the margins
+            this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
         }
 
         public override string Value
@@ -2302,9 +2324,12 @@ namespace Dynamo.Elements
                     return;
                 
                 base.Value = value;
+
+                this.tb.Text = dynUtils.Ellipsis(this.Value,30);
             }
         }
 
+        /*
         void tb_LostFocus(object sender, RoutedEventArgs e)
         {
             this.Value = this.tb.Text;
@@ -2314,7 +2339,7 @@ namespace Dynamo.Elements
         {
             if (e.Key.Equals(Keys.Enter))
                 this.Value = this.tb.Text;
-        }
+        }*/
 
         protected override string DeserializeValue(string val)
         {
@@ -2339,7 +2364,7 @@ namespace Dynamo.Elements
                         if (attr.Name.Equals("value"))
                         {
                             this.Value = this.DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
-                            this.tb.Text = this.Value;
+                            this.tb.Text = dynUtils.Ellipsis(this.Value,30);
                         }
                             
                     }

@@ -510,6 +510,8 @@ namespace Dynamo.Elements
             }
             else
                 this.topControl.Width = Math.Max(200, StatePortData.Count * 20) + 10;
+
+
         }
 
         /// <summary>
