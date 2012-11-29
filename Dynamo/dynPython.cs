@@ -215,10 +215,12 @@ namespace Dynamo.Elements
         private bool dirty = true;
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
-        TextBox tb;
+        //TextBox tb;
+        string script;
 
         public dynPython()
         {
+            /*
             tb = new TextBox()
             {
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -234,6 +236,7 @@ namespace Dynamo.Elements
             tb.TextChanged += delegate { this.dirty = true; };
 
             this.ContentGrid.Children.Add(tb);
+            */
 
             //add an edit window option to the 
             //main context window
@@ -248,8 +251,8 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
 
-            topControl.Height = 200;
-            topControl.Width = 300;
+            //topControl.Height = 200;
+            //topControl.Width = 300;
 
             this.UpdateLayout();
         }
@@ -267,7 +270,8 @@ namespace Dynamo.Elements
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             XmlElement script = xmlDoc.CreateElement("Script");
-            script.InnerText = this.tb.Text;
+            //script.InnerText = this.tb.Text;
+            script.InnerText = this.script;
             dynEl.AppendChild(script);
         }
 
@@ -276,7 +280,8 @@ namespace Dynamo.Elements
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name == "Script")
-                    this.tb.Text = subNode.InnerText;
+                    //this.tb.Text = subNode.InnerText;
+                    script = subNode.InnerText;
             }
         }
 
@@ -325,11 +330,14 @@ namespace Dynamo.Elements
         {
             if (this.dirty)
             {
-                this.engine.ProcessCode(
+                /*this.engine.ProcessCode(
                    (string)this.tb.Dispatcher.Invoke(new Func<string>(
                       delegate { return this.tb.Text; }
                    ))
-                );
+                );*/
+
+                this.engine.ProcessCode(script);
+
                 this.dirty = false;
             }
 
@@ -381,7 +389,7 @@ namespace Dynamo.Elements
             dynEditWindow editWindow = new dynEditWindow();
 
             //set the text of the edit window to begin
-            editWindow.editText.Text = tb.Text;
+            editWindow.editText.Text = script;
 
             if (editWindow.ShowDialog() != true)
             {
@@ -389,8 +397,8 @@ namespace Dynamo.Elements
             }
 
             //set the value from the text in the box
-            tb.Text = editWindow.editText.Text;
-
+            script = editWindow.editText.Text;
+            
             this.dirty = true;
         }
      }
