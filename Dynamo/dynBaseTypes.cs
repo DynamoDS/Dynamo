@@ -1968,7 +1968,7 @@ namespace Dynamo.Elements
             //and make this so it's not so wide
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             this.topControl.Width = 100;
-            this.topControl.Height = 60;
+            this.topControl.Height = 50;
 
             this.UpdateLayout();
         }
@@ -1986,7 +1986,7 @@ namespace Dynamo.Elements
 
                 base.Value = value;
                 //this.tb.Text = value.ToString();
-                this.nodeLabel.Text = value.ToString();
+                this.nodeLabel.Text =dynUtils.Ellipsis(value.ToString(),5);
                 //this.tb.Pending = false;
             }
         }

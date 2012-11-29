@@ -76,6 +76,17 @@ namespace Dynamo.Utilities
             return MakeEnumerable<object>(en);
         }
 
+        public static string Ellipsis(string value, int desiredLength)
+        {
+            if (desiredLength > value.Length)
+            {
+                return value;
+            }
+            else
+            {
+                return value.Remove(desiredLength - 1) + "...";
+            }
+        }
 
         /// <summary>
         /// Creates a sketch plane by projecting one point's z coordinate down to the other's z coordinate.
@@ -728,5 +739,6 @@ namespace Dynamo.Utilities
             }
         }
     }
+
 
 }
