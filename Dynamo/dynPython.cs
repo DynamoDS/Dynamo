@@ -216,6 +216,7 @@ namespace Dynamo.Elements
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         TextBox tb;
+        dynEditWindow editWindow;
 
         public dynPython()
         {
@@ -234,6 +235,14 @@ namespace Dynamo.Elements
             tb.TextChanged += delegate { this.dirty = true; };
 
             this.ContentGrid.Children.Add(tb);
+
+            //add an edit window option to the 
+            //main context window
+            System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
+            editWindowItem.Header = "Edit...";
+            editWindowItem.IsCheckable = false;
+            this.MainContextMenu.Items.Add(editWindowItem);
+            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
 
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
             OutPortData = new PortData("OUT", "Result of the python script", typeof(object));
@@ -255,7 +264,6 @@ namespace Dynamo.Elements
             }
             set { }
         }
-
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
@@ -368,7 +376,23 @@ namespace Dynamo.Elements
 
             return result;
         }
-    }
+
+        void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            dynEditWindow editWindow = new dynEditWindow();
+
+            //set the text of the edit window to begin
+            editWindow.editText.Text = tb.Text;
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            //set the value from the text in the box
+            tb.Text = editWindow.editText.Text;
+        }
+     }
 
     [ElementName("Python Script From String")]
     [ElementCategory(BuiltinElementCategories.MISC)]
