@@ -1820,17 +1820,7 @@ namespace Dynamo.Elements
 
         public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            //throw new NotImplementedException();
-            //open a new editing window
-            /*
-            dynEditWindow editWindow = new dynEditWindow();
-            if (editWindow.ShowDialog() != true)
-            {
-                return;
-            }
-            */
-            //set the value from the text in the box
-            
+            //override in child classes
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -1945,12 +1935,13 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     public class dynDoubleInput : dynDouble
     {
-        dynTextBox tb;
-
+        //dynTextBox tb;
+        TextBlock nodeLabel;
+        
         public dynDoubleInput()
         {
             //add a text box to the input grid of the control
-            tb = new dynTextBox();
+            /*tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             inputGrid.Children.Add(tb);
@@ -1959,13 +1950,25 @@ namespace Dynamo.Elements
             tb.IsNumeric = true;
             tb.Text = "0.0";
             tb.OnChangeCommitted += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
+            */
 
+            nodeLabel = new System.Windows.Controls.TextBlock();
+            nodeLabel.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            nodeLabel.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            nodeLabel.Text = "0.0";
+            nodeLabel.FontSize = 24;
+            
+            inputGrid.Children.Add(nodeLabel);
+            System.Windows.Controls.Grid.SetColumn(nodeLabel, 0);
+            System.Windows.Controls.Grid.SetRow(nodeLabel, 0);
+            
             base.RegisterInputsAndOutputs();
 
             //take out the left and right margins
             //and make this so it's not so wide
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             this.topControl.Width = 100;
+            this.topControl.Height = 60;
 
             this.UpdateLayout();
         }
@@ -1982,7 +1985,8 @@ namespace Dynamo.Elements
                     return;
 
                 base.Value = value;
-                this.tb.Text = value.ToString();
+                //this.tb.Text = value.ToString();
+                this.nodeLabel.Text = value.ToString();
                 //this.tb.Pending = false;
             }
         }
@@ -1997,6 +2001,25 @@ namespace Dynamo.Elements
             {
                 return 0;
             }
+        }
+
+        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            //throw new NotImplementedException();
+            //open a new editing window
+            
+            dynEditWindow editWindow = new dynEditWindow();
+
+            //set the text of the edit window to begin
+            editWindow.editText.Text = base.Value.ToString();
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+            
+            //set the value from the text in the box
+            this.Value = this.DeserializeValue(editWindow.editText.Text);
         }
     }
 
