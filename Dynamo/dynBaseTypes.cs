@@ -1854,6 +1854,23 @@ namespace Dynamo.Elements
         {
             return Expression.NewNumber(this.Value);
         }
+
+        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+
+            dynEditWindow editWindow = new dynEditWindow();
+
+            //set the text of the edit window to begin
+            editWindow.editText.Text = base.Value.ToString();
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            //set the value from the text in the box
+            this.Value = this.DeserializeValue(editWindow.editText.Text);
+        }
     }
 
     public abstract class dynBool : dynBasicInteractive<bool>
@@ -2003,24 +2020,7 @@ namespace Dynamo.Elements
             }
         }
 
-        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
-        {
-            //throw new NotImplementedException();
-            //open a new editing window
-            
-            dynEditWindow editWindow = new dynEditWindow();
-
-            //set the text of the edit window to begin
-            editWindow.editText.Text = base.Value.ToString();
-
-            if (editWindow.ShowDialog() != true)
-            {
-                return;
-            }
-            
-            //set the value from the text in the box
-            this.Value = this.DeserializeValue(editWindow.editText.Text);
-        }
+        
     }
 
     //MDJ - added by Matt Jezyk 10.27.2011
@@ -2089,15 +2089,21 @@ namespace Dynamo.Elements
                 }
             };
             //maxtb.Pending = false;
-
+            
             this.SetColumnAmount(3);
             inputGrid.Children.Add(mintb);
             inputGrid.Children.Add(maxtb);
+
+            //make the middle column containing the slider
+            //take up most of the width
+            inputGrid.ColumnDefinitions[1].Width = new GridLength(.75 * this.topControl.Width);
 
             System.Windows.Controls.Grid.SetColumn(mintb, 0);
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
 
             base.RegisterInputsAndOutputs();
+
+            this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
         }
 
         protected override double DeserializeValue(string val)
@@ -2168,6 +2174,7 @@ namespace Dynamo.Elements
                 }
             }
         }
+
     }
 
     [ElementName("Boolean")]
