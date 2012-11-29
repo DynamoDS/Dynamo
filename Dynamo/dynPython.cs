@@ -216,7 +216,6 @@ namespace Dynamo.Elements
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         TextBox tb;
-        dynEditWindow editWindow;
 
         public dynPython()
         {
