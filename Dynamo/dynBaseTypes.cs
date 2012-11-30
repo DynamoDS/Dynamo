@@ -37,6 +37,9 @@ using Expression = Dynamo.FScheme.Expression;
 using TextBox = System.Windows.Controls.TextBox;
 using System.Diagnostics.Contracts;
 using System.Text;
+using System.Windows.Input;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace Dynamo.Elements
 {
@@ -2007,7 +2010,7 @@ namespace Dynamo.Elements
     {
         //dynTextBox tb;
         TextBlock nodeLabel;
-        
+
         public dynDoubleInput()
         {
             //add a text box to the input grid of the control
@@ -2027,11 +2030,11 @@ namespace Dynamo.Elements
             nodeLabel.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             nodeLabel.Text = "0.0";
             nodeLabel.FontSize = 24;
-            
+
             inputGrid.Children.Add(nodeLabel);
             System.Windows.Controls.Grid.SetColumn(nodeLabel, 0);
             System.Windows.Controls.Grid.SetRow(nodeLabel, 0);
-            
+
             base.RegisterInputsAndOutputs();
 
             //take out the left and right margins
@@ -2056,7 +2059,7 @@ namespace Dynamo.Elements
 
                 base.Value = value;
                 //this.tb.Text = value.ToString();
-                this.nodeLabel.Text =dynUtils.Ellipsis(value.ToString(),5);
+                this.nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
                 //this.tb.Pending = false;
             }
         }
@@ -2073,7 +2076,7 @@ namespace Dynamo.Elements
             }
         }
 
-        
+
     }
 
     //MDJ - added by Matt Jezyk 10.27.2011
@@ -2086,6 +2089,7 @@ namespace Dynamo.Elements
         Slider tb_slider;
         dynTextBox mintb;
         dynTextBox maxtb;
+        TextBox displayBox;
 
         public dynDoubleSliderInput()
         {
@@ -2101,7 +2105,30 @@ namespace Dynamo.Elements
             tb_slider.Minimum = 0.0;
             tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
-            tb_slider.ValueChanged += delegate { this.Value = this.tb_slider.Value; };
+            tb_slider.ValueChanged += delegate
+            {
+                this.Value = this.tb_slider.Value;
+
+                var pos = Mouse.GetPosition(elementCanvas);
+                Canvas.SetLeft(displayBox, pos.X);
+            };
+
+            tb_slider.PreviewMouseDown += delegate
+            {
+                if (this.IsEnabled && !elementCanvas.Children.Contains(displayBox))
+                {
+                    elementCanvas.Children.Add(displayBox);
+
+                    var pos = Mouse.GetPosition(elementCanvas);
+                    Canvas.SetLeft(displayBox, pos.X);
+                }
+            };
+
+            tb_slider.PreviewMouseUp += delegate
+            {
+                if (elementCanvas.Children.Contains(displayBox))
+                    elementCanvas.Children.Remove(displayBox);
+            };
 
             mintb = new dynTextBox();
             mintb.MaxLength = 3;
@@ -2142,7 +2169,7 @@ namespace Dynamo.Elements
                 }
             };
             //maxtb.Pending = false;
-            
+
             this.SetColumnAmount(3);
             inputGrid.Children.Add(mintb);
             inputGrid.Children.Add(maxtb);
@@ -2157,7 +2184,41 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
 
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+
+
+            displayBox = new TextBox()
+            {
+                IsReadOnly = true,
+                Background = Brushes.White,
+                Foreground = Brushes.Black
+            };
+            Canvas.SetTop(displayBox, this.Height);
+            Canvas.SetZIndex(displayBox, int.MaxValue);
+
+            var binding = new System.Windows.Data.Binding("Value")
+            {
+                Source = tb_slider,
+                Mode = System.Windows.Data.BindingMode.OneWay,
+                Converter = new DoubleDisplay()
+            };
+            displayBox.SetBinding(TextBox.TextProperty, binding);
         }
+
+        #region Value Conversion
+        [ValueConversion(typeof(double), typeof(String))]
+        private class DoubleDisplay : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return ((double)value).ToString("F4");
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return null;
+            }
+        }
+        #endregion
 
         protected override double DeserializeValue(string val)
         {
@@ -2361,7 +2422,7 @@ namespace Dynamo.Elements
 
                 base.Value = value;
 
-                this.tb.Text = dynUtils.Ellipsis(this.Value,30);
+                this.tb.Text = dynUtils.Ellipsis(this.Value, 30);
             }
         }
 
@@ -2400,7 +2461,7 @@ namespace Dynamo.Elements
                         if (attr.Name.Equals("value"))
                         {
                             this.Value = this.DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
-                            this.tb.Text = dynUtils.Ellipsis(this.Value,30);
+                            this.tb.Text = dynUtils.Ellipsis(this.Value, 30);
                         }
 
                     }
