@@ -117,6 +117,7 @@ limitations under the License.
     <Compile Include="dynGeometricForms.cs" />
     <Compile Include="dynMeasurement.cs" />
     <Compile Include="dynTimer.cs" />
+    <Compile Include="dynViews.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
