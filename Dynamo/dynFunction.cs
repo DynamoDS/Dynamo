@@ -89,6 +89,13 @@ namespace Dynamo.Elements
             {
                 this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
                 this.Error("Could not find .dyf definition file for this node.");
+
+                if (!start)
+                {
+                    _startTag = false;
+                    _taggedSymbols.Clear();
+                }
+
                 return false;
             }
 
@@ -128,6 +135,13 @@ namespace Dynamo.Elements
             {
                 this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
                 this.Error("Could not find .dyf definition file for this node.");
+
+                if (!start)
+                {
+                    _startTag = false;
+                    _taggedSymbols.Clear();
+                }
+
                 return false;
             }
 
@@ -169,6 +183,13 @@ namespace Dynamo.Elements
                 {
                     this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
                     this.Error("Could not find .dyf definition file for this node.");
+
+                    if (!start)
+                    {
+                        _startTag = false;
+                        _taggedSymbols.Clear();
+                    }
+
                     return false;
                 }
 
@@ -207,6 +228,13 @@ namespace Dynamo.Elements
                     {
                         this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
                         this.Error("Could not find .dyf definition file for this node.");
+
+                        if (!start)
+                        {
+                            _startTag = false;
+                            _taggedSymbols.Clear();
+                        }
+
                         return;
                     }
 
@@ -358,6 +386,13 @@ namespace Dynamo.Elements
             {
                 this.Bench.Log("WARNING -- No implementation found for node: " + this.Symbol);
                 this.Error("Could not find .dyf definition file for this node.");
+
+                if (!start)
+                {
+                    _startTag = false;
+                    _taggedSymbols.Clear();
+                }
+
                 return;
             }
 
