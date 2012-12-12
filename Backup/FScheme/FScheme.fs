@@ -12,16 +12,11 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-
-//TODO:
-//  -Separate run-time and compile-time values
-//  -All functions are runtime only and take their arguments evaluated
-//  -All specials are now macros and are compile-time only. They take in syntax and return syntax.
-
 module Dynamo.FScheme
 #light
 
 //An F# Scheme Interpreter
+
 open System
 open System.Numerics
 open System.IO
@@ -59,8 +54,8 @@ let tokenize source =
       | w :: t when Char.IsWhiteSpace(w) -> tokenize' acc t // skip whitespace
       | '(' :: t -> tokenize' (Open :: acc) t
       | ')' :: t -> tokenize' (Close :: acc) t
-//      | '\'' :: t -> tokenize' (Quote :: acc) t
-//      | ',' :: t -> tokenize' (Unquote :: acc) t
+      | '\'' :: t -> tokenize' (Quote :: acc) t
+      | ',' :: t -> tokenize' (Unquote :: acc) t
       | ';' :: t -> comment t |> tokenize' acc // skip over comments
       | '"' :: t -> // start of string
          let s, t' = string "" t
@@ -77,7 +72,6 @@ let tokenize source =
       | [] -> List.rev acc // end of list terminates
    tokenize' [] source
 
-
 ///Types of FScheme Expressions
 type Expression =
    ///Expression representing any .NET object.
@@ -86,151 +80,69 @@ type Expression =
    | Number of double
    ///Expression representing a string.
    | String of string
+   ///Expression representing a variable.
+   | Symbol of string
    ///Expression representing a list of sub expressions.
    | List of Expression list
    ///Expression representing a function.
    | Function of (Continuation -> Expression list -> Expression)
+   ///Expression representing a "macro".
+   | Special of (Continuation -> Environment -> Expression list -> Expression)
    ///Expression representing a continuation (used by call/cc in Scheme).
    | Current of Continuation
    ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
    ///Should NOT be used except internally by this interpreter.
    | Dummy of string
-
 ///Function that takes an Expression and returns an Expression.
 and Continuation = Expression -> Expression
-
 ///Reference to a Map that maps strings to references to Expressions.
 and Environment = Map<string, Expression ref> ref
 
 ///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
 type ExternFunc = delegate of Expression list -> Expression
 
+///FScheme Macro delegate. Takes a list of unevaluated Expressions and an Environment as arguments, and returns an Expression.
+type ExternMacro = delegate of Expression list * Environment -> Expression
+
 ///Makes an Expression.Function out of an ExternFunc
 let makeExternFunc (externFunc : ExternFunc) =
    Function(fun c args -> externFunc.Invoke(args) |> c)
 
-type Parser =
-    | Number_P of double
-    | String_P of string
-    | Sym of string
-    | List_P of Parser list
-    | PrimFun of (Continuation -> Expression list -> Expression)
-
-type Macro = Parser list -> Parser
-type MacroEnvironment = Map<string, Macro>
-
-///FScheme Macro delegate. Takes a list of unevaluated Expressions and an Environment as arguments, and returns an Expression.
-type ExternMacro = delegate of Parser list -> Parser
-
-///Makes a Macro out of an ExternMacro
-let makeExternMacro (ex : ExternMacro) : Macro = ex.Invoke
-
-///AST for FScheme expressions
-type Syntax =
-   | Number_S of double
-   | String_S of string
-   | Id of string
-   | Bind of string list * Syntax list * Syntax
-   | BindRec of string list * Syntax list * Syntax
-   | Fun of string list * Syntax
-   | Call of Syntax * Syntax list
-   | If of Syntax * Syntax * Syntax
-   | Define of string * Syntax
-   | Begin of Syntax list
-   | PFun of (Continuation -> Expression list -> Expression)
+///Makes an Expression.Special out of an ExternMacro
+let makeExternMacro (externMacro : ExternMacro) =
+   Special(fun c e args -> externMacro.Invoke(args, e) |> c)
 
 //A simple parser
-let rec parse2 (macro_env : MacroEnvironment) parser =
-    let parse' = parse2 macro_env
-    match parser with
-    | Number_P(n) -> Number_S(n)
-    | String_P(s) -> String_S(s)
-    | PrimFun(f) -> PFun(f)
-    | Sym(s) -> Id(s)
-    | List_P(h :: t) ->
-        match h with
-        | Sym(s) when s = "let" || s = "letrec" ->
-            match t with
-            | List_P(bindings) :: body ->
-               let rec makeBind names bndings = function
-                  | List_P([Sym(name); bind]) :: t -> makeBind (name :: names) ((parse' bind) :: bndings) t
-                  | [] -> 
-                    let f = if s = "let" then Bind else BindRec
-                    f(names, bndings, Begin(List.map parse' body))
-                  | m -> sprintf "Syntax error in %s bindings." s |> failwith
-               makeBind [] [] bindings
-            | m -> sprintf "Syntax error in %s." s |> failwith
-        | Sym(s) when s = "lambda" || s = "λ" ->
-            match t with
-            | List_P(parameters) :: body ->
-               Fun(List.map (function String_P(s) -> s | m -> failwith "Syntax error in function definition.") parameters, Begin(List.map parse' body))
-            | m -> failwith "Syntax error in function definition"//: %s" expr |> failwith
-        | Sym(s) when s = "if" ->
-            match t with
-            | [cond; then_case; else_case] -> If(parse' cond, parse' then_case, parse' else_case)
-            | m -> failwith "Syntax error in if"//: %s" expr |> failwith
-        | Sym(s) when s = "define" -> 
-            match t with
-            | Sym(name) :: body -> Define(name, Begin(List.map parse' body))
-            | m -> failwith "Syntax error in define"//: %s" expr |> failwith
-        | Sym(s) when macro_env.ContainsKey s ->
-            macro_env.[s] t |> parse'
-        | _ -> Call(parse' h, List.map parse' t)
-    | _ -> failwith "Syntax error"
-
-//A simple parser
-let parse macroEnv source =
+let parse source =
    let map = function
-      | Token.Number(n) -> Number_P(Double.Parse(n))
-      | Token.String(s) -> String_P(s)
-      | Token.Symbol(s) -> Sym(s)
+      | Token.Number(n) -> Expression.Number(Double.Parse(n))
+      | Token.String(s) -> Expression.String(s)
+      | Token.Symbol(s) -> Expression.Symbol(s)
       | _ -> failwith "Syntax error."
    let rec list f t acc =
       let e, t' = parse' [] t
-      parse' (List_P(f e) :: acc) t'
+      parse' (List(f e) :: acc) t'
    and parse' acc = function
       | Open :: t -> list id t acc
       | Close :: t -> (List.rev acc), t
-      | Quote :: Open :: t -> list (fun e -> [Sym("quote"); List_P(e)]) t acc
-      | Quote :: h :: t -> parse' (List_P([Sym("quote"); map h]) :: acc) t
-      | Unquote :: Open :: t -> list (fun e -> [Sym("unquote"); List_P(e)]) t acc
-      | Unquote :: h :: t -> parse' (List_P([Sym("unquote"); map h]) :: acc) t
+      | Quote :: Open :: t -> list (fun e -> [Symbol("quote"); List(e)]) t acc
+      | Quote :: h :: t -> parse' (List([Symbol("quote"); map h]) :: acc) t
+      | Unquote :: Open :: t -> list (fun e -> [Symbol("unquote"); List(e)]) t acc
+      | Unquote :: h :: t -> parse' (List([Symbol("unquote"); map h]) :: acc) t
       | h :: t -> parse' ((map h) :: acc) t
       | [] -> (List.rev acc), []
    let result, _ = parse' [] (tokenize source)
-   List.map (parse2 macroEnv) result
-
-let rec printSyntax indent syntax = 
-   let printBind name names exprs body =
-      "(" + name +  " (" 
-         + String.Join(
-            "\n" + indent + "      ", 
-            (List.map (function (n, b) -> "[" + n + (printSyntax " " b) + "]")
-                      (List.zip names exprs)))
-         + ")\n"
-         + (printSyntax (indent + "  ") body)
-         + ")"
-   indent + match syntax with
-            | Number_S(n) -> n.ToString()
-            | String_S(s) -> "\"" + s + "\""
-            | Id(s) -> s
-            | Bind(names, exprs, body) -> printBind "let" names exprs body
-            | BindRec(names, exprs, body) -> printBind "letrec" names exprs body
-            | Fun(names, body) -> "(lambda (" + String.Join(" ", names) + ") " + (printSyntax "" body) + ")"
-            | Call(f, args) -> "(" + String.Join(" ", (List.map (printSyntax "") (f :: args))) + ")"
-            | If(c, t, e) -> "(if " + String.Join(" ", (List.map (printSyntax "") [c; t; e])) + ")"
-            | Define(names, body) -> "(define (" + String.Join(" ", names) + ")" + (printSyntax " " body) + ")"
-            | Begin(exprs) -> "(begin " + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
-            | PFun(f) -> "<primitive-function>"
+   result
 
 ///Converts the given Expression to a string.
 let rec print = function
    | List(Dummy(_) :: _) -> "" // don't print accumulated statement dummy values
    | List(list) -> "(" + String.Join(" ", (List.map print list)) + ")"
    | String(s) -> "\"" + s + "\""
+   | Symbol(s) -> s
    | Number(n) -> n.ToString()
    | Container(o) -> o.ToString()
-   | Function(_) | Current(_) -> "Function"
+   | Function(_) | Special(_) | Current(_) -> "Function"
    | Dummy(_) -> "" // sometimes useful to emit value for debugging, but normally we ignore
 
 ///Prints a malformed statement error.
@@ -356,26 +268,108 @@ let lookup (env : Environment) symbol =
    | None -> sprintf "No binding for '%s'." symbol |> failwith
 
 ///Zips given lists into a list of bindings.
-
+let zip args parameters =
+   let args' = // passing more args than params results in last param treated as list
+      let plen = List.length parameters
+      if List.length args = plen then
+         args
+      else
+         let split ts = ts (plen - 1) args |> List.ofSeq
+         split Seq.take @ [List(Symbol("list") :: split Seq.skip)]
+   List.zip parameters args'
 
 ///Error construct
 let Throw cont = function
    | [String(s)] -> failwith s
    | m -> malformed "throw" (List(m))
 
+///If construct
+let rec If cont env = function
+   | [condition; t; f] -> //(if [condition] [t] [f])
+      eval (function
+         | List([]) | String("") -> 
+            eval cont env f // empty list or empty string is false
+         | Number(n) when n = 0.0 ->
+            eval cont env f // zero is false
+         | _ -> eval cont env t) env condition // everything else is true
+   | m -> malformed "if" (List(m))
+
+///Let construct
+and Let cont env = function
+   | [List(bindings); body] ->
+      let rec mapbind acc = function
+         | List([Symbol(s); e]) :: t -> eval (fun x -> mapbind ((s, ref x) :: acc) t) env e
+         | [] ->
+            let frame = List.rev acc
+            let env' = extend env frame
+            eval cont env' body
+         | _ -> failwith "Malformed 'let' binding."
+      mapbind [] bindings
+   | m -> malformed "let" (List(m))
+
+///LetRec (Recursive Let) construct
+and LetRec cont env = function
+   //Input is two arguments, a list of bindings and the letrec body
+   | [List(bindings); body] -> 
+      //bind is a function that takes a Expression.List of two arguments, the second of which is ignored
+      let bind = function
+         | List([Symbol(s); _]) -> s, ref (Dummy("Dummy 'letrec'"))
+         | m -> malformed "letrec binding" m
+      //Map all of the bindings to dummys
+      let env' = List.map bind bindings |> extend env
+      // now update dummy env - assumes dummy env will be captured but not actually accessed (e.g. lambda)
+      let rec mapupdate = function
+         //If the input is a List (of symbol/expression pairs), then we evaluate the expression in the dummy environment
+         //and then update the environment with the result, and recurse
+         | List([Symbol(s); e]) :: t -> eval (fun x -> (env'.Value.Item s) := x; mapupdate t) env' e
+         //If the input is empty (base case), then we simply evaluate the body with the dummy environment
+         | [] -> eval cont env' body
+         //Error case
+         | _ -> failwith "Malformed 'let' binding."
+      mapupdate bindings
+   | m -> malformed "letrec" (List(m))
+
 ///Let* construct
-let LetStar : Macro = function
-   | Parser.List(bindings) :: body ->
-     let folder b a = 
-        match b with
-        | Parser.List([Parser.Sym(name); expr]) as bind ->
-            Parser.List([Parser.Sym("let"); Parser.List([bind]); a])
-        | m -> failwith "bad let*"
-     Parser.List(Parser.Sym("begin") :: body) |> List.foldBack folder bindings 
-   | m -> failwith ""
+and LetStar cont env = function
+   | [List(bindings); body] ->
+      let rec foldbind env' = function
+         | List([Symbol(s); e]) :: t -> eval (fun x -> foldbind ([s, ref x] |> extend env') t) env' e
+         | [] -> eval cont env' body
+         | _ -> failwith "Malformed 'let*' binding."
+      foldbind env bindings
+   | m -> malformed "let*" (List(m))
+
+///Anonymous function (lambda) construct
+and Lambda cont env = function
+   | [List(parameters); body] ->
+      let closure cont' env' args =
+         // bind parameters to actual arguments (evaluated in the caller's environment)
+         let rec mapbind acc = function
+            // If the list of bindings isn't empty, evaluate the parameter (a), place it on the accumulator,
+            // and continue mapbind with the rest of the list.
+            | (Symbol(p), a) :: t -> eval (fun x -> mapbind ((p, ref x) :: acc) t) env' a
+            //If the list is empty...
+            | [] ->
+               // env :: definition-time environment
+               // env' :: run-time environment (for evaluating arguments)
+               
+               //let env'' = Map.fold (fun state key value -> Map.add key value state) env'.Value env.Value |> ref
+               
+               //extend the captured definition-time environment
+               let env''' = if not acc.IsEmpty
+                            then List.rev acc |> extend env//''
+                            else env//''
+               //and evaluate the body with the new environment
+               eval cont' env''' body
+            | _ -> failwith "Malformed lambda param."
+         // Use mapbind to create our closure
+         mapbind [] (zip args parameters)
+      // Return the closure function as a special form
+      Special(closure) |> cont
+   | m -> malformed "lambda" (List(m))
 
 ///Code quotation construct
-let rec Quote cont env =
+and Quote cont env =
    let rec unquote cont' = function
       | List([Symbol("unquote"); e]) -> eval cont' env e
       | List(Symbol("unquote") :: _) as m -> malformed "unquote (too many args)" m
@@ -394,7 +388,7 @@ and Eval cont env = function
    | m -> malformed "eval" (List(m))
 
 ///Macro construct -- similar to functions, but arguments are passed unevaluated. Useful for short-circuiting.
-(*and Macro cont env = function
+and Macro cont env = function
    | [List(parameters); body] ->
       let closure cont' env' args =
          // bind parameters to actual arguments (but unevaluated, unlike lambda)
@@ -406,19 +400,34 @@ and Eval cont env = function
          //environment.
          eval (eval cont' env') env'' body
       Special(closure) |> cont
-   | m -> malformed "macro" (List(m))*)
+   | m -> malformed "macro" (List(m))
 
 ///Set! construct -- mutation
 and Set cont env = function
    | [Symbol(s); e] -> eval (fun x -> (lookup env s) := x; Dummy(sprintf "Set %s" s) |> cont) env e
    | m -> malformed "set!" (List(m))
+
+///Begin construct
+and Begin cont env =
+   let rec foldeval last = function
+      | h :: t -> eval (fun x -> foldeval x t) env h
+      | [] -> last |> cont
+   foldeval (Dummy("Empty 'begin'"))
   
+///Define construct -- Mutates base environment to contain the given definition
+and Define cont env = function
+   | [Symbol(s); e] ->
+      let def = ref (Dummy("Dummy 'define'"))
+      env := Map.add s def env.Value
+      eval (fun x -> def := x; Dummy(sprintf "Defined %s" s) |> cont) env e
+   | m -> malformed "define" (List(m))
+
 ///Load construct -- loads library files, reads them using the simple tokenizer and parser.
 and load file = Load (fun _ -> Dummy("")) [String(file)] |> ignore
 and Load cont = function
    | [String(file)] ->
-      (File.OpenText(file)).ReadToEnd() |> List.ofSeq |> parse macroEnv |> List.iter (fun x -> compile  x (fun _ -> Dummy("Dummy 'load'")) environment |> ignore)
-      Dummy(sprintf "Loaded '%s'." file) |> cont
+      (File.OpenText(file)).ReadToEnd() |> List.ofSeq |> parse |> List.iter (eval (fun _ -> Dummy("Dummy 'load'")) environment >> ignore)
+      Symbol(sprintf "Loaded '%s'." file) |> cont
    | m -> malformed "load" (List(m))
 
 ///Display construct -- used to print to stdout
@@ -427,8 +436,8 @@ and Display cont = function
    | m -> malformed "display" (List(m))
 
 ///Call/cc -- gives access to the current interpreter continuation.
-and CallCC cont = function
-   | [Function(callee)] -> callee cont [Current(cont)]
+and CallCC cont env = function
+   | [callee] -> eval (function Special(fn) -> fn cont env [Current(cont)] | m -> malformed "call/cc" m) env callee
    | m -> malformed "call/cc" (List(m))
 
 ///Our base environment
@@ -440,7 +449,11 @@ and environment =
        "+", ref (Function(Add))
        "-", ref (Function(Subtract))
        "pow", ref (Function(Exponent))
-       //"let*", ref (Special(LetStar))
+       "if", ref (Special(If))
+       "let", ref (Special(Let))
+       "letrec", ref (Special(LetRec))
+       "let*", ref (Special(LetStar))
+       "lambda", ref (Special(Lambda))
        "cons", ref (Function(Cons))
        "car", ref (Function(Car))
        "first", ref (Function(Car))
@@ -453,13 +466,15 @@ and environment =
        "get", ref (Function(Get))
        "drop", ref (Function(Drop))
        "build-seq", ref (Function(BuildSeq))
-       //"quote", ref (Special(Quote))
-       //"eval", ref (Special(Eval))
-       //"set!", ref (Special(Set))
-       //"begin", ref (Special(Begin))
+       "quote", ref (Special(Quote))
+       "eval", ref (Special(Eval))
+       "macro", ref (Special(Macro))
+       "set!", ref (Special(Set))
+       "begin", ref (Special(Begin))
+       "define", ref (Special(Define))
        "load", ref (Function(Load))
        "display", ref (Function(Display))
-       "call/cc", ref (Function(CallCC))
+       "call/cc", ref (Special(CallCC))
        "true", ref (Number(1.0))
        "false", ref (Number(0.0))
        "<=", ref (Function(LTE))
@@ -480,96 +495,45 @@ and environment =
        "concat-strings", ref (Function(Concat))
       ] |> ref
 
-///A basic compiler
-and compile syntax : (Continuation -> Environment -> Expression) =
-   match syntax with
-   | Number_S(n) ->
-      let x = Number(n)
-      fun cont _ -> x |> cont
-   | String_S(s) ->
-      let x = String(s)
-      fun cont _ -> x |> cont
-   | PFun(f) ->
-     let x = Function(f)
-     fun cont _ -> x |> cont
-   | Id(id) -> fun cont env -> (lookup env id).Value |> cont
-   | Bind(names, exprs, body) ->
-      compile (Call(Fun(names, body), exprs))
-   | BindRec(names, exprs, body) ->
-      let cbody = compile body
-      let cargs = List.map compile exprs
-      fun cont env ->
-         let boxes = List.map (fun _ -> ref (Dummy("letrec"))) names
-         let env' = List.zip names boxes |> extend env
-         let rec mapbind = function
-            | (expr, box) :: t -> expr (fun x -> box := x; mapbind t) env'
-            | [] -> cbody cont env'
-         List.zip cargs boxes |> mapbind
-   | Fun(names, body) ->
-      let cbody = compile body
-      let zip parameters args =
-        let args' = // passing more args than params results in last param treated as list
-            let plen = List.length parameters
-            if List.length args = plen then
-                (List.map ref args)
-            else
-                let split ts = ts (plen - 1) args |> List.ofSeq
-                (split Seq.take |> List.map ref) @ [List(split Seq.skip) |> ref]
-        List.zip parameters args'
-      fun cont env -> 
-         Function(fun cont' exprs -> zip names exprs |> extend env |> cbody cont') |> cont
-   | Call(fun_expr, args) ->
-        let cfun = compile fun_expr
-        let cargs = List.map compile args
-        fun cont env ->
-            let cont' = function
-                | Function(f) ->
-                    let rec mapeval acc = function
-                        | h :: t -> h (fun v -> mapeval (v :: acc) t) env
-                        | [] -> List.rev acc |> f cont
-                    mapeval [] cargs
-                | Current(c) ->
-                    match cargs with
-                    | [arg] -> arg c env
-                    | m -> failwith "Malformed Continuation"
-                | m -> printSyntax "" syntax |> sprintf "expected function for call: %s" |> failwith
-            cfun cont' env
-   | If(cond, then_expr, else_expr) ->
-      let ccond = compile cond
-      let cthen = compile then_expr
-      let celse = compile else_expr
-      fun cont env ->
-         let cont' = function
-            | List([]) | String("") ->  celse cont env // empty list or empty string is false
-            | Number(n) when n = 0.0 -> celse cont env // zero is false
-            | _ -> cthen cont env // everything else is true
-         ccond cont' env
-   | Define(name, body) ->
-      let cbody = compile body
-      fun cont env -> 
-        let def = ref (Dummy(sprintf "define '%s'" name))
-        env := Map.add name def env.Value
-        cbody (fun x -> def := x; Dummy(sprintf "defined '%s'" name) |> cont) env
-   | Begin(exprs) ->
-      let body = List.map compile exprs
-      fun cont env ->
-         let rec runall' acc = function
-            | h :: t -> h (fun x -> runall' x t) env
-            | [] -> acc |> cont
-         let d = Dummy("empty begin")
-         runall' d body
+///Our eval loop
+and eval cont env expression =
+   match expression with
+   //Basic values get passed to the continuation as themselves
+   | Number(_) | String(_) | Current(_) | Container(_) 
+   //As do function-like objects
+   | Function(_) | Special(_) as lit -> lit |> cont 
+   //Symbols are looked up in the environment, dereferenced, and then passed to the continuation.
+   | Symbol(s) -> (lookup env s).Value |> cont 
+   //Lists are function calls. First the head is evaluated into a function object, then depending
+   //on the object...
+   | List(h :: t) ->
+      eval (function
+         //Functions have their arguments evaluated and then applied to the function
+         | Function(f) -> apply cont env f t 
+         //Special forms have their unevaluated arguments passed to them, along with the environment
+         | Special(f) -> f cont env t 
+         //Continuations take one argument, and have that argument passed
+         | Current(f) -> match t with [rtn] -> f rtn | m -> malformed "call/cc args" (List(m))
+         | m -> h :: t |> apply cont env MakeList) (*malformed "expression" m*) env h
+   //Anything else causes an error.
+   | Dummy(s) -> sprintf "Cannot evaluate dummy value: %s" s |> failwith
+   | _ -> failwith "Malformed expression."
 
-and macroEnv = 
-    Map.ofList [
-       "let*", LetStar
-    ]
+///Our apply loop
+and apply cont env fn args =
+   //Tail recursive function used to evaluate a list of expressions.
+   let rec mapeval acc = function
+      //If the list is not empty, evaluate the head, then evaluate the rest of the list
+      | h :: t -> eval (fun a -> mapeval (a :: acc) t) env h
+      //Otherwise, we're done here. Pass the reversed accumulated list to the function.
+      | [] -> fn cont (List.rev acc)
+   mapeval [] args
 
-///REP -- Read/Eval/Prints
-let rep (env : Environment) text = 
-    List.ofSeq text |> parse macroEnv |> List.head |> compile |> fun x -> x id env |> print
+///REP -- Read/Eval/Print
+let rep env = List.ofSeq >> parse >> List.head >> eval id env >> print
 
 ///REPL -- Read/Eval/Print Loop
-let rec repl output : unit =
+let rec repl output =
    printf "%s\n> " output
    try Console.ReadLine() |> rep environment |> repl
    with ex -> repl ex.Message
