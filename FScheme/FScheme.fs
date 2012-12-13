@@ -12,12 +12,6 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-
-//TODO:
-//  -Separate run-time and compile-time values
-//  -All functions are runtime only and take their arguments evaluated
-//  -All specials are now macros and are compile-time only. They take in syntax and return syntax.
-
 module Dynamo.FScheme
 #light
 
@@ -469,6 +463,14 @@ let Apply cont = function
    | [Function(f); List(args)] -> f cont args
    | m -> malformed "apply" (List(m))
 
+let Add1 cont = function
+   | [Number(n)] -> Number(n + 1.0) |> cont
+   | m -> malformed "add1" (List(m))
+
+let Sub1 cont = function
+   | [Number(n)] -> Number(n - 1.0) |> cont
+   | m -> malformed "sub1" (List(m))
+
 ///A basic compiler
 let rec compile syntax : (Continuation -> Environment -> Expression) =
    match syntax with
@@ -679,6 +681,7 @@ and environment =
        ">", ref (Function(GT))
        "=", ref (Function(EQ))
        "empty", ref (List([]))
+       "null", ref (List([]))
        "empty?", ref (Function(IsEmpty))
        "reverse", ref (Function(Rev))
        "rev", ref (Function(Rev))
@@ -691,6 +694,8 @@ and environment =
        "concat-strings", ref (Function(Concat))
        "eval", ref (Function(Eval))
        "apply", ref (Function(Apply))
+       "add1", ref (Function(Add1))
+       "sub1", ref (Function(Sub1))
       ] |> ref
 
 ///REP -- Read/Eval/Prints
