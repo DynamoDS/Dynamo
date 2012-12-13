@@ -533,7 +533,7 @@ and apply cont env fn args =
 let rep env = List.ofSeq >> parse >> List.head >> eval id env >> print
 
 ///REPL -- Read/Eval/Print Loop
-let rec repl output =
+let rec repl output : unit =
    printf "%s\n> " output
    try Console.ReadLine() |> rep environment |> repl
    with ex -> repl ex.Message
