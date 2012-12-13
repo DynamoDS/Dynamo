@@ -160,7 +160,7 @@ type Syntax =
    | Bind of string list * Syntax list * Syntax
    | BindRec of string list * Syntax list * Syntax
    | Fun of string list * Syntax
-   | Call of Syntax list
+   | List_S of Syntax list
    | If of Syntax * Syntax * Syntax
    | Define of string * Syntax
    | Begin of Syntax list
@@ -183,11 +183,12 @@ let rec parserToSyntax (macro_env : MacroEnvironment) parser =
     | String_P(s) -> String_S(s)
     | PrimFun(f) -> PFun(f)
     | Sym(s) -> Id(s)
-    | List_P([]) -> Call([])
+    | List_P([]) -> List_S([])
     | List_P(h :: t) ->
         match h with
         //Set!
-        | Sym(s) when s = "set!" ->
+
+        | Sym("set!") ->
             match t with
             | Sym(name) :: body -> SetId(name, Begin(List.map parse' body))
             | m -> failwith "Syntax error in set!"
@@ -204,39 +205,44 @@ let rec parserToSyntax (macro_env : MacroEnvironment) parser =
                makeBind [] [] bindings
             | m -> sprintf "Syntax error in %s." s |> failwith
         //lambda
-        | Sym(s) when s = "lambda" || s = "λ" ->
+
+        | Sym("lambda") | Sym("λ") ->
             match t with
             | List_P(parameters) :: body ->
                Fun(List.map (function Sym(s) -> s | m -> failwith "Syntax error in function definition.") parameters, Begin(List.map parse' body))
             | m -> List_P(t) |> printParser |> sprintf "Syntax error in function definition: %s" |> failwith
         //if
-        | Sym(s) when s = "if" ->
+
+        | Sym("if") ->
             match t with
             | [cond; then_case; else_case] -> If(parse' cond, parse' then_case, parse' else_case)
             | m -> failwith "Syntax error in if"//: %s" expr |> failwith
         //define
-        | Sym(s) when s = "define" -> 
+
+        | Sym("define") -> 
             match t with
             | Sym(name) :: body -> Define(name, Begin(List.map parse' body))
             | m -> failwith "Syntax error in define"//: %s" expr |> failwith
         //quote
-        | Sym(s) when s = "quote" ->
+
+        | Sym("quote") ->
             match t with
             | [expr] -> Quote_S(parse' expr)
             | m -> failwith "Syntax error in quote"
         //unquote
-        | Sym(s) when s = "unquote" ->
+        | Sym("unquote") ->
             match t with
             | [expr] -> Unquote_S(parse' expr)
             | m -> failwith "Syntax error in unquote"
         //begin
-        | Sym(s) when s = "begin" ->
+
+        | Sym("begin") ->
             Begin(List.map parse' t)
         //defined macros
         | Sym(s) when macro_env.ContainsKey s ->
             macro_env.[s] t |> parse'
         //otherwise...
-        | _ -> Call(List.map parse' (h :: t))
+        | _ -> List_S(List.map parse' (h :: t))
 
 //A simple parser
 let stringToParser source =
@@ -280,7 +286,7 @@ let rec printSyntax indent syntax =
             | Bind(names, exprs, body) -> printBind "let" names exprs body
             | BindRec(names, exprs, body) -> printBind "letrec" names exprs body
             | Fun(names, body) -> "(lambda (" + String.Join(" ", names) + ") " + printSyntax "" body + ")"
-            | Call(exprs) -> "(" + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
+            | List_S(exprs) -> "(" + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
             | If(c, t, e) -> "(if " + String.Join(" ", (List.map (printSyntax "") [c; t; e])) + ")"
             | Define(names, body) -> "(define (" + String.Join(" ", names) + ")" + printSyntax " " body + ")"
             | Begin(exprs) -> "(begin " + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
@@ -421,7 +427,7 @@ let lookup (env : Environment) symbol =
    | Some(e) -> e
    | None -> sprintf "No binding for '%s'." symbol |> failwith
 
-///Zips given lists into a list of bindings.
+
 
 
 ///Error construct
@@ -429,25 +435,25 @@ let Throw cont = function
    | [String(s)] -> failwith s
    | m -> malformed "throw" (List(m))
 
-///Macro construct -- similar to functions, but arguments are passed unevaluated. Useful for short-circuiting.
-(*and Macro cont env = function
-   | [List(parameters); body] ->
-      let closure cont' env' args =
-         // bind parameters to actual arguments (but unevaluated, unlike lambda)
-         let bind = function 
-            | Symbol(p), a -> p, ref a 
-            | _, m -> malformed "macro parameter" m // bound unevaluated
-         let env'' = zip args parameters |> List.map bind |> extend env // extend the captured definition-time environment
-         //Evaluate the body in the extended environment (params mapped to args), then evaluate the result in the passed
-         //environment.
-         eval (eval cont' env') env'' body
-      Special(closure) |> cont
-   | m -> malformed "macro" (List(m))
 
-///Set! construct -- mutation
-let Set cont env = function
-   | [Symbol(s); e] -> eval (fun x -> (lookup env s) := x; Dummy(sprintf "Set %s" s) |> cont) env e
-   | m -> malformed "set!" (List(m))*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ///Display construct -- used to print to stdout
 let Display cont = function
@@ -489,8 +495,8 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
       fun cont env ->
          let box = lookup env id
          ce (fun x -> box := x; Dummy("set! " + id) |> cont) env
-   | Bind(names, exprs, body) ->
-      compile (Call(Fun(names, body) :: exprs))
+   | Bind(names, exprs, body) -> compile (List_S(Fun(names, body) :: exprs))
+
    | BindRec(names, exprs, body) ->
       let cbody = compile body
       let cargs = List.map compile exprs
@@ -514,7 +520,7 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
         List.zip parameters args'
       fun cont env -> 
          Function(fun cont' exprs -> zip names exprs |> extend env |> cbody cont') |> cont
-   | Call(fun_expr :: args) ->
+   | List_S(fun_expr :: args) ->
         let cfun = compile fun_expr
         let cargs = List.map compile args
         fun cont env ->
@@ -589,7 +595,7 @@ and makeQuote syntax =
       let qBody = makeQuote body
       fun cont env ->
          qBody (fun x -> List([s; names; x]) |> cont) env
-   | Call(exprs) -> 
+   | List_S(exprs) -> 
       let qargs = List.map makeQuote exprs
       fun cont env ->
          let rec mapquote acc = function
@@ -632,6 +638,7 @@ and Eval cont args =
       | Number(n) -> Number_P(n)
       | String(s) -> String_P(s)
       | List(l) -> List_P(List.map toParser l)
+      | Function(f) -> PrimFun(f)
       | m -> malformed "eval" m
    match args with
    | [arg] -> toParser arg |> parserToSyntax macroEnv |> compile |> fun x -> x cont environment
@@ -698,9 +705,12 @@ and environment =
        "sub1", ref (Function(Sub1))
       ] |> ref
 
+let Evaluate syntax = compile syntax id environment
+let ParseText text = List.ofSeq text |> parse |> Begin |> Evaluate
+
 ///REP -- Read/Eval/Prints
 let rep (env : Environment) text = 
-    List.ofSeq text |> parse |> List.head |> compile |> fun x -> x id env |> print
+    List.ofSeq text |> parse |> List.head |> fun x -> compile x id env |> print
 
 ///REPL -- Read/Eval/Print Loop
 let rec repl output : unit =
