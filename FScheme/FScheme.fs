@@ -489,29 +489,29 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
         let args' = // passing more args than params results in last param treated as list
             let plen = List.length parameters
             if List.length args = plen then
-                (List.map ref args)
+                args
             else
                 let split ts = ts (plen - 1) args |> List.ofSeq
-                (split Seq.take |> List.map ref) @ [List(split Seq.skip) |> ref]
-        List.zip parameters args'
+                split Seq.take @ [List(split Seq.skip)]
+        List.map2 (fun x y -> x, ref y) parameters args'
       fun cont env -> 
-         Function(fun cont' exprs -> zip names exprs |> extend env |> cbody cont') |> cont
+        Function(fun cont' exprs -> zip names exprs |> extend env |> cbody cont') |> cont
    | List_S(fun_expr :: args) ->
-        let cfun = compile fun_expr
-        let cargs = List.map compile args
-        fun cont env ->
-            let cont' = function
-                | Function(f) ->
-                    let rec mapeval acc = function
-                        | h :: t -> h (fun v -> mapeval (v :: acc) t) env
-                        | [] -> List.rev acc |> f cont
-                    mapeval [] cargs
-                | Current(c) ->
-                    match cargs with
-                    | [arg] -> arg c env
-                    | m -> failwith "Malformed Continuation"
-                | m -> printSyntax "" syntax |> sprintf "expected function for call: %s" |> failwith
-            cfun cont' env
+      let cfun = compile fun_expr
+      let cargs = List.map compile args
+      fun cont env ->
+         let cont' = function
+               | Function(f) ->
+                  let rec mapeval acc = function
+                     | h :: t -> h (fun v -> mapeval (v :: acc) t) env
+                     | [] -> List.rev acc |> f cont
+                  mapeval [] cargs
+               | Current(c) ->
+                  match cargs with
+                  | [arg] -> arg c env
+                  | m -> failwith "Malformed Continuation"
+               | m -> printSyntax "" syntax |> sprintf "expected function for call: %s" |> failwith
+         cfun cont' env
    | If(cond, then_expr, else_expr) ->
       let ccond = compile cond
       let cthen = compile then_expr
