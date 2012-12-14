@@ -427,33 +427,10 @@ let lookup (env : Environment) symbol =
    | Some(e) -> e
    | None -> sprintf "No binding for '%s'." symbol |> failwith
 
-
-
-
 ///Error construct
 let Throw cont = function
    | [String(s)] -> failwith s
    | m -> malformed "throw" (List(m))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ///Display construct -- used to print to stdout
 let Display cont = function
@@ -554,11 +531,11 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
         cbody (fun x -> def := x; Dummy(sprintf "defined '%s'" name) |> cont) env
    | Begin(exprs) ->
       let body = List.map compile exprs
+      let d = Dummy("empty begin")
       fun cont env ->
          let rec runall' acc = function
             | h :: t -> h (fun x -> runall' x t) env
             | [] -> acc |> cont
-         let d = Dummy("empty begin")
          runall' d body
    | Quote_S(expr) -> makeQuote expr
    | Unquote_S(expr) -> failwith "Can't unquote an expression that's not quoted."
