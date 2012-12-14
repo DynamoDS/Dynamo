@@ -473,7 +473,6 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
          let box = lookup env id
          ce (fun x -> box := x; Dummy("set! " + id) |> cont) env
    | Bind(names, exprs, body) -> compile (List_S(Fun(names, body) :: exprs))
-
    | BindRec(names, exprs, body) ->
       let cbody = compile body
       let cargs = List.map compile exprs
@@ -529,6 +528,7 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
         let def = ref (Dummy(sprintf "define '%s'" name))
         env := Map.add name def env.Value
         cbody (fun x -> def := x; Dummy(sprintf "defined '%s'" name) |> cont) env
+   | Begin([expr]) -> compile expr
    | Begin(exprs) ->
       let body = List.map compile exprs
       let d = Dummy("empty begin")
@@ -634,7 +634,7 @@ and Load cont = function
    | m -> malformed "load" (List(m))
 
 ///Our base environment
-and environment =
+and environment : Environment =
    Map.ofList
       ["*", ref (Function(Multiply))
        "/", ref (Function(Divide))
@@ -683,11 +683,20 @@ and environment =
       ] |> ref
 
 let Evaluate syntax = compile syntax id environment
-let ParseText text = List.ofSeq text |> parse |> Begin |> Evaluate
+
+let ParseText text = 
+   List.ofSeq text 
+   |> parse 
+   |> Begin 
+   |> Evaluate
 
 ///REP -- Read/Eval/Prints
 let rep (env : Environment) text = 
-    List.ofSeq text |> parse |> List.head |> fun x -> compile x id env |> print
+    List.ofSeq text 
+    |> parse 
+    |> List.head 
+    |> fun x -> compile x id env 
+    |> print
 
 ///REPL -- Read/Eval/Print Loop
 let rec repl output : unit =
@@ -859,7 +868,7 @@ let test (log : ErrorLog) =
                (map (lambda (x) (apply f x)) 
                     (zip lofls))))" ""
    case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
-   case "(combine (lambda (x y) (begin (display x) (display y) (append x y))) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
+   case "(combine (lambda (x y) (display x) (display y) (append x y)) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
    
    //Engine Tests
    case "(quote (* 2 3))" "(* 2 3)" // quote primitive
@@ -899,5 +908,7 @@ let test (log : ErrorLog) =
 
    //Scope
    case "(let ((y 6)) (let ((f (lambda (x) (+ x y)))) (let ((y 5)) (f 4))))" "10"
+
+   case "(begin (define cd (lambda (x) (if (<= x 0) x (cd (sub1 x))))) (cd 1000000))" "0"
    
 let runTests = ErrorLog(Console.WriteLine) |> test
