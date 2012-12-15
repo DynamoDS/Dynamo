@@ -485,32 +485,32 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
          List.zip cargs boxes |> mapbind
    | Fun(names, body) ->
       let cbody = compile body
-      let zip parameters args =
+      let extend parameters args (env : Environment) =
         let args' = // passing more args than params results in last param treated as list
-            let plen = List.length parameters
-            if List.length args = plen then
-                args
-            else
-                let split ts = ts (plen - 1) args |> List.ofSeq
-                split Seq.take @ [List(split Seq.skip)]
-        List.map2 (fun x y -> x, ref y) parameters args'
+          let plen = List.length parameters
+          if List.length args = plen then
+            args
+          else
+            let split ts = ts (plen - 1) args |> List.ofSeq
+            split Seq.take @ [List(split Seq.skip)]
+        List.fold2 (fun e x y -> Map.add x (ref y) e) env.Value parameters args' |> ref
       fun cont env -> 
-        Function(fun cont' exprs -> zip names exprs |> extend env |> cbody cont') |> cont
+        Function(fun cont' exprs -> extend names exprs env |> cbody cont') |> cont
    | List_S(fun_expr :: args) ->
       let cfun = compile fun_expr
       let cargs = List.map compile args
       fun cont env ->
          let cont' = function
-               | Function(f) ->
-                  let rec mapeval acc = function
-                     | h :: t -> h (fun v -> mapeval (v :: acc) t) env
-                     | [] -> List.rev acc |> f cont
-                  mapeval [] cargs
-               | Current(c) ->
-                  match cargs with
-                  | [arg] -> arg c env
-                  | m -> failwith "Malformed Continuation"
-               | m -> printSyntax "" syntax |> sprintf "expected function for call: %s" |> failwith
+            | Function(f) ->
+               let rec mapeval acc = function
+                  | h :: t -> h (fun v -> mapeval (v :: acc) t) env
+                  | [] -> List.rev acc |> f cont
+               mapeval [] cargs
+            | Current(c) ->
+               match cargs with
+               | [arg] -> arg c env
+               | m -> failwith "Malformed Continuation"
+            | m -> printSyntax "" syntax |> sprintf "expected function for call: %s" |> failwith
          cfun cont' env
    | If(cond, then_expr, else_expr) ->
       let ccond = compile cond
