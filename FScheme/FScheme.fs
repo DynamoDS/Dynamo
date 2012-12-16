@@ -91,12 +91,11 @@ type Expression =
    ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
    ///Should NOT be used except internally by this interpreter.
    | Dummy of string
-
 ///Function that takes an Expression and returns an Expression.
 and Continuation = Expression -> Expression
 
-///Reference to a Map that maps strings to references to Expressions.
-and Environment = Map<string, Expression ref> ref
+type Frame = Expression ref [] ref
+type Environment = Frame list ref
 
 ///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
 type ExternFunc = delegate of Expression list -> Expression
@@ -187,7 +186,6 @@ let rec parserToSyntax (macro_env : MacroEnvironment) parser =
     | List_P(h :: t) ->
         match h with
         //Set!
-
         | Sym("set!") ->
             match t with
             | Sym(name) :: body -> SetId(name, Begin(List.map parse' body))
@@ -205,26 +203,22 @@ let rec parserToSyntax (macro_env : MacroEnvironment) parser =
                makeBind [] [] bindings
             | m -> sprintf "Syntax error in %s." s |> failwith
         //lambda
-
         | Sym("lambda") | Sym("λ") ->
             match t with
             | List_P(parameters) :: body ->
                Fun(List.map (function Sym(s) -> s | m -> failwith "Syntax error in function definition.") parameters, Begin(List.map parse' body))
             | m -> List_P(t) |> printParser |> sprintf "Syntax error in function definition: %s" |> failwith
         //if
-
         | Sym("if") ->
             match t with
             | [cond; then_case; else_case] -> If(parse' cond, parse' then_case, parse' else_case)
             | m -> failwith "Syntax error in if"//: %s" expr |> failwith
         //define
-
         | Sym("define") -> 
             match t with
             | Sym(name) :: body -> Define(name, Begin(List.map parse' body))
             | m -> failwith "Syntax error in define"//: %s" expr |> failwith
         //quote
-
         | Sym("quote") ->
             match t with
             | [expr] -> Quote_S(parse' expr)
@@ -235,7 +229,6 @@ let rec parserToSyntax (macro_env : MacroEnvironment) parser =
             | [expr] -> Unquote_S(parse' expr)
             | m -> failwith "Syntax error in unquote"
         //begin
-
         | Sym("begin") ->
             Begin(List.map parse' t)
         //defined macros
@@ -416,17 +409,6 @@ let Concat cont = function
         concat "" l
     | m -> malformed "concat" (List(m))
 
-///Extends the given environment with the given bindings.
-let rec extend (env : Environment) = function
-   | [] -> env
-   | (a, b) :: t -> extend (Map.add a b env.Value |> ref) t
-
-///Looks up a symbol in the given environment.
-let lookup (env : Environment) symbol = 
-   match Map.tryFind symbol env.Value with
-   | Some(e) -> e
-   | None -> sprintf "No binding for '%s'." symbol |> failwith
-
 ///Error construct
 let Throw cont = function
    | [String(s)] -> failwith s
@@ -454,8 +436,21 @@ let Sub1 cont = function
    | [Number(n)] -> Number(n - 1.0) |> cont
    | m -> malformed "sub1" (List(m))
 
+type CompilerFrame = string list
+type CompilerEnv = CompilerFrame list ref
+
+let findInEnv (name : string) compenv =
+   let rec find acc = function
+      | h :: t ->
+         match List.tryFindIndex ((=) name) h with
+         | Some(i) -> acc, i
+         | None -> find (acc + 1) t
+      | [] -> sprintf "unbound name: %s" name |> failwith
+   find 0 compenv
+
 ///A basic compiler
-let rec compile syntax : (Continuation -> Environment -> Expression) =
+let rec compile (compenv : CompilerEnv) syntax : (Continuation -> Environment -> Expression) =
+   let compile' = compile compenv
    match syntax with
    | Number_S(n) ->
       let x = Number(n)
@@ -466,39 +461,59 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
    | PFun(f) ->
      let x = Function(f)
      fun cont _ -> x |> cont
-   | Id(id) -> fun cont env -> (lookup env id).Value |> cont
+   | Id(id) ->
+      let (i1, i2) = findInEnv id compenv.Value
+      fun cont env -> (env.Value.Item i1).Value.[i2].Value |> cont
    | SetId(id, expr) ->
-      let ce = compile expr
+      let ce = compile' expr
+      let (i1, i2) = findInEnv id compenv.Value
       fun cont env ->
-         let box = lookup env id
-         ce (fun x -> box := x; Dummy("set! " + id) |> cont) env
-   | Bind(names, exprs, body) -> compile (List_S(Fun(names, body) :: exprs))
+         let box = (env.Value.Item i1).Value.[i2]
+         ce (fun x -> box := x; Dummy(sprintf "set! %s" id) |> cont) env
+   | Bind(names, exprs, body) -> compile' (List_S(Fun(names, body) :: exprs))
    | BindRec(names, exprs, body) ->
-      let cbody = compile body
-      let cargs = List.map compile exprs
+      let cbody = compile (ref (names :: compenv.Value)) body
+      let cargs = List.map (ref (names :: compenv.Value) |> compile) exprs
+      let boxes = [ for _ in 1 .. List.length cargs -> ref (Dummy("letrec")) ]
+      let newFrame : Frame = List.toArray boxes |> ref
       fun cont env ->
-         let boxes = List.map (fun _ -> ref (Dummy("letrec"))) names
-         let env' = List.zip names boxes |> extend env
+         let env' = newFrame :: env.Value |> ref
          let rec mapbind = function
             | (expr, box) :: t -> expr (fun x -> box := x; mapbind t) env'
             | [] -> cbody cont env'
          List.zip cargs boxes |> mapbind
-   | Fun(names, body) ->
-      let cbody = compile body
-      let extend parameters args (env : Environment) =
-        let args' = // passing more args than params results in last param treated as list
-          let plen = List.length parameters
-          if List.length args = plen then
-            args
-          else
-            let split ts = ts (plen - 1) args |> List.ofSeq
-            split Seq.take @ [List(split Seq.skip)]
-        List.fold2 (fun e x y -> Map.add x (ref y) e) env.Value parameters args' |> ref
+   | Define(name, body) ->
+      let lastindex = compenv.Value.Head.Length
+      compenv := (List.append compenv.Value.Head [name]) :: compenv.Value.Tail
+      let cbody = compile compenv body
       fun cont env -> 
-        Function(fun cont' exprs -> extend names exprs env |> cbody cont') |> cont
+        let def = ref (Dummy(sprintf "define '%s'" name))
+        Array.Resize(env.Value.Head, env.Value.Head.Value.Length + 1)
+        env.Value.Head.Value.SetValue(def, lastindex)
+        cbody (fun x -> def := x; Dummy(sprintf "defined '%s'" name) |> cont) env
+   | Fun(names, body) ->
+      let compenv' = names :: compenv.Value |> ref
+      let cbody = compile compenv' body
+      let amt = List.length names
+      let pack args =
+         let arglen = List.length args
+         if arglen = amt then
+            Seq.map ref args 
+            |> Seq.toArray
+         else
+            Seq.append (Seq.take (amt - 1) args) 
+                       (Seq.singleton (List(Seq.skip (amt - 1) args |> Seq.toList)))
+            |> Seq.map ref 
+            |> Seq.toArray
+      fun cont env ->
+         Function(
+            fun cont' exprs -> 
+               ref (pack exprs) :: env.Value 
+               |> ref 
+               |> cbody cont') |> cont
    | List_S(fun_expr :: args) ->
-      let cfun = compile fun_expr
-      let cargs = List.map compile args
+      let cfun = compile' fun_expr
+      let cargs = List.map compile' args
       fun cont env ->
          let cont' = function
             | Function(f) ->
@@ -513,39 +528,34 @@ let rec compile syntax : (Continuation -> Environment -> Expression) =
             | m -> printSyntax "" syntax |> sprintf "expected function for call: %s" |> failwith
          cfun cont' env
    | If(cond, then_expr, else_expr) ->
-      let ccond = compile cond
-      let cthen = compile then_expr
-      let celse = compile else_expr
+      let ccond = compile' cond
+      let cthen = compile' then_expr
+      let celse = compile' else_expr
       fun cont env ->
          let cont' = function
             | List([]) | String("") ->  celse cont env // empty list or empty string is false
             | Number(n) when n = 0.0 -> celse cont env // zero is false
             | _ -> cthen cont env // everything else is true
          ccond cont' env
-   | Define(name, body) ->
-      let cbody = compile body
-      fun cont env -> 
-        let def = ref (Dummy(sprintf "define '%s'" name))
-        env := Map.add name def env.Value
-        cbody (fun x -> def := x; Dummy(sprintf "defined '%s'" name) |> cont) env
-   | Begin([expr]) -> compile expr
+   | Begin([expr]) -> compile' expr
    | Begin(exprs) ->
-      let body = List.map compile exprs
+      let body = List.map compile' exprs
       let d = Dummy("empty begin")
       fun cont env ->
          let rec runall' acc = function
             | h :: t -> h (fun x -> runall' x t) env
             | [] -> acc |> cont
          runall' d body
-   | Quote_S(expr) -> makeQuote expr
+   | Quote_S(expr) -> makeQuote compenv expr
    | Unquote_S(expr) -> failwith "Can't unquote an expression that's not quoted."
    | m -> failwith "Malformed expression"
 
-and makeQuote syntax =
+and makeQuote compenv syntax =
+   let makeQuote' = makeQuote compenv
    let quoteBind binder names exprs body =
       let nameExprs = List.map String names
-      let boundExprs = List.map makeQuote exprs
-      let qBody = makeQuote body
+      let boundExprs = List.map makeQuote' exprs
+      let qBody = makeQuote' body
       let binderSym = Symbol(binder)
       fun cont env ->
          let rec mapbind acc = function
@@ -561,7 +571,7 @@ and makeQuote syntax =
    | SetId(id, expr) -> 
       let s = Symbol("set!")
       let name = Symbol(id)
-      let q = makeQuote expr
+      let q = makeQuote' expr
       fun cont env ->
          q (fun x -> List([s; name; x]) |> cont) env
    | Bind(names, exprs, body) -> quoteBind "let" names exprs body
@@ -569,11 +579,11 @@ and makeQuote syntax =
    | Fun(names, body) -> 
       let s = Symbol("lambda")
       let names = List(List.map Symbol names)
-      let qBody = makeQuote body
+      let qBody = makeQuote' body
       fun cont env ->
          qBody (fun x -> List([s; names; x]) |> cont) env
    | List_S(exprs) -> 
-      let qargs = List.map makeQuote exprs
+      let qargs = List.map makeQuote' exprs
       fun cont env ->
          let rec mapquote acc = function
             | h :: t -> h (fun x -> mapquote (x :: acc) t) env
@@ -581,19 +591,19 @@ and makeQuote syntax =
          mapquote [] qargs
    | If(c, t, e) -> 
       let s = Symbol("if")
-      let qc = makeQuote c
-      let qt = makeQuote t
-      let qe = makeQuote e
+      let qc = makeQuote' c
+      let qt = makeQuote' t
+      let qe = makeQuote' e
       fun cont env ->
          qc (fun x -> qt (fun y -> qe (fun z -> List([s; x; y; z]) |> cont) env) env) env
    | Define(name, body) -> 
       let s = Symbol("define")
       let n = Symbol(name)
-      let qb = makeQuote body
+      let qb = makeQuote' body
       fun cont env ->
          qb (fun x -> List([s; n; x]) |> cont) env
    | Begin(exprs) -> 
-      let qExprs = List.map makeQuote exprs
+      let qExprs = List.map makeQuote' exprs
       fun cont env ->
          let rec mapquote acc = function
             | h :: t -> h (fun x -> mapquote (x :: acc) t) env
@@ -602,11 +612,11 @@ and makeQuote syntax =
    | PFun(f) -> fun cont _ -> Function(f) |> cont
    | Quote_S(expr) -> 
       let s = Symbol("quote")
-      let qs = makeQuote expr
+      let qs = makeQuote' expr
       fun cont env ->
          qs (fun x -> List([s; x]) |> cont) env
    | Unquote_S(s) -> 
-      compile s
+      compile compenv s
 
 ///Eval construct -- evaluates code quotations
 and Eval cont args =
@@ -618,7 +628,10 @@ and Eval cont args =
       | Function(f) -> PrimFun(f)
       | m -> malformed "eval" m
    match args with
-   | [arg] -> toParser arg |> parserToSyntax macroEnv |> compile |> fun x -> x cont environment
+   | [arg] -> toParser arg 
+              |> parserToSyntax macroEnv 
+              |> compile compileEnvironment
+              |> fun x -> x cont environment
    | m -> malformed "eval" (List(m))
 
 
@@ -629,60 +642,108 @@ and Load cont = function
       (File.OpenText(file)).ReadToEnd() 
          |> List.ofSeq 
          |> parse
-         |> List.iter (fun x -> compile  x (fun _ -> Dummy("Dummy 'load'")) environment |> ignore)
+         |> List.iter (fun x -> compile compileEnvironment x (fun _ -> Dummy("Dummy 'load'")) environment |> ignore)
       Dummy(sprintf "Loaded '%s'." file) |> cont
    | m -> malformed "load" (List(m))
 
+and compileEnvironment : CompilerEnv =
+   [[
+       "*"
+       "/"
+       "%"
+       "+"
+       "-"
+       "pow"
+       "cons"
+       "car"
+       "first"
+       "cdr"
+       "rest"
+       "len"
+       "length"
+       "append"
+       "take"
+       "get"
+       "drop"
+       "build-seq"
+       "load"
+       "display"
+       "call/cc"
+       "true"
+       "false"
+       "<="
+       ">="
+       "<"
+       ">"
+       "="
+       "empty"
+       "null"
+       "empty?"
+       "reverse"
+       "rev"
+       "list"
+       "sort"
+       "throw"
+       "rand"
+       "string->num"
+       "num->string"
+       "concat-strings"
+       "eval"
+       "apply"
+       "add1"
+       "sub1"
+   ]] |> ref
 ///Our base environment
 and environment : Environment =
-   Map.ofList
-      ["*", ref (Function(Multiply))
-       "/", ref (Function(Divide))
-       "%", ref (Function(Modulus))
-       "+", ref (Function(Add))
-       "-", ref (Function(Subtract))
-       "pow", ref (Function(Exponent))
-       "cons", ref (Function(Cons))
-       "car", ref (Function(Car))
-       "first", ref (Function(Car))
-       "cdr", ref (Function(Cdr))
-       "rest", ref (Function(Cdr))
-       "len", ref (Function(Len))
-       "length", ref (Function(Len))
-       "append", ref (Function(Append))
-       "take", ref (Function(Take))
-       "get", ref (Function(Get))
-       "drop", ref (Function(Drop))
-       "build-seq", ref (Function(BuildSeq))
-       "load", ref (Function(Load))
-       "display", ref (Function(Display))
-       "call/cc", ref (Function(CallCC))
-       "true", ref (Number(1.0))
-       "false", ref (Number(0.0))
-       "<=", ref (Function(LTE))
-       ">=", ref (Function(GTE))
-       "<", ref (Function(LT))
-       ">", ref (Function(GT))
-       "=", ref (Function(EQ))
-       "empty", ref (List([]))
-       "null", ref (List([]))
-       "empty?", ref (Function(IsEmpty))
-       "reverse", ref (Function(Rev))
-       "rev", ref (Function(Rev))
-       "list", ref (Function(MakeList))
-       "sort", ref (Function(Sort))
-       "throw", ref (Function(Throw))
-       "rand", ref (Function(RandomDbl))
-       "string->num", ref (Function(String2Num))
-       "num->string", ref (Function(Num2String))
-       "concat-strings", ref (Function(Concat))
-       "eval", ref (Function(Eval))
-       "apply", ref (Function(Apply))
-       "add1", ref (Function(Add1))
-       "sub1", ref (Function(Sub1))
-      ] |> ref
+   [   
+      [|
+       ref (Function(Multiply))
+       ref (Function(Divide))
+       ref (Function(Modulus))
+       ref (Function(Add))
+       ref (Function(Subtract))
+       ref (Function(Exponent))
+       ref (Function(Cons))
+       ref (Function(Car))
+       ref (Function(Car))
+       ref (Function(Cdr))
+       ref (Function(Cdr))
+       ref (Function(Len))
+       ref (Function(Len))
+       ref (Function(Append))
+       ref (Function(Take))
+       ref (Function(Get))
+       ref (Function(Drop))
+       ref (Function(BuildSeq))
+       ref (Function(Load))
+       ref (Function(Display))
+       ref (Function(CallCC))
+       ref (Number(1.0))
+       ref (Number(0.0))
+       ref (Function(LTE))
+       ref (Function(GTE))
+       ref (Function(LT))
+       ref (Function(GT))
+       ref (Function(EQ))
+       ref (List([]))
+       ref (List([]))
+       ref (Function(IsEmpty))
+       ref (Function(Rev))
+       ref (Function(Rev))
+       ref (Function(MakeList))
+       ref (Function(Sort))
+       ref (Function(Throw))
+       ref (Function(RandomDbl))
+       ref (Function(String2Num))
+       ref (Function(Num2String))
+       ref (Function(Concat))
+       ref (Function(Eval))
+       ref (Function(Apply))
+       ref (Function(Add1))
+       ref (Function(Sub1))
+      |] |> ref ] |> ref
 
-let Evaluate syntax = compile syntax id environment
+let Evaluate syntax = compile compileEnvironment syntax id environment
 
 let ParseText text = 
    List.ofSeq text 
@@ -695,7 +756,7 @@ let rep (env : Environment) text =
     List.ofSeq text 
     |> parse 
     |> List.head 
-    |> fun x -> compile x id env 
+    |> fun x -> compile compileEnvironment x id env 
     |> print
 
 ///REPL -- Read/Eval/Print Loop
