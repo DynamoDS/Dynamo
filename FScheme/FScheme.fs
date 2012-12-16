@@ -105,11 +105,11 @@ let makeExternFunc (externFunc : ExternFunc) =
    Function(fun c args -> externFunc.Invoke(args) |> c)
 
 type Parser =
-    | Number_P of double
-    | String_P of string
-    | Sym of string
-    | List_P of Parser list
-    | PrimFun of (Continuation -> Expression list -> Expression)
+   | Number_P of double
+   | String_P of string
+   | Sym of string
+   | List_P of Parser list
+   | PrimFun of (Continuation -> Expression list -> Expression)
 
 type Macro = Parser list -> Parser
 type MacroEnvironment = Map<string, Macro>
@@ -164,13 +164,12 @@ type Syntax =
    | Define of string * Syntax
    | Begin of Syntax list
    | PFun of (Continuation -> Expression list -> Expression)
-   | Quote_S of Syntax
-   | Unquote_S of Syntax
+   | Quote_S of Parser
 
 let rec printParser = function
    | Number_P(n) -> n.ToString()
    | String_P(s) -> "\"" + s + "\""
-   | Sym(s) -> "'" + s
+   | Sym(s) -> s
    | List_P(ps) -> "(" + String.Join(" ", List.map printParser ps) + ")"
    | PrimFun(_) -> "<primitive-fun>"
 
@@ -221,13 +220,11 @@ let rec parserToSyntax (macro_env : MacroEnvironment) parser =
         //quote
         | Sym("quote") ->
             match t with
-            | [expr] -> Quote_S(parse' expr)
+            | [expr] -> Quote_S(expr)
             | m -> failwith "Syntax error in quote"
         //unquote
         | Sym("unquote") ->
-            match t with
-            | [expr] -> Unquote_S(parse' expr)
-            | m -> failwith "Syntax error in unquote"
+            failwith "unquote outside of quote"
         //begin
         | Sym("begin") ->
             Begin(List.map parse' t)
@@ -284,8 +281,8 @@ let rec printSyntax indent syntax =
             | Define(names, body) -> "(define (" + String.Join(" ", names) + ")" + printSyntax " " body + ")"
             | Begin(exprs) -> "(begin " + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
             | PFun(f) -> "<primitive-function>"
-            | Quote_S(s) -> "(quote " + printSyntax "" s + ")"
-            | Unquote_S(s) -> "(unquote " + printSyntax "" s + ")"
+            | Quote_S(p) -> "(quote " + printParser p + ")"
+            //| Unquote_S(s) -> "(unquote " + printSyntax "" s + ")"
 
 ///Converts the given Expression to a string.
 let rec print = function
@@ -556,77 +553,28 @@ let rec compile (compenv : CompilerEnv) syntax : (Continuation -> Environment ->
             | h :: t -> h (fun x -> runall' x t) env
             | [] -> acc |> cont
          runall' d body
-   | Quote_S(expr) -> makeQuote compenv expr
-   | Unquote_S(expr) -> failwith "Can't unquote an expression that's not quoted."
+   | Quote_S(parser) -> makeQuote compenv parser
+   //| Unquote_S(expr) -> failwith "Can't unquote an expression that's not quoted."
    | m -> failwith "Malformed expression"
 
-and makeQuote compenv syntax =
+and makeQuote compenv parser =
    let makeQuote' = makeQuote compenv
-   let quoteBind binder names exprs body =
-      let nameExprs = List.map String names
-      let boundExprs = List.map makeQuote' exprs
-      let qBody = makeQuote' body
-      let binderSym = Symbol(binder)
-      fun cont env ->
-         let rec mapbind acc = function
-            | h :: t -> h (fun x -> mapbind (x :: acc) t) env
-            | [] -> 
-               let bindings = List.rev acc |> List.map2 (fun n b -> List([n; b])) nameExprs
-               qBody (fun x -> List([binderSym; List(bindings); x]) |> cont) env
-         mapbind [] boundExprs
-   match syntax with
-   | Number_S(n) -> fun cont _ -> Number(n) |> cont
-   | String_S(s) -> fun cont _ -> String(s) |> cont
-   | Id(s) -> fun cont _ -> Symbol(s) |> cont
-   | SetId(id, expr) -> 
-      let s = Symbol("set!")
-      let name = Symbol(id)
-      let q = makeQuote' expr
-      fun cont env ->
-         q (fun x -> List([s; name; x]) |> cont) env
-   | Bind(names, exprs, body) -> quoteBind "let" names exprs body
-   | BindRec(names, exprs, body) -> quoteBind "letrec" names exprs body
-   | Fun(names, body) -> 
-      let s = Symbol("lambda")
-      let names = List(List.map Symbol names)
-      let qBody = makeQuote' body
-      fun cont env ->
-         qBody (fun x -> List([s; names; x]) |> cont) env
-   | List_S(exprs) -> 
+   match parser with
+   | Number_P(n) -> fun cont _ -> Number(n) |> cont
+   | String_P(s) -> fun cont _ -> String(s) |> cont
+   | Sym(s) -> fun cont _ -> Symbol(s) |> cont
+   | PrimFun(f) -> fun cont _ -> Function(f) |> cont
+   | List_P(Sym("unquote") :: t) ->
+      match t with
+      | [expr] -> parserToSyntax macroEnv expr |> compile compenv
+      | _ -> failwith "malformed 'unquote'"
+   | List_P(exprs) ->
       let qargs = List.map makeQuote' exprs
       fun cont env ->
          let rec mapquote acc = function
             | h :: t -> h (fun x -> mapquote (x :: acc) t) env
             | [] -> List.rev acc |> List |> cont
          mapquote [] qargs
-   | If(c, t, e) -> 
-      let s = Symbol("if")
-      let qc = makeQuote' c
-      let qt = makeQuote' t
-      let qe = makeQuote' e
-      fun cont env ->
-         qc (fun x -> qt (fun y -> qe (fun z -> List([s; x; y; z]) |> cont) env) env) env
-   | Define(name, body) -> 
-      let s = Symbol("define")
-      let n = Symbol(name)
-      let qb = makeQuote' body
-      fun cont env ->
-         qb (fun x -> List([s; n; x]) |> cont) env
-   | Begin(exprs) -> 
-      let qExprs = List.map makeQuote' exprs
-      fun cont env ->
-         let rec mapquote acc = function
-            | h :: t -> h (fun x -> mapquote (x :: acc) t) env
-            | [] -> List(List.rev acc) |> cont
-         mapquote [] qExprs
-   | PFun(f) -> fun cont _ -> Function(f) |> cont
-   | Quote_S(expr) -> 
-      let s = Symbol("quote")
-      let qs = makeQuote' expr
-      fun cont env ->
-         qs (fun x -> List([s; x]) |> cont) env
-   | Unquote_S(s) -> 
-      compile compenv s
 
 ///Eval construct -- evaluates code quotations
 and Eval cont args =
@@ -826,6 +774,10 @@ let evaluateSchemeDefs() =
       (lambda (f lofls) 
          (map (lambda (x) (apply f x)) 
                (zip lofls))))
+
+  (define for-each 
+     ;; for-each :: (X -> unit) [listof X] -> unit
+     (lambda (f lst) (fold (lambda (x _) (f x)) (begin) lst)))
    " |> ParseText |> ignore
 
 makeEnvironments()
