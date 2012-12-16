@@ -443,9 +443,9 @@ let findInEnv (name : string) compenv =
    let rec find acc = function
       | h :: t ->
          match List.tryFindIndex ((=) name) h with
-         | Some(i) -> acc, i
+         | Some(i) -> Some(acc, i)
          | None -> find (acc + 1) t
-      | [] -> sprintf "unbound name: %s" name |> failwith
+      | [] -> None
    find 0 compenv
 
 ///A basic compiler
@@ -459,17 +459,20 @@ let rec compile (compenv : CompilerEnv) syntax : (Continuation -> Environment ->
       let x = String(s)
       fun cont _ -> x |> cont
    | PFun(f) ->
-     let x = Function(f)
-     fun cont _ -> x |> cont
+      let x = Function(f)
+      fun cont _ -> x |> cont
    | Id(id) ->
-      let (i1, i2) = findInEnv id compenv.Value
-      fun cont env -> (env.Value.Item i1).Value.[i2].Value |> cont
+      match findInEnv id compenv.Value with
+      | Some(i1, i2) -> fun cont env -> (env.Value.Item i1).Value.[i2].Value |> cont
+      | None -> sprintf "Unbound identifier: %s" id |> failwith
    | SetId(id, expr) ->
       let ce = compile' expr
-      let (i1, i2) = findInEnv id compenv.Value
-      fun cont env ->
-         let box = (env.Value.Item i1).Value.[i2]
-         ce (fun x -> box := x; Dummy(sprintf "set! %s" id) |> cont) env
+      match findInEnv id compenv.Value with
+      | Some(i1, i2) -> 
+         fun cont env ->
+            let box = (env.Value.Item i1).Value.[i2]
+            ce (fun x -> box := x; Dummy(sprintf "set! %s" id) |> cont) env
+      | None -> sprintf "Unbound identifier: %s" id |> failwith
    | Bind(names, exprs, body) -> compile' (List_S(Fun(names, body) :: exprs))
    | BindRec(names, exprs, body) ->
       let cbody = compile (ref (names :: compenv.Value)) body
@@ -483,14 +486,21 @@ let rec compile (compenv : CompilerEnv) syntax : (Continuation -> Environment ->
             | [] -> cbody cont env'
          List.zip cargs boxes |> mapbind
    | Define(name, body) ->
-      let lastindex = compenv.Value.Head.Length
-      compenv := (List.append compenv.Value.Head [name]) :: compenv.Value.Tail
-      let cbody = compile compenv body
-      fun cont env -> 
-        let def = ref (Dummy(sprintf "define '%s'" name))
-        Array.Resize(env.Value.Head, env.Value.Head.Value.Length + 1)
-        env.Value.Head.Value.SetValue(def, lastindex)
-        cbody (fun x -> def := x; Dummy(sprintf "defined '%s'" name) |> cont) env
+      match List.tryFindIndex ((=) name) compenv.Value.Head with
+      | Some(idx) ->
+         let cbody = compile' body
+         fun cont env ->
+            let box = env.Value.Head.Value.[idx]
+            cbody (fun x -> box := x; Dummy(sprintf "defined '%s'" name) |> cont) env
+      | None ->
+         let lastindex = compenv.Value.Head.Length
+         compenv := (List.append compenv.Value.Head [name]) :: compenv.Value.Tail
+         let cbody = compile compenv body
+         fun cont env -> 
+           let def = ref (Dummy(sprintf "define '%s'" name))
+           Array.Resize(env.Value.Head, env.Value.Head.Value.Length + 1)
+           env.Value.Head.Value.SetValue(def, lastindex)
+           cbody (fun x -> def := x; Dummy(sprintf "defined '%s'" name) |> cont) env
    | Fun(names, body) ->
       let compenv' = names :: compenv.Value |> ref
       let cbody = compile compenv' body
@@ -652,11 +662,9 @@ and compileEnvironment : CompilerEnv =
 and environment : Environment =
    [[||] |> ref ] |> ref
 
-let mutable tempCEnv : string list = []
-let mutable tempREnv : Expression ref list = []
+let mutable tempEnv : (string * Expression ref) list = []
 let AddDefaultBinding name expr =
-   tempCEnv <- name :: tempCEnv
-   tempREnv <- ref expr :: tempREnv
+   tempEnv <- (name, ref expr) :: tempEnv
 
 let makeEnvironments() =
    AddDefaultBinding "*" (Function(Multiply))
@@ -706,29 +714,135 @@ let makeEnvironments() =
 
 let Evaluate syntax = compile compileEnvironment syntax id environment
 
+///Parses and evaluates an expression given in text form, and returns the resulting expression
 let ParseText text = 
    List.ofSeq text 
    |> parse 
    |> Begin 
    |> Evaluate
 
+let evaluateSchemeDefs() =
+   "
+   (define not (lambda (x) (if x 0 1)))
+
+   (define xor 
+      (lambda (a b) 
+         (and (or a b) 
+               (not (and a b)))))
+
+   (define fold 
+      ;; fold :: (X Y -> Y) Y [listof X] -> Y
+      (lambda (f a xs) 
+         (if (empty? xs) 
+               a 
+               (fold f (f (first xs) a) (rest xs))))) 
+
+   (define map
+      ;; map :: (X -> Y) [listof X] -> [listof Y] 
+      (lambda (f lst) 
+         (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) 
+                        empty
+                        lst))))
+
+   (define filter 
+      ;; filter :: (X -> bool) [listof X] -> [listof X]
+      (lambda (p lst) 
+         (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) 
+                        empty 
+                        lst)))) 
+
+   (define cartesian-product 
+      ;; cartesian-product :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
+      (lambda (comb lsts)
+         (letrec ((cp-atom-list (lambda (at lst) 
+                                    (letrec ((cal* (lambda (x l a) 
+                                                      (if (empty? l) 
+                                                            (reverse a) 
+                                                            (cal* x (rest l) (cons (cons x (first l)) a)))))) 
+                                       (cal* at lst empty))))
+
+                  (cp-list-list (lambda (l1 l2)
+                                    (letrec ((cll* (lambda (m n a) 
+                                                      (if (or (empty? m) (empty? n))
+                                                            a 
+                                                            (cll* (rest m) n (append a (cp-atom-list (first m) n)))))))
+                                       (cll* l1 l2 empty)))))
+
+            (let* ((lofls (reverse lsts)) 
+                     (rst (rest lofls))
+                     (cp (lambda (lsts) 
+                           (fold cp-list-list 
+                                 (map list (first lofls))
+                                 rst))))
+               (map (lambda (args) (apply comb args)) (cp lofls))))))
+
+   (define qs 
+      ;; qs :: [listof X] (X -> Y) (Y Y -> bool) -> [listof X]
+      (lambda (lst f c) 
+         (if (empty? lst) 
+               empty 
+               (let* ((pivot (f (first lst))) 
+                     (lt (filter (lambda (x) (c (f x) pivot)) (rest lst)))
+                     (gt (filter (lambda (x) (not (c (f x) pivot))) (rest lst))))
+               (append (qs lt f c) (cons (first lst) (qs gt f c))))))) 
+            
+   (define sort-with 
+      ;; sort-with :: [listof X] (X X -> int) -> [listof X]
+      (lambda (lst comp) 
+         (qs lst 
+               (lambda (x) x)
+               (lambda (a b) (< (comp a b) 0))))) 
+                      
+   (define sort-by
+      ;; sort-by :: [listof X] (X -> IComparable) -> [listof X]
+      (lambda (lst proj) 
+         (map (lambda (x) (first x))                       ;; Convert back to original list
+              (qs (map (lambda (x) (list x (proj x))) lst) ;; Sort list of original element/projection pairs
+                  (lambda (y) (first (rest y)))            ;; Sort based on the second element in the sub-lists
+                  <))))                                    ;; Compare using less-than
+
+  (define zip
+      ;; zip :: [listof X] [listof Y] ... [listof Z] -> [listof [listof X Y ... Z]]
+      (lambda (lofls) 
+         (letrec ((zip'' (lambda (lofls a al) 
+                           (if (empty? lofls) 
+                                 (list (reverse a) (reverse al)) 
+                                 (if (empty? (first lofls)) 
+                                    (list empty al) 
+                                    (zip'' (rest lofls) 
+                                           (cons (first (first lofls)) a) 
+                                           (cons (rest (first lofls)) al)))))) 
+                  (zip' (lambda (lofls acc) 
+                           (let ((result (zip'' lofls empty empty))) 
+                              (if (empty? (first result)) 
+                                    (reverse acc) 
+                                    (let ((p (first result)) 
+                                          (t (first (rest result)))) 
+                                    (zip' t (cons p acc)))))))) 
+            (zip' lofls empty))))
+
+   (define combine 
+      ;; combine :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
+      (lambda (f lofls) 
+         (map (lambda (x) (apply f x)) 
+               (zip lofls))))
+   " |> ParseText |> ignore
+
 makeEnvironments()
-environment := [Seq.toArray tempREnv |> ref]
-compileEnvironment := [tempCEnv]
+environment := [Seq.map (fun (_, x) -> x) tempEnv |> Seq.toArray |> ref]
+compileEnvironment := [List.map (fun (x, _) -> x) tempEnv]
+evaluateSchemeDefs()
 
 ///REP -- Read/Eval/Prints
-let rep (env : Environment) text = 
-    List.ofSeq text 
-    |> parse 
-    |> List.head 
-    |> fun x -> compile compileEnvironment x id env 
-    |> print
+let rep = ParseText >> print
 
 ///REPL -- Read/Eval/Print Loop
-let rec repl output : unit =
-   printf "%s\n> " output
-   try Console.ReadLine() |> rep environment |> repl
-   with ex -> repl ex.Message
+let repl() : unit =
+   let rec repl' output =
+      printf "%s\n> " output
+      try Console.ReadLine() |> rep |> repl'
+      with ex -> repl' ex.Message
+   repl' ""
 
 type ErrorLog = delegate of string -> unit
 
@@ -737,15 +851,13 @@ let test (log : ErrorLog) =
    let case source expected =
       try
          //printfn "TEST: %s" source
-         let output = rep environment source
+         let output = rep source
          //Console.WriteLine(sprintf "TESTING: %s" source)
          if output <> expected then
             sprintf "TEST FAILED: %s [Expected: %s, Actual: %s]" source expected output |> log.Invoke
       with ex -> sprintf "TEST CRASHED: %s [%s]" ex.Message source |> log.Invoke
    
    //Not
-   case "(define not 
-            (lambda (x) (if x 0 1)))" ""
    case "(not true)" "0"
    case "(not false)" "1"
    case "(not 0)" "1" // or (true)
@@ -764,135 +876,53 @@ let test (log : ErrorLog) =
    case "(or 1 1)" "1" // or (true)
 
    //Xor
-   case "(define xor 
-            (lambda (a b) 
-               (and (or a b) 
-                    (not (and a b)))))" ""
    case "(xor 0 0)" "0" // xor (false)
    case "(xor 1 0)" "1" // xor (true)
    case "(xor 0 1)" "1" // xor (true)
    case "(xor 1 1)" "0" // xor (false)
    
+   //Built-in Tests
+   case "(cons 1 (cons 5 (cons \"hello\" empty)))" "(1 5 \"hello\")" // cons and empty
+   case "(car (list 5 6 2))" "5" // car / first
+   case "(cdr (list 5 6 2))" "(6 2)" // cdr / rest
+   case "(len (list 5 6 2))" "3" // len
+   case "(append '(1 2 3) '(4 5 6))" "(1 2 3 4 5 6)" // append
+   case "(take 2 '(1 2 3))" "(1 2)" // take
+   case "(get 2 '(1 2 3))" "3" // get
+   case "(drop 2 '(1 2 3))" "(3)" // drop
+   case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9 10)" // build-seq
+   case "(reverse '(1 2 3))" "(3 2 1)" // reverse
+   case "(empty? '())" "1" // empty?
+   case "(empty? '(1))" "0" // empty?
+   case "(sort '(8 4 7 6 1 0 2 9))" "(0 1 2 4 6 7 8 9)" // sort
+   case "(sort (list \"b\" \"c\" \"a\"))" "(\"a\" \"b\" \"c\")" // sort
+
+   //Scope
+   case "(let ((y 6)) (let ((f (lambda (x) (+ x y)))) (let ((y 5)) (f 4))))" "10"
+
    //Apply
    case "(apply + '(1 2))" "3"
    case "(apply append '((1) (2)))" "(1 2)"
    
    //Fold
-   case "(begin 
-            (define fold 
-               ;; fold :: (X Y -> Y) Y [listof X] -> Y
-               (lambda (f a xs) 
-                  (if (empty? xs) 
-                      a 
-                      (fold f (f (first xs) a) (rest xs))))) 
-            (fold + 0 '(1 2 3)))" 
-        "6"
+   case "(fold + 0 '(1 2 3))"   "6"
    case "(fold * 1 '(2 3 4 5))" "120" // fold
    
    //Map
-   case "(begin 
-            (define map
-               ;; map :: (X -> Y) [listof X] -> [listof Y] 
-               (lambda (f lst) 
-                  (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) 
-                                 empty
-                                 lst)))) 
-            (map (lambda (x) x) '(1 2 3)))" 
-        "(1 2 3)"
+   case "(map (lambda (x) x) '(1 2 3))" "(1 2 3)"
    
    //Filter
-   case "(begin 
-            (define filter 
-               ;; filter :: (X -> bool) [listof X] -> [listof X]
-               (lambda (p lst) 
-                  (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) 
-                                 empty 
-                                 lst)))) 
-            (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))"
-        "(0 1)"
+   case "(filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"
    
    //Cartesian Product
-   case "(begin 
-            (define cp-atom-list 
-               (lambda (at lst) 
-                  (letrec ((cal* (lambda (x l a) 
-                                    (if (empty? l) 
-                                        (reverse a) 
-                                        (cal* x (rest l) (cons (cons x (first l)) a)))))) 
-                     (cal* at lst empty)))) 
-            
-            (define cp-list-list 
-               (lambda (l1 l2)
-                  (letrec ((cll* (lambda (m n a) 
-                                    (if (or (empty? m) (empty? n))
-                                        a 
-                                        (cll* (rest m) n (append a (cp-atom-list (first m) n)))))))
-                     (cll* l1 l2 empty)))) 
-                     
-            (define cartesian-product 
-               ;; cartesian-product :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
-               (lambda (comb lsts) 
-                  (let* ((lofls (reverse lsts)) 
-                         (rst (rest lofls))
-                         (cp (lambda (lsts) 
-                                 (fold cp-list-list 
-                                       (map list (first lofls))
-                                       rst))))
-                     (map (lambda (args) (apply comb args)) (cp lofls))))))" ""
-   case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))" "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
+   case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))" 
+        "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
    
    //Sorting
-   case "(begin 
-            (define qs 
-               ;; qs :: [listof X] (X -> Y) (Y Y -> bool) -> [listof X]
-               (lambda (lst f c) 
-                  (if (empty? lst) 
-                      empty 
-                      (let* ((pivot (f (first lst))) 
-                            (lt (filter (lambda (x) (c (f x) pivot)) (rest lst)))
-                            (gt (filter (lambda (x) (not (c (f x) pivot))) (rest lst))))
-                        (append (qs lt f c) (cons (first lst) (qs gt f c))))))) 
-            
-            (define sort-with 
-               ;; sort-with :: [listof X] (X X -> int) -> [listof X]
-               (lambda (lst comp) 
-                  (qs lst 
-                      (lambda (x) x)
-                      (lambda (a b) (< (comp a b) 0))))) 
-                      
-            (define sort-by
-               ;; sort-by :: [listof X] (X -> IComparable) -> [listof X]
-               (lambda (lst proj) 
-                  (map (lambda (x) (first x))                       ;; Convert back to original list
-                       (qs (map (lambda (x) (list x (proj x))) lst) ;; Sort list of original element/projection pairs
-                           (lambda (y) (first (rest y)))            ;; Sort based on the second element in the sub-lists
-                           <)))))                                   ;; Compare using less-than" ""
    case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
    case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
    
-   //Combine
-   case "(define zip
-            ;; zip :: [listof X] [listof Y] ... [listof Z] -> [listof [listof X Y ... Z]]
-            (lambda (lofls) 
-               (letrec ((zip'' (lambda (lofls a al) 
-                                 (if (empty? lofls) 
-                                     (list (reverse a) (reverse al)) 
-                                     (if (empty? (first lofls)) 
-                                         (list empty al) 
-                                         (zip'' (rest lofls) (cons (first (first lofls)) a) (cons (rest (first lofls)) al)))))) 
-                        (zip' (lambda (lofls acc) 
-                                 (let ((result (zip'' lofls empty empty))) 
-                                    (if (empty? (first result)) 
-                                        (reverse acc) 
-                                        (let ((p (first result)) 
-                                              (t (first (rest result)))) 
-                                          (zip' t (cons p acc)))))))) 
-                  (zip' lofls empty))))" ""
-   case "(define combine 
-            ;; combine :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
-            (lambda (f lofls) 
-               (map (lambda (x) (apply f x)) 
-                    (zip lofls))))" ""
+   //Zip/Combine
    case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
    case "(combine (lambda (x y) (display x) (display y) (append x y)) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
    
@@ -915,26 +945,5 @@ let test (log : ErrorLog) =
    case "(+ 8 (call/cc (lambda (k^) (* (k^ 5) 100))))" "13" // call/cc bailing out of multiplication
    case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
    case "(let ((divide (lambda (x y) (call/cc (lambda (k^) (if (= y 0) (k^ \"error\") (/ x y))))))) (divide 1 0))" "\"error\"" // call/cc as an error handler
-   
-   //Built-in Tests
-   case "(cons 1 (cons 5 (cons \"hello\" empty)))" "(1 5 \"hello\")" // cons and empty
-   case "(car (list 5 6 2))" "5" // car / first
-   case "(cdr (list 5 6 2))" "(6 2)" // cdr / rest
-   case "(len (list 5 6 2))" "3" // len
-   case "(append '(1 2 3) '(4 5 6))" "(1 2 3 4 5 6)" // append
-   case "(take 2 '(1 2 3))" "(1 2)" // take
-   case "(get 2 '(1 2 3))" "3" // get
-   case "(drop 2 '(1 2 3))" "(3)" // drop
-   case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9 10)" // build-seq
-   case "(reverse '(1 2 3))" "(3 2 1)" // reverse
-   case "(empty? '())" "1" // empty?
-   case "(empty? '(1))" "0" // empty?
-   case "(sort '(8 4 7 6 1 0 2 9))" "(0 1 2 4 6 7 8 9)" // sort
-   case "(sort (list \"b\" \"c\" \"a\"))" "(\"a\" \"b\" \"c\")" // sort
-
-   //Scope
-   case "(let ((y 6)) (let ((f (lambda (x) (+ x y)))) (let ((y 5)) (f 4))))" "10"
-
-   case "(begin (define cd (lambda (x) (if (<= x 0) x (cd (sub1 x))))) (cd 1000000))" "0"
    
 let runTests() = ErrorLog(Console.WriteLine) |> test
