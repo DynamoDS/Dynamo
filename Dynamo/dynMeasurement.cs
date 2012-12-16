@@ -78,11 +78,12 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            double u = 0.0;
-            double v = 0.0;
+            //double u = 0.0;
+            //double v = 0.0;
 
             FSharpList<Expression> result = FSharpList<Expression>.Empty;
-           
+            BoundingBoxUV bbox = null;
+
             object arg0 = ((Expression.Container)args[0]).Item;
             if (arg0 is Reference)
             {
@@ -90,15 +91,7 @@ namespace Dynamo.Elements
                 Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
                 if (f != null)
                 {
-                    if (!f.get_IsCyclic(0))
-                    {
-                        u = f.get_Period(0);
-                    }
-
-                    if (!f.get_IsCyclic(1))
-                    {
-                        v = f.get_Period(1);
-                    }
+                    bbox = f.GetBoundingBox();
                 }
             }
             else
@@ -106,13 +99,19 @@ namespace Dynamo.Elements
                 throw new Exception("Cannot cast first argument to Face.");
             }
 
-            FSharpList<Expression>.Cons(
-                           Expression.NewNumber(u),
+            result = FSharpList<Expression>.Cons(
+                           Expression.NewNumber(bbox.Max.V),
                            result);
-            FSharpList<Expression>.Cons(
-                           Expression.NewNumber(v),
+            result = FSharpList<Expression>.Cons(
+                           Expression.NewNumber(bbox.Max.U),
                            result);
-    
+            result = FSharpList<Expression>.Cons(
+                           Expression.NewNumber(bbox.Min.V),
+                           result);
+            result = FSharpList<Expression>.Cons(
+                           Expression.NewNumber(bbox.Min.U),
+                           result);
+
             //Fin
             return Expression.NewList(result);
         }
