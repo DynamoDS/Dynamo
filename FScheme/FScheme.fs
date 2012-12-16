@@ -21,14 +21,14 @@ open System.Numerics
 open System.IO
 
 //Simple Tokenizer for quickly defining expressions in Scheme syntax.
-type Token =
+type private Token =
    | Open | Close
    | Quote | Unquote
    | Number of string
    | String of string
    | Symbol of string
 
-let tokenize source =
+let private tokenize source =
    let rec string acc = function
       | '\\' :: '"' :: t -> string (acc + "\"") t // escaped quote becomes quote
       | '\\' :: 'b' :: t -> string (acc + "\b") t // escaped backspace
@@ -107,9 +107,9 @@ let makeExternFunc (externFunc : ExternFunc) =
 type Parser =
    | Number_P of double
    | String_P of string
-   | Sym of string
+   | Symbol_P of string
    | List_P of Parser list
-   | PrimFun of (Continuation -> Expression list -> Expression)
+   | PrimFun_P of (Continuation -> Expression list -> Expression)
 
 type Macro = Parser list -> Parser
 type MacroEnvironment = Map<string, Macro>
@@ -119,23 +119,23 @@ let LetStar : Macro = function
    | List_P(bindings) :: body ->
      let folder b a = 
         match b with
-        | List_P([Sym(name); expr]) as bind ->
-            List_P([Sym("let"); List_P([bind]); a])
+        | List_P([Symbol_P(name); expr]) as bind ->
+            List_P([Symbol_P("let"); List_P([bind]); a])
         | m -> failwith "bad let*"
-     List_P(Parser.Sym("begin") :: body) |> List.foldBack folder bindings 
+     List_P(Symbol_P("begin") :: body) |> List.foldBack folder bindings 
    | m -> failwith "bad let*"
 
 ///And Macro
 let rec And : Macro = function
    | [] -> Number_P(1.0)
    | [expr] -> expr
-   | h :: t -> List_P([Sym("if"); h; And t; Number_P(0.0)])
+   | h :: t -> List_P([Symbol_P("if"); h; And t; Number_P(0.0)])
 
 ///Or Macro
 let rec Or : Macro = function
    | [] -> Number_P(0.0)
    | [expr] -> expr
-   | h :: t -> List_P([Sym("if"); h; Number_P(1.0); Or t])
+   | h :: t -> List_P([Symbol_P("if"); h; Number_P(1.0); Or t])
 
 let macroEnv = 
     Map.ofList [
@@ -163,38 +163,38 @@ type Syntax =
    | If of Syntax * Syntax * Syntax
    | Define of string * Syntax
    | Begin of Syntax list
-   | PFun of (Continuation -> Expression list -> Expression)
+   | PrimFun_S of (Continuation -> Expression list -> Expression)
    | Quote_S of Parser
 
-let rec printParser = function
+let rec private printParser = function
    | Number_P(n) -> n.ToString()
    | String_P(s) -> "\"" + s + "\""
-   | Sym(s) -> s
+   | Symbol_P(s) -> s
    | List_P(ps) -> "(" + String.Join(" ", List.map printParser ps) + ")"
-   | PrimFun(_) -> "<primitive-fun>"
+   | PrimFun_P(_) -> "<primitive-fun>"
 
 //A simple parser
-let rec parserToSyntax (macro_env : MacroEnvironment) parser =
+let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
     let parse' = parserToSyntax macro_env
     match parser with
     | Number_P(n) -> Number_S(n)
     | String_P(s) -> String_S(s)
-    | PrimFun(f) -> PFun(f)
-    | Sym(s) -> Id(s)
+    | PrimFun_P(f) -> PrimFun_S(f)
+    | Symbol_P(s) -> Id(s)
     | List_P([]) -> List_S([])
     | List_P(h :: t) ->
         match h with
         //Set!
-        | Sym("set!") ->
+        | Symbol_P("set!") ->
             match t with
-            | Sym(name) :: body -> SetId(name, Begin(List.map parse' body))
+            | Symbol_P(name) :: body -> SetId(name, Begin(List.map parse' body))
             | m -> failwith "Syntax error in set!"
         //let and letrec
-        | Sym(s) when s = "let" || s = "letrec" ->
+        | Symbol_P(s) when s = "let" || s = "letrec" ->
             match t with
             | List_P(bindings) :: body ->
                let rec makeBind names bndings = function
-                  | List_P([Sym(name); bind]) :: t -> makeBind (name :: names) ((parse' bind) :: bndings) t
+                  | List_P([Symbol_P(name); bind]) :: t -> makeBind (name :: names) ((parse' bind) :: bndings) t
                   | [] -> 
                     let f = if s = "let" then Bind else BindRec
                     f(names, bndings, Begin(List.map parse' body))
@@ -202,44 +202,44 @@ let rec parserToSyntax (macro_env : MacroEnvironment) parser =
                makeBind [] [] bindings
             | m -> sprintf "Syntax error in %s." s |> failwith
         //lambda
-        | Sym("lambda") | Sym("λ") ->
+        | Symbol_P("lambda") | Symbol_P("λ") ->
             match t with
             | List_P(parameters) :: body ->
-               Fun(List.map (function Sym(s) -> s | m -> failwith "Syntax error in function definition.") parameters, Begin(List.map parse' body))
+               Fun(List.map (function Symbol_P(s) -> s | m -> failwith "Syntax error in function definition.") parameters, Begin(List.map parse' body))
             | m -> List_P(t) |> printParser |> sprintf "Syntax error in function definition: %s" |> failwith
         //if
-        | Sym("if") ->
+        | Symbol_P("if") ->
             match t with
             | [cond; then_case; else_case] -> If(parse' cond, parse' then_case, parse' else_case)
             | m -> failwith "Syntax error in if"//: %s" expr |> failwith
         //define
-        | Sym("define") -> 
+        | Symbol_P("define") -> 
             match t with
-            | Sym(name) :: body -> Define(name, Begin(List.map parse' body))
+            | Symbol_P(name) :: body -> Define(name, Begin(List.map parse' body))
             | m -> failwith "Syntax error in define"//: %s" expr |> failwith
         //quote
-        | Sym("quote") ->
+        | Symbol_P("quote") ->
             match t with
             | [expr] -> Quote_S(expr)
             | m -> failwith "Syntax error in quote"
         //unquote
-        | Sym("unquote") ->
+        | Symbol_P("unquote") ->
             failwith "unquote outside of quote"
         //begin
-        | Sym("begin") ->
+        | Symbol_P("begin") ->
             Begin(List.map parse' t)
         //defined macros
-        | Sym(s) when macro_env.ContainsKey s ->
+        | Symbol_P(s) when macro_env.ContainsKey s ->
             macro_env.[s] t |> parse'
         //otherwise...
         | _ -> List_S(List.map parse' (h :: t))
 
 //A simple parser
-let stringToParser source =
+let private stringToParser source =
    let map = function
       | Token.Number(n) -> Number_P(Double.Parse(n))
       | Token.String(s) -> String_P(s)
-      | Token.Symbol(s) -> Sym(s)
+      | Token.Symbol(s) -> Symbol_P(s)
       | _ -> failwith "Syntax error."
    let rec list f t acc =
       let e, t' = parse' [] t
@@ -247,16 +247,16 @@ let stringToParser source =
    and parse' acc = function
       | Open :: t -> list id t acc
       | Close :: t -> (List.rev acc), t
-      | Quote :: Open :: t -> list (fun e -> [Sym("quote"); List_P(e)]) t acc
-      | Quote :: h :: t -> parse' (List_P([Sym("quote"); map h]) :: acc) t
-      | Unquote :: Open :: t -> list (fun e -> [Sym("unquote"); List_P(e)]) t acc
-      | Unquote :: h :: t -> parse' (List_P([Sym("unquote"); map h]) :: acc) t
+      | Quote :: Open :: t -> list (fun e -> [Symbol_P("quote"); List_P(e)]) t acc
+      | Quote :: h :: t -> parse' (List_P([Symbol_P("quote"); map h]) :: acc) t
+      | Unquote :: Open :: t -> list (fun e -> [Symbol_P("unquote"); List_P(e)]) t acc
+      | Unquote :: h :: t -> parse' (List_P([Symbol_P("unquote"); map h]) :: acc) t
       | h :: t -> parse' ((map h) :: acc) t
       | [] -> (List.rev acc), []
    let result, _ = parse' [] (tokenize source)
    result
 
-let parse = stringToParser >> List.map (parserToSyntax macroEnv)
+let private parse = stringToParser >> List.map (parserToSyntax macroEnv)
 
 let rec printSyntax indent syntax = 
    let printBind name names exprs body =
@@ -280,9 +280,8 @@ let rec printSyntax indent syntax =
             | If(c, t, e) -> "(if " + String.Join(" ", (List.map (printSyntax "") [c; t; e])) + ")"
             | Define(names, body) -> "(define (" + String.Join(" ", names) + ")" + printSyntax " " body + ")"
             | Begin(exprs) -> "(begin " + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
-            | PFun(f) -> "<primitive-function>"
+            | PrimFun_S(f) -> "<primitive-function>"
             | Quote_S(p) -> "(quote " + printParser p + ")"
-            //| Unquote_S(s) -> "(unquote " + printSyntax "" s + ")"
 
 ///Converts the given Expression to a string.
 let rec print = function
@@ -296,10 +295,10 @@ let rec print = function
    | Dummy(_) -> "" // sometimes useful to emit value for debugging, but normally we ignore
 
 ///Prints a malformed statement error.
-let malformed n e = sprintf "Malformed '%s': %s" n (print (List([e]))) |> failwith
+let private malformed n e = sprintf "Malformed '%s': %s" n (print (List([e]))) |> failwith
 
 ///Simple wrapper for arithmatic operations.
-let math op name cont = function
+let private mathbin op name cont = function
    //If the arguments coming in consist of at least two numbers...
    | Number(n) :: Number(n2) :: ns ->
       //op': function that takes two Expression.Numbers and applies the given op.
@@ -310,16 +309,31 @@ let math op name cont = function
    //Otherwise, fail.
    | m -> malformed name (List(m))
 
+let private math0 op name start cont exprs = 
+  let op' a = function
+    | Number(b) -> op a b
+    | m -> malformed (sprintf "%s arg" name) m
+  Number(List.fold op' start exprs) |> cont
+
+let private math1 op op2 unary name cont = function
+  | [Number(n)] -> Number(unary n) |> cont
+  | Number(n) :: ns ->
+    let cont' = function
+      | Number(x) -> Number(op n x) |> cont 
+      | m -> malformed (sprintf "%s arg" name) m
+    op2 cont' ns
+  | m -> malformed name (List(m)) 
+
 //Arithmatic functions
-let Add = math (+) "addition"
-let Subtract = math (-) "subtraction"
-let Multiply = math (*) "multiplication"
-let Divide = math (/) "division"
-let Modulus = math (%) "modulus"
-let Exponent = math ( ** ) "exponent"
+let Add = math0 (+) "addition" 0.
+let Subtract = math1 (-) Add (fun x -> -x) "subtraction"
+let Multiply = math0 (*) "multiplication" 1.
+let Divide = math1 (/) Multiply ((/) 1.) "division"
+let Modulus = mathbin (%) "modulus"
+let Exponent = mathbin ( ** ) "exponent"
 
 ///Simple wrapper for comparison operations.
-let boolMath (op : (IComparable -> IComparable -> bool)) name cont args =
+let private boolMath (op : (IComparable -> IComparable -> bool)) name cont args =
    let comp a' b' = 
       match (op a' b') with
       | true -> Number(1.0) |> cont
@@ -337,7 +351,7 @@ let GT = boolMath (>) "greater-than"
 let EQ = boolMath (=) "equals"
 
 //Random Number
-let _r = new Random()
+let private _r = new Random()
 let RandomDbl cont = function _ -> Number(_r.NextDouble()) |> cont
 
 //List Functions
@@ -433,10 +447,10 @@ let Sub1 cont = function
    | [Number(n)] -> Number(n - 1.0) |> cont
    | m -> malformed "sub1" (List(m))
 
-type CompilerFrame = string list
-type CompilerEnv = CompilerFrame list ref
+type private CompilerFrame = string list
+type private CompilerEnv = CompilerFrame list ref
 
-let findInEnv (name : string) compenv =
+let private findInEnv (name : string) compenv =
    let rec find acc = function
       | h :: t ->
          match List.tryFindIndex ((=) name) h with
@@ -446,7 +460,7 @@ let findInEnv (name : string) compenv =
    find 0 compenv
 
 ///A basic compiler
-let rec compile (compenv : CompilerEnv) syntax : (Continuation -> Environment -> Expression) =
+let rec private compile (compenv : CompilerEnv) syntax : (Continuation -> Environment -> Expression) =
    let compile' = compile compenv
    match syntax with
    | Number_S(n) ->
@@ -455,7 +469,7 @@ let rec compile (compenv : CompilerEnv) syntax : (Continuation -> Environment ->
    | String_S(s) ->
       let x = String(s)
       fun cont _ -> x |> cont
-   | PFun(f) ->
+   | PrimFun_S(f) ->
       let x = Function(f)
       fun cont _ -> x |> cont
    | Id(id) ->
@@ -554,17 +568,16 @@ let rec compile (compenv : CompilerEnv) syntax : (Continuation -> Environment ->
             | [] -> acc |> cont
          runall' d body
    | Quote_S(parser) -> makeQuote compenv parser
-   //| Unquote_S(expr) -> failwith "Can't unquote an expression that's not quoted."
    | m -> failwith "Malformed expression"
 
-and makeQuote compenv parser =
+and private makeQuote compenv parser =
    let makeQuote' = makeQuote compenv
    match parser with
    | Number_P(n) -> fun cont _ -> Number(n) |> cont
    | String_P(s) -> fun cont _ -> String(s) |> cont
-   | Sym(s) -> fun cont _ -> Symbol(s) |> cont
-   | PrimFun(f) -> fun cont _ -> Function(f) |> cont
-   | List_P(Sym("unquote") :: t) ->
+   | Symbol_P(s) -> fun cont _ -> Symbol(s) |> cont
+   | PrimFun_P(f) -> fun cont _ -> Function(f) |> cont
+   | List_P(Symbol_P("unquote") :: t) ->
       match t with
       | [expr] -> parserToSyntax macroEnv expr |> compile compenv
       | _ -> failwith "malformed 'unquote'"
@@ -579,11 +592,11 @@ and makeQuote compenv parser =
 ///Eval construct -- evaluates code quotations
 and Eval cont args =
    let rec toParser = function
-      | Symbol(s) -> Sym(s)
+      | Symbol(s) -> Symbol_P(s)
       | Number(n) -> Number_P(n)
       | String(s) -> String_P(s)
       | List(l) -> List_P(List.map toParser l)
-      | Function(f) -> PrimFun(f)
+      | Function(f) -> PrimFun_P(f)
       | m -> malformed "eval" m
    match args with
    | [arg] -> toParser arg 
@@ -610,11 +623,11 @@ and compileEnvironment : CompilerEnv =
 and environment : Environment =
    [[||] |> ref ] |> ref
 
-let mutable tempEnv : (string * Expression ref) list = []
+let mutable private tempEnv : (string * Expression ref) list = []
 let AddDefaultBinding name expr =
    tempEnv <- (name, ref expr) :: tempEnv
 
-let makeEnvironments() =
+let private makeEnvironments() =
    AddDefaultBinding "*" (Function(Multiply))
    AddDefaultBinding "/" (Function(Divide))
    AddDefaultBinding "%" (Function(Modulus))
@@ -669,7 +682,7 @@ let ParseText text =
    |> Begin 
    |> Evaluate
 
-let evaluateSchemeDefs() =
+let private evaluateSchemeDefs() =
    "
    (define not (lambda (x) (if x 0 1)))
 
