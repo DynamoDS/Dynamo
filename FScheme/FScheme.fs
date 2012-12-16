@@ -647,101 +647,62 @@ and Load cont = function
    | m -> malformed "load" (List(m))
 
 and compileEnvironment : CompilerEnv =
-   [[
-       "*"
-       "/"
-       "%"
-       "+"
-       "-"
-       "pow"
-       "cons"
-       "car"
-       "first"
-       "cdr"
-       "rest"
-       "len"
-       "length"
-       "append"
-       "take"
-       "get"
-       "drop"
-       "build-seq"
-       "load"
-       "display"
-       "call/cc"
-       "true"
-       "false"
-       "<="
-       ">="
-       "<"
-       ">"
-       "="
-       "empty"
-       "null"
-       "empty?"
-       "reverse"
-       "rev"
-       "list"
-       "sort"
-       "throw"
-       "rand"
-       "string->num"
-       "num->string"
-       "concat-strings"
-       "eval"
-       "apply"
-       "add1"
-       "sub1"
-   ]] |> ref
+   [[]] |> ref
 ///Our base environment
 and environment : Environment =
-   [   
-      [|
-       ref (Function(Multiply))
-       ref (Function(Divide))
-       ref (Function(Modulus))
-       ref (Function(Add))
-       ref (Function(Subtract))
-       ref (Function(Exponent))
-       ref (Function(Cons))
-       ref (Function(Car))
-       ref (Function(Car))
-       ref (Function(Cdr))
-       ref (Function(Cdr))
-       ref (Function(Len))
-       ref (Function(Len))
-       ref (Function(Append))
-       ref (Function(Take))
-       ref (Function(Get))
-       ref (Function(Drop))
-       ref (Function(BuildSeq))
-       ref (Function(Load))
-       ref (Function(Display))
-       ref (Function(CallCC))
-       ref (Number(1.0))
-       ref (Number(0.0))
-       ref (Function(LTE))
-       ref (Function(GTE))
-       ref (Function(LT))
-       ref (Function(GT))
-       ref (Function(EQ))
-       ref (List([]))
-       ref (List([]))
-       ref (Function(IsEmpty))
-       ref (Function(Rev))
-       ref (Function(Rev))
-       ref (Function(MakeList))
-       ref (Function(Sort))
-       ref (Function(Throw))
-       ref (Function(RandomDbl))
-       ref (Function(String2Num))
-       ref (Function(Num2String))
-       ref (Function(Concat))
-       ref (Function(Eval))
-       ref (Function(Apply))
-       ref (Function(Add1))
-       ref (Function(Sub1))
-      |] |> ref ] |> ref
+   [[||] |> ref ] |> ref
+
+let mutable tempCEnv : string list = []
+let mutable tempREnv : Expression ref list = []
+let AddDefaultBinding name expr =
+   tempCEnv <- name :: tempCEnv
+   tempREnv <- ref expr :: tempREnv
+
+let makeEnvironments() =
+   AddDefaultBinding "*" (Function(Multiply))
+   AddDefaultBinding "/" (Function(Divide))
+   AddDefaultBinding "%" (Function(Modulus))
+   AddDefaultBinding "+" (Function(Add))
+   AddDefaultBinding "-" (Function(Subtract))
+   AddDefaultBinding "pow" (Function(Exponent))
+   AddDefaultBinding "cons" (Function(Cons))
+   AddDefaultBinding "car" (Function(Car))
+   AddDefaultBinding "first" (Function(Car))
+   AddDefaultBinding "cdr" (Function(Cdr))
+   AddDefaultBinding "rest" (Function(Cdr))
+   AddDefaultBinding "len" (Function(Len))
+   AddDefaultBinding "length" (Function(Len))
+   AddDefaultBinding "append" (Function(Append))
+   AddDefaultBinding "take" (Function(Take))
+   AddDefaultBinding "get" (Function(Get))
+   AddDefaultBinding "drop" (Function(Drop))
+   AddDefaultBinding "build-seq" (Function(BuildSeq))
+   AddDefaultBinding "load" (Function(Load))
+   AddDefaultBinding "display" (Function(Display))
+   AddDefaultBinding "call/cc" (Function(CallCC))
+   AddDefaultBinding "true" (Number(1.0))
+   AddDefaultBinding "false" (Number(0.0))
+   AddDefaultBinding "<=" (Function(LTE))
+   AddDefaultBinding ">=" (Function(GTE))
+   AddDefaultBinding "<" (Function(LT))
+   AddDefaultBinding ">" (Function(GT))
+   AddDefaultBinding "=" (Function(EQ))
+   AddDefaultBinding "empty" (List([]))
+   AddDefaultBinding "null" (List([]))
+   AddDefaultBinding "empty?" (Function(IsEmpty))
+   AddDefaultBinding "reverse" (Function(Rev))
+   AddDefaultBinding "rev" (Function(Rev))
+   AddDefaultBinding "list" (Function(MakeList))
+   AddDefaultBinding "sort" (Function(Sort))
+   AddDefaultBinding "throw" (Function(Throw))
+   AddDefaultBinding "rand" (Function(RandomDbl))
+   AddDefaultBinding "string->num" (Function(String2Num))
+   AddDefaultBinding "num->string"(Function(Num2String))
+   AddDefaultBinding "concat-strings" (Function(Concat))
+   AddDefaultBinding "eval" (Function(Eval))
+   AddDefaultBinding "apply" (Function(Apply))
+   AddDefaultBinding "add1" (Function(Add1))
+   AddDefaultBinding "sub1" (Function(Sub1))
 
 let Evaluate syntax = compile compileEnvironment syntax id environment
 
@@ -750,6 +711,10 @@ let ParseText text =
    |> parse 
    |> Begin 
    |> Evaluate
+
+makeEnvironments()
+environment := [Seq.toArray tempREnv |> ref]
+compileEnvironment := [tempCEnv]
 
 ///REP -- Read/Eval/Prints
 let rep (env : Environment) text = 
@@ -972,4 +937,4 @@ let test (log : ErrorLog) =
 
    case "(begin (define cd (lambda (x) (if (<= x 0) x (cd (sub1 x))))) (cd 1000000))" "0"
    
-let runTests = ErrorLog(Console.WriteLine) |> test
+let runTests() = ErrorLog(Console.WriteLine) |> test
