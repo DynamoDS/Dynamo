@@ -86,8 +86,6 @@ type Expression =
    | List of Expression list
    ///Expression representing a function.
    | Function of (Continuation -> Expression list -> Expression)
-   ///Expression representing a continuation (used by call/cc in Scheme).
-   | Current of Continuation
    ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
    ///Should NOT be used except internally by this interpreter.
    | Dummy of string
@@ -291,7 +289,7 @@ let rec print = function
    | Symbol(s) -> s
    | Number(n) -> n.ToString()
    | Container(o) -> o.ToString()
-   | Function(_) | Current(_) -> "Function"
+   | Function(_) -> "#<procedure>"
    | Dummy(_) -> "" // sometimes useful to emit value for debugging, but normally we ignore
 
 ///Prints a malformed statement error.
@@ -430,6 +428,12 @@ let Display cont = function
    | [e] -> print e |> printf "DISPLAY: %s \n"; Dummy("Dummy 'display'") |> cont
    | m -> malformed "display" (List(m))
 
+let private Current cont =
+   let func _ = function
+      | [expr] -> expr |> cont
+      | m -> malformed "continuation application" (List(m))
+   Function(func)
+
 ///Call/cc -- gives access to the current interpreter continuation.
 let CallCC cont = function
    | [Function(callee)] -> callee cont [Current(cont)]
@@ -521,11 +525,13 @@ let rec private compile (compenv : CompilerEnv) syntax : (Continuation -> Enviro
          if arglen = amt then
             Seq.map ref args 
             |> Seq.toArray
-         else
+         elif amt > 0 then
             Seq.append (Seq.take (amt - 1) args) 
                        (Seq.singleton (List(Seq.skip (amt - 1) args |> Seq.toList)))
             |> Seq.map ref 
             |> Seq.toArray
+         else
+            failwith "Can't call 0-arity function with arguments."
       fun cont env ->
          Function(
             fun cont' exprs -> 
@@ -542,10 +548,6 @@ let rec private compile (compenv : CompilerEnv) syntax : (Continuation -> Enviro
                   | h :: t -> h (fun v -> mapeval (v :: acc) t) env
                   | [] -> List.rev acc |> f cont
                mapeval [] cargs
-            | Current(c) ->
-               match cargs with
-               | [arg] -> arg c env
-               | m -> failwith "Malformed Continuation"
             | m -> printSyntax "" syntax |> sprintf "expected function for call: %s" |> failwith
          cfun cont' env
    | If(cond, then_expr, else_expr) ->
@@ -813,6 +815,7 @@ type ErrorLog = delegate of string -> unit
 
 //Tests
 let test (log : ErrorLog) =
+   let success = ref true
    let case source expected =
       try
          //printfn "TEST: %s" source
@@ -820,7 +823,9 @@ let test (log : ErrorLog) =
          //Console.WriteLine(sprintf "TESTING: %s" source)
          if output <> expected then
             sprintf "TEST FAILED: %s [Expected: %s, Actual: %s]" source expected output |> log.Invoke
-      with ex -> sprintf "TEST CRASHED: %s [%s]" ex.Message source |> log.Invoke
+      with ex ->
+         success := false 
+         sprintf "TEST CRASHED: %s [%s]" ex.Message source |> log.Invoke
    
    //Not
    case "(not true)" "0"
@@ -889,7 +894,7 @@ let test (log : ErrorLog) =
    
    //Zip/Combine
    case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
-   case "(combine (lambda (x y) (display x) (display y) (append x y)) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
+   case "(combine (lambda (x y) (append x y)) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
    
    //Engine Tests
    case "(quote (* 2 3))" "(* 2 3)" // quote primitive
@@ -911,4 +916,7 @@ let test (log : ErrorLog) =
    case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
    case "(let ((divide (lambda (x y) (call/cc (lambda (k^) (if (= y 0) (k^ \"error\") (/ x y))))))) (divide 1 0))" "\"error\"" // call/cc as an error handler
    
-let runTests() = ErrorLog(Console.WriteLine) |> test
+   success.Value
+
+let runTests() = 
+   if ErrorLog(Console.WriteLine) |> test then Console.WriteLine("All Tests Passed.")
