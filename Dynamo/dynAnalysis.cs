@@ -14,7 +14,7 @@ using Expression = Dynamo.FScheme.Expression;
 namespace Dynamo.Elements
 {
     
-    [ElementName("Spatial Field")]
+    [ElementName("Colored Surface Spatial Field")]
     [ElementCategory(BuiltinElementCategories.ANALYSIS)]
     [ElementDescription("Gets or creates the spatial field manager on the view.")]
     [RequiresTransaction(true)]
@@ -55,24 +55,25 @@ namespace Dynamo.Elements
             
         }
 
-        public void CreateDisplayStyle()
+        void CreateDisplayStyle()
         {
             Document doc = dynElementSettings.SharedInstance.Doc.Document;
 
-            AnalysisDisplayStyle analysisDisplayStyle = null;
+            analysisDisplayStyle = null;
+
             // Look for an existing analysis display style with a specific name
             FilteredElementCollector collector1 = new FilteredElementCollector(doc);
             ICollection<Element> collection =
                 collector1.OfClass(typeof(AnalysisDisplayStyle)).ToElements();
             var displayStyle = from element in collection
-                               where element.Name == "Dynamo"
+                               where element.Name == "Dynamo_Color"
                                select element;
 
             // If display style does not already exist in the document, create it
             if (displayStyle.Count() == 0)
             {
                 AnalysisDisplayColoredSurfaceSettings coloredSurfaceSettings = new AnalysisDisplayColoredSurfaceSettings();
-                coloredSurfaceSettings.ShowGridLines = true;
+                coloredSurfaceSettings.ShowGridLines = false;
                 
                 AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
                 Color orange = new Color(255, 205, 0);
@@ -88,9 +89,7 @@ namespace Dynamo.Elements
                 
                 FilteredElementCollector collector2 = new FilteredElementCollector(doc);
                 ICollection<Element> elementCollection = collector2.OfClass(typeof(TextNoteType)).ToElements();
-                //var textElements = from element in collector2
-                //                   where element.Name == "LegendText"
-                //                   select element;
+
                 var textElements = from element in collector2
                                    select element;
                 // if LegendText exists, use it for this Display Style
@@ -100,7 +99,106 @@ namespace Dynamo.Elements
                         textElements.Cast<TextNoteType>().ElementAt<TextNoteType>(0);
                     legendSettings.TextTypeId = textType.Id;
                 }
-                analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(doc, "Dynamo", coloredSurfaceSettings, colorSettings, legendSettings);
+                analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(doc, "Dynamo_Color", coloredSurfaceSettings, colorSettings, legendSettings);
+            }
+            else
+            {
+                analysisDisplayStyle =
+                    displayStyle.Cast<AnalysisDisplayStyle>().ElementAt<AnalysisDisplayStyle>(0);
+            }
+            // now assign the display style to the view
+            doc.ActiveView.AnalysisDisplayStyleId = analysisDisplayStyle.Id;
+        }
+    }
+
+    [ElementName("Vector Spatial Field")]
+    [ElementCategory(BuiltinElementCategories.ANALYSIS)]
+    [ElementDescription("Gets or creates the spatial field manager on the view.")]
+    [RequiresTransaction(true)]
+    class dynVectorSpatialField : dynNode
+    {
+        AnalysisDisplayStyle analysisDisplayStyle;
+
+        public dynVectorSpatialField()
+        {
+            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
+            OutPortData = new PortData("sfm", "Spatial field manager for the active view", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            SpatialFieldManager sfm;
+
+            if (analysisDisplayStyle == null)
+            {
+                CreateDisplayStyle();
+            }
+
+            sfm = SpatialFieldManager.GetSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView);
+            
+            if (sfm != null)
+            {
+                dynElementSettings.SharedInstance.SpatialFieldManagerUpdated = sfm;
+            }
+            else
+            {
+                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView, Convert.ToInt16(((Expression.Number)args[0]).Item));
+            }
+
+            return Expression.NewContainer(sfm);
+
+        }
+
+        void CreateDisplayStyle()
+        {
+            Document doc = dynElementSettings.SharedInstance.Doc.Document;
+
+            analysisDisplayStyle = null;
+            // Look for an existing analysis display style with a specific name
+            FilteredElementCollector collector1 = new FilteredElementCollector(doc);
+            ICollection<Element> collection =
+                collector1.OfClass(typeof(AnalysisDisplayStyle)).ToElements();
+            var displayStyle = from element in collection
+                               where element.Name == "Dynamo_Vector"
+                               select element;
+
+            // If display style does not already exist in the document, create it
+            if (displayStyle.Count() == 0)
+            {
+                AnalysisDisplayVectorSettings vectorSettings = new AnalysisDisplayVectorSettings();
+                vectorSettings.VectorPosition = AnalysisDisplayStyleVectorPosition.FromDataPoint;
+                vectorSettings.VectorOrientation = AnalysisDisplayStyleVectorOrientation.Linear;
+                vectorSettings.ArrowheadScale = AnalysisDisplayStyleVectorArrowheadScale.NoScaling;
+                vectorSettings.ArrowLineWeight = 5;
+
+                AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
+                Color orange = new Color(255, 205, 0);
+                Color purple = new Color(200, 0, 200);
+                colorSettings.MaxColor = orange;
+                colorSettings.MinColor = purple;
+
+                AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
+                legendSettings.NumberOfSteps = 10;
+                legendSettings.Rounding = 0.05;
+                legendSettings.ShowDataDescription = false;
+                legendSettings.ShowLegend = true;
+
+                FilteredElementCollector collector2 = new FilteredElementCollector(doc);
+                ICollection<Element> elementCollection = collector2.OfClass(typeof(TextNoteType)).ToElements();
+
+                var textElements = from element in collector2
+                                   select element;
+                // if LegendText exists, use it for this Display Style
+                if (textElements.Count() > 0)
+                {
+                    TextNoteType textType =
+                        textElements.Cast<TextNoteType>().ElementAt<TextNoteType>(0);
+                    legendSettings.TextTypeId = textType.Id;
+                }
+                analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(doc, "Dynamo_Vector", vectorSettings, colorSettings, legendSettings);
             }
             else
             {
@@ -196,6 +294,123 @@ namespace Dynamo.Elements
             sfm.UpdateSpatialFieldPrimitive(idx, pnts, vals, schemaIndex);
 
             return Expression.NewContainer(idx);
+
+        }
+    }
+
+    [ElementName("Temporary Curves")]
+    [ElementCategory(BuiltinElementCategories.ANALYSIS)]
+    [ElementDescription("Draw temporary curves in the family.")]
+    [RequiresTransaction(true)]
+    class dynTemporaryCurves : dynNode
+    {
+        const string DYNAMO_TEMP_CURVES_SCHEMA = "Dynamo Temporary Curves";
+
+        List<int> idxs = new List<int>();
+        int schemaId = -1;
+
+        public dynTemporaryCurves()
+        {
+            InPortData.Add(new PortData("lst", "List of sets of xys that will define line segments.", typeof(object)));
+            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
+            OutPortData = new PortData("idx", "Analysis results object index", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            SpatialFieldManager sfm = ((Expression.Container)args[1]).Item as SpatialFieldManager;
+
+            //first, cleanup the old one
+            if(idxs.Count > 0)
+            {
+                foreach (int idx in idxs)
+                {
+                    sfm.RemoveSpatialFieldPrimitive(idx);
+                }
+            }
+
+            if (!sfm.IsResultSchemaNameUnique(DYNAMO_TEMP_CURVES_SCHEMA, -1))
+            {
+                IList<int> arses = sfm.GetRegisteredResults();
+                foreach (int i in arses)
+                {
+                    AnalysisResultSchema arsTest = sfm.GetResultSchema(i);
+                    if (arsTest.Name == DYNAMO_TEMP_CURVES_SCHEMA)
+                    {
+                        schemaId = i;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                AnalysisResultSchema ars = new AnalysisResultSchema(DYNAMO_TEMP_CURVES_SCHEMA, "Temporary curves from Dynamo.");
+                schemaId = sfm.RegisterResult(ars);
+            }
+
+            Transform trf = Transform.Identity;
+
+            //get the list of pairs
+            FSharpList<Expression> listOfPairs = ((Expression.List)args[0]).Item;
+            foreach (Expression expr in listOfPairs)
+            {
+                FSharpList<Expression> pair = ((Expression.List)expr).Item;
+
+                XYZ start = (XYZ)((Expression.Container)pair[0]).Item;
+                XYZ end = (XYZ)((Expression.Container)pair[1]).Item;
+                XYZ start1 = start + XYZ.BasisZ * .1;
+                XYZ end1 = end + XYZ.BasisZ * .1;
+
+                //http://thebuildingcoder.typepad.com/blog/2012/09/sphere-creation-for-avf-and-filtering.html#3
+
+                Line l1 = this.UIDocument.Application.Application.Create.NewLineBound(start, end);
+                Line l2 = this.UIDocument.Application.Application.Create.NewLineBound(end, end1);
+                Line l3 = this.UIDocument.Application.Application.Create.NewLineBound(end1, start1);
+                Line l4 = this.UIDocument.Application.Application.Create.NewLineBound(start1, start);
+
+                List<CurveLoop> loops = new List<CurveLoop>();
+                CurveLoop cl = new CurveLoop();
+                cl.Append(l1);
+                cl.Append(l2);
+                cl.Append(l3);
+                cl.Append(l4);
+                loops.Add(cl);
+                Solid s = GeometryCreationUtilities.CreateExtrusionGeometry(loops, (end-start).CrossProduct(start1-start), .01);
+                
+                foreach (Face face in s.Faces)
+                {
+                    int idx = sfm.AddSpatialFieldPrimitive(face, trf);
+
+                    //need to use double parameters because
+                    //we're drawing lines
+                    IList<UV> uvPts = new List<UV>();
+                    uvPts.Add(face.GetBoundingBox().Min);
+
+                    FieldDomainPointsByUV pnts
+                      = new FieldDomainPointsByUV(uvPts);
+
+                    List<double> doubleList
+                      = new List<double>();
+
+                    doubleList.Add(0);
+
+                    IList<ValueAtPoint> valList
+                      = new List<ValueAtPoint>();
+
+                    valList.Add(new ValueAtPoint(doubleList));
+
+                    FieldValues vals = new FieldValues(valList);
+
+                    sfm.UpdateSpatialFieldPrimitive(
+                      idx, pnts, vals, schemaId);
+
+                    idxs.Add(idx);
+                }
+            }
+
+            return Expression.NewList(Utils.convertSequence(idxs.Select(x => Expression.NewNumber(x))));
 
         }
     }

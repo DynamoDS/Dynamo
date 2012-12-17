@@ -294,7 +294,7 @@ namespace Dynamo.Elements
 
                 PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
 
-                ReferencePoint pt;
+                ReferencePoint pt = null;
 
                 if (this.Elements.Any())
                 {
@@ -306,14 +306,20 @@ namespace Dynamo.Elements
                     }
                     else
                     {
-                        pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
-                        this.Elements[0] = pt.Id;
+                        if (this.UIDocument.Document.IsFamilyDocument)
+                        {
+                            pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
+                            this.Elements[0] = pt.Id;
+                        }
                     }
                 }
                 else
                 {
-                    pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
-                    this.Elements.Add(pt.Id);
+                    if (this.UIDocument.Document.IsFamilyDocument)
+                    {
+                        pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
+                        this.Elements.Add(pt.Id);
+                    }
                 }
 
                 return Expression.NewContainer(pt);

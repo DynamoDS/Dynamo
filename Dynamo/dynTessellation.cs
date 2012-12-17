@@ -82,7 +82,11 @@ namespace Dynamo.Elements
                             continue;
                         }
 
-                        ReferencePoint rp1 = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
+                        FSharpList<Expression> pts = FSharpList<Expression>.Empty;
+                        pts = FSharpList<Expression>.Cons(Expression.NewContainer(start), pts);
+                        pts = FSharpList<Expression>.Cons(Expression.NewContainer(end), pts);
+
+                        /*ReferencePoint rp1 = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
                         ReferencePoint rp2 = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
                         
                         this.Elements.Add(rp1.Id);
@@ -91,7 +95,8 @@ namespace Dynamo.Elements
                         FSharpList<Expression> pts = FSharpList<Expression>.Empty;
                         pts = FSharpList<Expression>.Cons(Expression.NewContainer(rp1), pts);
                         pts = FSharpList<Expression>.Cons(Expression.NewContainer(rp2), pts);
-                        
+                        */
+
                         result = FSharpList<Expression>.Cons(Expression.NewList(pts), result);
 
                     }
