@@ -245,7 +245,8 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Creates a grid of XYZs.")]
     [RequiresTransaction(false)]
-    public class dynReferencePtGrid : dynNode
+    public class 
+        dynReferencePtGrid : dynNode
     {
         public dynReferencePtGrid()
         {

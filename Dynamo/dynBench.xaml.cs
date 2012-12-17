@@ -2091,7 +2091,13 @@ namespace Dynamo.Controls
                 {
                     try
                     {
-                        valid.Add(dynElementSettings.SharedInstance.Doc.Document.GetElement(delId).Id);
+                        Autodesk.Revit.DB.Element e = dynElementSettings.SharedInstance.Doc.Document.GetElement(delId);
+                        if (e != null)
+                        {
+                            valid.Add(e.Id);
+                        }
+                        else
+                            invalid.Add(delId);
                     }
                     catch
                     {

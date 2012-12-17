@@ -1,0 +1,915 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>StarMath</name>
+    </assembly>
+    <members>
+        <member name="T:StarMathLib.StarMath">
+            <summary>
+              The one and only class in the StarMathLib. All functions are static
+              functions located here.
+            </summary>
+        </member>
+        <member name="M:StarMathLib.StarMath.solve(System.Double[0:,0:],System.Collections.Generic.IList{System.Double})">
+            <summary>
+            Solves the specified A.
+            </summary>
+            <param name="A">The A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.solve(System.Int32[0:,0:],System.Collections.Generic.IList{System.Double})">
+            <summary>
+            Solves the specified A.
+            </summary>
+            <param name="A">The A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.solve(System.Double[0:,0:],System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Solves the specified A.
+            </summary>
+            <param name="A">The A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.solve(System.Int32[0:,0:],System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Solves the specified A.
+            </summary>
+            <param name="A">The A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Min(System.Double[0:,0:])">
+            <summary>
+              Finds the minimum value in the given 2D double array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>A double value that is the minimum of A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Min(System.Int32[0:,0:])">
+            <summary>
+              Finds the minimum value in the given 2D integer array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>An integer value that is the minimum of A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Max(System.Double[0:,0:])">
+            <summary>
+              Finds the maximum value in the given 2D double array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>A double value that is the maximum of A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Max(System.Int32[0:,0:])">
+            <summary>
+              Finds the maximum value in the given 2D integer array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>An integer value that is the maximum of A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Max(System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              Finds the maximum value in the given 1D integer array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>An integer value that is the maximum of A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Min(System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              Finds the minimum value in the given 1D integer array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>An integer value that is the minimum of A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Max(System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Finds the maximum value in the given 1D double array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>An double value that is the maximum of A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Min(System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Finds the minimum value in the given 1D double array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>An double value that is the minimum of A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.MinMax(System.Double[0:,0:])">
+            <summary>
+              Finds the minimum and maximum value in the given 2D double array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>A 1 x 2 double array that contains the minimum and maximum value in A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.MinMax(System.Int32[0:,0:])">
+            <summary>
+              Finds the minimum and maximum value in the given 2D double array
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>A 1 x 2 double array that contains the minimum and maximum value in A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.MinRC(System.Double[0:,0:])">
+            <summary>
+              Finds the minimum value in the given 2D double array and returns the row and column indices along with it.
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>A 1 x 3 double array that contains the minimum value and its row and column index in A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.MaxRC(System.Double[0:,0:])">
+            <summary>
+              Finds the maximum value in the given 2D double array and returns the row and column indices along with it.
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>A 1 x 3 double array that contains the maximum value and its row and column index in A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.MinMaxRC(System.Double[0:,0:])">
+            <summary>
+              Finds the minimum and maximum value in the given 2D double array and returns the row and column indices
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>A 1 x 6 double array that contains the min value and its row and col index and the max value and its row and col index in A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.MinR(System.Double[])">
+            <summary>
+              Finds the minimum value in the given 1D double array and returns its index along with it.
+            </summary>
+            <param name = "A">The array to be searched for</param>
+            <returns>A 1 x 2 double array that contains the minimum value and its index in A</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.find(System.Double,System.Double[])">
+            <summary>
+              Finds the specified find val.
+            </summary>
+            <param name = "FindVal">The find val.</param>
+            <param name = "A">The A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.find(System.Int32,System.Int32[])">
+            <summary>
+              Finds the specified find val.
+            </summary>
+            <param name = "FindVal">The find val.</param>
+            <param name = "A">The A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiply(System.Double,System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Multiplies all elements of a 1D double array with the double value.
+            </summary>
+            <param name = "a">The double value to be multiplied</param>
+            <param name = "B">The double vector to be multiplied with</param>
+            <returns>A 1D double array that contains the product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiply(System.Double,System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              Multiplies all elements of a 1D integer array with the double value.
+            </summary>
+            <param name = "a">The double value to be multiplied</param>
+            <param name = "B">The integer vector to be multiplied with</param>
+            <returns>A 1D double array that contains the product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.divide(System.Collections.Generic.IList{System.Double},System.Double)">
+            <summary>
+              Divides all elements of a 1D double array by the double value.
+            </summary>
+            <param name = "B">The vector to be divided</param>
+            <param name = "a">The double value to be divided by, the divisor.</param>
+            <returns>A 1D double array that contains the product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.divide(System.Collections.Generic.IList{System.Int32},System.Double)">
+            <summary>
+              Divides all elements of a 1D integer array by the double value.
+            </summary>
+            <param name = "B">The vector to be divided</param>
+            <param name = "a">The double value to be divided by, the divisor.</param>
+            <returns>A 1D double array that contains the product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiply(System.Double,System.Double[0:,0:])">
+            <summary>
+              Multiplies all elements of a 2D double array with a double value.
+            </summary>
+            <param name = "a">The double value to be multiplied</param>
+            <param name = "B">The matrix to be multiplied with</param>
+            <returns>A 2D double array that contains the product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiply(System.Double,System.Int32[0:,0:])">
+            <summary>
+              Multiplies all elements of a 2D int array with a double value.
+            </summary>
+            <param name = "a">The double value to be multiplied</param>
+            <param name = "B">The matrix to be multiplied with</param>
+            <returns>A 2D double array that contains the product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.divide(System.Double[0:,0:],System.Double)">
+            <summary>
+              Divides all elements of a 2D double array by the double value.
+            </summary>
+            <param name = "B">The matrix to be divided</param>
+            <param name = "a">The double value to be divided by, the divisor.</param>
+            <returns>A 2D double array that contains the product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.divide(System.Int32[0:,0:],System.Double)">
+            <summary>
+              Divides all elements of a 2D integer array by the double value.
+            </summary>
+            <param name = "B">The matrix to be divided</param>
+            <param name = "a">The double value to be divided by, the divisor.</param>
+            <returns>A 2D double array that contains the product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyDot(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              The dot product of the two 1D double vectors A and B
+            </summary>
+            <param name = "A">1D double Array 1</param>
+            <param name = "B">1D double Array 2</param>
+            <returns>A double value that contains the dot product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyDot(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              The dot product of the one 1D int vector and one 1D double vector
+            </summary>
+            <param name = "A">1D int Array 1</param>
+            <param name = "B">1D double Array 2</param>
+            <returns>A double value that contains the dot product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyDot(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              The dot product of the two 1D int vectors A and B
+            </summary>
+            <param name = "A">1D int Array 1</param>
+            <param name = "B">1D int Array 2</param>
+            <returns>A double value that contains the dot product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyCross(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              The cross product of the two 1D double vectors A and B
+            </summary>
+            <param name = "A">1D double Array 1</param>
+            <param name = "B">1D double Array 2</param>
+            <returns>A double value that contains the dot product</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyCross2D(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              The cross product of the two 1D double vectors A and B which are of length, 2.
+            </summary>
+            <param name = "A">1D double Array 1</param>
+            <param name = "B">1D double Array 2</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyCross2D(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              The cross product of a 1D integer vector, A, and a 1D double vector, B, which are both of length, 2.
+            </summary>
+            <param name = "A">1D integer Array 1</param>
+            <param name = "B">1D double Array 2</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyCross2D(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              The cross product of the two 1D integer vectors A and B which are of length, 2.
+            </summary>
+            <param name = "A">1D integer Array 1</param>
+            <param name = "B">1D integer Array 2</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyVectorsIntoAMatrix(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Product of each element of array-1 (1D double) with each element of array-2 (1D double)
+            </summary>
+            <param name = "A">1D double array - column vector (1 element per row)</param>
+            <param name = "B">1D double array - row vector (1 element column)</param>
+            <returns>2D double array product matrix, value of element [i,j] = A[i] * B[j]</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyVectorsIntoAMatrix(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Product of each element of array-1 (1D int) with each element of array-2 (1D double)
+            </summary>
+            <param name = "A">1D integer array - column vector (1 element per row)</param>
+            <param name = "B">1D double array - row vector (1 element column)</param>
+            <returns>2D double array product matrix, value of element [i,j] = A[i] * B[j]</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiplyVectorsIntoAMatrix(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              Product of each element of array-1 (1D int) with each element of array-2 (1D int)
+            </summary>
+            <param name = "A">1D integer array - column vector (1 element per row)</param>
+            <param name = "B">1D integer array - row vector (1 element column)</param>
+            <returns>2D double array product matrix, value of element [i,j] = A[i] * B[j]</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiply(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Product of two matrices (2D double)
+            </summary>
+            <param name = "A">2D double Array 1</param>
+            <param name = "B">2D double Array 1</param>
+            <returns>A 2D double array that is the product of the two matrices A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiply(System.Double[0:,0:],System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Product of two matrices (2D double and 1D double)
+            </summary>
+            <param name = "A">2D double Array</param>
+            <param name = "B">1D double array - column vector (1 element row)</param>
+            <returns>A 1D double array that is the product of the two matrices A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.multiply(System.Collections.Generic.IList{System.Double},System.Double[0:,0:])">
+            <summary>
+              Product of two matrices (1D double and 2D double)
+            </summary>
+            <param name = "A">1D double array - row vector (1 element column)</param>
+            <param name = "B">2D double Array</param>
+            <returns>A 1D double array that is the product of the two matrices A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.add(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Adds arrays A and B
+            </summary>
+            <param name = "A">1D double array 1</param>
+            <param name = "B">1D double array 2</param>
+            <returns>1D double array that contains sum of vectros A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.add(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Adds arrays A and B
+            </summary>
+            <param name = "A">1D int array 1</param>
+            <param name = "B">1D double array 2</param>
+            <returns>1D double array that contains sum of vectros A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.add(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              Adds arrays A and B
+            </summary>
+            <param name = "A">1D int array 1</param>
+            <param name = "B">1D int array 2</param>
+            <returns>1D integer array that contains sum of vectros A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.add(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Adds arrays A and B
+            </summary>
+            <param name = "A">2D double array 1</param>
+            <param name = "B">2D double array 2</param>
+            <returns>2D double array that contains sum of vectros A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.add(System.Int32[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Adds arrays A and B
+            </summary>
+            <param name = "A">2D double array 1</param>
+            <param name = "B">2D int array 2</param>
+            <returns>2D double array that contains sum of vectros A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.add(System.Int32[0:,0:],System.Int32[0:,0:])">
+            <summary>
+              Adds arrays A and B
+            </summary>
+            <param name = "A">2D integer array 1</param>
+            <param name = "B">2D integer array 2</param>
+            <returns>2D integer array that contains sum of vectros A and B</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.subtract(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Subtracts one vector (B) from the other (A). C = A - B.
+            </summary>
+            <param name = "A">The minuend vector, A (1D double)</param>
+            <param name = "B">The subtrahend vector, B (1D double)</param>
+            <returns>Returns the difference vector, C (1D double)</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.subtract(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Subtracts one matrix (B) from the other (A). C = A - B.
+            </summary>
+            <param name = "A">The minuend matrix, A (2D double).</param>
+            <param name = "B">The subtrahend matrix, B (2D double).</param>
+            <returns>Returns the difference matrix, C (2D double)</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.subtract(System.Int32[0:,0:],System.Int32[0:,0:])">
+            <summary>
+              Subtracts one matrix (B) from the other (A). C = A - B.
+            </summary>
+            <param name = "A">The minuend matrix, A (2D integer).</param>
+            <param name = "B">The subtrahend matrix, B (2D integer).</param>
+            <returns>Returns the difference matrix, C (2D integer)</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+              Sum up all the elements of a given matrix
+            </summary>
+            <param name = "B">Matrix (1D double) whose parameters need to be summed up</param>
+            <returns>Returns the total (double) </returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.sum(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+              Sum up all the elements of a given matrix
+            </summary>
+            <param name = "B">Matrix (1D int) whose parameters need to be summed up</param>
+            <returns>Returns the total (int) </returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.sum(System.Double[0:,0:])">
+            <summary>
+              Sum up all the elements of a given matrix
+            </summary>
+            <param name = "B">Matrix (2D double) whose parameters need to be summed up</param>
+            <returns>Returns the total (double) </returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.sum(System.Int32[0:,0:])">
+            <summary>
+              Sum up all the elements of a given matrix
+            </summary>
+            <param name = "B">Matrix (2D double) whose parameters need to be summed up</param>
+            <returns>Returns the total (int) </returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.MakePrintString(System.Double[0:,0:])">
+            <summary>
+              Makes the print string.
+            </summary>
+            <param name = "A">The A.</param>
+        </member>
+        <member name="M:StarMathLib.StarMath.MakePrintString(System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Makes the print string.
+            </summary>
+            <param name = "A">The A.</param>
+        </member>
+        <member name="M:StarMathLib.StarMath.MakePrintString(System.Int32[0:,0:])">
+            <summary>
+              Makes the print string.
+            </summary>
+            <param name = "A">The A.</param>
+        </member>
+        <member name="M:StarMathLib.StarMath.MakePrintString(System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              Makes the print string.
+            </summary>
+            <param name = "A">The A.</param>
+        </member>
+        <member name="M:StarMathLib.StarMath.inverseUpper(System.Double[0:,0:])">
+            <summary>
+              Inverses the matrix A only if the matrix has already been
+              "triangularized" - meaning there are no elements in the bottom
+              triangle - A[i,j]=0.0 where j>i
+            </summary>
+            <param name = "A">The matrix to invert. This matrix is unchanged by this function.</param>
+            <returns>The inverted matrix, A^-1.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.inverseUpper(System.Int32[0:,0:])">
+            <summary>
+              Inverses the matrix A only if the matrix has already been
+              "triangularized" - meaning there are no elements in the bottom
+              triangle - A[i,j]=0.0 where j>i
+            </summary>
+            <param name = "A">The matrix to invert. This matrix is unchanged by this function.</param>
+            <returns>The inverted matrix, A^-1.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.inverse(System.Double[0:,0:])">
+            <summary>
+              Inverses the matrix A only if the diagonal is all non-zero.
+              A[i,i] != 0.0
+            </summary>
+            <param name = "A">The matrix to invert. This matrix is unchanged by this function.</param>
+            <returns>The inverted matrix, A^-1.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.inverse(System.Int32[0:,0:])">
+            <summary>
+              Inverses the matrix A only if the diagonal is all non-zero.
+              A[i,i] != 0.0
+            </summary>
+            <param name = "A">The matrix to invert. This matrix is unchanged by this function.</param>
+            <returns>The inverted matrix, A^-1.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.LUDecomposition(System.Double[0:,0:])">
+            <summary>
+              Returns the LU decomposition of A in a new matrix.
+            </summary>
+            <param name = "A">The matrix to invert. This matrix is unchanged by this function.</param>
+            <returns>A matrix of equal size to A that combines the L and U. Here the diagonals belongs to L and the U's diagonal elements are all 1.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.LUDecomposition(System.Int32[0:,0:])">
+            <summary>
+              Returns the LU decomposition of A in a new matrix.
+            </summary>
+            <param name = "A">The matrix to invert. This matrix is unchanged by this function.</param>
+            <returns>A matrix of equal size to A that combines the L and U. Here the diagonals belongs to L and the U's diagonal elements are all 1.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.LUDecomposition(System.Double[0:,0:],System.Double[0:,0:]@,System.Double[0:,0:]@)">
+            <summary>
+              Returns the LU decomposition of A in a new matrix.
+            </summary>
+            <param name = "A">The matrix to invert. This matrix is unchanged by this function.</param>
+            <param name = "L">The L matrix is output where the diagonal elements are included and not (necessarily) equal to one.</param>
+            <param name = "U">The U matrix is output where the diagonal elements are all equal to one.</param>
+        </member>
+        <member name="M:StarMathLib.StarMath.LUDecomposition(System.Int32[0:,0:],System.Double[0:,0:]@,System.Double[0:,0:]@)">
+            <summary>
+              Returns the LU decomposition of A in a new matrix.
+            </summary>
+            <param name = "A">The matrix to invert. This matrix is unchanged by this function.</param>
+            <param name = "L">The L matrix is output where the diagonal elements are included and not (necessarily) equal to one.</param>
+            <param name = "U">The U matrix is output where the diagonal elements are all equal to one.</param>
+        </member>
+        <member name="M:StarMathLib.StarMath.transpose(System.Double[0:,0:])">
+            <summary>
+              Transposes the matrix, A.
+            </summary>
+            <param name = "A">The matrix to transpose. This matrix is unchanged by this function.</param>
+            <returns>The transponse of A.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.transpose(System.Int32[0:,0:])">
+            <summary>
+              Transposes the matrix, A.
+            </summary>
+            <param name = "A">The matrix to transpose. This matrix is unchanged by this function.</param>
+            <returns>The transponse of A.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.determinant(System.Double[0:,0:])">
+            <summary>
+              Returns the determinant of matrix, A.
+            </summary>
+            <param name="A">The input argument matrix. This matrix is unchanged by this function.</param>
+            <exception cref="T:System.Exception"></exception>
+            <returns>a single value representing the matrix's determinant.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.determinant(System.Int32[0:,0:])">
+            <summary>
+              Returns the determinant of matrix, A.
+            </summary>
+            <param name="A">The input argument matrix. This matrix is unchanged by this function.</param>
+            <exception cref="T:System.Exception"></exception>
+            <returns>a single value representing the matrix's determinant.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.determinantsMoreThan3(System.Double[0:,0:])">
+            <summary>
+              Returns the determinant of matrix, A. Only used internally for matrices larger than 3.
+            </summary>
+            <param name = "A">The input argument matrix. This matrix is unchanged by this function.</param>
+            <returns>a single value representing the matrix's determinant.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm1(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Returns to 1-norm (sum of absolute values of all terms)
+              of the difference between x and y.
+            </summary>
+            <param name = "x">The vector, x.</param>
+            <param name = "y">The vector, y.</param>
+            <returns>Scalar value of 1-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm1(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Int32})">
+            <summary>
+              Returns to 1-norm (sum of absolute values of all terms)
+              of the difference between x and y.
+            </summary>
+            <param name = "x">The vector, x.</param>
+            <param name = "y">The vector, y.</param>
+            <returns>Scalar value of 1-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm1(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+              Returns to 1-norm (sum of absolute values of all terms)
+              of the vector, x.
+            </summary>
+            <param name = "x">The vector, x.</param>
+            <returns>Scalar value of 1-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm1(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+              Returns to 1-norm (sum of absolute values of all terms)
+              of the vector, x.
+            </summary>
+            <param name = "x">The vector, x.</param>
+            <returns>Scalar value of 1-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm1(System.Double[0:,0:])">
+            <summary>
+              Returns to 1-norm (sum of absolute values of all terms)
+              of the matrix, A.
+            </summary>
+            <param name = "A">The matrix, A.</param>
+            <returns>Scalar value of 1-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm1(System.Int32[0:,0:])">
+            <summary>
+              Returns to 1-norm (sum of absolute values of all terms)
+              of the matrix, A.
+            </summary>
+            <param name = "A">The matrix, A.</param>
+            <returns>Scalar value of 1-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm2(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double},System.Boolean)">
+            <summary>
+            Returns to 2-norm (square root of the sum of squares of all terms)
+            of the difference between x and y.
+            </summary>
+            <param name="x">The vector, x.</param>
+            <param name="y">The vector, y.</param>
+            <param name="dontDoSqrt">if set to <c>true</c> [don't take the square root].</param>
+            <returns>Scalar value of 2-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm2(System.Collections.Generic.IList{System.Int32},System.Collections.Generic.IList{System.Int32},System.Boolean)">
+            <summary>
+            Returns to 2-norm (square root of the sum of squares of all terms)
+            of the difference between x and y.
+            </summary>
+            <param name="x">The vector, x.</param>
+            <param name="y">The vector, y.</param>
+            <param name="dontDoSqrt">if set to <c>true</c> [don't take the square root].</param>
+            <returns>Scalar value of 2-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm2(System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
+            <summary>
+            Returns to 2-norm (square root of the sum of squares of all terms)
+            of the vector, x.
+            </summary>
+            <param name="x">The vector, x.</param>
+            <param name="dontDoSqrt">if set to <c>true</c> [don't take the square root].</param>
+            <returns>Scalar value of 2-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm2(System.Collections.Generic.IEnumerable{System.Int32},System.Boolean)">
+            <summary>
+            Returns to 2-norm (square root of the sum of squares of all terms)
+            of the vector, x.
+            </summary>
+            <param name="x">The vector, x.</param>
+            <param name="dontDoSqrt">if set to <c>true</c> [don't take the square root].</param>
+            <returns>Scalar value of 2-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm2(System.Double[0:,0:],System.Boolean)">
+            <summary>
+            Returns to 2-norm (square root of the sum of squares of all terms)
+            of the matrix, A.
+            </summary>
+            <param name="A">The matrix, A.</param>
+            <param name="dontDoSqrt">if set to <c>true</c> [don't take the square root].</param>
+            <returns>Scalar value of 2-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.norm2(System.Int32[0:,0:],System.Boolean)">
+            <summary>
+            Returns to 2-norm (square root of the sum of squares of all terms)
+            of the matrix, A.
+            </summary>
+            <param name="A">The matrix, A.</param>
+            <param name="dontDoSqrt">if set to <c>true</c> [don't take the square root].</param>
+            <returns>Scalar value of 2-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.normP(System.Collections.Generic.IEnumerable{System.Double},System.Double,System.Boolean)">
+            <summary>
+            Returns to p-norm (p-root of the sum of each term raised to the p power)
+            </summary>
+            <param name="x">The vector, x.</param>
+            <param name="p">The power, p.</param>
+            <param name="dontDoPRoot">if set to <c>true</c> [don't take the P-root].</param>
+            <returns>Scalar value of P-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.normP(System.Collections.Generic.IEnumerable{System.Int32},System.Double,System.Boolean)">
+            <summary>
+            Returns to p-norm (p-root of the sum of each term raised to the p power)
+            </summary>
+            <param name="x">The vector, x.</param>
+            <param name="p">The power, p.</param>
+            <param name="dontDoPRoot">if set to <c>true</c> [don't take the P-root].</param>
+            <returns>Scalar value of P-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.normP(System.Double[0:,0:],System.Double,System.Boolean)">
+            <summary>
+            Returns to p-norm (p-root of the sum of each term raised to the p power)
+            </summary>
+            <param name="A">The matrix, A.</param>
+            <param name="p">The power, p.</param>
+            <param name="dontDoPRoot">if set to <c>true</c> [don't take the P-root].</param>
+            <returns>Scalar value of P-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.normP(System.Int32[0:,0:],System.Double,System.Boolean)">
+            <summary>
+            Returns to 2-norm (square root of the sum of squares of all terms)
+            of the matrix, A.
+            </summary>
+            <param name="A">The matrix, A.</param>
+            <param name="p">The power, p.</param>
+            <param name="dontDoPRoot">if set to <c>true</c> [don't take the P-root].</param>
+            <returns>Scalar value of 2-norm.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.normalize(System.Double[])">
+            <summary>
+              Returns to normalized vector (has lenght or 2-norm of 1))
+              of the vector, x.
+            </summary>
+            <param name = "x">The vector, x.</param>
+            <returns>unit vector.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.castIntArrayToDouble(System.Int32[0:,0:])">
+            <summary>
+            Casts the int matrix to double matrix.
+            </summary>
+            <param name="A">The A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeZero(System.Int32)">
+            <summary>
+              Makes a sqare matrix of size p by p of all zeroes.
+            </summary>
+            <param name = "p">The size (number of both rows and columns).</param>
+            <returns>an empty (all zeroes) square matrix (2D double).</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeZeroInt(System.Int32)">
+            <summary>
+              Makes a sqare matrix of size p by p of all zeroes.
+            </summary>
+            <param name = "p">The size (number of both rows and columns).</param>
+            <returns>an empty (all zeroes) square matrix (2D int).</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeZeroVector(System.Int32)">
+            <summary>
+              Makes the zero vector.
+            </summary>
+            <param name = "p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeZeroIntVector(System.Int32)">
+            <summary>
+              Makes the zero int vector.
+            </summary>
+            <param name = "p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeZero(System.Int32,System.Int32)">
+            <summary>
+              Makes a matrix of size numRows by numCols of all zeroes.
+            </summary>
+            <param name = "numRows">The number of rows.</param>
+            <param name = "numCols">The number of columns.</param>
+            <returns>an empty (all zeroes) matrix.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeZeroInt(System.Int32,System.Int32)">
+            <summary>
+              Makes a matrix of size numRows by numCols of all zeroes.
+            </summary>
+            <param name = "numRows">The number of rows.</param>
+            <param name = "numCols">The number of columns.</param>
+            <returns>an empty (all zeroes) matrix.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeIdentity(System.Int32)">
+            <summary>
+              Makes an identity matrix of size p by p.
+            </summary>
+            <param name = "p">The size (number of both rows and columns).</param>
+            <returns>the identity matrix, I.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeIdentityInt(System.Int32)">
+            <summary>
+              Makes an identity matrix of size p by p.
+            </summary>
+            <param name = "p">The size (number of both rows and columns).</param>
+            <returns>the identity matrix, I.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeLinearProgression(System.Double,System.Double,System.Double)">
+            <summary>
+              Makes the linear progression.
+            </summary>
+            <param name = "Start">The start.</param>
+            <param name = "CommonDifference">The common difference.</param>
+            <param name = "End">The end.</param>
+            <returns>Returns an double array with a series of numbers starting from Start till End with a distance of CommonDifference between two numbers.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.makeLinearProgression(System.Int32,System.Int32,System.Int32)">
+            <summary>
+              Makes the linear progression.
+            </summary>
+            <param name = "Start">The start.</param>
+            <param name = "CommonDifference">The common difference.</param>
+            <param name = "End">The end.</param>
+            <returns>
+              Returns an double array with a series of numbers starting from Start till End with a distance of CommonDifference between two numbers
+            </returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.GetColumn(System.Int32,System.Double[0:,0:])">
+            <summary>
+              Gets a column of matrix, A.
+            </summary>
+            <param name = "colIndex">The column index.</param>
+            <param name = "A">The matrix, A.</param>
+            <returns>A double array that contains the requested column</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.GetRow(System.Int32,System.Double[0:,0:])">
+            <summary>
+              Gets a row of matrix, A.
+            </summary>
+            <param name = "rowIndex">The row index.</param>
+            <param name = "A">The matrix, A.</param>
+            <returns>A double array that contains the requested row</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.SetRow(System.Int32,System.Double[0:,0:],System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Sets/Replaces the given row of matrix A with the vector v.
+            </summary>
+            <param name = "rowIndex">The index of the row, rowIndex.</param>
+            <param name = "A">The matrix, A.</param>
+            <param name = "v">The vector, v.</param>
+        </member>
+        <member name="M:StarMathLib.StarMath.SetColumn(System.Int32,System.Double[0:,0:],System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Sets/Replaces the given column of matrix A with the vector v.
+            </summary>
+            <param name = "colIndex">Index of the col.</param>
+            <param name = "A">The A.</param>
+            <param name = "v">The v.</param>
+        </member>
+        <member name="M:StarMathLib.StarMath.GetColumns(System.Int32[],System.Double[0:,0:])">
+            <summary>
+              Get more than one column from a given 2D double array. Invalid column indices numbers are ignored
+            </summary>
+            <param name = "ColumnList">The column list indices.</param>
+            <param name = "A">2D double array from which columns need to be extracted</param>
+            <returns>A single 2D double array that contains all the requested columns</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.GetColumns(System.Int32[],System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Generalization (overload) of the GetColumns function to be extended to a single row array. Invalid Column indices are ignored
+            </summary>
+            <param name = "ColumnList">The column list indices.</param>
+            <param name = "A">1D double array from which columns (elements) need to be extracted</param>
+            <returns>A single 1D double array that contains all the requested columns (elements)</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.GetColumns(System.Int32[],System.Int32[])">
+            <summary>
+              Generalization (overload) of the GetColumns function to be extended to a single row array for integers
+            </summary>
+            <param name = "ColumnList">The column list indices.</param>
+            <param name = "A">1D integer array from which columns (elements) need to be extracted</param>
+            <returns>A single 1D integer array that contains all the requested columns (elements)</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.GetRows(System.Int32[],System.Double[0:,0:])">
+            <summary>
+              Get more than one row from a given 2D double array.  Invalid row indices are ignored
+            </summary>
+            <param name = "RowList">The row list indices.</param>
+            <param name = "A">2D double array from which rows need to be extracted</param>
+            <returns>A single 2D double array that contains all the requested rows</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.JoinCol(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Jions two 2D double arrays side by side and returns the results. The given variables remain unchanged
+            </summary>
+            <param name = "Matrix1">The Matrix that comes on the left.</param>
+            <param name = "Matrix2">Matrix that is attached to the right</param>
+            <returns>A 2D double array that has Matrix1 and Matrix2 side by side</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.JoinRow(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Jions two 2D double arrays one under the other and returns the results. The given variables remain unchanged
+            </summary>
+            <param name = "Matrix1">The Matrix that comes on the top.</param>
+            <param name = "Matrix2">Matrix that is attached to the bottom</param>
+            <returns>A 2D double array that has Matrix1 and Matrix2 one below the other</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.JoinArr(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double})">
+            <summary>
+              Concatenates two 1D double arrays and returns the result. The given variables remain unchanged
+            </summary>
+            <param name = "Array1">Array that comes to the left.</param>
+            <param name = "Array2">Array that is appended to the end of the first array</param>
+            <returns>A double array that has Array1 and Array2 side by side</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.JoinArr(System.Int32[],System.Int32[])">
+            <summary>
+              Concatenates two 1D integer arrays and returns the result. The given variables remain unchanged
+            </summary>
+            <param name = "Array1">Array that comes to the left.</param>
+            <param name = "Array2">Array that is appended to the end of the first array</param>
+            <returns>An integer array that has Array1 and Array2 side by side</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.Translate(System.Double,System.Double,System.Double)">
+            <summary>
+              Creates a translated coordinate frame.
+            </summary>
+            <param name = "Tx">Amount of translation in x.</param>
+            <param name = "Ty">Amount of translation in y.</param>
+            <param name = "Tz">Amount of translation in z.</param>
+            <returns>4-by-4 matrix translated by the amount specified.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.RotationX(System.Double)">
+            <summary>
+              Creates a rotation matrix about the X-axis.
+            </summary>
+            <param name = "xdeg">The amount of angle in degrees (positive is counter-clockwise).</param>
+            <returns>4-by-4 matrix rotated by the amount specified.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.RotationY(System.Double)">
+            <summary>
+              Creates a rotation matrix about the Y-axis.
+            </summary>
+            <param name = "ydeg">The amount of angle in degrees (positive is counter-clockwise).</param>
+            <returns>4-by-4 matrix rotated by the amount specified.</returns>
+        </member>
+        <member name="M:StarMathLib.StarMath.RotationZ(System.Double)">
+            <summary>
+              Creates a rotation matrix about the Z-axis.
+            </summary>
+            <param name = "zdeg">The amount of angle in degrees (positive is counter-clockwise).</param>
+            <returns>4-by-4 matrix rotated by the amount specified.</returns>
+        </member>
+    </members>
+</doc>

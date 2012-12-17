@@ -41,8 +41,16 @@ namespace Dynamo.Utilities
             try
             {
                 e = dynElementSettings.SharedInstance.Doc.Document.GetElement(id);
-                _testid = e.Id;
-                return true;
+                if (e != null)
+                {
+                    _testid = e.Id;
+                    return true;
+                }
+                else
+                {
+                    e = null;
+                    return false;
+                }
             }
             catch
             {

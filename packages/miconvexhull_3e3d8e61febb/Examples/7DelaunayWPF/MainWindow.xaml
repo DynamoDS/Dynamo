@@ -1,0 +1,49 @@
+﻿<Window x:Class="DelaunayWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DelaunayWPF" Height="600" Width="800">
+    <Grid Loaded="Grid_Loaded">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF727272" Offset="0" />
+                <GradientStop Color="#FFCCCCCC" Offset="1" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid x:Name="background" Background="Transparent">
+            <Viewport3D x:Name="viewport">
+                <ModelVisual3D>
+                    <ModelVisual3D.Content>
+                        <Model3DGroup>
+                            <DirectionalLight x:Name="light" Color="#FF808080" Direction="0 -2 -1" />
+                            <AmbientLight Color="LightYellow" />
+                        </Model3DGroup>
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+
+                <Viewport3D.Camera>
+                    <PerspectiveCamera x:Name="camera" Position="0 0 80" UpDirection="0 1 0"
+                                   LookDirection="0 0 -1" FieldOfView="45">
+                    </PerspectiveCamera>
+                </Viewport3D.Camera>
+            </Viewport3D>
+        </Grid>
+
+        <Border Grid.Row="1" BorderBrush="#FF202020" BorderThickness="0,2,0,0" Background="#FF333333" />
+
+        <TextBlock x:Name="infoText" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="1" Margin="5" Foreground="White" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="6">
+            <TextBlock VerticalAlignment="Center" Foreground="White">Number of points:</TextBlock>
+            <TextBox Margin="5,0,0,0" x:Name="numPoints" Width="40" Text="100" />
+            <Button Padding="3,1" Margin="5,0,0,0" Click="GenerateButton_Click">Generate</Button>
+            <Button Padding="3,1" Margin="25,0,0,0" Click="ExpandButton_Click">Expand</Button>
+            <Button Padding="3,1" Margin="3,0,0,0" Click="ExpandRandomButton_Click">Expand Random</Button>
+            <Button Padding="3,1" Margin="3,0,0,0" Click="CollapseButton_Click">Collapse</Button>
+            <Button Padding="3,1" Margin="3,0,0,0" Click="PulseButton_Click">Pulse</Button>
+        </StackPanel>     
+    </Grid>
+</Window>

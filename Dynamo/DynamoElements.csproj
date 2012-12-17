@@ -60,6 +60,9 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
     </Reference>
+    <Reference Include="MIConvexHullPlugin">
+      <HintPath>..\packages\miconvexhull_3e3d8e61febb\MIConvexHull\bin\Debug\MIConvexHullPlugin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Drawing">
       <HintPath>..\packages\Coding4Fun.Kinect.Wpf.1.1.0\lib\Microsoft.Expression.Drawing.dll</HintPath>
@@ -114,6 +117,7 @@ limitations under the License.
     </Compile>
     <Compile Include="dynGeometricForms.cs" />
     <Compile Include="dynMeasurement.cs" />
+    <Compile Include="dynTessellation.cs" />
     <Compile Include="dynTimer.cs" />
     <Compile Include="dynViews.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
