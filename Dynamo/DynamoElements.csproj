@@ -60,8 +60,9 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
     </Reference>
-    <Reference Include="MIConvexHullPlugin">
-      <HintPath>..\packages\miconvexhull_3e3d8e61febb\MIConvexHull\bin\Debug\MIConvexHullPlugin.dll</HintPath>
+    <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Drawing">
