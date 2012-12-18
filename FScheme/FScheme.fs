@@ -462,7 +462,7 @@ let Sub1 cont = function
 
 let Identity cont = function
    | [e] -> e |> cont
-   | m malformed "identity" (List(m))
+   | m -> malformed "identity" (List(m))
 
 type private CompilerFrame = string list
 type private CompilerEnv = CompilerFrame list ref
