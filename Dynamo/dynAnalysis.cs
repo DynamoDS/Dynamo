@@ -35,8 +35,6 @@ namespace Dynamo.Elements
         {
             SpatialFieldManager sfm;
 
-            analysisDisplayStyle = ((Expression.Container)args[0]).Item as AnalysisDisplayStyle;
-
             sfm = SpatialFieldManager.GetSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView);
             
             if (sfm != null)
