@@ -256,7 +256,7 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("Reference Point On Face")]
+    [ElementName("Reference Point On Face by UV components")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Creates an element which owns a reference point on a selected face.")]
     [RequiresTransaction(true)]
@@ -293,6 +293,70 @@ namespace Dynamo.Elements
                 //Autodesk.Revit.DB..::.PointOnPlane
 
                 PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, new UV(u, v));
+
+                ReferencePoint pt = null;
+
+                if (this.Elements.Any())
+                {
+                    Element e;
+                    if (dynUtils.TryGetElement(this.Elements[0], out e))
+                    {
+                        pt = e as ReferencePoint;
+                        pt.SetPointElementReference(facePoint);
+                    }
+                    else
+                    {
+                        if (this.UIDocument.Document.IsFamilyDocument)
+                        {
+                            pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
+                            this.Elements[0] = pt.Id;
+                        }
+                    }
+                }
+                else
+                {
+                    if (this.UIDocument.Document.IsFamilyDocument)
+                    {
+                        pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(facePoint);
+                        this.Elements.Add(pt.Id);
+                    }
+                }
+
+                return Expression.NewContainer(pt);
+            }
+            else
+            {
+                throw new Exception("Cannot cast first argument to Face.");
+            }
+        }
+    }
+
+    [ElementName("Reference Point On Face by UV")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates an element which owns a reference point on a selected face.")]
+    [RequiresTransaction(true)]
+    public class dynPointOnFaceUV : dynNode
+    {
+        public dynPointOnFaceUV()
+        {
+            InPortData.Add(new PortData("face", "ModelFace", typeof(Reference)));
+            InPortData.Add(new PortData("UV", "U Parameter on face.", typeof(object)));
+            OutPortData = new PortData("pt", "PointOnFace", typeof(ReferencePoint));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            object arg0 = ((Expression.Container)args[0]).Item;
+            if (arg0 is Reference)
+            {
+               
+                Reference r = arg0 as Reference;
+
+                UV uv = ((Expression.Container)args[1]).Item as UV;
+
+                PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, uv);
 
                 ReferencePoint pt = null;
 

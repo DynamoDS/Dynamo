@@ -274,9 +274,9 @@ namespace Dynamo.Elements
             UV min = ((Expression.Container)domain[0]).Item as UV;
             UV max = ((Expression.Container)domain[1]).Item as UV;
 
-            for (double u = min.U; u < max.U; u+=us)
+            for (double u = min.U; u <= max.U; u+=us)
             {
-                for (double v = min.V; v < max.V; v+=vs)
+                for (double v = min.V; v <= max.V; v+=vs)
                 {
                     result = FSharpList<Expression>.Cons(
                         Expression.NewContainer(new UV(u,v)),
