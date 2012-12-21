@@ -71,15 +71,13 @@ namespace Dynamo.Elements
         public dynSurfaceDomain()
         {
             InPortData.Add(new PortData("face", "Ref", typeof(Reference)));//Ref to a face of a form
-            OutPortData = new PortData("dom", "The surface area of the face.", typeof(object));
+            OutPortData = new PortData("dom", "The min, max, and dimensions of the surface domain.", typeof(object));
 
             base.RegisterInputsAndOutputs();
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            //double u = 0.0;
-            //double v = 0.0;
 
             FSharpList<Expression> result = FSharpList<Expression>.Empty;
             BoundingBoxUV bbox = null;
@@ -100,17 +98,18 @@ namespace Dynamo.Elements
             }
 
             result = FSharpList<Expression>.Cons(
-                           Expression.NewNumber(bbox.Max.V),
+                           Expression.NewNumber(bbox.Max.V - bbox.Min.V),
                            result);
             result = FSharpList<Expression>.Cons(
-                           Expression.NewNumber(bbox.Max.U),
+                           Expression.NewNumber(bbox.Max.U - bbox.Min.U),
                            result);
             result = FSharpList<Expression>.Cons(
-                           Expression.NewNumber(bbox.Min.V),
+                           Expression.NewContainer(bbox.Max),
                            result);
             result = FSharpList<Expression>.Cons(
-                           Expression.NewNumber(bbox.Min.U),
+                           Expression.NewContainer(bbox.Min),
                            result);
+            
 
             //Fin
             return Expression.NewList(result);
