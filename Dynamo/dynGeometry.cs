@@ -241,11 +241,61 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("UV Grid")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates a grid of UVs froma domain.")]
+    [RequiresTransaction(false)]
+    public class 
+        dynUVGrid : dynNode
+    {
+        public dynUVGrid()
+        {
+            InPortData.Add(new PortData("dom", "A domain.", typeof(object)));
+            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(double)));
+            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
+            OutPortData = new PortData("UVs", "List of UVs in the grid", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            FSharpList<Expression> domain;
+            double ui, vi;
+            
+            domain = ((Expression.List)args[0]).Item;
+            ui = ((Expression.Number)args[1]).Item;
+            vi = ((Expression.Number)args[2]).Item;
+            double us = ((Expression.Number)domain[2]).Item / ui;
+            double vs = ((Expression.Number)domain[3]).Item / vi;
+
+            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+
+            UV min = ((Expression.Container)domain[0]).Item as UV;
+            UV max = ((Expression.Container)domain[1]).Item as UV;
+
+            for (double u = min.U; u <= max.U; u+=us)
+            {
+                for (double v = min.V; v <= max.V; v+=vs)
+                {
+                    result = FSharpList<Expression>.Cons(
+                        Expression.NewContainer(new UV(u,v)),
+                        result
+                    );
+                }
+            }
+
+            return Expression.NewList(
+               ListModule.Reverse(result)
+            );
+        }
+    }
+
     [ElementName("XYZ Grid")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Creates a grid of XYZs.")]
     [RequiresTransaction(false)]
-    public class 
+    public class
         dynReferencePtGrid : dynNode
     {
         public dynReferencePtGrid()
@@ -358,7 +408,6 @@ namespace Dynamo.Elements
             );
         }
     }
-
 
     [ElementName("Plane")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
@@ -499,63 +548,6 @@ namespace Dynamo.Elements
 
 
             return FScheme.Expression.NewContainer(new UV(u, v));
-        }
-    }
-
-    [ElementName("Domain")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("An element which returns the domain for a surface.")]
-    [RequiresTransaction(false)]
-    public class dynDomain : dynNode
-    {
-        public dynDomain()
-        {
-            InPortData.Add(new PortData("face", "Face", typeof(double)));
-
-            OutPortData = new PortData("dom", "Domain", typeof(UV));
-
-            base.RegisterInputsAndOutputs();
-        }
-
-        public override Expression Evaluate(FSharpList<Expression> args)
-        {
-            Reference faceRef = ((Expression.Container)args[0]).Item as Reference;
-            GeometryObject geob = dynElementSettings.SharedInstance.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
-            Face f = geob as Face;
-            double periodU = 1.0;
-            double periodV = 1.0;
-
-            try
-            {
-                periodU = f.get_Period(0);
-            }
-            catch
-            {
-                periodU = 1.0;
-            }
-
-
-            try
-            {
-                periodV = f.get_Period(1);
-            }
-            catch 
-            {
-                periodV = 1.0;
-            }
-
-            IList<UV> uvPts = new List<UV>();  
-            BoundingBoxUV bb = f.GetBoundingBox();
-            UV min = bb.Min;
-            UV max = bb.Max;
-            uvPts.Add(new UV(min.U, min.V));
-            uvPts.Add(new UV(max.U, max.V));  
-
-            Expression result = Expression.NewList(Utils.convertSequence(
-                            (new double[]{periodU, periodV}).Select(Expression.NewNumber)
-                        ));
-
-            return result;
         }
     }
 
