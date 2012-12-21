@@ -13,6 +13,13 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
+// Needed to create and apply a strong name (a crypto hash key) to allow registering this dll in the GAC and then referencing the assembly in Dynamo. 
+// This is to get around the failure we were seeing trying to reference this pre-compiled dll from dyanmo\packages directory.
+// see http://support.microsoft.com/kb/315682
+
+[assembly: AssemblyKeyFile("..\\..\\bin\\Debug\\GACKey.snk")]
+
+
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.

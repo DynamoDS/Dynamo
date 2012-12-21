@@ -286,22 +286,49 @@ namespace Dynamo.Controls
             //setup the menu with all the types by reflecting
             //the DynamoElements.dll
             Assembly elementsAssembly = Assembly.GetExecutingAssembly();
-            Type[] loadedTypes = elementsAssembly.GetTypes();
 
-            foreach (Type t in loadedTypes)
+
+            //try getting the element types via reflection. 
+            // MDJ - I wrapped this in a try-catch as we were having problems with an 
+            // external dll (MIConvexHullPlugin.dll) not loading correctly from \dynamo\packages 
+            // because the dll did not have a strong name by default and was not loaded into the GAC.
+            // The exceptions are now caught but if there is an exception no built-in types are loaded.
+            // TODO - move the try catch inside the for loop if possible to not fail all loads. this could slow down load times though.
+
+            try
             {
-                //only load types that are in the right namespace, are not abstract
-                //and have the elementname attribute
-                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+                Type[] loadedTypes = elementsAssembly.GetTypes();
 
-                if (t.Namespace == "Dynamo.Elements" &&
-                    !t.IsAbstract &&
-                    attribs.Length > 0 &&
-                    t.IsSubclassOf(typeof(dynNode)))
+                foreach (Type t in loadedTypes)
                 {
-                    string typeName = (attribs[0] as ElementNameAttribute).ElementName;
-                    builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
+                    //only load types that are in the right namespace, are not abstract
+                    //and have the elementname attribute
+                    object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+
+                    if (t.Namespace == "Dynamo.Elements" &&
+                        !t.IsAbstract &&
+                        attribs.Length > 0 &&
+                        t.IsSubclassOf(typeof(dynNode)))
+                    {
+                        string typeName = (attribs[0] as ElementNameAttribute).ElementName;
+                        builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                dynElementSettings.SharedInstance.Bench.Log( "Could not load types. " + e.ToString());
+                Log(e);
+                if (e is System.Reflection.ReflectionTypeLoadException)
+                {
+                    var typeLoadException = e as ReflectionTypeLoadException;
+                    var loaderExceptions = typeLoadException.LoaderExceptions;
+                    dynElementSettings.SharedInstance.Bench.Log("Dll Load Exception: " + loaderExceptions[0].ToString());
+                    Log(loaderExceptions[0].ToString());
+                    dynElementSettings.SharedInstance.Bench.Log("Dll Load Exception: " + loaderExceptions[1].ToString());
+                    Log(loaderExceptions[1].ToString());
+                }
+
             }
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
