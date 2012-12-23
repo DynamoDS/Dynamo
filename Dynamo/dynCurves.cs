@@ -46,6 +46,13 @@ namespace Dynamo.Elements
          SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
 
          ModelCurve mc;
+         XYZ spOrigin = sp.Plane.Origin;
+         XYZ modelOrigin = XYZ.Zero;
+         Transform trf = Transform.get_Translation(spOrigin);
+         trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
+         Curve ct = c.get_Transformed(trf);
+
+
 
          if (this.Elements.Any())
          {
@@ -53,23 +60,29 @@ namespace Dynamo.Elements
             if (dynUtils.TryGetElement(this.Elements[0], out e))
             {
                mc = e as ModelCurve;
+               mc.SketchPlane = sp;
                var loc = mc.Location as LocationCurve;
-               loc.Curve = c;
+               loc.Curve = ct;
+              
             }
             else
             {
                mc = this.UIDocument.Document.IsFamilyDocument
-                  ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                  : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+                  ? this.UIDocument.Document.FamilyCreate.NewModelCurve(ct, sp)
+                  : this.UIDocument.Document.Create.NewModelCurve(ct, sp);
                this.Elements[0] = mc.Id;
+               mc.SketchPlane = sp;
+               
+               
             }
          }
          else
          {
             mc = this.UIDocument.Document.IsFamilyDocument
-               ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-               : this.UIDocument.Document.Create.NewModelCurve(c, sp);
+               ? this.UIDocument.Document.FamilyCreate.NewModelCurve(ct, sp)
+               : this.UIDocument.Document.Create.NewModelCurve(ct, sp);
             this.Elements.Add(mc.Id);
+            mc.SketchPlane = sp;
          }
 
          return Expression.NewContainer(mc);

@@ -316,6 +316,116 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Spatial Field Primitive Curve")]
+    [ElementCategory(BuiltinElementCategories.ANALYSIS)]
+    [ElementDescription("An analysis results curve to be used with a spatial field manager.")]
+    [RequiresTransaction(true)]
+    class dynAnalysisResultsCurve : dynNode
+    {
+        const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results Curve";
+
+        int idx = -1;
+
+        public dynAnalysisResultsCurve()
+        {
+            InPortData.Add(new PortData("vals", "List of values.", typeof(object)));
+            InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(object)));
+            InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
+            InPortData.Add(new PortData("face", "Curve", typeof(Curve)));
+            OutPortData = new PortData("idx", "Analysis results object index", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            SpatialFieldManager sfm = ((Expression.Container)args[2]).Item as SpatialFieldManager;
+
+
+            // Place analysis results in the form of vectors at each of a beam or column's analytical model curve
+            Curve curve = ((Expression.Container)args[3]).Item as Curve;
+
+
+            int index = sfm.AddSpatialFieldPrimitive(curve, Transform.Identity);
+
+            IList<double> doubleList = new List<double>();
+            doubleList.Add(curve.get_EndParameter(0)); // vectors will be at each end of the analytical model curve
+            doubleList.Add(curve.get_EndParameter(1));
+            FieldDomainPointsByParameter pointsByParameter = new FieldDomainPointsByParameter(doubleList);
+
+            List<XYZ> xyzList = new List<XYZ>();
+            xyzList.Add(curve.ComputeDerivatives(0, true).BasisX.Normalize()); // vectors will be tangent to the curve at its ends
+            IList<VectorAtPoint> vectorList = new List<VectorAtPoint>();
+            vectorList.Add(new VectorAtPoint(xyzList));
+            xyzList.Clear();
+            xyzList.Add(curve.ComputeDerivatives(1, true).BasisX.Normalize().Negate());
+            vectorList.Add(new VectorAtPoint(xyzList));
+            FieldDomainPointsByXYZ feildPoints = new FieldDomainPointsByXYZ(xyzList);
+            FieldValues fieldValues = new FieldValues(vectorList);
+            int n = 0;
+            sfm.UpdateSpatialFieldPrimitive(index, feildPoints, fieldValues, n);
+
+            /*
+            //first, cleanup the old one
+            if (idx != -1)
+            {
+                sfm.RemoveSpatialFieldPrimitive(idx);
+            }
+
+            Reference reference = ((Expression.Container)args[3]).Item as Reference;
+            idx = sfm.AddSpatialFieldPrimitive(reference);
+
+            Face face = dynElementSettings.SharedInstance.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
+
+            //unwrap the sample locations
+            IEnumerable<UV> pts = ((Expression.List)args[1]).Item.Select(
+               x => (UV)((Expression.Container)x).Item
+            );
+            FieldDomainPointsByUV sample_pts = new FieldDomainPointsByUV(pts.ToList<UV>());
+
+            //unwrap the values
+            IEnumerable<double> nvals = ((Expression.List)args[0]).Item.Select(
+               x => (double)((Expression.Number)x).Item
+            );
+
+            //for every sample location add a list
+            //of valueatpoint objets. for now, we only
+            //support one value per point
+            IList<ValueAtPoint> valList = new List<ValueAtPoint>();
+            foreach (var n in nvals)
+            {
+                valList.Add(new ValueAtPoint(new List<double> { n }));
+            }
+            FieldValues sample_values = new FieldValues(valList);
+
+            int schemaIndex = 0;
+            if (!sfm.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
+            {
+                IList<int> arses = sfm.GetRegisteredResults();
+                foreach (int i in arses)
+                {
+                    AnalysisResultSchema arsTest = sfm.GetResultSchema(i);
+                    if (arsTest.Name == DYNAMO_ANALYSIS_RESULTS_NAME)
+                    {
+                        schemaIndex = i;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                AnalysisResultSchema ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
+                schemaIndex = sfm.RegisterResult(ars);
+            }
+
+            sfm.UpdateSpatialFieldPrimitive(idx, sample_pts, sample_values, schemaIndex);
+            */
+
+            return Expression.NewContainer(idx);
+
+        }
+    }
+
     [ElementName("Temporary Curves")]
     [ElementCategory(BuiltinElementCategories.ANALYSIS)]
     [ElementDescription("Draw temporary curves in the family.")]

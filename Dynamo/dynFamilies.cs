@@ -1061,6 +1061,36 @@ namespace Dynamo.Elements
             return Expression.NewContainer(curves);
         }
 
+        /*
+        public void GetAndTransformCurve(Autodesk.Revit.ApplicationServices.Application app,
+    Autodesk.Revit.DB.Element element, Options geoOptions)
+        {
+            // Get geometry element of the selected element
+            Autodesk.Revit.DB.GeometryElement geoElement = element.get_Geometry(geoOptions);
+
+            // Get geometry object
+            foreach (GeometryObject geoObject in geoElement.Objects)
+            {
+                // Get the geometry instance which contains the geometry information
+                Autodesk.Revit.DB.GeometryInstance instance =
+                    geoObject as Autodesk.Revit.DB.GeometryInstance;
+                if (null != instance)
+                {
+                    foreach (GeometryObject o in instance.SymbolGeometry.Objects)
+                    {
+                        // Get curve
+                        Curve curve = o as Curve;
+                        if (curve != null)
+                        {
+                            // transfrom the curve to make it in the instance's coordinate space
+                            curve = curve.get_Transformed(instance.Transform);
+                        }
+                    }
+                }
+            }
+        }*/
+
+
         public override Expression Evaluate(FSharpList<Expression> args)
         {
             var input = args[0];
