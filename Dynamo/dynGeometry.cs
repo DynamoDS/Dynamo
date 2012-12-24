@@ -291,6 +291,58 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("UV Random Distribution")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates a grid of UVs froma domain.")]
+    [RequiresTransaction(false)]
+    public class
+        dynUVRandom : dynNode
+    {
+        public dynUVRandom()
+        {
+            InPortData.Add(new PortData("dom", "A domain.", typeof(object)));
+            InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(double)));
+            InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
+            OutPortData = new PortData("UVs", "List of UVs in the grid", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            FSharpList<Expression> domain;
+            double ui, vi;
+
+            domain = ((Expression.List)args[0]).Item;
+            ui = ((Expression.Number)args[1]).Item;
+            vi = ((Expression.Number)args[2]).Item;
+
+            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+
+            UV min = ((Expression.Container)domain[0]).Item as UV;
+            UV max = ((Expression.Container)domain[1]).Item as UV;
+            
+            Random r = new Random();
+            double uSpan = max.U-min.U;
+            double vSpan = max.V-min.V;
+
+            for (int i = 0; i < ui; i++)
+            {
+                for (int j = 0; j < vi; j++)
+                {
+                    result = FSharpList<Expression>.Cons(
+                        Expression.NewContainer(new UV(min.U + r.NextDouble()*uSpan, min.V + r.NextDouble()*vSpan)),
+                        result
+                    );
+                }
+            }
+
+            return Expression.NewList(
+               ListModule.Reverse(result)
+            );
+        }
+    }
+
     [ElementName("XYZ Grid")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Creates a grid of XYZs.")]
