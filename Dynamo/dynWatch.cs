@@ -14,11 +14,8 @@
 
 using System;
 using System.Windows;
-
 using Autodesk.Revit.DB;
-
 using Dynamo.Connectors;
-
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 

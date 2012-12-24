@@ -56,6 +56,9 @@ limitations under the License.
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="HelixToolkit.Wpf">
+      <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
@@ -114,6 +117,7 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dyn3D.cs" />
     <Compile Include="dynAnalysis.cs" />
     <Compile Include="dynDivide.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
