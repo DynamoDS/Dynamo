@@ -63,6 +63,9 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
 
+            //get rid of right click delete
+            this.MainContextMenu.Items.Clear();
+
             //take out the left and right margins
             //and make this so it's not so wide
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
