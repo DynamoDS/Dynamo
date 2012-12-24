@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 // This is to get around the failure we were seeing trying to reference this pre-compiled dll from dyanmo\packages directory.
 // see http://support.microsoft.com/kb/315682
 
-[assembly: AssemblyKeyFile("..\\..\\bin\\Debug\\GACKey.snk")]
+[assembly: AssemblyKeyFile("..\\..\\..\\lib\\GACKey.snk")]
 
 
 // Setting ComVisible to false makes the types in this assembly not visible 
