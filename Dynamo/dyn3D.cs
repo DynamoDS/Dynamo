@@ -40,9 +40,11 @@ namespace Dynamo.Elements
     {
         HelixViewport3D view;
         PointsVisual3D points;
-        
-        public Point3DCollection Points{get;set;}
+        LinesVisual3D lines;
+        bool isDrawingPoints;
 
+        public Point3DCollection Points{get;set;}
+ 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void RaisePropertyChanged(string property)
@@ -77,7 +79,10 @@ namespace Dynamo.Elements
             //view.IsHitTestVisible = true;
 
             points = new PointsVisual3D { Color = Colors.Red, Size = 6 };
+            lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 2 };
+
             view.Children.Add(points);
+            view.Children.Add(lines);
 
             this.inputGrid.Children.Add(view);
 
@@ -89,7 +94,12 @@ namespace Dynamo.Elements
             if (points != null)
             {
                 //hook up the points collection to the visual
-                points.Points = Points;
+                if (isDrawingPoints)
+                {
+                    points.Points = Points;
+                }
+                else
+                    lines.Points = Points;
             }
         }                                                                                                                                                                                                         
 
@@ -105,7 +115,7 @@ namespace Dynamo.Elements
                     //If we are receiving a list, we must create reference points for each XYZ in the list.
                     if (input.IsList)
                     { 
-                        var xyzList = (input as Expression.List).Item;
+                        var inList = (input as Expression.List).Item;
 
                         //initialize the point collection
                         if (Points == null)
@@ -115,11 +125,39 @@ namespace Dynamo.Elements
                         else
                             Points.Clear();
 
-                        foreach (Expression e in xyzList)
+                        //test the first item in the list.
+                        //if it's an XYZ, assume XYZs for the list
+                        //create points. otherwise, create curves
+                        XYZ ptTest = (inList.First() as Expression.Container).Item as XYZ;
+                        Curve cvTest = (inList.First() as Expression.Container).Item as Curve;
+
+                        if (ptTest != null) isDrawingPoints = true;
+
+                        foreach (Expression e in inList)
                         {
-                            XYZ pt = (XYZ)(e as Expression.Container).Item;
-                            var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
-                            Points.Add(ptVis);
+                            if (isDrawingPoints)
+                            {
+                                XYZ pt = (e as Expression.Container).Item as XYZ;
+                                var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
+                                Points.Add(ptVis);
+                            }
+                            else
+                            {
+                                Curve c = (e as Expression.Container).Item as Curve;
+                                if (c.GetType() == typeof(Line))
+                                {
+                                    XYZ start = c.get_EndPoint(0);
+                                    XYZ end = c.get_EndPoint(1);
+                                    var ptVis1 = new Point3D(start.X, start.Y, start.Z);
+                                    var ptVis2 = new Point3D(end.X, end.Y, end.Z);
+                                    Points.Add(ptVis1);
+                                    Points.Add(ptVis2);
+                                }
+                                else if (c.GetType() == typeof(HermiteSpline))
+                                {
+                                    //TODO:
+                                }
+                            }
                         }
                         RaisePropertyChanged("Points");
                         view.ZoomExtents();
