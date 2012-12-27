@@ -522,7 +522,7 @@ namespace Dynamo.Elements
                           SketchPlane sp = null;
 
                           //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
-                          if (x is Plane)
+                          if (x is Plane) //TODO: ensure this is correctly casting and testing.
                           {
                               sp = (this.UIDocument.Document.IsFamilyDocument)
                               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(
