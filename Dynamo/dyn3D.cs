@@ -60,7 +60,7 @@ namespace Dynamo.Elements
         public dyn3DPreview()
         {
             InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
-            OutPortData = new PortData("OUT", "3D output", typeof(object));
+            OutPortData = new PortData("OUT", "Watch contents, passed through", typeof(object));
 
             base.RegisterInputsAndOutputs();
 
@@ -180,7 +180,7 @@ namespace Dynamo.Elements
                     }
                }));
 
-            return Expression.NewContainer(null);
+            return Expression.NewContainer(input); //watch 3d should be a 'pass through' node
         }
 
     }

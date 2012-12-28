@@ -35,7 +35,7 @@ namespace Dynamo.Elements
         public dynWatch()
         {
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
-            OutPortData = new PortData("", "Watch contents.", typeof(string));
+            OutPortData = new PortData("", "Watch contents, passed through", typeof(object));
             base.RegisterInputsAndOutputs();
 
             //take out the left and right margins
@@ -80,7 +80,8 @@ namespace Dynamo.Elements
             ));
 
             //return the content that has been gathered
-            return Expression.NewString(content);
+            //return Expression.NewString(content);
+            return Expression.NewContainer(args); //watch should be a 'pass through' node
         }
 
         public void ShowClickedElementInView()

@@ -2753,6 +2753,15 @@ namespace Dynamo.Controls
 
             //Find compile errors
             var topMost = funcWorkspace.Elements.Where(x => !x.OutPort.Connectors.Any()).ToList();
+            
+            //foreach (var ele in topMost)
+            //{
+            //    if ((ele.NickName == "Watch") || (ele.NickName == "Watch 3d")) // allow watch nodes to 'hang out'
+            //    {
+            //        topMost.Remove(ele);
+            //    }
+            //}
+
             if (topMost.Count > 1)
             {
                 foreach (var ele in topMost)
