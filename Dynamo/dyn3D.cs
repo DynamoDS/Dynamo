@@ -29,6 +29,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Data;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace Dynamo.Elements
 {
@@ -66,6 +67,12 @@ namespace Dynamo.Elements
             //get rid of right click delete
             this.MainContextMenu.Items.Clear();
 
+            MenuItem mi = new MenuItem();
+            mi.Header = "Zoom to Fit";
+            mi.Click +=new RoutedEventHandler(mi_Click);
+
+            this.MainContextMenu.Items.Add(mi);
+
             //take out the left and right margins
             //and make this so it's not so wide
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
@@ -90,6 +97,12 @@ namespace Dynamo.Elements
             this.inputGrid.Children.Add(view);
 
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+        }
+
+        void mi_Click(object sender, RoutedEventArgs e)
+        {
+            view.ZoomExtents();
+
         }
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
@@ -163,7 +176,7 @@ namespace Dynamo.Elements
                             }
                         }
                         RaisePropertyChanged("Points");
-                        view.ZoomExtents();
+                        //view.ZoomExtents();
                     }
                }));
 

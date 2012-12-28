@@ -34,7 +34,7 @@ namespace Dynamo.Elements
     [ElementName("Create Particle System")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("A node which allows you to drive the position of elmenets via a particle system .")]
-    [RequiresTransaction(true)]
+    [RequiresTransaction(false)]
     class dynDynamicRelaxation : dynNode
     {
         ParticleSystem particleSystem;
@@ -45,10 +45,11 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("points", "The point to drive.", typeof(ReferencePoint)));
             InPortData.Add(new PortData("curves", "The curves to make into springs", typeof(IList<CurveByPoints>)));
-            InPortData.Add(new PortData("tim", "Timer results to trigger updates.", typeof(double)));
+            //InPortData.Add(new PortData("tim", "Timer results to trigger updates.", typeof(double)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(double)));
             InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
             InPortData.Add(new PortData("r", "Rest Length.", typeof(double)));
+            InPortData.Add(new PortData("m", "Nodal Mass.", typeof(double)));
 
             OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
             base.RegisterInputsAndOutputs();
@@ -60,44 +61,51 @@ namespace Dynamo.Elements
             // from the old i need to know which two new points correspond to these two old points.
             pointDictionary = new Dictionary<ElementId, ElementId>();
 
-
             rPoints = new List<ReferencePoint>();
 
-
-            
         }
 
-        void setupLineTest()
+        void setupLineTest(double springDampening, double springRestLength, double springConstant, double mass)
         {
 
             double maxLength = 200;
             int maxPart = 20;
             double stepSize = maxLength / maxPart;
-            double mass = 1;
-            double springDampening = 1;
-            double springRestLength = stepSize / 1;
-            double springConstant = 2500;
+            //double mass = 1;
+            //double springDampening = 1;
+            //double springRestLength = stepSize / 1;
+            //double springConstant = 2500;
 
-            for (int i = 0; i < maxPart; i++)
+            for (int j = 0; j < maxPart; j++)
             {
-                if (i == 0)
+                for (int i = 0; i < maxPart; i++)
                 {
-                    Particle a = particleSystem.makeParticle(mass, new XYZ(0, 0, 0), true);
-                }
-                else
-                {
-                    Particle b = particleSystem.makeParticle(mass, new XYZ(i * stepSize, 0, 0), false);
-                    particleSystem.makeSpring(particleSystem.getParticle(i - 1), b, springRestLength, springConstant, springDampening);
-                }
-                if (i == maxPart - 1)
-                {
-                    particleSystem.getParticle(i).makeFixed();
+                    if (i == 0)
+                    {
+                        Particle a = particleSystem.makeParticle(mass, new XYZ(0, j*stepSize, 0), true);
+                    }
+                    else
+                    {
+                        Particle b = particleSystem.makeParticle(mass, new XYZ(i * stepSize, j*stepSize, 0), false);
+                        particleSystem.makeSpring(particleSystem.getParticle((i - 1)+(j*maxPart)), b, springRestLength, springConstant, springDampening);
+                    }
+                    if (i == maxPart - 1)
+                    {
+                        particleSystem.getParticle(i + (j*maxPart)).makeFixed();
+                    }
                 }
 
+                if (j > 0)
+                {
+                    for (int i = 0; i < maxPart; i++)
+                    {
+                        Particle a = particleSystem.getParticle(i + (j * maxPart));
+                        Particle b = particleSystem.getParticle(i + ((j - 1 )*maxPart));
 
+                        particleSystem.makeSpring(a, b, springRestLength, springConstant, springDampening);
+                    }
+                }
             }
-            
-
         }
 
         // geometric test, fairly expensive. obsoleted by CreateParticleByElementID and GetParticleFromElementID
@@ -122,7 +130,7 @@ namespace Dynamo.Elements
             return null;
         }
 
-        public override bool IsDirty { get { return true; } set { } } 
+        //public override bool IsDirty { get { return true; } set { } } 
 
         // geometric test, fairly expensive. 
         public ReferencePoint FindRefPointWithCoincidentXYZ(ReferencePoint rp)
@@ -148,19 +156,19 @@ namespace Dynamo.Elements
         {
             //var points = args[0];//points
             //var curves = args[1];//curves
-            double timer = ((Expression.Number)args[2]).Item;//timer in ms
-            double ms = timer / 1000;
-            //double d = ((Expression.Number)args[3]).Item;//dampening
-            //double s = ((Expression.Number)args[4]).Item;//spring constant
-            //double r = ((Expression.Number)args[5]).Item;//rest length
+            //double timer = ((Expression.Number)args[2]).Item;//timer in ms
+            //double ms = timer / 1000;
+            double d = ((Expression.Number)args[2]).Item;//dampening
+            double s = ((Expression.Number)args[3]).Item;//spring constant
+            double r = ((Expression.Number)args[4]).Item;//rest length
+            double m = ((Expression.Number)args[5]).Item;//nodal mass
 
             particleSystem.Clear();
             
             //ReferencePointArray refPtArr = new ReferencePointArray();
             //ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
-            setupLineTest();
-
+            setupLineTest(d, r, s, m);
 
             return Expression.NewContainer(particleSystem);
         }
@@ -169,13 +177,16 @@ namespace Dynamo.Elements
     [ElementName("Dynamic Relaxation Step")]
     [ElementDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
     [ElementCategory(BuiltinElementCategories.MISC)]
-    [RequiresTransaction(true)]
+    [RequiresTransaction(false)]
     public class dynDynamicRelaxationStep : dynNode
     {
+        //public override bool IsDirty { get { return true; } set { } } 
+
         public dynDynamicRelaxationStep()
         {
             InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(ParticleSystem)));
             InPortData.Add(new PortData("step", "Time to step.", typeof(double)));
+            InPortData.Add(new PortData("exec", "Execution interval.", typeof(object)));
             OutPortData = new PortData("geom", "Relaxation data.", typeof(object));
 
             base.RegisterInputsAndOutputs();
