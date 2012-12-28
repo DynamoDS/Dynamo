@@ -43,8 +43,8 @@ namespace Dynamo.Elements
 
         public dynDynamicRelaxation()
         {
-            InPortData.Add(new PortData("points", "The point to drive.", typeof(ReferencePoint)));
-            InPortData.Add(new PortData("curves", "The curves to make into springs", typeof(IList<CurveByPoints>)));
+            InPortData.Add(new PortData("points", "The point to drive.", typeof(object)));
+            InPortData.Add(new PortData("curves", "The curves to make into springs", typeof(object)));
             //InPortData.Add(new PortData("tim", "Timer results to trigger updates.", typeof(double)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(double)));
             InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
@@ -153,8 +153,6 @@ namespace Dynamo.Elements
         {
             //var points = args[0];//points
             //var curves = args[1];//curves
-            //double timer = ((Expression.Number)args[2]).Item;//timer in ms
-            //double ms = timer / 1000;
             double d = ((Expression.Number)args[2]).Item;//dampening
             double s = ((Expression.Number)args[3]).Item;//spring constant
             double r = ((Expression.Number)args[4]).Item;//rest length
@@ -197,7 +195,7 @@ namespace Dynamo.Elements
             double timeStep = ((Expression.Number)args[1]).Item;
             var result = FSharpList<Expression>.Empty;
 
-            particleSystem.step(timeStep);
+            particleSystem.step(timeStep);//in ms
 
             //Particle p;
             //ParticleSpring s;
