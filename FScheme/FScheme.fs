@@ -96,6 +96,10 @@ type Expression =
 type Frame = Expression ref [] ref
 type Environment = Frame list ref
 
+type Parameter =
+    | Normal of string
+    | Tail of string
+
 ///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
 type ExternFunc = delegate of Expression list -> Expression
 
@@ -107,6 +111,7 @@ type Parser =
    | Number_P of double
    | String_P of string
    | Symbol_P of string
+   | Dot_P
    | Func_P of (Expression list -> Expression)
    | List_P of Parser list
 
@@ -157,7 +162,7 @@ type Syntax =
    | SetId of string * Syntax
    | Bind of string list * Syntax list * Syntax
    | BindRec of string list * Syntax list * Syntax
-   | Fun of string list * Syntax
+   | Fun of Parameter list * Syntax
    | List_S of Syntax list
    | If of Syntax * Syntax * Syntax
    | Define of string * Syntax
@@ -171,6 +176,7 @@ let rec private printParser = function
    | String_P(s) -> "\"" + s + "\""
    | Symbol_P(s) -> s
    | Func_P(_) -> "#<procedure>"
+   | Dot_P -> "."
    | List_P(ps) -> "(" + String.Join(" ", List.map printParser ps) + ")"
 
 //A simple parser
@@ -205,7 +211,12 @@ let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
         | Symbol_P("lambda") | Symbol_P("λ") ->
             match t with
             | List_P(parameters) :: body ->
-               Fun(List.map (function Symbol_P(s) -> s | m -> failwith "Syntax error in function definition.") parameters, Begin(List.map parse' body))
+               let rec paramMap acc = function
+                  | [Dot_P; Symbol_P(s)] -> Tail(s) :: acc |> List.rev 
+                  | Symbol_P(s) :: t -> paramMap (Normal(s) :: acc) t
+                  | [] -> List.rev acc
+                  | m -> failwith "Syntax error in function definition."
+               Fun(paramMap [] parameters, Begin(List.map parse' body))
             | m -> List_P(t) |> printParser |> sprintf "Syntax error in function definition: %s" |> failwith
         //if
         | Symbol_P("if") ->
@@ -237,12 +248,15 @@ let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
             macro_env.[s] t |> parse'
         //otherwise...
         | _ -> List_S(List.map parse' (h :: t))
+    | Dot_P ->
+        failwith "illegal use of \".\""
 
 //A simple parser
 let private stringToParser source =
    let map = function
       | Token.Number(n) -> Number_P(Double.Parse(n))
       | Token.String(s) -> String_P(s)
+      | Token.Symbol(".") -> Dot_P
       | Token.Symbol(s) -> Symbol_P(s)
       | _ -> failwith "Syntax error."
    let rec list f t acc =
@@ -500,7 +514,7 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
             Dummy(sprintf "set! %s" id)
       | None -> sprintf "Unbound identifier: %s" id |> failwith
    
-   | Bind(names, exprs, body) -> compile' (List_S(Fun(names, body) :: exprs))
+   | Bind(names, exprs, body) -> compile' (List_S(Fun(List.map Normal names, body) :: exprs))
    
    | BindRec(names, exprs, body) ->
       let cbody = compile (ref (names :: compenv.Value)) body
@@ -533,21 +547,25 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
            Dummy(sprintf "defined '%s'" name)
    
    | Fun(names, body) ->
-      let compenv' = names :: compenv.Value |> ref
+      let paramToString = function
+        | Normal(s) | Tail(s) -> s
+      let compenv' = List.map paramToString names :: compenv.Value |> ref
       let cbody = compile compenv' body
       let amt = List.length names
       let pack args =
-         let arglen = List.length args
-         if arglen = amt then
-            Seq.map ref args 
-            |> Seq.toArray
-         elif amt > 0 then
-            Seq.append (Seq.take (amt - 1) args) 
-                       (Seq.singleton (List(Seq.skip (amt - 1) args |> Seq.toList)))
-            |> Seq.map ref 
-            |> Seq.toArray
-         else
-            failwith "Can't call 0-arity function with arguments."
+         let rec pack' names args =
+            match names with
+            | [Tail(s)] ->
+                [List(args) |> ref]
+            | _ :: xs -> 
+                match args with
+                | h :: t ->
+                    ref h :: pack' xs t
+                | _ -> failwith "Arity mismatch."
+            | [] -> 
+                if Seq.isEmpty args then [] 
+                else failwith "Arity mismatch."
+         pack' names args |> Seq.toArray
       fun env ->
          Function(
             fun exprs -> 
@@ -593,6 +611,7 @@ and private makeQuote isQuasi compenv parser =
    | Number_P(n) -> fun _ -> Number(n)
    | String_P(s) -> fun _ -> String(s)
    | Symbol_P(s) -> fun _ -> Symbol(s)
+   | Dot_P -> fun _ -> Symbol(".")
    | Func_P(f) -> fun _ -> Function(f)
    | List_P(Symbol_P("unquote") :: t) when isQuasi ->
       match t with
@@ -728,7 +747,7 @@ let private evaluateSchemeDefs() =
 
    (define cartesian-product 
       ;; cartesian-product :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
-      (lambda (comb lsts)
+      (lambda (comb . lsts)
          (letrec ((cp-atom-list (lambda (at lst) 
                                     (letrec ((cal* (lambda (x l a) 
                                                       (if (empty? l) 
@@ -778,7 +797,7 @@ let private evaluateSchemeDefs() =
 
   (define zip
       ;; zip :: [listof X] [listof Y] ... [listof Z] -> [listof [listof X Y ... Z]]
-      (lambda (lofls) 
+      (lambda (. lofls) 
          (letrec ((zip'' (lambda (lofls a al) 
                            (if (empty? lofls) 
                                  (list (reverse a) (reverse al)) 
@@ -798,9 +817,9 @@ let private evaluateSchemeDefs() =
 
    (define combine 
       ;; combine :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
-      (lambda (f lofls) 
+      (lambda (f . lofls) 
          (map (lambda (x) (apply f x)) 
-               (zip lofls))))
+              (apply zip lofls))))
 
   (define for-each 
      ;; for-each :: (X -> unit) [listof X] -> unit
@@ -915,7 +934,7 @@ let test (log : ErrorLog) =
    
    //Zip/Combine
    case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
-   case "(combine (lambda (x y) (append x y)) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
+   case "(combine append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
    
    //Engine Tests
    case "(quote (* 2 3))" "(* 2 3)" // quote primitive
@@ -925,7 +944,7 @@ let test (log : ErrorLog) =
    case "(quasiquote (* 2 (unquote (- 5 2))))" "(* 2 3)" // quote nested unquote
    case "(let ((a 1)) (begin (set! a 2) a))" "2" // begin and assign
    case "(let* ((a 5) (dummy (set! a 10))) a)" "10" // re-assign after let
-   case "(begin (define too-many (lambda (a x) x)) (too-many 1 2 3))" "(2 3)"
+   case "(begin (define too-many (lambda (_ . x) x)) (too-many 1 2 3))" "(2 3)"
    case "(too-many '(1 1) '(2 2) '(3 3))" "((2 2) (3 3))"
    case "(reverse '(1 2 3))" "(3 2 1)" // reverse
    case "(list 1 2 3)" "(1 2 3)"
