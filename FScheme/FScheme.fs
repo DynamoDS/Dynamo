@@ -453,8 +453,7 @@ let Sub1 = function
 let Identity = function
    | [e] -> e
    | m -> malformed "identity" (List(m))
-   
-let rec Loop exprs = Loop exprs
+
 
 type private CompilerFrame = string list
 type private CompilerEnv = CompilerFrame list ref
@@ -687,7 +686,6 @@ let private makeEnvironments() =
    AddDefaultBinding "add1" (Function(Add1))
    AddDefaultBinding "sub1" (Function(Sub1))
    AddDefaultBinding "identity" (Function(Identity))
-   AddDefaultBinding "loop" (Function(Loop))
 
 let Evaluate syntax = compile compileEnvironment syntax environment
 
