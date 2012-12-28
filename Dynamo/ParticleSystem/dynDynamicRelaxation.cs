@@ -50,35 +50,32 @@ namespace Dynamo.Elements
             InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
             InPortData.Add(new PortData("r", "Rest Length.", typeof(double)));
             InPortData.Add(new PortData("m", "Nodal Mass.", typeof(double)));
+            InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(int)));
+            InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(int)));
 
             OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
             base.RegisterInputsAndOutputs();
 
             particleSystem = new ParticleSystem();
 
-            // need a dictionary to hold reference between old points and new to handle spring mapping and mutation
-            // curve input is curve by point which references two original ref points. in order to make a new curve by point 
-            // from the old i need to know which two new points correspond to these two old points.
-            pointDictionary = new Dictionary<ElementId, ElementId>();
-
-            rPoints = new List<ReferencePoint>();
 
         }
 
-        void setupLineTest(double springDampening, double springRestLength, double springConstant, double mass)
+        void setupLineTest(int maxPartX, int maxPartY, double springDampening, double springRestLength, double springConstant, double mass)
         {
 
-            double maxLength = 200;
-            int maxPart = 20;
-            double stepSize = maxLength / maxPart;
+            //double maxLength = 200;
+            double stepSize = 20;
+            //int maxPart = 20;
+            //double stepSize = maxLength / maxPart;
             //double mass = 1;
             //double springDampening = 1;
             //double springRestLength = stepSize / 1;
             //double springConstant = 2500;
 
-            for (int j = 0; j < maxPart; j++)
+            for (int j = 0; j < maxPartY; j++) // Y axis is outer loop
             {
-                for (int i = 0; i < maxPart; i++)
+                for (int i = 0; i < maxPartX; i++) // X axis is inner loop
                 {
                     if (i == 0)
                     {
@@ -87,20 +84,20 @@ namespace Dynamo.Elements
                     else
                     {
                         Particle b = particleSystem.makeParticle(mass, new XYZ(i * stepSize, j*stepSize, 0), false);
-                        particleSystem.makeSpring(particleSystem.getParticle((i - 1)+(j*maxPart)), b, springRestLength, springConstant, springDampening);
+                        particleSystem.makeSpring(particleSystem.getParticle((i - 1)+(j*maxPartX)), b, springRestLength, springConstant, springDampening);
                     }
-                    if (i == maxPart - 1)
+                    if (i == maxPartX - 1)
                     {
-                        particleSystem.getParticle(i + (j*maxPart)).makeFixed();
+                        particleSystem.getParticle(i + (j*maxPartX)).makeFixed();
                     }
                 }
 
-                if (j > 0)
+                if (j > 0) // thread multple chains together along Y axis
                 {
-                    for (int i = 0; i < maxPart; i++)
+                    for (int i = 0; i < maxPartX; i++)
                     {
-                        Particle a = particleSystem.getParticle(i + (j * maxPart));
-                        Particle b = particleSystem.getParticle(i + ((j - 1 )*maxPart));
+                        Particle a = particleSystem.getParticle(i + (j * maxPartX));
+                        Particle b = particleSystem.getParticle(i + ((j - 1 )*maxPartX));
 
                         particleSystem.makeSpring(a, b, springRestLength, springConstant, springDampening);
                     }
@@ -162,13 +159,15 @@ namespace Dynamo.Elements
             double s = ((Expression.Number)args[3]).Item;//spring constant
             double r = ((Expression.Number)args[4]).Item;//rest length
             double m = ((Expression.Number)args[5]).Item;//nodal mass
+            int numX = (int)((Expression.Number)args[6]).Item;//number of particles in X
+            int numY = (int)((Expression.Number)args[7]).Item;//number of particles in Y
 
             particleSystem.Clear();
             
             //ReferencePointArray refPtArr = new ReferencePointArray();
             //ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
-            setupLineTest(d, r, s, m);
+            setupLineTest(numX, numY, d, r, s, m);
 
             return Expression.NewContainer(particleSystem);
         }
@@ -200,39 +199,40 @@ namespace Dynamo.Elements
 
             particleSystem.step(timeStep);
 
-            Particle p;
-            ParticleSpring s;
-            XYZ pt;
+            //Particle p;
+            //ParticleSpring s;
+            //XYZ pt;
 
-            Particle springEnd1;
-            Particle springEnd2;
-            XYZ springXYZ1;
-            XYZ springXYZ2;
-            Line springLine;
+            //Particle springEnd1;
+            //Particle springEnd2;
+            //XYZ springXYZ1;
+            //XYZ springXYZ2;
+            //Line springLine;
 
-            //draw points as XYZs
-            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
-            {
-                p = particleSystem.getParticle(i);
-                pt = new XYZ(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
-                //result = FSharpList<Expression>.Cons(Expression.NewContainer(pt), result);
-            }
+            ////draw points as XYZs
+            //for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+            //{
+            //    p = particleSystem.getParticle(i);
+            //    pt = new XYZ(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
+            //    //result = FSharpList<Expression>.Cons(Expression.NewContainer(pt), result);
+            //}
 
-            //draw curves as geometry curves
-            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
-            {
-                s = particleSystem.getSpring(i);
-                springEnd1 = s.getOneEnd();
-                springEnd2 = s.getTheOtherEnd();
+            ////draw curves as geometry curves
+            //for (int i = 0; i < particleSystem.numberOfSprings(); i++)
+            //{
+            //    s = particleSystem.getSpring(i);
+            //    springEnd1 = s.getOneEnd();
+            //    springEnd2 = s.getTheOtherEnd();
 
-                springXYZ1 = new XYZ(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
-                springXYZ2 = new XYZ(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
-                springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
+            //    springXYZ1 = new XYZ(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
+            //    springXYZ2 = new XYZ(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
+            //    springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
 
-                result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
-            }
+            //    result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
+            //}
 
-            return Expression.NewList(result);
+            //return Expression.NewList(result);
+            return Expression.NewContainer(particleSystem);
         }
     }
 

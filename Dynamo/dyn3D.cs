@@ -83,7 +83,7 @@ namespace Dynamo.Elements
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
             view = new HelixViewport3D();
             view.DataContext = this;
-            view.CameraRotationMode = CameraRotationMode.Trackball;
+            view.CameraRotationMode = CameraRotationMode.Turntable;
             view.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             //view.IsHitTestVisible = true;
@@ -121,16 +121,17 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            FSharpList<Expression> list = ((Expression.List)args[0]).Item;
+            
             
             var input = args[0];
 
             this.Dispatcher.Invoke(new Action(
                delegate
                {
-                    //If we are receiving a list, we must create reference points for each XYZ in the list.
+                    //If we are receiving a list, we test to see if they are XYZs or curves and then make Preview3d elements.
                     if (input.IsList)
-                    { 
+                    {
+                        //FSharpList<Expression> list = ((Expression.List)args[0]).Item;
                         var inList = (input as Expression.List).Item;
 
                         //initialize the point collection
@@ -178,7 +179,61 @@ namespace Dynamo.Elements
                         RaisePropertyChanged("Points");
                         //view.ZoomExtents();
                     }
+                    else if (input.IsContainer) //if not a list, presume it's a a particle system
+                    {
+                        var psTest = input as Expression.Container;
+
+                        //initialize the point collection
+                        if (Points == null)
+                        {
+                            Points = new Point3DCollection();
+                        }
+                        else
+                            Points.Clear();
+
+                        if ((ParticleSystem)(psTest).Item is ParticleSystem)
+                        {
+                            ParticleSystem ps = (ParticleSystem)(psTest).Item; //XYZ xyz = (XYZ)((Expression.Container)input).Item;
+
+                            Particle p;
+                            ParticleSpring s;
+
+                            Particle springEnd1;
+                            Particle springEnd2;
+                            Line springLine;
+
+                            //draw points as XYZs
+                            for (int i = 0; i < ps.numberOfParticles(); i++)
+                            {
+                                p = ps.getParticle(i);
+                                var ptVis = new Point3D(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
+                                Points.Add(ptVis);
+                            }
+
+                            //draw curves as geometry curves
+                            for (int i = 0; i < ps.numberOfSprings(); i++)
+                            {
+                                s = ps.getSpring(i);
+                                springEnd1 = s.getOneEnd();
+                                springEnd2 = s.getTheOtherEnd();
+
+                                var ptVis1 = new Point3D(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
+                                var ptVis2 = new Point3D(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
+                                Points.Add(ptVis1);
+                                Points.Add(ptVis2);
+
+                            }
+
+                        }
+                        else
+                        {
+                            //please pass in a list of XYZs, Curves or a single particle system
+                        }
+                        RaisePropertyChanged("Points");
+                        //view.ZoomExtents();
+                    }
                }));
+
 
             return Expression.NewContainer(input); //watch 3d should be a 'pass through' node
         }
