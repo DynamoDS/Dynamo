@@ -186,8 +186,8 @@ let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
     | Number_P(n) -> Number_S(n)
     | String_P(s) -> String_S(s)
     | Symbol_P(s) -> Id(s)
-    | List_P([]) -> List_S([])
     | Func_P(f) -> Func_S(f)
+    | List_P([]) -> List_S([])
     | List_P(h :: t) ->
         match h with
         //Set!
@@ -224,9 +224,11 @@ let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
             | [cond; then_case; else_case] -> If(parse' cond, parse' then_case, parse' else_case)
             | m -> failwith "Syntax error in if"//: %s" expr |> failwith
         //define
-        | Symbol_P("define") -> 
+        | Symbol_P("define") as d -> 
             match t with
             | Symbol_P(name) :: body -> Define(name, Begin(List.map parse' body))
+            | List_P(name :: ps) :: body -> 
+                parse' (List_P([d; name; List_P(Symbol_P("lambda") :: List_P(ps) :: body)]))
             | m -> failwith "Syntax error in define"//: %s" expr |> failwith
         //quote
         | Symbol_P("quote") ->
