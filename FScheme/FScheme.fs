@@ -717,6 +717,8 @@ let ParseText text =
 
 let private evaluateSchemeDefs() =
    "
+   (define Y (lambda (f) ((lambda (x) (x x)) (lambda (x) (f (lambda (g) ((x x) g)))))))
+
    (define not (lambda (x) (if x 0 1)))
 
    (define xor 
@@ -831,19 +833,19 @@ environment := [Seq.map (fun (_, x) -> x) tempEnv |> Seq.toArray |> ref]
 compileEnvironment := [List.map (fun (x, _) -> x) tempEnv]
 evaluateSchemeDefs()
 
-///REP -- Read/Eval/Prints
-let rep = ParseText >> print
+///REP -- Read/Eval/Print
+let REP = ParseText >> print
 
-let repd text =
+//Debug version of rep
+let private REPd text =
     let watch = Stopwatch.StartNew()
     let x = ParseText text
     watch.Stop()
-    Console.WriteLine(sprintf "Time Elapsed: %d ms" watch.ElapsedMilliseconds);
-    x |> print
+    sprintf "%s\nTime Elapsed: %d ms" (print x) watch.ElapsedMilliseconds
 
 ///REPL -- Read/Eval/Print Loop
-let repl debug : unit =
-   let runner = if debug then repd else rep
+let REPL debug : unit =
+   let runner = if debug then REPd else REP
    let rec repl' output =
       printf "%s\n> " output
       try Console.ReadLine() |> runner |> repl'
@@ -853,12 +855,12 @@ let repl debug : unit =
 type ErrorLog = delegate of string -> unit
 
 //Tests
-let test (log : ErrorLog) =
+let private test (log : ErrorLog) =
    let success = ref true
    let case source expected =
       try
          //printfn "TEST: %s" source
-         let output = rep source
+         let output = REP source
          //Console.WriteLine(sprintf "TESTING: %s" source)
          if output <> expected then
             success := false
@@ -935,6 +937,9 @@ let test (log : ErrorLog) =
    //Zip/Combine
    case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
    case "(combine append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
+
+   //Y Combinator
+   case "(let ((fact (Y (lambda (f) (lambda (n) (if (<= n 1) 1 (* n (f (sub1 n))))))))) (fact 5))" "120"
    
    //Engine Tests
    case "(quote (* 2 3))" "(* 2 3)" // quote primitive
@@ -954,6 +959,6 @@ let test (log : ErrorLog) =
    
    success.Value
 
-let runTests() = 
+let RunTests() = 
    if (ErrorLog(Console.WriteLine) |> test) then 
       Console.WriteLine("All Tests Passed.")
