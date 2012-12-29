@@ -79,6 +79,8 @@ namespace Dynamo.Elements
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             this.topControl.Width = 400;
             this.topControl.Height = 300;
+            this.elementShine.Visibility = System.Windows.Visibility.Hidden;
+            this.elementRectangle.Visibility = System.Windows.Visibility.Hidden;
 
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
@@ -88,9 +90,11 @@ namespace Dynamo.Elements
             view.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             //view.IsHitTestVisible = true;
-
-            points = new PointsVisual3D { Color = Colors.Red, Size = 6 };
-            lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 2 };
+            view.ShowFrameRate = true;
+            view.DebugInfo = "This is some debug info.";
+            
+            points = new PointsVisual3D { Color = Colors.Black, Size = 6 };
+            lines = new LinesVisual3D { Color = Colors.LightGray, Thickness = 2 };
 
             view.Children.Add(points);
             view.Children.Add(lines);
