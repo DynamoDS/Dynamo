@@ -38,8 +38,6 @@ namespace Dynamo.Elements
     class dynDynamicRelaxation : dynNode
     {
         ParticleSystem particleSystem;
-        //Dictionary<ElementId, ElementId> pointDictionary;
-        //List<ReferencePoint> rPoints;
 
         public dynDynamicRelaxation()
         {
@@ -57,7 +55,6 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
 
             particleSystem = new ParticleSystem();
-
 
         }
 
@@ -127,8 +124,6 @@ namespace Dynamo.Elements
             return null;
         }
 
-        //public override bool IsDirty { get { return true; } set { } } 
-
         // geometric test, fairly expensive. 
         public ReferencePoint FindRefPointWithCoincidentXYZ(ReferencePoint rp)
         {
@@ -161,9 +156,6 @@ namespace Dynamo.Elements
             int numY = (int)((Expression.Number)args[7]).Item;//number of particles in Y
 
             particleSystem.Clear();
-            
-            //ReferencePointArray refPtArr = new ReferencePointArray();
-            //ReferencePointArray tempRefPtArr = new ReferencePointArray();
 
             setupLineTest(numX, numY, d, r, s, m);
 
@@ -177,8 +169,6 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     public class dynDynamicRelaxationStep : dynNode
     {
-        //public override bool IsDirty { get { return true; } set { } } 
-
         public dynDynamicRelaxationStep()
         {
             InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(ParticleSystem)));
@@ -197,141 +187,8 @@ namespace Dynamo.Elements
 
             particleSystem.step(timeStep);//in ms
 
-            Particle p;
-            ParticleSpring s;
-            XYZ pt;
-
-            Particle springEnd1;
-            Particle springEnd2;
-            XYZ springXYZ1;
-            XYZ springXYZ2;
-            Line springLine;
-
-            //draw points as XYZs
-            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
-            {
-                p = particleSystem.getParticle(i);
-                pt = new XYZ(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
-                //result = FSharpList<Expression>.Cons(Expression.NewContainer(pt), result);
-            }
-
-            //draw curves as geometry curves
-            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
-            {
-                s = particleSystem.getSpring(i);
-                springEnd1 = s.getOneEnd();
-                springEnd2 = s.getTheOtherEnd();
-
-                springXYZ1 = new XYZ(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
-                springXYZ2 = new XYZ(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
-                springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
-
-                result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
-            }
-
-            return Expression.NewList(result);
-            //return Expression.NewContainer(particleSystem);
+            return Expression.NewContainer(particleSystem);
         }
     }
-
-
-
-    //[ElementName("Timer")]
-    //[ElementCategory(BuiltinElementCategories.MISC)]
-    //[ElementDescription("A node which represents a stopwatch.")]
-    //[RequiresTransaction(false)]
-    //public class dynTimer : dynNode
-    //{
-    //    Stopwatch sw;
-    //    bool timing = false;
-    //    System.Timers.Timer timer; 
-
-    //    public dynTimer()
-    //    {
-    //        InPortData.Add(new PortData("n", "How often to receive updates in milliseconds.", typeof(double)));
-    //        InPortData.Add(new PortData("i/o", "Turn the timer on or off", typeof(dynBool)));
-    //        OutPortData = new PortData("tim", "The timer, counting in milliseconds.", typeof(int));
-
-    //        base.RegisterInputsAndOutputs();
-
-    //        sw = new Stopwatch();
-    //        //timer = new System.Timers.Timer();
-
-
-    //    }
-
-    //    void StartTimer(int interval)
-    //    {
-
-    //        timer = new System.Timers.Timer(interval); 
-
-    //        timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
-    //        timer.Enabled = true; // Enable it
-    //    }
-
-    //    static void _timer_Elapsed(object sender, ElapsedEventArgs e)
-    //    {
-    //       //figure out how to trigger Evaluate of the Timer node
-    //       // Dynamo.Utilities.dynElementSettings.SharedInstance.Workbench
-    //    }
-
-    //    int KeepTime(int interval)
-    //    {
-
-    //        if (sw.ElapsedMilliseconds > interval)
-    //        {
-    //            sw.Stop();
-    //            sw.Reset();
-    //            sw.Start();
-    //            return interval;
-
-    //        }
-    //        else
-    //        {
-    //            return 0;
-    //        }
-
-    //        //return (int)sw.ElapsedMilliseconds;
-
-    //    }
-
-    //    public override Expression Evaluate(FSharpList<Expression> args)
-    //    {
-            
-    //        double result = 0;
-    //        int interval = Convert.ToInt16(((Expression.Number)args[0]).Item);
-
-
-    //        bool isTiming = Convert.ToBoolean(((Expression.Number)args[1]).Item);
-
-
-    //        if (timing)
-    //        {
-    //            if (!isTiming)  //if you are timing and we turn off the timer
-    //            {
-    //                timing = false; //stop
-    //                sw.Stop();
-    //                sw.Reset();
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (isTiming)
-    //            {
-    //                timing = true;  //if you are not timing and we turn on the timer
-    //                sw.Start();
-    //                StartTimer(interval);
-    //                while (timing)
-    //                {
-    //                    result = KeepTime(interval);
-    //                    break;
-    //                }
-    //            }
-    //        }
-
-    //        IsDirty = true;// stephen suggesting hitting this with a larger hammer. 
-    //        return Expression.NewNumber(result);
-    //    }
-    //}
 
 }

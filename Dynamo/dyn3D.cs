@@ -43,6 +43,7 @@ namespace Dynamo.Elements
         PointsVisual3D points;
         LinesVisual3D lines;
         bool isDrawingPoints;
+        ParticleSystem ps;
 
         public Point3DCollection Points{get;set;}
  
@@ -125,8 +126,6 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            
-            
             var input = args[0];
 
             this.Dispatcher.Invoke(new Action(
@@ -135,6 +134,7 @@ namespace Dynamo.Elements
                     //If we are receiving a list, we test to see if they are XYZs or curves and then make Preview3d elements.
                     if (input.IsList)
                     {
+                        #region points and curves
                         //FSharpList<Expression> list = ((Expression.List)args[0]).Item;
                         var inList = (input as Expression.List).Item;
 
@@ -181,67 +181,65 @@ namespace Dynamo.Elements
                             }
                         }
                         RaisePropertyChanged("Points");
-                        //view.ZoomExtents();
+                        #endregion
                     }
                     else if (input.IsContainer) //if not a list, presume it's a a particle system
                     {
                         var psTest = input as Expression.Container;
 
-                        //initialize the point collection
-                        if (Points == null)
-                        {
-                            Points = new Point3DCollection();
-                        }
-                        else
-                            Points.Clear();
-
                         if ((ParticleSystem)(psTest).Item is ParticleSystem)
                         {
-                            ParticleSystem ps = (ParticleSystem)(psTest).Item; //XYZ xyz = (XYZ)((Expression.Container)input).Item;
+                            ps = (ParticleSystem)(psTest).Item; //XYZ xyz = (XYZ)((Expression.Container)input).Item;
 
-                            Particle p;
-                            ParticleSpring s;
+                            UpdateVisualsFromParticleSystem();
 
-                            Particle springEnd1;
-                            Particle springEnd2;
-                            Line springLine;
-
-                            //draw points as XYZs
-                            for (int i = 0; i < ps.numberOfParticles(); i++)
-                            {
-                                p = ps.getParticle(i);
-                                var ptVis = new Point3D(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
-                                Points.Add(ptVis);
-                            }
-
-                            //draw curves as geometry curves
-                            for (int i = 0; i < ps.numberOfSprings(); i++)
-                            {
-                                s = ps.getSpring(i);
-                                springEnd1 = s.getOneEnd();
-                                springEnd2 = s.getTheOtherEnd();
-
-                                var ptVis1 = new Point3D(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
-                                var ptVis2 = new Point3D(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
-                                Points.Add(ptVis1);
-                                Points.Add(ptVis2);
-
-                            }
-
+                            RaisePropertyChanged("Points");
                         }
                         else
                         {
                             //please pass in a list of XYZs, Curves or a single particle system
                         }
-                        RaisePropertyChanged("Points");
-                        //view.ZoomExtents();
                     }
                }));
-
 
             //return Expression.NewContainer(input); //watch 3d should be a 'pass through' node 
             return input; //watch 3d should be a 'pass through' node
             
+        }
+
+        private void UpdateVisualsFromParticleSystem()
+        {
+            points.Points = null;
+            lines.Points = null;
+
+            if (Points == null)
+            {
+                //initialize the point collection
+                Points = new Point3DCollection();
+            }
+            else
+            {
+                Points.Clear();
+            }
+
+            Particle p;
+            ParticleSpring s;
+
+            Particle springEnd1;
+            Particle springEnd2;
+
+            //draw curves as geometry curves
+            for (int i = 0; i < ps.numberOfSprings(); i++)
+            {
+                s = ps.getSpring(i);
+                springEnd1 = s.getOneEnd();
+                springEnd2 = s.getTheOtherEnd();
+
+                var ptVis1 = new Point3D(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
+                var ptVis2 = new Point3D(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
+                Points.Add(ptVis1);
+                Points.Add(ptVis2);
+            }
         }
 
     }
