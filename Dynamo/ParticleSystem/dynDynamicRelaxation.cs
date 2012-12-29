@@ -50,6 +50,7 @@ namespace Dynamo.Elements
             InPortData.Add(new PortData("m", "Nodal Mass.", typeof(double)));
             InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(int)));
             InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(int)));
+            InPortData.Add(new PortData("Gravity", "Gravity in Z.", typeof(double)));
 
             OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
             base.RegisterInputsAndOutputs();
@@ -154,10 +155,12 @@ namespace Dynamo.Elements
             double m = ((Expression.Number)args[5]).Item;//nodal mass
             int numX = (int)((Expression.Number)args[6]).Item;//number of particles in X
             int numY = (int)((Expression.Number)args[7]).Item;//number of particles in Y
+            double g = ((Expression.Number)args[8]).Item;//gravity z component
 
             particleSystem.Clear();
 
             setupLineTest(numX, numY, d, r, s, m);
+            particleSystem.setGravity(g);
 
             return Expression.NewContainer(particleSystem);
         }

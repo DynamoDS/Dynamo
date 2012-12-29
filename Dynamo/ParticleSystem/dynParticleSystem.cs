@@ -89,7 +89,7 @@ namespace Dynamo.Elements
         //    }
         //}
 
-        void setGravity(double g)
+        public void setGravity(double g)
         {
             gravity = new XYZ(0, 0, g);
         }
