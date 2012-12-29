@@ -33,7 +33,7 @@ namespace Dynamo.Elements
 {
     [ElementName("Create Particle System")]
     [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("A node which allows you to drive the position of elmenets via a particle system .")]
+    [ElementDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     [RequiresTransaction(false)]
     class dynDynamicRelaxation : dynNode
     {
@@ -43,14 +43,13 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("points", "The point to drive.", typeof(object)));
             InPortData.Add(new PortData("curves", "The curves to make into springs", typeof(object)));
-            //InPortData.Add(new PortData("tim", "Timer results to trigger updates.", typeof(double)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(double)));
             InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
             InPortData.Add(new PortData("r", "Rest Length.", typeof(double)));
             InPortData.Add(new PortData("m", "Nodal Mass.", typeof(double)));
             InPortData.Add(new PortData("numX", "Number of Particles in X.", typeof(int)));
             InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(int)));
-            InPortData.Add(new PortData("Gravity", "Gravity in Z.", typeof(double)));
+            InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(double)));
 
             OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
             base.RegisterInputsAndOutputs();
@@ -194,4 +193,85 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("XYZs from Particle System")]
+    [ElementDescription("Creates XYZs from a Particle System.")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [RequiresTransaction(false)]
+    public class dynXYZsFromPS : dynNode
+    {
+        public dynXYZsFromPS()
+        {
+            InPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
+            OutPortData = new PortData("XYZs", "XYZs.", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+
+            ParticleSystem particleSystem = (ParticleSystem)((Expression.Container)args[0]).Item;
+
+            var result = FSharpList<Expression>.Empty;
+
+            Particle p;
+            XYZ pt;
+
+            //create an XYZ from each Particle
+            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+            {
+                p = particleSystem.getParticle(i);
+                pt = new XYZ(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
+                result = FSharpList<Expression>.Cons(Expression.NewContainer(pt), result);
+            }
+
+            return Expression.NewList(result);
+        }
+    }
+
+    [ElementName("Curves from Particle System")]
+    [ElementDescription("Creates Curves from a Particle System.")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [RequiresTransaction(false)]
+    public class dynCurvesFromPS : dynNode
+    {
+        public dynCurvesFromPS()
+        {
+            InPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
+            OutPortData = new PortData("curves", "geometry curves.", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+
+            ParticleSystem particleSystem = (ParticleSystem)((Expression.Container)args[0]).Item;
+
+            var result = FSharpList<Expression>.Empty;
+
+            ParticleSpring s;
+            Particle springEnd1;
+            Particle springEnd2;
+            XYZ springXYZ1;
+            XYZ springXYZ2;
+            Line springLine;
+
+            //create a geometry curve from each spring
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
+            {
+                s = particleSystem.getSpring(i);
+                springEnd1 = s.getOneEnd();
+                springEnd2 = s.getTheOtherEnd();
+
+                springXYZ1 = new XYZ(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
+                springXYZ2 = new XYZ(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
+                springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
+
+                result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
+            }
+
+            return Expression.NewList(result);
+        }
+    }
 }

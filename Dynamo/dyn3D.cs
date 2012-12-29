@@ -118,7 +118,7 @@ namespace Dynamo.Elements
                 else
                 {
                     lines.Points = Points;
-                    points.Points = Points;
+                    //points.Points = Points;
                 }
                 
             }

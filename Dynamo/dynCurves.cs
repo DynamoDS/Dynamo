@@ -209,7 +209,7 @@ namespace Dynamo.Elements
                            {
                                //...and if we're successful, update it's position... 
                                c = e as CurveByPoints;
-                               c.SetPoints(refPtArr);
+                               //c.SetPoints(refPtArr);
                                //c.GetPoints().get_Item(0).Position.X = gc.get_EndPoint(0).X;
                            }
                            else
