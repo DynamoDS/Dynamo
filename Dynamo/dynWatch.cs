@@ -81,7 +81,7 @@ namespace Dynamo.Elements
 
             //return the content that has been gathered
             //return Expression.NewString(content);
-            return Expression.NewContainer(args); //watch should be a 'pass through' node
+            return args[0]; //watch should be a 'pass through' node
         }
 
         public void ShowClickedElementInView()

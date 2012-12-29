@@ -38,8 +38,8 @@ namespace Dynamo.Elements
     class dynDynamicRelaxation : dynNode
     {
         ParticleSystem particleSystem;
-        Dictionary<ElementId, ElementId> pointDictionary;
-        List<ReferencePoint> rPoints;
+        //Dictionary<ElementId, ElementId> pointDictionary;
+        //List<ReferencePoint> rPoints;
 
         public dynDynamicRelaxation()
         {
@@ -197,40 +197,40 @@ namespace Dynamo.Elements
 
             particleSystem.step(timeStep);//in ms
 
-            //Particle p;
-            //ParticleSpring s;
-            //XYZ pt;
+            Particle p;
+            ParticleSpring s;
+            XYZ pt;
 
-            //Particle springEnd1;
-            //Particle springEnd2;
-            //XYZ springXYZ1;
-            //XYZ springXYZ2;
-            //Line springLine;
+            Particle springEnd1;
+            Particle springEnd2;
+            XYZ springXYZ1;
+            XYZ springXYZ2;
+            Line springLine;
 
-            ////draw points as XYZs
-            //for (int i = 0; i < particleSystem.numberOfParticles(); i++)
-            //{
-            //    p = particleSystem.getParticle(i);
-            //    pt = new XYZ(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
-            //    //result = FSharpList<Expression>.Cons(Expression.NewContainer(pt), result);
-            //}
+            //draw points as XYZs
+            for (int i = 0; i < particleSystem.numberOfParticles(); i++)
+            {
+                p = particleSystem.getParticle(i);
+                pt = new XYZ(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
+                //result = FSharpList<Expression>.Cons(Expression.NewContainer(pt), result);
+            }
 
-            ////draw curves as geometry curves
-            //for (int i = 0; i < particleSystem.numberOfSprings(); i++)
-            //{
-            //    s = particleSystem.getSpring(i);
-            //    springEnd1 = s.getOneEnd();
-            //    springEnd2 = s.getTheOtherEnd();
+            //draw curves as geometry curves
+            for (int i = 0; i < particleSystem.numberOfSprings(); i++)
+            {
+                s = particleSystem.getSpring(i);
+                springEnd1 = s.getOneEnd();
+                springEnd2 = s.getTheOtherEnd();
 
-            //    springXYZ1 = new XYZ(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
-            //    springXYZ2 = new XYZ(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
-            //    springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
+                springXYZ1 = new XYZ(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
+                springXYZ2 = new XYZ(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
+                springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
 
-            //    result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
-            //}
+                result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
+            }
 
-            //return Expression.NewList(result);
-            return Expression.NewContainer(particleSystem);
+            return Expression.NewList(result);
+            //return Expression.NewContainer(particleSystem);
         }
     }
 

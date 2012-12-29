@@ -115,7 +115,11 @@ namespace Dynamo.Elements
                     points.Points = Points;
                 }
                 else
+                {
                     lines.Points = Points;
+                    points.Points = Points;
+                }
+                
             }
         }                                                                                                                                                                                                         
 
@@ -235,7 +239,9 @@ namespace Dynamo.Elements
                }));
 
 
-            return Expression.NewContainer(input); //watch 3d should be a 'pass through' node
+            //return Expression.NewContainer(input); //watch 3d should be a 'pass through' node 
+            return input; //watch 3d should be a 'pass through' node
+            
         }
 
     }
