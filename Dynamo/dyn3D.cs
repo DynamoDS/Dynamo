@@ -41,13 +41,16 @@ namespace Dynamo.Elements
     {
         HelixViewport3D view;
         PointsVisual3D points;
+        PointsVisual3D fixedPoints;
         List<LinesVisual3D> linesList;
 
         bool isDrawingPoints;
         ParticleSystem ps;
 
         public List<Point3DCollection> Points{get;set;}
- 
+
+        public Point3DCollection FixedPoints { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void RaisePropertyChanged(string property)
@@ -93,8 +96,11 @@ namespace Dynamo.Elements
             //view.IsHitTestVisible = true;
             view.ShowFrameRate = true;
            //view.DebugInfo = "This is some debug info.";
-            
-            points = new PointsVisual3D { Color = Colors.Black, Size = 6 };
+
+            fixedPoints = new PointsVisual3D { Color = Colors.Red, Size = 8 };
+            view.Children.Add(fixedPoints);
+
+            points = new PointsVisual3D { Color = Colors.Black, Size = 4 };
             view.Children.Add(points);
 
             List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
@@ -109,8 +115,7 @@ namespace Dynamo.Elements
             colors.Add(Colors.OrangeRed); //09
             colors.Add(Colors.Red); //10
 
-           
-
+            FixedPoints = new Point3DCollection();
             Points = new List<Point3DCollection>();
             for (int i = 0; i < colors.Count(); i++)
             {
@@ -147,12 +152,12 @@ namespace Dynamo.Elements
                 }
                 else
                 {
-                    //lines.Points = Points;
                     for(int i=0; i<linesList.Count(); i++)
                     {
                         linesList[i].Points = Points[i];
                     }
-                    //points.Points = Points;
+
+                    fixedPoints.Points = FixedPoints;
                 }
                 
             }
@@ -267,6 +272,11 @@ namespace Dynamo.Elements
                 var ptVis1 = new Point3D(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
                 var ptVis2 = new Point3D(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
 
+                if (!springEnd1.isFree())
+                    FixedPoints.Add(ptVis1);
+                if (!springEnd2.isFree())
+                    FixedPoints.Add(ptVis2);
+
                 AddPointToCorrectCollection(s.getResidualForce(), ptVis1, ptVis2);
             }
 
@@ -279,11 +289,14 @@ namespace Dynamo.Elements
             {
                 pts.Clear();
             }
+
+            FixedPoints.Clear();
         }
 
         private void DetachVisuals()
         {
             points.Points = null;
+            fixedPoints.Points = null;
 
             foreach (LinesVisual3D lines in linesList)
             {
