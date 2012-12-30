@@ -59,8 +59,8 @@ limitations under the License.
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="!Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <PropertyGroup>
-    <PostBuildEvent>copy .\FScheme.dll ..\..\..\DynamoRevit\bin\Release\FScheme.dll
-copy .\FScheme.pdb ..\..\..\DynamoRevit\bin\Release\FScheme.pdb</PostBuildEvent>
+    <PostBuildEvent>copy .\FScheme.dll ..\..\..\DynamoRevit\bin\Debug\FScheme.dll
+copy .\FScheme.pdb ..\..\..\DynamoRevit\bin\Debug\FScheme.pdb</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
         Other similar extension points exist, see Microsoft.Common.targets.
