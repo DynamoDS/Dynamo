@@ -43,6 +43,7 @@ namespace Dynamo.Elements
         PointsVisual3D points;
         PointsVisual3D fixedPoints;
         List<LinesVisual3D> linesList;
+        System.Windows.Point rightMousePoint;
 
         bool isDrawingPoints;
         ParticleSystem ps;
@@ -95,7 +96,9 @@ namespace Dynamo.Elements
             view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             //view.IsHitTestVisible = true;
             view.ShowFrameRate = true;
-           //view.DebugInfo = "This is some debug info.";
+
+            view.MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
+            view.PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
             fixedPoints = new PointsVisual3D { Color = Colors.Red, Size = 8 };
             view.Children.Add(fixedPoints);
@@ -134,6 +137,22 @@ namespace Dynamo.Elements
             this.inputGrid.Children.Add(view);
 
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+        }
+
+        void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            rightMousePoint = e.GetPosition(this.topControl);
+        }
+
+        void view_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //if the mouse has moved, and this is a right
+            //click, we assume rotation. handle the event
+            //so we don't show the context menu
+            if (e.GetPosition(this.topControl) != rightMousePoint)
+            {
+                e.Handled = true;
+            }
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
