@@ -271,8 +271,8 @@ limitations under the License.
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy .\DynamoElements.dll ..\..\..\DynamoRevit\bin\Debug\DynamoElements.dll
-copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Debug\DynamoElements.pdb</PostBuildEvent>
+    <PostBuildEvent>copy .\DynamoElements.dll ..\..\..\DynamoRevit\bin\Release\DynamoElements.dll
+copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Release\DynamoElements.pdb</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
