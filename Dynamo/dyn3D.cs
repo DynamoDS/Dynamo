@@ -231,7 +231,7 @@ namespace Dynamo.Elements
 
             Particle springEnd1;
             Particle springEnd2;
-
+            
             //draw curves as geometry curves
             for (int i = 0; i < ps.numberOfSprings(); i++)
             {

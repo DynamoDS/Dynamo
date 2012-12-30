@@ -59,10 +59,8 @@ namespace Dynamo.Elements
             particles = new List<Particle>();
             springs = new List<ParticleSpring>();
 
-
             gravity = new XYZ(0, 0, DEFAULT_GRAVITY);
             drag = DEFAULT_DRAG;
-
 
         }
 
@@ -157,7 +155,8 @@ namespace Dynamo.Elements
             return null;
 
         }
-        public ParticleSpring makeSpring(Particle a, Particle b, double restLength, double springConstant, double damping)
+        
+         public ParticleSpring makeSpring(Particle a, Particle b, double restLength, double springConstant, double damping)
         {
 
             ParticleSpring s = new ParticleSpring(a, b, restLength, springConstant, damping);
@@ -189,35 +188,28 @@ namespace Dynamo.Elements
             return null;
         }
 
-
-
         public void applyForces()
         {
 
             for (int i = 0; i < particles.Count(); ++i)
             {
-
                 particles[i].addForce(gravity);
-
+                particles[i].addForce(particles[i].getVelocity() * -drag);
             }
 
-            for (int i = 0; i < particles.Count(); ++i)
+            /*for (int i = 0; i < particles.Count(); ++i)
             {
 
                 Particle p = particles[i];
                 p.addForce(p.getVelocity() * -drag);
 
-            }
+            }*/
 
             for (int i = 0; i < springs.Count(); i++)
             {
-
                 ParticleSpring f = springs[i];
                 f.apply();
-
             }
-
-
         }
 
         public void clearForces()
@@ -227,8 +219,6 @@ namespace Dynamo.Elements
                 particles[i].clearForce();
             }
         }
-
-
 
         public int numberOfParticles()
         {
