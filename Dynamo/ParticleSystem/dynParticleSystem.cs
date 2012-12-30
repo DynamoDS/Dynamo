@@ -215,8 +215,8 @@ namespace Dynamo.Elements
             {
                 ParticleSpring f = springs[i];
                 f.apply();
-                double residual = f.getSpringConstant() * Math.Abs(f.getRestLength() - f.getLength());
-                maxResidualForce = Math.Max(maxResidualForce, residual);
+
+                maxResidualForce = Math.Max(maxResidualForce, f.getResidualForce());
             }
         }
 

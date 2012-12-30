@@ -30,6 +30,7 @@ namespace Dynamo.Elements
         protected double m_springConstant;
         protected double m_Damping;
         protected ElementId m_ElementId;
+        protected double m_residualForce;
 
         public ParticleSpring(Particle particleA, Particle particleB, double restLength, double springConstant, double damping)
         {
@@ -73,6 +74,11 @@ namespace Dynamo.Elements
         public double getDamping()
         {
             return m_Damping;
+        }
+
+        public double getResidualForce()
+        {
+            return getSpringConstant() * Math.Abs(getRestLength() - getLength());
         }
 
         public void setSpringConstant(double springConstant)

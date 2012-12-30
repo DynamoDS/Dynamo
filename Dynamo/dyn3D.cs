@@ -41,11 +41,12 @@ namespace Dynamo.Elements
     {
         HelixViewport3D view;
         PointsVisual3D points;
-        LinesVisual3D lines;
+        List<LinesVisual3D> linesList;
+
         bool isDrawingPoints;
         ParticleSystem ps;
 
-        public Point3DCollection Points{get;set;}
+        public List<Point3DCollection> Points{get;set;}
  
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -94,10 +95,34 @@ namespace Dynamo.Elements
            //view.DebugInfo = "This is some debug info.";
             
             points = new PointsVisual3D { Color = Colors.Black, Size = 6 };
-            lines = new LinesVisual3D { Color = Colors.LightGray, Thickness = 2 };
-
             view.Children.Add(points);
-            view.Children.Add(lines);
+
+            List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
+            colors.Add(Colors.LightGray); //01
+            colors.Add(Colors.LightBlue); //02
+            colors.Add(Colors.Blue); //03
+            colors.Add(Colors.Purple); //04
+            colors.Add(Colors.LightGreen); //05
+            colors.Add(Colors.GreenYellow); //06
+            colors.Add(Colors.Yellow); //07
+            colors.Add(Colors.Orange); //08
+            colors.Add(Colors.OrangeRed); //09
+            colors.Add(Colors.Red); //10
+
+            Points = new List<Point3DCollection>();
+            for (int i = 0; i < 10; i++)
+            {
+                Points.Add(new Point3DCollection());
+            }
+
+            linesList = new List<LinesVisual3D>();
+            for (int i = 0; i < 10; i++)
+            {
+                LinesVisual3D lines = new LinesVisual3D { Color = colors[i], Thickness = 1 };
+
+                linesList.Add(lines);
+                view.Children.Add(lines);
+            }
 
             this.inputGrid.Children.Add(view);
 
@@ -107,7 +132,6 @@ namespace Dynamo.Elements
         void mi_Click(object sender, RoutedEventArgs e)
         {
             view.ZoomExtents();
-
         }
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
@@ -117,11 +141,15 @@ namespace Dynamo.Elements
                 //hook up the points collection to the visual
                 if (isDrawingPoints)
                 {
-                    points.Points = Points;
+                    points.Points = Points[0];
                 }
                 else
                 {
-                    lines.Points = Points;
+                    //lines.Points = Points;
+                    for(int i=0; i<linesList.Count(); i++)
+                    {
+                        linesList[i].Points = Points[i];
+                    }
                     //points.Points = Points;
                 }
                 
@@ -142,13 +170,8 @@ namespace Dynamo.Elements
                         //FSharpList<Expression> list = ((Expression.List)args[0]).Item;
                         var inList = (input as Expression.List).Item;
 
-                        //initialize the point collection
-                        if (Points == null)
-                        {
-                            Points = new Point3DCollection();
-                        }
-                        else
-                            Points.Clear();
+                        DetachVisuals();
+                        ClearPointsCollections();
 
                         //test the first item in the list.
                         //if it's an XYZ, assume XYZs for the list
@@ -164,19 +187,20 @@ namespace Dynamo.Elements
                             {
                                 XYZ pt = (e as Expression.Container).Item as XYZ;
                                 var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
-                                Points.Add(ptVis);
+                                Points[0].Add(ptVis);
                             }
                             else
                             {
                                 Curve c = (e as Expression.Container).Item as Curve;
                                 if (c.GetType() == typeof(Line))
+
                                 {
                                     XYZ start = c.get_EndPoint(0);
                                     XYZ end = c.get_EndPoint(1);
                                     var ptVis1 = new Point3D(start.X, start.Y, start.Z);
                                     var ptVis2 = new Point3D(end.X, end.Y, end.Z);
-                                    Points.Add(ptVis1);
-                                    Points.Add(ptVis2);
+                                    Points[0].Add(ptVis1);
+                                    Points[0].Add(ptVis2);
                                 }
                                 else if (c.GetType() == typeof(HermiteSpline))
                                 {
@@ -213,20 +237,9 @@ namespace Dynamo.Elements
 
         private void UpdateVisualsFromParticleSystem()
         {
-            points.Points = null;
-            lines.Points = null;
+            DetachVisuals();
+            ClearPointsCollections();
 
-            if (Points == null)
-            {
-                //initialize the point collection
-                Points = new Point3DCollection();
-            }
-            else
-            {
-                Points.Clear();
-            }
-
-            Particle p;
             ParticleSpring s;
 
             Particle springEnd1;
@@ -238,15 +251,40 @@ namespace Dynamo.Elements
                 s = ps.getSpring(i);
                 springEnd1 = s.getOneEnd();
                 springEnd2 = s.getTheOtherEnd();
-
+                
                 var ptVis1 = new Point3D(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
                 var ptVis2 = new Point3D(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
-                Points.Add(ptVis1);
-                Points.Add(ptVis2);
+
+                AddPointToCorrectCollection(s.getResidualForce(), ptVis1, ptVis2);
             }
 
             view.DebugInfo = string.Format("Max. Residual Force = {0:0.##}\n Max. Nodal Velocity = {1:0.##}", ps.getMaxResidualForce(), ps.getMaxNodalVelocity());
         }
 
+        private void ClearPointsCollections()
+        {
+            foreach (Point3DCollection pts in Points)
+            {
+                pts.Clear();
+            }
+        }
+
+        private void DetachVisuals()
+        {
+            points.Points = null;
+
+            foreach (LinesVisual3D lines in linesList)
+            {
+                lines.Points = null;
+            }
+        }
+
+        private void AddPointToCorrectCollection(double force, Point3D pt1, Point3D pt2)
+        {
+            double forceNormalized = force / ps.getMaxResidualForce();
+            int forceGroup = (int)(forceNormalized * 9.0);
+            Points[forceGroup].Add(pt1);
+            Points[forceGroup].Add(pt2);
+        }
     }
 }
