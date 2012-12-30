@@ -50,7 +50,10 @@ namespace Dynamo.Elements
             m_Damping = damping;
         }
 
-        
+        public double getLength()
+        {
+            return (m_particleB.getPosition() - m_particleA.getPosition()).GetLength();
+        }
 
         public Particle getOneEnd()
         {

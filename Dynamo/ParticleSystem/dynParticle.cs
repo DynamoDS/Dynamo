@@ -95,7 +95,6 @@ namespace Dynamo.Elements
             return m_Velocity;
         }
 
-
         public void setVelocity(XYZ v)
         {
             m_Velocity = v;

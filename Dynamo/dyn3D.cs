@@ -91,7 +91,7 @@ namespace Dynamo.Elements
             view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             //view.IsHitTestVisible = true;
             view.ShowFrameRate = true;
-            view.DebugInfo = "This is some debug info.";
+           //view.DebugInfo = "This is some debug info.";
             
             points = new PointsVisual3D { Color = Colors.Black, Size = 6 };
             lines = new LinesVisual3D { Color = Colors.LightGray, Thickness = 2 };
@@ -244,6 +244,8 @@ namespace Dynamo.Elements
                 Points.Add(ptVis1);
                 Points.Add(ptVis2);
             }
+
+            view.DebugInfo = string.Format("Max. Residual Force = {0:0.##}\n Max. Nodal Velocity = {1:0.##}", ps.getMaxResidualForce(), ps.getMaxNodalVelocity());
         }
 
     }

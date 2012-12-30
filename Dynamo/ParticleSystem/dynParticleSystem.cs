@@ -50,6 +50,8 @@ namespace Dynamo.Elements
 
         protected bool hasDeadParticles;
 
+        double maxResidualForce = -1000000000.0;
+        double maxNodalVelocity = -1000000000.0;
 
         public ParticleSystem()
         {
@@ -190,11 +192,14 @@ namespace Dynamo.Elements
 
         public void applyForces()
         {
+            maxResidualForce = -1000000000.0;
+            maxNodalVelocity = -1000000000.0;
 
             for (int i = 0; i < particles.Count(); ++i)
             {
                 particles[i].addForce(gravity);
                 particles[i].addForce(particles[i].getVelocity() * -drag);
+                maxNodalVelocity = Math.Max(maxNodalVelocity, particles[i].getVelocity().GetLength());
             }
 
             /*for (int i = 0; i < particles.Count(); ++i)
@@ -205,10 +210,13 @@ namespace Dynamo.Elements
 
             }*/
 
+            //F=kd, calculate the maximum residual force in any member
             for (int i = 0; i < springs.Count(); i++)
             {
                 ParticleSpring f = springs[i];
                 f.apply();
+                double residual = f.getSpringConstant() * Math.Abs(f.getRestLength() - f.getLength());
+                maxResidualForce = Math.Max(maxResidualForce, residual);
             }
         }
 
@@ -223,6 +231,16 @@ namespace Dynamo.Elements
         public int numberOfParticles()
         {
             return particles.Count();
+        }
+
+        public double getMaxResidualForce()
+        {
+            return maxResidualForce;
+        }
+
+        public double getMaxNodalVelocity()
+        {
+            return maxNodalVelocity;
         }
 
         public int numberOfSprings()
