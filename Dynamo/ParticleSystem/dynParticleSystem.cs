@@ -53,6 +53,9 @@ namespace Dynamo.Elements
         double maxResidualForce = -1000000000.0;
         double maxNodalVelocity = -1000000000.0;
 
+        protected int partID;
+        protected int springID;
+
         public ParticleSystem()
         {
             hasDeadParticles = false;
@@ -101,9 +104,37 @@ namespace Dynamo.Elements
 
         public Particle makeParticle(double mass, XYZ position, bool fix)
         {
-            Particle p = new Particle(mass, position, fix);
+            Particle p = new Particle(partID++, mass, position, fix);
             particles.Add(p);
+            
             return p;
+        }
+
+        public Particle makeOrUpdateParticle(int ID, double mass, XYZ position, bool fix)
+        {
+            bool found = false;
+            for (int i = 0; i < particles.Count(); ++i)
+            {
+                if (ID != null && (particles[i].ID() != null))
+                {
+                    if (ID == particles[i].ID())
+                    {
+                        found = true;
+                        particles[i].setPosition(position);
+                        return particles[i];
+
+                    }
+                }
+            }
+            if (found == false)//if we did not find one make a new one
+            {
+                Particle part = new Particle(ID++, mass, position, fix);
+                particles.Add(part);
+                return part;
+            }
+
+            return null;
+
         }
 
         public Particle makeParticleFromElementID(ElementId eid, double mass, XYZ position, bool fix)
@@ -116,6 +147,7 @@ namespace Dynamo.Elements
                     if (eid == particles[i].getElementID())
                     {
                         found = true;
+                        particles[i].setPosition(position);
                         return particles[i];
                        
                     }
@@ -123,7 +155,7 @@ namespace Dynamo.Elements
             }
             if (found == false)//if we did not find one make a new one
             {
-                Particle part = new Particle(eid, .5, position, fix);
+                Particle part = new Particle(partID++, eid, mass, position, fix);
                 particles.Add(part);
                 return part;
             }
@@ -142,6 +174,7 @@ namespace Dynamo.Elements
                     if (position.IsAlmostEqualTo(particles[i].getPosition()))
                     {
                         found = true;
+                        particles[i].setPosition(position);
                         return particles[i];
 
                     }
@@ -149,7 +182,7 @@ namespace Dynamo.Elements
             }
             if (found == false)//if we did not find one make a new one
             {
-                Particle part = new Particle(eid, .5, position, fix);
+                Particle part = new Particle(partID++, eid, mass, position, fix);
                 particles.Add(part);
                 return part;
             }
@@ -161,7 +194,7 @@ namespace Dynamo.Elements
          public ParticleSpring makeSpring(Particle a, Particle b, double restLength, double springConstant, double damping)
         {
 
-            ParticleSpring s = new ParticleSpring(a, b, restLength, springConstant, damping);
+            ParticleSpring s = new ParticleSpring(springID++, a, b, restLength, springConstant, damping);
             springs.Add(s);
             return s;
         }
@@ -183,7 +216,31 @@ namespace Dynamo.Elements
             }
             if (found == false)
             {
-                ParticleSpring s = new ParticleSpring(eid, a, b, restLength, springConstant, damping);
+                ParticleSpring s = new ParticleSpring(springID++, eid, a, b, restLength, springConstant, damping);
+                springs.Add(s);
+                return s;
+            }
+            return null;
+        }
+
+        public ParticleSpring makeOrUpdateSpring(int ID, Particle a, Particle b, double restLength, double springConstant, double damping)
+        {
+            bool found = false;
+            for (int i = 0; i < springs.Count(); ++i)
+            {
+                if (ID != null && (springs[i].ID() != null))
+                {
+                    if (ID == springs[i].ID())
+                    {
+                        found = true;
+                        return springs[i];
+
+                    }
+                }
+            }
+            if (found == false)
+            {
+                ParticleSpring s = new ParticleSpring(ID++, a, b, restLength, springConstant, damping);
                 springs.Add(s);
                 return s;
             }

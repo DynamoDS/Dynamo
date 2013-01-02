@@ -31,9 +31,11 @@ namespace Dynamo.Elements
         protected double m_Damping;
         protected ElementId m_ElementId;
         protected double m_residualForce;
+        protected int m_ID;
 
-        public ParticleSpring(Particle particleA, Particle particleB, double restLength, double springConstant, double damping)
+        public ParticleSpring(int ID, Particle particleA, Particle particleB, double restLength, double springConstant, double damping)
         {
+            m_ID = ID;
             m_particleA = particleA;
             m_particleB = particleB;
             m_restLength = restLength;
@@ -41,8 +43,9 @@ namespace Dynamo.Elements
             m_Damping = damping;
         }
 
-        public ParticleSpring(ElementId eid, Particle particleA, Particle particleB, double restLength, double springConstant, double damping)
+        public ParticleSpring(int ID, ElementId eid, Particle particleA, Particle particleB, double restLength, double springConstant, double damping)
         {
+            m_ID = ID;
             m_ElementId = eid;
             m_particleA = particleA;
             m_particleB = particleB;
@@ -50,6 +53,8 @@ namespace Dynamo.Elements
             m_springConstant = springConstant;
             m_Damping = damping;
         }
+
+       
 
         public double getLength()
         {
@@ -148,5 +153,12 @@ namespace Dynamo.Elements
         {
             m_ElementId = eid;
         }
+
+        public int ID()
+        {
+            return m_ID;
+        }
+
+      
     }
 }

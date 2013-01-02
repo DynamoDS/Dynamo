@@ -109,14 +109,16 @@ namespace Dynamo.Elements
             colors.Add(Colors.OrangeRed); //09
             colors.Add(Colors.Red); //10
 
+           
+
             Points = new List<Point3DCollection>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < colors.Count(); i++)
             {
                 Points.Add(new Point3DCollection());
             }
 
             linesList = new List<LinesVisual3D>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < colors.Count(); i++)
             {
                 LinesVisual3D lines = new LinesVisual3D { Color = colors[i], Thickness = 1 };
 
@@ -217,11 +219,21 @@ namespace Dynamo.Elements
 
                         if ((ParticleSystem)(psTest).Item is ParticleSystem)
                         {
-                            ps = (ParticleSystem)(psTest).Item; //XYZ xyz = (XYZ)((Expression.Container)input).Item;
+                            ps = (ParticleSystem)(psTest).Item;
 
-                            UpdateVisualsFromParticleSystem();
+                            try
+                            {
 
-                            RaisePropertyChanged("Points");
+                                UpdateVisualsFromParticleSystem();
+
+                                RaisePropertyChanged("Points");
+
+                            }
+                            catch (Exception e)
+                            {
+                                dynElementSettings.SharedInstance.Bench.Log("Something wrong drawing 3d preview. " + e.ToString());
+
+                            }
                         }
                         else
                         {
@@ -245,7 +257,7 @@ namespace Dynamo.Elements
             Particle springEnd1;
             Particle springEnd2;
             
-            //draw curves as geometry curves
+            //draw springs as geometry curves
             for (int i = 0; i < ps.numberOfSprings(); i++)
             {
                 s = ps.getSpring(i);
@@ -281,8 +293,16 @@ namespace Dynamo.Elements
 
         private void AddPointToCorrectCollection(double force, Point3D pt1, Point3D pt2)
         {
+            int maxColors = linesList.Count();
             double forceNormalized = force / ps.getMaxResidualForce();
             int forceGroup = (int)(forceNormalized * 9.0);
+            if (forceGroup > maxColors) //maxColors  - points and colors array arrays are sized at 10, somehow we are going out of bounds here, clamp it to prevent hard crash
+            {
+                dynElementSettings.SharedInstance.Bench.Log("Had to clamp forces for display. Original Value: " + forceGroup.ToString());
+                forceGroup = 9; //clamp
+
+            }
+            //int forceGroup = 9;
             Points[forceGroup].Add(pt1);
             Points[forceGroup].Add(pt2);
         }

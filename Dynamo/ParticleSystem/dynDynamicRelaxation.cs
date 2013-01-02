@@ -38,11 +38,13 @@ namespace Dynamo.Elements
     class dynDynamicRelaxation : dynNode
     {
         ParticleSystem particleSystem;
+        private int extraParticlesCounter = 0;
+        private int extraSpringCounter = 0;
 
         public dynDynamicRelaxation()
         {
-            InPortData.Add(new PortData("points", "The point to drive.", typeof(object)));
-            InPortData.Add(new PortData("curves", "The curves to make into springs", typeof(object)));
+            InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(object)));
+            InPortData.Add(new PortData("curves", "The curves to make into spring chains", typeof(object)));
             InPortData.Add(new PortData("d", "Dampening.", typeof(double)));
             InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
             InPortData.Add(new PortData("r", "Rest Length.", typeof(double)));
@@ -58,6 +60,7 @@ namespace Dynamo.Elements
 
         }
 
+
         void setupLineTest(int maxPartX, int maxPartY, double springDampening, double springRestLength, double springConstant, double mass)
         {
 
@@ -69,6 +72,8 @@ namespace Dynamo.Elements
             //double springDampening = 1;
             //double springRestLength = stepSize / 1;
             //double springConstant = 2500;
+
+            
 
             for (int j = 0; j < maxPartY; j++) // Y axis is outer loop
             {
@@ -156,10 +161,148 @@ namespace Dynamo.Elements
             int numY = (int)((Expression.Number)args[7]).Item;//number of particles in Y
             double g = ((Expression.Number)args[8]).Item;//gravity z component
 
-            particleSystem.Clear();
 
-            setupLineTest(numX, numY, d, r, s, m);
+            particleSystem.Clear();
             particleSystem.setGravity(g);
+            ReferencePoint pt1;
+            ReferencePoint pt2;
+            Particle fixedPart1;
+            Particle fixedPart2;
+            XYZ partXYZ1;
+            XYZ partXYZ2;
+            ParticleSpring sp;
+            Line tempLine;
+            Particle p;
+            Particle p2;
+
+            
+
+
+            var input = args[0];
+
+            //If we are receiving a list, we must create fixed particles for each reference point in the list.
+            if (input.IsList)
+            {
+                var pointList = (input as Expression.List).Item;
+
+                // for each point in collection, make a fixed particle
+                // create a geom line between subsequent pairs of points in list
+                // divide/evaluate lines into maxPart number, create a Particle for each
+                // create springs between each pair of particles in each chain
+
+                ////We create our output by...
+                //var result = Utils.convertSequence(
+                //   pointList.Select(
+                //    //..taking each element in the list and...
+                //      delegate(Expression x)
+                //      {
+                //          XYZ fixedXYZ;
+
+                //          pt = (ReferencePoint)(((Expression.Container)x).Item);
+                //          fixedXYZ = pt.Position;
+                //          fixedPart1 = particleSystem.makeParticleFromElementID(pt.Id, m, pt.Position, true); // true means 'make fixed'
+                //          return Expression.NewContainer(fixedXYZ);
+                //      }
+                //   )
+                //);
+
+
+
+
+
+
+                if (pointList.Count() > 1)
+                {
+                    Array pointArray = pointList.ToArray();
+                    //foreach (var elem in pointList)
+
+                    for (int i = 0; i < pointArray.Length-1; i++)
+                    {
+                        
+                        //create temp  geomlines 
+                        //var pair = pointList.Take(2);
+                        //pt1 = (ReferencePoint)((Expression.Container)pair.ElementAt(0)).Item as ReferencePoint;
+                        //partXYZ1 = pt1.Position;
+                        //pt2 = (ReferencePoint)((Expression.Container)pair.ElementAt(1)).Item as ReferencePoint;
+                        //partXYZ2 = pt2.Position;
+
+                        pt1 = (ReferencePoint)((Expression.Container)pointArray.GetValue(i)).Item as ReferencePoint;
+                        partXYZ1 = pt1.Position;
+                        pt2 = (ReferencePoint)((Expression.Container)pointArray.GetValue(i+1)).Item as ReferencePoint;
+                        partXYZ2 = pt2.Position;
+
+                        tempLine = this.UIDocument.Application.Application.Create.NewLineBound(partXYZ1, partXYZ2);
+
+                        //divide up geom lines into a chain
+                        if (tempLine != null)
+                        {
+
+                            for (int j = 0; j < numX; j++)//step along curve and evaluate at each step, making sure to thread in the existing fixed parts
+                            {
+                                double curveParam = 0;
+                                XYZ pointOnLine;
+
+                                if (j == 0) // starting point
+                                {
+                                    curveParam = (double)j / numX;
+                                    pointOnLine = tempLine.Evaluate(curveParam, true);
+                                    p = particleSystem.makeParticle(m, pointOnLine, true); // make first particle fixed
+                                }
+                                else // middle points
+                                {
+                                    curveParam = (double)j / numX;
+                                    pointOnLine = tempLine.Evaluate(curveParam, true);
+                                    p = particleSystem.makeParticle(m, pointOnLine, false); // make a new particle along curve at j-th point on line
+                                    particleSystem.makeSpring(particleSystem.getParticle((j - 1)), p, r, s, d);//make a new spring and connect it to the last-made point
+                                }
+                                if (j == numX - 1) //last free point, connect with fixed end point
+                                {
+                                    curveParam = (double)(j+1) / numX; // last point 
+                                    pointOnLine = tempLine.Evaluate(curveParam, true);
+                                    p2 = particleSystem.makeParticle(m, pointOnLine, true); // make last particle fixed
+                                    particleSystem.makeSpring(p, p2, r, s, d);//make a new spring and connect the j-th point to the fixed point
+
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+                else // just one point
+                {
+                    pt1 = (ReferencePoint)((Expression.Container)pointList.ElementAt(0)).Item as ReferencePoint;
+                    partXYZ1 = pt1.Position;
+                    fixedPart1 = particleSystem.makeParticleFromElementID(pt1.Id, m, pt1.Position, true); // true means 'make fixed'
+
+                    partXYZ2 = partXYZ1 + new XYZ(10, 0, 0);
+                    tempLine = this.UIDocument.Application.Application.Create.NewLineBound(partXYZ1, partXYZ2);
+
+                    for (int j = 0; j < numX - 1; j++) //step along curve and evaluate at each step
+                    {
+                        p = particleSystem.makeParticle(m, tempLine.Evaluate(j / numX, true), false);
+                        p2 = particleSystem.makeParticle(m, tempLine.Evaluate((j + 1) / numX, true), false);
+                        particleSystem.makeSpring(p, p2, r, s, d);
+
+                        extraParticlesCounter++;
+                        extraSpringCounter++;
+                    }
+                }
+
+
+                
+
+
+                //Fin
+                return Expression.NewContainer(particleSystem);
+            }
+            //If we're not receiving a list, we will just assume we don't care about the point input and will just run our test function.
+            else
+            {
+                setupLineTest(numX, numY, d, r, s, m);
+            }
+        
+
 
             return Expression.NewContainer(particleSystem);
         }
@@ -185,7 +328,7 @@ namespace Dynamo.Elements
         {
             ParticleSystem particleSystem = (ParticleSystem)((Expression.Container)args[0]).Item;
             double timeStep = ((Expression.Number)args[1]).Item;
-            var result = FSharpList<Expression>.Empty;
+            //var result = FSharpList<Expression>.Empty;
 
             particleSystem.step(timeStep);//in ms
 
@@ -264,8 +407,8 @@ namespace Dynamo.Elements
                 springEnd1 = s.getOneEnd();
                 springEnd2 = s.getTheOtherEnd();
 
-                springXYZ1 = new XYZ(springEnd1.getPosition().X, springEnd1.getPosition().Y, springEnd1.getPosition().Z);
-                springXYZ2 = new XYZ(springEnd2.getPosition().X, springEnd2.getPosition().Y, springEnd2.getPosition().Z);
+                springXYZ1 = springEnd1.getPosition();
+                springXYZ2 = springEnd2.getPosition();
                 springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
 
                 result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
