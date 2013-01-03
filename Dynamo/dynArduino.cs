@@ -98,7 +98,7 @@ namespace Dynamo.Elements
 
                 if (sensorValues.Length > 0)
                 {
-                    this.data = Convert.ToInt16(sensorValues[1]);
+                    this.data = Convert.ToInt16(sensorValues[0]);
                     this.IsDirty = true;
                 }
             }
