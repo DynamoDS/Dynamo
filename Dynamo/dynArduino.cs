@@ -64,6 +64,11 @@ namespace Dynamo.Elements
 
         void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
+            if (port != null)
+            {
+                if (port.IsOpen)
+                    port.Close();
+            }
             port.PortName = "COM4";
             com4Item.IsChecked = true;
             com3Item.IsChecked = false;
@@ -71,6 +76,11 @@ namespace Dynamo.Elements
 
         void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
+            if (port != null)
+            {
+                if (port.IsOpen)
+                    port.Close();
+            }
             port.PortName = "COM3";
             com4Item.IsChecked = false;
             com3Item.IsChecked = true;
@@ -102,6 +112,11 @@ namespace Dynamo.Elements
                     this.IsDirty = true;
                 }
             }
+
+        }
+
+        private void TogglePortState()
+        {
 
         }
 
