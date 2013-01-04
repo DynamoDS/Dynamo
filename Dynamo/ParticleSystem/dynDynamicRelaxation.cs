@@ -66,7 +66,6 @@ namespace Dynamo.Elements
 
             double stepSize = 20;
 
-
             for (int j = 0; j < maxPartY; j++) // Y axis is outer loop
             {
                 for (int i = 0; i < maxPartX; i++) // X axis is inner loop
@@ -276,6 +275,98 @@ namespace Dynamo.Elements
             }
         
 
+
+            return Expression.NewContainer(particleSystem);
+        }
+    }
+
+    [ElementName("Create Particle System on Face")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("A node which allows you to drive the position of elmenets via a particle system.")]
+    [RequiresTransaction(false)]
+    class dynDynamicRelaxationOnFace : dynNode
+    {
+        ParticleSystem particleSystem;
+
+        public dynDynamicRelaxationOnFace()
+        {
+            InPortData.Add(new PortData("face", "The face to use for distribution of particles.", typeof(object)));
+            InPortData.Add(new PortData("d", "Dampening.", typeof(double)));
+            InPortData.Add(new PortData("s", "Spring Constant.", typeof(double)));
+            InPortData.Add(new PortData("r", "Rest Length.", typeof(double)));
+            InPortData.Add(new PortData("m", "Nodal Mass.", typeof(double)));
+            InPortData.Add(new PortData("numU", "Number of Particles in U.", typeof(int)));
+            InPortData.Add(new PortData("numV", "Number of Particles in V.", typeof(int)));
+            InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(double)));
+
+            OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
+            base.RegisterInputsAndOutputs();
+
+            particleSystem = new ParticleSystem();
+
+        }
+
+        void setupParticleSystem(Face f, int uDiv, int vDiv, double springDampening, double springRestLength, double springConstant, double mass)
+        {
+            
+
+            BoundingBoxUV bbox = f.GetBoundingBox();
+            double uStep = (bbox.Max.U - bbox.Min.U)/uDiv;
+            double vStep = (bbox.Max.V - bbox.Min.V)/vDiv;
+
+            for (int j = 0; j <=uDiv; j++) // Y axis is outer loop
+            {
+                double u = bbox.Min.U + uStep * j;
+
+                for (int i = 0; i <= vDiv; i++) // X axis is inner loop
+                {
+                    double v = bbox.Min.V + vStep * i;
+
+                    Particle a = particleSystem.makeParticle(mass, f.Evaluate(new UV(u, v)), false);
+                    if(i > 0)
+                    {   
+                        particleSystem.makeSpring(particleSystem.getParticle((i - 1) + (j * (vDiv+1))), a, springRestLength, springConstant, springDampening);
+                    }
+
+                    if (j > 0)
+                    {
+                        Particle b = particleSystem.getParticle(i + ((j - 1) * (vDiv+1)));
+                        particleSystem.makeSpring(a, b, springRestLength, springConstant, springDampening);
+                    }
+
+                    if (i == 0 || i == vDiv || j==0 || j==uDiv)
+                    {
+                        a.makeFixed();
+                    }
+                }
+            }
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            object arg0 = ((Expression.Container)args[0]).Item;
+            Face f = null;
+            if (arg0 is Reference)
+            {
+                Reference faceRef = arg0 as Reference;
+                f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+            }
+
+            double d = ((Expression.Number)args[1]).Item;//dampening
+            double s = ((Expression.Number)args[2]).Item;//spring constant
+            double r = ((Expression.Number)args[3]).Item;//rest length
+            double m = ((Expression.Number)args[4]).Item;//nodal mass
+            int numX = (int)((Expression.Number)args[5]).Item;//number of particles in X
+            int numY = (int)((Expression.Number)args[6]).Item;//number of particles in Y
+            double g = ((Expression.Number)args[7]).Item;//gravity z component
+
+            particleSystem.setIsFaceConstrained(true);
+            particleSystem.setConstraintFace(f);
+
+            particleSystem.Clear();
+
+            setupParticleSystem(f, numX, numY, d, r, s, m);
+            particleSystem.setGravity(g);
 
             return Expression.NewContainer(particleSystem);
         }

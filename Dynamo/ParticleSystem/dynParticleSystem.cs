@@ -50,6 +50,9 @@ namespace Dynamo.Elements
 
         protected bool hasDeadParticles;
 
+        protected bool isFaceConstrained = false;
+        protected Face constraintFace;
+
         double maxResidualForce = -1000000000.0;
         double maxNodalVelocity = -1000000000.0;
 
@@ -95,6 +98,16 @@ namespace Dynamo.Elements
         public void setGravity(double g)
         {
             gravity = new XYZ(0, 0, g);
+        }
+
+        public void setConstraintFace(Face f)
+        {
+            constraintFace = f;
+        }
+
+        public void setIsFaceConstrained(bool isConstrained)
+        {
+            isFaceConstrained = isConstrained;
         }
 
         void setDrag(double d)
@@ -254,18 +267,15 @@ namespace Dynamo.Elements
 
             for (int i = 0; i < particles.Count(); ++i)
             {
-                particles[i].addForce(gravity);
+                //if (!isFaceConstrained)
+                //{
+                    particles[i].addForce(gravity);
+                //}
+
                 particles[i].addForce(particles[i].getVelocity() * -drag);
+
                 maxNodalVelocity = Math.Max(maxNodalVelocity, particles[i].getVelocity().GetLength());
             }
-
-            /*for (int i = 0; i < particles.Count(); ++i)
-            {
-
-                Particle p = particles[i];
-                p.addForce(p.getVelocity() * -drag);
-
-            }*/
 
             //F=kd, calculate the maximum residual force in any member
             for (int i = 0; i < springs.Count(); i++)
@@ -275,6 +285,30 @@ namespace Dynamo.Elements
 
                 maxResidualForce = Math.Max(maxResidualForce, f.getResidualForce());
             }
+            
+            /*
+            if (isFaceConstrained && constraintFace != null)
+            {
+                for (int i = 0; i < particles.Count(); ++i)
+                {
+                    //get the component of force that is tangent 
+                    //to the surface at the point
+                    IntersectionResult ir = constraintFace.Project(particles[i].getPosition());
+                    if (ir != null)
+                    {
+                        XYZ n = constraintFace.ComputeNormal(ir.UVPoint);
+                        n = n.Normalize();
+                        XYZ force = particles[i].getForce();
+                        //XYZ normalForce = new XYZ(force.X * n.X, force.Y * n.Y, force.Z * n.Z);
+                        double normalForce = force.DotProduct(n);
+                        //XYZ normalForce2 = new XYZ(normalForce.X * n.X, normalForce.Y * n.Y, normalForce.Z * n.Z);
+                        XYZ normalForce2 = normalForce * n;
+                        particles[i].clearForce();
+                        particles[i].addForce(force - normalForce2);
+                    }
+                }
+            }
+            */
         }
 
         public void clearForces()
