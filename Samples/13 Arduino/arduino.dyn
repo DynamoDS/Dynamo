@@ -1,0 +1,16 @@
+<dynWorkspace X="10" Y="-173">
+  <dynElements>
+    <Dynamo.Elements.dynArduino type="Dynamo.Elements.dynArduino" guid="9fc93e35-109b-44b7-8ce6-2e07137de9b3" nickname="Arduino" x="285.75" y="296.5" />
+    <Dynamo.Elements.dynExecuteInterval type="Dynamo.Elements.dynExecuteInterval" guid="becce57b-6666-4902-ba76-eb191fdd68d1" nickname="Execution Interval" x="114.5" y="267.75" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c1f09a17-d525-412b-86bd-e916379ff1da" nickname="Number" x="50.75" y="337.5">
+      <System.Double value="2500" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="b78266a4-6efd-4a1c-8d68-9bdedb805923" nickname="Watch" x="434.25" y="350" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="9fc93e35-109b-44b7-8ce6-2e07137de9b3" start_index="0" end="b78266a4-6efd-4a1c-8d68-9bdedb805923" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="becce57b-6666-4902-ba76-eb191fdd68d1" start_index="0" end="9fc93e35-109b-44b7-8ce6-2e07137de9b3" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="c1f09a17-d525-412b-86bd-e916379ff1da" start_index="0" end="becce57b-6666-4902-ba76-eb191fdd68d1" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

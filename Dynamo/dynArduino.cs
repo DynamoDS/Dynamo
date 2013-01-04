@@ -37,7 +37,7 @@ namespace Dynamo.Elements
         public dynArduino()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
-            OutPortData = new PortData("output", "Serial output", typeof(double));
+            OutPortData = new PortData("output", "Serial output line", typeof(string));
 
             base.RegisterInputsAndOutputs();
 
@@ -104,13 +104,15 @@ namespace Dynamo.Elements
 
                 //get the sensor value
                 string sensorString = values[0];
-                string[] sensorValues = values[0].Split(new char[]{'='}, StringSplitOptions.RemoveEmptyEntries);
+                //string[] sensorValues = values[0].Split(new char[]{'='}, StringSplitOptions.RemoveEmptyEntries);
+                this.serialLine = sensorString;
+                this.IsDirty = true;
 
-                if (sensorValues.Length > 0)
-                {
-                    this.data = Convert.ToInt16(sensorValues[0]);
-                    this.IsDirty = true;
-                }
+                //if (sensorValues.Length > 0)
+                //{
+                //    this.data = Convert.ToInt16(sensorValues[0]);
+                //    this.IsDirty = true;
+                //}
             }
 
         }
@@ -121,6 +123,7 @@ namespace Dynamo.Elements
         }
 
         int data;
+        string serialLine;
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
@@ -149,7 +152,7 @@ namespace Dynamo.Elements
                 }
             }
 
-            return Expression.NewNumber(this.data);
+            return Expression.NewString(this.serialLine);
         }
 
     }
