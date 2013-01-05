@@ -174,9 +174,9 @@ namespace Dynamo.Elements
                 using (Bitmap bmp = new Bitmap(storedPath))
                 {
                     // Do some processing
-                    for (int x = 0; x < xDiv; x++)
+                    for (int y = 0; y < yDiv; y++)
                     {
-                        for (int y = 0; y < yDiv; y++)
+                        for (int x = 0; x < xDiv; x++)
                         {
                             Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width/xDiv), y * (int)(bmp.Height/yDiv));
                             result = FSharpList<Expression>.Cons( Expression.NewContainer(pixelColor),result);
@@ -184,7 +184,7 @@ namespace Dynamo.Elements
                     }
                 }
 
-                return Expression.NewList(ListModule.Reverse(result));
+                return Expression.NewList(result);
             }
             else
                 return Expression.NewList(FSharpList<Expression>.Empty);
