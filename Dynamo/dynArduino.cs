@@ -41,7 +41,7 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
 
-            port = new SerialPort("COM3", 9600);
+            port = new SerialPort("COM4", 9600);
             port.NewLine = "\r\n";
             port.DtrEnable = true;
 
@@ -59,8 +59,18 @@ namespace Dynamo.Elements
 
             this.MainContextMenu.Items.Add(com3Item);
             this.MainContextMenu.Items.Add(com4Item);
-            port.PortName = "COM3";
+            port.PortName = "COM4";
+
+            this.dynElementDestroyed += new dynElementDestroyedHandler(OnDynArduinoDestroyed);
+            this.dynElementReadyToDestroy += new dynElementReadyToDestroyHandler(OnDynArduinoReadyToDestroy);
+
         }
+
+        public event dynElementDestroyedHandler dynElementDestroyed;
+        public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
+
+        public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
+        public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
 
         void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -86,6 +96,36 @@ namespace Dynamo.Elements
             com3Item.IsChecked = true;
         }
 
+
+
+        void OnDynArduinoDestroyed(object sender, EventArgs e)
+        {
+            if (dynElementDestroyed != null)
+            {
+
+                if (port != null)
+                {
+                    if (port.IsOpen)
+                        port.Close();
+                }
+                port = null;
+
+                dynElementDestroyed(this, e);
+            }
+        }
+
+        void OnDynArduinoReadyToDestroy(object sender, EventArgs e)
+        {
+            if (port != null)
+            {
+                if (port.IsOpen)
+                    port.Close();
+            }
+            port = null;
+
+            dynElementDestroyed(this, e);
+        }
+
         private void GetArduinoData()
         {
             //data comes off this port looking like 
@@ -106,7 +146,7 @@ namespace Dynamo.Elements
                 string sensorString = values[0];
                 //string[] sensorValues = values[0].Split(new char[]{'='}, StringSplitOptions.RemoveEmptyEntries);
                 this.serialLine = sensorString;
-                this.IsDirty = true;
+                //this.IsDirty = true;
 
                 //if (sensorValues.Length > 0)
                 //{
@@ -114,11 +154,6 @@ namespace Dynamo.Elements
                 //    this.IsDirty = true;
                 //}
             }
-
-        }
-
-        private void TogglePortState()
-        {
 
         }
 
@@ -154,6 +189,7 @@ namespace Dynamo.Elements
 
             return Expression.NewString(this.serialLine);
         }
+
 
     }
 }
