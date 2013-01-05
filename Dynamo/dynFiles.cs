@@ -24,9 +24,59 @@ using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Dynamo.Elements
 {
+
+    public abstract class dynFileReaderBase : dynNode
+    {
+        FileSystemEventHandler handler;
+
+        string _path;
+        protected string storedPath
+        {
+            get { return _path; }
+            set
+            {
+                if (value != null && !value.Equals(_path))
+                {
+                    if (watcher != null)
+                        watcher.FileChanged -= handler;
+
+                    _path = value;
+                    watcher = new FileWatcher(_path);
+                    watcher.FileChanged += handler;
+                }
+            }
+        }
+
+        FileWatcher watcher;
+
+        public dynFileReaderBase()
+        {
+            this.handler = new FileSystemEventHandler(watcher_FileChanged);
+
+            InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
+            OutPortData = new PortData("contents", "File contents", typeof(string));
+
+            //base.RegisterInputsAndOutputs();
+        }
+
+        void watcher_FileChanged(object sender, FileSystemEventArgs e)
+        {
+            if (!this.Bench.Running)
+                this.IsDirty = true;
+            else
+            {
+                //TODO: Refactor
+                this.DisableReporting();
+                this.IsDirty = true;
+                this.EnableReporting();
+            }
+        }
+    }
+
     [ElementName("Read File")]
     [ElementCategory(BuiltinElementCategories.MISC)]
     [ElementDescription("Reads data from a file.")]
@@ -97,6 +147,49 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Read Image File")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Reads data from an image file.")]
+    [RequiresTransaction(false)]
+    public class dynImageFileReader : dynFileReaderBase
+    {
+        public dynImageFileReader()
+        {
+
+            InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
+            InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            storedPath = ((Expression.String)args[0]).Item;
+            double xDiv = ((Expression.Number)args[1]).Item;
+            double yDiv = ((Expression.Number)args[1]).Item;
+
+            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+            if (File.Exists(storedPath))
+            {
+                using (Bitmap bmp = new Bitmap(storedPath))
+                {
+                    // Do some processing
+                    for (int x = 0; x < xDiv; x++)
+                    {
+                        for (int y = 0; y < yDiv; y++)
+                        {
+                            Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width/xDiv), y * (int)(bmp.Height/yDiv));
+                            result = FSharpList<Expression>.Cons( Expression.NewContainer(pixelColor),result);
+                        }
+                    }
+                }
+
+                return Expression.NewList(ListModule.Reverse(result));
+            }
+            else
+                return Expression.NewList(FSharpList<Expression>.Empty);
+        }
+    }
 
     [ElementName("Write File")]
     [ElementCategory(BuiltinElementCategories.MISC)]
@@ -132,7 +225,6 @@ namespace Dynamo.Elements
             return Expression.NewNumber(1);
         }
     }
-
 
     [ElementName("Write CSV File")]
     [ElementCategory(BuiltinElementCategories.MISC)]

@@ -90,6 +90,7 @@ limitations under the License.
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -117,6 +118,7 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="dyn3D.cs" />
     <Compile Include="dynAnalysis.cs" />
+    <Compile Include="dynColors.cs" />
     <Compile Include="dynDivide.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>

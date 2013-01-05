@@ -243,7 +243,7 @@ namespace Dynamo.Elements
 
     [ElementName("UV Grid")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Creates a grid of UVs froma domain.")]
+    [ElementDescription("Creates a grid of UVs from a domain.")]
     [RequiresTransaction(false)]
     public class 
         dynUVGrid : dynNode
