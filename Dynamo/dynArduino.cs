@@ -26,7 +26,7 @@ namespace Dynamo.Elements
 
     [ElementName("Arduino")]
     [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Reads values from an Arduino microcontroller.")]
+    [ElementDescription("Manages connection to an Arduino microcontroller.")]
     [RequiresTransaction(false)]
     public class dynArduino : dynNode
     {
@@ -37,7 +37,7 @@ namespace Dynamo.Elements
         public dynArduino()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
-            OutPortData = new PortData("output", "Serial output line", typeof(string));
+            OutPortData = new PortData("arduino serial", "Serial port for later read/write", typeof(object));
 
             base.RegisterInputsAndOutputs();
 
@@ -48,13 +48,13 @@ namespace Dynamo.Elements
             com3Item = new System.Windows.Controls.MenuItem();
             com3Item.Header = "COM3";
             com3Item.IsCheckable = true;
-            com3Item.IsChecked = true;
+            com3Item.IsChecked = false;
             com3Item.Checked += new System.Windows.RoutedEventHandler(com3Item_Checked);
 
             com4Item = new System.Windows.Controls.MenuItem();
             com4Item.Header = "COM4";
             com4Item.IsCheckable = true;
-            com4Item.IsChecked = false;
+            com4Item.IsChecked = true;
             com4Item.Checked += new System.Windows.RoutedEventHandler(com4Item_Checked);
 
             this.MainContextMenu.Items.Add(com3Item);
@@ -126,6 +126,58 @@ namespace Dynamo.Elements
             dynElementDestroyed(this, e);
         }
 
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            if (((Expression.Number)args[0]).Item == 1)
+            {
+                if (port != null)
+                {
+                    bool isOpen = true;
+
+                    if (isOpen == true)
+                    {
+                        if (!port.IsOpen)
+                        {
+                            port.Open();
+                        }
+
+
+                    }
+                    else if (isOpen == false)
+                    {
+                        if (port.IsOpen)
+                            port.Close();
+                    }
+                }
+            }
+
+            return Expression.NewContainer(port); // pass the port downstream
+        }
+
+
+    }
+
+    [ElementName("Read Arduino")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Reads values from an Arduino microcontroller.")]
+    [RequiresTransaction(false)]
+    public class dynArduinoRead : dynNode
+    {
+        SerialPort port;
+
+
+        public dynArduinoRead()
+        {
+            InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
+            OutPortData = new PortData("output", "Serial output line", typeof(string));
+
+            base.RegisterInputsAndOutputs();
+
+        }
+
+      
+
         private void GetArduinoData()
         {
             //data comes off this port looking like 
@@ -144,15 +196,8 @@ namespace Dynamo.Elements
 
                 //get the sensor value
                 string sensorString = values[0];
-                //string[] sensorValues = values[0].Split(new char[]{'='}, StringSplitOptions.RemoveEmptyEntries);
                 this.serialLine = sensorString;
-                //this.IsDirty = true;
 
-                //if (sensorValues.Length > 0)
-                //{
-                //    this.data = Convert.ToInt16(sensorValues[0]);
-                //    this.IsDirty = true;
-                //}
             }
 
         }
@@ -162,32 +207,93 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            if (((Expression.Number)args[0]).Item == 1)
+            port = (SerialPort)((Expression.Container)args[0]).Item;
+
+            if (port != null)
             {
-                if (port != null)
+                bool isOpen = true;
+
+                if (isOpen == true)
                 {
-                    bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
-
-                    if (isOpen == true)
+                    if (!port.IsOpen)
                     {
-                        if (!port.IsOpen)
-                        {
-                            port.Open();
-                        }
-
-                        //get the analog value from the serial port
-                        GetArduinoData();
-
+                        port.Open();
                     }
-                    else if (isOpen == false)
-                    {
-                        if (port.IsOpen)
-                            port.Close();
-                    }
+
+                    //get the value from the serial port as a string
+                    GetArduinoData();
+
+                }
+                else if (isOpen == false)
+                {
+                    if (port.IsOpen)
+                        port.Close();
                 }
             }
+            
 
             return Expression.NewString(this.serialLine);
+        }
+
+
+    }
+
+    [ElementName("Write Arduino")]
+    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementDescription("Writes values to an Arduino microcontroller.")]
+    [RequiresTransaction(false)]
+    public class dynArduinoWrite : dynNode
+    {
+        SerialPort port;
+
+        public dynArduinoWrite()
+        {
+            InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
+            InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
+            OutPortData = new PortData("success?", "Whether or not the operation was successful.", typeof(bool));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+
+        private void WriteDataToArduino(string dataLine)
+        {
+
+            dataLine = dataLine + "\r\n"; //termination
+            port.WriteLine(dataLine);
+
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+
+            port = (SerialPort)((Expression.Container)args[0]).Item;
+            string dataToWrite = ((Expression.String)args[1]).Item;// ((Expression.Container)args[1]).Item;
+
+            if (port != null)
+            {
+                bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
+
+                if (isOpen == true)
+                {
+                    if (!port.IsOpen)
+                    {
+                        port.Open();
+                    }
+
+                    //write data to the serial port
+                    WriteDataToArduino(dataToWrite);
+
+                }
+                else if (isOpen == false)
+                {
+                    if (port.IsOpen)
+                        port.Close();
+                }
+            }
+            
+
+            return Expression.NewNumber(1);// catch failures here 
         }
 
 
