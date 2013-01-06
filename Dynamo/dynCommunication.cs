@@ -89,16 +89,15 @@ namespace Dynamo.Elements
        private delegate void LogDelegate(string msg);
        private delegate void UDPListening();
 
+       private string UDPResponse = "";
+       int listenPort;
+
        private void ListenOnUDP()
        {
-           string UDPResponse = "";
+           
            LogDelegate log = new LogDelegate(this.Bench.Log);
 
-           int listenPort = 11000;
-
            // UDP sample from http://stackoverflow.com/questions/8274247/udp-listener-respond-to-client
-
-           // bool done = false;
 
            UdpClient listener = new UdpClient(listenPort);
            IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
@@ -107,18 +106,16 @@ namespace Dynamo.Elements
            {
 
                 log("Waiting for broadcast");
-                //Console.WriteLine("Waiting for broadcast"); 
                 byte[] bytes = listener.Receive(ref groupEP);
                 UDPResponse = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                string verboseLog = "Received broadcast from" + groupEP.ToString() + ":\n" + UDPResponse + "\n";
+                string verboseLog = "Received broadcast from " + groupEP.ToString() + ":\n" + UDPResponse + "\n";
                 log(verboseLog);
-                //Console.WriteLine("Received broadcast from {0} :\n {1}\n", groupEP.ToString(), Encoding.ASCII.GetString(bytes, 0, bytes.Length)):
-
                
            }
            catch (Exception e)
            {
-               this.Bench.Log(e.ToString());
+               UDPResponse = "";
+               log(e.ToString());
            }
            finally
            {
@@ -128,18 +125,17 @@ namespace Dynamo.Elements
 
        public override Expression Evaluate(FSharpList<Expression> args)
        {
-           int listenPort = (int)((Expression.Number)args[1]).Item;
+           listenPort = (int)((Expression.Number)args[1]).Item; // udp port to listen to
 
 
-
-           if (((Expression.Number)args[0]).Item == 1)
+           if (((Expression.Number)args[0]).Item == 1) // if exec node has pumped
            {
                this.Dispatcher.BeginInvoke(new UDPListening(ListenOnUDP));
            }
                          
 
 
-           return Expression.NewString("1");
+           return Expression.NewString(UDPResponse);
        }
       
    }
