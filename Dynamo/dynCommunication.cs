@@ -17,7 +17,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Net.Sockets;
 using System.IO;
+using System.Windows.Threading;
+using System.Security.Cryptography;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 
@@ -65,38 +68,79 @@ namespace Dynamo.Elements
          return Expression.NewString(responseFromServer);
       }
 
-      //public override void Draw()
-      //{
-      //   if (CheckInputs())
-      //   {
-      //      //send a webrequest to the URL
-      //      // Initialize the WebRequest.
-      //      WebRequest myRequest = WebRequest.Create(InPortData[0].Object.ToString());
+   }
 
-      //      // Return the response. 
-      //      WebResponse myResponse = myRequest.GetResponse();
+   [ElementName("UDP Listener")]
+   [ElementCategory(BuiltinElementCategories.MISC)]
+   [ElementDescription("Listens for data from the web using a UDP port")]
+   [RequiresTransaction(false)]
+   public class dynUDPListener : dynNode
+   {
+       public dynUDPListener()
+       {
+           InPortData.Add(new Connectors.PortData("exec", "Execution Interval", typeof(object)));
+           InPortData.Add(new Connectors.PortData("udp port", "A UDP port to listen to.", typeof(object)));
+           OutPortData = new Connectors.PortData("str", "The string returned from the web request.", typeof(object));
 
-      //      Stream dataStream = myResponse.GetResponseStream();
 
-      //      // Open the stream using a StreamReader for easy access.
-      //      StreamReader reader = new StreamReader(dataStream);
+           base.RegisterInputsAndOutputs();
+       }
 
-      //      // Read the content.
-      //      string responseFromServer = reader.ReadToEnd();
+       private delegate void LogDelegate(string msg);
+       private delegate void UDPListening();
 
-      //      // Code to use the WebResponse goes here.
-      //      this.Tree.Trunk.Leaves.Add(responseFromServer);
+       private void ListenOnUDP()
+       {
+           string UDPResponse = "";
+           LogDelegate log = new LogDelegate(this.Bench.Log);
 
-      //      reader.Close();
+           int listenPort = 11000;
 
-      //      // Close the response to free resources.
-      //      myResponse.Close();
-      //   }
-      //}
+           // UDP sample from http://stackoverflow.com/questions/8274247/udp-listener-respond-to-client
 
-      //public override void Update()
-      //{
-      //   OnDynElementReadyToBuild(EventArgs.Empty);
-      //}
+           // bool done = false;
+
+           UdpClient listener = new UdpClient(listenPort);
+           IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+
+           try
+           {
+
+                log("Waiting for broadcast");
+                //Console.WriteLine("Waiting for broadcast"); 
+                byte[] bytes = listener.Receive(ref groupEP);
+                UDPResponse = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+                string verboseLog = "Received broadcast from" + groupEP.ToString() + ":\n" + UDPResponse + "\n";
+                log(verboseLog);
+                //Console.WriteLine("Received broadcast from {0} :\n {1}\n", groupEP.ToString(), Encoding.ASCII.GetString(bytes, 0, bytes.Length)):
+
+               
+           }
+           catch (Exception e)
+           {
+               this.Bench.Log(e.ToString());
+           }
+           finally
+           {
+               listener.Close();
+           }
+       }
+
+       public override Expression Evaluate(FSharpList<Expression> args)
+       {
+           int listenPort = (int)((Expression.Number)args[1]).Item;
+
+
+
+           if (((Expression.Number)args[0]).Item == 1)
+           {
+               this.Dispatcher.BeginInvoke(new UDPListening(ListenOnUDP));
+           }
+                         
+
+
+           return Expression.NewString("1");
+       }
+      
    }
 }

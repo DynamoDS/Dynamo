@@ -37,7 +37,7 @@ namespace Dynamo.Elements
         public dynArduino()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
-            OutPortData = new PortData("arduino serial", "Serial port for later read/write", typeof(object));
+            OutPortData = new PortData("arduino", "Serial port for later read/write", typeof(object));
 
             base.RegisterInputsAndOutputs();
 
