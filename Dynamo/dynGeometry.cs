@@ -627,6 +627,100 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Arc")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates a geometric arc.")]
+    [RequiresTransaction(false)]
+    public class dynArc : dynNode
+    {
+        public dynArc()
+        {
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("pt", "XYZ on Curve", typeof(XYZ)));
+            OutPortData = new PortData("line", "Line", typeof(Line));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var ptA = (XYZ)((Expression.Container)args[0]).Item;
+            var ptB = (XYZ)((Expression.Container)args[1]).Item;
+            var ptC = (XYZ)((Expression.Container)args[2]).Item;
+            var bound = ((Expression.Number)args[2]).Item == 1;
+
+            return Expression.NewContainer(
+               this.UIDocument.Application.Application.Create.NewArc(
+                  ptA, ptB, ptC
+               )
+            );
+        }
+    }
+
+    [ElementName("Circle")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates a geometric cirvle.")]
+    [RequiresTransaction(false)]
+    public class dynCircle : dynNode
+    {
+        public dynCircle()
+        {
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("rad", "Radius", typeof(double)));
+            OutPortData = new PortData("circle", "Cicle CurveLoop", typeof(CurveLoop));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var ptA = (XYZ)((Expression.Container)args[0]).Item;
+            var radius = (double)((Expression.Container)args[1]).Item;
+
+            // build cylindrical shape around endpoint, http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0108-Geometry108/0110-Geometry110/Solids%2c_Faces_and_Edges/Solid_and_face_creation
+            CurveLoop circle = new CurveLoop();
+
+            // For solid geometry creation, two curves are necessary, even for closed  
+            // cyclic shapes like circles  
+            circle.Append(this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, Math.PI, XYZ.BasisX, XYZ.BasisY));
+            circle.Append(this.UIDocument.Application.Application.Create.NewArc(ptA, radius, Math.PI, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY));
+
+            return Expression.NewContainer(circle);
+        }
+    }
+
+    [ElementName("Ellipse")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates a geometric ellipse.")]
+    [RequiresTransaction(false)]
+    public class dynEllipse : dynNode
+    {
+        public dynEllipse()
+        {
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("radX", "Major Radius", typeof(double)));
+            InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
+            OutPortData = new PortData("ell", "Ellipse", typeof(Ellipse));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var ptA = (XYZ)((Expression.Container)args[0]).Item;
+            var radX = (double)((Expression.Container)args[1]).Item;
+            var radY = (double)((Expression.Container)args[2]).Item;
+           
+
+            return Expression.NewContainer(
+               this.UIDocument.Application.Application.Create.NewEllipse(
+                  ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, -2 * Math.PI, 2 * Math.PI
+               )
+            );
+        }
+    }
+
     [ElementName("UV")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Creates a UV from two double values.")]

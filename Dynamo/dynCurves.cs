@@ -45,6 +45,7 @@ namespace Dynamo.Elements
          Curve c = (Curve)((Expression.Container)args[0]).Item;
          SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
 
+         
          ModelCurve mc;
          XYZ spOrigin = sp.Plane.Origin;
          XYZ modelOrigin = XYZ.Zero;
@@ -52,7 +53,12 @@ namespace Dynamo.Elements
          trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
          Curve ct = c.get_Transformed(trf);
 
-
+          
+          // http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0114-Sketchin114/0117-ModelCur117
+          // The SetPlaneAndCurve() method and the Curve and SketchPlane property setters are used in different situations.
+          // When the new Curve lies in the same SketchPlane, or the new SketchPlane lies on the same planar face with the old SketchPlane, use the Curve or SketchPlane property setters.
+          // If new Curve does not lay in the same SketchPlane, or the new SketchPlane does not lay on the same planar face with the old SketchPlane, you must simultaneously change the Curve value and the SketchPlane value using SetPlaneAndCurve() to avoid internal data inconsistency.
+          
 
          if (this.Elements.Any())
          {
