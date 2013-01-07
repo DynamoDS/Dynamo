@@ -550,11 +550,27 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
            Dummy(sprintf "defined '%s'" name)
    
    | Fun(names, body) ->
+      let findAllDefs = function
+        | Begin(exprs) ->
+            let rec pred defacc = function
+                | h :: t -> match h with
+                            | Define(name, _) -> pred (name :: defacc) t
+                            | Begin(exprs) ->
+                                let x = pred defacc exprs 
+                                pred x t
+                            | _ -> pred defacc t
+                | [] -> List.rev defacc
+            pred [] exprs
+        | Define(name, _) -> [name]
+        | _ -> []
+      let defs = findAllDefs body
       let paramToString = function
         | Normal(s) | Tail(s) -> s
-      let compenv' = List.map paramToString names :: compenv.Value |> ref
-      let cbody = compile compenv' body
+      let names' = (defs @ (List.map paramToString names))
+      let compenv' = names' :: compenv.Value |> ref
+      let cbody = body |> compile compenv'
       let amt = List.length names
+      let buffer = List.length defs
       let pack args =
          let rec pack' names args =
             match names with
@@ -568,7 +584,12 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
             | [] -> 
                 if Seq.isEmpty args then [] 
                 else failwith "Arity mismatch."
-         pack' names args |> Seq.toArray
+         let packed = pack' names args
+         if buffer > 0 then
+            let undefined = seq { for _ in 1 .. buffer -> Dummy("undefined") |> ref }
+            Seq.append undefined packed |> Seq.toArray
+         else
+            packed |> List.toArray
       fun env ->
          Function(
             fun exprs -> 
