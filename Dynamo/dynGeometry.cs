@@ -53,6 +53,29 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("XYZ From Ref Point")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Extracts an XYZ from a Reference Point.")]
+    [RequiresTransaction(false)]
+    public class dynXYZFromReferencePoint : dynNode
+    {
+        public dynXYZFromReferencePoint()
+        {
+            InPortData.Add(new PortData("pt", "Reference Point", typeof(object)));
+            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            ReferencePoint point;
+            point = (ReferencePoint)((Expression.Container)args[0]).Item;
+
+            return Expression.NewContainer(point.Position);
+        }
+    }
+
     [ElementName("XYZ -> X")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
     [ElementDescription("Fetches the X value of the given XYZ")]
