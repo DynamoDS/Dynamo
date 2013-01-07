@@ -228,9 +228,30 @@ namespace Dynamo.Elements
                                     Points[0].Add(ptVis1);
                                     Points[0].Add(ptVis2);
                                 }
-                                else if (c.GetType() == typeof(HermiteSpline))
+                                else if (c.GetType() == typeof(Arc))
                                 {
-                                    //TODO:
+                                    List<XYZ> points;
+
+                                    points = c.Tessellate() as List<XYZ>;
+                                    Array pointArr = points.ToArray();
+
+                                    for (int i = 0; i < pointArr.Length-1; i++)
+                                    {
+                                        XYZ pt1 = pointArr.GetValue(i) as XYZ;
+                                        XYZ pt2 = pointArr.GetValue(i+1) as XYZ;
+                                        var ptVis1 = new Point3D(pt1.X, pt1.Y, pt1.Z);
+                                        var ptVis2 = new Point3D(pt2.X, pt2.Y, pt2.Z);
+                                        Points[0].Add(ptVis1);
+                                        Points[0].Add(ptVis2);
+                                    }
+
+
+
+                                    //foreach (var ptVis1 in points)
+                                    //{
+                                    //    Points[0].Add(ptVis1);
+
+                                    //}
                                 }
                             }
                         }

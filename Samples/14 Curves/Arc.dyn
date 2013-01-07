@@ -19,9 +19,14 @@
     <Dynamo.Elements.dynXYZFromReferencePoint type="Dynamo.Elements.dynXYZFromReferencePoint" guid="b671e597-f5e3-4fa4-ad29-3160febe9163" nickname="XYZ From Ref Point" x="230.25" y="112.75" />
     <Dynamo.Elements.dynXYZFromReferencePoint type="Dynamo.Elements.dynXYZFromReferencePoint" guid="2ce4097b-07a2-464b-be89-deaff11b434b" nickname="XYZ From Ref Point" x="225.25" y="191.25" />
     <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="d06cd90b-d3c7-4fd3-b530-21e981a1b710" nickname="Watch" x="497.5" y="321.25" />
+    <Dynamo.Elements.dyn3DPreview type="Dynamo.Elements.dyn3DPreview" guid="383677d8-a594-4040-b14a-e7fa9e73bfab" nickname="Watch 3D" x="752.769230769231" y="0" />
+    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="6de77be2-fa0f-41ec-a494-151d47ad8274" nickname="List" x="508.519230769231" y="110">
+      <Input name="item(s)" />
+    </Dynamo.Elements.dynNewList>
   </dynElements>
   <dynConnectors>
     <Dynamo.Connectors.dynConnector start="f927b0e4-58ec-49be-a624-73c2910a760f" start_index="0" end="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="f927b0e4-58ec-49be-a624-73c2910a760f" start_index="0" end="6de77be2-fa0f-41ec-a494-151d47ad8274" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnector start="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" start_index="0" end="d06cd90b-d3c7-4fd3-b530-21e981a1b710" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnector start="2d6cb241-3689-43f3-8204-2cb76a68d7d0" start_index="0" end="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnector start="56c0b63e-7592-4125-8587-93633cadf15d" start_index="0" end="2d6cb241-3689-43f3-8204-2cb76a68d7d0" end_index="0" portType="0" />
@@ -33,6 +38,7 @@
     <Dynamo.Connectors.dynConnector start="bad31750-c7b6-4fa9-a022-17f81818f6ed" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="0" portType="0" />
     <Dynamo.Connectors.dynConnector start="b671e597-f5e3-4fa4-ad29-3160febe9163" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="1" portType="0" />
     <Dynamo.Connectors.dynConnector start="2ce4097b-07a2-464b-be89-deaff11b434b" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="6de77be2-fa0f-41ec-a494-151d47ad8274" start_index="0" end="383677d8-a594-4040-b14a-e7fa9e73bfab" end_index="0" portType="0" />
   </dynConnectors>
   <dynNotes />
 </dynWorkspace>

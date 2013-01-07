@@ -683,7 +683,7 @@ namespace Dynamo.Elements
 
     [ElementName("Circle")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Creates a geometric cirvle.")]
+    [ElementDescription("Creates a geometric circle.")]
     [RequiresTransaction(false)]
     public class dynCircle : dynNode
     {
