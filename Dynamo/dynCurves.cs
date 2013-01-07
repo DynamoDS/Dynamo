@@ -309,7 +309,7 @@ namespace Dynamo.Elements
    {
       public dynCurveRef()
       {
-         InPortData.Add(new PortData("curve", "Model Curve Element", typeof(object)));
+         InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(object)));
          OutPortData = new PortData("curveRef", "Curve Reference", typeof(object));
 
          base.RegisterInputsAndOutputs();
@@ -386,6 +386,72 @@ namespace Dynamo.Elements
 
    }
 
+   [ElementName("Curve From Curve Element")]
+   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementDescription("Takes in a Model Curve and Extracts Geometry Curve")]
+   [RequiresTransaction(false)]
+   public class dynCurveFromModelCurve : dynNode
+   {
+       public dynCurveFromModelCurve()
+       {
+           InPortData.Add(new PortData("mc", "Model Curve Element", typeof(object)));
+           OutPortData = new PortData("curve", "Curve", typeof(object));
+
+           base.RegisterInputsAndOutputs();
+       }
+
+       private Expression extractCurve(object c, int count)
+       {
+           Curve curve = ((CurveElement)c).GeometryCurve;
+
+           return Expression.NewContainer(curve);
+       }
+
+
+       public override Expression Evaluate(FSharpList<Expression> args)
+       {
+           var input = args[0];
+
+           if (input.IsList)
+           {
+               int count = 0;
+               var result = Expression.NewList(
+                  Utils.convertSequence(
+                     (input as Expression.List).Item.Select(
+                        x =>
+                               this.extractCurve(
+                               ((Expression.Container)x).Item,
+                               count++
+                           )
+                     )
+                  )
+               );
+               foreach (var e in this.Elements.Skip(count))
+               {
+                   this.DeleteElement(e);
+               }
+
+               return result;
+           }
+           else
+           {
+               var result = this.extractCurve(
+                      ((Expression.Container)input).Item,
+                      0
+
+                   );
+
+               foreach (var e in this.Elements.Skip(1))
+               {
+                   this.DeleteElement(e);
+               }
+
+               return result;
+           }
+       }
+
+   }
+
    [ElementName("Planar Nurb Spline")]
    [ElementCategory(BuiltinElementCategories.REVIT)]
    [ElementDescription("Node to create a planar model curve.")]
@@ -394,7 +460,7 @@ namespace Dynamo.Elements
    {
        public dynModelCurveNurbSpline()
        {
-           InPortData.Add(new PortData("pts", "The points from which to create the nurbes curve", typeof(object)));
+           InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(object)));
            OutPortData = new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline));
 
            base.RegisterInputsAndOutputs();
