@@ -671,7 +671,7 @@ namespace Dynamo.Elements
             var ptA = (XYZ)((Expression.Container)args[0]).Item;
             var ptB = (XYZ)((Expression.Container)args[1]).Item;
             var ptC = (XYZ)((Expression.Container)args[2]).Item;
-            var bound = ((Expression.Number)args[2]).Item == 1;
+ 
 
             return Expression.NewContainer(
                this.UIDocument.Application.Application.Create.NewArc(
@@ -691,7 +691,7 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
             InPortData.Add(new PortData("rad", "Radius", typeof(double)));
-            OutPortData = new PortData("circle", "Cicle CurveLoop", typeof(CurveLoop));
+            OutPortData = new PortData("circle", "Circle CurveLoop", typeof(CurveLoop));
 
             base.RegisterInputsAndOutputs();
         }

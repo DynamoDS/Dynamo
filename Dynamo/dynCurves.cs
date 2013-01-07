@@ -50,8 +50,8 @@ namespace Dynamo.Elements
          XYZ spOrigin = sp.Plane.Origin;
          XYZ modelOrigin = XYZ.Zero;
          Transform trf = Transform.get_Translation(spOrigin);
-         trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
-         Curve ct = c.get_Transformed(trf);
+         //trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
+         //Curve ct = c.get_Transformed(trf);
 
           
           // http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0114-Sketchin114/0117-ModelCur117
@@ -68,14 +68,14 @@ namespace Dynamo.Elements
                mc = e as ModelCurve;
                mc.SketchPlane = sp;
                var loc = mc.Location as LocationCurve;
-               loc.Curve = ct;
+               loc.Curve = c;
               
             }
             else
             {
                mc = this.UIDocument.Document.IsFamilyDocument
-                  ? this.UIDocument.Document.FamilyCreate.NewModelCurve(ct, sp)
-                  : this.UIDocument.Document.Create.NewModelCurve(ct, sp);
+                  ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+                  : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                this.Elements[0] = mc.Id;
                mc.SketchPlane = sp;
                
@@ -85,8 +85,8 @@ namespace Dynamo.Elements
          else
          {
             mc = this.UIDocument.Document.IsFamilyDocument
-               ? this.UIDocument.Document.FamilyCreate.NewModelCurve(ct, sp)
-               : this.UIDocument.Document.Create.NewModelCurve(ct, sp);
+               ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
+               : this.UIDocument.Document.Create.NewModelCurve(c, sp);
             this.Elements.Add(mc.Id);
             mc.SketchPlane = sp;
          }
