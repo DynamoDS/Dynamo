@@ -132,15 +132,15 @@ let LetStar : Macro = function
 
 ///And macro
 let rec And : Macro = function
-   | [] -> Number_P(1.0)
+   | [] -> Number_P(1.)
    | [expr] -> expr
-   | h :: t -> List_P([Symbol_P("if"); h; And t; Number_P(0.0)])
+   | h :: t -> List_P([Symbol_P("if"); h; And t; Number_P(0.)])
 
 ///Or macro
 let rec Or : Macro = function
-   | [] -> Number_P(0.0)
+   | [] -> Number_P(0.)
    | [expr] -> expr
-   | h :: t -> List_P([Symbol_P("if"); h; Number_P(1.0); Or t])
+   | h :: t -> List_P([Symbol_P("if"); h; Number_P(1.); Or t])
 
 //Cond macro
 let rec Cond : Macro = function
@@ -375,8 +375,8 @@ let Exponent = mathbin ( ** ) "exponent"
 let private boolMath (op : (IComparable -> IComparable -> bool)) name args =
    let comp a' b' = 
       match op a' b' with
-      | true -> Number(1.0)
-      | _ -> Number(0.0)
+      | true -> Number(1.)
+      | _ -> Number(0.)
    match args with
    | [Number(a); Number(b)] -> comp a b
    | [String(a); String(b)] -> comp a b
@@ -396,13 +396,13 @@ let RandomDbl = function
    | m -> malformed "random" (List(m))
 
 //List Functions
-let IsEmpty = function [List([])] -> Number(1.0) | _ -> Number (0.0)
+let IsEmpty = function [List([])] -> Number(1.) | _ -> Number (0.)
 let Cons = function [h; List(t)] -> (List(h :: t)) | m -> malformed "cons" (List(m))
 let Car = function [List(h :: _)] -> h | m -> malformed "car" (List(m))
 let Cdr = function [List(_ :: t)] -> List(t) | m -> malformed "cdr" (List(m))
 let Rev = function [List(l)] -> List(List.rev l) | m -> malformed "reverse" (List(m))
 let MakeList = function (elements : Expression list) -> List(elements)
-let Len = function [List(l)] -> Number(double (List.length l)) | m -> malformed "len" (List(m))
+let Len = function [List(l)] -> Number(double l.Length) | m -> malformed "len" (List(m))
 let Append = function [List(l1); List(l2)] -> List(List.append l1 l2) | m -> malformed "append" (List(m))
 let Take = function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take" (List(m))
 let Get = function [Number(n); List(l)] -> l.Item (int n) | m -> malformed "get" (List(m))
@@ -476,11 +476,11 @@ let Apply = function
    | m -> malformed "apply" (List(m))
 
 let Add1 = function
-   | [Number(n)] -> Number(n + 1.0)
+   | [Number(n)] -> Number(n + 1.)
    | m -> malformed "add1" (List(m))
 
 let Sub1 = function
-   | [Number(n)] -> Number(n - 1.0)
+   | [Number(n)] -> Number(n - 1.)
    | m -> malformed "sub1" (List(m))
 
 let Identity = function
@@ -552,7 +552,7 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
       ///Compiled binding expressions
       let cargs = List.map (compile compenv') exprs
       ///Runtime identifier boxes
-      let boxes = [| for _ in 1 .. List.length cargs -> ref (Dummy("letrec")) |]
+      let boxes = [| for _ in cargs -> ref (Dummy("letrec")) |]
       //At runtime...
       fun env ->
          //We append the new frame to the environment
@@ -620,9 +620,9 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
       ///Compiled function body
       let cbody = compile compenv' body
       ///Number of sub-definitions
-      let buffer = List.length defs
+      let buffer = defs.Length
       ///Size of the environment frame to be created for this function
-      let framesize = List.length parameters + buffer
+      let framesize = parameters.Length + buffer
       ///Default value for uninitialized identifiers
       let dummy = Dummy("undefined")
       ///Creates a new runtime environment frame from the arguments to this function 
@@ -686,7 +686,7 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
          //Empty list or empty string is false, evaluate else branch.
          | List([]) | String("") ->  celse env
          //Zero is false, evaluate else branch.
-         | Number(n) when n = 0.0 -> celse env
+         | Number(n) when n = 0. -> celse env
          //Everything else is true, evaluate then branch.
          | _ -> cthen env
    
@@ -787,8 +787,8 @@ let private makeEnvironments() =
    AddDefaultBinding "build-seq" (Function(BuildSeq))
    AddDefaultBinding "load" (Function(Load))
    AddDefaultBinding "display" (Function(Display))
-   AddDefaultBinding "true" (Number(1.0))
-   AddDefaultBinding "false" (Number(0.0))
+   AddDefaultBinding "true" (Number(1.))
+   AddDefaultBinding "false" (Number(0.))
    AddDefaultBinding "<=" (Function(LTE))
    AddDefaultBinding ">=" (Function(GTE))
    AddDefaultBinding "<" (Function(LT))
@@ -809,9 +809,7 @@ let private makeEnvironments() =
    AddDefaultBinding "eval" (Function(Eval))
    AddDefaultBinding "apply" (Function(Apply))
    AddDefaultBinding "add1" (Function(Add1))
-   AddDefaultBinding "+1" (Function(Add1))
    AddDefaultBinding "sub1" (Function(Sub1))
-   AddDefaultBinding "-1" (Function(Sub1))
    AddDefaultBinding "identity" (Function(Identity))
 
 let private eval ce env syntax = compile ce syntax env
@@ -824,10 +822,13 @@ let ParseText = List.ofSeq >> parse >> Begin >> Evaluate
 
 let private evaluateSchemeDefs() =
    "
-   (define (Y f) ((lambda (x) (x x)) (lambda (x) (f (lambda (g) ((x x) g))))))
+   ;; Y Combinator
+   (define (Y f) ((λ (x) (x x)) (λ (x) (f (λ (g) ((x x) g))))))
 
+   ;; not :: bool -> bool
    (define (not x) (if x 0 1))
 
+   ;; xor :: bool bool -> bool
    (define (xor a b)
      (and (or a b)
           (not (and a b))))
@@ -840,13 +841,13 @@ let private evaluateSchemeDefs() =
 
    ;; map :: (X -> Y) [listof X] -> [listof Y]
    (define (map f lst)
-     (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc))
+     (reverse (fold (λ (fold-first fold-acc) (cons (f fold-first) fold-acc))
                     empty
                     lst)))
 
    ;; filter :: (X -> bool) [listof X] -> [listof X]
    (define (filter p lst)
-     (reverse (fold (lambda (f a) (if (p f) (cons f a) a))
+     (reverse (fold (λ (f a) (if (p f) (cons f a) a))
                     empty
                     lst)))
 
@@ -868,7 +869,7 @@ let private evaluateSchemeDefs() =
 
      (let* ((lofls (reverse lsts))
             (rst (rest lofls))
-            (cp (lambda (lsts)
+            (cp (λ (lsts)
                   (fold cp-list-list
                         (map list (first lofls))
                         rst))))
@@ -879,20 +880,20 @@ let private evaluateSchemeDefs() =
      (if (empty? lst)
          empty
          (let* ((pivot (f (first lst)))
-                (lt (filter (lambda (x) (c (f x) pivot)) (rest lst)))
-                (gt (filter (lambda (x) (not (c (f x) pivot))) (rest lst))))
+                (lt (filter (λ (x) (c (f x) pivot)) (rest lst)))
+                (gt (filter (λ (x) (not (c (f x) pivot))) (rest lst))))
            (append (quicksort lt f c) (cons (first lst) (quicksort gt f c))))))
 
    ;; sort-with :: [listof X] (X X -> int) -> [listof X]
    (define (sort-with lst comp)
-     (quicksort lst identity (lambda (a b) (< (comp a b) 0))))
+     (quicksort lst identity (λ (a b) (< (comp a b) 0))))
 
    ;; sort-by :: [listof X] (X -> IComparable) -> [listof X]
    (define (sort-by lst proj)
-     (map (lambda (x) (first x))                              ;; Convert back to original list
-          (quicksort (map (lambda (x) (list x (proj x))) lst) ;; Sort list of original element/projection pairs
-                     (lambda (y) (first (rest y)))            ;; Sort based on the second element in the sub-lists
-                     <)))                                     ;; Compare using less-than
+     (map (λ (x) (first x))                              ;; Convert back to original list
+          (quicksort (map (λ (x) (list x (proj x))) lst) ;; Sort list of original element/projection pairs
+                     (λ (y) (first (rest y)))            ;; Sort based on the second element in the sub-lists
+                     <)))                                ;; Compare using less-than
 
    ;; zip :: [listof X] [listof Y] ... [listof Z] -> [listof [listof X Y ... Z]]
    (define (zip . lofls)
@@ -915,11 +916,11 @@ let private evaluateSchemeDefs() =
 
    ;; combine :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
    (define (combine f . lofls)
-     (map (lambda (x) (apply f x)) (apply zip lofls)))
+     (map (λ (x) (apply f x)) (apply zip lofls)))
 
    ;; for-each :: (X -> unit) [listof X] -> unit
    (define (for-each f lst)
-     (fold (lambda (x _) (f x)) (begin) lst)))
+     (fold (λ (x _) (f x)) (begin) lst)))
    " |> ParseText |> ignore
 
 makeEnvironments()
@@ -972,15 +973,15 @@ let private test (log : ErrorLog) =
    case "(quasiquote (* 2 (unquote (- 5 2))))" "(* 2 3)" // quote nested unquote
    case "(let ((a 1)) (begin (set! a 2) a))" "2" // begin and assign
    case "(let* ((a 5) (dummy (set! a 10))) a)" "10" // re-assign after let
-   case "((lambda (_ . x) x) 1 2 3)" "(2 3)" // varargs
+   case "((λ (_ . x) x) 1 2 3)" "(2 3)" // varargs
    case "(reverse '(1 2 3))" "(3 2 1)" // reverse
    case "(list 1 2 3)" "(1 2 3)" //list
-   case "(let ((square (lambda (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
-   case "(let ((square (lambda (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
-   case "(let ((square (lambda (x) (* x x)))) (map square '()))" "()" // mapping empty
+   case "(let ((square (λ (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
+   case "(let ((square (λ (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
+   case "(let ((square (λ (x) (* x x)))) (map square '()))" "()" // mapping empty
 
    //Scope
-   case "(let ((y 6)) (let ((f (lambda (x) (+ x y)))) (let ((y 5)) (f 4))))" "10" //lexical
+   case "(let ((y 6)) (let ((f (λ (x) (+ x y)))) (let ((y 5)) (f 4))))" "10" //lexical
    case "(begin (define (t x) (define y 5) (+ x y)) (t 6))" "11" //nested defines
 
    //Not
@@ -1038,25 +1039,25 @@ let private test (log : ErrorLog) =
    case "(fold * 1 '(2 3 4 5))" "120" // fold
    
    //Map
-   case "(map (lambda (x) x) '(1 2 3))" "(1 2 3)"
+   case "(map (λ (x) x) '(1 2 3))" "(1 2 3)"
    
    //Filter
-   case "(filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"
+   case "(filter (λ (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"
    
    //Cartesian Product
    case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))" 
         "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
    
    //Sorting
-   case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
-   case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
+   case "(sort-by '((2 2) (2 1) (1 1)) (λ (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
+   case "(sort-with '((2 2) (2 1) (1 1)) (λ (x y) (let ((size (λ (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
    
    //Zip/Combine
    case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
    case "(combine append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
 
    //Y Combinator
-   case "(let ((fact (Y (lambda (f) (lambda (n) (if (<= n 1) 1 (* n (f (sub1 n))))))))) (fact 5))" "120"
+   case "((Y (λ (f) (λ (n) (if (<= n 1) 1 (* n (f (sub1 n))))))) 5)" "120"
 
    success.Value
 
