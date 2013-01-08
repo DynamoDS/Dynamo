@@ -97,19 +97,23 @@ namespace Dynamo.Elements
             
             if (eIn.IsContainer)
             {
-                //TODO: make clickable hyperlinks to show the element in Revit
-                //http://stackoverflow.com/questions/7890159/programmatically-make-textblock-with-hyperlink-in-between-text
-
-                string id = "";
-                Element revitEl = (eIn as Expression.Container).Item as Autodesk.Revit.DB.Element;
-                if (revitEl != null)
+                if ((eIn as Expression.Container).Item != null)
                 {
-                    id = revitEl.Id.ToString();
-                }
-                content += (eIn as Expression.Container).Item.ToString() + ":" + id + "\n";
+                    //TODO: make clickable hyperlinks to show the element in Revit
+                    //http://stackoverflow.com/questions/7890159/programmatically-make-textblock-with-hyperlink-in-between-text
 
-                node = new WatchNode((eIn as Expression.Container).Item.ToString());
-                node.Link = id;
+                    string id = "";
+                    Element revitEl = (eIn as Expression.Container).Item as Autodesk.Revit.DB.Element;
+                    if (revitEl != null)
+                    {
+                        id = revitEl.Id.ToString();
+                    }
+
+                    content += (eIn as Expression.Container).Item.ToString() + ":" + id + "\n";
+
+                    node = new WatchNode((eIn as Expression.Container).Item.ToString());
+                    node.Link = id;
+                }
             }
             else if (eIn.IsFunction || eIn.IsSpecial)
             {

@@ -393,14 +393,70 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
+            var result = new List<List<FamilyInstance>>();
+
+            DividedSurfaceData dsd = this.SelectedElement.GetDividedSurfaceData();
+
+            if (dsd != null)
+            {
+                foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
+                {
+                    DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
+
+                    GridNode gn = new GridNode();
+
+                    int u = 0;
+                    while (u < ds.NumberOfUGridlines)
+                    {
+
+                        var lst = new List<FamilyInstance>();
+
+                        gn.UIndex = u;
+
+                        int v = 0;
+                        while (v < ds.NumberOfVGridlines)
+                        {
+                            gn.VIndex = v;
+
+                            if (ds.IsSeedNode(gn))
+                            {
+                                FamilyInstance fi
+                                  = ds.GetTileFamilyInstance(gn, 0);
+
+                                //put the family instance into the tree
+                                lst.Add(fi);
+                            }
+                            v = v + 1;
+                        }
+
+                        result.Add(lst);
+
+                        u = u + 1;
+                    }
+                }
+
+                this.data = Expression.NewList(
+                   Utils.convertSequence(
+                      result.Select(
+                         row => Expression.NewList(
+                            Utils.convertSequence(
+                               row.Select(Expression.NewContainer)
+                            )
+                         )
+                      )
+                   )
+                );
+            }
+
             return data;
         }
 
         protected override string SelectionText
         {
-            get { return "Loft ID: " + this.SelectedElement.Id; }
+            get { return "Element ID: " + this.SelectedElement.Id; }
         }
 
+        /*
         public override Element SelectedElement
         {
             get
@@ -467,6 +523,7 @@ namespace Dynamo.Elements
                 }
             }
         }
+        */
 
         protected override void OnSelectClick()
         {

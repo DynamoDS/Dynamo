@@ -404,6 +404,7 @@ namespace Dynamo.Utilities
 
 
         }
+        
         public static CurveElement RequestCurveElementSelection(UIDocument doc, string message, dynElementSettings settings)
         {
             try
@@ -435,7 +436,6 @@ namespace Dynamo.Utilities
                 return null;
             }
         }
-
 
         public static CurveArray RequestMultipleCurveElementsSelection(UIDocument doc, string message, dynElementSettings settings)
         {
@@ -530,9 +530,7 @@ namespace Dynamo.Utilities
 
         }
 
-
         // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
-
         public static Reference RequestFaceReferenceSelection(UIDocument doc, string message, dynElementSettings settings)
         {
             try
@@ -573,6 +571,7 @@ namespace Dynamo.Utilities
 
 
         }
+        
         public static Form RequestFormSelection(UIDocument doc, string message, dynElementSettings settings)
         {
             try
@@ -609,7 +608,6 @@ namespace Dynamo.Utilities
 
 
         }
-
 
         public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message,
             dynElementSettings settings, ref FamilyInstance fi)
@@ -674,7 +672,6 @@ namespace Dynamo.Utilities
             }
         }
 
-
         public static Element RequestLevelSelection(UIDocument doc, string message, dynElementSettings settings)
         {
             try
@@ -701,7 +698,6 @@ namespace Dynamo.Utilities
                 return null;
             }
         }
-
 
         public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message, dynElementSettings settings)
         {
