@@ -31,8 +31,9 @@ namespace Dynamo.Elements
     public class dynArduino : dynNode
     {
         SerialPort port;
-        System.Windows.Controls.MenuItem com4Item;
-        System.Windows.Controls.MenuItem com3Item;
+        System.Windows.Controls.MenuItem comItem;
+        //System.Windows.Controls.MenuItem com4Item;
+        //System.Windows.Controls.MenuItem com3Item;
 
         public dynArduino()
         {
@@ -41,25 +42,50 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
 
-            port = new SerialPort("COM4", 9600);
+            string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
+
+            port = new SerialPort();
+            port.BaudRate = 9600;
             port.NewLine = "\r\n";
             port.DtrEnable = true;
 
-            com3Item = new System.Windows.Controls.MenuItem();
-            com3Item.Header = "COM3";
-            com3Item.IsCheckable = true;
-            com3Item.IsChecked = false;
-            com3Item.Checked += new System.Windows.RoutedEventHandler(com3Item_Checked);
 
-            com4Item = new System.Windows.Controls.MenuItem();
-            com4Item.Header = "COM4";
-            com4Item.IsCheckable = true;
-            com4Item.IsChecked = true;
-            com4Item.Checked += new System.Windows.RoutedEventHandler(com4Item_Checked);
+            foreach (string portName in serialPortNames)
+            {
 
-            this.MainContextMenu.Items.Add(com3Item);
-            this.MainContextMenu.Items.Add(com4Item);
-            port.PortName = "COM4";
+                comItem = new System.Windows.Controls.MenuItem();
+                comItem.Header = portName;
+                comItem.IsCheckable = true;
+                comItem.IsChecked = false;
+                comItem.Checked += new System.Windows.RoutedEventHandler(comItem_Checked);
+                this.MainContextMenu.Items.Add(comItem);
+
+                port.PortName = portName;
+                
+
+            }
+
+            //this.MainContextMenu.ItemsSource = SerialPort.GetPortNames();
+
+            //port = new SerialPort("COM9-t", 9600);
+            //port.NewLine = "\r\n";
+            //port.DtrEnable = true;
+
+            //com3Item = new System.Windows.Controls.MenuItem();
+            //com3Item.Header = "COM3";
+            //com3Item.IsCheckable = true;
+            //com3Item.IsChecked = false;
+            //com3Item.Checked += new System.Windows.RoutedEventHandler(com3Item_Checked);
+
+            //com4Item = new System.Windows.Controls.MenuItem();
+            //com4Item.Header = "COM9";
+            //com4Item.IsCheckable = true;
+            //com4Item.IsChecked = true;
+            //com4Item.Checked += new System.Windows.RoutedEventHandler(com4Item_Checked);
+
+            //this.MainContextMenu.Items.Add(com3Item);
+            //this.MainContextMenu.Items.Add(com4Item);
+            //port.PortName = "COM9";
 
             this.dynElementDestroyed += new dynElementDestroyedHandler(OnDynArduinoDestroyed);
             this.dynElementReadyToDestroy += new dynElementReadyToDestroyHandler(OnDynArduinoReadyToDestroy);
@@ -69,32 +95,34 @@ namespace Dynamo.Elements
         public event dynElementDestroyedHandler dynElementDestroyed;
         public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
 
-        public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
-        public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
+        //public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
+        //public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
 
-        void com4Item_Checked(object sender, System.Windows.RoutedEventArgs e)
+        void comItem_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
+            System.Windows.Controls.MenuItem comItem = e.Source as System.Windows.Controls.MenuItem;
+
             if (port != null)
             {
                 if (port.IsOpen)
                     port.Close();
             }
-            port.PortName = "COM4";
-            com4Item.IsChecked = true;
-            com3Item.IsChecked = false;
+            port.PortName = comItem.Header.ToString();
+            comItem.IsChecked = true;
+            
         }
 
-        void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (port != null)
-            {
-                if (port.IsOpen)
-                    port.Close();
-            }
-            port.PortName = "COM3";
-            com4Item.IsChecked = false;
-            com3Item.IsChecked = true;
-        }
+        //void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
+        //{
+        //    if (port != null)
+        //    {
+        //        if (port.IsOpen)
+        //            port.Close();
+        //    }
+        //    port.PortName = "COM3";
+        //    com4Item.IsChecked = false;
+        //    com3Item.IsChecked = true;
+        //}
 
 
 
