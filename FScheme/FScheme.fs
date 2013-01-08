@@ -627,6 +627,7 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
       let dummy = Dummy("undefined")
       ///Creates a new runtime environment frame from the arguments to this function 
       let pack args =
+         ///New frame for the function call
          let frame = Array.zeroCreate framesize
          ///Recursive helper for processing arguments
          let rec pack' idx args = function
@@ -648,8 +649,8 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
                 | _ -> sprintf "Arity mismatch: Cannot apply %i-arity function on %i arguments." parameters.Length args.Length |> failwith
          ///List of identifier boxes for parameters
          pack' buffer args parameters
-         for i in 0 .. (buffer - 1) do
-            frame.[i] <- ref dummy
+         //Initialize inner-define identifiers with dummy value
+         for i in 0 .. (buffer - 1) do frame.[i] <- ref dummy
          //If we don't, just create a frame out of the packed arguments.
          frame
       //At runtime, we need to add the arguments to the environment and evaluate the body.
