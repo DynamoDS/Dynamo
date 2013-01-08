@@ -533,6 +533,7 @@ namespace Dynamo.Elements
 
         protected override void OnSelectClick()
         {
+            this.SelectedElement = null;
             this.SelectedElement = SelectionHelper.RequestFormSelection(
                dynElementSettings.SharedInstance.Doc, "Select a form element.", dynElementSettings.SharedInstance
             );
