@@ -268,11 +268,6 @@ namespace Dynamo.Elements
                     //get the values from the serial port as a list of strings
                     serialLine = GetArduinoData();
 
-//                    return Expression.NewList(
-//                Utils.convertSequence(
-//serialLine.Select(
-//                )
-//            );
 
                 }
                 else if (isOpen == false)

@@ -330,6 +330,7 @@ namespace Dynamo.Controls
                 }
 
             }
+            var threads = Process.GetCurrentProcess().Threads; // trying to understand why processor pegs after loading.
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");

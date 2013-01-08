@@ -701,13 +701,9 @@ namespace Dynamo.Elements
             var ptA = (XYZ)((Expression.Container)args[0]).Item;
             var radius = (double)((Expression.Number)args[1]).Item;
 
-            // build cylindrical shape around endpoint, http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0108-Geometry108/0110-Geometry110/Solids%2c_Faces_and_Edges/Solid_and_face_creation
-            CurveLoop circle = new CurveLoop();
-
-            // For solid geometry creation, two curves are necessary, even for closed  
-            // cyclic shapes like circles  
-            circle.Append(this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, Math.PI, XYZ.BasisX, XYZ.BasisY));
-            circle.Append(this.UIDocument.Application.Application.Create.NewArc(ptA, radius, Math.PI, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY));
+            Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
+            bool isBound = circle.IsBound;//always false
+            bool isCyclic = circle.IsCyclic;//always true
 
             return Expression.NewContainer(circle);
         }
@@ -732,13 +728,13 @@ namespace Dynamo.Elements
         public override Expression Evaluate(FSharpList<Expression> args)
         {
             var ptA = (XYZ)((Expression.Container)args[0]).Item;
-            var radX = (double)((Expression.Container)args[1]).Item;
-            var radY = (double)((Expression.Container)args[2]).Item;
+            var radX = (double)((Expression.Number)args[1]).Item;
+            var radY = (double)((Expression.Number)args[2]).Item;
            
 
             return Expression.NewContainer(
                this.UIDocument.Application.Application.Create.NewEllipse(
-                  ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, -2 * Math.PI, 2 * Math.PI
+                  ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                )
             );
         }
