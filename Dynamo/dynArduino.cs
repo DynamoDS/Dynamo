@@ -32,8 +32,6 @@ namespace Dynamo.Elements
     {
         SerialPort port;
         System.Windows.Controls.MenuItem comItem;
-        //System.Windows.Controls.MenuItem com4Item;
-        //System.Windows.Controls.MenuItem com3Item;
 
         public dynArduino()
         {
@@ -43,8 +41,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
 
             string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
-
-            port = new SerialPort();
+            if (port == null)
+            {
+                port = new SerialPort();
+            }
             port.BaudRate = 9600;
             port.NewLine = "\r\n";
             port.DtrEnable = true;
@@ -53,14 +53,19 @@ namespace Dynamo.Elements
             foreach (string portName in serialPortNames)
             {
 
+                if (lastComItem != null)
+                {
+                    lastComItem.IsChecked = false; // uncheck last checked item
+                }
                 comItem = new System.Windows.Controls.MenuItem();
                 comItem.Header = portName;
                 comItem.IsCheckable = true;
-                comItem.IsChecked = false;
+                comItem.IsChecked = true;
                 comItem.Checked += new System.Windows.RoutedEventHandler(comItem_Checked);
                 this.MainContextMenu.Items.Add(comItem);
 
                 port.PortName = portName;
+                lastComItem = comItem;
                 
 
             }
@@ -95,12 +100,19 @@ namespace Dynamo.Elements
         public event dynElementDestroyedHandler dynElementDestroyed;
         public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
 
-        //public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
-        //public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
+        public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
+        public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
 
+        System.Windows.Controls.MenuItem lastComItem = null;
+        
         void comItem_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             System.Windows.Controls.MenuItem comItem = e.Source as System.Windows.Controls.MenuItem;
+
+            if (lastComItem != null)
+            {
+                lastComItem.IsChecked = false; // uncheck last checked item
+            }
 
             if (port != null)
             {
@@ -109,6 +121,7 @@ namespace Dynamo.Elements
             }
             port.PortName = comItem.Header.ToString();
             comItem.IsChecked = true;
+            lastComItem = comItem;
             
         }
 
@@ -231,7 +244,7 @@ namespace Dynamo.Elements
         }
 
         int data;
-        string serialLine;
+        string serialLine = "";
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
