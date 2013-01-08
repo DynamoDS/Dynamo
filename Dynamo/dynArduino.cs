@@ -16,10 +16,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.FSharp.Collections;
+using System.Xml;
 using System.IO.Ports;
+
+using Microsoft.FSharp.Collections;
+
 using Dynamo.Connectors;
+using Dynamo.Utilities;
+using Dynamo.FSchemeInterop;
 using Expression = Dynamo.FScheme.Expression;
+
+
 
 namespace Dynamo.Elements
 {
@@ -70,27 +77,6 @@ namespace Dynamo.Elements
 
             }
 
-            //this.MainContextMenu.ItemsSource = SerialPort.GetPortNames();
-
-            //port = new SerialPort("COM9-t", 9600);
-            //port.NewLine = "\r\n";
-            //port.DtrEnable = true;
-
-            //com3Item = new System.Windows.Controls.MenuItem();
-            //com3Item.Header = "COM3";
-            //com3Item.IsCheckable = true;
-            //com3Item.IsChecked = false;
-            //com3Item.Checked += new System.Windows.RoutedEventHandler(com3Item_Checked);
-
-            //com4Item = new System.Windows.Controls.MenuItem();
-            //com4Item.Header = "COM9";
-            //com4Item.IsCheckable = true;
-            //com4Item.IsChecked = true;
-            //com4Item.Checked += new System.Windows.RoutedEventHandler(com4Item_Checked);
-
-            //this.MainContextMenu.Items.Add(com3Item);
-            //this.MainContextMenu.Items.Add(com4Item);
-            //port.PortName = "COM9";
 
             this.dynElementDestroyed += new dynElementDestroyedHandler(OnDynArduinoDestroyed);
             this.dynElementReadyToDestroy += new dynElementReadyToDestroyHandler(OnDynArduinoReadyToDestroy);
@@ -125,18 +111,6 @@ namespace Dynamo.Elements
             
         }
 
-        //void com3Item_Checked(object sender, System.Windows.RoutedEventArgs e)
-        //{
-        //    if (port != null)
-        //    {
-        //        if (port.IsOpen)
-        //            port.Close();
-        //    }
-        //    port.PortName = "COM3";
-        //    com4Item.IsChecked = false;
-        //    com3Item.IsChecked = true;
-        //}
-
 
 
         void OnDynArduinoDestroyed(object sender, EventArgs e)
@@ -165,6 +139,25 @@ namespace Dynamo.Elements
             port = null;
 
             dynElementDestroyed(this, e);
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", port.PortName);
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == typeof(double).FullName)
+                {
+                    port.PortName = subNode.Attributes[0].Value;
+                }
+            }
         }
 
 
@@ -206,11 +199,14 @@ namespace Dynamo.Elements
     public class dynArduinoRead : dynNode
     {
         SerialPort port;
+        int range;
+        List<string> serialLine = new List<string>();
 
 
         public dynArduinoRead()
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
+            InPortData.Add(new PortData("range", "Number of lines to read", typeof(double)));
             OutPortData = new PortData("output", "Serial output line", typeof(string));
 
             base.RegisterInputsAndOutputs();
@@ -219,36 +215,44 @@ namespace Dynamo.Elements
 
       
 
-        private void GetArduinoData()
+        private List<string> GetArduinoData()
         {
-            //data comes off this port looking like 
-            //sensor = xxx\toutput = xxx
-            //sensor = xxx\toutput = xxx
-
             string data = port.ReadExisting();
+            List<string> serialRange = new List<string>();
 
             string[] allData = data.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             if (allData.Length > 2)
             {
-                //get the second to last element
-                //the last is often truncated
+
+
                 string lastData = allData[allData.Length - 2];
                 string[] values = lastData.Split(new char[]{'\t'}, StringSplitOptions.RemoveEmptyEntries);
 
-                //get the sensor value
-                string sensorString = values[0];
-                this.serialLine = sensorString;
+                //get the sensor values, tailing the values list and passing back a range from [range to count-2]
+                int start = allData.Length - range - 2; //get the second to last element as the last is often truncated
+                //int end = allData.Length - 2; 
+                try
+                {
+                    serialRange = allData.ToList<string>().GetRange(0, range);
+                    return serialRange;
+                }
+                catch (Exception e)
+                {
+                    return serialRange;
+                }
 
             }
 
+            return serialRange;
+
         }
 
-        int data;
-        string serialLine = "";
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
             port = (SerialPort)((Expression.Container)args[0]).Item;
+            range = (int)((Expression.Number)args[1]).Item;
+            
 
             if (port != null)
             {
@@ -261,8 +265,14 @@ namespace Dynamo.Elements
                         port.Open();
                     }
 
-                    //get the value from the serial port as a string
-                    GetArduinoData();
+                    //get the values from the serial port as a list of strings
+                    serialLine = GetArduinoData();
+
+//                    return Expression.NewList(
+//                Utils.convertSequence(
+//serialLine.Select(
+//                )
+//            );
 
                 }
                 else if (isOpen == false)
@@ -271,9 +281,9 @@ namespace Dynamo.Elements
                         port.Close();
                 }
             }
-            
 
-            return Expression.NewString(this.serialLine);
+
+            return Expression.NewList(Utils.convertSequence(serialLine.Select(Expression.NewString)));
         }
 
 
