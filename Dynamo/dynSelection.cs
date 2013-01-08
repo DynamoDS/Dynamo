@@ -395,6 +395,9 @@ namespace Dynamo.Elements
         {
             var result = new List<List<FamilyInstance>>();
 
+            //"Get an interface to the divided surfaces on this element."
+            //TODO: do we want to select a face instead and try to get
+            //the divided surface that way?
             DividedSurfaceData dsd = this.SelectedElement.GetDividedSurfaceData();
 
             if (dsd != null)
@@ -418,6 +421,7 @@ namespace Dynamo.Elements
                         {
                             gn.VIndex = v;
 
+                            //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
                             if (ds.IsSeedNode(gn))
                             {
                                 FamilyInstance fi
@@ -429,7 +433,9 @@ namespace Dynamo.Elements
                             v = v + 1;
                         }
 
-                        result.Add(lst);
+                        //don't add list if it's empty
+                        if(lst.Count() > 0)
+                            result.Add(lst);
 
                         u = u + 1;
                     }
