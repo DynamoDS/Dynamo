@@ -367,7 +367,9 @@ let private math1 op op2 unary name = function
 let Add = math0 (+) "addition" 0.
 let Subtract = math1 (-) Add (fun x -> -x) "subtraction"
 let Multiply = math0 (*) "multiplication" 1.
-let Divide = math1 (/) Multiply ((/) 1.) "division"
+let Divide = 
+   let div a b = if b = 0. then failwith "Divide by zero" else a / b
+   math1 div Multiply (div 1.) "division"
 let Modulus = mathbin (%) "modulus"
 let Exponent = mathbin ( ** ) "exponent"
 
