@@ -621,36 +621,37 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
       let cbody = compile compenv' body
       ///Number of sub-definitions
       let buffer = List.length defs
+      ///Size of the environment frame to be created for this function
+      let framesize = List.length parameters + buffer
+      ///Default value for uninitialized identifiers
+      let dummy = Dummy("undefined")
       ///Creates a new runtime environment frame from the arguments to this function 
       let pack args =
+         let frame = Array.zeroCreate framesize
          ///Recursive helper for processing arguments
-         let rec pack' args = function
+         let rec pack' idx args = function
             //If there's one parameter left and it's a Tail, then store the parameter's argument as all the arguments in a list.
-            | [Tail(_)] -> [List(args) |> ref]
+            | [Tail(_)] -> frame.[idx] <- List(args) |> ref
             //If there is more than one parameter left...
             | _ :: xs -> 
                 match args with
                 //Reference the first arg in the list, then pack the remaining args with the remaining names.
-                | h :: t -> ref h :: pack' t xs
+                | h :: t -> frame.[idx] <- ref h; pack' (idx + 1) t xs
                 //Not enough arguments.
                 | _ -> sprintf "Arity mismatch: Cannot apply %i-arity function on %i arguments." parameters.Length args.Length |> failwith
             //If there are no parameters left...
             | [] ->
                 match args with
                 //If there are also no arguments left, we're done.
-                | [] -> []
+                | [] -> ()
                 //Too many arguments.
                 | _ -> sprintf "Arity mismatch: Cannot apply %i-arity function on %i arguments." parameters.Length args.Length |> failwith
          ///List of identifier boxes for parameters
-         let packed = pack' args parameters
-         //If we have sub-definitions...
-         if buffer > 0 then
-            ///Sequence of new boxes for each undefined identifier.
-            let undefined = seq { for _ in 1 .. buffer -> Dummy("undefined") |> ref }
-            //Create the frame by appending the unidentified
-            Seq.append undefined packed |> Seq.toArray
+         pack' buffer args parameters
+         for i in 0 .. (buffer - 1) do
+            frame.[i] <- ref dummy
          //If we don't, just create a frame out of the packed arguments.
-         else packed |> List.toArray
+         frame
       //At runtime, we need to add the arguments to the environment and evaluate the body.
       fun env -> Function(fun exprs -> (pack exprs |> ref) :: env.Value |> ref |> cbody)
    
