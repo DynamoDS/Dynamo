@@ -109,6 +109,7 @@ namespace Dynamo.Connectors
 
          this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
          this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
+
       }
       #endregion constructors
 
@@ -157,8 +158,18 @@ namespace Dynamo.Connectors
          GeneralTransform transform = this.TransformToAncestor(dynElementSettings.SharedInstance.Workbench);
          Point rootPoint = transform.Transform(new Point(0, 0));
 
-         double x = rootPoint.X + this.Width / 2;
-         double y = rootPoint.Y + this.Width / 2;
+         double x = rootPoint.X;
+         double y = rootPoint.Y;
+
+         if (this.portType == Dynamo.Connectors.PortType.OUTPUT)
+         {
+             //x += this.Width / 2;
+         }
+         else
+         {
+             x += this.Width / 2;
+         }
+         y += this.Width / 2;
          return new Point(x, y);
 
       }
@@ -207,4 +218,7 @@ namespace Dynamo.Connectors
          this.portType = portType;
       }
    }
+
+    
+                
 }

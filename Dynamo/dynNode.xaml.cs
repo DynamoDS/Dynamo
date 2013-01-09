@@ -194,16 +194,49 @@ namespace Dynamo.Elements
                 {
                     case ElementState.ACTIVE:
                         elementRectangle.Fill = dynElementSettings.SharedInstance.ActiveBrush;
+                        foreach (dynPort p in inPorts)
+                        {
+                            p.ellipse1.Fill = dynElementSettings.SharedInstance.ActiveBrush;
+                        }
+
+                        if (outPort != null)
+                            outPort.ellipse1.Fill = dynElementSettings.SharedInstance.ActiveBrush;
+
                         break;
                     case ElementState.DEAD:
                         elementRectangle.Fill = dynElementSettings.SharedInstance.DeadBrush;
+
+                        foreach (dynPort p in inPorts)
+                        {
+                            p.ellipse1.Fill = dynElementSettings.SharedInstance.DeadBrush;
+                        }
+                        if (outPort != null)
+                            outPort.ellipse1.Fill = dynElementSettings.SharedInstance.DeadBrush;
                         break;
                     case ElementState.ERROR:
                         elementRectangle.Fill = dynElementSettings.SharedInstance.ErrorBrush;
+
+                        foreach (dynPort p in inPorts)
+                        {
+                            p.ellipse1.Fill = dynElementSettings.SharedInstance.ErrorBrush;
+                        }
+
+                        if (outPort != null)
+                            outPort.ellipse1.Fill = dynElementSettings.SharedInstance.ErrorBrush;
+
                         break;
                     case ElementState.SELECTED:
                     default:
                         elementRectangle.Fill = dynElementSettings.SharedInstance.SelectedBrush;
+
+                        foreach (dynPort p in inPorts)
+                        {
+                            p.ellipse1.Fill = dynElementSettings.SharedInstance.SelectedBrush;
+                        }
+
+                        if (outPort != null)
+                            outPort.ellipse1.Fill = dynElementSettings.SharedInstance.SelectedBrush;
+
                         break;
                 }
 
@@ -296,6 +329,9 @@ namespace Dynamo.Elements
 
             //set the z index to 2
             Canvas.SetZIndex(this, 1);
+
+            //Canvas.SetZIndex(this.gridLeft, 40);
+            //Canvas.SetZIndex(this.gridRight, 40);
 
             //dirtyEllipse = new System.Windows.Shapes.Ellipse();
             //dirtyEllipse.Height = 20;
@@ -500,7 +536,7 @@ namespace Dynamo.Elements
             //   this.topControl.Height = Math.Max(inPortData.Count, outPortData.Count) * 20 + 10; //spacing for inputs + title space 
             //}
 
-            this.elementShine.Height = this.topControl.Height / 2;
+            //this.elementShine.Height = this.topControl.Height / 2;
 
             if (inputGrid.Children.Count == 0)
             {
@@ -691,6 +727,9 @@ namespace Dynamo.Elements
 
             tb.HorizontalAlignment = HorizontalAlignment.Right;
 
+            ScaleTransform trans = new ScaleTransform(-1, 1, p.Width/2, p.Height/2);
+            p.RenderTransform = trans;
+
             p.PortType = PortType.OUTPUT;
             outPort = p;
             gridRight.Children.Add(p);
@@ -751,6 +790,8 @@ namespace Dynamo.Elements
 
                     tb.HorizontalAlignment = HorizontalAlignment.Left;
 
+                    Canvas.SetZIndex(tb, 200);
+
                     p.PortType = PortType.INPUT;
                     inPorts.Add(p);
                     inPortTextBlocks[p] = tb;
@@ -762,7 +803,7 @@ namespace Dynamo.Elements
                     gridLeft.Children.Add(tb);
                     Grid.SetColumn(tb, 1);
                     Grid.SetRow(tb, index);
-
+                    
                     p.Owner = this;
 
                     //register listeners on the port

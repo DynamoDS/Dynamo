@@ -116,6 +116,7 @@ namespace Dynamo.Connectors
             dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
             endDot.Opacity = STROKE_OPACITY;
 
+
             connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
             connector.MouseLeave += delegate { Unhighlight(); };
 
@@ -126,7 +127,8 @@ namespace Dynamo.Connectors
             Dynamo.Controls.DragCanvas.SetCanBeDragged(connector, false);
 
             //set the z order to the front
-            Canvas.SetZIndex(this, 300);
+            Canvas.SetZIndex(connector, 0);
+            Canvas.SetZIndex(endDot, 1);
 
             //register an event listener for the start port update
             //this will tell the connector to set the elements at either
