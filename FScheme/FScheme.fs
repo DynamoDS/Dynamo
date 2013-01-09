@@ -431,25 +431,39 @@ let Take = function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSe
 let Get = function [Number(n); List(l)] -> l.Item (int n) | m -> malformed "get" (List(m))
 let Drop = function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop" (List(m))
 
+let rec private reduceLists = function
+    | []     -> Seq.empty
+    | [xs]   -> seq { for x in xs -> [x] }
+    | h :: t -> reduceLists t |> Seq.zip h |> Seq.map (fun (a,b) -> a::b) 
+
 let Map = function
-   | [Function(f); List(l)] ->
-       List(List.map (fun x -> f [x]) l)
+   | Function(f) :: lists -> 
+       List(List.map (function List(l) -> l | m -> failwith "bad map arg") lists |> reduceLists |> Seq.map f |> Seq.toList)
    | m -> malformed "map" (List(m))
 
 let FoldL = function
-   | [Function(f); a; List(l)] ->
-       List.fold (fun x y -> f [y; x]) a l
+   | Function(f) :: a :: lists ->
+       List.map (function List(l) -> l | m -> failwith "bad fold arg") lists |> reduceLists |> Seq.fold (fun a x -> f (x @ [a])) a
    | m -> malformed "foldl" (List(m))
 
 let FoldR = function
-   | [Function(f); a; List(l)] ->
-       List.foldBack (fun x y -> f [x; y]) l a
+   | Function(f) :: a :: lists ->
+       List.foldBack (fun x a -> f (x @ [a])) (List.map (function List(l) -> l | m -> failwith "bad fold arg") lists |> reduceLists |> Seq.toList) a
    | m -> malformed "foldr" (List(m))
 
 let Filter = function
    | [Function(p); List(l)] ->
        List(List.filter (fun x -> [x] |> p |> exprToBool) l)
    | m -> malformed "filter" (List(m))
+
+let CartProd = function
+   | Function(f) :: lists ->
+       let product2 xs ys = seq { for x in xs do for y in ys do yield x,y }
+       let rec reduceLists = function
+           | []        -> seq { yield [] }
+           | xs :: xss -> reduceLists xss |> product2 xs |> Seq.map (fun (a,b) -> a::b)
+       List(List.map (function List(l) -> l | m -> failwith "bad cart prod arg") lists |> reduceLists |> Seq.map f |> Seq.toList)
+   | m -> malformed "cartesian-product" (List(m))
 
 ///Sorts using natural ordering. Only works for primitive types (numbers, strings, etc.)
 let Sort = function
@@ -852,6 +866,7 @@ let private makeEnvironments() =
    AddDefaultBinding "foldr" (Function(FoldR))
    AddDefaultBinding "not" (Function(Not))
    AddDefaultBinding "xor" (Function(Xor))
+   AddDefaultBinding "cartesian-product" (Function(CartProd))
 
 let private eval ce env syntax = compile ce syntax env
 
@@ -865,30 +880,6 @@ let private evaluateSchemeDefs() =
    "
    ;; Y Combinator
    (define (Y f) ((λ (x) (x x)) (λ (x) (f (λ (g) ((x x) g))))))
-
-   ;; cartesian-product :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
-   (define (cartesian-product comb . lsts)
-     (define (cp-atom-list at lst)
-       (define (cal* x l a)
-         (if (empty? l)
-             (reverse a)
-             (cal* x (rest l) (cons (cons x (first l)) a))))
-       (cal* at lst empty))
-
-     (define (cp-list-list l1 l2)
-       (define (cll* m n a)
-         (if (or (empty? m) (empty? n))
-             a
-             (cll* (rest m) n (append a (cp-atom-list (first m) n)))))
-       (cll* l1 l2 empty))
-
-     (let* ((lofls (reverse lsts))
-            (rst (rest lofls))
-            (cp (λ (lsts)
-                  (foldl cp-list-list
-                        (map list (first lofls))
-                        rst))))
-       (map (lambda (args) (apply comb args)) (cp lofls))))
 
    ;; quicksort :: [listof X] (X -> Y) (Y Y -> bool) -> [listof X]
    (define (quicksort lst f c)
@@ -909,29 +900,6 @@ let private evaluateSchemeDefs() =
           (quicksort (map (λ (x) (list x (proj x))) lst) ;; Sort list of original element/projection pairs
                      (λ (y) (first (rest y)))            ;; Sort based on the second element in the sub-lists
                      <)))                                ;; Compare using less-than
-
-   ;; zip :: [listof X] [listof Y] ... [listof Z] -> [listof [listof X Y ... Z]]
-   (define (zip . lofls)
-     (define (zip'' lofls a al)
-       (cond ((empty? lofls)         (list (reverse a) (reverse al)))
-             ((empty? (first lofls)) (list empty al))
-             (else                   (zip'' (rest lofls)
-                                            (cons (first (first lofls)) a)
-                                            (cons (rest (first lofls)) al)))))
-
-     (define (zip' lofls acc)
-       (let ((result (zip'' lofls empty empty)))
-         (if (empty? (first result))
-             (reverse acc)
-             (let ((p (first result))
-                   (t (first (rest result))))
-               (zip' t (cons p acc))))))
-
-     (zip' lofls empty))
-
-   ;; combine :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
-   (define (combine f . lofls)
-     (map (λ (x) (apply f x)) (apply zip lofls)))
 
    ;; for-each :: (X -> unit) [listof X] -> unit
    (define (for-each f lst)
@@ -1050,13 +1018,15 @@ let private test (log : ErrorLog) =
    case "(apply append '((1) (2)))" "(1 2)"
    
    //Fold
-   case "(foldl cons empty '(1 2 3))"  "(3 2 1)"
-   case "(foldr cons empty '(1 2 3))"  "(1 2 3)"
-   case "(foldl + 0 '(1 2 3))"         "6"
-   case "(foldl * 1 '(2 3 4 5))"       "120"
+   case "(foldl cons empty '(1 2 3))"   "(3 2 1)"
+   case "(foldr cons empty '(1 2 3))"   "(1 2 3)"
+   case "(foldl + 0 '(1 2 3))"          "6"
+   case "(foldr + 0 '(1 2 3) '(4 5 6))" "21"
+   case "(foldl * 1 '(2 3) '(4 5))"     "120"
    
    //Map
    case "(map (λ (x) x) '(1 2 3))" "(1 2 3)"
+   case "(map append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
    
    //Filter
    case "(filter (λ (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"
@@ -1068,10 +1038,6 @@ let private test (log : ErrorLog) =
    //Sorting
    case "(sort-by '((2 2) (2 1) (1 1)) (λ (x) (foldl + 0 x)))" "((1 1) (2 1) (2 2))"
    case "(sort-with '((2 2) (2 1) (1 1)) (λ (x y) (let ((size (λ (l) (foldl + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
-   
-   //Zip/Combine
-   case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
-   case "(combine append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
 
    //Y Combinator
    case "((Y (λ (f) (λ (n) (if (<= n 1) 1 (* n (f (sub1 n))))))) 5)" "120"
