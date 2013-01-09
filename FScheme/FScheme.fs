@@ -91,7 +91,16 @@ type Expression =
    ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
    ///Should NOT be used except internally by this interpreter.
    | Dummy of string
-///Function that takes an Expression and returns an Expression.
+
+
+///Converts an expression to a boolean value
+let private exprToBool = function
+   //Empty list or empty string is false, evaluate else branch.
+   | List([]) | String("") -> false
+   //Zero is false, evaluate else branch.
+   | Number(n) when n = 0. -> false
+   //Everything else is true, evaluate then branch.
+   | _ -> true
 
 type Frame = Expression ref [] ref
 type Environment = Frame list ref
@@ -391,6 +400,18 @@ let LT = boolMath (<) "less-than"
 let GT = boolMath (>) "greater-than"
 let EQ = boolMath (=) "equals"
 
+let Not = function
+   | [expr] -> if exprToBool expr then Number(0.) else Number(1.)
+   | m -> malformed "not" (List(m))
+
+let Xor = function
+   | [a; b] ->
+      if exprToBool a then 
+         if exprToBool b then Number(0.) else Number(1.) 
+      else 
+         if exprToBool b then Number(1.) else Number(0.)
+   | m -> malformed "xor" (List(m))
+
 //Random Number
 let private _r = new Random()
 let RandomDbl = function 
@@ -409,6 +430,26 @@ let Append = function [List(l1); List(l2)] -> List(List.append l1 l2) | m -> mal
 let Take = function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take" (List(m))
 let Get = function [Number(n); List(l)] -> l.Item (int n) | m -> malformed "get" (List(m))
 let Drop = function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop" (List(m))
+
+let Map = function
+   | [Function(f); List(l)] ->
+       List(List.map (fun x -> f [x]) l)
+   | m -> malformed "map" (List(m))
+
+let FoldL = function
+   | [Function(f); a; List(l)] ->
+       List.fold (fun x y -> f [y; x]) a l
+   | m -> malformed "foldl" (List(m))
+
+let FoldR = function
+   | [Function(f); a; List(l)] ->
+       List.foldBack (fun x y -> f [x; y]) l a
+   | m -> malformed "foldr" (List(m))
+
+let Filter = function
+   | [Function(p); List(l)] ->
+       List(List.filter (fun x -> [x] |> p |> exprToBool) l)
+   | m -> malformed "filter" (List(m))
 
 ///Sorts using natural ordering. Only works for primitive types (numbers, strings, etc.)
 let Sort = function
@@ -681,16 +722,8 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
       let cthen = compile' then_expr
       ///Compiled else branch
       let celse = compile' else_expr
-      //At runtime...
-      fun env ->
-         //Evaluate the test
-         match ccond env with
-         //Empty list or empty string is false, evaluate else branch.
-         | List([]) | String("") ->  celse env
-         //Zero is false, evaluate else branch.
-         | Number(n) when n = 0. -> celse env
-         //Everything else is true, evaluate then branch.
-         | _ -> cthen env
+      //At runtime, evaluate the expression and select the correct branch
+      fun env -> if ccond env |> exprToBool then cthen env else celse env
    
    //A begin statement with one sub-expression is the same as just the sub-expression.
    | Begin([expr]) -> compile' expr
@@ -813,6 +846,12 @@ let private makeEnvironments() =
    AddDefaultBinding "add1" (Function(Add1))
    AddDefaultBinding "sub1" (Function(Sub1))
    AddDefaultBinding "identity" (Function(Identity))
+   AddDefaultBinding "map" (Function(Map))
+   AddDefaultBinding "filter" (Function(Filter))
+   AddDefaultBinding "foldl" (Function(FoldL))
+   AddDefaultBinding "foldr" (Function(FoldR))
+   AddDefaultBinding "not" (Function(Not))
+   AddDefaultBinding "xor" (Function(Xor))
 
 let private eval ce env syntax = compile ce syntax env
 
@@ -826,32 +865,6 @@ let private evaluateSchemeDefs() =
    "
    ;; Y Combinator
    (define (Y f) ((λ (x) (x x)) (λ (x) (f (λ (g) ((x x) g))))))
-
-   ;; not :: bool -> bool
-   (define (not x) (if x 0 1))
-
-   ;; xor :: bool bool -> bool
-   (define (xor a b)
-     (and (or a b)
-          (not (and a b))))
-
-   ;; fold :: (X Y -> Y) Y [listof X] -> Y
-   (define (fold f a xs)
-     (if (empty? xs)
-         a
-         (fold f (f (first xs) a) (rest xs))))
-
-   ;; map :: (X -> Y) [listof X] -> [listof Y]
-   (define (map f lst)
-     (reverse (fold (λ (fold-first fold-acc) (cons (f fold-first) fold-acc))
-                    empty
-                    lst)))
-
-   ;; filter :: (X -> bool) [listof X] -> [listof X]
-   (define (filter p lst)
-     (reverse (fold (λ (f a) (if (p f) (cons f a) a))
-                    empty
-                    lst)))
 
    ;; cartesian-product :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
    (define (cartesian-product comb . lsts)
@@ -872,7 +885,7 @@ let private evaluateSchemeDefs() =
      (let* ((lofls (reverse lsts))
             (rst (rest lofls))
             (cp (λ (lsts)
-                  (fold cp-list-list
+                  (foldl cp-list-list
                         (map list (first lofls))
                         rst))))
        (map (lambda (args) (apply comb args)) (cp lofls))))
@@ -922,7 +935,7 @@ let private evaluateSchemeDefs() =
 
    ;; for-each :: (X -> unit) [listof X] -> unit
    (define (for-each f lst)
-     (fold (λ (x _) (f x)) (begin) lst)))
+     (foldl (λ (x _) (f x)) (begin) lst)))
    " |> ParseText |> ignore
 
 makeEnvironments()
@@ -1037,8 +1050,10 @@ let private test (log : ErrorLog) =
    case "(apply append '((1) (2)))" "(1 2)"
    
    //Fold
-   case "(fold + 0 '(1 2 3))"   "6"
-   case "(fold * 1 '(2 3 4 5))" "120" // fold
+   case "(foldl cons empty '(1 2 3))"  "(3 2 1)"
+   case "(foldr cons empty '(1 2 3))"  "(1 2 3)"
+   case "(foldl + 0 '(1 2 3))"         "6"
+   case "(foldl * 1 '(2 3 4 5))"       "120"
    
    //Map
    case "(map (λ (x) x) '(1 2 3))" "(1 2 3)"
@@ -1051,8 +1066,8 @@ let private test (log : ErrorLog) =
         "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
    
    //Sorting
-   case "(sort-by '((2 2) (2 1) (1 1)) (λ (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
-   case "(sort-with '((2 2) (2 1) (1 1)) (λ (x y) (let ((size (λ (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
+   case "(sort-by '((2 2) (2 1) (1 1)) (λ (x) (foldl + 0 x)))" "((1 1) (2 1) (2 2))"
+   case "(sort-with '((2 2) (2 1) (1 1)) (λ (x y) (let ((size (λ (l) (foldl + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
    
    //Zip/Combine
    case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
