@@ -26,7 +26,7 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Elements
 {
     [ElementName("Level")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_DATUMS)]
     [ElementDescription("Creates a level datum.")]
     [RequiresTransaction(true)]
     public class dynLevel : dynNode
@@ -167,7 +167,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Ref Plane")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_DATUMS)]
     [ElementDescription("Creates a reference plane.")]
     [RequiresTransaction(true)]
     public class dynReferencePlane : dynNode
@@ -418,7 +418,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Column Grid")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_DATUMS)]
     [ElementDescription("Creates a column grid datum.")]
     [RequiresTransaction(true)]
     public class dynColumnGrid : dynNode

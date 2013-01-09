@@ -27,7 +27,7 @@ using Expression = Dynamo.FScheme.Expression;
 namespace Dynamo.Elements
 {
    [ElementName("Web Request")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
+   [ElementCategory(BuiltinElementCategories.COMMUNICATION)]
    [ElementDescription("Fetches data from the web using a URL.")]
    [RequiresTransaction(false)]
    public class dynWebRequest : dynNode
@@ -71,7 +71,7 @@ namespace Dynamo.Elements
    }
 
    [ElementName("UDP Listener")]
-   [ElementCategory(BuiltinElementCategories.MISC)]
+   [ElementCategory(BuiltinElementCategories.COMMUNICATION)]
    [ElementDescription("Listens for data from the web using a UDP port")]
    [RequiresTransaction(false)]
    public class dynUDPListener : dynNode

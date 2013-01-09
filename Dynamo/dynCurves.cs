@@ -26,7 +26,7 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Elements
 {
    [ElementName("Model Curve")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementCategory(BuiltinElementCategories.REVIT_CURVES)]
    [ElementDescription("Creates a model curve.")]
    [RequiresTransaction(true)]
    public class dynModelCurve : dynNode
@@ -96,7 +96,7 @@ namespace Dynamo.Elements
    }
 
    [ElementName("Curve By Points")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementCategory(BuiltinElementCategories.REVIT_CURVES)]
    [ElementDescription("Create a new Curve by Points by passing in a list of Reference Points")]
    [RequiresTransaction(true)]
    public class dynCurveByPoints : dynNode
@@ -155,7 +155,7 @@ namespace Dynamo.Elements
    }
 
    [ElementName("Curve By Points By Line")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementCategory(BuiltinElementCategories.REVIT_CURVES)]
    [ElementDescription("Create a new Curve by Points by passing in a geometry line in 3d space")]
    [RequiresTransaction(true)]
    public class dynCurveByPointsByLine : dynNode
@@ -302,8 +302,8 @@ namespace Dynamo.Elements
    }
 
    [ElementName("Curve Element Reference")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("Takes in a Model Curve or Geometry Curve, returns a Curve References")]
+   [ElementCategory(BuiltinElementCategories.REVIT_CURVES)]
+   [ElementDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
    [RequiresTransaction(true)]
    public class dynCurveRef : dynNode
    {
@@ -387,7 +387,7 @@ namespace Dynamo.Elements
    }
 
    [ElementName("Curve From Curve Element")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementCategory(BuiltinElementCategories.REVIT_GEOM)]
    [ElementDescription("Takes in a Model Curve and Extracts Geometry Curve")]
    [RequiresTransaction(false)]
    public class dynCurveFromModelCurve : dynNode
@@ -453,7 +453,7 @@ namespace Dynamo.Elements
    }
 
    [ElementName("Planar Nurb Spline")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
+   [ElementCategory(BuiltinElementCategories.REVIT_CURVES)]
    [ElementDescription("Node to create a planar model curve.")]
    [RequiresTransaction(true)]
    public class dynModelCurveNurbSpline : dynNode

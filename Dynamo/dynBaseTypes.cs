@@ -50,11 +50,30 @@ namespace Dynamo.Elements
     /// </summary>
     public static class BuiltinElementCategories
     {
+
+        /* Broke up Miscellaneous and Revit into these subcats
+         * Points
+         * XYZ UV Vector
+         * Geometry Curves
+         * Revit Curves
+         * Revit Geometry
+         * Revit Datums
+         * Communication
+         * Scripting
+         */
+
         public const string MATH = "Math";
         public const string COMPARISON = "Comparison";
         public const string BOOLEAN = "Logic";
         public const string PRIMITIVES = "Primitives";
         public const string REVIT = "Revit";
+        public const string REVIT_XYZ_UV_VECTOR = "XYZ UV Vector";
+        public const string REVIT_POINTS = "Points";
+        public const string REVIT_GEOM = "Geometry";
+        public const string REVIT_CURVES = "Model Curves";
+        public const string REVIT_DATUMS = "Datums";
+        public const string COMMUNICATION = "Communication";
+        public const string SCRIPTING = "Scripting";
         public const string MISC = "Miscellaneous";
         public const string LIST = "Lists";
         public const string ANALYSIS = "Analysis";

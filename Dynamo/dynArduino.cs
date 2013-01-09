@@ -32,7 +32,7 @@ namespace Dynamo.Elements
 {
 
     [ElementName("Arduino")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.COMMUNICATION)]
     [ElementDescription("Manages connection to an Arduino microcontroller.")]
     [RequiresTransaction(false)]
     public class dynArduino : dynNode
@@ -193,7 +193,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Read Arduino")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.COMMUNICATION)]
     [ElementDescription("Reads values from an Arduino microcontroller.")]
     [RequiresTransaction(false)]
     public class dynArduinoRead : dynNode
@@ -285,7 +285,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Write Arduino")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.COMMUNICATION)]
     [ElementDescription("Writes values to an Arduino microcontroller.")]
     [RequiresTransaction(false)]
     public class dynArduinoWrite : dynNode

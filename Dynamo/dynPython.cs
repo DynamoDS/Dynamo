@@ -206,7 +206,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Python Script")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.SCRIPTING)]
     [ElementDescription("Runs an embedded IronPython script")]
     [RequiresTransaction(true)]
     public class dynPython : dynNode
@@ -404,7 +404,7 @@ namespace Dynamo.Elements
      }
 
     [ElementName("Python Script From String")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.SCRIPTING)]
     [ElementDescription("Runs a IronPython script from a string")]
     [RequiresTransaction(true)]
     public class dynPythonString : dynNode
