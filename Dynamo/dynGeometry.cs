@@ -630,7 +630,6 @@ namespace Dynamo.Elements
         {
             InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
             InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("bound?", "Boolean: Is this line bounded?", typeof(bool)));
             OutPortData = new PortData("line", "Line", typeof(Line));
 
             base.RegisterInputsAndOutputs();
@@ -643,25 +642,57 @@ namespace Dynamo.Elements
             var bound = ((Expression.Number)args[2]).Item == 1;
 
             return Expression.NewContainer(
-               this.UIDocument.Application.Application.Create.NewLine(
-                  ptA, ptB, bound
+               this.UIDocument.Application.Application.Create.NewLineBound(
+                  ptA, ptB
                )
             );
         }
     }
 
-    [ElementName("Arc")]
+    [ElementName("Arc by Start Middle End")]
     [ElementCategory(BuiltinElementCategories.REVIT)]
-    [ElementDescription("Creates a geometric arc.")]
+    [ElementDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
     [RequiresTransaction(false)]
-    public class dynArc : dynNode
+    public class dynArcStartMiddleEnd : dynNode
     {
-        public dynArc()
+        public dynArcStartMiddleEnd()
         {
             InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(XYZ)));
             InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
-            InPortData.Add(new PortData("pt", "XYZ on Curve", typeof(XYZ)));
-            OutPortData = new PortData("line", "Line", typeof(Line));
+            OutPortData = new PortData("arc", "Arc", typeof(Arc));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var ptA = (XYZ)((Expression.Container)args[0]).Item;//start
+            var ptB = (XYZ)((Expression.Container)args[1]).Item;//middle
+            var ptC = (XYZ)((Expression.Container)args[2]).Item;//end
+ 
+
+            return Expression.NewContainer(
+               this.UIDocument.Application.Application.Create.NewArc(
+                  ptA, ptC, ptB //start, end, middle 
+               )
+            );
+        }
+    }
+
+    [ElementName("Arc by Center Point")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
+    [RequiresTransaction(false)]
+    public class dynArcCenter : dynNode
+    {
+        public dynArcCenter()
+        {
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("radius", "Radius", typeof(double)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(double)));
+            InPortData.Add(new PortData("end", "End Param", typeof(double)));
+            OutPortData = new PortData("arc", "Arc", typeof(Arc));
 
             base.RegisterInputsAndOutputs();
         }
@@ -669,13 +700,13 @@ namespace Dynamo.Elements
         public override Expression Evaluate(FSharpList<Expression> args)
         {
             var ptA = (XYZ)((Expression.Container)args[0]).Item;
-            var ptB = (XYZ)((Expression.Container)args[1]).Item;
-            var ptC = (XYZ)((Expression.Container)args[2]).Item;
- 
+            var radius = (double)((Expression.Number)args[1]).Item;
+            var start = (double)((Expression.Number)args[2]).Item;
+            var end = (double)((Expression.Number)args[3]).Item;
+
 
             return Expression.NewContainer(
-               this.UIDocument.Application.Application.Create.NewArc(
-                  ptA, ptB, ptC
+               this.UIDocument.Application.Application.Create.NewArc(ptA, radius, start, end, XYZ.BasisX, XYZ.BasisY
                )
             );
         }
@@ -702,7 +733,7 @@ namespace Dynamo.Elements
             var radius = (double)((Expression.Number)args[1]).Item;
 
             Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
-            bool isBound = circle.IsBound;//always false
+            bool isBound = circle.IsBound;//always false, seems like Revit API does not support creation of full circles and 360 degree arcs are not really supported either.
             bool isCyclic = circle.IsCyclic;//always true
 
             return Expression.NewContainer(circle);
@@ -735,6 +766,40 @@ namespace Dynamo.Elements
             return Expression.NewContainer(
                this.UIDocument.Application.Application.Create.NewEllipse(
                   ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+               )
+            );
+        }
+    }
+
+    [ElementName("Elliptical Arc")]
+    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
+    [RequiresTransaction(false)]
+    public class dynEllipticalArc : dynNode
+    {
+        public dynEllipticalArc()
+        {
+            InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
+            InPortData.Add(new PortData("radX", "Major Radius", typeof(double)));
+            InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(double)));
+            InPortData.Add(new PortData("end", "End Param", typeof(double)));
+            OutPortData = new PortData("ell", "Ellipse", typeof(Ellipse));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var ptA = (XYZ)((Expression.Container)args[0]).Item;
+            var radX = (double)((Expression.Number)args[1]).Item;
+            var radY = (double)((Expression.Number)args[2]).Item;
+            var start = (double)((Expression.Number)args[3]).Item;
+            var end = (double)((Expression.Number)args[4]).Item;
+
+            return Expression.NewContainer(
+               this.UIDocument.Application.Application.Create.NewEllipse(
+                  ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
                )
             );
         }
