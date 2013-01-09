@@ -63,6 +63,7 @@ namespace Dynamo.Controls
         bool isPanning = false;
         StringWriter sw;
         string logText;
+        ConnectorType connectorType;
 
         dynWorkspace _cspace;
         internal dynWorkspace CurrentSpace
@@ -86,6 +87,10 @@ namespace Dynamo.Controls
         SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
         SplashScreen splashScreen;
+        public ConnectorType ConnectorType
+        {
+            get { return connectorType; }
+        }
 
         public dynBench(DynamoUpdater updater, SplashScreen splash)
         {
@@ -127,6 +132,10 @@ namespace Dynamo.Controls
             LoadBuiltinTypes();
             PopulateSamplesMenu();
             //LoadUserTypes();
+
+            connectorType = ConnectorType.BEZIER;
+            settings_curves.IsChecked = true;
+            settings_curves.IsChecked = false;
         }
 
         private bool _activated = false;
@@ -3415,8 +3424,23 @@ namespace Dynamo.Controls
             this.dynamicCheckBox.IsEnabled = true;
         }
 
-        
+        private void settings_curves_Checked(object sender, RoutedEventArgs e)
+        {
+            if (settings_plines != null)
+            {
+                this.connectorType = ConnectorType.BEZIER;
+                settings_plines.IsChecked = false;
+            }
+        }
 
+        private void settings_plines_Checked(object sender, RoutedEventArgs e)
+        {
+            if (settings_curves != null)
+            {
+                this.connectorType = ConnectorType.POLYLINE;
+                settings_curves.IsChecked = false;
+            }
+        }
     }
 
     public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>

@@ -60,7 +60,13 @@
             </MenuItem>
             <Separator />
          </MenuItem>
-         <!--<MenuItem Header="_Add" Name="AddMenu">
+        <MenuItem Header="Settings">
+                <MenuItem Header="_Connector Type" IsEnabled="True">
+                    <MenuItem Name="settings_curves" IsCheckable="True" IsChecked="True" Checked="settings_curves_Checked" Header="Curves"/>
+                    <MenuItem Name="settings_plines" IsCheckable="True" IsChecked="False" Checked="settings_plines_Checked" Header="Polylines"/>
+                </MenuItem>
+            </MenuItem>
+                <!--<MenuItem Header="_Add" Name="AddMenu">
             <MenuItem Header="_New Function" Click="NewFunction_Click"/>
             <MenuItem Header="Variable" Click="AddElement_Click" Name="varItem" IsEnabled="False" />
             <Separator />
