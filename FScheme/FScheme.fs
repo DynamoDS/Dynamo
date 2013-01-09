@@ -465,7 +465,13 @@ let CartProd = function
        List(List.map (function List(l) -> l | m -> failwith "bad cart prod arg") lists |> reduceLists |> Seq.map f |> Seq.toList)
    | m -> malformed "cartesian-product" (List(m))
 
-///Sorts using natural ordering. Only works for primitive types (numbers, strings, etc.)
+let ForEach = function
+   | [Function(f); List(l)] ->
+       for e in l do f [e] |> ignore
+       Dummy("for-each")
+   | m -> malformed "for-each" (List(m))
+
+///Sorts using natural ordering. Only works for primitive types (numbers, strings)
 let Sort = function
    //We expect a list of expressions as the only argument.
    | [List(l)] ->
@@ -495,6 +501,38 @@ let Sort = function
       | _ -> malformed "sort" (List(l))
    //Otherwise, fail.
    | m -> malformed "sort" (List(m))
+
+let SortBy = function
+   | [Function(key); List(h :: t)] ->
+      let mapper x = key [x], x
+      let first = mapper h
+      let sortBy mapper' keyed = 
+         List(List.sortBy (function key, _ -> key) keyed 
+              |> List.map (function _, value -> value))
+      match first with
+      | Number(n), x ->
+         let mapper' x =
+            match mapper x with
+            | Number(n), t -> n, t
+            | m -> failwith "sort-by key function must always return the same type"
+         (n, x) :: List.map mapper' t |> sortBy mapper'
+      | String(s), x -> 
+         let mapper' x =
+            match mapper x with
+            | String(s), t -> s, t
+            | m -> failwith "sort-by key function must always return the same type"
+         (s, x) :: List.map mapper' t |> sortBy mapper'
+      | _ -> failwith "key function for sort-by must return strings or numbers"
+   | m -> malformed "sort-by" (List(m))      
+
+let SortWith = function
+   | [Function(comp); List(l)] ->
+      let comp' x y =
+         match comp [x; y] with
+         | Number(n) -> int n
+         | _ -> failwith "sort-with comparitor must return numbers"
+      List(List.sortWith comp' l)
+   | m -> malformed "sort-with" (List(m))
 
 ///Build Sequence
 let BuildSeq = function
@@ -867,6 +905,9 @@ let private makeEnvironments() =
    AddDefaultBinding "not" (Function(Not))
    AddDefaultBinding "xor" (Function(Xor))
    AddDefaultBinding "cartesian-product" (Function(CartProd))
+   AddDefaultBinding "sort-with" (Function(SortWith))
+   AddDefaultBinding "sort-by" (Function(SortBy))
+   AddDefaultBinding "for-each" (Function(ForEach))
 
 let private eval ce env syntax = compile ce syntax env
 
@@ -880,30 +921,6 @@ let private evaluateSchemeDefs() =
    "
    ;; Y Combinator
    (define (Y f) ((λ (x) (x x)) (λ (x) (f (λ (g) ((x x) g))))))
-
-   ;; quicksort :: [listof X] (X -> Y) (Y Y -> bool) -> [listof X]
-   (define (quicksort lst f c)
-     (if (empty? lst)
-         empty
-         (let* ((pivot (f (first lst)))
-                (lt (filter (λ (x) (c (f x) pivot)) (rest lst)))
-                (gt (filter (λ (x) (not (c (f x) pivot))) (rest lst))))
-           (append (quicksort lt f c) (cons (first lst) (quicksort gt f c))))))
-
-   ;; sort-with :: [listof X] (X X -> int) -> [listof X]
-   (define (sort-with lst comp)
-     (quicksort lst identity (λ (a b) (< (comp a b) 0))))
-
-   ;; sort-by :: [listof X] (X -> IComparable) -> [listof X]
-   (define (sort-by lst proj)
-     (map (λ (x) (first x))                              ;; Convert back to original list
-          (quicksort (map (λ (x) (list x (proj x))) lst) ;; Sort list of original element/projection pairs
-                     (λ (y) (first (rest y)))            ;; Sort based on the second element in the sub-lists
-                     <)))                                ;; Compare using less-than
-
-   ;; for-each :: (X -> unit) [listof X] -> unit
-   (define (for-each f lst)
-     (foldl (λ (x _) (f x)) (begin) lst)))
    " |> ParseText |> ignore
 
 makeEnvironments()
@@ -1036,11 +1053,14 @@ let private test (log : ErrorLog) =
         "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
    
    //Sorting
-   case "(sort-by '((2 2) (2 1) (1 1)) (λ (x) (foldl + 0 x)))" "((1 1) (2 1) (2 2))"
-   case "(sort-with '((2 2) (2 1) (1 1)) (λ (x y) (let ((size (λ (l) (foldl + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
+   case "(sort-by (λ (x) (foldl + 0 x)) '((2 2) (2 1) (1 1)))" "((1 1) (2 1) (2 2))"
+   case "(sort-with (λ (x y) (let ((size (λ (l) (foldl + 0 l)))) (- (size x) (size y)))) '((2 2) (2 1) (1 1)))" "((1 1) (2 1) (2 2))"
 
    //Y Combinator
    case "((Y (λ (f) (λ (n) (if (<= n 1) 1 (* n (f (sub1 n))))))) 5)" "120"
+
+   //For-Each
+   case "(let ((x empty)) (for-each (λ (y) (set! x (cons y x))) '(1 2 3 4 5)) x)" "(5 4 3 2 1)"
 
    success.Value
 
