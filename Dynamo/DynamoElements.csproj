@@ -59,6 +59,9 @@ limitations under the License.
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="HelixToolkit.Wpf.Input">
+      <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
+    </Reference>
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
@@ -276,7 +279,13 @@ limitations under the License.
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy .\DynamoElements.dll ..\..\..\DynamoRevit\bin\Debug\DynamoElements.dll
-copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Debug\DynamoElements.pdb</PostBuildEvent>
+copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Debug\DynamoElements.pdb
+copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.dll
+copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.Input.dll
+copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.pdb ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.pdb
+copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.pdb ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.Input.pdb
+copy ..\..\..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll  ..\..\..\DynamoRevit\bin\Debug\MIConvexHullPlugin.dll
+copy ..\..\..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.pdb  ..\..\..\DynamoRevit\bin\Debug\MIConvexHullPlugin.pdb</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
