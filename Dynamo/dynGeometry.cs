@@ -521,7 +521,7 @@ namespace Dynamo.Elements
         public dynSketchPlane()
         {
             InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(object))); // SketchPlane can accept Plane, Reference or PlanarFace
-            OutPortData = new PortData("SP", "SketchPlane", typeof(dynSketchPlane));
+            OutPortData = new PortData("sp", "SketchPlane", typeof(dynSketchPlane));
 
             base.RegisterInputsAndOutputs();
         }

@@ -78,7 +78,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Read File")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Reads data from a file.")]
     [RequiresTransaction(false)]
     public class dynFileReader : dynNode
@@ -148,7 +148,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Read Image File")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Reads data from an image file.")]
     [RequiresTransaction(false)]
     public class dynImageFileReader : dynFileReaderBase
@@ -192,7 +192,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Write File")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Writes the given string to the given file. Creates the file if it doesn't exist.")]
     public class dynFileWriter : dynNode
     {
@@ -227,7 +227,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Write CSV File")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Writes a list of lists into a file using a comma-separated values format. Outer list represents rows, inner lists represent column.")]
     public class dynListToCSV : dynNode
     {
@@ -270,7 +270,7 @@ namespace Dynamo.Elements
     #region File Watcher
 
     [ElementName("Watch File")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Creates a FileWatcher for watching changes in a file.")]
     [RequiresTransaction(false)]
     public class dynFileWatcher : dynNode
@@ -291,7 +291,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Watched File Changed?")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Checks if the file watched by the given FileWatcher has changed.")]
     [RequiresTransaction(false)]
     public class dynFileWatcherChanged : dynNode
@@ -313,8 +313,8 @@ namespace Dynamo.Elements
     }
 
     //TODO: Add UI for specifying whether should error or continue (checkbox?)
-    [ElementName("Wait for Change")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementName("File Watcher Wait for Change")]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Waits for the specified watched file to change.")]
     [RequiresTransaction(false)]
     public class dynFileWatcherWait : dynNode

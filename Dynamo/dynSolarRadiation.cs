@@ -27,8 +27,8 @@ using Expression = Dynamo.FScheme.Expression;
 namespace Dynamo.Elements
 {
    [ElementName("Extract Solar Radiation Value")]
-   [ElementCategory(BuiltinElementCategories.REVIT)]
-   [ElementDescription("Extracts and computs the average solar radiation value based on a CSV file.")]
+   [ElementCategory(BuiltinElementCategories.ANALYSIS)]
+   [ElementDescription("Extracts and computes the average solar radiation value based on a CSV file.")]
    [RequiresTransaction(false)]
    public class dynComputeSolarRadiationValue : dynNode
    {
