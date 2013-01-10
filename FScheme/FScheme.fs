@@ -416,17 +416,16 @@ let RandomDbl = function
    | m -> malformed "random" (List(m))
 
 //List Functions
-let IsEmpty = function [List([])] -> Number(1.) | _ -> Number (0.)
-let Cons = function [h; List(t)] -> (List(h :: t)) | m -> malformed "cons" (List(m))
-let Car = function [List(h :: _)] -> h | m -> malformed "car" (List(m))
-let Cdr = function [List(_ :: t)] -> List(t) | m -> malformed "cdr" (List(m))
-let Rev = function [List(l)] -> List(List.rev l) | m -> malformed "reverse" (List(m))
-let MakeList = function (elements : Expression list) -> List(elements)
-let Len = function [List(l)] -> Number(double l.Length) | m -> malformed "len" (List(m))
-let Append = function [List(l1); List(l2)] -> List(List.append l1 l2) | m -> malformed "append" (List(m))
-let Take = function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take" (List(m))
-let Get = function [Number(n); List(l)] -> l.Item (int n) | m -> malformed "get" (List(m))
-let Drop = function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop" (List(m))
+let Cons =     function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons" (List(m))
+let Car =      function [List(h :: _)]       -> h                                      | m -> malformed "car" (List(m))
+let Cdr =      function [List(_ :: t)]       -> List(t)                                | m -> malformed "cdr" (List(m))
+let Rev =      function [List(l)]            -> List(List.rev l)                       | m -> malformed "reverse" (List(m))
+let Len =      function [List(l)]            -> Number(double l.Length)                | m -> malformed "len" (List(m))
+let Append =   function [List(l1); List(l2)] -> List(List.append l1 l2)                | m -> malformed "append" (List(m))
+let Take =     function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take" (List(m))
+let Get =      function [Number(n); List(l)] -> l.Item (int n)                         | m -> malformed "get" (List(m))
+let Drop =     function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop" (List(m))
+let IsEmpty =  function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?" (List(m))
 
 let rec private reduceLists = function
     | []     -> Seq.empty
@@ -883,7 +882,7 @@ let private makeEnvironments() =
    AddDefaultBinding "empty?" (Function(IsEmpty))
    AddDefaultBinding "reverse" (Function(Rev))
    AddDefaultBinding "rev" (Function(Rev))
-   AddDefaultBinding "list" (Function(MakeList))
+   AddDefaultBinding "list" (Function(List))
    AddDefaultBinding "sort" (Function(Sort))
    AddDefaultBinding "throw" (Function(Throw))
    AddDefaultBinding "rand" (Function(RandomDbl))
