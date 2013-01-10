@@ -47,6 +47,8 @@ namespace Dynamo.Elements
 
         bool isDrawingPoints;
         ParticleSystem ps;
+        Curve c;
+        XYZ pt;
 
         public List<Point3DCollection> Points{get;set;}
 
@@ -71,7 +73,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
 
             //get rid of right click delete
-            this.MainContextMenu.Items.Clear();
+            //this.MainContextMenu.Items.Clear();
 
             MenuItem mi = new MenuItem();
             mi.Header = "Zoom to Fit";
@@ -211,45 +213,14 @@ namespace Dynamo.Elements
                         {
                             if (isDrawingPoints)
                             {
-                                XYZ pt = (e as Expression.Container).Item as XYZ;
-                                var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
-                                Points[0].Add(ptVis);
+                                pt = (e as Expression.Container).Item as XYZ;
+                                DrawPoint(pt);
                             }
                             else
                             {
-                                Curve c = (e as Expression.Container).Item as Curve;
+                                c = (e as Expression.Container).Item as Curve;
+                                DrawCurve(c);
 
-                                //if (c.GetType() == typeof(Line))
-
-                                //{
-                                //    XYZ start = c.get_EndPoint(0);
-                                //    XYZ end = c.get_EndPoint(1);
-                                //    var ptVis1 = new Point3D(start.X, start.Y, start.Z);
-                                //    var ptVis2 = new Point3D(end.X, end.Y, end.Z);
-                                //    Points[0].Add(ptVis1);
-                                //    Points[0].Add(ptVis2);
-                                //}
-                                //else if (c.GetType() == typeof(Arc))
-                                //{
-
-                                List<XYZ> points;
-
-                                points = c.Tessellate() as List<XYZ>;
-                                Array pointArr = points.ToArray();
-
-                                for (int i = 0; i < pointArr.Length - 1; i++)
-                                {
-                                    XYZ pt1 = pointArr.GetValue(i) as XYZ;
-                                    XYZ pt2 = pointArr.GetValue(i + 1) as XYZ;
-                                    var ptVis1 = new Point3D(pt1.X, pt1.Y, pt1.Z);
-                                    var ptVis2 = new Point3D(pt2.X, pt2.Y, pt2.Z);
-                                    Points[0].Add(ptVis1);
-                                    Points[0].Add(ptVis2);
-                                }
-
-
-
-                                // }
                             }
                         }
                         RaisePropertyChanged("Points");
@@ -257,36 +228,67 @@ namespace Dynamo.Elements
                     }
                     else if (input.IsContainer) //if not a list, presume it's a a particle system
                     {
-                        var psTest = input as Expression.Container;
+                        var test = ((Expression.Container)(input)).Item;
 
-                        if ((ParticleSystem)(psTest).Item is ParticleSystem)
+                        if (test is ParticleSystem)
                         {
-                            ps = (ParticleSystem)(psTest).Item;
+                            ps = (ParticleSystem)test;
 
-                            try
-                            {
+                            //try
+                            //{
 
                                 UpdateVisualsFromParticleSystem();
 
                                 RaisePropertyChanged("Points");
 
-                            }
-                            catch (Exception e)
-                            {
-                                dynElementSettings.SharedInstance.Bench.Log("Something wrong drawing 3d preview. " + e.ToString());
+                            //}
+                            //catch (Exception e)
+                            //{
+                            //    dynElementSettings.SharedInstance.Bench.Log("Something wrong drawing 3d preview. " + e.ToString());
 
-                            }
+                            //}
                         }
-                        else
+                        else if (test is Curve)
                         {
-                            //please pass in a list of XYZs, Curves or a single particle system
+                            c = (Curve)test;
+                            DrawCurve(c);
+                        }
+                        else if (test is XYZ)
+                        {
+                            pt = (XYZ)test;
+                            DrawCurve(c);
                         }
                     }
                }));
 
-            //return Expression.NewContainer(input); //watch 3d should be a 'pass through' node 
             return input; //watch 3d should be a 'pass through' node
             
+        }
+
+        private void DrawPoint(XYZ pt)
+        {
+            var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
+            Points[0].Add(ptVis);
+        }
+
+        private void DrawCurve(Curve c)
+        {
+            List<XYZ> points;
+
+            points = c.Tessellate() as List<XYZ>;
+            XYZ pt1;
+            XYZ pt2;
+            Point3D ptVis1;
+            Point3D ptVis2;
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                pt1 = points[i] as XYZ;
+                pt2 = points[i + 1] as XYZ;
+                ptVis1 = new Point3D(pt1.X, pt1.Y, pt1.Z);
+                ptVis2 = new Point3D(pt2.X, pt2.Y, pt2.Z);
+                Points[0].Add(ptVis1);
+                Points[0].Add(ptVis2);
+            }
         }
 
         private void UpdateVisualsFromParticleSystem()

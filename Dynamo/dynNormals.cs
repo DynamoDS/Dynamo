@@ -22,7 +22,7 @@ using Expression = Dynamo.FScheme.Expression;
 namespace Dynamo.Elements
 {
     [ElementName("Evaluate Normal")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.REVIT_XYZ_UV_VECTOR)]
     [ElementDescription("Evaluate a point on a face to find the normal.")]
     [RequiresTransaction(false)]
     class dynNormalEvaluate:dynNode
@@ -64,7 +64,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Evaluate XYZ")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.REVIT_XYZ_UV_VECTOR)]
     [ElementDescription("Evaluate a point on a face to find the XYZ location.")]
     [RequiresTransaction(false)]
     class dynXYZEvaluate : dynNode

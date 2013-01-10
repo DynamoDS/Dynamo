@@ -60,6 +60,7 @@ namespace Dynamo.Elements
          * Revit Datums
          * Communication
          * Scripting
+         * Strings
          */
 
         public const string MATH = "Math";
@@ -67,13 +68,14 @@ namespace Dynamo.Elements
         public const string BOOLEAN = "Logic";
         public const string PRIMITIVES = "Primitives";
         public const string REVIT = "Revit";
-        public const string REVIT_XYZ_UV_VECTOR = "XYZ UV Vector";
-        public const string REVIT_POINTS = "Points";
-        public const string REVIT_GEOM = "Geometry";
-        public const string REVIT_CURVES = "Model Curves";
-        public const string REVIT_DATUMS = "Datums";
+        public const string REVIT_XYZ_UV_VECTOR = "Revit XYZ UV Vector";
+        public const string REVIT_POINTS = "Revit Points";
+        public const string REVIT_GEOM = "Revit Geometry";
+        public const string REVIT_CURVES = "Revit Model Curves";
+        public const string REVIT_DATUMS = "Revit Datums";
         public const string COMMUNICATION = "Communication";
         public const string SCRIPTING = "Scripting";
+        public const string STRINGS = "Strings";
         public const string MISC = "Miscellaneous";
         public const string LIST = "Lists";
         public const string ANALYSIS = "Analysis";
@@ -2593,7 +2595,7 @@ namespace Dynamo.Elements
 
     [ElementName("Concatenate Strings")]
     [ElementDescription("Concatenates two or more strings")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.STRINGS)]
     [RequiresTransaction(false)]
     public class dynConcatStrings : dynVariableInput
     {
@@ -2666,7 +2668,7 @@ namespace Dynamo.Elements
 
     [ElementName("String -> Number")]
     [ElementDescription("Converts a string to a number")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.STRINGS)]
     [RequiresTransaction(false)]
     public class dynString2Num : dynBuiltinFunction
     {
@@ -2682,7 +2684,7 @@ namespace Dynamo.Elements
 
     [ElementName("Number -> String")]
     [ElementDescription("Converts a number to a string")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.STRINGS)]
     [RequiresTransaction(false)]
     public class dynNum2String : dynBuiltinFunction
     {
@@ -2698,7 +2700,7 @@ namespace Dynamo.Elements
 
     [ElementName("Split String")]
     [ElementDescription("Splits given string around given delimiter into a list of sub strings.")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.STRINGS)]
     public class dynSplitString : dynNode
     {
         public dynSplitString()
@@ -2726,7 +2728,7 @@ namespace Dynamo.Elements
 
     [ElementName("Join Strings")]
     [ElementDescription("Joins the given list of strings around the given delimiter.")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.STRINGS)]
     public class dynJoinStrings : dynNode
     {
         public dynJoinStrings()
@@ -2751,7 +2753,7 @@ namespace Dynamo.Elements
 
     [ElementName("String Case")]
     [ElementDescription("Converts a string to uppercase or lowercase")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.STRINGS)]
     public class dynStringCase : dynNode
     {
         public dynStringCase()
@@ -2776,7 +2778,7 @@ namespace Dynamo.Elements
 
     [ElementName("Substring")]
     [ElementDescription("Gets a substring of a given string")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.STRINGS)]
     public class dynSubstring : dynNode
     {
         public dynSubstring()
