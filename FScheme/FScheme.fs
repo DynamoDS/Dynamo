@@ -133,8 +133,8 @@ let LetStar : Macro = function
    | List_P(bindings) :: body ->
      let folder b a = 
         match b with
-        | List_P([Symbol_P(name); expr]) as Let ->
-            List_P([Symbol_P("let"); List_P([Let]); a])
+        | List_P([Symbol_P(name); expr]) as let' ->
+            List_P([Symbol_P("let"); List_P([let']); a])
         | m -> failwith "bad let*"
      List_P(Symbol_P("begin") :: body) |> List.foldBack folder bindings 
    | m -> failwith "bad let*"
@@ -153,10 +153,7 @@ let rec Or : Macro = function
 
 //Cond macro
 let rec Cond : Macro = function
-   | List_P([Symbol_P("else"); expr]) :: t ->
-      match t with
-      | [] -> expr
-      | _ -> failwith "bad cond: else clause must be last"
+   | [List_P([Symbol_P("else"); expr])] -> expr
    | List_P([condition; expr]) :: t -> List_P([Symbol_P("if"); condition; expr; Cond t])
    | [] -> List_P([Symbol_P("begin")])
    | m -> failwith "bad cond"
