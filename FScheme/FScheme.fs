@@ -439,17 +439,23 @@ let rec private reduceLists = function
 
 let Map = function
     | Function(f) :: lists -> 
-        List(List.map (function List(l) -> l | m -> failwith "bad map arg") lists |> reduceLists |> Seq.map f |> Seq.toList)
+        List(List.map (function List(l) -> l | m -> failwith "bad map arg") lists
+                |> reduceLists |> Seq.map f |> Seq.toList)
     | m -> malformed "map" (List(m))
 
 let FoldL = function
     | Function(f) :: a :: lists ->
-        List.map (function List(l) -> l | m -> failwith "bad fold arg") lists |> reduceLists |> Seq.fold (fun a x -> f (x @ [a])) a
+        List.map (function List(l) -> l | m -> failwith "bad fold arg") lists 
+            |> reduceLists
+            |> Seq.fold (fun a x -> f (x @ [a])) a
     | m -> malformed "foldl" (List(m))
 
 let FoldR = function
     | Function(f) :: a :: lists ->
-        List.foldBack (fun x a -> f (x @ [a])) (List.map (function List(l) -> l | m -> failwith "bad fold arg") lists |> reduceLists |> Seq.toList) a
+        List.foldBack (fun x a' -> f (x @ [a'])) 
+                      (List.map (function List(l) -> l | m -> failwith "bad fold arg") lists 
+                        |> reduceLists |> Seq.toList)
+                      a
     | m -> malformed "foldr" (List(m))
 
 let Filter = function
