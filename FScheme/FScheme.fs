@@ -23,84 +23,84 @@ open System.Diagnostics
 
 //Simple Tokenizer for quickly defining expressions in Scheme syntax.
 type private Token =
-   | Open | Close
-   | Quote | Quasi | Unquote
-   | Number of string
-   | String of string
-   | Symbol of string
+    | Open | Close
+    | Quote | Quasi | Unquote
+    | Number of string
+    | String of string
+    | Symbol of string
 
 let private tokenize source =
-   let rec string acc = function
-      | '\\' :: '"' :: t -> string (acc + "\"") t // escaped quote becomes quote
-      | '\\' :: 'b' :: t -> string (acc + "\b") t // escaped backspace
-      | '\\' :: 'f' :: t -> string (acc + "\f") t // escaped formfeed
-      | '\\' :: 'n' :: t -> string (acc + "\n") t // escaped newline
-      | '\\' :: 'r' :: t -> string (acc + "\r") t // escaped return
-      | '\\' :: 't' :: t -> string (acc + "\t") t // escaped tab
-      | '\\' :: '\\' :: t -> string (acc + "\\") t // escaped backslash
-      | '"' :: t -> acc, t // closing quote terminates
-      | c :: t -> string (acc + (c.ToString())) t // otherwise accumulate chars
-      | _ -> failwith "Malformed string."
-   let rec comment = function
-      | '\r' :: t | '\n' :: t -> t // terminated by line end
-      | [] -> [] // or by EOF
-      | _ :: t -> comment t
-   let rec token acc = function
-      | (')' :: _) as t -> acc, t // closing paren terminates
-      | w :: t when Char.IsWhiteSpace(w) -> acc, t // whitespace terminates
-      | [] -> acc, [] // end of list terminates
-      | c :: t -> token (acc + (c.ToString())) t // otherwise accumulate chars
-   let rec tokenize' acc = function
-      | w :: t when Char.IsWhiteSpace(w) -> tokenize' acc t // skip whitespace
-      | '(' :: t -> tokenize' (Open :: acc) t
-      | ')' :: t -> tokenize' (Close :: acc) t
-      | '\'' :: t -> tokenize' (Quote :: acc) t
-      | '`' :: t -> tokenize' (Quasi :: acc) t
-      | ',' :: t -> tokenize' (Unquote :: acc) t
-      | ';' :: t -> comment t |> tokenize' acc // skip over comments
-      | '"' :: t -> // start of string
-         let s, t' = string "" t
-         tokenize' (Token.String(s) :: acc) t'
-      | '-' :: d :: t when Char.IsDigit(d) -> // start of negative number
-         let n, t' = token ("-" + d.ToString()) t
-         tokenize' (Token.Number(n) :: acc) t'
-      | '+' :: d :: t | d :: t when Char.IsDigit(d) -> // start of positive number
-         let n, t' = token (d.ToString()) t
-         tokenize' (Token.Number(n) :: acc) t'
-      | s :: t -> // otherwise start of symbol
-         let s, t' = token (s.ToString()) t
-         tokenize' (Token.Symbol(s) :: acc) t'
-      | [] -> List.rev acc // end of list terminates
-   tokenize' [] source
+    let rec string acc = function
+        | '\\' :: '"' :: t -> string (acc + "\"") t // escaped quote becomes quote
+        | '\\' :: 'b' :: t -> string (acc + "\b") t // escaped backspace
+        | '\\' :: 'f' :: t -> string (acc + "\f") t // escaped formfeed
+        | '\\' :: 'n' :: t -> string (acc + "\n") t // escaped newline
+        | '\\' :: 'r' :: t -> string (acc + "\r") t // escaped return
+        | '\\' :: 't' :: t -> string (acc + "\t") t // escaped tab
+        | '\\' :: '\\' :: t -> string (acc + "\\") t // escaped backslash
+        | '"' :: t -> acc, t // closing quote terminates
+        | c :: t -> string (acc + (c.ToString())) t // otherwise accumulate chars
+        | _ -> failwith "Malformed string."
+    let rec comment = function
+        | '\r' :: t | '\n' :: t -> t // terminated by line end
+        | [] -> [] // or by EOF
+        | _ :: t -> comment t
+    let rec token acc = function
+        | (')' :: _) as t -> acc, t // closing paren terminates
+        | w :: t when Char.IsWhiteSpace(w) -> acc, t // whitespace terminates
+        | [] -> acc, [] // end of list terminates
+        | c :: t -> token (acc + (c.ToString())) t // otherwise accumulate chars
+    let rec tokenize' acc = function
+        | w :: t when Char.IsWhiteSpace(w) -> tokenize' acc t // skip whitespace
+        | '(' :: t -> tokenize' (Open :: acc) t
+        | ')' :: t -> tokenize' (Close :: acc) t
+        | '\'' :: t -> tokenize' (Quote :: acc) t
+        | '`' :: t -> tokenize' (Quasi :: acc) t
+        | ',' :: t -> tokenize' (Unquote :: acc) t
+        | ';' :: t -> comment t |> tokenize' acc // skip over comments
+        | '"' :: t -> // start of string
+            let s, t' = string "" t
+            tokenize' (Token.String(s) :: acc) t'
+        | '-' :: d :: t when Char.IsDigit(d) -> // start of negative number
+            let n, t' = token ("-" + d.ToString()) t
+            tokenize' (Token.Number(n) :: acc) t'
+        | '+' :: d :: t | d :: t when Char.IsDigit(d) -> // start of positive number
+            let n, t' = token (d.ToString()) t
+            tokenize' (Token.Number(n) :: acc) t'
+        | s :: t -> // otherwise start of symbol
+            let s, t' = token (s.ToString()) t
+            tokenize' (Token.Symbol(s) :: acc) t'
+        | [] -> List.rev acc // end of list terminates
+    tokenize' [] source
 
 
 ///Types of FScheme Expressions
 type Expression =
-   ///Expression representing any .NET object.
-   | Container of obj
-   ///Expression representing a number (double).
-   | Number of double
-   ///Expression representing a string.
-   | String of string
-   ///Expression representing a symbol.
-   | Symbol of string
-   ///Expression representing a list of sub expressions.
-   | List of Expression list
-   ///Expression representing a function.
-   | Function of (Expression list -> Expression)
-   ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
-   ///Should NOT be used except internally by this interpreter.
-   | Dummy of string
+    ///Expression representing any .NET object.
+    | Container of obj
+    ///Expression representing a number (double).
+    | Number of double
+    ///Expression representing a string.
+    | String of string
+    ///Expression representing a symbol.
+    | Symbol of string
+    ///Expression representing a list of sub expressions.
+    | List of Expression list
+    ///Expression representing a function.
+    | Function of (Expression list -> Expression)
+    ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
+    ///Should NOT be used except internally by this interpreter.
+    | Dummy of string
 
 
 ///Converts an expression to a boolean value
 let private exprToBool = function
-   //Empty list or empty string is false, evaluate else branch.
-   | List([]) | String("") -> false
-   //Zero is false, evaluate else branch.
-   | Number(n) when n = 0. -> false
-   //Everything else is true, evaluate then branch.
-   | _ -> true
+    //Empty list or empty string is false, evaluate else branch.
+    | List([]) | String("") -> false
+    //Zero is false, evaluate else branch.
+    | Number(n) when n = 0. -> false
+    //Everything else is true, evaluate then branch.
+    | _ -> true
 
 type Frame = Expression ref [] ref
 type Environment = Frame list ref
@@ -114,56 +114,56 @@ type ExternFunc = delegate of Expression list -> Expression
 
 ///Makes an Expression.Function out of an ExternFunc
 let makeExternFunc (externFunc : ExternFunc) =
-   Function(externFunc.Invoke)
+    Function(externFunc.Invoke)
 
 type Parser =
-   | Number_P of double
-   | String_P of string
-   | Symbol_P of string
-   | Dot_P
-   | Func_P of (Expression list -> Expression)
-   | List_P of Parser list
-   | Container_P of obj
+    | Number_P of double
+    | String_P of string
+    | Symbol_P of string
+    | Dot_P
+    | Func_P of (Expression list -> Expression)
+    | List_P of Parser list
+    | Container_P of obj
 
 type Macro = Parser list -> Parser
 type MacroEnvironment = Map<string, Macro>
 
 ///Let* macro
 let LetStar : Macro = function
-   | List_P(bindings) :: body ->
-     let folder b a = 
-        match b with
-        | List_P([Symbol_P(name); expr]) as let' ->
-            List_P([Symbol_P("let"); List_P([let']); a])
-        | m -> failwith "bad let*"
-     List_P(Symbol_P("begin") :: body) |> List.foldBack folder bindings 
-   | m -> failwith "bad let*"
+    | List_P(bindings) :: body ->
+        let folder b a = 
+            match b with
+            | List_P([Symbol_P(name); expr]) as let' ->
+                List_P([Symbol_P("let"); List_P([let']); a])
+            | m -> failwith "bad let*"
+        List_P(Symbol_P("begin") :: body) |> List.foldBack folder bindings 
+    | m -> failwith "bad let*"
 
 ///And macro
 let rec And : Macro = function
-   | [] -> Number_P(1.)
-   | [expr] -> expr
-   | h :: t -> List_P([Symbol_P("if"); h; And t; Number_P(0.)])
+    | [] -> Number_P(1.)
+    | [expr] -> expr
+    | h :: t -> List_P([Symbol_P("if"); h; And t; Number_P(0.)])
 
 ///Or macro
 let rec Or : Macro = function
-   | [] -> Number_P(0.)
-   | [expr] -> expr
-   | h :: t -> List_P([Symbol_P("if"); h; Number_P(1.); Or t])
+    | [] -> Number_P(0.)
+    | [expr] -> expr
+    | h :: t -> List_P([Symbol_P("if"); h; Number_P(1.); Or t])
 
 //Cond macro
 let rec Cond : Macro = function
-   | [List_P([Symbol_P("else"); expr])] -> expr
-   | List_P([condition; expr]) :: t -> List_P([Symbol_P("if"); condition; expr; Cond t])
-   | [] -> List_P([Symbol_P("begin")])
-   | m -> failwith "bad cond"
+    | [List_P([Symbol_P("else"); expr])] -> expr
+    | List_P([condition; expr]) :: t -> List_P([Symbol_P("if"); condition; expr; Cond t])
+    | [] -> List_P([Symbol_P("begin")])
+    | m -> failwith "bad cond"
 
 let macroEnv = 
     Map.ofList [
-       "let*", LetStar
-       "cond", Cond
-       "and", And
-       "or", Or
+        "let*", LetStar
+        "cond", Cond
+        "and", And
+        "or", Or
     ]
 
 ///FScheme Macro delegate. Takes a list of unevaluated Expressions and an Environment as arguments, and returns an Expression.
@@ -174,41 +174,42 @@ let makeExternMacro (ex : ExternMacro) : Macro = ex.Invoke
 
 ///AST for FScheme expressions
 type Syntax =
-   | Number_S of double
-   | String_S of string
-   | Id of string
-   | SetId of string * Syntax
-   | Let of string list * Syntax list * Syntax
-   | LetRec of string list * Syntax list * Syntax
-   | Fun of Parameter list * Syntax
-   | List_S of Syntax list
-   | If of Syntax * Syntax * Syntax
-   | Define of string * Syntax
-   | Begin of Syntax list
-   | Quote_S of Parser
-   | Quasi_S of Parser
-   | Func_S of (Expression list -> Expression)
-   | Container_S of obj
+    | Number_S of double
+    | String_S of string
+    | Id of string
+    | SetId of string * Syntax
+    | Let of string list * Syntax list * Syntax
+    | LetRec of string list * Syntax list * Syntax
+    | Fun of Parameter list * Syntax
+    | List_S of Syntax list
+    | If of Syntax * Syntax * Syntax
+    | Define of string * Syntax
+    | Begin of Syntax list
+    | Quote_S of Parser
+    | Quasi_S of Parser
+    | Func_S of (Expression list -> Expression)
+    | Container_S of obj
 
 let rec private printParser = function
-   | Number_P(n) -> n.ToString()
-   | String_P(s) -> "\"" + s + "\""
-   | Symbol_P(s) -> s
-   | Func_P(_) -> "#<procedure>"
-   | Dot_P -> "."
-   | List_P(ps) -> "(" + String.Join(" ", List.map printParser ps) + ")"
-   | Container_P(o) -> o.ToString() |> sprintf "#<object:\"%s\">"
+    | Number_P(n) -> n.ToString()
+    | String_P(s) -> "\"" + s + "\""
+    | Symbol_P(s) -> s
+    | Func_P(_) -> "#<procedure>"
+    | Dot_P -> "."
+    | List_P(ps) -> "(" + String.Join(" ", List.map printParser ps) + ")"
+    | Container_P(o) -> o.ToString() |> sprintf "#<object:\"%s\">"
 
 //A simple parser
 let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
     let parse' = parserToSyntax macro_env
     match parser with
-    | Number_P(n) -> Number_S(n)
-    | String_P(s) -> String_S(s)
-    | Symbol_P(s) -> Id(s)
-    | Func_P(f) -> Func_S(f)
+    | Dot_P          -> failwith "illegal use of \".\""
+    | Number_P(n)    -> Number_S(n)
+    | String_P(s)    -> String_S(s)
+    | Symbol_P(s)    -> Id(s)
+    | Func_P(f)      -> Func_S(f)
     | Container_P(o) -> Container_S(o)
-    | List_P([]) -> List_S([])
+    | List_P([])     -> List_S([])
     | List_P(h :: t) ->
         match h with
         //Set!
@@ -216,6 +217,7 @@ let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
             match t with
             | Symbol_P(name) :: body -> SetId(name, Begin(List.map parse' body))
             | m -> failwith "Syntax error in set!"
+
         //let and letrec
         | Symbol_P(s) when s = "let" || s = "letrec" ->
             match t with
@@ -228,23 +230,26 @@ let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
                   | m -> sprintf "Syntax error in %s bindings." s |> failwith
                makeLet [] [] bindings
             | m -> sprintf "Syntax error in %s." s |> failwith
+
         //lambda
         | Symbol_P("lambda") | Symbol_P("λ") ->
             match t with
             | List_P(parameters) :: body ->
-               let rec paramMap acc = function
-                  | [Dot_P; Symbol_P(s)] -> Tail(s) :: acc |> List.rev 
-                  | Symbol_P(s) :: t -> paramMap (Normal(s) :: acc) t
-                  | [] -> List.rev acc
-                  | m -> failwith "Syntax error in function definition."
-               Fun(paramMap [] parameters, Begin(List.map parse' body))
+                let rec paramMap acc = function
+                    | [Dot_P; Symbol_P(s)] -> Tail(s) :: acc |> List.rev 
+                    | Symbol_P(s) :: t -> paramMap (Normal(s) :: acc) t
+                    | [] -> List.rev acc
+                    | m -> failwith "Syntax error in function definition."
+                Fun(paramMap [] parameters, Begin(List.map parse' body))
             | m -> List_P(t) |> printParser |> sprintf "Syntax error in function definition: %s" |> failwith
+
         //if
         | Symbol_P("if") ->
             match t with
             | [cond; then_case] -> If(parse' cond, parse' then_case, Begin([]))
             | [cond; then_case; else_case] -> If(parse' cond, parse' then_case, parse' else_case)
             | m -> failwith "Syntax error in if"//: %s" expr |> failwith
+
         //define
         | Symbol_P("define") as d -> 
             match t with
@@ -252,6 +257,7 @@ let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
             | List_P(name :: ps) :: body -> 
                 parse' (List_P([d; name; List_P(Symbol_P("lambda") :: List_P(ps) :: body)]))
             | m -> failwith "Syntax error in define"//: %s" expr |> failwith
+
         //quote
         | Symbol_P("quote") ->
             match t with
@@ -261,159 +267,158 @@ let rec private parserToSyntax (macro_env : MacroEnvironment) parser =
             match t with
             | [expr] -> Quasi_S(expr)
             | m -> failwith "Syntax error in quasiquote"
+
         //unquote
-        | Symbol_P("unquote") ->
-            failwith "unquote outside of quote"
+        | Symbol_P("unquote") -> failwith "unquote outside of quote"
+
         //begin
-        | Symbol_P("begin") ->
-            Begin(List.map parse' t)
+        | Symbol_P("begin") -> Begin(List.map parse' t)
+
         //defined macros
-        | Symbol_P(s) when macro_env.ContainsKey s ->
-            macro_env.[s] t |> parse'
+        | Symbol_P(s) when macro_env.ContainsKey s -> macro_env.[s] t |> parse'
+
         //otherwise...
         | _ -> List_S(List.map parse' (h :: t))
-    | Dot_P ->
-        failwith "illegal use of \".\""
 
 //A simple parser
 let private stringToParser source =
-   let map = function
-      | Token.Number(n) -> Number_P(Double.Parse(n))
-      | Token.String(s) -> String_P(s)
-      | Token.Symbol(".") -> Dot_P
-      | Token.Symbol(s) -> Symbol_P(s)
-      | _ -> failwith "Syntax error."
-   let rec list f t acc =
-      let e, t' = parse' [] t
-      parse' (List_P(f e) :: acc) t'
-   and parse' acc = function
-      | Open :: t -> list id t acc
-      | Close :: t -> (List.rev acc), t
-      | Quote :: Open :: t -> list (fun e -> [Symbol_P("quote"); List_P(e)]) t acc
-      | Quote :: h :: t -> parse' (List_P([Symbol_P("quote"); map h]) :: acc) t
-      | Quasi :: Open :: t -> list (fun e -> [Symbol_P("quasiquote"); List_P(e)]) t acc
-      | Quasi :: h :: t -> parse' (List_P([Symbol_P("quasiquote"); map h]) :: acc) t
-      | Unquote :: Open :: t -> list (fun e -> [Symbol_P("unquote"); List_P(e)]) t acc
-      | Unquote :: h :: t -> parse' (List_P([Symbol_P("unquote"); map h]) :: acc) t
-      | h :: t -> parse' ((map h) :: acc) t
-      | [] -> (List.rev acc), []
-   let result, _ = parse' [] (tokenize source)
-   result
+    let map = function
+        | Token.Number(n)   -> Number_P(Double.Parse(n))
+        | Token.String(s)   -> String_P(s)
+        | Token.Symbol(".") -> Dot_P
+        | Token.Symbol(s)   -> Symbol_P(s)
+        | _                 -> failwith "Syntax error."
+    let rec list f t acc =
+        let e, t' = parse' [] t
+        parse' (List_P(f e) :: acc) t'
+    and parse' acc = function
+        | Open :: t            -> list id t acc
+        | Close :: t           -> (List.rev acc), t
+        | Quote :: Open :: t   -> list (fun e -> [Symbol_P("quote"); List_P(e)]) t acc
+        | Quote :: h :: t      -> parse' (List_P([Symbol_P("quote"); map h]) :: acc) t
+        | Quasi :: Open :: t   -> list (fun e -> [Symbol_P("quasiquote"); List_P(e)]) t acc
+        | Quasi :: h :: t      -> parse' (List_P([Symbol_P("quasiquote"); map h]) :: acc) t
+        | Unquote :: Open :: t -> list (fun e -> [Symbol_P("unquote"); List_P(e)]) t acc
+        | Unquote :: h :: t    -> parse' (List_P([Symbol_P("unquote"); map h]) :: acc) t
+        | h :: t               -> parse' ((map h) :: acc) t
+        | []                   -> (List.rev acc), []
+    let result, _ = parse' [] (tokenize source)
+    result
 
 let private parse = stringToParser >> List.map (parserToSyntax macroEnv)
 
 let rec printSyntax indent syntax = 
-   let printLet name names exprs body =
-      "(" + name +  " (" 
-         + String.Join(
-            "\n" + indent + "      ", 
-            (List.map (function (n, b) -> "[" + n + (printSyntax " " b) + "]")
-                      (List.zip names exprs)))
-         + ")\n"
-         + (printSyntax (indent + "  ") body)
-         + ")"
-   indent + match syntax with
-            | Number_S(n) -> n.ToString()
-            | String_S(s) -> "\"" + s + "\""
-            | Id(s) -> s
-            | SetId(s, expr) -> "(set! " + s + " " + printSyntax "" expr
-            | Let(names, exprs, body) -> printLet "let" names exprs body
-            | LetRec(names, exprs, body) -> printLet "letrec" names exprs body
-            | Fun(names, body) -> "(lambda (" + String.Join(" ", names) + ") " + printSyntax "" body + ")"
-            | List_S(exprs) -> "(" + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
-            | If(c, t, e) -> "(if " + String.Join(" ", (List.map (printSyntax "") [c; t; e])) + ")"
-            | Define(names, body) -> "(define (" + String.Join(" ", names) + ")" + printSyntax " " body + ")"
-            | Begin(exprs) -> "(begin " + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
-            | Quote_S(p) -> "(quote " + printParser p + ")"
-            | Quasi_S(p) -> "(quasiquote " + printParser p + ")"
-            | Func_S(_) -> "#<procedure>"
-            | Container_S(o) -> o.ToString() |> sprintf "#<object:\"%s\">"
+    let printLet name names exprs body =
+        "(" + name +  " (" 
+            + String.Join(
+                "\n" + indent + "      ", 
+                (List.map (function (n, b) -> "[" + n + (printSyntax " " b) + "]")
+                          (List.zip names exprs)))
+            + ")\n"
+            + (printSyntax (indent + "  ") body)
+            + ")"
+    indent + match syntax with
+             | Number_S(n) -> n.ToString()
+             | String_S(s) -> "\"" + s + "\""
+             | Id(s) -> s
+             | SetId(s, expr) -> "(set! " + s + " " + printSyntax "" expr
+             | Let(names, exprs, body) -> printLet "let" names exprs body
+             | LetRec(names, exprs, body) -> printLet "letrec" names exprs body
+             | Fun(names, body) -> "(lambda (" + String.Join(" ", names) + ") " + printSyntax "" body + ")"
+             | List_S(exprs) -> "(" + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
+             | If(c, t, e) -> "(if " + String.Join(" ", (List.map (printSyntax "") [c; t; e])) + ")"
+             | Define(names, body) -> "(define (" + String.Join(" ", names) + ")" + printSyntax " " body + ")"
+             | Begin(exprs) -> "(begin " + String.Join(" ", (List.map (printSyntax "") exprs)) + ")"
+             | Quote_S(p) -> "(quote " + printParser p + ")"
+             | Quasi_S(p) -> "(quasiquote " + printParser p + ")"
+             | Func_S(_) -> "#<procedure>"
+             | Container_S(o) -> o.ToString() |> sprintf "#<object:\"%s\">"
 
 ///Converts the given Expression to a string.
 let rec print = function
-   | List(Dummy(_) :: _) -> "" // don't print accumulated statement dummy values
-   | List(list) -> "(" + String.Join(" ", (List.map print list)) + ")"
-   | String(s) -> "\"" + s + "\""
-   | Symbol(s) -> s
-   | Number(n) -> n.ToString()
-   | Container(o) -> o.ToString() |> sprintf "#<object:\"%s\">"
-   | Function(_) -> "#<procedure>"
-   | Dummy(_) -> "" // sometimes useful to emit value for debugging, but normally we ignore
+    | List(Dummy(_)::_) -> "" // don't print accumulated statement dummy values
+    | List(list)        -> "(" + String.Join(" ", (List.map print list)) + ")"
+    | String(s)         -> "\"" + s + "\""
+    | Symbol(s)         -> s
+    | Number(n)         -> n.ToString()
+    | Container(o)      -> o.ToString() |> sprintf "#<object:\"%s\">"
+    | Function(_)       -> "#<procedure>"
+    | Dummy(_)          -> "" // sometimes useful to emit value for debugging, but normally we ignore
 
 ///Prints a malformed statement error.
 let private malformed n e = sprintf "Malformed '%s': %s" n (print (List([e]))) |> failwith
 
 ///Simple wrapper for arithmatic operations.
 let private mathbin op name = function
-   //If the arguments coming in consist of at least two numbers...
-   | Number(n) :: Number(n2) :: ns ->
-      //op': function that takes two Expression.Numbers and applies the given op.
-      //     if the second argument is not an Expression.Number, then throw exception
-      let op' a = function Number(b) -> op a b | m -> malformed (sprintf "%s arg" name) m
-      //Reduce list of Expressions (ns) using op'. Pass result to continuation.
-      Number(List.fold op' (op n n2) ns)
-   //Otherwise, fail.
-   | m -> malformed name (List(m))
+    //If the arguments coming in consist of at least two numbers...
+    | Number(n) :: Number(n2) :: ns ->
+        ///function that takes two Expression.Numbers and applies the given op.
+        ///if the second argument is not an Expression.Number, then throw exception
+        let op' a = function Number(b) -> op a b | m -> malformed (sprintf "%s arg" name) m
+        //Reduce list of Expressions (ns) using op'. Pass result to continuation.
+        Number(List.fold op' (op n n2) ns)
+    //Otherwise, fail.
+    | m -> malformed name (List(m))
 
 let private math0 op name start exprs = 
-  let op' a = function
-    | Number(b) -> op a b
-    | m -> malformed (sprintf "%s arg" name) m
-  Number(List.fold op' start exprs)
+    let op' a = function
+        | Number(b) -> op a b
+        | m         -> malformed (sprintf "%s arg" name) m
+    Number(List.fold op' start exprs)
 
 let private math1 op op2 unary name = function
-  | [Number(n)] -> Number(unary n)
-  | Number(n) :: ns ->
-     match op2 ns with
-     | Number(x) -> Number(op n x)
-     | m -> malformed (sprintf "%s arg" name) m
-  | m -> malformed name (List(m)) 
+    | [Number(n)] -> Number(unary n)
+    | Number(n) :: ns ->
+        match op2 ns with
+        | Number(x) -> Number(op n x)
+        | m         -> malformed (sprintf "%s arg" name) m
+    | m -> malformed name (List(m)) 
 
 //Arithmatic functions
-let Add = math0 (+) "addition" 0.
+let Add =      math0 (+) "addition" 0.
 let Subtract = math1 (-) Add (fun x -> -x) "subtraction"
 let Multiply = math0 (*) "multiplication" 1.
 let Divide = 
-   let div a b = if b = 0. then failwith "Divide by zero" else a / b
-   math1 div Multiply (div 1.) "division"
-let Modulus = mathbin (%) "modulus"
+    let div a b = if b = 0. then failwith "Divide by zero" else a / b
+    math1 div Multiply (div 1.) "division"
+let Modulus =  mathbin (%) "modulus"
 let Exponent = mathbin ( ** ) "exponent"
 
 ///Simple wrapper for comparison operations.
 let private boolMath (op : (IComparable -> IComparable -> bool)) name args =
-   let comp a' b' = 
-      match op a' b' with
-      | true -> Number(1.)
-      | _ -> Number(0.)
-   match args with
-   | [Number(a); Number(b)] -> comp a b
-   | [String(a); String(b)] -> comp a b
-   | m -> malformed name (List(m))
+    let comp a' b' = 
+        match op a' b' with
+        | true -> Number(1.)
+        | _ -> Number(0.)
+    match args with
+    | [Number(a); Number(b)] -> comp a b
+    | [String(a); String(b)] -> comp a b
+    | m -> malformed name (List(m))
 
 //Comparison operations.
 let LTE = boolMath (<=) "less-than-or-equals"
 let GTE = boolMath (>=) "greater-than-or-equals"
-let LT = boolMath (<) "less-than"
-let GT = boolMath (>) "greater-than"
-let EQ = boolMath (=) "equals"
+let LT =  boolMath (<) "less-than"
+let GT =  boolMath (>) "greater-than"
+let EQ =  boolMath (=) "equals"
 
 let Not = function
-   | [expr] -> if exprToBool expr then Number(0.) else Number(1.)
-   | m -> malformed "not" (List(m))
+    | [expr] -> if exprToBool expr then Number(0.) else Number(1.)
+    | m -> malformed "not" (List(m))
 
 let Xor = function
-   | [a; b] ->
-      if exprToBool a then 
-         if exprToBool b then Number(0.) else Number(1.) 
-      else 
-         if exprToBool b then Number(1.) else Number(0.)
-   | m -> malformed "xor" (List(m))
+    | [a; b] ->
+        if exprToBool a then 
+            if exprToBool b then Number(0.) else Number(1.) 
+        else 
+            if exprToBool b then Number(1.) else Number(0.)
+    | m -> malformed "xor" (List(m))
 
 //Random Number
 let private _r = new Random()
 let RandomDbl = function 
-   | [] -> Number(_r.NextDouble())
-   | m -> malformed "random" (List(m))
+    | [] -> Number(_r.NextDouble())
+    | m  -> malformed "random" (List(m))
 
 //List Functions
 let Cons =     function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons" (List(m))
@@ -694,10 +699,11 @@ let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Express
       let findAllDefs = function
         | Begin(exprs) ->
             let rec pred defacc = function
-                | h :: t -> match h with
-                            | Define(name, _) -> pred (name :: defacc) t
-                            | Begin(exprs) -> pred (pred defacc exprs) t
-                            | _ -> pred defacc t
+                | h :: t -> 
+                    match h with
+                    | Define(name, _) -> pred (name :: defacc) t
+                    | Begin(exprs) -> pred (pred defacc exprs) t
+                    | _ -> pred defacc t
                 | [] -> List.rev defacc
             pred [] exprs
         | Define(name, _) -> [name]
@@ -913,7 +919,7 @@ let Evaluate = eval compileEnvironment environment
 ///Parses and evaluates an expression given in text form, and returns the resulting expression
 let ParseText = List.ofSeq >> parse >> Begin >> Evaluate
 
-let private evaluateSchemeDefs() =
+let private evaluateSchemeDefs() = 
    "
    ;; Y Combinator
    (define (Y f) ((λ (x) (x x)) (λ (x) (f (λ (g) ((x x) g))))))
