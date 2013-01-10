@@ -53,6 +53,9 @@ Source: DynamoElements.dll; DestDir: {app}; Flags: ignoreversion overwritereadon
 Source: DragCanvas.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
 Source: FSchemeInterop.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
 Source: FScheme.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
+Source: HelixToolkit.Wpf.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
+Source: HelixToolkit.Wpf.Input.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
+Source: MIConvexHullPlugin.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
 Source: Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
 Source: readme.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
 Source: fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
