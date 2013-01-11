@@ -44,6 +44,7 @@ namespace Dynamo.Elements
         PointsVisual3D fixedPoints;
         List<LinesVisual3D> linesList;
         System.Windows.Point rightMousePoint;
+        List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
 
         bool isDrawingPoints;
         ParticleSystem ps;
@@ -108,7 +109,8 @@ namespace Dynamo.Elements
             points = new PointsVisual3D { Color = Colors.Black, Size = 4 };
             view.Children.Add(points);
 
-            List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
+            // a list of 10 colors to be used for 
+            // mapping analysis results
             colors.Add(Colors.LightGray); //01
             colors.Add(Colors.LightBlue); //02
             colors.Add(Colors.Blue); //03
@@ -357,18 +359,21 @@ namespace Dynamo.Elements
 
         private void AddPointToCorrectCollection(double force, Point3D pt1, Point3D pt2)
         {
-            int maxColors = linesList.Count();
-            double forceNormalized = force / ps.getMaxResidualForce();
-            int forceGroup = (int)(forceNormalized * 9.0);
-            if (forceGroup > maxColors) //maxColors  - points and colors array arrays are sized at 10, somehow we are going out of bounds here, clamp it to prevent hard crash
-            {
-                dynElementSettings.SharedInstance.Bench.Log("Had to clamp forces for display. Original Value: " + forceGroup.ToString());
-                forceGroup = 9; //clamp
 
+            int maxColorIndex = colors.Count()-1;
+
+            double forceNormalized = force / ps.getMaxResidualForce();
+            int forceGroup = (int)Math.Round(forceNormalized * 9.0, 0, MidpointRounding.AwayFromZero);
+            if (forceGroup > maxColorIndex || forceGroup < 0)
+            {
+                Points[0].Add(pt1);
+                Points[0].Add(pt2);
             }
-            //int forceGroup = 9;
-            Points[forceGroup].Add(pt1);
-            Points[forceGroup].Add(pt2);
+            else
+            {
+                Points[forceGroup].Add(pt1);
+                Points[forceGroup].Add(pt2);
+            }
         }
     }
 }
