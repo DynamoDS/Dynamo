@@ -86,8 +86,8 @@ namespace Dynamo.Elements
             this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             this.topControl.Width = 400;
             this.topControl.Height = 300;
-            this.elementShine.Visibility = System.Windows.Visibility.Hidden;
-            this.elementRectangle.Visibility = System.Windows.Visibility.Hidden;
+            //this.elementShine.Visibility = System.Windows.Visibility.Hidden;
+            //this.elementRectangle.Visibility = System.Windows.Visibility.Hidden;
 
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
