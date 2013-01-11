@@ -74,8 +74,8 @@ let private tokenize source =
     tokenize' [] source
 
 
-///Types of FScheme Expressions
-type Expression =
+///Types of FScheme Values
+type Value =
     ///Expression representing any .NET object.
     | Container of obj
     ///Expression representing a number (double).
@@ -85,11 +85,10 @@ type Expression =
     ///Expression representing a symbol.
     | Symbol of string
     ///Expression representing a list of sub expressions.
-    | List of Expression list
+    | List of Value list
     ///Expression representing a function.
-    | Function of (Expression list -> Expression)
-    ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
-    ///Should NOT be used except internally by this interpreter.
+    | Function of (Value list -> Value)
+    ///Invalid value (used for mutation, where expressions shouldn't return anything).
     | Dummy of string
 
 
@@ -102,7 +101,7 @@ let private exprToBool = function
     //Everything else is true, evaluate then branch.
     | _ -> true
 
-type Frame = Expression ref [] ref
+type Frame = Value ref [] ref
 type Environment = Frame list ref
 
 type Parameter =
@@ -110,22 +109,22 @@ type Parameter =
     | Tail of string
 
 ///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
-type ExternFunc = delegate of Expression list -> Expression
+type ExternFunc = delegate of Value list -> Value
 
 ///Makes an Expression.Function out of an ExternFunc
 let makeExternFunc (externFunc : ExternFunc) =
     Function(externFunc.Invoke)
 
-type Parser =
+type Syntax =
     | Number_P of double
     | String_P of string
     | Symbol_P of string
     | Dot_P
-    | Func_P of (Expression list -> Expression)
-    | List_P of Parser list
+    | Func_P of (Value list -> Value)
+    | List_P of Syntax list
     | Container_P of obj
 
-type Macro = Parser list -> Parser
+type Macro = Syntax list -> Syntax
 type MacroEnvironment = Map<string, Macro>
 
 ///Let* macro
@@ -167,27 +166,27 @@ let macroEnv =
     ]
 
 ///FScheme Macro delegate. Takes a list of unevaluated Expressions and an Environment as arguments, and returns an Expression.
-type ExternMacro = delegate of Parser list -> Parser
+type ExternMacro = delegate of Syntax list -> Syntax
 
 ///Makes a Macro out of an ExternMacro
 let makeExternMacro (ex : ExternMacro) : Macro = ex.Invoke
 
 ///AST for FScheme expressions
-type Syntax =
+type Expression =
     | Number_S of double
     | String_S of string
     | Id of string
-    | SetId of string * Syntax
-    | Let of string list * Syntax list * Syntax
-    | LetRec of string list * Syntax list * Syntax
-    | Fun of Parameter list * Syntax
-    | List_S of Syntax list
-    | If of Syntax * Syntax * Syntax
-    | Define of string * Syntax
-    | Begin of Syntax list
-    | Quote_S of Parser
-    | Quasi_S of Parser
-    | Func_S of (Expression list -> Expression)
+    | SetId of string * Expression
+    | Let of string list * Expression list * Expression
+    | LetRec of string list * Expression list * Expression
+    | Fun of Parameter list * Expression
+    | List_S of Expression list
+    | If of Expression * Expression * Expression
+    | Define of string * Expression
+    | Begin of Expression list
+    | Quote_S of Syntax
+    | Quasi_S of Syntax
+    | Func_S of (Value list -> Value)
     | Container_S of obj
 
 let rec private printParser = function
@@ -422,15 +421,15 @@ let RandomDbl = function
     | m  -> malformed "random" <| List(m)
 
 //List Functions
-let Cons =     function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons" <| List(m)
-let Car =      function [List(h :: _)]       -> h                                      | m -> malformed "car" <| List(m)
-let Cdr =      function [List(_ :: t)]       -> List(t)                                | m -> malformed "cdr" <| List(m)
+let Car =      function [List(h :: _)]       -> h                                      | m -> malformed "car"    <| List(m)
+let Cdr =      function [List(_ :: t)]       -> List(t)                                | m -> malformed "cdr"    <| List(m)
+let Cons =     function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons"   <| List(m)
+let Get =      function [Number(n); List(l)] -> l.Item (int n)                         | m -> malformed "get"    <| List(m)
 let Rev =      function [List(l)]            -> List(List.rev l)                       | m -> malformed "reverse"<| List(m)
-let Len =      function [List(l)]            -> Number(double l.Length)                | m -> malformed "len" <| List(m)
+let Len =      function [List(l)]            -> Number(double l.Length)                | m -> malformed "len"    <| List(m)
 let Append =   function [List(l1); List(l2)] -> List(List.append l1 l2)                | m -> malformed "append" <| List(m)
-let Take =     function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take" <| List(m)
-let Get =      function [Number(n); List(l)] -> l.Item (int n)                         | m -> malformed "get" <| List(m)
-let Drop =     function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop" <| List(m)
+let Take =     function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take"   <| List(m)
+let Drop =     function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop"   <| List(m)
 let IsEmpty =  function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?" <| List(m)
 
 let rec private reduceLists = function
@@ -545,7 +544,7 @@ let SortWith = function
 ///Build List
 let BuildSeq = function
     | [Number(start); Number(stop); Number(step)] -> [start .. step .. stop] |> List.map Number |> List
-    | m -> malformed "build-seq" <| List(m)
+    | m -> malformed "build-list" <| List(m)
 
 ///Converts strings to numbers
 let StringToNum = function
@@ -608,7 +607,7 @@ let private findInEnv (name : string) compenv =
 let private wrap x = fun _ -> x
 
 ///Compiles Syntax
-let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Expression) =
+let rec private compile (compenv : CompilerEnv) syntax : (Environment -> Value) =
     ///Utility function that compiles the given expression in the current environment
     let compile' = compile compenv
 
@@ -857,7 +856,7 @@ and compileEnvironment : CompilerEnv = ref [[]]
 ///Our base environment
 and environment : Environment = ref [ref [||]]
 
-let mutable private tempEnv : (string * Expression ref) list = []
+let mutable private tempEnv : (string * Value ref) list = []
 
 ///Adds a new binding to the default environment
 let AddDefaultBinding name expr = tempEnv <- (name, ref expr) :: tempEnv
@@ -880,7 +879,7 @@ let private makeEnvironments() =
     AddDefaultBinding "take" (Function(Take))
     AddDefaultBinding "get" (Function(Get))
     AddDefaultBinding "drop" (Function(Drop))
-    AddDefaultBinding "build-seq" (Function(BuildSeq))
+    AddDefaultBinding "build-list" (Function(BuildSeq))
     AddDefaultBinding "load" (Function(Load))
     AddDefaultBinding "display" (Function(Display))
     AddDefaultBinding "true" (Number(1.))
@@ -964,7 +963,7 @@ let private test (log : ErrorLog) =
     let rep ce env = List.ofSeq >> parse >> Begin >> eval ce env >> print
     let case source expected =
         try
-            let testEnv = List.map (fun (x : Frame) -> Array.map (fun (y : Expression ref) -> ref y.Value) x.Value |> ref) environment.Value |> ref
+            let testEnv = List.map (fun (x : Frame) -> Array.map (fun (y : Value ref) -> ref y.Value) x.Value |> ref) environment.Value |> ref
             let testCEnv = compileEnvironment.Value |> ref
             let output = rep testCEnv testEnv source
             if output <> expected then
@@ -1032,7 +1031,7 @@ let private test (log : ErrorLog) =
     case "(take 2 '(1 2 3))" "(1 2)" // take
     case "(get 2 '(1 2 3))" "3" // get
     case "(drop 2 '(1 2 3))" "(3)" // drop
-    case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9 10)" // build-seq
+    case "(build-list 0 10 1)" "(0 1 2 3 4 5 6 7 8 9 10)" // build-list
     case "(reverse '(1 2 3))" "(3 2 1)" // reverse
     case "(empty? '())" "1" // empty?
     case "(empty? '(1))" "0" // empty?
