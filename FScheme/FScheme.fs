@@ -24,7 +24,7 @@ open System.Diagnostics
 //Simple Tokenizer for quickly defining expressions in Scheme syntax.
 type private Token =
     | Open | Close
-    | Quote | Quasi | Unquote
+    | QuoteT | QuasiT | Unquote
     | Number of string
     | String of string
     | Symbol of string
@@ -54,8 +54,8 @@ let private tokenize source =
         | w :: t when Char.IsWhiteSpace(w) -> tokenize' acc t // skip whitespace
         | '(' :: t -> tokenize' (Open :: acc) t
         | ')' :: t -> tokenize' (Close :: acc) t
-        | '\'' :: t -> tokenize' (Quote :: acc) t
-        | '`' :: t -> tokenize' (Quasi :: acc) t
+        | '\'' :: t -> tokenize' (QuoteT :: acc) t
+        | '`' :: t -> tokenize' (QuasiT :: acc) t
         | ',' :: t -> tokenize' (Unquote :: acc) t
         | ';' :: t -> comment t |> tokenize' acc // skip over comments
         | '"' :: t -> // start of string
@@ -294,10 +294,10 @@ let private stringToSyntax source =
     and parse' acc = function
         | Open :: t            -> list id t acc
         | Close :: t           -> (List.rev acc), t
-        | Quote :: Open :: t   -> list (fun e -> [Symbol_S("quote"); List_S(e)]) t acc
-        | Quote :: h :: t      -> parse' (List_S([Symbol_S("quote"); map h]) :: acc) t
-        | Quasi :: Open :: t   -> list (fun e -> [Symbol_S("quasiquote"); List_S(e)]) t acc
-        | Quasi :: h :: t      -> parse' (List_S([Symbol_S("quasiquote"); map h]) :: acc) t
+        | QuoteT :: Open :: t  -> list (fun e -> [Symbol_S("quote"); List_S(e)]) t acc
+        | QuoteT :: h :: t     -> parse' (List_S([Symbol_S("quote"); map h]) :: acc) t
+        | QuasiT :: Open :: t  -> list (fun e -> [Symbol_S("quasiquote"); List_S(e)]) t acc
+        | QuasiT :: h :: t     -> parse' (List_S([Symbol_S("quasiquote"); map h]) :: acc) t
         | Unquote :: Open :: t -> list (fun e -> [Symbol_S("unquote"); List_S(e)]) t acc
         | Unquote :: h :: t    -> parse' (List_S([Symbol_S("unquote"); map h]) :: acc) t
         | h :: t               -> parse' ((map h) :: acc) t
@@ -773,7 +773,7 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
             //If it's a function, then evaluate the arguments and apply the function.
             | Function(f) -> f <| List.map (fun x -> x env) cargs
             //Can't call something that's not a function
-            | m           -> printExpression "" syntax |> sprintf "expected function for call: %s" |> failwith
+            | m           -> printExpression "" expression |> sprintf "expected function for call: %s" |> failwith
 
     //Conditionals
     | If(cond, then_expr, else_expr) ->
