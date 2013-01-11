@@ -165,7 +165,7 @@ let macroEnv =
         "or", Or
     ]
 
-///FScheme Macro delegate. Takes a list of unevaluated Expressions and an Environment as arguments, and returns an Expression.
+///FScheme Macro delegate.
 type ExternMacro = delegate of Syntax list -> Syntax
 
 ///Makes a Macro out of an ExternMacro
@@ -334,7 +334,7 @@ let rec printExpression indent syntax =
              | Function_E(_)              -> "#<procedure>"
              | Container_E(o)             -> sprintf "#<object:\"%s\">" <| o.ToString()
 
-///Converts the given Expression to a string.
+///Converts the given Value to a string.
 let rec print = function
     | List(Dummy(_)::_) -> "" // don't print accumulated statement dummy values
     | List(list)        -> "(" + String.Join(" ", List.map print list) + ")"
@@ -352,10 +352,10 @@ let private malformed n e = sprintf "Malformed '%s': %s" n (print (List([e]))) |
 let private mathbin op name = function
     //If the arguments coming in consist of at least two numbers...
     | Number(n) :: Number(n2) :: ns ->
-        ///function that takes two Expression.Numbers and applies the given op.
-        ///if the second argument is not an Expression.Number, then throw exception
+        ///function that takes two Numbers and applies the given op.
+        ///if the second argument is not an Number, then throw exception
         let op' a = function Number(b) -> op a b | m -> malformed (sprintf "%s arg" name) m
-        //Reduce list of Expressions (ns) using op'. Pass result to continuation.
+        //Reduce list of Values (ns) using op'. Pass result to continuation.
         Number(List.fold op' (op n n2) ns)
     //Otherwise, fail.
     | m -> malformed name <| List(m)
@@ -484,25 +484,25 @@ let Sort = function
     | [List(l)] ->
         //Peek and see what kind of data we're sorting
         match l with
-        //If the first element is an Expression.Number...
+        //If the first element is an Number...
         | Number(n) :: _ ->
-            //converter: Makes sure given Expression is an Expression.Number.
-            //           If it is an Expression.Number, pull the Number from it.
+            //converter: Makes sure given Value is an Number.
+            //           If it is a Number, pull the double from it.
             //           Otherwise, fail.
             let converter = function
                 | Number(n) -> n
                 | m         -> malformed "sort" m
-            //Convert Expression.Numbers to doubles, sort them, then convert them back to Expression.Numbers.
+            //Convert Numbers to doubles, sort them, then convert them back to Numbers.
             List(List.map converter l |> List.sort |> List.map Number)
-        //If the first element is an Expression.String...
+        //If the first element is a String...
         | String(s) :: _ ->
-            //converter: Makes sure given Expression is an Expression.String.
-            //           If it is an Expression.String, pull the string from it.
+            //converter: Makes sure given Value is a String.
+            //           If it is aa String, pull the string from it.
             //           Otherwise, fail.
             let converter = function
                 | String(s) -> s
                 | m         -> malformed "sort" m
-            //Convert Expression.Strings to strings, sort them, then convert them back to Expression.Strings.
+            //Convert Strings to strings, sort them, then convert them back to Strings.
             List(List.map converter l |> List.sort |> List.map String)
         //Otherwise, fail.
         | _ -> malformed "sort" <| List(l)
