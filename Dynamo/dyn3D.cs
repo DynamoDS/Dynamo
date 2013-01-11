@@ -119,6 +119,7 @@ namespace Dynamo.Elements
             colors.Add(Colors.Orange); //08
             colors.Add(Colors.OrangeRed); //09
             colors.Add(Colors.Red); //10
+            colors.Add(Colors.Black);//11 for naked lines and curves
 
             FixedPoints = new Point3DCollection();
             Points = new List<Point3DCollection>();
@@ -250,13 +251,22 @@ namespace Dynamo.Elements
                         }
                         else if (test is Curve)
                         {
+                            DetachVisuals();
+                            ClearPointsCollections();
+
                             c = (Curve)test;
                             DrawCurve(c);
+                            RaisePropertyChanged("Points");
                         }
                         else if (test is XYZ)
                         {
+
+                            DetachVisuals();
+                            ClearPointsCollections();
+
                             pt = (XYZ)test;
                             DrawCurve(c);
+                            RaisePropertyChanged("Points");
                         }
                     }
                }));
@@ -267,8 +277,9 @@ namespace Dynamo.Elements
 
         private void DrawPoint(XYZ pt)
         {
+            int lastPointColor = Points.Count() - 1;//master Point list for color assignment
             var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
-            Points[0].Add(ptVis);
+            Points[lastPointColor].Add(ptVis);
         }
 
         private void DrawCurve(Curve c)
@@ -280,14 +291,15 @@ namespace Dynamo.Elements
             XYZ pt2;
             Point3D ptVis1;
             Point3D ptVis2;
+            int lastPointColor = Points.Count() - 1;//master Point list for color assignment
             for (int i = 0; i < points.Count - 1; i++)
             {
                 pt1 = points[i] as XYZ;
                 pt2 = points[i + 1] as XYZ;
                 ptVis1 = new Point3D(pt1.X, pt1.Y, pt1.Z);
                 ptVis2 = new Point3D(pt2.X, pt2.Y, pt2.Z);
-                Points[0].Add(ptVis1);
-                Points[0].Add(ptVis2);
+                Points[lastPointColor].Add(ptVis1);
+                Points[lastPointColor].Add(ptVis2);
             }
         }
 
