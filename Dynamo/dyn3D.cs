@@ -84,7 +84,7 @@ namespace Dynamo.Elements
 
             //take out the left and right margins
             //and make this so it's not so wide
-            this.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+            this.inputGrid.Margin = new Thickness(10, 10, 10, 10);
             this.topControl.Width = 400;
             this.topControl.Height = 300;
             //this.elementShine.Visibility = System.Windows.Visibility.Hidden;
@@ -97,6 +97,7 @@ namespace Dynamo.Elements
             view.CameraRotationMode = CameraRotationMode.Turntable;
             view.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            
             //view.IsHitTestVisible = true;
             view.ShowFrameRate = true;
 
@@ -139,6 +140,19 @@ namespace Dynamo.Elements
                 view.Children.Add(lines);
             }
 
+            System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
+            backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            backgroundRect.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            backgroundRect.RadiusX = 10;
+            backgroundRect.RadiusY = 10;
+            backgroundRect.IsHitTestVisible = false;
+            BrushConverter bc = new BrushConverter();
+            Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
+            backgroundRect.Stroke = strokeBrush;
+            backgroundRect.StrokeThickness = 1;
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250,250,216));
+            backgroundRect.Fill = backgroundBrush;
+            this.inputGrid.Children.Add(backgroundRect);
             this.inputGrid.Children.Add(view);
 
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
