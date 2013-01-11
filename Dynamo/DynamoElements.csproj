@@ -192,7 +192,7 @@ limitations under the License.
     </Compile>
     <Compile Include="SearchDictionary.cs" />
     <Compile Include="ParticleSystem\VerletIntegrator.cs" />
-    <Compile Include="Transforms.cs" />
+    <Compile Include="dynTransforms.cs" />
     <Compile Include="WatchTree.xaml.cs">
       <DependentUpon>WatchTree.xaml</DependentUpon>
     </Compile>

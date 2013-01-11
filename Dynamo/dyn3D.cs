@@ -234,19 +234,19 @@ namespace Dynamo.Elements
                         {
                             ps = (ParticleSystem)test;
 
-                            //try
-                            //{
+                            try
+                            {
 
                                 UpdateVisualsFromParticleSystem();
 
                                 RaisePropertyChanged("Points");
 
-                            //}
-                            //catch (Exception e)
-                            //{
-                            //    dynElementSettings.SharedInstance.Bench.Log("Something wrong drawing 3d preview. " + e.ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                dynElementSettings.SharedInstance.Bench.Log("Something wrong drawing 3d preview. " + e.ToString());
 
-                            //}
+                            }
                         }
                         else if (test is Curve)
                         {

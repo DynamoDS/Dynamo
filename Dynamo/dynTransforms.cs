@@ -11,7 +11,7 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Elements
 {
     [ElementName("Transform Identity")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
     [ElementDescription("Returns the identity transformation.")]
     [RequiresTransaction(false)]
     public class dynTransformIdentity : dynNode
@@ -32,7 +32,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Transform Scale Basis")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
     [ElementDescription("Returns the identity transformation.")]
     [RequiresTransaction(false)]
     public class dynTransformScaleBasis : dynNode
@@ -58,7 +58,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Transform Rotation")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
     [ElementDescription("Returns a transform that rotates by the specified angle about the specified axis and point.")]
     [RequiresTransaction(false)]
     public class dynTransformRotation : dynNode
@@ -86,7 +86,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Transform Translation")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
     [ElementDescription("Returns he transformation that translates by the specified vector.")]
     [RequiresTransaction(false)]
     public class dynTransformTranslation : dynNode
@@ -110,7 +110,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Transform Reflection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
     [ElementDescription("Returns the transformation that reflects about the specified plane.")]
     [RequiresTransaction(false)]
     public class dynTransformReflection : dynNode
@@ -134,7 +134,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Transform Point")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
     [ElementDescription("Transform a point with a transform.")]
     [RequiresTransaction(false)]
     public class dynTransformPoint : dynNode
