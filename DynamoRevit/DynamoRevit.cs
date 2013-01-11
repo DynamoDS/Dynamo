@@ -39,6 +39,8 @@ using System.Windows.Interop;
 using System.Reflection;
 using System.Windows;
 
+//TAF added to get strings from resource files
+using System.Resources;
 
 namespace Dynamo.Applications
 {
@@ -50,21 +52,25 @@ namespace Dynamo.Applications
         static private string m_AssemblyName = System.Reflection.Assembly.GetExecutingAssembly().Location;
         static private string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
         static public DynamoUpdater updater;
+        static private ResourceManager res;
 
         public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
         {
             try
             {
+                //TAF load english_us TODO add a way to localize
+                res = Resource_en_us.ResourceManager;
                 // Create new ribbon panel
-                RibbonPanel ribbonPanel = application.CreateRibbonPanel("Visual Programming"); //MDJ todo - move hard-coded strings out to resource files
+                RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description")); //MDJ todo - move hard-coded strings out to resource files
 
                 //Create a push button in the ribbon panel 
 
                 PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
-                    "Dynamo", m_AssemblyName, "Dynamo.Applications.DynamoRevit")) as PushButton;
+                    res.GetString("App_Name"), m_AssemblyName, "Dynamo.Applications.DynamoRevit")) as PushButton;
 
                 System.Drawing.Bitmap dynamoIcon = Dynamo.Applications.Properties.Resources.Nodes_32_32;
-
+                
+                
                 BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                          dynamoIcon.GetHbitmap(),
                          IntPtr.Zero,
@@ -75,7 +81,7 @@ namespace Dynamo.Applications
                 pushButton.Image = bitmapSource;
 
                 // MDJ = element level events and dyanmic model update
-                // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-reun definitin when they are moved
+                // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-run definition when they are moved
 
                 IdlePromise.RegisterIdle(application);
 

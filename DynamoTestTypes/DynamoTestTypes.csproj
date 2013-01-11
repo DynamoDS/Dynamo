@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamoElements">
-      <HintPath>..\Dynamo\bin\Release\DynamoElements.dll</HintPath>
+      <HintPath>..\Dynamo\bin\Debug\DynamoElements.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
