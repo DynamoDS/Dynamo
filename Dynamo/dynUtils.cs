@@ -169,12 +169,15 @@ namespace Dynamo.Utilities
 
         //colors taken from:
         //http://cloford.com/resources/colours/500col.htm
+        //http://linaker-wall.net/Colour/Dynamic_Fmt/Swatch_rgb_numbers.htm
         System.Windows.Media.Color colorGreen1 = System.Windows.Media.Color.FromRgb(193, 255, 193);
         System.Windows.Media.Color colorGreen2 = System.Windows.Media.Color.FromRgb(155, 250, 155);
         System.Windows.Media.Color colorRed1 = System.Windows.Media.Color.FromRgb(255, 64, 64);
         System.Windows.Media.Color colorRed2 = System.Windows.Media.Color.FromRgb(205, 51, 51);
-        System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 193, 37);
-        System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(238, 180, 34);
+        //System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 193, 37);
+        //System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(238, 180, 34);
+        System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 207, 98);
+        System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(235,187,78);
         System.Windows.Media.Color colorGray1 = System.Windows.Media.Color.FromRgb(220, 220, 220);
         System.Windows.Media.Color colorGray2 = System.Windows.Media.Color.FromRgb(192, 192, 192);
 
