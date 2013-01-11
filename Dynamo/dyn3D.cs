@@ -111,7 +111,7 @@ namespace Dynamo.Elements
 
             // a list of 10 colors to be used for 
             // mapping analysis results
-            colors.Add(Colors.LightGray); //01
+            colors.Add(Colors.Black); //01
             colors.Add(Colors.LightBlue); //02
             colors.Add(Colors.Blue); //03
             colors.Add(Colors.Purple); //04
