@@ -637,15 +637,29 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            var ptA = (XYZ)((Expression.Container)args[0]).Item;
-            var ptB = (XYZ)((Expression.Container)args[1]).Item;
-            //var bound = ((Expression.Number)args[2]).Item == 1;
+            var ptA = ((Expression.Container)args[0]).Item;
+            var ptB = ((Expression.Container)args[1]).Item;
 
-            return Expression.NewContainer(
-               this.UIDocument.Application.Application.Create.NewLineBound(
-                  ptA, ptB
-               )
-            );
+            Line line = null;
+
+            if (ptA is XYZ)
+            {
+
+                line = this.UIDocument.Application.Application.Create.NewLineBound(
+                  (XYZ)ptA, (XYZ)ptB
+                  );
+
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                line = this.UIDocument.Application.Application.Create.NewLineBound(
+                  (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position
+               );
+
+            }
+
+            return Expression.NewContainer(line);
         }
     }
 
@@ -667,16 +681,29 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            var ptA = (XYZ)((Expression.Container)args[0]).Item;//start
-            var ptB = (XYZ)((Expression.Container)args[1]).Item;//middle
-            var ptC = (XYZ)((Expression.Container)args[2]).Item;//end
- 
 
-            return Expression.NewContainer(
-               this.UIDocument.Application.Application.Create.NewArc(
-                  ptA, ptC, ptB //start, end, middle 
-               )
-            );
+            Arc a = null;
+
+            var ptA = ((Expression.Container)args[0]).Item;//start
+            var ptB = ((Expression.Container)args[1]).Item;//middle
+            var ptC = ((Expression.Container)args[2]).Item;//end
+
+            if (ptA is XYZ)
+            {
+
+                a = this.UIDocument.Application.Application.Create.NewArc(
+                   (XYZ)ptA, (XYZ)ptC, (XYZ)ptB //start, end, middle 
+                );
+
+
+            }else if (ptA is ReferencePoint)
+            {
+                a = this.UIDocument.Application.Application.Create.NewArc(
+                   (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position, (XYZ)((ReferencePoint)ptC).Position //start, end, middle 
+                );
+
+            }
+            return Expression.NewContainer(a);
         }
     }
 
@@ -699,16 +726,28 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            var ptA = (XYZ)((Expression.Container)args[0]).Item;
+            var ptA = ((Expression.Container)args[0]).Item;
             var radius = (double)((Expression.Number)args[1]).Item;
             var start = (double)((Expression.Number)args[2]).Item;
             var end = (double)((Expression.Number)args[3]).Item;
 
+            Arc a = null;
 
-            return Expression.NewContainer(
-               this.UIDocument.Application.Application.Create.NewArc(ptA, radius, start, end, XYZ.BasisX, XYZ.BasisY
-               )
-            );
+
+            if (ptA is XYZ)
+            {
+                a = this.UIDocument.Application.Application.Create.NewArc(
+                   (XYZ)ptA, radius, start, end, XYZ.BasisX, XYZ.BasisY
+                );
+            }
+            else if (ptA is ReferencePoint)
+            {
+                a = this.UIDocument.Application.Application.Create.NewArc(
+                   (XYZ)((ReferencePoint)ptA).Position, radius, start, end, XYZ.BasisX, XYZ.BasisY
+                );
+            }
+
+            return Expression.NewContainer(a);
         }
     }
 
@@ -756,14 +795,22 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            var ptA = (XYZ)((Expression.Container)args[0]).Item;
+            var ptA = ((Expression.Container)args[0]).Item;
             var radius = (double)((Expression.Number)args[1]).Item;
 
-            //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
-            Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+            Curve circle = null;
 
-            bool isBound = circle.IsBound;//always false, seems like Revit API does not support creation of full circles and 360 degree arcs are not really supported either.
-            bool isCyclic = circle.IsCyclic;//always true
+            if (ptA is XYZ)
+            {
+                //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
+                circle = this.UIDocument.Application.Application.Create.NewArc((XYZ)ptA, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
+                circle = this.UIDocument.Application.Application.Create.NewArc((XYZ)((ReferencePoint)ptA).Position, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+            }
 
             return Expression.NewContainer(circle);
         }
@@ -789,17 +836,29 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            var ptA = (XYZ)((Expression.Container)args[0]).Item;
+            var ptA = ((Expression.Container)args[0]).Item;
             var radX = (double)((Expression.Number)args[1]).Item;
             var radY = (double)((Expression.Number)args[2]).Item;
-           
 
-            return Expression.NewContainer(
-               this.UIDocument.Application.Application.Create.NewEllipse(
-                  //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
-                  ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
-               )
-            );
+            Ellipse ell = null;
+
+            if (ptA is XYZ)
+            {
+                ell = this.UIDocument.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+                  (XYZ)ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
+               );
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                ell = this.UIDocument.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+               (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
+                );
+            }
+
+            return Expression.NewContainer(ell);
         }
     }
 
@@ -823,17 +882,30 @@ namespace Dynamo.Elements
 
         public override Expression Evaluate(FSharpList<Expression> args)
         {
-            var ptA = (XYZ)((Expression.Container)args[0]).Item;
+            var ptA = ((Expression.Container)args[0]).Item;
             var radX = (double)((Expression.Number)args[1]).Item;
             var radY = (double)((Expression.Number)args[2]).Item;
             var start = (double)((Expression.Number)args[3]).Item;
             var end = (double)((Expression.Number)args[4]).Item;
 
-            return Expression.NewContainer(
-               this.UIDocument.Application.Application.Create.NewEllipse(
-                  ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
-               )
-            );
+            Ellipse ell = null;
+
+            if (ptA is XYZ)
+            {
+                ell = this.UIDocument.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+                  (XYZ)ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
+               );
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                ell = this.UIDocument.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+               (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
+                );
+            }
+            return Expression.NewContainer(ell);
         }
     }
 
