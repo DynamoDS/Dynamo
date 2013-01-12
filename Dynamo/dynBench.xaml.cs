@@ -80,8 +80,6 @@ namespace Dynamo.Controls
 
         dynWorkspace homeSpace;
         public Dictionary<string, dynWorkspace> dynFunctionDict = new Dictionary<string, dynWorkspace>();
-
-        public dynToolFinder toolFinder;
         public event PropertyChangedEventHandler PropertyChanged;
 
         SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
@@ -1057,10 +1055,9 @@ namespace Dynamo.Controls
 
             //close the tool finder if the user
             //has clicked anywhere else on the workbench
-            if (toolFinder != null)
+            if (dynToolFinder.Instance != null)
             {
-                workBench.Children.Remove(toolFinder);
-                toolFinder = null;
+                workBench.Children.Remove(dynToolFinder.Instance);
             }
         }
 
@@ -1944,14 +1941,15 @@ namespace Dynamo.Controls
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.B))
             {
                 //get the mouse position
+                if (!dynElementSettings.SharedInstance.Workbench.Children.Contains(dynToolFinder.Instance))
+                {
+                    dynElementSettings.SharedInstance.Workbench.Children.Add(dynToolFinder.Instance);
 
-                toolFinder = new dynToolFinder();
-                dynElementSettings.SharedInstance.Workbench.Children.Add(toolFinder);
-                toolFinder.ToolFinderFinished += new ToolFinderFinishedHandler(toolFinder_ToolFinderFinished);
-
-                Canvas.SetLeft(toolFinder, 100);
-                Canvas.SetTop(toolFinder, 100);
-                e.Handled = true;
+                    Point p = Mouse.GetPosition(dynElementSettings.SharedInstance.Workbench);
+                    Canvas.SetLeft(dynToolFinder.Instance, p.X);
+                    Canvas.SetTop(dynToolFinder.Instance, p.Y);
+                    e.Handled = true;
+                }
             }
             //changed the delete key combination so as not to interfere with
             //keyboard events
@@ -2061,12 +2059,6 @@ namespace Dynamo.Controls
             selectedElements.Remove(el);
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
             el = null;
-        }
-
-        void toolFinder_ToolFinderFinished(object sender, EventArgs e)
-        {
-            dynElementSettings.SharedInstance.Workbench.Children.Remove(toolFinder);
-            toolFinder = null;
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
