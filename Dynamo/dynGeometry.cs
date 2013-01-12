@@ -712,6 +712,31 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Curve Transformed")]
+    [ElementCategory(BuiltinElementCategories.REVIT_GEOM)]
+    [ElementDescription("Returns the curve (c) transformed by the transform (t).")]
+    [RequiresTransaction(false)]
+    public class dynCurveTransformed : dynNode
+    {
+        public dynCurveTransformed()
+        {
+            InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(object)));
+            InPortData.Add(new PortData("t", "Transform(Transform)", typeof(object)));
+            OutPortData = new PortData("circle", "Circle CurveLoop", typeof(Curve));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var curve = (Curve)((Expression.Container)args[0]).Item;
+            var trans = (Transform)((Expression.Container)args[1]).Item;
+
+            return Expression.NewContainer(curve.get_Transformed(trans));
+        }
+    }
+
     [ElementName("Circle")]
     [ElementCategory(BuiltinElementCategories.REVIT_GEOM)]
     [ElementDescription("Creates a geometric circle.")]

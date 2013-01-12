@@ -115,4 +115,28 @@ namespace Dynamo.Elements
             return Expression.NewList(result);
         }
     }
+
+    [ElementName("XYZ Distance")]
+    [ElementCategory(BuiltinElementCategories.MEASUREMENT)]
+    [ElementDescription("Returns the distance between a(XYZ) and b(XYZ).")]
+    [RequiresTransaction(false)]
+    public class dynXYZDistance : dynNode
+    {
+        public dynXYZDistance()
+        {
+            InPortData.Add(new PortData("a", "Start (XYZ).", typeof(object)));//Ref to a face of a form
+            InPortData.Add(new PortData("b", "End (XYZ)", typeof(object)));//Ref to a face of a form
+            OutPortData = new PortData("d", "The distance between the two XYZs (Number).", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var a = (XYZ)((Expression.Container)args[0]).Item;
+            var b = (XYZ)((Expression.Container)args[1]).Item;
+
+            return Expression.NewNumber(a.DistanceTo(b));
+        }
+    }
 }

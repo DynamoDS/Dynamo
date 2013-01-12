@@ -31,6 +31,40 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Transform From Origin and Vectors")]
+    [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
+    [ElementDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
+    [RequiresTransaction(false)]
+    public class dynTransformOriginAndVectors : dynNode
+    {
+        public dynTransformOriginAndVectors()
+        {
+            InPortData.Add(new PortData("o", "Origin(XYZ)", typeof(object)));
+            InPortData.Add(new PortData("u", "Up(XYZ)", typeof(object)));
+            InPortData.Add(new PortData("forward", "Up(XYZ)", typeof(object)));
+            OutPortData = new PortData("t", "Transform", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var origin = (XYZ)((Expression.Container)args[0]).Item;
+            var up = (XYZ)((Expression.Container)args[1]).Item;
+            var forward = (XYZ)((Expression.Container)args[2]).Item;
+
+            Transform t = Transform.Identity;
+            t.Origin = origin;
+            t.BasisZ = up;
+            t.BasisY = forward;
+            t.BasisX = forward.CrossProduct(up);
+            
+            return Expression.NewContainer(
+               t
+            );
+        }
+    }
+
     [ElementName("Transform Scale Basis")]
     [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
     [ElementDescription("Returns the identity transformation.")]
@@ -181,5 +215,40 @@ namespace Dynamo.Elements
 
     }
 
+    [ElementName("Face Compute Derivatives")]
+    [ElementCategory(BuiltinElementCategories.REVIT_TRANSFORMS)]
+    [ElementDescription("Returns a transform describing the face (f) at the parameter (uv).")]
+    [RequiresTransaction(false)]
+    public class dynFaceComputerDerivative : dynNode
+    {
+        public dynFaceComputerDerivative()
+        {
+            InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(object)));
+            InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(object)));
+            OutPortData = new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(object));
 
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var faceRef = (Reference)((Expression.Container)args[0]).Item;
+            var uv = (UV)((Expression.Container)args[1]).Item;
+
+            Transform t = Transform.Identity;
+
+            Face f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+            if (f != null)
+            {
+                t = f.ComputeDerivatives(uv);
+                t.BasisX = t.BasisX.Normalize();
+                t.BasisZ = t.BasisZ.Normalize();
+                t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
+            }
+            return Expression.NewContainer(
+               t
+            );
+        }
+
+    }
 }
