@@ -572,7 +572,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Curve by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_CURVES)]
     [ElementDescription("Select a curve from the document.")] //or set of curves in the future
     [RequiresTransaction(false)]
     public class dynCurvesBySelection : dynElementSelection
@@ -596,7 +596,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Curves by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_CURVES)]
     [ElementDescription("An element which allows the user to select a set of curves.")]
     [RequiresTransaction(false)]
     public class dynMultipleCurvesBySelection : dynMultipleElementSelection
@@ -645,7 +645,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Point by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_POINTS)]
     [ElementDescription("Select a reference point from the document.")]
     [RequiresTransaction(false)]
     public class dynPointBySelection : dynElementSelection
@@ -668,7 +668,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Level by Selection")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_DATUMS)]
     [ElementDescription("Select a level from the document.")]
     [RequiresTransaction(false)]
     public class dynLevelBySelection : dynElementSelection

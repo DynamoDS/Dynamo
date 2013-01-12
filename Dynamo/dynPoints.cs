@@ -26,7 +26,7 @@ using Expression = Dynamo.FScheme.Expression;
 namespace Dynamo.Elements
 {
     [ElementName("Reference Point")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_POINTS)]
     [ElementDescription("Creates a reference point.")]
     [RequiresTransaction(true)]
     public class dynReferencePointByXYZ : dynNode
@@ -155,7 +155,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Reference Point Distance")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_POINTS)]
     [ElementDescription("Measures a distance between point(s).")]
     [RequiresTransaction(false)]
     public class dynDistanceBetweenPoints : dynNode
@@ -202,7 +202,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Reference Point On Edge")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_POINTS)]
     [ElementDescription("Creates an element which owns a reference point on a selected edge.")]
     [RequiresTransaction(true)]
     public class dynPointOnEdge : dynNode
@@ -257,7 +257,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Reference Point On Face by UV components")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_POINTS)]
     [ElementDescription("Creates an element which owns a reference point on a selected face.")]
     [RequiresTransaction(true)]
     public class dynPointOnFace : dynNode
@@ -332,7 +332,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Reference Point On Face by UV")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_POINTS)]
     [ElementDescription("Creates an element which owns a reference point on a selected face.")]
     [RequiresTransaction(true)]
     public class dynPointOnFaceUV : dynNode
@@ -396,7 +396,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Reference Point By Normal")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_POINTS)]
     [ElementDescription("Creates an element which owns a reference point which is projected from a point by normal and distance.")]
     [RequiresTransaction(true)]
     public class dynPointNormalDistance : dynNode
@@ -449,7 +449,7 @@ namespace Dynamo.Elements
     }
     
     [ElementName("Plane from Reference Point")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.REVIT_POINTS)]
     [ElementDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
     [RequiresTransaction(true)]
     public class dynPlaneFromRefPoint : dynNode
