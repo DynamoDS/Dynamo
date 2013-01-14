@@ -3444,26 +3444,45 @@ namespace Dynamo.Controls
             {
                 string imagePath = sfd.FileName;
 
+                Transform trans = workBench.LayoutTransform;
+                workBench.LayoutTransform = null;
+                Size size = new Size(workBench.Width, workBench.Height);
+                workBench.Measure(size);
+                workBench.Arrange(new Rect(size));
+
                 //calculate the necessary width and height
                 double width = 0;
                 double height = 0;
                 foreach (dynNode n in this.Elements)
                 {
                     Point relativePoint = n.TransformToAncestor(workBench)
-                          .Transform(new Point(n.ActualWidth, n.ActualHeight));
-                    width = Math.Max(relativePoint.X, width);
-                    height = Math.Max(relativePoint.Y, height);
+                          .Transform(new Point(0,0));
+                   
+                    width = Math.Max(relativePoint.X + n.Width, width);
+                    height = Math.Max(relativePoint.Y + n.Height, height);
                 }
 
-                SaveCanvas(width*2, height*2, workBench, 150, sfd.FileName);
+                Rect rect = VisualTreeHelper.GetDescendantBounds(workBench);
+
+                RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
+                  (int)rect.Bottom + 50, 96, 96, System.Windows.Media.PixelFormats.Default);
+                rtb.Render(workBench);
+                //endcode as PNG
+                BitmapEncoder pngEncoder = new PngBitmapEncoder();
+                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+                using (var stm = System.IO.File.Create(sfd.FileName))
+                {
+                    pngEncoder.Save(stm);
+                }
             }
         }
 
         public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
         {
             
-            Size size = new Size(width, height);
-            canvas.Measure(size);
+            //Size size = new Size(width, height);
+            //canvas.Measure(size);
             //canvas.Arrange(new Rect(size));
 
             var rtb = new RenderTargetBitmap(
