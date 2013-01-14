@@ -39,6 +39,7 @@ using TransactionStatus = Autodesk.Revit.DB.TransactionStatus;
 using Path = System.IO.Path;
 using Expression = Dynamo.FScheme.Expression;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.Controls
 {
@@ -3433,6 +3434,60 @@ namespace Dynamo.Controls
                 settings_curves.IsChecked = false;
             }
         }
+
+        private void saveImage_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "PNG Image|*.png";
+            sfd.Title = "Save you Workbench to an Image";
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string imagePath = sfd.FileName;
+
+                //calculate the necessary width and height
+                double width = 0;
+                double height = 0;
+                foreach (dynNode n in this.Elements)
+                {
+                    Point relativePoint = n.TransformToAncestor(workBench)
+                          .Transform(new Point(n.ActualWidth, n.ActualHeight));
+                    width = Math.Max(relativePoint.X, width);
+                    height = Math.Max(relativePoint.Y, height);
+                }
+
+                SaveCanvas(width*2, height*2, workBench, 150, sfd.FileName);
+            }
+        }
+
+        public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
+        {
+            
+            Size size = new Size(width, height);
+            canvas.Measure(size);
+            //canvas.Arrange(new Rect(size));
+
+            var rtb = new RenderTargetBitmap(
+                (int)width, //width 
+                (int)height, //height 
+                dpi, //dpi x 
+                dpi, //dpi y 
+                PixelFormats.Pbgra32 // pixelformat 
+                );
+            rtb.Render(canvas);
+
+            SaveRTBAsPNG(rtb, filename);
+        }
+
+        private static void SaveRTBAsPNG(RenderTargetBitmap bmp, string filename)
+        {
+            var enc = new System.Windows.Media.Imaging.PngBitmapEncoder();
+            enc.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bmp));
+
+            using (var stm = System.IO.File.Create(filename))
+            {
+                enc.Save(stm);
+            }
+        } 
     }
 
     public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>
