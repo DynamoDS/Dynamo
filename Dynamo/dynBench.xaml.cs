@@ -3487,6 +3487,85 @@ namespace Dynamo.Controls
             {
                 enc.Save(stm);
             }
+        }
+
+        private void layoutAll_Click(object sender, RoutedEventArgs e)
+        {
+            LockUI();
+            CleanWorkbench();
+
+            double x = 0;
+            double y = 0;
+            double maxWidth = 0;    //track max width of current column
+            double colGutter = 40;     //the space between columns
+            double rowGutter = 40;
+            int colCount = 0;
+
+            Hashtable typeHash = new Hashtable();
+
+            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                object[] attribs = t.GetCustomAttributes(typeof(ElementCategoryAttribute), false);
+
+                if (t.Namespace == "Dynamo.Elements" &&
+                    !t.IsAbstract &&
+                    attribs.Length > 0 &&
+                    t.IsSubclassOf(typeof(dynNode)))
+                {
+                    ElementCategoryAttribute elCatAttrib = attribs[0] as ElementCategoryAttribute;
+
+                    List<Type> catTypes = null;
+
+                    if (typeHash.ContainsKey(elCatAttrib.ElementCategory))
+                    {
+                        catTypes = typeHash[elCatAttrib.ElementCategory] as List<Type>;
+                    }
+                    else
+                    {
+                        catTypes = new List<Type>();
+                        typeHash.Add(elCatAttrib.ElementCategory, catTypes);
+                    }
+
+                    catTypes.Add(t);
+                }
+            }
+
+            foreach (DictionaryEntry de in typeHash)
+            {
+                List<Type> catTypes = de.Value as List<Type>;
+
+                //add the name of the category here
+                AddNote(de.Key.ToString(), x, y, this.CurrentSpace);
+
+                y += 60;
+
+                foreach(Type t in catTypes)
+                {
+                    object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+
+                    ElementNameAttribute elNameAttrib = attribs[0] as ElementNameAttribute;
+                    dynNode el = AddDynElement(
+                           t, elNameAttrib.ElementName, Guid.NewGuid(), x, y,
+                           this.CurrentSpace
+                        );
+
+                    el.DisableReporting();
+
+                    maxWidth = Math.Max(el.Width, maxWidth);
+
+                    colCount++;
+
+                    y += el.Height + rowGutter;
+                }
+
+                y = 0;
+                colCount = 0;
+                x += maxWidth + colGutter;
+                maxWidth = 0;
+                
+            }
+
+            UnlockUI();
         } 
     }
 
