@@ -355,7 +355,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Reset File Watcher")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Resets state of FileWatcher so that it watches again.")]
     [RequiresTransaction(false)]
     public class dynFileWatcherReset : dynNode

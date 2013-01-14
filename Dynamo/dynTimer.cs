@@ -27,7 +27,7 @@ namespace Dynamo.Elements
 {
     [ElementName("Pause")]
     [ElementDescription("Pauses execution for a given amount of time.")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.EXECUTION)]
     public class dynPause : dynNode
     {
         public dynPause()
@@ -50,7 +50,7 @@ namespace Dynamo.Elements
 
     [ElementName("Execution Interval")]
     [ElementDescription("Forces an Execution after every interval")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.EXECUTION)]
     public class dynExecuteInterval : dynNode
     {
         public dynExecuteInterval()

@@ -32,7 +32,7 @@ using System.Threading;
 namespace Dynamo.Elements
 {
     [ElementName("Create Particle System")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.SIMULATION)]
     [ElementDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     [RequiresTransaction(false)]
     class dynDynamicRelaxation : dynNode
@@ -281,7 +281,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Create Particle System on Face")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.SIMULATION)]
     [ElementDescription("A node which allows you to drive the position of elmenets via a particle system.")]
     [RequiresTransaction(false)]
     class dynDynamicRelaxationOnFace : dynNode
@@ -374,7 +374,7 @@ namespace Dynamo.Elements
 
     [ElementName("Dynamic Relaxation Step")]
     [ElementDescription("Performs a step in the dynamic relaxation simulation for a particle system.")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.SIMULATION)]
     [RequiresTransaction(false)]
     public class dynDynamicRelaxationStep : dynNode
     {

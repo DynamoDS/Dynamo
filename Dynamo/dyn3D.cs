@@ -34,7 +34,7 @@ using System.Windows.Controls;
 namespace Dynamo.Elements
 {
     [ElementName("Watch 3D")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.DEBUG)]
     [ElementDescription("Shows a dynamic preview of geometry.")]
     [RequiresTransaction(false)]
     public class dyn3DPreview : dynNode, INotifyPropertyChanged

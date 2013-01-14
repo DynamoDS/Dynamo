@@ -70,6 +70,11 @@ namespace Dynamo.Elements
         public const string LIST = "Lists";
         public const string ANALYSIS = "Analysis";
         public const string MEASUREMENT = "Measurement";
+        public const string TESSELLATION = "Tessellation";
+        public const string DEBUG = "Debug";
+        public const string SELECTION = "Selection";
+        public const string EXECUTION = "Execution";
+        public const string SIMULATION = "Simulation";
     }
 
     #region FScheme Builtin Interop
@@ -1468,7 +1473,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Debug Breakpoint")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.DEBUG)]
     [ElementDescription("Halts execution until user clicks button.")]
     [RequiresTransaction(false)]
     public class dynBreakpoint : dynNode

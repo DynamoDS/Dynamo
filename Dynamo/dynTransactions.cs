@@ -31,7 +31,7 @@ using Dynamo.Controls;
 namespace Dynamo.Elements
 {
     [ElementName("Transaction")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.EXECUTION)]
     [ElementDescription("Executes Expression inside of a Revit API transaction")]
     [RequiresTransaction(false)]
     public class dynTransaction : dynNode
