@@ -1,9 +1,10 @@
 Dynamo: Visual Programming for Revit
 
-This project was started by Ian Keough. The intent of this project is to provide a code playground for building interesting parametric functionality on top of that already offered by Revit, and to do so with a graphical interface that allows you to share your work with others less inclined to write code themselves.
+The intent of this project is to provide a visual interface for building interesting parametric functionality on top of that already offered by Revit. Dynamo aims to be accessable both to the non-programmer and the programmer alike with the ability to visually script behavior and define your own nodes, but also the ability to write functionality using Python or by compiling .net code into dlls that can be linked at run time.
 
-It has been developed based on feedback from several parties inlcuding Buro Happold Engineers, and students and faculty at the USC School of Architecture.
+This project was started by Ian Keough. A complete rewrite of the underlying Dynamo engine was done by Stephen Elliot and Matt Jezyk contributed a ton of nodes as well as a wealth of input on pretty much all other aspects of Dynamo's design. Prior to Ian's joining Autodesk, others on the Autodesk team including Zach Kron, Tom Vollaro, and Lillian Smith provided a lot of very useful feedback.
 
+Dynamo has been developed based on feedback from several parties inlcuding Buro Happold Engineers, Autodesk, and students and faculty at the USC School of Architecture.
 
 
 BEWARE LEGAL STUFF BELOW!!!
@@ -35,9 +36,9 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 1. It 
 Key new features in June 2012 Release:
 
 - User Interface - side panel to allow you to search and then drag and drop new nodes in to place
-- User-created nodes – you can make 'sub-nodes' and then reference them elsewhere, these act like writing a reusable function in a programming language
-- Python Scripting node – we have integrated a python scripting node into 
-- Math, logic and other nodes – many new nodes added to support evaluation,  iteration and looping
+- User-created nodes ï¿½ you can make 'sub-nodes' and then reference them elsewhere, these act like writing a reusable function in a programming language
+- Python Scripting node ï¿½ we have integrated a python scripting node into 
+- Math, logic and other nodes ï¿½ many new nodes added to support evaluation,  iteration and looping
 
 Dynamo For Vasari Beta 1 WIP: Integrating Dynamo into Project Vasari and extending Dynamo to support integrated analysis and performance-based design.
 
