@@ -89,8 +89,44 @@ namespace Dynamo.Elements
        private delegate void LogDelegate(string msg);
        private delegate void UDPListening();
 
-       private string UDPResponse = "";
+       public string UDPResponse = "";
        int listenPort;
+       bool UDPInitialized = false;
+
+       public class UdpState
+       {
+           public IPEndPoint e;
+           public UdpClient u;
+
+       }
+
+       public static bool messageReceived = false;
+
+       public void ReceiveCallback(IAsyncResult ar)
+       {
+           LogDelegate log = new LogDelegate(this.Bench.Log);
+
+           try
+           {
+               UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
+               IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
+
+               Byte[] receiveBytes = u.EndReceive(ar, ref e);
+               string receiveString = Encoding.ASCII.GetString(receiveBytes);
+
+               UDPResponse = Encoding.ASCII.GetString(receiveBytes, 0, receiveBytes.Length);
+               string verboseLog = "Received broadcast from " + e.ToString() + ":\n" + UDPResponse + "\n";
+               log(verboseLog);
+
+               Console.WriteLine("Received: {0}", receiveString);
+               messageReceived = true;
+           }
+           catch (Exception e)
+           {
+               UDPResponse = "";
+               log(e.ToString());
+           }
+       }
 
        private void ListenOnUDP()
        {
@@ -98,19 +134,27 @@ namespace Dynamo.Elements
            LogDelegate log = new LogDelegate(this.Bench.Log);
 
            // UDP sample from http://stackoverflow.com/questions/8274247/udp-listener-respond-to-client
-
-           UdpClient listener = new UdpClient(listenPort);
-           IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+           UdpClient listener;
+           IPEndPoint groupEP;
+           listener = new UdpClient(listenPort);
+           groupEP = new IPEndPoint(IPAddress.Any, listenPort);
 
            try
            {
 
-                log("Waiting for broadcast");
-                byte[] bytes = listener.Receive(ref groupEP);
-                UDPResponse = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                string verboseLog = "Received broadcast from " + groupEP.ToString() + ":\n" + UDPResponse + "\n";
-                log(verboseLog);
-               
+               if (messageReceived == false)
+               {
+
+                   UdpState s = new UdpState();
+                   s.e = groupEP;
+                   s.u = listener;
+
+
+
+                   log("Waiting for broadcast");
+                   listener.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+                   //byte[] bytes = listener.Receive(ref groupEP);
+               }
            }
            catch (Exception e)
            {
@@ -119,7 +163,11 @@ namespace Dynamo.Elements
            }
            finally
            {
-               listener.Close();
+               if (messageReceived == true)
+               {
+                   listener.Close();
+                   messageReceived = false;
+               }
            }
        }
 
