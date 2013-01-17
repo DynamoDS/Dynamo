@@ -130,6 +130,7 @@ limitations under the License.
     </Compile>
     <Compile Include="dynGeometricForms.cs" />
     <Compile Include="dynMeasurement.cs" />
+    <Compile Include="dynSimplexNoise.cs" />
     <Compile Include="dynTessellation.cs" />
     <Compile Include="dynTimer.cs" />
     <Compile Include="dynViews.cs" />
