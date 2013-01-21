@@ -40,6 +40,8 @@ using Path = System.IO.Path;
 using Expression = Dynamo.FScheme.Expression;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace Dynamo.Controls
 {
@@ -590,6 +592,16 @@ namespace Dynamo.Controls
                 Log("Autoloading definitions...");
                 loadUserWorkspaces(pluginsPath);
             }
+
+            // use the node manager to load types
+            // first read the repositories file
+            string nodeManagerPath = Path.Combine(directory, "Dynamo_Node_Manager");
+            string nodeReposFile = Path.Combine(nodeManagerPath, "node_repositories.json");
+
+            FileStream stream1 = new FileStream(nodeReposFile, FileMode.Open);
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(NodeRepositoryList));
+            NodeRepositoryList o = ser.ReadObject(stream1) as NodeRepositoryList;
+
         }
 
         private void loadUserWorkspaces(string directory)
