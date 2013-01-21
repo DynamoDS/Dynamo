@@ -42,6 +42,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using LibGit2Sharp;
 
 namespace Dynamo.Controls
 {
@@ -600,8 +601,23 @@ namespace Dynamo.Controls
 
             FileStream stream1 = new FileStream(nodeReposFile, FileMode.Open);
             DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(NodeRepositoryList));
-            NodeRepositoryList o = ser.ReadObject(stream1) as NodeRepositoryList;
+            NodeRepositoryList repoList = ser.ReadObject(stream1) as NodeRepositoryList;
 
+            string nodesLocation = Path.Combine(nodeManagerPath, "Nodes");
+
+            // for each repository, clone the repo into the nodes directory
+            foreach (string repoLocation in repoList.repositories)
+            {
+                // get the repo name
+                Uri repoUri = new Uri(repoLocation);
+                string cloneLocation = Path.Combine(nodesLocation, repoUri.Segments.Last());
+                Repository.Clone(repoLocation, cloneLocation);
+            }
+
+            // then recurse through all the Node subdirectories
+            // and load all the workspaces
+
+            
         }
 
         private void loadUserWorkspaces(string directory)
