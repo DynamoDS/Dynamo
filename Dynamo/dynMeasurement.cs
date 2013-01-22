@@ -139,4 +139,63 @@ namespace Dynamo.Elements
             return Expression.NewNumber(a.DistanceTo(b));
         }
     }
+
+
+    [ElementName("Height")]
+    [ElementCategory(BuiltinElementCategories.MEASUREMENT)]
+    [ElementDescription("Returns the height in z of an element.")]
+    [RequiresTransaction(false)]
+    public class dynHeight : dynNode
+    {
+        public dynHeight()
+        {
+            InPortData.Add(new PortData("object", "Level, Family Instance, RefPoint, XYZ", typeof(object)));//add elements here when adding switch statements 
+            OutPortData = new PortData("d", "The height above project 0.", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        private static double getHeight(object elem)
+        {
+            double h = 0;
+
+            if (elem is Level)
+            {
+                h = ((Level)elem).Elevation;
+                return h;
+            }
+            else if (elem is ReferencePoint)
+            {
+                h = ((ReferencePoint)elem).Position.Z;
+                return h;
+            }
+            else if (elem is FamilyInstance)
+            {
+                LocationPoint loc =  (LocationPoint)((FamilyInstance)elem).Location;
+                h = loc.Point.Z;
+                return h;
+            }
+            else if (elem is XYZ)
+            {
+                h = ((XYZ)elem).Z;
+                return h;
+            }
+            else
+            {
+                return h;
+            }
+
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var a = ((Expression.Container)args[0]).Item;
+
+            return Expression.NewNumber(getHeight(a));
+        }
+    }
+
+
 }
+
+
