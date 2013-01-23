@@ -149,8 +149,8 @@ namespace Dynamo.Elements
     {
         public dynHeight()
         {
-            InPortData.Add(new PortData("object", "Level, Family Instance, RefPoint, XYZ", typeof(object)));//add elements here when adding switch statements 
-            OutPortData = new PortData("d", "The height above project 0.", typeof(object));
+            InPortData.Add(new PortData("elem", "Level, Family Instance, RefPoint, XYZ", typeof(object)));//add elements here when adding switch statements 
+            OutPortData = new PortData("h", "The height of an element in z relative to project 0.", typeof(object));
 
             base.RegisterInputsAndOutputs();
         }
