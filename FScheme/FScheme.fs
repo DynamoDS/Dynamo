@@ -541,6 +541,20 @@ let SortWith = function
         List(List.sortWith comp' l)
     | m -> malformed "sort-with" <| List(m)
 
+///Flatten List
+let Flatten = function
+    | [List(l2d)] ->
+        let rec flatten' a = function
+            | List(l) :: t ->
+                let rec flatten'' a' = function
+                    | h :: t -> flatten'' (h :: a') t
+                    | []     -> a'
+                flatten' (flatten'' a l) t
+            | [] -> List(List.rev a)
+            | m  -> malformed "flatten" <| List(m)
+        flatten' [] l2d
+    | m -> malformed "flatten" <| List(m)
+
 ///Build List
 let BuildSeq = function
     | [Number(start); Number(stop); Number(step)] -> [start .. step .. stop] |> List.map Number |> List
@@ -916,6 +930,7 @@ let private makeEnvironments() =
     AddDefaultBinding "sort-with" (Function(SortWith))
     AddDefaultBinding "sort-by" (Function(SortBy))
     AddDefaultBinding "for-each" (Function(ForEach))
+    AddDefaultBinding "flatten" (Function(Flatten))
 
 let private eval ce env syntax = compile ce syntax env
 
@@ -1069,6 +1084,9 @@ let private test (log : ErrorLog) =
 
     //For-Each
     case "(let ((x empty)) (for-each (λ (y) (set! x (cons y x))) '(1 2 3 4 5)) x)" "(5 4 3 2 1)"
+
+    //Flatten
+    case "(flatten '((1 2) (3 4) (5 6)))" "(1 2 3 4 5 6)"
 
     success.Value
 
