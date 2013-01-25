@@ -292,6 +292,9 @@ limitations under the License.
   <PropertyGroup>
     <PostBuildEvent>copy .\DynamoElements.dll ..\..\..\DynamoRevit\bin\Debug\DynamoElements.dll
 copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Debug\DynamoElements.pdb
+copy .\DynamoElements.dll ..\..\..\DynamoSandbox\bin\Debug\DynamoElements.dll
+copy .\DynamoElements.pdb ..\..\..\\DynamoSandbox\bin\Debug\DynamoElements.pdb
+
 copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.dll
 copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.Input.dll
 copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.pdb ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.pdb

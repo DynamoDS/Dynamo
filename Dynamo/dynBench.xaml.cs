@@ -138,6 +138,7 @@ namespace Dynamo.Controls
         }
 
         private bool _activated = false;
+        
         protected override void OnActivated(EventArgs e)
         {
             if (!this._activated)
