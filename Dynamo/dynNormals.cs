@@ -54,15 +54,15 @@ namespace Dynamo.Elements
         }
     }
 
-    [ElementName("Evaluate XYZ")]
+    [ElementName("Evaluate UV")]
     [ElementCategory(BuiltinElementCategories.REVIT_XYZ_UV_VECTOR)]
-    [ElementDescription("Evaluate a point on a face to find the XYZ location.")]
+    [ElementDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
     [RequiresTransaction(false)]
     class dynXYZEvaluate : dynNode
     {
         public dynXYZEvaluate()
         {
-            InPortData.Add(new PortData("pt", "The point to evaluate.", typeof(object)));
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
             
             OutPortData = new PortData("XYZ", "The location.", typeof(string));
@@ -74,25 +74,15 @@ namespace Dynamo.Elements
             Reference faceRef = (args[1] as Expression.Container).Item as Reference;
 
             Face f = this.UIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
-            XYZ loc = null;
+            XYZ face_point = null;
 
             if (f != null)
             {
                 //each item in the list will be a reference point
-                ReferencePoint rp = (args[0] as Expression.Container).Item as ReferencePoint;
-
-                if (rp != null)
-                {
-                    PointOnFace pof = rp.GetPointElementReference() as PointOnFace;
-
-                    if (pof != null)
-                    {
-                        loc = f.Evaluate(pof.UV);
-                    }
-                }
+                UV param = (UV)(args[0] as Expression.Container).Item;
+                face_point = f.Evaluate(param);
             }
-
-            return Expression.NewContainer(loc);
+            return Expression.NewContainer(face_point);
         }
     }
 
