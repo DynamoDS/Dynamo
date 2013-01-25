@@ -77,7 +77,13 @@
       <Border Margin="291,20,0,0" BorderBrush="Black" BorderThickness="1" Name="border">
          <!--outer canvas clips the inner canvas-->
          <Canvas Name="outerCanvas" Margin="0,0,0,0" ClipToBounds="True">
-            <dynCtrl:DragCanvas x:Name="workBench" Width="100000" Height="100000" Visibility="Hidden">
+            <dynCtrl:DragCanvas x:Name="workBench"
+                                Width="100000" 
+                                Height="100000" 
+                                Visibility="Hidden"
+                                MouseDown="workBench_MouseDown"
+                                MouseUp="workBench_MouseUp"
+                                MouseMove="workBench_MouseMove">
                <Canvas.RenderTransform>
                   <TransformGroup>
                      <ScaleTransform CenterX="-10"
@@ -88,7 +94,13 @@
                                          Y="{Binding ElementName=_this, Path=CurrentY}" />
                   </TransformGroup>
                </Canvas.RenderTransform>
-            </dynCtrl:DragCanvas>
+                <Rectangle
+                    x:Name="selectionBox"
+                    Visibility="Collapsed"
+                    Stroke="Black"
+                    StrokeThickness="1"
+                />
+                </dynCtrl:DragCanvas>
             <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" HorizontalContentAlignment="Right" FontSize="24" FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
             <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" 
                    MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 

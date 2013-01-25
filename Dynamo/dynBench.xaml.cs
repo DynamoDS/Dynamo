@@ -66,6 +66,9 @@ namespace Dynamo.Controls
         string logText;
         ConnectorType connectorType;
 
+        bool mouseDown = false;
+        Point mouseDownPos;
+
         dynWorkspace _cspace;
         internal dynWorkspace CurrentSpace
         {
@@ -3586,7 +3589,98 @@ namespace Dynamo.Controls
             }
 
             UnlockUI();
-        } 
+        }
+
+        private void workBench_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Capture and track the mouse.
+            mouseDown = true;
+            mouseDownPos = e.GetPosition(workBench);
+            workBench.CaptureMouse();
+
+            // Initial placement of the drag selection box.         
+            Canvas.SetLeft(selectionBox, mouseDownPos.X);
+            Canvas.SetTop(selectionBox, mouseDownPos.Y);
+            selectionBox.Width = 0;
+            selectionBox.Height = 0;
+
+            // Make the drag selection box visible.
+            selectionBox.Visibility = Visibility.Visible;
+        }
+
+        private void workBench_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // Release the mouse capture and stop tracking it.
+            mouseDown = false;
+            workBench.ReleaseMouseCapture();
+
+            // Hide the drag selection box.
+            selectionBox.Visibility = Visibility.Collapsed;
+
+            Point mouseUpPos = e.GetPosition(workBench);
+
+            //clear the selected elements
+            ClearSelection();
+
+            foreach (dynNode n in this.Elements)
+            {
+                //check if the node is within the boundary
+                double x = Canvas.GetLeft(n);
+                double y = Canvas.GetTop(n);
+                System.Windows.Rect rect = 
+                    new System.Windows.Rect(Canvas.GetLeft(selectionBox), 
+                        Canvas.GetTop(selectionBox), 
+                        selectionBox.Width, 
+                        selectionBox.Height);
+
+                bool contains = rect.Contains(x, y);
+                if (contains)
+                {
+                    selectedElements.Add(n);
+
+                    if (n is dynNode)
+                        (n as dynNode).Select();
+                }
+            }
+        }
+
+        private void workBench_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (mouseDown)
+            {
+                // When the mouse is held down, reposition the drag selection box.
+
+                Point mousePos = e.GetPosition(workBench);
+
+                if (mouseDownPos.X < mousePos.X)
+                {
+                    Canvas.SetLeft(selectionBox, mouseDownPos.X);
+                    selectionBox.Width = mousePos.X - mouseDownPos.X;
+                }
+                else
+                {
+                    Canvas.SetLeft(selectionBox, mousePos.X);
+                    selectionBox.Width = mouseDownPos.X - mousePos.X;
+                }
+
+                if (mouseDownPos.Y < mousePos.Y)
+                {
+                    Canvas.SetTop(selectionBox, mouseDownPos.Y);
+                    selectionBox.Height = mousePos.Y - mouseDownPos.Y;
+                }
+                else
+                {
+                    Canvas.SetTop(selectionBox, mousePos.Y);
+                    selectionBox.Height = mouseDownPos.Y - mousePos.Y;
+                }
+            }
+        }
+
+        private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
     }
 
     public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>
