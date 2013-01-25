@@ -13,7 +13,7 @@ using MIConvexHull;
 namespace Dynamo.Elements
 {
     [ElementName("Delaunay Tessellation")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.TESSELLATION)]
     [ElementDescription("Create a delaunay tesselation from a number of reference points.")]
     [RequiresTransaction(true)]
     public class dynDelaunayTessellation : dynNode

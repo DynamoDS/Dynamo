@@ -32,7 +32,7 @@ using Expression = Dynamo.FScheme.Expression;
 namespace Dynamo.Elements
 {
     [ElementName("Family Type Selector")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.SELECTION)]
     [ElementDescription("Select a Family Type from a drop down list.")]
     [RequiresTransaction(false)]
     [IsInteractive(true)]
@@ -122,7 +122,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Family Parameter Selector")]
-    [ElementCategory(BuiltinElementCategories.REVIT)]
+    [ElementCategory(BuiltinElementCategories.SELECTION)]
     [ElementDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [RequiresTransaction(false)]
     [IsInteractive(true)]

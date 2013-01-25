@@ -232,7 +232,6 @@ namespace Dynamo.Applications
         }
     }
 
-
     class WindowHandle : System.Windows.Interop.IWin32Window
     {
         IntPtr _hwnd;

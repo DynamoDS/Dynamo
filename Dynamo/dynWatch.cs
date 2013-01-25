@@ -22,7 +22,7 @@ using Expression = Dynamo.FScheme.Expression;
 namespace Dynamo.Elements
 {
     [ElementName("Watch")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.DEBUG)]
     [ElementDescription("Visualize the output of node.")]
     [ElementSearchTags("print", "output", "display")]
     [RequiresTransaction(false)]

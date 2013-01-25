@@ -55,12 +55,17 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Coding4Fun.Kinect.Wpf">
+      <HintPath>..\packages\Coding4Fun.Kinect.Wpf.1.1.0\lib\Coding4Fun.Kinect.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HelixToolkit.Wpf.Input">
       <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -75,6 +80,10 @@ limitations under the License.
     <Reference Include="Microsoft.Expression.Drawing">
       <HintPath>..\packages\Coding4Fun.Kinect.Wpf.1.1.0\lib\Microsoft.Expression.Drawing.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Kinect, Version=1.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\kinect\Microsoft.Kinect.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -129,7 +138,9 @@ limitations under the License.
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynGeometricForms.cs" />
+    <Compile Include="dynKinect.cs" />
     <Compile Include="dynMeasurement.cs" />
+    <Compile Include="dynSimplexNoise.cs" />
     <Compile Include="dynTessellation.cs" />
     <Compile Include="dynTimer.cs" />
     <Compile Include="dynViews.cs" />
@@ -281,6 +292,9 @@ limitations under the License.
   <PropertyGroup>
     <PostBuildEvent>copy .\DynamoElements.dll ..\..\..\DynamoRevit\bin\Debug\DynamoElements.dll
 copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Debug\DynamoElements.pdb
+copy .\DynamoElements.dll ..\..\..\DynamoSandbox\bin\Debug\DynamoElements.dll
+copy .\DynamoElements.pdb ..\..\..\\DynamoSandbox\bin\Debug\DynamoElements.pdb
+
 copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.dll
 copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.Input.dll
 copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.pdb ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.pdb

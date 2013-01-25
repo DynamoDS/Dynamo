@@ -538,32 +538,25 @@ namespace Dynamo.Utilities
         {
             try
             {
-                Face f = null;
-                //Reference r = null;
-
                 Selection choices = doc.Selection;
-
                 choices.Elements.Clear();
 
                 //MessageBox.Show(message);
                 settings.Bench.Log(message);
 
-                //create some geometry options so that we computer references
-                Autodesk.Revit.DB.Options opts = new Options();
-                opts.ComputeReferences = true;
-                opts.DetailLevel = ViewDetailLevel.Medium;
-                opts.IncludeNonVisibleObjects = false;
+                //create some geometry options so that we compute references
+                //Autodesk.Revit.DB.Options opts = new Options();
+                //opts.ComputeReferences = true;
+                //opts.DetailLevel = ViewDetailLevel.Medium;
+                //opts.IncludeNonVisibleObjects = false;
 
                 Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
 
-                if (faceRef != null)
-                {
-
-                    GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
-
-                    f = geob as Face;
-                }
-                //return f;
+                //if (faceRef != null)
+                //{
+                //    GeometryElement geom = settings.Doc.Document.GetElement(faceRef).get_Geometry(opts); 
+                //    settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+                //}
                 return faceRef;
             }
             catch (Exception ex)
@@ -571,8 +564,6 @@ namespace Dynamo.Utilities
                 settings.Bench.Log(ex);
                 return null;
             }
-
-
         }
         
         public static Form RequestFormSelection(UIDocument doc, string message, dynElementSettings settings)

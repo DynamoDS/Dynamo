@@ -15,6 +15,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
 using Autodesk.Revit.UI;
@@ -25,6 +26,8 @@ using Expression = Dynamo.FScheme.Expression;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Media.Imaging;
+using System.Windows.Interop;
 
 namespace Dynamo.Elements
 {
@@ -153,13 +156,36 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     public class dynImageFileReader : dynFileReaderBase
     {
+
+        System.Windows.Controls.Image image1;
+        int width = 320;
+        int height = 240;
+
         public dynImageFileReader()
         {
 
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
 
+            image1 = new System.Windows.Controls.Image();
+            image1.Width = 320;
+            image1.Height = 240;
+            image1.Margin = new Thickness(5);
+            image1.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            image1.Name = "image1";
+            image1.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            
+            //image1.Margin = new Thickness(0, 0, 0, 0);
+
+            this.inputGrid.Children.Add(image1);
+
             base.RegisterInputsAndOutputs();
+
+            this.Width = 450;
+            this.Height = 240 + 5;
+
+            //this.Loaded += new RoutedEventHandler(topControl_Loaded);
+
         }
 
         public override Expression Evaluate(FSharpList<Expression> args)
@@ -171,18 +197,42 @@ namespace Dynamo.Elements
             FSharpList<Expression> result = FSharpList<Expression>.Empty;
             if (File.Exists(storedPath))
             {
-                using (Bitmap bmp = new Bitmap(storedPath))
-                {
-                    // Do some processing
-                    for (int y = 0; y < yDiv; y++)
+
+                    try
                     {
-                        for (int x = 0; x < xDiv; x++)
+                        using (Bitmap bmp = new Bitmap(storedPath))
                         {
-                            Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width/xDiv), y * (int)(bmp.Height/yDiv));
-                            result = FSharpList<Expression>.Cons( Expression.NewContainer(pixelColor),result);
+
+                            this.Dispatcher.Invoke(new Action(
+                                delegate
+                                {
+                                    // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+                                    // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+                                    // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
+
+                                    var hbitmap = bmp.GetHbitmap();
+                                    var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+                                    image1.Source = imageSource;
+                                }
+                            ));
+
+
+                            // Do some processing
+                            for (int y = 0; y < yDiv; y++)
+                            {
+                                for (int x = 0; x < xDiv; x++)
+                                {
+                                    Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width / xDiv), y * (int)(bmp.Height / yDiv));
+                                    result = FSharpList<Expression>.Cons(Expression.NewContainer(pixelColor), result);
+                                }
+                            }
                         }
                     }
-                }
+                    catch (Exception e)
+                    {
+                        this.Bench.Log(e.ToString());
+                    }
+
 
                 return Expression.NewList(result);
             }
@@ -355,7 +405,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Reset File Watcher")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.FILES)]
     [ElementDescription("Resets state of FileWatcher so that it watches again.")]
     [RequiresTransaction(false)]
     public class dynFileWatcherReset : dynNode

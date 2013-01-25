@@ -70,6 +70,11 @@ namespace Dynamo.Elements
         public const string LIST = "Lists";
         public const string ANALYSIS = "Analysis";
         public const string MEASUREMENT = "Measurement";
+        public const string TESSELLATION = "Tessellation";
+        public const string DEBUG = "Debug";
+        public const string SELECTION = "Selection";
+        public const string EXECUTION = "Execution";
+        public const string SIMULATION = "Simulation";
     }
 
     #region FScheme Builtin Interop
@@ -1468,7 +1473,7 @@ namespace Dynamo.Elements
     }
 
     [ElementName("Debug Breakpoint")]
-    [ElementCategory(BuiltinElementCategories.MISC)]
+    [ElementCategory(BuiltinElementCategories.DEBUG)]
     [ElementDescription("Halts execution until user clicks button.")]
     [RequiresTransaction(false)]
     public class dynBreakpoint : dynNode
@@ -1867,6 +1872,7 @@ namespace Dynamo.Elements
             this.MainContextMenu.Items.Add(editWindowItem);
 
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+             
         }
 
         public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -2020,13 +2026,13 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     public class dynDoubleInput : dynDouble
     {
-        //dynTextBox tb;
-        TextBlock nodeLabel;
+        dynTextBox tb;
+        //TextBlock nodeLabel;
 
         public dynDoubleInput()
         {
             //add a text box to the input grid of the control
-            /*tb = new dynTextBox();
+            tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             inputGrid.Children.Add(tb);
@@ -2035,17 +2041,6 @@ namespace Dynamo.Elements
             tb.IsNumeric = true;
             tb.Text = "0.0";
             tb.OnChangeCommitted += delegate { this.Value = this.DeserializeValue(this.tb.Text); };
-            */
-
-            nodeLabel = new System.Windows.Controls.TextBlock();
-            nodeLabel.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            nodeLabel.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            nodeLabel.Text = "0.0";
-            nodeLabel.FontSize = 24;
-
-            inputGrid.Children.Add(nodeLabel);
-            System.Windows.Controls.Grid.SetColumn(nodeLabel, 0);
-            System.Windows.Controls.Grid.SetRow(nodeLabel, 0);
 
             base.RegisterInputsAndOutputs();
 
@@ -2070,9 +2065,10 @@ namespace Dynamo.Elements
                     return;
 
                 base.Value = value;
-                //this.tb.Text = value.ToString();
-                this.nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
-                //this.tb.Pending = false;
+                
+                //this.nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
+                this.tb.Text = value.ToString();
+                this.tb.Pending = false;
             }
         }
 
@@ -2402,14 +2398,14 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     public class dynStringInput : dynString
     {
-        //dynTextBox tb;
-        TextBlock tb;
+        dynTextBox tb;
+        //TextBlock tb;
 
         public dynStringInput()
         {
             //add a text box to the input grid of the control
-            //tb = new dynTextBox();
-            tb = new TextBlock();
+            tb = new dynTextBox();
+            //tb = new TextBlock();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             inputGrid.Children.Add(tb);
@@ -2417,7 +2413,7 @@ namespace Dynamo.Elements
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "";
 
-            //tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
+            tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
 
             base.RegisterInputsAndOutputs();
 

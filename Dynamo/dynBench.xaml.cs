@@ -39,6 +39,7 @@ using TransactionStatus = Autodesk.Revit.DB.TransactionStatus;
 using Path = System.IO.Path;
 using Expression = Dynamo.FScheme.Expression;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.Controls
 {
@@ -80,8 +81,6 @@ namespace Dynamo.Controls
 
         dynWorkspace homeSpace;
         public Dictionary<string, dynWorkspace> dynFunctionDict = new Dictionary<string, dynWorkspace>();
-
-        public dynToolFinder toolFinder;
         public event PropertyChangedEventHandler PropertyChanged;
 
         SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
@@ -139,6 +138,7 @@ namespace Dynamo.Controls
         }
 
         private bool _activated = false;
+        
         protected override void OnActivated(EventArgs e)
         {
             if (!this._activated)
@@ -1057,10 +1057,9 @@ namespace Dynamo.Controls
 
             //close the tool finder if the user
             //has clicked anywhere else on the workbench
-            if (toolFinder != null)
+            if (dynToolFinder.Instance != null)
             {
-                workBench.Children.Remove(toolFinder);
-                toolFinder = null;
+                workBench.Children.Remove(dynToolFinder.Instance);
             }
         }
 
@@ -1944,14 +1943,15 @@ namespace Dynamo.Controls
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.B))
             {
                 //get the mouse position
+                if (!dynElementSettings.SharedInstance.Workbench.Children.Contains(dynToolFinder.Instance))
+                {
+                    dynElementSettings.SharedInstance.Workbench.Children.Add(dynToolFinder.Instance);
 
-                toolFinder = new dynToolFinder();
-                dynElementSettings.SharedInstance.Workbench.Children.Add(toolFinder);
-                toolFinder.ToolFinderFinished += new ToolFinderFinishedHandler(toolFinder_ToolFinderFinished);
-
-                Canvas.SetLeft(toolFinder, 100);
-                Canvas.SetTop(toolFinder, 100);
-                e.Handled = true;
+                    Point p = Mouse.GetPosition(dynElementSettings.SharedInstance.Workbench);
+                    Canvas.SetLeft(dynToolFinder.Instance, p.X);
+                    Canvas.SetTop(dynToolFinder.Instance, p.Y);
+                    e.Handled = true;
+                }
             }
             //changed the delete key combination so as not to interfere with
             //keyboard events
@@ -2061,12 +2061,6 @@ namespace Dynamo.Controls
             selectedElements.Remove(el);
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
             el = null;
-        }
-
-        void toolFinder_ToolFinderFinished(object sender, EventArgs e)
-        {
-            dynElementSettings.SharedInstance.Workbench.Children.Remove(toolFinder);
-            toolFinder = null;
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
@@ -3441,6 +3435,158 @@ namespace Dynamo.Controls
                 settings_curves.IsChecked = false;
             }
         }
+
+        private void saveImage_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "PNG Image|*.png";
+            sfd.Title = "Save you Workbench to an Image";
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string imagePath = sfd.FileName;
+
+                Transform trans = workBench.LayoutTransform;
+                workBench.LayoutTransform = null;
+                Size size = new Size(workBench.Width, workBench.Height);
+                workBench.Measure(size);
+                workBench.Arrange(new Rect(size));
+
+                //calculate the necessary width and height
+                double width = 0;
+                double height = 0;
+                foreach (dynNode n in this.Elements)
+                {
+                    Point relativePoint = n.TransformToAncestor(workBench)
+                          .Transform(new Point(0,0));
+                   
+                    width = Math.Max(relativePoint.X + n.Width, width);
+                    height = Math.Max(relativePoint.Y + n.Height, height);
+                }
+
+                Rect rect = VisualTreeHelper.GetDescendantBounds(workBench);
+
+                RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
+                  (int)rect.Bottom + 50, 96, 96, System.Windows.Media.PixelFormats.Default);
+                rtb.Render(workBench);
+                //endcode as PNG
+                BitmapEncoder pngEncoder = new PngBitmapEncoder();
+                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+                using (var stm = System.IO.File.Create(sfd.FileName))
+                {
+                    pngEncoder.Save(stm);
+                }
+            }
+        }
+
+        public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
+        {
+            
+            //Size size = new Size(width, height);
+            //canvas.Measure(size);
+            //canvas.Arrange(new Rect(size));
+
+            var rtb = new RenderTargetBitmap(
+                (int)width, //width 
+                (int)height, //height 
+                dpi, //dpi x 
+                dpi, //dpi y 
+                PixelFormats.Pbgra32 // pixelformat 
+                );
+            rtb.Render(canvas);
+
+            SaveRTBAsPNG(rtb, filename);
+        }
+
+        private static void SaveRTBAsPNG(RenderTargetBitmap bmp, string filename)
+        {
+            var enc = new System.Windows.Media.Imaging.PngBitmapEncoder();
+            enc.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bmp));
+
+            using (var stm = System.IO.File.Create(filename))
+            {
+                enc.Save(stm);
+            }
+        }
+
+        private void layoutAll_Click(object sender, RoutedEventArgs e)
+        {
+            LockUI();
+            CleanWorkbench();
+
+            double x = 0;
+            double y = 0;
+            double maxWidth = 0;    //track max width of current column
+            double colGutter = 40;     //the space between columns
+            double rowGutter = 40;
+            int colCount = 0;
+
+            Hashtable typeHash = new Hashtable();
+
+            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                object[] attribs = t.GetCustomAttributes(typeof(ElementCategoryAttribute), false);
+
+                if (t.Namespace == "Dynamo.Elements" &&
+                    !t.IsAbstract &&
+                    attribs.Length > 0 &&
+                    t.IsSubclassOf(typeof(dynNode)))
+                {
+                    ElementCategoryAttribute elCatAttrib = attribs[0] as ElementCategoryAttribute;
+
+                    List<Type> catTypes = null;
+
+                    if (typeHash.ContainsKey(elCatAttrib.ElementCategory))
+                    {
+                        catTypes = typeHash[elCatAttrib.ElementCategory] as List<Type>;
+                    }
+                    else
+                    {
+                        catTypes = new List<Type>();
+                        typeHash.Add(elCatAttrib.ElementCategory, catTypes);
+                    }
+
+                    catTypes.Add(t);
+                }
+            }
+
+            foreach (DictionaryEntry de in typeHash)
+            {
+                List<Type> catTypes = de.Value as List<Type>;
+
+                //add the name of the category here
+                AddNote(de.Key.ToString(), x, y, this.CurrentSpace);
+
+                y += 60;
+
+                foreach(Type t in catTypes)
+                {
+                    object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+
+                    ElementNameAttribute elNameAttrib = attribs[0] as ElementNameAttribute;
+                    dynNode el = AddDynElement(
+                           t, elNameAttrib.ElementName, Guid.NewGuid(), x, y,
+                           this.CurrentSpace
+                        );
+
+                    el.DisableReporting();
+
+                    maxWidth = Math.Max(el.Width, maxWidth);
+
+                    colCount++;
+
+                    y += el.Height + rowGutter;
+                }
+
+                y = 0;
+                colCount = 0;
+                x += maxWidth + colGutter;
+                maxWidth = 0;
+                
+            }
+
+            UnlockUI();
+        } 
     }
 
     public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>

@@ -26,14 +26,14 @@ namespace Dynamo.Elements
 {
     [ElementName("Surface Area")]
     [ElementCategory(BuiltinElementCategories.MEASUREMENT)]
-    [ElementDescription("An element which measures the surface area of a face")]
+    [ElementDescription("An element which measures the surface area of a face (f)")]
     [RequiresTransaction(true)]
     public class dynSurfaceArea : dynNode
     {
         public dynSurfaceArea()
         {
-            InPortData.Add(new PortData("face", "Ref", typeof(Reference)));//Ref to a face of a form
-            OutPortData = new PortData("area", "The surface area of the face.", typeof(object));
+            InPortData.Add(new PortData("f", "The face whose surface area you wish to calculate (Reference).", typeof(Reference)));//Ref to a face of a form
+            OutPortData = new PortData("a", "The surface area of the face (Number).", typeof(object));
 
             base.RegisterInputsAndOutputs();
         }
@@ -70,8 +70,8 @@ namespace Dynamo.Elements
     {
         public dynSurfaceDomain()
         {
-            InPortData.Add(new PortData("face", "Ref", typeof(Reference)));//Ref to a face of a form
-            OutPortData = new PortData("dom", "The min, max, and dimensions of the surface domain.", typeof(object));
+            InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(Reference)));//Ref to a face of a form
+            OutPortData = new PortData("d", "The min, max, and dimensions of the surface domain. (List)", typeof(object));
 
             base.RegisterInputsAndOutputs();
         }
@@ -139,4 +139,63 @@ namespace Dynamo.Elements
             return Expression.NewNumber(a.DistanceTo(b));
         }
     }
+
+
+    [ElementName("Height")]
+    [ElementCategory(BuiltinElementCategories.MEASUREMENT)]
+    [ElementDescription("Returns the height in z of an element.")]
+    [RequiresTransaction(false)]
+    public class dynHeight : dynNode
+    {
+        public dynHeight()
+        {
+            InPortData.Add(new PortData("elem", "Level, Family Instance, RefPoint, XYZ", typeof(object)));//add elements here when adding switch statements 
+            OutPortData = new PortData("h", "The height of an element in z relative to project 0.", typeof(object));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        private static double getHeight(object elem)
+        {
+            double h = 0;
+
+            if (elem is Level)
+            {
+                h = ((Level)elem).Elevation;
+                return h;
+            }
+            else if (elem is ReferencePoint)
+            {
+                h = ((ReferencePoint)elem).Position.Z;
+                return h;
+            }
+            else if (elem is FamilyInstance)
+            {
+                LocationPoint loc =  (LocationPoint)((FamilyInstance)elem).Location;
+                h = loc.Point.Z;
+                return h;
+            }
+            else if (elem is XYZ)
+            {
+                h = ((XYZ)elem).Z;
+                return h;
+            }
+            else
+            {
+                return h;
+            }
+
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var a = ((Expression.Container)args[0]).Item;
+
+            return Expression.NewNumber(getHeight(a));
+        }
+    }
+
+
 }
+
+

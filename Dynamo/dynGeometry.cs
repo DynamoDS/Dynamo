@@ -991,4 +991,45 @@ namespace Dynamo.Elements
         }
     }
 
+    [ElementName("Hermite Spline")]
+    [ElementCategory(BuiltinElementCategories.REVIT_GEOM)]
+    [ElementDescription("Creates a geometric hermite spline.")]
+    [RequiresTransaction(false)]
+    public class dynHermiteSpline : dynNode
+    {
+        HermiteSpline hs;
+
+        public dynHermiteSpline()
+        {
+            InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(object)));
+            OutPortData = new PortData("ell", "Ellipse", typeof(HermiteSpline));
+
+            base.RegisterInputsAndOutputs();
+        }
+
+        public override Expression Evaluate(FSharpList<Expression> args)
+        {
+            var pts = ((Expression.List)args[0]).Item;
+
+            hs = null;
+
+            FSharpList<Expression> containers = Utils.convertSequence(pts);
+
+            List<XYZ> ctrlPts = new List<XYZ>();
+            foreach (Expression e in containers)
+            {
+                if (e.IsContainer)
+                {
+                    XYZ pt = (XYZ)((Expression.Container)(e)).Item;
+                    ctrlPts.Add(pt);
+                }
+            }
+            if (pts.Count() > 0)
+            {
+                hs = this.UIDocument.Application.Application.Create.NewHermiteSpline(ctrlPts, false);
+            }
+
+            return Expression.NewContainer(hs);
+        }
+    }
 }

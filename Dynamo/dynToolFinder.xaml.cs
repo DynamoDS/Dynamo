@@ -39,14 +39,21 @@ namespace Dynamo.Elements
     {
         public event ToolFinderFinishedHandler ToolFinderFinished;
 
-        //bool _listShowing = false;
+        bool _listShowing = false;
         List<string> toolNames = new List<string>();
         bool hasStartedSearching = false;
+        private static dynToolFinder instance;
 
-        protected virtual void OnToolFinderFinished(EventArgs e)
+        public static dynToolFinder Instance
         {
-            if (ToolFinderFinished != null)
-                ToolFinderFinished(this, e);
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new dynToolFinder();
+                }
+                return instance;
+            }
         }
 
         public dynToolFinder()
@@ -56,54 +63,59 @@ namespace Dynamo.Elements
 
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
+            Assembly elementsAssembly = Assembly.GetExecutingAssembly();
+
             //when a key is pressed iterate over all loaded types
             //using the current text in the text box and repopulate
             //Assembly elementsAssembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-            //if (!_listShowing && this.toolNameBox.Text != "")
-            //{
-            //    //show the drop down list
-            //    _listShowing = true;
+            if (!_listShowing && this.toolNameBox.Text != "")
+            {
+                //show the drop down list
+                _listShowing = true;
 
-            //    //show the list box
-            //    toolSelectListBox.Visibility = System.Windows.Visibility.Visible;
+                //show the list box
+                toolSelectListBox.Visibility = System.Windows.Visibility.Visible;
 
-            //}
+            }
 
-            //if (e.Key == Key.Enter)
-            //{
-            //    //if the list is showing
-            //    //enter will build whatever element is chosen in
-            //    //the list
-            //    if (_listShowing)
-            //    {
-            //        if (toolSelectListBox.SelectedIndex >= 0)
-            //        {
-            //            //create an element with the type name selected
-            //            foreach (Type t in elementsAssembly.GetTypes())
-            //            {
-            //                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
-            //                if (attribs.Length > 0)
-            //                {
-            //                    if (t.Name == ((ListBoxItem)toolSelectListBox.Items[toolSelectListBox.SelectedIndex]).Content.ToString())
-            //                    {
-            //                        dynElement newEl = dynElementSettings.SharedInstance.Bench.AddDynElement(t, (attribs[0] as ElementNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0);
-            //                        newEl.CheckInputs();
-                                    
-            //                        //turn off the tool list box by sending an event
-            //                        //that is picked up by the bench
+            if (e.Key == Key.Enter)
+            {
+                //if the list is showing
+                //enter will build whatever element is chosen in
+                //the list
+                if (_listShowing)
+                {
+                    if (toolSelectListBox.SelectedIndex >= 0)
+                    {
+                        //create an element with the type name selected
+                        foreach (Type t in elementsAssembly.GetTypes())
+                        {
+                            object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+                            if (attribs.Length > 0)
+                            {
+                                if (((ElementNameAttribute)attribs[0]).ElementName == ((ListBoxItem)toolSelectListBox.Items[toolSelectListBox.SelectedIndex]).Content.ToString())
+                                {
+                                   // dynNode newEl = dynElementSettings.SharedInstance.Bench.AddDynElement(t, (attribs[0] as ElementNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0, dynElementSettings.SharedInstance.Workbench.work);
 
-            //                        OnToolFinderFinished(EventArgs.Empty);
+                                    Point p = Mouse.GetPosition(dynElementSettings.SharedInstance.Bench.outerCanvas);
+                                    dynNode newEl = dynElementSettings.SharedInstance.Bench.AddDynElement(
+                                                    t, (attribs[0] as ElementNameAttribute).ElementName, Guid.NewGuid(), p.X,p.Y, dynElementSettings.SharedInstance.Bench.CurrentSpace);
+                                    newEl.CheckInputs();
 
-            //                        break;
-            //                    }
-            //                }
-            //            }
+                                    //turn off the tool list box by sending an event
+                                    //that is picked up by the bench
+                                    dynElementSettings.SharedInstance.Workbench.Children.Remove(this);
 
-            //            return;
-            //        }
-            //    }
-            //}
+                                    break;
+                                }
+                            }
+                        }
+
+                        return;
+                    }
+                }
+            }
             //else if (e.Key == Key.Down || e.Key == Key.Up)
             //{
             //    if (_listShowing)
@@ -119,54 +131,78 @@ namespace Dynamo.Elements
             //        return;
             //    }
             //}
-            
-            ////clear the list of list box items
-            ////and our list holding the tool names
-            //toolSelectListBox.Items.Clear();
-            //toolNames.Clear();
-            
-            //if (string.IsNullOrEmpty(toolNameBox.Text))
-            //{
-            //    toolSelectListBox.Items.Clear();
-            //    toolNames.Clear();
-            //    toolSelectListBox.Visibility = System.Windows.Visibility.Hidden;
-            //    _listShowing = false;
-            //    return;
-            //}
+            else if (e.Key == Key.Escape)
+            {
+                dynElementSettings.SharedInstance.Workbench.Children.Remove(this);
+            }
 
-            
-       
-            //foreach (Type t in elementsAssembly.GetTypes())
-            //{
-            //    //only load types that are in the right namespace, are not abstract
-            //    //and have the elementname attribute
-            //    object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
-            //    object[] descrips = t.GetCustomAttributes(typeof(ElementDescriptionAttribute), false);
+            //clear the list of list box items
+            //and our list holding the tool names
+            toolSelectListBox.Items.Clear();
+            toolNames.Clear();
 
-            //    if (t.Namespace == "Dynamo.Elements" && !t.IsAbstract && attribs.Length > 0)
-            //    {
-            //        if (t.Name.Contains(toolNameBox.Text) && toolNameBox.Text != "")
-            //        {
-            //            if (!toolNames.Contains(t.Name))
-            //            {
-            //                ListBoxItem lbi = new ListBoxItem();
+            if (string.IsNullOrEmpty(toolNameBox.Text))
+            {
+                toolSelectListBox.Items.Clear();
+                toolNames.Clear();
+                toolSelectListBox.Visibility = System.Windows.Visibility.Hidden;
+                _listShowing = false;
+                return;
+            }
 
-            //                lbi.Content = t.Name;
-            //                //lbi.Content = ((ElementNameAttribute)attribs[0]).ElementName;
+            foreach (Type t in elementsAssembly.GetTypes())
+            {
+                //only load types that are in the right namespace, are not abstract
+                //and have the elementname attribute
+                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+                object[] descrips = t.GetCustomAttributes(typeof(ElementDescriptionAttribute), false);
 
-            //                if (descrips.Length > 0)
-            //                {
-            //                    lbi.ToolTip = ((ElementDescriptionAttribute)descrips[0]).ElementDescription;
-            //                }
+                if (t.Namespace == "Dynamo.Elements" && !t.IsAbstract && attribs.Length > 0)
+                {
+                    if ((attribs[0] as ElementNameAttribute).ElementName.ToLower().Contains(toolNameBox.Text.ToLower()) && toolNameBox.Text != "")
+                    {
+                        if (!toolNames.Contains(t.Name))
+                        {
+                            ListBoxItem lbi = new ListBoxItem();
 
-            //                toolSelectListBox.Items.Add(lbi);
-            //                toolNames.Add(t.Name);
-            //            }
-            //        }
-            //    }
-            //}
+                            //lbi.Content = t.Name;
+                            lbi.Content = ((ElementNameAttribute)attribs[0]).ElementName;
 
-            //e.Handled = true;
+                            if (descrips.Length > 0)
+                            {
+                                lbi.ToolTip = ((ElementDescriptionAttribute)descrips[0]).ElementDescription;
+                            }
+                            lbi.PreviewMouseUp += new MouseButtonEventHandler(lbi_PreviewMouseUp);
+                            toolSelectListBox.Items.Add(lbi);
+                            toolNames.Add(t.Name);
+                        }
+                    }
+                }
+            }
+
+            e.Handled = true;
+        }
+
+        void lbi_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem lbi = sender as ListBoxItem;
+
+            // don't know why, but sometimes we get a -1 index here.
+            if (toolSelectListBox.SelectedIndex < 0 || toolSelectListBox.SelectedIndex > toolNames.Count() - 1)
+                return;
+
+            if (lbi != null)
+            {   
+                //we've clicked a list item
+                Point p = Mouse.GetPosition(dynElementSettings.SharedInstance.Workbench);
+                dynNode newEl = dynElementSettings.SharedInstance.Bench.AddDynElement(
+                                Type.GetType("Dynamo.Elements." + toolNames[toolSelectListBox.SelectedIndex]), lbi.Content.ToString(), Guid.NewGuid(), p.X, p.Y, dynElementSettings.SharedInstance.Bench.CurrentSpace);
+                newEl.CheckInputs();
+
+                //turn off the tool list box by sending an event
+                //that is picked up by the bench
+                dynElementSettings.SharedInstance.Workbench.Children.Remove(this);
+            }
         }
 
         private void toolNameBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -179,11 +215,6 @@ namespace Dynamo.Elements
                 hasStartedSearching = true;
                 e.Handled = true;
             }
-
-            
-
         }
-
-
     }
 }

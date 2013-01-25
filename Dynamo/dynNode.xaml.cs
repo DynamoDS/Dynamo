@@ -392,6 +392,9 @@ namespace Dynamo.Elements
             SetupPortGrids();
             RegisterInputs();
             RegisterOutputs();
+
+            UpdateLayout();
+
             SetToolTips();
             ValidateConnections();
         }
@@ -401,6 +404,9 @@ namespace Dynamo.Elements
             ResizeElementForInputs();
             SetupPortGrids();
             RegisterInputs();
+
+            UpdateLayout();
+
             SetToolTips();
             ValidateConnections();
             UpdateConnections();

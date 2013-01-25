@@ -47,7 +47,9 @@
                   <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                </MenuItem.Icon>
             </MenuItem>
-            <!--<MenuItem Header="_Save Function" Click="SaveFunction_Click" Name="saveFuncItem" IsEnabled="False" />
+            <MenuItem Header="_Save Image..." Click="saveImage_Click" Name="saveImage"/>
+            <MenuItem Header="_Layout All" Click="layoutAll_Click"  Name="layoutAll"/>
+                <!--<MenuItem Header="_Save Function" Click="SaveFunction_Click" Name="saveFuncItem" IsEnabled="False" />
             <MenuItem Header="_Run" Click="Run_Click" />
             <MenuItem Header="_Run Debug" Click="RunDebug_Click" />
             <MenuItem Header="_Print Expression" Click="Print_Click" />-->
