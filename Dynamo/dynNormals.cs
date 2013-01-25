@@ -29,7 +29,7 @@ namespace Dynamo.Elements
     {
         public dynNormalEvaluate()
         {
-            InPortData.Add(new PortData("pt", "The point to evaluate.", typeof(object)));
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
             
             OutPortData = new PortData("XYZ", "The normal.", typeof(string));
@@ -42,21 +42,12 @@ namespace Dynamo.Elements
             
             Face f = this.UIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
             XYZ norm = null;
-
+            
             if (f != null)
             {
                 //each item in the list will be a reference point
-                ReferencePoint rp = (args[0] as Expression.Container).Item as ReferencePoint;
-
-                if (rp != null)
-                {
-                    PointOnFace pof = rp.GetPointElementReference() as PointOnFace;
-
-                    if (pof != null)
-                    {
-                        norm = f.ComputeNormal(pof.UV);
-                    } 
-                }
+                UV uv = (UV)(args[0] as Expression.Container).Item;
+                norm = f.ComputeNormal(uv);
             }
 
             return Expression.NewContainer(norm);
