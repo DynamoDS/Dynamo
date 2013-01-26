@@ -40,6 +40,7 @@ using Path = System.IO.Path;
 using Expression = Dynamo.FScheme.Expression;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Dynamo.Controls
 {
@@ -930,10 +931,15 @@ namespace Dynamo.Controls
             //match the new mouse coordinates.
             if (workBench.isDragInProgress)
             {
-                foreach (dynConnector c in connectorsToUpdate)
+                this.Dispatcher.Invoke(new Action(
+                delegate
                 {
-                    c.Redraw();
-                }
+                    foreach (dynConnector c in connectorsToUpdate)
+                    {
+                        c.Redraw();
+                    }
+                    }
+                ),DispatcherPriority.Render,null);
             }
 
             //If we are panning the workspace, update the coordinate offset for the

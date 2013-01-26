@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Dynamo.Controls;
+using System.Windows.Threading;
 
 namespace Dynamo.Controls
 {
@@ -382,23 +383,27 @@ namespace Dynamo.Controls
 
          #region Move Drag Element
          count = 0;
-         foreach (UIElement el in this.elementsBeingDragged)
-         {
-             OffsetData od = offsets[count];
+         this.Dispatcher.Invoke(new Action(
+               delegate
+               {
+                 foreach (UIElement el in this.elementsBeingDragged)
+                 {
+                     OffsetData od = offsets[count];
  
-             if (od.ModifyLeftOffset)
-                 Canvas.SetLeft(el, od.NewHorizontalOffset);
-             else
-                 Canvas.SetRight(el, od.NewHorizontalOffset);
+                     if (od.ModifyLeftOffset)
+                         Canvas.SetLeft(el, od.NewHorizontalOffset);
+                     else
+                         Canvas.SetRight(el, od.NewHorizontalOffset);
 
-             if (od.ModifyTopOffset)
-                 Canvas.SetTop(el, od.NewVerticalOffset);
-             else
-                 Canvas.SetBottom(el, od.NewVerticalOffset);
+                     if (od.ModifyTopOffset)
+                         Canvas.SetTop(el, od.NewVerticalOffset);
+                     else
+                         Canvas.SetBottom(el, od.NewVerticalOffset);
 
-             count++;
-         }
-
+                     count++;
+                 }
+               }
+            ),DispatcherPriority.Render, null );
          #endregion // Move Drag Element
 
       }

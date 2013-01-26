@@ -44,7 +44,7 @@ namespace Dynamo.Elements
             this.NickName = symbol;
 
             //Add a drop-shadow.
-            ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
+            //((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
 
             //Setup double-click behavior
             this.MouseDoubleClick += delegate
@@ -65,7 +65,7 @@ namespace Dynamo.Elements
             };
 
             //Add a drop-shadow
-            ((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
+            //((DropShadowEffect)this.elementRectangle.Effect).Opacity = 1;
         }
 
         protected internal override bool RequiresManualTransaction()
