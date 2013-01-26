@@ -1,0 +1,3 @@
+# override specific installer exes#
+###################
+!fsharp_redist.exe
