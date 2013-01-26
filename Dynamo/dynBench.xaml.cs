@@ -68,6 +68,7 @@ namespace Dynamo.Controls
 
         bool isWindowSelecting = false;
         Point mouseDownPos;
+        List<dynConnector> connectorsToUpdate = new List<dynConnector>();
 
         dynWorkspace _cspace;
         internal dynWorkspace CurrentSpace
@@ -909,7 +910,6 @@ namespace Dynamo.Controls
             }
         }
 
-
         /// <summary>
         /// Called when the mouse has been moved.
         /// </summary>
@@ -930,17 +930,9 @@ namespace Dynamo.Controls
             //match the new mouse coordinates.
             if (workBench.isDragInProgress)
             {
-                foreach (UIElement selEl in workBench.ElementsBeingDragged)
+                foreach (dynConnector c in connectorsToUpdate)
                 {
-                    dynNode el = selEl as dynNode;
-                    if (el != null)
-                    {
-                        foreach (dynPort p in el.InPorts)
-                        {
-                            p.Update();
-                        }
-                        el.OutPort.Update();
-                    }
+                    c.Redraw();
                 }
             }
 
@@ -1084,12 +1076,12 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void 
+            OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             Debug.WriteLine("Starting mouse down.");
 
             //Pan with middle-click
-
             if (e.ChangedButton == MouseButton.Middle)
             {
                 isPanning = true;
@@ -1104,6 +1096,8 @@ namespace Dynamo.Controls
 
             if (e.ChangedButton == MouseButton.Left)
             {
+                connectorsToUpdate.Clear();
+
                 if (!isConnecting)
                 {
                     //test if you're hitting a node
@@ -1121,7 +1115,20 @@ namespace Dynamo.Controls
                                 Debug.WriteLine("Element clicked");
                                 ClearSelection();
                                 SelectElement(element);
+
                                 //we found an element, so just get out of here
+                                foreach(dynPort p in element.InPorts)
+                                {
+                                    foreach (dynConnector c in p.Connectors)
+                                    {
+                                        connectorsToUpdate.Add(c);
+                                    }
+                                }
+                                foreach (dynConnector c in element.OutPort.Connectors)
+                                {
+                                    connectorsToUpdate.Add(c);
+                                }
+
                                 return;
                             }
                         }
@@ -1158,7 +1165,6 @@ namespace Dynamo.Controls
             if (e.ChangedButton == MouseButton.Middle)
             {
                 isPanning = false;
-
                 oldX = 0.0;
                 oldY = 0.0;
                 newX = 0.0;
@@ -1206,23 +1212,36 @@ namespace Dynamo.Controls
                                 (n as dynNode).Select();
                         }
                     }
-                }
-                
-                //if (this.selectedElements.Count > 0)
-                //{
-                //    //we have elements selected already or
-                //    //we found some elements, get out of here
-                //    return;
-                //}
 
-                ////last but not least, if you haven't found any elements
-                ////see if you're hitting the canvas
-                //DragCanvas dc = ElementClicked(hitResultsList[0], typeof(DragCanvas)) as DragCanvas;
-                //if (dc != null)
-                //{
-                //    Debug.WriteLine("Canvas clicked");
-                //    ClearSelection();
-                //}
+                    connectorsToUpdate.Clear();
+
+                    //store all the connectors involved in this
+                    //selection for updating
+                    foreach (UIElement selEl in workBench.ElementsBeingDragged)
+                    {
+                        dynNode el = selEl as dynNode;
+                        if (el != null)
+                        {
+                            foreach (dynPort p in el.InPorts)
+                            {
+                                foreach (dynConnector c in p.Connectors)
+                                {
+                                    if (!connectorsToUpdate.Contains(c))
+                                    {
+                                        connectorsToUpdate.Add(c);
+                                    }
+                                }
+                            }
+                            foreach (dynConnector c in el.OutPort.Connectors)
+                            {
+                                if (!connectorsToUpdate.Contains(c))
+                                {
+                                    connectorsToUpdate.Add(c);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

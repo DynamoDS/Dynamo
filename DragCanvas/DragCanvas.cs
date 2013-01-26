@@ -20,18 +20,11 @@ namespace Dynamo.Controls
       #region Data
 
       // Stores a reference to the UIElement currently being dragged by the user.
-      //public UIElement elementBeingDragged;
       public List<UIElement> elementsBeingDragged = new List<UIElement>();
       public List<OffsetData> offsets = new List<OffsetData>();
 
       // Keeps track of where the mouse cursor was when a drag operation began.		
       private Point origCursorLocation;
-
-      // The offsets from the DragCanvas' edges when the drag operation began.
-      //private double origHorizOffset, origVertOffset;
-
-      // Keeps track of which horizontal and vertical offset should be modified for the drag element.
-      //private bool modifyLeftOffset, modifyTopOffset;
 
       // True if a drag operation is underway, else false.
       public bool isDragInProgress;
@@ -304,70 +297,12 @@ namespace Dynamo.Controls
                 offsets.Add(os);
 
             }
-            // Walk up the visual tree from the element that was clicked, 
-            // looking for an element that is a direct child of the Canvas.
-            //this.ElementBeingDragged = this.FindCanvasChild(e.Source as DependencyObject);
-            //if (this.ElementBeingDragged == null)
-            //    return;
 
-            //// Get the element's offsets from the four sides of the Canvas.
-            //double left = Canvas.GetLeft(this.ElementBeingDragged);
-            //double right = Canvas.GetRight(this.ElementBeingDragged);
-            //double top = Canvas.GetTop(this.ElementBeingDragged);
-            //double bottom = Canvas.GetBottom(this.ElementBeingDragged);
-
-            //// Calculate the offset deltas and determine for which sides
-            //// of the Canvas to adjust the offsets.
-            //this.origHorizOffset = ResolveOffset(left, right, out this.modifyLeftOffset);
-            //this.origVertOffset = ResolveOffset(top, bottom, out this.modifyTopOffset);
-
-            // Set the Handled flag so that a control being dragged 
-            // does not react to the mouse input.
             e.Handled = true;
 
             this.isDragInProgress = true;
          }
       }
-
-      /// <summary>
-      /// Hack to use the picking elemements in the dynBench class. Replace with proper events int the future
-      /// </summary>
-      //public void DragElement()
-      //{
-      //   if (!isConnecting)
-      //   {
-
-      //      if (this.ElementBeingDragged == null)
-      //         return;
-      //       if (this.elementsBeingDragged.Count == 0)
-      //           return;
-
-      //        Get the element's offsets from the four sides of the Canvas.
-      //       double left = Canvas.GetLeft(this.elementsBeingDragged);
-      //       double right = Canvas.GetRight(this.elementsBeingDragged);
-      //       double top = Canvas.GetTop(this.elementsBeingDragged);
-      //       double bottom = Canvas.GetBottom(this.elementsBeingDragged);
-
-      //        Calculate the offset deltas and determine for which sides
-      //        of the Canvas to adjust the offsets.
-      //       this.origHorizOffset = ResolveOffset(left, right, out this.modifyLeftOffset);
-      //       this.origVertOffset = ResolveOffset(top, bottom, out this.modifyTopOffset);
-      //      UIElement el = this.elementsBeingDragged[0];
-
-      //       Get the element's offsets from the four sides of the Canvas.
-      //      double left = Canvas.GetLeft(el);
-      //      double right = Canvas.GetRight(el);
-      //      double top = Canvas.GetTop(el);
-      //      double bottom = Canvas.GetBottom(el);
-
-      //       Calculate the offset deltas and determine for which sides
-      //       of the Canvas to adjust the offsets.
-      //      this.origHorizOffset = ResolveOffset(left, right, out this.modifyLeftOffset);
-      //      this.origVertOffset = ResolveOffset(top, bottom, out this.modifyTopOffset);
-
-      //      this.isDragInProgress = true;
-      //   }
-      //}
 
       #endregion // OnPreviewMouseLeftButtonDown
 
@@ -377,18 +312,11 @@ namespace Dynamo.Controls
       {
          base.OnPreviewMouseMove(e);
 
-         // If no element is being dragged, there is nothing to do.
-         //if (this.ElementBeingDragged == null || !this.isDragInProgress)
-         //   return;
-
          if (this.elementsBeingDragged.Count == 0 || !this.isDragInProgress)
              return;
 
          // Get the position of the mouse cursor, relative to the Canvas.
          Point cursorLocation = e.GetPosition(this);
-
-         // These values will store the new offsets of the drag element.
-         //double newHorizontalOffset, newVerticalOffset;
 
          #region Calculate Offsets
 
@@ -412,18 +340,6 @@ namespace Dynamo.Controls
              Debug.WriteLine(string.Format("New h:{0} v:{1}", od.NewHorizontalOffset, od.NewVerticalOffset));
              count++;
          }
-
-         //// Determine the horizontal offset.
-         //if (this.modifyLeftOffset)
-         //   newHorizontalOffset = this.origHorizOffset + (cursorLocation.X - this.origCursorLocation.X);
-         //else
-         //   newHorizontalOffset = this.origHorizOffset - (cursorLocation.X - this.origCursorLocation.X);
-
-         //// Determine the vertical offset.
-         //if (this.modifyTopOffset)
-         //   newVerticalOffset = this.origVertOffset + (cursorLocation.Y - this.origCursorLocation.Y);
-         //else
-         //   newVerticalOffset = this.origVertOffset - (cursorLocation.Y - this.origCursorLocation.Y);
 
          #endregion // Calculate Offsets
 
@@ -461,30 +377,6 @@ namespace Dynamo.Controls
                  count++;
              }
 
-            // Get the bounding rect of the drag element.
-            //Rect elemRect = this.CalculateDragElementRect(newHorizontalOffset, newVerticalOffset);
-
-            ////
-            //// If the element is being dragged out of the viewable area, 
-            //// determine the ideal rect location, so that the element is 
-            //// within the edge(s) of the canvas.
-            ////
-            //bool leftAlign = elemRect.Left < 0;
-            //bool rightAlign = elemRect.Right > this.ActualWidth;
-
-            //if (leftAlign)
-            //   newHorizontalOffset = modifyLeftOffset ? 0 : this.ActualWidth - elemRect.Width;
-            //else if (rightAlign)
-            //   newHorizontalOffset = modifyLeftOffset ? this.ActualWidth - elemRect.Width : 0;
-
-            //bool topAlign = elemRect.Top < 0;
-            //bool bottomAlign = elemRect.Bottom > this.ActualHeight;
-
-            //if (topAlign)
-            //   newVerticalOffset = modifyTopOffset ? 0 : this.ActualHeight - elemRect.Height;
-            //else if (bottomAlign)
-            //   newVerticalOffset = modifyTopOffset ? this.ActualHeight - elemRect.Height : 0;
-
             #endregion // Verify Drag Element Location
          }
 
@@ -506,16 +398,6 @@ namespace Dynamo.Controls
 
              count++;
          }
-         
-         //if (this.modifyLeftOffset)
-         //   Canvas.SetLeft(this.ElementBeingDragged, newHorizontalOffset);
-         //else
-         //   Canvas.SetRight(this.ElementBeingDragged, newHorizontalOffset);
-
-         //if (this.modifyTopOffset)
-         //   Canvas.SetTop(this.ElementBeingDragged, newVerticalOffset);
-         //else
-         //   Canvas.SetBottom(this.ElementBeingDragged, newVerticalOffset);
 
          #endregion // Move Drag Element
 
@@ -524,16 +406,6 @@ namespace Dynamo.Controls
       #endregion // OnPreviewMouseMove
 
       #region OnHostPreviewMouseUp
-
-      //protected override void OnPreviewMouseUp( MouseButtonEventArgs e )
-      //{
-      //    base.OnPreviewMouseUp( e );
-
-      //    // Reset the field whether the left or right mouse button was 
-      //    // released, in case a context menu was opened on the drag element.
-      //    this.ElementBeingDragged = null;
-      //    this.isDragInProgress = false;
-      //}
 
       protected override void OnMouseUp(MouseButtonEventArgs e)
       {
@@ -548,6 +420,7 @@ namespace Dynamo.Controls
 
          this.isDragInProgress = false;
       }
+      
       #endregion // OnHostPreviewMouseUp
 
       #endregion // Host Event Handlers
