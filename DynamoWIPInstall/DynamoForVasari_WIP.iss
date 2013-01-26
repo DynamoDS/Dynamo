@@ -54,7 +54,8 @@ Source: DragCanvas.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; 
 Source: FSchemeInterop.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP
 Source: FScheme.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP
 Source: HelixToolkit.Wpf.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP 
-Source: MIConvexHullPlugin.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP 
+Source: MIConvexHullPlugin.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP
+Source: Microsoft.Kinect.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP  
 Source: Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP
 Source: readme.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoForVasariWIP
 Source: fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForVasariWIP
