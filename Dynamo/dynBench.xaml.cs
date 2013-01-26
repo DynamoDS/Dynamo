@@ -917,6 +917,7 @@ namespace Dynamo.Controls
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+
         {
             //Debug.WriteLine("Mouse move.");
 
@@ -938,6 +939,7 @@ namespace Dynamo.Controls
                     {
                         c.Redraw();
                     }
+
                     }
                 ),DispatcherPriority.Render,null);
             }
@@ -1082,8 +1084,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void 
-            OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             Debug.WriteLine("Starting mouse down.");
 
@@ -1118,23 +1119,9 @@ namespace Dynamo.Controls
                             element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
                             if (element != null && element.IsVisible)
                             {
-                                Debug.WriteLine("Element clicked");
+                                //clear the selection but don't
+                                //reselect until mouse up.
                                 ClearSelection();
-                                SelectElement(element);
-
-                                //we found an element, so just get out of here
-                                foreach(dynPort p in element.InPorts)
-                                {
-                                    foreach (dynConnector c in p.Connectors)
-                                    {
-                                        connectorsToUpdate.Add(c);
-                                    }
-                                }
-                                foreach (dynConnector c in element.OutPort.Connectors)
-                                {
-                                    connectorsToUpdate.Add(c);
-                                }
-
                                 return;
                             }
                         }
@@ -1244,6 +1231,40 @@ namespace Dynamo.Controls
                                 {
                                     connectorsToUpdate.Add(c);
                                 }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    hitResultsList.Clear();
+                    TestClick(e.GetPosition(workBench));
+                    dynNode element = null;
+                    if (hitResultsList.Count > 0)
+                    {
+                        foreach (DependencyObject depObj in hitResultsList)
+                        {
+                            element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
+                            if (element != null && element.IsVisible)
+                            {
+                                Debug.WriteLine("Element clicked");
+                                ClearSelection();
+                                SelectElement(element);
+
+                                //we found an element, so just get out of here
+                                foreach (dynPort p in element.InPorts)
+                                {
+                                    foreach (dynConnector c in p.Connectors)
+                                    {
+                                        connectorsToUpdate.Add(c);
+                                    }
+                                }
+                                foreach (dynConnector c in element.OutPort.Connectors)
+                                {
+                                    connectorsToUpdate.Add(c);
+                                }
+
+                                return;
                             }
                         }
                     }
@@ -1908,7 +1929,8 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
-        void OnPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        void 
+            OnPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
         {
             Debug.WriteLine("Starting preview mouse down.");
 
