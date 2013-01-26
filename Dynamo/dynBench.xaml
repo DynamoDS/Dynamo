@@ -5,7 +5,7 @@
         x:Name="_this"
         Height="768" Width="1024"
         MouseMove="OnMouseMove" 
-        PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown" 
+        PreviewMouseLeftButtonUp="OnPreviewMouseLeftButtonDown"
         MouseWheel="OnMouseWheel"
         MouseDown="OnMouseDown"
         MouseUp="OnMouseUp"
@@ -80,10 +80,7 @@
             <dynCtrl:DragCanvas x:Name="workBench"
                                 Width="100000" 
                                 Height="100000" 
-                                Visibility="Hidden"
-                                MouseDown="workBench_MouseDown"
-                                MouseUp="workBench_MouseUp"
-                                MouseMove="workBench_MouseMove">
+                                Visibility="Hidden">
                <Canvas.RenderTransform>
                   <TransformGroup>
                      <ScaleTransform CenterX="-10"
