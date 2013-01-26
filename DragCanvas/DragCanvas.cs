@@ -420,12 +420,14 @@ namespace Dynamo.Controls
          // released, in case a context menu was opened on the drag element.
          //this.ElementBeingDragged = null;
 
-         this.elementsBeingDragged.Clear();
-         this.offsets.Clear();
-
          this.isDragInProgress = false;
       }
-      
+
+      public void ClearDragElements()
+      {
+          this.elementsBeingDragged.Clear();
+          this.offsets.Clear();
+      }
       #endregion // OnHostPreviewMouseUp
 
       #endregion // Host Event Handlers

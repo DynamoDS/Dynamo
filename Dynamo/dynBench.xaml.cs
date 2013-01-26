@@ -753,9 +753,8 @@ namespace Dynamo.Controls
             }
 
             selectedElements.Clear();
-            workBench.elementsBeingDragged.Clear();
+            workBench.ClearDragElements();
         }
-
 
         /// <summary>
         /// Called when the MouseWheel has been scrolled.
@@ -788,7 +787,6 @@ namespace Dynamo.Controls
             }
             return false;
         }
-
 
         /// <summary>
         /// Updates an element and all its ports.
@@ -1121,7 +1119,7 @@ namespace Dynamo.Controls
                             {
                                 //clear the selection but don't
                                 //reselect until mouse up.
-                                ClearSelection();
+                                //ClearSelection();
                                 return;
                             }
                         }
@@ -1234,9 +1232,18 @@ namespace Dynamo.Controls
                             }
                         }
                     }
+
+                    return;
                 }
                 else
                 {
+                    //if you're dragging a bunch of stuff, when you let go
+                    //the stuff should stay highlighted
+                    //if (this.SelectedElements.Count > 1)
+                    //    return;
+
+                    //otherwise, assume that we want to select what's
+                    //under the mouse
                     hitResultsList.Clear();
                     TestClick(e.GetPosition(workBench));
                     dynNode element = null;
@@ -1929,8 +1936,7 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
-        void 
-            OnPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        void OnPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
         {
             Debug.WriteLine("Starting preview mouse down.");
 
@@ -1938,10 +1944,6 @@ namespace Dynamo.Controls
             TestClick(e.GetPosition(workBench));
 
             dynPort p = null;
-            //DragCanvas dc = null;
-            //dynNode element = null;
-
-            bool hit = false;
 
             //figure out which element is hit
             //HACK: put the tests with break in highest to
@@ -1955,26 +1957,9 @@ namespace Dynamo.Controls
                     p = ElementClicked(depObj, typeof(dynPort)) as dynPort;
                     if (p != null && p.Owner.IsVisible)
                     {
-                        hit = true;
                         break;
                     }
-
-                    //traverse the tree through all the
-                    //hit elements to see if you get an element
-                    //element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
-                    //if (element != null && element.IsVisible)
-                    //{
-                    //    hit = true;
-                    //    break;
-                    //}
                 }
-
-                //if (!hit)
-                //{
-                //    //traverse the tree through all the
-                //    //hit elements to see if you get the canvas
-                //    dc = ElementClicked(hitResultsList[0], typeof(DragCanvas)) as DragCanvas;
-                //}
             }
 
             #region test for a port
@@ -2057,18 +2042,6 @@ namespace Dynamo.Controls
             }
             #endregion
 
-            //if (element != null)
-            //{
-            //    Debug.WriteLine("Element clicked");
-            //    ClearSelection();
-            //    SelectElement(element);
-            //}
-
-            //if (dc != null)
-            //{
-            //    Debug.WriteLine("Canvas clicked");
-            //    ClearSelection();
-            //}
         }
 
         //void OnMouseRightButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
@@ -2105,6 +2078,7 @@ namespace Dynamo.Controls
 
         //bubbling
         //from element up to root
+        
         private void OnKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
 
