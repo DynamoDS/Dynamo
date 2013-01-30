@@ -56,11 +56,10 @@
                        RadiusX="10" 
                        RadiusY="10"
                        Canvas.ZIndex="90"
-                       Stroke="Black" 
-                       StrokeThickness="2">
-            <!--<Rectangle.Effect>
+                       Stroke="Black" StrokeThickness="2">
+            <Rectangle.Effect>
                <DropShadowEffect Opacity="0" />
-            </Rectangle.Effect>-->
+            </Rectangle.Effect>
             <Rectangle.Fill>
                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
                   <GradientStop Color="Yellow" Offset="0.0" />
