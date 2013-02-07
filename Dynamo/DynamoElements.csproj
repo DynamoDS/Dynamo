@@ -71,6 +71,9 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
     </Reference>
+    <Reference Include="LeapCSharp.NET4.0">
+      <HintPath>..\..\..\..\..\..\Leap\Leap_SDK\lib\LeapCSharp.NET4.0.dll</HintPath>
+    </Reference>
     <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
@@ -139,6 +142,7 @@ limitations under the License.
     </Compile>
     <Compile Include="dynGeometricForms.cs" />
     <Compile Include="dynKinect.cs" />
+    <Compile Include="dynLeapMotion.cs" />
     <Compile Include="dynMeasurement.cs" />
     <Compile Include="dynSimplexNoise.cs" />
     <Compile Include="dynTessellation.cs" />
