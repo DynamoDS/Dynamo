@@ -17,7 +17,6 @@ module Dynamo.FScheme
 
 //An F# Scheme Interpreter
 open System
-open System.Numerics
 open System.IO
 open System.Diagnostics
 
