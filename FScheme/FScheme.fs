@@ -630,15 +630,16 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
     //Objects are passed as their Expression equivalent
     | Number_E(n)    -> wrap <| Number(n)
     | String_E(s)    -> wrap <| String(s)
-    | Function_E(f)      -> wrap <| Function(f)
+    | Function_E(f)  -> wrap <| Function(f)
     | Container_E(o) -> wrap <| Container(o)
 
     //Identifiers
     | Id(id) ->
         match findInEnv id compenv.Value with
-        //If the identifier is in the compiler environment (name registry), then we fetch it from the environment at runtime.
+        //If the identifier is in the compiler environment (name registry),
+        //then we fetch it from the environment at runtime.
         | Some(i1, i2) -> fun env -> (env.Value.Item i1).Value.[i2].Value
-        //If it's not there, then it's free identifier.
+        //If it's not there, then it's a free identifier.
         | None         -> failwith <| sprintf "Unbound identifier: %s" id
 
     //Set!
