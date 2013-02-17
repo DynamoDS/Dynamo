@@ -383,6 +383,10 @@ let Divide =
 let Modulus =  mathbin (%) "modulus"
 let Exponent = mathbin ( ** ) "exponent"
 
+let Sqrt = function
+   | [Number(n)] -> Number(Math.Sqrt n)
+   | m -> malformed "square root" <| List(m)
+
 ///Simple wrapper for comparison operations.
 let private boolMath (op : (IComparable -> IComparable -> bool)) name args =
     let comp a' b' =
@@ -931,6 +935,7 @@ let private makeEnvironments() =
     AddDefaultBinding "sort-by" (Function(SortBy))
     AddDefaultBinding "for-each" (Function(ForEach))
     AddDefaultBinding "flatten" (Function(Flatten))
+    AddDefaultBinding "sqrt" (Function(Sqrt))
 
 let private eval ce env syntax = compile ce syntax env
 
