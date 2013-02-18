@@ -121,7 +121,7 @@ namespace Dynamo.Elements
             return fun
                .Invoke(ExecutionEnvironment.IDENT)
                .Invoke(
-                  Utils.convertSequence(args.Select(
+                  Utils.SequenceToFSharpList(args.Select(
                      x => this.macroEnvironment.Evaluate(x)
                   ))
                );
@@ -1253,7 +1253,7 @@ namespace Dynamo.Elements
             if (input.IsList)
             {
                 return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
                       ((Expression.List)input).Item.Select(
                          x =>
                             Expression.NewNumber(Math.Sin(((Expression.Number)x).Item))
@@ -1290,7 +1290,7 @@ namespace Dynamo.Elements
             if (input.IsList)
             {
                 return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
                       ((Expression.List)input).Item.Select(
                          x =>
                             Expression.NewNumber(Math.Cos(((Expression.Number)x).Item))
@@ -1327,7 +1327,7 @@ namespace Dynamo.Elements
             if (input.IsList)
             {
                 return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
                       ((Expression.List)input).Item.Select(
                          x =>
                             Expression.NewNumber(Math.Tan(((Expression.Number)x).Item))
@@ -2704,7 +2704,7 @@ namespace Dynamo.Elements
             string del = ((Expression.String)args[1]).Item;
 
             return Expression.NewList(
-                Utils.convertSequence(
+                Utils.SequenceToFSharpList(
                     str.Split(new string[] { del }, StringSplitOptions.None)
                        .Select(Expression.NewString)
                 )

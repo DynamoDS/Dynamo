@@ -538,7 +538,7 @@ namespace Dynamo.Elements
             {
                 var planeList = (input as Expression.List).Item;
 
-                var result = Utils.convertSequence(
+                var result = Utils.SequenceToFSharpList(
                    planeList.Select(
                       delegate(Expression x)
                       {
@@ -1013,7 +1013,7 @@ namespace Dynamo.Elements
 
             hs = null;
 
-            FSharpList<Expression> containers = Utils.convertSequence(pts);
+            FSharpList<Expression> containers = Utils.SequenceToFSharpList(pts);
 
             List<XYZ> ctrlPts = new List<XYZ>();
             foreach (Expression e in containers)

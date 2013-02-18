@@ -83,7 +83,7 @@ namespace Dynamo.Elements
 
 
                 //We create our output by...
-                var result = Utils.convertSequence(
+                var result = Utils.SequenceToFSharpList(
                    curveList.Select(
                     //..taking each curve in the list and...
                       delegate(Expression x)

@@ -350,7 +350,7 @@ namespace Dynamo.Elements
          {
             int count = 0;
             var result =  Expression.NewList(
-               Utils.convertSequence(
+               Utils.SequenceToFSharpList(
                   (input as Expression.List).Item.Select(
                      x =>
                             this.makeCurveRef(

@@ -1174,7 +1174,7 @@ namespace Dynamo.Elements
                 
                 //Evaluate arguments, then evaluate this.
                 this.oldValue = this.eval(
-                   Utils.convertSequence(
+                   Utils.SequenceToFSharpList(
                       args.Select(
                          input => environment.Evaluate(input)
                       )

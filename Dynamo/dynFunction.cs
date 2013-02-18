@@ -349,7 +349,7 @@ namespace Dynamo.Elements
                 return (procedure as Expression.Function).Item
                    .Invoke(ExecutionEnvironment.IDENT)
                    .Invoke(
-                      Utils.convertSequence(
+                      Utils.SequenceToFSharpList(
                          args.Select(
                             input => this.macroEnvironment.Evaluate(input)
                          )

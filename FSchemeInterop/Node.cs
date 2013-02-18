@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 using Microsoft.FSharp.Collections;
 
@@ -70,7 +71,7 @@ namespace Dynamo.FSchemeInterop
 
             public Expression Compile()
             {
-                return Expression.NewNumber(this.num);
+                return Expression.NewNumber_E(this.num);
             }
         }
 
@@ -86,7 +87,7 @@ namespace Dynamo.FSchemeInterop
 
             public Expression Compile()
             {
-                return Expression.NewString(this.str);
+                return Expression.NewString_E(this.str);
             }
         }
 
@@ -102,7 +103,7 @@ namespace Dynamo.FSchemeInterop
 
             public Expression Compile()
             {
-                return Expression.NewContainer(this.obj);
+                return Expression.NewContainer_E(this.obj);
             }
         }
 
@@ -118,7 +119,7 @@ namespace Dynamo.FSchemeInterop
 
             public Expression Compile()
             {
-                return Expression.NewSymbol(this.symbol);
+                return Expression.NewId(this.symbol);
             }
         }
 
@@ -130,12 +131,10 @@ namespace Dynamo.FSchemeInterop
 
             public override Expression Compile()
             {
-                return Utils.mkExprList(
-                   Expression.NewSymbol("if"),
-                   this.arguments["test"].Compile(),
-                   this.arguments["true"].Compile(),
-                   this.arguments["false"].Compile()
-                );
+                return Expression.NewIf(
+                    this.arguments["test"].Compile(),
+                    this.arguments["true"].Compile(),
+                    this.arguments["false"].Compile());
             }
         }
 
@@ -151,18 +150,9 @@ namespace Dynamo.FSchemeInterop
 
             public override Expression Compile()
             {
-                return Expression.NewList(
-                   FSharpList<Expression>.Cons(
-                      Expression.NewSymbol("begin"),
-                      Utils.convertSequence(this.Inputs.Select(x => this.arguments[x].Compile()))
-                   )
-                );
-
-                //return Utils.mkExprList(
-                //   Expression.NewSymbol("begin"),
-                //   this.arguments["expr1"].Compile(),
-                //   this.arguments["expr2"].Compile()
-                //);
+                return Expression.NewBegin(
+                    Utils.SequenceToFSharpList(
+                        this.Inputs.Select(x => this.arguments[x].Compile())));
             }
         }
 
@@ -264,31 +254,28 @@ namespace Dynamo.FSchemeInterop
                     );
                     //Return a function that...
                     return Utils.MakeAnon(
-                        //...takes all of the missing arguments...
+                       //...takes all of the missing arguments...
                        missingArgs.ToList(),
-                       Expression.NewList(
+                       Expression.NewList_E(
                           FSharpList<Expression>.Cons(
-                        //...and calls this function...
+                             //...and calls this function...
                              function,
-                             Utils.convertSequence(
-                        //...with the arguments which were supplied.
-                                parameters.Select(input => missingArgs.Contains(input)
-                                                        ? Expression.NewSymbol(input)
-                                                        : this.arguments[input].Compile()
-                                )
-                             )
-                          )
-                       )
-                    );
+                             Utils.SequenceToFSharpList(
+                                 //...with the arguments which were supplied.
+                                 parameters.Select(
+                                    input => 
+                                        missingArgs.Contains(input)
+                                        ? Expression.NewId(input)
+                                        : this.arguments[input].Compile())))));
                 }
 
                 //If all the arguments were supplied, just return a standard function call expression.
                 else
                 {
-                    return Expression.NewList(
+                    return Expression.NewList_E(
                        FSharpList<Expression>.Cons(
                           function,
-                          Utils.convertSequence(
+                          Utils.SequenceToFSharpList(
                              parameters.Select(input => this.arguments[input].Compile())
                           )
                        )
@@ -418,47 +405,25 @@ namespace Dynamo.FSchemeInterop
 
         public class ExternalFunctionNode : ProcedureCallNode
         {
-            public FScheme.ExternFunc EntryPoint { get; private set; }
+            public Func<FSharpList<Value>, Value> EntryPoint { get; private set; }
 
             protected override Expression Body
             {
                 get
                 {
-                    return FuncContainer.MakeFunction(this.EntryPoint);
+                    return Expression.NewFunction_E(
+                        Utils.ConvertToFSchemeFunc(this.EntryPoint));
                 }
             }
 
-            public ExternalFunctionNode(FScheme.ExternFunc f, IEnumerable<string> inputList)
+            public ExternalFunctionNode(Func<FSharpList<Value>, Value> f, IEnumerable<string> inputList)
                 : base(inputList)
             {
                 this.EntryPoint = f;
             }
 
-            public ExternalFunctionNode(FScheme.ExternFunc f)
+            public ExternalFunctionNode(Func<FSharpList<Value>, Value> f)
                 : this(f, new List<string>())
-            { }
-        }
-
-        public class ExternalMacroNode : ProcedureCallNode
-        {
-            public ExternMacro EntryPoint { get; private set; }
-
-            protected override Expression Body
-            {
-                get
-                {
-                    return FuncContainer.MakeMacro(this.EntryPoint);
-                }
-            }
-
-            public ExternalMacroNode(ExternMacro m, IEnumerable<string> inputList)
-                : base(inputList)
-            {
-                this.EntryPoint = m;
-            }
-
-            public ExternalMacroNode(ExternMacro m)
-                : this(m, new List<string>())
             { }
         }
     }

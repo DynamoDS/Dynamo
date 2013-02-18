@@ -516,10 +516,10 @@ namespace Dynamo.Elements
                     }
 
                     this.data = Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           result.Select(
                              row => Expression.NewList(
-                                Utils.convertSequence(
+                                Utils.SequenceToFSharpList(
                                    row.Select(Expression.NewContainer)
                                 )
                              )

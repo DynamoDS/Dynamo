@@ -763,7 +763,7 @@ namespace Dynamo.Elements
                 int count = 0;
 
                 var result = Expression.NewList(
-                   Utils.convertSequence(
+                   Utils.SequenceToFSharpList(
                       locList.Select(
                          x =>
                             this.makeFamilyInstance(
@@ -880,7 +880,7 @@ namespace Dynamo.Elements
                 int count = 0;
 
                 var result = Expression.NewList(
-                   Utils.convertSequence(
+                   Utils.SequenceToFSharpList(
                       locList.Select(
                          x =>
                             this.makeFamilyInstance(
@@ -961,7 +961,7 @@ namespace Dynamo.Elements
             }
 
             //convert curvearray into list using Stephens MakeEnumerable
-            Expression result = Expression.NewList(Utils.convertSequence(
+            Expression result = Expression.NewList(Utils.SequenceToFSharpList(
                             dynUtils.MakeEnumerable(curves).Select(Expression.NewContainer)
                         ));
 
@@ -1108,7 +1108,7 @@ namespace Dynamo.Elements
                 int count = 0;
 
                 var result = Expression.NewList(
-                  Utils.convertSequence(
+                  Utils.SequenceToFSharpList(
                      familyList.Select(
                         x =>
                            this.GetCurvesFromFamily(
@@ -1223,7 +1223,7 @@ namespace Dynamo.Elements
                 {
                     var fiList = (input as Expression.List).Item;
                     return Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           fiList.Select(
                              x =>
                                 setParam(
@@ -1251,7 +1251,7 @@ namespace Dynamo.Elements
                 {
                     var fiList = (input as Expression.List).Item;
                     return Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           fiList.Select(
                              x =>
                                 setParam(
@@ -1341,7 +1341,7 @@ namespace Dynamo.Elements
                 {
                     var fiList = (input as Expression.List).Item;
                     return Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           fiList.Select(
                              x =>
                                 getParam(
@@ -1368,7 +1368,7 @@ namespace Dynamo.Elements
                 {
                     var fiList = (input as Expression.List).Item;
                     return Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           fiList.Select(
                              x =>
                                 getParam(
@@ -1466,7 +1466,7 @@ namespace Dynamo.Elements
                 {
                     var fiList = (input as Expression.List).Item;
                     return Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           fiList.Select(
                              x =>
                                 setParam(
@@ -1494,7 +1494,7 @@ namespace Dynamo.Elements
                 {
                     var fiList = (input as Expression.List).Item;
                     return Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           fiList.Select(
                              x =>
                                 setParam(
@@ -1584,7 +1584,7 @@ namespace Dynamo.Elements
                 {
                     var fiList = (input as Expression.List).Item;
                     return Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           fiList.Select(
                              x =>
                                 getParam(
@@ -1611,7 +1611,7 @@ namespace Dynamo.Elements
                 {
                     var fiList = (input as Expression.List).Item;
                     return Expression.NewList(
-                       Utils.convertSequence(
+                       Utils.SequenceToFSharpList(
                           fiList.Select(
                              x =>
                                 getParam(

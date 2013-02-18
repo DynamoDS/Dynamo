@@ -103,10 +103,6 @@ let private exprToBool = function
 type Frame = Value ref [] ref
 type Environment = Frame list ref
 
-type Parameter =
-    | Normal of string
-    | Tail of string
-
 ///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
 type ExternFunc = delegate of Value list -> Value
 
@@ -187,6 +183,10 @@ type Expression =
     | Quasi of Syntax
     | Function_E of (Value list -> Value)
     | Container_E of obj
+
+and Parameter =
+    | Normal of string
+    | Tail of string
 
 let rec private printSyntax = function
     | Number_S(n)    -> n.ToString()
@@ -611,7 +611,7 @@ let Identity = function
 type private CompilerFrame = string list
 type private CompilerEnv = CompilerFrame list ref
 
-let private findInEnv (name : string) compenv =
+let FindInCompilerEnv (name : string) compenv =
     let rec find acc = function
         | h :: t ->
             match List.tryFindIndex ((=) name) h with
@@ -638,7 +638,7 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
 
     //Identifiers
     | Id(id) ->
-        match findInEnv id compenv.Value with
+        match FindInCompilerEnv id compenv.Value with
         //If the identifier is in the compiler environment (name registry),
         //then we fetch it from the environment at runtime.
         | Some(i1, i2) -> fun env -> (env.Value.Item i1).Value.[i2].Value
@@ -647,7 +647,7 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
 
     //Set!
     | SetId(id, expr) ->
-        match findInEnv id compenv.Value with
+        match FindInCompilerEnv id compenv.Value with
         //If the identifier is in the compiler environment...
         | Some(i1, i2) ->
             ///Compiled sub-expression
@@ -692,8 +692,7 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
         | Some(idx) ->
             let cbody = compile' body
             fun env ->
-                let box = env.Value.Head.Value.[idx]
-                box := cbody env
+                env.Value.Head.Value.[idx] := cbody env
                 dummy
         //If it's not there, then we need to add it.
         | None ->
@@ -941,6 +940,9 @@ let private eval ce env syntax = compile ce syntax env
 
 ///Evaluates the given Syntax
 let Evaluate = eval compileEnvironment environment
+
+///Evaluates the given Syntax in the given Environment
+let EvaluateInEnvironment = eval
 
 ///Parses and evaluates an expression given in text form, and returns the resulting expression
 let ParseText = List.ofSeq >> parse >> Begin >> Evaluate

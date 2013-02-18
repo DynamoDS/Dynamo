@@ -53,7 +53,7 @@ namespace Dynamo.Elements
                 int count = 0;
 
                 //We create our output by...
-                var result = Utils.convertSequence(
+                var result = Utils.SequenceToFSharpList(
                    xyzList.Select(
                     //..taking each element in the list and...
                       delegate(Expression x)
