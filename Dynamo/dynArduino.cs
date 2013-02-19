@@ -22,9 +22,13 @@ using System.IO.Ports;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Connectors;
+<<<<<<< HEAD
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Expression = Dynamo.FScheme.Expression;
+=======
+using Value = Dynamo.FScheme.Value;
+>>>>>>> Now builds and runs!
 
 
 
@@ -161,9 +165,9 @@ namespace Dynamo.Elements
         }
 
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            if (((Expression.Number)args[0]).Item == 1)
+            if (((Value.Number)args[0]).Item == 1)
             {
                 if (port != null)
                 {
@@ -186,6 +190,7 @@ namespace Dynamo.Elements
                 }
             }
 
+<<<<<<< HEAD
             return Expression.NewContainer(port); // pass the port downstream
         }
 
@@ -279,6 +284,9 @@ namespace Dynamo.Elements
 
 
             return Expression.NewList(Utils.convertSequence(serialLine.Select(Expression.NewString)));
+=======
+            return Value.NewNumber(this.data);
+>>>>>>> Now builds and runs!
         }
 
 

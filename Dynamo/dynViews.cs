@@ -20,7 +20,7 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
@@ -39,11 +39,11 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
             ViewDrafting vd = null;
-            string viewName = ((Expression.String)args[0]).Item;
+            string viewName = ((Value.String)args[0]).Item;
 
             if (!string.IsNullOrEmpty(viewName))
             {
@@ -51,7 +51,7 @@ namespace Dynamo.Elements
                 //and it's the same one, get out
                 if (vd != null && vd.Name == viewName)
                 {
-                    return Expression.NewContainer(vd);
+                    return Value.NewContainer(vd);
                 }
 
                 FilteredElementCollector fec = new FilteredElementCollector(dynElementSettings.SharedInstance.Doc.Document);
@@ -85,7 +85,7 @@ namespace Dynamo.Elements
                 }
             }
 
-            return Expression.NewContainer(vd);
+            return Value.NewContainer(vd);
         }
     }
 }

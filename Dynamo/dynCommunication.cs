@@ -22,7 +22,7 @@ using System.IO;
 using System.Windows.Threading;
 using System.Security.Cryptography;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Elements
 {
@@ -41,9 +41,9 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override Value Evaluate(FSharpList<Value> args)
       {
-         string url = ((Expression.String)args[0]).Item;
+         string url = ((Value.String)args[0]).Item;
 
          //send a webrequest to the URL
          // Initialize the WebRequest.
@@ -65,7 +65,7 @@ namespace Dynamo.Elements
          // Close the response to free resources.
          myResponse.Close();
 
-         return Expression.NewString(responseFromServer);
+         return Value.NewString(responseFromServer);
       }
 
    }

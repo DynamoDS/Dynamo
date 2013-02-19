@@ -162,7 +162,7 @@ namespace Dynamo.FSchemeInterop
         //}
 
         //Binds symbols of the given string to the given External Function.
-        public void DefineExternal(string name, Func<FSharpList<Value>, Value> func)
+        public void DefineExternal(string name, Converter<FSharpList<Value>, Value> func)
         {
             DefineExternal(
                 name,

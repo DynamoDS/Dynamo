@@ -24,7 +24,7 @@ using Dynamo.Elements;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 using Microsoft.FSharp.Collections;
 
@@ -35,88 +35,86 @@ using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using System.Windows;
 using System.Xml;
+using Microsoft.FSharp.Core;
 
 namespace Dynamo.Elements
 {
     internal static class Converters
     {
-        internal static Expression convertPyFunction(Func<IList<dynamic>, dynamic> pyf)
+        internal static Value convertPyFunction(Func<IList<dynamic>, dynamic> pyf)
         {
-            return FuncContainer.MakeFunction(
-               new FScheme.ExternFunc(
-                  args =>
-                     convertToExpression(
-                        pyf(args.Select(ex => convertFromExpression(ex)).ToList())
-                     )
-               )
-            );
+            return Value.NewFunction(
+                FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                    args => 
+                        convertToValue(
+                            pyf(args.Select(ex => convertFromValue(ex)).ToList()))));
         }
 
-        internal static Expression convertToExpression(dynamic data)
+        internal static Value convertToValue(dynamic data)
         {
-            if (data is Expression)
+            if (data is Value)
                 return data;
             else if (data is string)
-                return Expression.NewString(data);
+                return Value.NewString(data);
             else if (data is double)
-                return Expression.NewNumber(data);
+                return Value.NewNumber(data);
             else if (data is IEnumerable<dynamic>)
             {
-                FSharpList<Expression> result = FSharpList<Expression>.Empty;
+                FSharpList<Value> result = FSharpList<Value>.Empty;
 
                 data.reverse();
 
                 foreach (var x in data)
                 {
-                    result = FSharpList<Expression>.Cons(convertToExpression(x), result);
+                    result = FSharpList<Value>.Cons(convertToValue(x), result);
                 }
 
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             //else if (data is PythonFunction)
             //{
             //   return FuncContainer.MakeFunction(
             //      new FScheme.ExternFunc(
             //         args =>
-            //            convertToExpression(
-            //               data(args.Select(ex => convertFromExpression(ex)))
+            //            convertToValue(
+            //               data(args.Select(ex => convertFromValue(ex)))
             //            )
             //      )
             //   );
             //}
             //else if (data is Func<dynamic, dynamic>)
             //{
-            //   return Expression.NewCurrent(FuncContainer.MakeContinuation(
+            //   return Value.NewCurrent(FuncContainer.MakeContinuation(
             //      new Continuation(
             //         exp =>
-            //            convertToExpression(
-            //               data(convertFromExpression(exp))
+            //            convertToValue(
+            //               data(convertFromValue(exp))
             //            )
             //      )
             //   ));
             //}
             else
-                return Expression.NewContainer(data);
+                return Value.NewContainer(data);
         }
 
-        internal static dynamic convertFromExpression(Expression exp)
+        internal static dynamic convertFromValue(Value exp)
         {
             if (exp.IsList)
-                return ((Expression.List)exp).Item.Select(x => convertFromExpression(x)).ToList();
+                return ((Value.List)exp).Item.Select(x => convertFromValue(x)).ToList();
             else if (exp.IsNumber)
-                return ((Expression.Number)exp).Item;
+                return ((Value.Number)exp).Item;
             else if (exp.IsString)
-                return ((Expression.String)exp).Item;
+                return ((Value.String)exp).Item;
             else if (exp.IsContainer)
-                return ((Expression.Container)exp).Item;
+                return ((Value.Container)exp).Item;
             //else if (exp.IsFunction)
             //{
             //   return new Func<IList<dynamic>, dynamic>(
             //      args =>
-            //         ((Expression.Function)exp).Item
+            //         ((Value.Function)exp).Item
             //            .Invoke(ExecutionEnvironment.IDENT)
             //            .Invoke(Utils.convertSequence(args.Select(
-            //               x => (Expression)Converters.convertToExpression(x)
+            //               x => (Value)Converters.convertToValue(x)
             //            )))
             //   );
             //}
@@ -124,7 +122,7 @@ namespace Dynamo.Elements
             //{
             //   return new Func<IList<dynamic>, dynamic>(
             //      args =>
-            //         ((Expression.Special)exp).Item
+            //         ((Value.Special)exp).Item
             //            .Invoke(ExecutionEnvironment.IDENT)
             //            .Invoke(
             //}
@@ -132,8 +130,8 @@ namespace Dynamo.Elements
             //{
             //   return new Func<dynamic, dynamic>(
             //      ex => 
-            //         Converters.convertFromExpression(
-            //            ((Expression.Current)exp).Item.Invoke(Converters.convertToExpression(ex))
+            //         Converters.convertFromValue(
+            //            ((Value.Current)exp).Item.Invoke(Converters.convertToValue(ex))
             //         )
             //   );
             //}
@@ -158,7 +156,7 @@ namespace Dynamo.Elements
             this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 
-        public Expression Evaluate(IEnumerable<Binding> bindings)
+        public Value Evaluate(IEnumerable<Binding> bindings)
         {
             var scope = this.engine.CreateScope();
 
@@ -180,13 +178,13 @@ namespace Dynamo.Elements
                 );
             }
 
-            Expression result = Expression.NewNumber(1);
+            Value result = Value.NewNumber(1);
 
             if (scope.ContainsVariable("OUT"))
             {
                 dynamic output = scope.GetVariable("OUT");
 
-                result = Converters.convertToExpression(output);
+                result = Converters.convertToValue(output);
             }
 
             return result;
@@ -288,18 +286,18 @@ namespace Dynamo.Elements
         private delegate void LogDelegate(string msg);
         private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
 
-        private List<Binding> makeBindings(IEnumerable<Expression> args)
+        private List<Binding> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = this.InPortData
                .Select(x => x.NickName)
-               .Zip(args, (s, v) => new Binding(s, Converters.convertFromExpression(v)))
+               .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
                .ToList();
 
             bindings.Add(new Binding("DynLog", new LogDelegate(this.Bench.Log))); //Logging
             //bindings.Add(new Binding(
             //   "DynFunction",
-            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Expression>(
+            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Value>(
             //      Converters.convertPyFunction
             //   )
             //));
@@ -326,7 +324,7 @@ namespace Dynamo.Elements
             return bindings;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             if (this.dirty)
             {
@@ -347,13 +345,13 @@ namespace Dynamo.Elements
                = dynElementSettings.SharedInstance.Bench.Transaction != null
                && dynElementSettings.SharedInstance.Bench.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
 
-            Expression result = null;
+            Value result = null;
 
             if (dynElementSettings.SharedInstance.Bench.InIdleThread)
                 result = engine.Evaluate(bindings);
             else
             {
-                result = IdlePromise<Expression>.ExecuteOnIdle(
+                result = IdlePromise<Value>.ExecuteOnIdle(
                    () => engine.Evaluate(bindings)
                 );
             }
@@ -424,18 +422,18 @@ namespace Dynamo.Elements
         private delegate void LogDelegate(string msg);
         private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
 
-        private List<Binding> makeBindings(IEnumerable<Expression> args)
+        private List<Binding> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = this.InPortData
                .Select(x => x.NickName)
-               .Zip(args, (s, v) => new Binding(s, Converters.convertFromExpression(v)))
+               .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
                .ToList();
 
             bindings.Add(new Binding("DynLog", new LogDelegate(this.Bench.Log))); //Logging
             //bindings.Add(new Binding(
             //   "DynFunction",
-            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Expression>(
+            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Value>(
             //      Converters.convertPyFunction
             //   )
             //));
@@ -461,10 +459,10 @@ namespace Dynamo.Elements
             return bindings;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             this.engine.ProcessCode(
-                ((Expression.String)args[0]).Item
+                ((Value.String)args[0]).Item
             );
 
             var bindings = this.makeBindings(args).Skip(1);
@@ -473,13 +471,13 @@ namespace Dynamo.Elements
                = dynElementSettings.SharedInstance.Bench.Transaction != null
                && dynElementSettings.SharedInstance.Bench.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
 
-            Expression result = null;
+            Value result = null;
 
             if (dynElementSettings.SharedInstance.Bench.InIdleThread)
                 result = engine.Evaluate(bindings);
             else
             {
-                result = IdlePromise<Expression>.ExecuteOnIdle(
+                result = IdlePromise<Value>.ExecuteOnIdle(
                    () => engine.Evaluate(bindings)
                 );
             }

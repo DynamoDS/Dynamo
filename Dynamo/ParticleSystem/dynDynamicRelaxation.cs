@@ -23,7 +23,7 @@ using System.IO.Ports;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Autodesk.Revit.DB;
 using System.Timers;
 using System.Threading;
@@ -213,8 +213,9 @@ namespace Dynamo.Elements
             return null;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
+<<<<<<< HEAD
             var input = args[0];//point list
             //var curves = args[1];//curves
             double d = ((Expression.Number)args[2]).Item;//dampening
@@ -225,6 +226,38 @@ namespace Dynamo.Elements
             int numY = (int)((Expression.Number)args[7]).Item;//number of particles in Y
             double g = ((Expression.Number)args[8]).Item;//gravity z component
 
+=======
+            var points = args[0];//points
+            var curves = args[1];//curves
+            double timer = ((Value.Number)args[2]).Item;//timer in ms
+            double ms = timer / 1000;
+            double d = ((Value.Number)args[3]).Item;//dampening
+            double s = ((Value.Number)args[4]).Item;//spring constant
+            double r = ((Value.Number)args[5]).Item;//rest length
+
+            particleSystem.Clear();
+            
+            //CurveByPoints existingCurve;
+            
+            ReferencePointArray refPtArr = new ReferencePointArray();
+            ReferencePointArray tempRefPtArr = new ReferencePointArray();
+
+            setupLineTest();
+
+            //if (points.IsList)
+            //{
+            //    var pointsList = (points as Value.List).Item;
+
+            //    int count = 0;
+
+            //    //We create our output by...
+            //    var resultPoints = Utils.convertSequence(
+            //       pointsList.Select(
+            //        //..taking each element in the list and...
+            //          delegate(Value x)
+            //          {
+            //              ReferencePoint p = ((ReferencePoint)((Value.Container)x).Item);
+>>>>>>> Now builds and runs!
 
             particleSystem.Clear();
             particleSystem.setGravity(g);
@@ -245,10 +278,16 @@ namespace Dynamo.Elements
             {
                 var pointList = (input as Expression.List).Item;
 
+<<<<<<< HEAD
                 if (pointList.Count() > 1)
                 {
                     Array pointArray = pointList.ToArray();
                     //foreach (var elem in pointList)
+=======
+            //              count++;
+            //              return Value.NewContainer(p);
+            //          }
+>>>>>>> Now builds and runs!
 
                     for (int i = 0; i < pointArray.Length-1; i++)
                     {
@@ -280,6 +319,7 @@ namespace Dynamo.Elements
         }
     }
 
+<<<<<<< HEAD
     [ElementName("Create Particle System on Face")]
     [ElementCategory(BuiltinElementCategories.SIMULATION)]
     [ElementDescription("A node which allows you to drive the position of elmenets via a particle system.")]
@@ -298,11 +338,29 @@ namespace Dynamo.Elements
             InPortData.Add(new PortData("numU", "Number of Particles in U.", typeof(int)));
             InPortData.Add(new PortData("numV", "Number of Particles in V.", typeof(int)));
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(double)));
+=======
+            //if (curves.IsList)
+            //{
+            //    var curvesList = (curves as Value.List).Item;
+
+            //    //We create our output by...
+            //    var resultCurves = Utils.convertSequence(
+            //       curvesList.Select(
+            //        //..taking each element in the list and...
+            //          delegate(Value x)
+            //          {
+>>>>>>> Now builds and runs!
 
             OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
             base.RegisterInputsAndOutputs();
 
+<<<<<<< HEAD
             particleSystem = new ParticleSystem();
+=======
+            //              tempRefPtArr.Clear();
+            //              existingCurve = ((CurveByPoints)((Value.Container)x).Item);
+            //              tempRefPtArr = existingCurve.GetPoints();
+>>>>>>> Now builds and runs!
 
         }
 
@@ -360,15 +418,23 @@ namespace Dynamo.Elements
             int numY = (int)((Expression.Number)args[6]).Item;//number of particles in Y
             double g = ((Expression.Number)args[7]).Item;//gravity z component
 
+<<<<<<< HEAD
             particleSystem.setIsFaceConstrained(true);
             particleSystem.setConstraintFace(f);
+=======
+            //              return Value.NewContainer(existingCurve);
+            //          }
+            //       )
+            //    );
+            //}
+>>>>>>> Now builds and runs!
 
             particleSystem.Clear();
 
             setupParticleSystem(f, numX, numY, d, r, s, m);
             particleSystem.setGravity(g);
 
-            return Expression.NewContainer(particleSystem);
+            return Value.NewContainer(particleSystem);
         }
     }
 
@@ -388,11 +454,16 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
+<<<<<<< HEAD
             ParticleSystem particleSystem = (ParticleSystem)((Expression.Container)args[0]).Item;
             double timeStep = ((Expression.Number)args[1]).Item;
             //var result = FSharpList<Expression>.Empty;
+=======
+            ParticleSystem particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
+            double timeStep = ((Value.Number)args[1]).Item;
+>>>>>>> Now builds and runs!
 
             particleSystem.step(timeStep);//in ms
 
@@ -432,7 +503,43 @@ namespace Dynamo.Elements
                 result = FSharpList<Expression>.Cons(Expression.NewContainer(pt), result);
             }
 
+<<<<<<< HEAD
             return Expression.NewList(result);
+=======
+           
+
+            ////update lines - purely destructive for now
+
+            //if (particleSystem.numberOfParticles() == refPtArr.Size)
+            //{
+            //    for (int i = 0; i < particleSystem.numberOfSprings(); i++) // make lines between points
+            //    {
+
+            //        s = particleSystem.getSpring(i);
+            //        //s.setDamping(d);
+            //        //s.setRestLength(r);
+            //        //s.setSpringConstant(s);
+
+            //        tempRefPtArr.Clear();
+            //        ReferencePoint end1 = this.UIDocument.Document.FamilyCreate.NewReferencePoint(s.getOneEnd().getPosition());
+            //        this.Elements.Add(end1.Id);
+            //        ReferencePoint end2 = this.UIDocument.Document.FamilyCreate.NewReferencePoint(s.getTheOtherEnd().getPosition());
+            //        this.Elements.Add(end2.Id);
+            //        if (end1 != null && end2 != null)
+            //        {
+            //            tempRefPtArr.Append(end1);
+
+            //            tempRefPtArr.Append(end2);
+
+            //           CurveByPoints c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(tempRefPtArr); // update curve position based on current particle position.
+            //           this.Elements.Add(c.Id);
+            //        }
+            //    }
+
+            //}
+
+            return Value.NewContainer(refPtArr);
+>>>>>>> Now builds and runs!
         }
     }
 
@@ -475,8 +582,49 @@ namespace Dynamo.Elements
                 springXYZ2 = springEnd2.getPosition();
                 springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
 
+<<<<<<< HEAD
                 result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
             }
+=======
+    //    public override Value Evaluate(FSharpList<Value> args)
+    //    {
+            
+    //        double result = 0;
+    //        int interval = Convert.ToInt16(((Value.Number)args[0]).Item);
+
+
+    //        bool isTiming = Convert.ToBoolean(((Value.Number)args[1]).Item);
+
+
+    //        if (timing)
+    //        {
+    //            if (!isTiming)  //if you are timing and we turn off the timer
+    //            {
+    //                timing = false; //stop
+    //                sw.Stop();
+    //                sw.Reset();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            if (isTiming)
+    //            {
+    //                timing = true;  //if you are not timing and we turn on the timer
+    //                sw.Start();
+    //                StartTimer(interval);
+    //                while (timing)
+    //                {
+    //                    result = KeepTime(interval);
+    //                    break;
+    //                }
+    //            }
+    //        }
+
+    //        IsDirty = true;// stephen suggesting hitting this with a larger hammer. 
+    //        return Value.NewNumber(result);
+    //    }
+    //}
+>>>>>>> Now builds and runs!
 
             return Expression.NewList(result);
         }

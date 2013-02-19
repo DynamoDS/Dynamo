@@ -64,10 +64,9 @@ namespace Dynamo.FSchemeInterop
         /// </summary>
         /// <param name="f"></param>
         /// <returns></returns>
-        public static FSharpFunc<FSharpList<Value>, Value> ConvertToFSchemeFunc(Func<FSharpList<Value>, Value> f)
+        public static FSharpFunc<FSharpList<Value>, Value> ConvertToFSchemeFunc(Converter<FSharpList<Value>, Value> f)
         {
-            return FSharpFunc<FSharpList<Value>, Value>.FromConverter(
-                new Converter<FSharpList<Value>, Value>(f));
+            return FSharpFunc<FSharpList<Value>, Value>.FromConverter(f);
         }
 
         /// <summary>

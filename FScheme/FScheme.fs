@@ -980,7 +980,7 @@ let REPL debug : unit =
 type ErrorLog = delegate of string -> unit
 
 ///Tests
-let private test (log : ErrorLog) =
+let RunTests (log : ErrorLog) =
     let success = ref true
     let rep ce env = List.ofSeq >> parse >> Begin >> eval ce env >> print
     let case source expected =
@@ -1097,6 +1097,6 @@ let private test (log : ErrorLog) =
 
     success.Value
 
-let RunTests() =
-    if test <| ErrorLog(Console.WriteLine) then
+let RunTestsInConsole() =
+    if RunTests <| ErrorLog(Console.WriteLine) then
         Console.WriteLine("All Tests Passed.")

@@ -38,6 +38,7 @@ using Transaction = Autodesk.Revit.DB.Transaction;
 using TransactionStatus = Autodesk.Revit.DB.TransactionStatus;
 using Path = System.IO.Path;
 using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -114,16 +115,8 @@ namespace Dynamo.Controls
             dynElementSettings.SharedInstance.Workbench = workBench;
             dynElementSettings.SharedInstance.Bench = this;
 
-            //run tests, also load core library
-            bool wasError = false;
-            FScheme.test(
-               delegate(string s)
-               {
-                   wasError = true;
-                   Log(s);
-               }
-            );
-            if (!wasError)
+            //run tests
+            if (FScheme.RunTests(Log))
                 Log("All Tests Passed. Core library loaded OK.");
 
             this.Environment = new ExecutionEnvironment();
@@ -3096,7 +3089,7 @@ namespace Dynamo.Controls
                     //TODO: Flesh out error handling
                     try
                     {
-                        string exp = FScheme.print(runningExpression);
+                        string exp = FScheme.printExpression("", runningExpression);
                         Log("> " + exp);
                     }
                     catch (Exception ex)

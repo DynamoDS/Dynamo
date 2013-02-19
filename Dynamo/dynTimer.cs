@@ -20,7 +20,7 @@ using Dynamo.Connectors;
 
 using Microsoft.FSharp.Collections;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using System.Threading;
 
 namespace Dynamo.Elements
@@ -38,13 +38,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            int ms = (int)((Expression.Number)args[0]).Item;
+            int ms = (int)((Value.Number)args[0]).Item;
 
             Thread.Sleep(ms);
 
-            return Expression.NewNumber(1);
+            return Value.NewNumber(1);
         }
     }
 
@@ -69,9 +69,9 @@ namespace Dynamo.Elements
         //        delayThread.Abort();
         //}
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            int delay = (int)((Expression.Number)args[0]).Item;
+            int delay = (int)((Value.Number)args[0]).Item;
 
             if (delayThread == null || !delayThread.IsAlive)
             {
@@ -97,7 +97,7 @@ namespace Dynamo.Elements
                 delayThread.Start();
             }
 
-            return Expression.NewNumber(1);
+            return Value.NewNumber(1);
         }
     }
 

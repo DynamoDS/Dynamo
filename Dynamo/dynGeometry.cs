@@ -20,7 +20,7 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
@@ -42,14 +42,14 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             double x, y, z;
-            x = ((Expression.Number)args[0]).Item;
-            y = ((Expression.Number)args[1]).Item;
-            z = ((Expression.Number)args[2]).Item;
+            x = ((Value.Number)args[0]).Item;
+            y = ((Value.Number)args[1]).Item;
+            z = ((Value.Number)args[2]).Item;
 
-            return Expression.NewContainer(new XYZ(x, y, z));
+            return Value.NewContainer(new XYZ(x, y, z));
         }
     }
 
@@ -67,12 +67,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             ReferencePoint point;
-            point = (ReferencePoint)((Expression.Container)args[0]).Item;
+            point = (ReferencePoint)((Value.Container)args[0]).Item;
 
-            return Expression.NewContainer(point.Position);
+            return Value.NewContainer(point.Position);
         }
     }
 
@@ -90,9 +90,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(((XYZ)((Expression.Container)args[0]).Item).X);
+            return Value.NewNumber(((XYZ)((Value.Container)args[0]).Item).X);
         }
     }
 
@@ -110,9 +110,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(((XYZ)((Expression.Container)args[0]).Item).Y);
+            return Value.NewNumber(((XYZ)((Value.Container)args[0]).Item).Y);
         }
     }
 
@@ -130,9 +130,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(((XYZ)((Expression.Container)args[0]).Item).Z);
+            return Value.NewNumber(((XYZ)((Value.Container)args[0]).Item).Z);
         }
     }
 
@@ -149,10 +149,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
-            return Expression.NewContainer(XYZ.Zero);
+            return Value.NewContainer(XYZ.Zero);
         }
     }
 
@@ -169,10 +169,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
-            return Expression.NewContainer(XYZ.BasisX);
+            return Value.NewContainer(XYZ.BasisX);
         }
     }
 
@@ -189,10 +189,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
-            return Expression.NewContainer(XYZ.BasisY);
+            return Value.NewContainer(XYZ.BasisY);
         }
     }
 
@@ -209,10 +209,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
-            return Expression.NewContainer(XYZ.BasisZ);
+            return Value.NewContainer(XYZ.BasisZ);
         }
     }
 
@@ -231,12 +231,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            XYZ xyz = (XYZ)((Expression.Container)args[0]).Item;
-            double n = ((Expression.Number)args[1]).Item;
+            XYZ xyz = (XYZ)((Value.Container)args[0]).Item;
+            double n = ((Value.Number)args[1]).Item;
 
-            return Expression.NewContainer(xyz.Multiply(n));
+            return Value.NewContainer(xyz.Multiply(n));
         }
     }
 
@@ -255,12 +255,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            XYZ xyza = (XYZ)((Expression.Container)args[0]).Item;
-            XYZ xyzb = (XYZ)((Expression.Container)args[1]).Item;
+            XYZ xyza = (XYZ)((Value.Container)args[0]).Item;
+            XYZ xyzb = (XYZ)((Value.Container)args[1]).Item;
 
-            return Expression.NewContainer(xyza + xyzb);
+            return Value.NewContainer(xyza + xyzb);
         }
     }
 
@@ -281,34 +281,34 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Expression> domain;
+            FSharpList<Value> domain;
             double ui, vi;
             
-            domain = ((Expression.List)args[0]).Item;
-            ui = ((Expression.Number)args[1]).Item;
-            vi = ((Expression.Number)args[2]).Item;
-            double us = ((Expression.Number)domain[2]).Item / ui;
-            double vs = ((Expression.Number)domain[3]).Item / vi;
+            domain = ((Value.List)args[0]).Item;
+            ui = ((Value.Number)args[1]).Item;
+            vi = ((Value.Number)args[2]).Item;
+            double us = ((Value.Number)domain[2]).Item / ui;
+            double vs = ((Value.Number)domain[3]).Item / vi;
 
-            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+            FSharpList<Value> result = FSharpList<Value>.Empty;
 
-            UV min = ((Expression.Container)domain[0]).Item as UV;
-            UV max = ((Expression.Container)domain[1]).Item as UV;
+            UV min = ((Value.Container)domain[0]).Item as UV;
+            UV max = ((Value.Container)domain[1]).Item as UV;
 
             for (double u = min.U; u <= max.U; u+=us)
             {
                 for (double v = min.V; v <= max.V; v+=vs)
                 {
-                    result = FSharpList<Expression>.Cons(
-                        Expression.NewContainer(new UV(u,v)),
+                    result = FSharpList<Value>.Cons(
+                        Value.NewContainer(new UV(u,v)),
                         result
                     );
                 }
             }
 
-            return Expression.NewList(
+            return Value.NewList(
                ListModule.Reverse(result)
             );
         }
@@ -331,19 +331,19 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Expression> domain;
+            FSharpList<Value> domain;
             double ui, vi;
 
-            domain = ((Expression.List)args[0]).Item;
-            ui = ((Expression.Number)args[1]).Item;
-            vi = ((Expression.Number)args[2]).Item;
+            domain = ((Value.List)args[0]).Item;
+            ui = ((Value.Number)args[1]).Item;
+            vi = ((Value.Number)args[2]).Item;
 
-            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+            FSharpList<Value> result = FSharpList<Value>.Empty;
 
-            UV min = ((Expression.Container)domain[0]).Item as UV;
-            UV max = ((Expression.Container)domain[1]).Item as UV;
+            UV min = ((Value.Container)domain[0]).Item as UV;
+            UV max = ((Value.Container)domain[1]).Item as UV;
             
             Random r = new Random();
             double uSpan = max.U-min.U;
@@ -353,14 +353,14 @@ namespace Dynamo.Elements
             {
                 for (int j = 0; j < vi; j++)
                 {
-                    result = FSharpList<Expression>.Cons(
-                        Expression.NewContainer(new UV(min.U + r.NextDouble()*uSpan, min.V + r.NextDouble()*vSpan)),
+                    result = FSharpList<Value>.Cons(
+                        Value.NewContainer(new UV(min.U + r.NextDouble()*uSpan, min.V + r.NextDouble()*vSpan)),
                         result
                     );
                 }
             }
 
-            return Expression.NewList(
+            return Value.NewList(
                ListModule.Reverse(result)
             );
         }
@@ -390,21 +390,21 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             double xi, yi, zi, x0, y0, z0, xs, ys, zs;
 
-            xi = ((Expression.Number)args[0]).Item;
-            yi = ((Expression.Number)args[1]).Item;
-            zi = ((Expression.Number)args[2]).Item;
-            x0 = ((Expression.Number)args[3]).Item;
-            y0 = ((Expression.Number)args[4]).Item;
-            z0 = ((Expression.Number)args[5]).Item;
-            xs = ((Expression.Number)args[6]).Item;
-            ys = ((Expression.Number)args[7]).Item;
-            zs = ((Expression.Number)args[8]).Item;
+            xi = ((Value.Number)args[0]).Item;
+            yi = ((Value.Number)args[1]).Item;
+            zi = ((Value.Number)args[2]).Item;
+            x0 = ((Value.Number)args[3]).Item;
+            y0 = ((Value.Number)args[4]).Item;
+            z0 = ((Value.Number)args[5]).Item;
+            xs = ((Value.Number)args[6]).Item;
+            ys = ((Value.Number)args[7]).Item;
+            zs = ((Value.Number)args[8]).Item;
 
-            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+            FSharpList<Value> result = FSharpList<Value>.Empty;
 
             double z = z0;
             for (int zCount = 0; zCount < zi; zCount++)
@@ -415,8 +415,8 @@ namespace Dynamo.Elements
                     double x = x0;
                     for (int xCount = 0; xCount < xi; xCount++)
                     {
-                        result = FSharpList<Expression>.Cons(
-                           Expression.NewContainer(new XYZ(x, y, z)),
+                        result = FSharpList<Value>.Cons(
+                           Value.NewContainer(new XYZ(x, y, z)),
                            result
                         );
                         x += xs;
@@ -426,7 +426,7 @@ namespace Dynamo.Elements
                 z += zs;
             }
 
-            return Expression.NewList(
+            return Value.NewList(
                ListModule.Reverse(result)
             );
         }
@@ -450,17 +450,17 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            CurveElement c = (CurveElement)((Expression.Container)args[0]).Item; // Curve 
+            CurveElement c = (CurveElement)((Value.Container)args[0]).Item; // Curve 
 
             double xi;//, x0, xs;
-            xi = ((Expression.Number)args[1]).Item;// Number
-            //x0 = ((Expression.Number)args[2]).Item;// Starting Coord
-            //xs = ((Expression.Number)args[3]).Item;// Spacing
+            xi = ((Value.Number)args[1]).Item;// Number
+            //x0 = ((Value.Number)args[2]).Item;// Starting Coord
+            //xs = ((Value.Number)args[3]).Item;// Spacing
 
 
-            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+            FSharpList<Value> result = FSharpList<Value>.Empty;
 
             //double x = x0;
             Curve crvRef = c.GeometryCurve;
@@ -469,8 +469,8 @@ namespace Dynamo.Elements
             for (int xCount = 0; xCount < xi; xCount++)
             {
                 t = xCount / xi; // create normalized curve param by dividing current number by total number
-                result = FSharpList<Expression>.Cons(
-                    Expression.NewContainer(
+                result = FSharpList<Value>.Cons(
+                    Value.NewContainer(
                         crvRef.Evaluate(t, true) // pass in parameter on curve and the bool to say yes this is normalized, Curve.Evaluate passes back out an XYZ that we store in this list
                     ),
                     result
@@ -478,7 +478,7 @@ namespace Dynamo.Elements
                 //x += xs;
             }
 
-            return Expression.NewList(
+            return Value.NewList(
                ListModule.Reverse(result)
             );
         }
@@ -499,16 +499,16 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            XYZ ptA = (XYZ)((Expression.Container)args[0]).Item;
-            XYZ ptB = (XYZ)((Expression.Container)args[1]).Item;
+            XYZ ptA = (XYZ)((Value.Container)args[0]).Item;
+            XYZ ptB = (XYZ)((Value.Container)args[1]).Item;
 
             var plane = this.UIDocument.Application.Application.Create.NewPlane(
                ptA, ptB
             );
 
-            return Expression.NewContainer(plane);
+            return Value.NewContainer(plane);
         }
     }
 
@@ -526,7 +526,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
@@ -536,11 +536,11 @@ namespace Dynamo.Elements
 
             if (input.IsList)
             {
-                var planeList = (input as Expression.List).Item;
+                var planeList = (input as Value.List).Item;
 
                 var result = Utils.SequenceToFSharpList(
                    planeList.Select(
-                      delegate(Expression x)
+                      delegate(Value x)
                       {
                           SketchPlane sp = null;
 
@@ -549,46 +549,45 @@ namespace Dynamo.Elements
                           {
                               sp = (this.UIDocument.Document.IsFamilyDocument)
                               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(
-                                 (Plane)((Expression.Container)x).Item
+                                 (Plane)((Value.Container)x).Item
                               )
                               : this.UIDocument.Document.Create.NewSketchPlane(
-                                 (Plane)((Expression.Container)x).Item
+                                 (Plane)((Value.Container)x).Item
                               );
                           }
                           else if (x is Reference)
                           {
                               sp = (this.UIDocument.Document.IsFamilyDocument)
                               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(
-                                 (Reference)((Expression.Container)x).Item
+                                 (Reference)((Value.Container)x).Item
                               )
                               : this.UIDocument.Document.Create.NewSketchPlane(
-                                 (Reference)((Expression.Container)x).Item
+                                 (Reference)((Value.Container)x).Item
                               );
                           }
                           else if (x is PlanarFace)
                           {
                               sp = (this.UIDocument.Document.IsFamilyDocument)
                               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(
-                                 (PlanarFace)((Expression.Container)x).Item
+                                 (PlanarFace)((Value.Container)x).Item
                               )
                               : this.UIDocument.Document.Create.NewSketchPlane(
-                                 (PlanarFace)((Expression.Container)x).Item
+                                 (PlanarFace)((Value.Container)x).Item
                               );
                           }
 
 
                           this.Elements.Add(sp.Id);
-                          return Expression.NewContainer(sp);
+                          return Value.NewContainer(sp);
                       }
                    )
                 );
 
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             else
             {
-
-                var x = ((Expression.Container)input).Item;
+                var x = ((Value.Container)input).Item;
                 SketchPlane sp = null;
 
                 //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
@@ -615,7 +614,7 @@ namespace Dynamo.Elements
 
                 this.Elements.Add(sp.Id);
 
-                return Expression.NewContainer(sp);
+                return Value.NewContainer(sp);
             }
         }
     }
@@ -635,10 +634,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var ptA = ((Expression.Container)args[0]).Item;
-            var ptB = ((Expression.Container)args[1]).Item;
+            var ptA = ((Value.Container)args[0]).Item;
+            var ptB = ((Value.Container)args[1]).Item;
 
             Line line = null;
 
@@ -659,7 +658,7 @@ namespace Dynamo.Elements
 
             }
 
-            return Expression.NewContainer(line);
+            return Value.NewContainer(line);
         }
     }
 
@@ -679,14 +678,14 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
             Arc a = null;
 
-            var ptA = ((Expression.Container)args[0]).Item;//start
-            var ptB = ((Expression.Container)args[1]).Item;//middle
-            var ptC = ((Expression.Container)args[2]).Item;//end
+            var ptA = ((Value.Container)args[0]).Item;//start
+            var ptB = ((Value.Container)args[1]).Item;//middle
+            var ptC = ((Value.Container)args[2]).Item;//end
 
             if (ptA is XYZ)
             {
@@ -703,7 +702,7 @@ namespace Dynamo.Elements
                 );
 
             }
-            return Expression.NewContainer(a);
+            return Value.NewContainer(a);
         }
     }
 
@@ -724,15 +723,14 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var ptA = ((Expression.Container)args[0]).Item;
-            var radius = (double)((Expression.Number)args[1]).Item;
-            var start = (double)((Expression.Number)args[2]).Item;
-            var end = (double)((Expression.Number)args[3]).Item;
+            var ptA = ((Value.Container)args[0]).Item;
+            var radius = (double)((Value.Number)args[1]).Item;
+            var start = (double)((Value.Number)args[2]).Item;
+            var end = (double)((Value.Number)args[3]).Item;
 
             Arc a = null;
-
 
             if (ptA is XYZ)
             {
@@ -747,7 +745,7 @@ namespace Dynamo.Elements
                 );
             }
 
-            return Expression.NewContainer(a);
+            return Value.NewContainer(a);
         }
     }
 
@@ -767,12 +765,12 @@ namespace Dynamo.Elements
         }
 
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var curve = (Curve)((Expression.Container)args[0]).Item;
-            var trans = (Transform)((Expression.Container)args[1]).Item;
+            var curve = (Curve)((Value.Container)args[0]).Item;
+            var trans = (Transform)((Value.Container)args[1]).Item;
 
-            return Expression.NewContainer(curve.get_Transformed(trans));
+            return Value.NewContainer(curve.get_Transformed(trans));
         }
     }
 
@@ -793,10 +791,10 @@ namespace Dynamo.Elements
 
         const double RevitPI = 3.14159265358979;
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var ptA = ((Expression.Container)args[0]).Item;
-            var radius = (double)((Expression.Number)args[1]).Item;
+            var ptA = ((Value.Container)args[0]).Item;
+            var radius = (double)((Value.Number)args[1]).Item;
 
             Curve circle = null;
 
@@ -812,7 +810,7 @@ namespace Dynamo.Elements
                 circle = this.UIDocument.Application.Application.Create.NewArc((XYZ)((ReferencePoint)ptA).Position, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
             }
 
-            return Expression.NewContainer(circle);
+            return Value.NewContainer(circle);
         }
     }
 
@@ -834,11 +832,11 @@ namespace Dynamo.Elements
 
         const double RevitPI = 3.14159265358979;
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var ptA = ((Expression.Container)args[0]).Item;
-            var radX = (double)((Expression.Number)args[1]).Item;
-            var radY = (double)((Expression.Number)args[2]).Item;
+            var ptA = ((Value.Container)args[0]).Item;
+            var radX = (double)((Value.Number)args[1]).Item;
+            var radY = (double)((Value.Number)args[2]).Item;
 
             Ellipse ell = null;
 
@@ -858,7 +856,7 @@ namespace Dynamo.Elements
                 );
             }
 
-            return Expression.NewContainer(ell);
+            return Value.NewContainer(ell);
         }
     }
 
@@ -880,13 +878,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var ptA = ((Expression.Container)args[0]).Item;
-            var radX = (double)((Expression.Number)args[1]).Item;
-            var radY = (double)((Expression.Number)args[2]).Item;
-            var start = (double)((Expression.Number)args[3]).Item;
-            var end = (double)((Expression.Number)args[4]).Item;
+            var ptA = ((Value.Container)args[0]).Item;
+            var radX = (double)((Value.Number)args[1]).Item;
+            var radY = (double)((Value.Number)args[2]).Item;
+            var start = (double)((Value.Number)args[3]).Item;
+            var end = (double)((Value.Number)args[4]).Item;
 
             Ellipse ell = null;
 
@@ -905,7 +903,7 @@ namespace Dynamo.Elements
                (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
                 );
             }
-            return Expression.NewContainer(ell);
+            return Value.NewContainer(ell);
         }
     }
 
@@ -925,14 +923,14 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             double u, v;
-            u = ((Expression.Number)args[0]).Item;
-            v = ((Expression.Number)args[1]).Item;
+            u = ((Value.Number)args[0]).Item;
+            v = ((Value.Number)args[1]).Item;
 
 
-            return FScheme.Expression.NewContainer(new UV(u, v));
+            return FScheme.Value.NewContainer(new UV(u, v));
         }
     }
 
@@ -952,15 +950,15 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var ptA = (XYZ)((Expression.Container)args[0]).Item;
-            var ptB = (XYZ)((Expression.Container)args[1]).Item;
+            var ptA = (XYZ)((Value.Container)args[0]).Item;
+            var ptB = (XYZ)((Value.Container)args[1]).Item;
 
             // CurveElement c = MakeLine(this.UIDocument.Document, ptA, ptB);
             CurveElement c = MakeLineCBP(this.UIDocument.Document, ptA, ptB);
 
-            return FScheme.Expression.NewContainer(c);
+            return FScheme.Value.NewContainer(c);
         }
 
 
@@ -1007,20 +1005,20 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var pts = ((Expression.List)args[0]).Item;
+            var pts = ((Value.List)args[0]).Item;
 
             hs = null;
 
-            FSharpList<Expression> containers = Utils.SequenceToFSharpList(pts);
+            FSharpList<Value> containers = Utils.SequenceToFSharpList(pts);
 
             List<XYZ> ctrlPts = new List<XYZ>();
-            foreach (Expression e in containers)
+            foreach (Value e in containers)
             {
                 if (e.IsContainer)
                 {
-                    XYZ pt = (XYZ)((Expression.Container)(e)).Item;
+                    XYZ pt = (XYZ)((Value.Container)(e)).Item;
                     ctrlPts.Add(pt);
                 }
             }
@@ -1029,7 +1027,7 @@ namespace Dynamo.Elements
                 hs = this.UIDocument.Application.Application.Create.NewHermiteSpline(ctrlPts, false);
             }
 
-            return Expression.NewContainer(hs);
+            return Value.NewContainer(hs);
         }
     }
 }

@@ -20,7 +20,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
@@ -40,10 +40,10 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override Value Evaluate(FSharpList<Value> args)
       {
-         Curve c = (Curve)((Expression.Container)args[0]).Item;
-         SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
+         Curve c = (Curve)((Value.Container)args[0]).Item;
+         SketchPlane sp = (SketchPlane)((Value.Container)args[1]).Item;
 
          
          ModelCurve mc;
@@ -91,7 +91,7 @@ namespace Dynamo.Elements
             mc.SketchPlane = sp;
          }
 
-         return Expression.NewContainer(mc);
+         return Value.NewContainer(mc);
       }
    }
 
@@ -109,14 +109,14 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override Value Evaluate(FSharpList<Value> args)
       {
          //Our eventual output.
          CurveByPoints c;
 
-         //Build a sequence that unwraps the input list from it's Expression form.
-         IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
-            x => (ReferencePoint)((Expression.Container)x).Item
+         //Build a sequence that unwraps the input list from it's Value form.
+         IEnumerable<ReferencePoint> refPts = ((Value.List)args[0]).Item.Select(
+            x => (ReferencePoint)((Value.Container)x).Item
          );
 
          //Add all of the elements in the sequence to a ReferencePointArray.
@@ -150,7 +150,7 @@ namespace Dynamo.Elements
             this.Elements.Add(c.Id);
          }
 
-         return Expression.NewContainer(c);
+         return Value.NewContainer(c);
       }
    }
 
@@ -315,7 +315,7 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      private Expression makeCurveRef(object c, int count)
+      private Value makeCurveRef(object c, int count)
       {
           Reference r = c is CurveElement
              ? (c as CurveElement).GeometryCurve.Reference // curve element
@@ -325,36 +325,36 @@ namespace Dynamo.Elements
           //if (c is CurveElement)
           //{
           //    r = (c as CurveElement).GeometryCurve.Reference;
-          //    return Expression.NewContainer(r);
+          //    return Value.NewContainer(r);
           //}
           //else if (c is Curve)
           //{
           //    r = (c as Curve).Reference;
-          //    return Expression.NewContainer(r);
+          //    return Value.NewContainer(r);
           //}
           //else if (c is Reference)
           //{
           //    r = c as Reference;
-          //    return Expression.NewContainer(r);
+          //    return Value.NewContainer(r);
           //}
       
-          return Expression.NewContainer(r);
+          return Value.NewContainer(r);
       }
 
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override Value Evaluate(FSharpList<Value> args)
       {
          var input = args[0];
 
          if (input.IsList)
          {
             int count = 0;
-            var result =  Expression.NewList(
+            var result =  Value.NewList(
                Utils.SequenceToFSharpList(
-                  (input as Expression.List).Item.Select(
+                  (input as Value.List).Item.Select(
                      x =>
                             this.makeCurveRef(
-                            ((Expression.Container)x).Item,
+                            ((Value.Container)x).Item,
                             count++
                         )
                   )
@@ -370,7 +370,7 @@ namespace Dynamo.Elements
          else
          {
             var result = this.makeCurveRef(
-                   ((Expression.Container)input).Item,
+                   ((Value.Container)input).Item,
                    0
 
                 );
@@ -466,10 +466,10 @@ namespace Dynamo.Elements
            base.RegisterInputsAndOutputs();
        }
 
-       public override Expression Evaluate(FSharpList<Expression> args)
+       public override Value Evaluate(FSharpList<Value> args)
        {
-           var pts = ((Expression.List)args[0]).Item.Select(
-              e => ((ReferencePoint)((Expression.Container)e).Item).Position
+           var pts = ((Value.List)args[0]).Item.Select(
+              e => ((ReferencePoint)((Value.Container)e).Item).Position
            ).ToList();
 
 
@@ -509,7 +509,7 @@ namespace Dynamo.Elements
 
            this.Elements.Add(c.Id);
 
-           return Expression.NewContainer(c);
+           return Value.NewContainer(c);
        }
    }
 }
