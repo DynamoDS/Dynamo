@@ -93,5 +93,15 @@ namespace Dynamo.FSchemeInterop
                 result = FSharpList<T>.Cons(element, result);
             return result;
         }
+
+        /// <summary>
+        /// A better ToString() for Values.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static string Print(this Value v)
+        {
+            return FScheme.print(v);
+        }
     }
 }

@@ -80,46 +80,53 @@ namespace Dynamo.Elements
                 var idle = Expression.NewFunction_E(
                     FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                         args =>
-                            IdlePromise<Value>.ExecuteOnIdle(
-                                () =>
-                                    (args[0] as Value.Function).Item
-                                        .Invoke(FSharpList<Value>.Empty))));
+                        {
+                            var f = (args[0] as Value.Function).Item;
+
+                            if (node.Bench.RunInDebug)
+                                return f.Invoke(FSharpList<Value>.Empty);
+                            else
+                            {
+                                return IdlePromise<Value>.ExecuteOnIdle(
+                                    () => f.Invoke(FSharpList<Value>.Empty));
+                            }
+                        }));
 
                 //startTransaction :: () -> ()
                 //Starts a Dynamo Transaction.
                 var startTransaction = Expression.NewFunction_E(
                     FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                         _ =>
+                        {
+                            if (node.Bench.RunCancelled)
+                                throw new CancelEvaluationException(false);
+
+                            if (!node.Bench.RunInDebug)
                             {
-                                if (node.Bench.RunCancelled)
-                                    throw new CancelEvaluationException(false);
+                                node.Bench.InIdleThread = true;
+                                node.Bench.InitTransaction();
+                            }
 
-                                if (!node.Bench.RunInDebug)
-                                {
-                                    node.Bench.InIdleThread = true;
-                                    node.Bench.InitTransaction();
-                                }
-
-                                return Value.NewDummy("started transaction");
-                            }));
+                            return Value.NewDummy("started transaction");
+                        }));
 
                 //endTransaction :: () -> ()
                 //Ends a Dynamo Transaction.
                 var endTransaction = Expression.NewFunction_E(
                     FSharpFunc<FSharpList<Value>, Value>.FromConverter(
-                        delegate (FSharpList<Value> _)
+                        _ =>
                         {
                             if (!node.Bench.RunInDebug)
                             {
                                 node.Bench.EndTransaction();
                                 node.Bench.InIdleThread = false;
+
+                                UpdateLayoutDelegate uld = new UpdateLayoutDelegate(node.CallUpdateLayout);
+                                node.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { node });
+                                node.ValidateConnections();
                             }
                             else
                                 node.setDirty(false);
-
-                            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(node.CallUpdateLayout);
-                            node.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { this });
-                            node.ValidateConnections();
 
                             return Value.NewDummy("ended transaction");
                         }));
