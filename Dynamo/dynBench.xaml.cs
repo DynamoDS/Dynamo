@@ -3022,7 +3022,7 @@ namespace Dynamo.Controls
             }
             catch (Exception ex)
             {
-                Log(ex);
+                Log(ex.GetType().ToString() + ": " + ex.Message);
             }
         }
 
