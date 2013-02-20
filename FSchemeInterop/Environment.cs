@@ -59,58 +59,6 @@ namespace Dynamo.FSchemeInterop
             this.rEnv = FScheme.environment;
         }
 
-        //Indexor providing a quick way to lookup symbols in the environment.
-        public FSharpRef<Value> this[string symbol]
-        {
-            get
-            {
-                return this.Lookup(symbol);
-            }
-        }
-
-        //Looks up the given symbol in this environment.
-        //TODO: Use "Try" pattern to avoid bad lookups
-        public FSharpRef<Value> Lookup(string symbol)
-        {
-            var ce = cEnv.Value;
-            var lookup = FScheme.FindInCompilerEnv(symbol, ce);
-            if (FSharpOption<Tuple<int, int>>.get_IsSome(lookup))
-            {
-                var indeces = lookup.Value;
-                return rEnv.Value[indeces.Item1].Value[indeces.Item2];
-            }
-            return null;
-        }
-
-        //Adds a symbol to this environment. Simulates a "define".
-        public void Add(string symbol, Value expr)
-        {
-            var idx = ListModule.TryFindIndex(
-                (Converter<string, bool>)symbol.Equals,
-                this.cEnv.Value.Head);
-
-            if (FSharpOption<int>.get_IsSome(idx))
-            {
-                this.rEnv.Value.Head.Value[idx.Value].Value = expr;
-            }
-            else
-            {
-                //Update compilation environment
-                this.cEnv.Value =
-                    FSharpList<FSharpList<string>>.Cons(
-                        ListModule.Append(this.cEnv.Value.Head, Utils.MakeFSharpList(symbol)),
-                        this.cEnv.Value.Tail);
-
-                //Update runtime environment
-                var rEnvNew = this.rEnv.Value.Head.Value;
-                var lastIndex = rEnvNew.Length;
-                Array.Resize(ref rEnvNew, rEnvNew.Length + 1);
-                this.rEnv.Value.Head.Value = rEnvNew;
-
-                this.rEnv.Value.Head.Value[lastIndex] = new FSharpRef<Value>(expr);
-            }
-        }
-
         /// <summary>
         /// Removes an identifier from this environment.
         /// </summary>
@@ -135,6 +83,11 @@ namespace Dynamo.FSchemeInterop
                 (_, i) => !removedIndeces.Contains(i)
             ).ToArray();
         }
+
+        public override string ToString()
+        {
+            return this.CompilationEnvironment.ToString() + "\n" + this.RuntimeEnvironment.ToString();
+        }
     }
 
     //Class representing an FScheme Execution Environment. Used to evaluate FScheme Expressions.
@@ -143,22 +96,31 @@ namespace Dynamo.FSchemeInterop
         //Environment used to store symbols.
         private EnvironmentWrapper env;
 
+        //private FSharpRef<FSharpMap<string, FSharpRef<Value>>> frozenEnv;
+
         //Default constructor, simply creates a default environment.
         public ExecutionEnvironment()
         {
             this.env = new EnvironmentWrapper();
+            //this.frozenEnv = FScheme.EnvironmentMap;
         }
 
         //Binds symbols of the given string to the given body.
         public void DefineSymbol(string name, Expression body)
         {
             Evaluate(Expression.NewDefine(name, body));
+
+            //frozenEnv.Value = frozenEnv.Value.Add(name, env.Lookup(name));
         }
 
-        //Binds symbols of the given string to the given Expression.
-        //private void DefineExternal(string name, Expression func)
+        //private void add(string name, Value v)
         //{
-        //   this.env.Add(name, func);
+        //    var box = env.Add(name, v);
+
+        //    //if (frozenEnv.Value.ContainsKey(name))
+        //    //    frozenEnv.Value[name].Value = v;
+        //    //else
+        //    //    frozenEnv.Value = frozenEnv.Value.Add(name, box);
         //}
 
         //Binds symbols of the given string to the given External Function.
@@ -172,7 +134,8 @@ namespace Dynamo.FSchemeInterop
         //Binds symbols of the given string to the given External Function.
         public void DefineExternal(string name, FSharpFunc<FSharpList<Value>, Value> func)
         {
-            this.env.Add(name, Value.NewFunction(func));
+            //add(name, Value.NewFunction(func));
+            Evaluate(Expression.NewDefine(name, Expression.NewFunction_E(func)));
         }
 
         /// <summary>
@@ -191,7 +154,11 @@ namespace Dynamo.FSchemeInterop
         ///Removes the given symbol from the environment.
         public void RemoveSymbol(string p)
         {
-            this.env.Delete(p);
+            //TODO: Implement
+
+            //this.env.Delete(p); //no worky?
+            
+            //frozenEnv.Value = frozenEnv.Value.Remove(p);
         }
 
         /// <summary>
@@ -199,9 +166,23 @@ namespace Dynamo.FSchemeInterop
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public FSharpRef<Value> LookupSymbol(string p)
+        public Value LookupSymbol(string p)
         {
-            return this.env.Lookup(p);
+            //try
+            //{
+            //    return this.frozenEnv.Value[p];
+            //}
+            //catch (Exception)
+            //{
+            //    throw new Exception("Could not find key " + p + " in environment");
+            //}
+            //return env.Lookup(p);
+            return Evaluate(Expression.NewId(p));
+        }
+
+        public override string ToString()
+        {
+            return env.ToString();
         }
     }
 }

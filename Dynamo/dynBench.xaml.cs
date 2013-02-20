@@ -593,10 +593,12 @@ namespace Dynamo.Controls
 
         private void loadUserWorkspaces(string directory)
         {
+            var parentBuffer = new Dictionary<string, HashSet<string>>();
+            var childrenBuffer = new Dictionary<string, HashSet<dynWorkspace>>();
             string[] filePaths = Directory.GetFiles(directory, "*.dyf");
             foreach (string filePath in filePaths)
             {
-                this.OpenDefinition(filePath);
+                this.OpenDefinition(filePath, childrenBuffer, parentBuffer);
             }
             foreach (var e in this.AllElements)
             {
@@ -1439,6 +1441,17 @@ namespace Dynamo.Controls
 
         bool OpenDefinition(string xmlPath)
         {
+            return OpenDefinition(
+                xmlPath, 
+                new Dictionary<string, HashSet<dynWorkspace>>(),
+                new Dictionary<string, HashSet<string>>());
+        }
+
+        bool OpenDefinition(
+            string xmlPath,
+            Dictionary<string, HashSet<dynWorkspace>> children,
+            Dictionary<string, HashSet<string>> parents)
+        {
             try
             {
                 #region read xml file
@@ -1504,6 +1517,8 @@ namespace Dynamo.Controls
                 XmlNode cNodesList = cNodes[0] as XmlNode;
                 XmlNode nNodesList = nNodes[0] as XmlNode;
 
+                var dependencies = new Stack<string>();
+
                 #region instantiate nodes
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
@@ -1535,6 +1550,13 @@ namespace Dynamo.Controls
 
                     el.DisableReporting();
                     el.LoadElement(elNode);
+
+                    if (el is dynFunction)
+                    {
+                        var fun = el as dynFunction;
+                        if (fun.Symbol != ws.Name)
+                            dependencies.Push(fun.Symbol);
+                    }
                 }
                 #endregion
 
@@ -1622,6 +1644,33 @@ namespace Dynamo.Controls
                 #endregion
 
                 ws.FilePath = xmlPath;
+
+                foreach (var dep in dependencies)
+                {
+                    if (!dynFunctionDict.ContainsKey(dep))
+                    {
+                        if (children.ContainsKey(dep))
+                            children[dep].Add(ws);
+                        else
+                            children[dep] = new HashSet<dynWorkspace>() { ws };
+
+                        if (parents.ContainsKey(ws.Name))
+                            parents[ws.Name].Add(dep);
+                        else
+                            parents[ws.Name] = new HashSet<string>() { dep };
+                    }
+                }
+
+                if (children.ContainsKey(ws.Name))
+                {
+                    foreach (var child in children[ws.Name])
+                    {
+                        var allParents = parents[child.Name];
+                        allParents.Remove(ws.Name);
+                        if (!allParents.Any())
+                            this.SaveFunction(child, false);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -1631,6 +1680,7 @@ namespace Dynamo.Controls
                 CleanWorkbench();
                 return false;
             }
+
             return true;
         }
 
@@ -2885,7 +2935,7 @@ namespace Dynamo.Controls
             this.setHomeBackground();
         }
 
-        public void SaveFunction(dynWorkspace funcWorkspace, bool writeDefinition = true)
+        public void SaveFunction(dynWorkspace funcWorkspace, bool writeDefinition=true)
         {
             //Generate xml, and save it in a fixed place
             if (writeDefinition)
@@ -2907,41 +2957,33 @@ namespace Dynamo.Controls
                     Log(e);
                 }
             }
-
-            //Find compile errors
-            var topMost = funcWorkspace.Elements.Where(x => !x.OutPort.Connectors.Any()).ToList();
             
-            //foreach (var ele in topMost)
-            //{
-            //    if ((ele.NickName == "Watch") || (ele.NickName == "Watch 3d")) // allow watch nodes to 'hang out'
-            //    {
-            //        topMost.Remove(ele);
-            //    }
-            //}
-
-            if (topMost.Count > 1)
-            {
-                foreach (var ele in topMost)
-                {
-                    ele.Error("Nodes can have only one output.");
-                }
-            }
-            else
-            {
-                foreach (var ele in topMost)
-                {
-                    ele.ValidateConnections();
-                }
-            }
-
-            //Find function entry point, and then compile the function and add it to our environment
-            dynNode top = topMost.FirstOrDefault();
-
-            var variables = funcWorkspace.Elements.Where(x => x is dynSymbol);
-            var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
-
             try
             {
+                //Find compile errors
+                var topMost = funcWorkspace.Elements.Where(x => !x.OutPort.Connectors.Any()).ToList();
+
+                if (topMost.Count > 1)
+                {
+                    foreach (var ele in topMost)
+                    {
+                        ele.Error("Nodes can have only one output.");
+                    }
+                }
+                else
+                {
+                    foreach (var ele in topMost)
+                    {
+                        ele.ValidateConnections();
+                    }
+                }
+
+                //Find function entry point, and then compile the function and add it to our environment
+                dynNode top = topMost.FirstOrDefault();
+
+                var variables = funcWorkspace.Elements.Where(x => x is dynSymbol);
+                var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
+
                 if (top != default(dynNode))
                 {
                     Expression expression = Utils.MakeAnon(
@@ -2951,37 +2993,37 @@ namespace Dynamo.Controls
 
                     this.Environment.DefineSymbol(funcWorkspace.Name, expression);
                 }
-            }
-            catch
-            {
-                //TODO: flesh out error handling (build-loops?)
-            }
 
-            //Update existing function nodes which point to this function to match its changes
-            foreach (var el in this.AllElements)
-            {
-                if (el is dynFunction)
+                //Update existing function nodes which point to this function to match its changes
+                foreach (var el in this.AllElements)
                 {
-                    var node = (dynFunction)el;
+                    if (el is dynFunction)
+                    {
+                        var node = (dynFunction)el;
 
-                    if (!node.Symbol.Equals(funcWorkspace.Name))
-                        continue;
+                        if (!node.Symbol.Equals(funcWorkspace.Name))
+                            continue;
 
-                    node.SetInputs(variableNames);
-                    el.ReregisterInputs();
-                    //el.IsDirty = true;
+                        node.SetInputs(variableNames);
+                        el.ReregisterInputs();
+                        //el.IsDirty = true;
+                    }
                 }
+
+                //Call OnSave for all saved elements
+                foreach (var el in funcWorkspace.Elements)
+                    el.onSave();
+
+                //Update new add menu
+                var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name];
+                addItem.SetInputs(variableNames);
+                addItem.ReregisterInputs();
+                addItem.State = ElementState.DEAD;
             }
-
-            //Call OnSave for all saved elements
-            foreach (var el in funcWorkspace.Elements)
-                el.onSave();
-
-            //Update new add menu
-            var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name];
-            addItem.SetInputs(variableNames);
-            addItem.ReregisterInputs();
-            addItem.State = ElementState.DEAD;
+            catch (Exception ex)
+            {
+                Log(ex);
+            }
         }
 
         internal void DisplayFunction(string symbol)

@@ -344,11 +344,10 @@ namespace Dynamo.Elements
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var procedure = this.Bench.Environment.LookupSymbol(this.Symbol).Value;
+            var procedure = this.Bench.Environment.LookupSymbol(this.Symbol);
             if (procedure.IsFunction)
             {
-                return (procedure as Value.Function).Item
-                   .Invoke(args);
+                return (procedure as Value.Function).Item.Invoke(args);
             }
             else
                 return base.Evaluate(args);

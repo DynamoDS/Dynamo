@@ -114,7 +114,7 @@ namespace Dynamo.Elements
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Bench.Environment.LookupSymbol(Symbol).Value)
+            return ((Value.Function)Bench.Environment.LookupSymbol(Symbol))
                 .Item.Invoke(args);
         }
     }
@@ -309,7 +309,7 @@ namespace Dynamo.Elements
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)this.Bench.Environment.LookupSymbol("list").Value)
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("list"))
                 .Item.Invoke(args);
         }
     }
@@ -370,12 +370,12 @@ namespace Dynamo.Elements
     [ElementName("Reduce")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Reduces a sequence.")]
-    [ElementSearchTags("fold")]
+    [ElementSearchTags("foldl")]
     [RequiresTransaction(false)]
     public class dynFold : dynBuiltinFunction
     {
         public dynFold()
-            : base("fold")
+            : base("foldl")
         {
             InPortData.Add(new PortData("f(x, a)", "Reductor Funtion", typeof(object)));
             InPortData.Add(new PortData("a", "Seed", typeof(object)));
@@ -411,7 +411,7 @@ namespace Dynamo.Elements
     public class dynBuildSeq : dynBuiltinFunction
     {
         public dynBuildSeq()
-            : base("build-seq")
+            : base("build-list")
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(double)));
             InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(double)));
@@ -490,7 +490,7 @@ namespace Dynamo.Elements
                 );
             }
             else
-                return new FunctionNode("combine", portNames);
+                return new FunctionNode("map", portNames);
         }
 
         private Value macroEval(FSharpList<Value> args)
@@ -506,7 +506,7 @@ namespace Dynamo.Elements
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)this.Bench.Environment.LookupSymbol("combine").Value)
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("map"))
                 .Item.Invoke(args);
         }
     }
@@ -596,7 +596,7 @@ namespace Dynamo.Elements
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)this.Bench.Environment.LookupSymbol("cartesian-product").Value)
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("cartesian-product"))
                 .Item.Invoke(args);
         }
     }
@@ -888,6 +888,54 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
         }
+
+        protected internal override INode Build()
+        {
+            if (InPorts.All(x => x.Connectors.Any()))
+            {
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build());
+                ifNode.ConnectInput("true", InPorts[1].Connectors[0].Start.Owner.Build());
+                ifNode.ConnectInput("false", new NumberNode(0));
+                return ifNode;
+            }
+            else
+            {
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
+                ifNode.ConnectInput("false", new NumberNode(0));
+
+                var node = new AnonymousFunctionNode(
+                    InPortData.Select(x => x.NickName),
+                    ifNode);
+
+                //For each index in InPortData
+                for (int i = 0; i < InPortData.Count; i++)
+                {
+                    //Fetch the corresponding port
+                    var port = InPorts[i];
+
+                    //If this port has connectors...
+                    if (port.Connectors.Any())
+                    {
+                        //Fetch the corresponding info for the port.
+                        var data = InPortData[i];
+
+                        //Compile input and connect it
+                        node.ConnectInput(
+                           data.NickName,
+                           port.Connectors[0].Start.Owner.Build()
+                        );
+                    }
+                }
+
+                IsDirty = false;
+                OnEvaluate();
+
+                return node;
+            }
+        }
     }
 
     [ElementName("Or")]
@@ -906,6 +954,54 @@ namespace Dynamo.Elements
             this.nickNameBlock.FontSize = 20;
 
             base.RegisterInputsAndOutputs();
+        }
+
+        protected internal override INode Build()
+        {
+            if (InPorts.All(x => x.Connectors.Any()))
+            {
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build());
+                ifNode.ConnectInput("true", new NumberNode(1));
+                ifNode.ConnectInput("false", InPorts[1].Connectors[0].Start.Owner.Build());
+                return ifNode;
+            }
+            else
+            {
+                var ifNode = new ConditionalNode();
+                ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                ifNode.ConnectInput("true", new NumberNode(1));
+                ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
+
+                var node = new AnonymousFunctionNode(
+                    InPortData.Select(x => x.NickName),
+                    ifNode);
+
+                //For each index in InPortData
+                for (int i = 0; i < InPortData.Count; i++)
+                {
+                    //Fetch the corresponding port
+                    var port = InPorts[i];
+
+                    //If this port has connectors...
+                    if (port.Connectors.Any())
+                    {
+                        //Fetch the corresponding info for the port.
+                        var data = InPortData[i];
+
+                        //Compile input and connect it
+                        node.ConnectInput(
+                           data.NickName,
+                           port.Connectors[0].Start.Owner.Build()
+                        );
+                    }
+                }
+
+                IsDirty = false;
+                OnEvaluate();
+
+                return node;
+            }
         }
     }
 
@@ -2611,8 +2707,8 @@ namespace Dynamo.Elements
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var fun = ((Value.Function)this.Bench.Environment.LookupSymbol("concat-strings").Value).Item;
-            return fun.Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("concat-strings"))
+                .Item.Invoke(args);
         }
     }
 

@@ -316,6 +316,7 @@ let rec printExpression indent syntax =
             + ")\n"
             + printExpression (indent + "  ") body
             + ")"
+    let printParam = function Normal(s) | Tail(s) -> s
     indent + match syntax with
              | Number_E(n)                -> n.ToString()
              | String_E(s)                -> "\"" + s + "\""
@@ -323,10 +324,10 @@ let rec printExpression indent syntax =
              | SetId(s, expr)             -> "(set! " + s + " " + printExpression "" expr
              | Let(names, exprs, body)    -> printLet "let" names exprs body
              | LetRec(names, exprs, body) -> printLet "letrec" names exprs body
-             | Fun(names, body)           -> "(lambda (" + String.Join(" ", names) + ") " + printExpression "" body + ")"
+             | Fun(names, body)           -> "(lambda (" + String.Join(" ", List.map printParam names) + ") " + printExpression "" body + ")"
              | List_E(exprs)              -> "(" + String.Join(" ", List.map (printExpression "") exprs) + ")"
              | If(c, t, e)                -> "(if " + String.Join(" ", List.map (printExpression "") [c; t; e]) + ")"
-             | Define(names, body)        -> "(define (" + String.Join(" ", names) + ")" + printExpression " " body + ")"
+             | Define(name, body)         -> "(define " + name + printExpression " " body + ")"
              | Begin(exprs)               -> "(begin " + String.Join(" ", List.map (printExpression "") exprs) + ")"
              | Quote(p)                   -> "(quote " + printSyntax p + ")"
              | Quasi(p)                   -> "(quasiquote " + printSyntax p + ")"
@@ -699,9 +700,9 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
             ///The index of the new identifier box in the mutated environment.
             let lastindex = compenv.Value.Head.Length
             //Update the compiler environment.
-            compenv := (compenv.Value.Head @ [name]) :: compenv.Value.Tail
+            let cenv = ref <| (compenv.Value.Head @ [name]) :: compenv.Value.Tail
             ///Compiled binding expression.
-            let cbody = compile compenv body
+            let cbody = compile cenv body
             ///Dummy value for undefined identifiers.
             let dummy' = Dummy(sprintf "define '%s'" name)
             //At runtime...
@@ -709,11 +710,13 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
                 ///New identifier's box
                 let def = ref dummy'
                 //Resize the environment to accomodate the new identifier
-                Array.Resize(env.Value.Head, env.Value.Head.Value.Length + 1)
+                Array.Resize(env.Value.Head, lastindex + 1)
                 //Place the box in the environment
                 env.Value.Head.Value.SetValue(def, lastindex)
                 //Evaluate the binding expression with the mutated environment
                 def := cbody env
+                ///Set the reference to the updated environment
+                compenv := !cenv
                 //Return the dummy for the define statement
                 dummy
    
@@ -875,8 +878,13 @@ and environment : Environment = ref [ref [||]]
 
 let mutable private tempEnv : (string * Value ref) list = []
 
+let EnvironmentMap : Map<string, Value ref> ref = ref Collections.Map.empty
+
 ///Adds a new binding to the default environment
-let AddDefaultBinding name expr = tempEnv <- (name, ref expr) :: tempEnv
+let AddDefaultBinding name expr = 
+   let eRef = ref expr
+   tempEnv <- (name, eRef) :: tempEnv
+   EnvironmentMap := Collections.Map.add name eRef EnvironmentMap.Value
 
 let private makeEnvironments() =
     AddDefaultBinding "*" (Function(Multiply))
