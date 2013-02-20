@@ -20,7 +20,7 @@ using System.Text;
 using Microsoft.FSharp.Collections;
 using System.IO.Ports;
 using Dynamo.Connectors;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using HelixToolkit.Wpf;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
@@ -217,7 +217,7 @@ namespace Dynamo.Elements
             }
         }                                                                                                                                                                                                         
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
@@ -228,8 +228,8 @@ namespace Dynamo.Elements
                     if (input.IsList)
                     {
                         #region points and curves
-                        //FSharpList<Expression> list = ((Expression.List)args[0]).Item;
-                        var inList = (input as Expression.List).Item;
+                        //FSharpList<Value> list = ((Value.List)args[0]).Item;
+                        var inList = (input as Value.List).Item;
 
                         DetachVisuals();
                         ClearPointsCollections();
@@ -237,21 +237,21 @@ namespace Dynamo.Elements
                         //test the first item in the list.
                         //if it's an XYZ, assume XYZs for the list
                         //create points. otherwise, create curves
-                        XYZ ptTest = (inList.First() as Expression.Container).Item as XYZ;
-                        Curve cvTest = (inList.First() as Expression.Container).Item as Curve;
+                        XYZ ptTest = (inList.First() as Value.Container).Item as XYZ;
+                        Curve cvTest = (inList.First() as Value.Container).Item as Curve;
 
                         if (ptTest != null) isDrawingPoints = true;
 
-                        foreach (Expression e in inList)
+                        foreach (Value e in inList)
                         {
                             if (isDrawingPoints)
                             {
-                                pt = (e as Expression.Container).Item as XYZ;
+                                pt = (e as Value.Container).Item as XYZ;
                                 DrawPoint(pt);
                             }
                             else
                             {
-                                c = (e as Expression.Container).Item as Curve;
+                                c = (e as Value.Container).Item as Curve;
                                 DrawCurve(c);
 
                             }
@@ -261,7 +261,7 @@ namespace Dynamo.Elements
                     }
                     else if (input.IsContainer) //if not a list, try to cast to either a particle system, curve, or xyz
                     {
-                        var test = ((Expression.Container)(input)).Item;
+                        var test = ((Value.Container)(input)).Item;
 
                         if (test is ParticleSystem)
                         {

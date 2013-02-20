@@ -188,13 +188,13 @@ namespace Dynamo.Elements
 
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            storedPath = ((Expression.String)args[0]).Item;
-            double xDiv = ((Expression.Number)args[1]).Item;
-            double yDiv = ((Expression.Number)args[1]).Item;
+            storedPath = ((Value.String)args[0]).Item;
+            double xDiv = ((Value.Number)args[1]).Item;
+            double yDiv = ((Value.Number)args[1]).Item;
 
-            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+            FSharpList<Value> result = FSharpList<Value>.Empty;
             if (File.Exists(storedPath))
             {
 
@@ -223,7 +223,7 @@ namespace Dynamo.Elements
                                 for (int x = 0; x < xDiv; x++)
                                 {
                                     Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width / xDiv), y * (int)(bmp.Height / yDiv));
-                                    result = FSharpList<Expression>.Cons(Expression.NewContainer(pixelColor), result);
+                                    result = FSharpList<Value>.Cons(Value.NewContainer(pixelColor), result);
                                 }
                             }
                         }
@@ -234,10 +234,10 @@ namespace Dynamo.Elements
                     }
 
 
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             else
-                return Expression.NewList(FSharpList<Expression>.Empty);
+                return Value.NewList(FSharpList<Value>.Empty);
         }
     }
 

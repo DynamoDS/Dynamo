@@ -9,7 +9,7 @@ using Dynamo.Utilities;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Microsoft.Kinect;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -130,7 +130,7 @@ namespace Dynamo.Elements
             
         //}
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             if (rightHandPt == null)
             {
@@ -145,12 +145,12 @@ namespace Dynamo.Elements
                 //this.Tree.Trunk.Leaves.Add(rightHandPt);
             }
 
-            if (((Expression.Number)args[0]).Item == 1)
+            if (((Value.Number)args[0]).Item == 1)
             {
-                var input = (Element)((Expression.Container)args[0]).Item;
-                double xScale = (double)((Expression.Container)args[1]).Item;
-                double yScale = (double)((Expression.Container)args[2]).Item;
-                double zScale = (double)((Expression.Container)args[3]).Item;
+                var input = (Element)((Value.Container)args[0]).Item;
+                double xScale = (double)((Value.Container)args[1]).Item;
+                double yScale = (double)((Value.Container)args[2]).Item;
+                double zScale = (double)((Value.Container)args[3]).Item;
 
                 //update the image
                 //image1.Source = nui.DepthStream.GetNextFrame(0).ToBitmapSource();
@@ -184,7 +184,7 @@ namespace Dynamo.Elements
             }
 
 
-            return Expression.NewNumber(0);
+            return Value.NewNumber(0);
         }
 
         //public override void Destroy()

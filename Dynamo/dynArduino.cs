@@ -87,11 +87,11 @@ namespace Dynamo.Elements
 
         }
 
-        public event dynElementDestroyedHandler dynElementDestroyed;
-        public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
+        public new event dynElementDestroyedHandler dynElementDestroyed;
+        public new event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
 
-        public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
-        public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
+        public new delegate void dynElementDestroyedHandler(object sender, EventArgs e);
+        public new delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
 
         System.Windows.Controls.MenuItem lastComItem = null;
         
