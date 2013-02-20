@@ -72,7 +72,7 @@ limitations under the License.
       <HintPath>..\..\..\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
     </Reference>
     <Reference Include="LeapCSharp.NET4.0">
-      <HintPath>..\..\..\..\..\..\Leap\Leap_SDK\lib\LeapCSharp.NET4.0.dll</HintPath>
+      <HintPath>..\packages\Leap SDK 0.7.3_2234 Binaries\LeapCSharp.NET4.0.dll</HintPath>
     </Reference>
     <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

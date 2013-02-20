@@ -46,6 +46,7 @@ namespace Dynamo.Elements
         System.Windows.Point rightMousePoint;
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
 
+        bool isScreenShot= false;
         bool isDrawingPoints;
         ParticleSystem ps;
         Curve c;
@@ -85,8 +86,20 @@ namespace Dynamo.Elements
             //take out the left and right margins
             //and make this so it's not so wide
             this.inputGrid.Margin = new Thickness(10, 10, 10, 10);
-            this.topControl.Width = 400;
-            this.topControl.Height = 300;
+
+            isScreenShot = true;
+
+            if (isScreenShot)
+            {
+                this.topControl.Width = 800;
+                this.topControl.Height = 500;
+            }
+            else
+            {
+                this.topControl.Width = 400;
+                this.topControl.Height = 300;
+            }
+
             //this.elementShine.Visibility = System.Windows.Visibility.Hidden;
             //this.elementRectangle.Visibility = System.Windows.Visibility.Hidden;
 
@@ -97,6 +110,9 @@ namespace Dynamo.Elements
             view.CameraRotationMode = CameraRotationMode.Turntable;
             view.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            //RenderOptions.SetEdgeMode(view,EdgeMode.Aliased);
+            RenderOptions.SetEdgeMode(view, EdgeMode.Unspecified);
+            
             
             //view.IsHitTestVisible = true;
             view.ShowFrameRate = true;
@@ -243,7 +259,7 @@ namespace Dynamo.Elements
                         RaisePropertyChanged("Points");
                         #endregion
                     }
-                    else if (input.IsContainer) //if not a list, presume it's a a particle system
+                    else if (input.IsContainer) //if not a list, try to cast to either a particle system, curve, or xyz
                     {
                         var test = ((Expression.Container)(input)).Item;
 
@@ -316,6 +332,34 @@ namespace Dynamo.Elements
                 ptVis2 = new Point3D(pt2.X, pt2.Y, pt2.Z);
                 Points[lastPointColor].Add(ptVis1);
                 Points[lastPointColor].Add(ptVis2);
+            }
+        }
+
+        private void DrawSurface(Face f)
+        {
+            Mesh mesh;
+            Mesh3D helixMesh;
+
+            mesh = f.Triangulate() as Mesh;
+            XYZ vertex0;
+            XYZ vertex1;
+            XYZ vertex2;
+
+            Point3D ptVis0;
+            Point3D ptVis1;
+            Point3D ptVis2;
+            int lastPointColor = Points.Count() - 1;//master Point list for color assignment
+            for (int i = 0; i < mesh.NumTriangles - 1; i++)
+            {
+                vertex0 =  mesh.get_Triangle(i).get_Vertex(0);
+                vertex1 =  mesh.get_Triangle(i).get_Vertex(1);
+                vertex2 = mesh.get_Triangle(i).get_Vertex(2);
+                ptVis0 = new Point3D(vertex0.X, vertex0.Y, vertex0.Z);
+                ptVis1 = new Point3D(vertex1.X, vertex1.Y, vertex1.Z);
+                ptVis2 = new Point3D(vertex2.X, vertex2.Y, vertex2.Z);
+               // TriOrQuadFacet
+               // helixMesh.AddFace(
+
             }
         }
 
