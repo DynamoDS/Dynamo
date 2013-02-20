@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2010
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6C8C52F4-ABB9-4AD9-ADAB-D774458A2190}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoElements", "Dynamo\DynamoElements.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F9B766BE-A5A3-4680-840F-649462340EE7} = {F9B766BE-A5A3-4680-840F-649462340EE7}
