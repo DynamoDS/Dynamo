@@ -47,6 +47,10 @@ namespace Dynamo.Nodes
         public Dictionary<PortData, dynNode> Inputs = new Dictionary<PortData, dynNode>();
 
         private Dictionary<PortData, dynNode> previousEvalPortMappings = new Dictionary<PortData, dynNode>();
+        
+        /// <summary>
+        /// Should changes be reported to the containing workspace?
+        /// </summary>
         private bool _report = true;
 
         protected Expression oldValue;
@@ -139,6 +143,9 @@ namespace Dynamo.Nodes
             this.NodeUI = new dynNodeUI(this);
         }
 
+        /// <summary>
+        /// Check current ports against ports used for previous mappings.
+        /// </summary>
         void CheckPortsForRecalc()
         {
             this.RequiresRecalc = this.InPortData.Any(
@@ -523,7 +530,7 @@ namespace Dynamo.Nodes
         /// </summary>
         private int runCount;
 
-        public dynRevitNode()
+        public dynRevitNode() : base()
         {
             elements = new List<List<ElementId>>() { new List<ElementId>() };
         }
@@ -682,7 +689,7 @@ namespace Dynamo.Nodes
         }
 
         private List<ElementId> deletedIds = new List<ElementId>();
-        protected void DeleteElement(ElementId id, bool hookOnly = false)
+        protected void DeleteElement(ElementId id, bool hookOnly=false)
         {
             if (!hookOnly)
                 this.UIDocument.Document.Delete(id);
