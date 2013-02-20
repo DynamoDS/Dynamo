@@ -171,19 +171,19 @@ namespace Dynamo.Elements
            }
        }
 
-       public override Expression Evaluate(FSharpList<Expression> args)
+       public override Value Evaluate(FSharpList<Value> args)
        {
-           listenPort = (int)((Expression.Number)args[1]).Item; // udp port to listen to
+           listenPort = (int)((Value.Number)args[1]).Item; // udp port to listen to
 
 
-           if (((Expression.Number)args[0]).Item == 1) // if exec node has pumped
+           if (((Value.Number)args[0]).Item == 1) // if exec node has pumped
            {
                this.Dispatcher.BeginInvoke(new UDPListening(ListenOnUDP));
            }
                          
 
 
-           return Expression.NewString(UDPResponse);
+           return Value.NewString(UDPResponse);
        }
       
    }

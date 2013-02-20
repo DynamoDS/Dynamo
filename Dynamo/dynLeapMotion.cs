@@ -33,7 +33,7 @@ using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Autodesk.Revit.DB;
 
 namespace Dynamo.Elements
@@ -97,9 +97,9 @@ namespace Dynamo.Elements
             LeapEnable(false);
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewContainer(leapController);
+            return Value.NewContainer(leapController);
         }
 
         public static Leap.Controller Controller
@@ -144,19 +144,19 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Controller controller = (Leap.Controller)((Expression.Container)args[0]).Item;
+            Leap.Controller controller = (Leap.Controller)((Value.Container)args[0]).Item;
             if (controller == null)
                 throw new Exception("No Leap Controller attached.");
             
-            int age = (int)((Expression.Number)args[1]).Item;
+            int age = (int)((Value.Number)args[1]).Item;
             if (age < 0)
                 throw new Exception("Leap Frame Age must be >= 0");
 
             Leap.Frame frame = controller.Frame(age);
 
-            return Expression.NewContainer(frame);
+            return Value.NewContainer(frame);
         }
     }
 
@@ -175,9 +175,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Controller controller = (Leap.Controller)((Expression.Container)args[0]).Item;
+            Leap.Controller controller = (Leap.Controller)((Value.Container)args[0]).Item;
             if (controller == null)
                 throw new Exception("No Leap Controller attached.");
 
@@ -193,7 +193,7 @@ namespace Dynamo.Elements
             //else
             //    str = "Leap Disabled";
 
-            return Expression.NewContainer(frame);
+            return Value.NewContainer(frame);
         }
     }
 
@@ -213,16 +213,16 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Frame frame = (Leap.Frame)((Expression.Container)args[0]).Item;
+            Leap.Frame frame = (Leap.Frame)((Value.Container)args[0]).Item;
             if (frame == null)
                 throw new Exception("No Leap Frame.");
 
             int age = 1;
             if (args.Length > 1 && args[1].IsNumber)
             {
-                age = (int)((Expression.Number)args[1]).Item;
+                age = (int)((Value.Number)args[1]).Item;
                 if (age < 0)
                     throw new Exception("Leap Frame Age must be >= 0");
             }
@@ -233,7 +233,7 @@ namespace Dynamo.Elements
 
             Leap.Frame sinceFrame = controller.Frame(age);
 
-            return Expression.NewNumber(frame.ScaleFactor(sinceFrame));
+            return Value.NewNumber(frame.ScaleFactor(sinceFrame));
         }
     }
 
@@ -253,9 +253,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Frame frame = (Leap.Frame)((Expression.Container)args[0]).Item;
+            Leap.Frame frame = (Leap.Frame)((Value.Container)args[0]).Item;
             if (frame == null)
                 throw new Exception("No Leap Frame.");
 
@@ -263,7 +263,7 @@ namespace Dynamo.Elements
             int age = 1;
             if (args.Length > 1 && args[1].IsNumber)
             {
-                age = (int)((Expression.Number)args[1]).Item;
+                age = (int)((Value.Number)args[1]).Item;
                 if (age < 0)
                     throw new Exception("Leap Frame Age must be >= 0");
             }
@@ -279,7 +279,7 @@ namespace Dynamo.Elements
             else
                 v = new Leap.Vector();
 
-            return Expression.NewContainer(new XYZ(v.x, v.y, v.z));
+            return Value.NewContainer(new XYZ(v.x, v.y, v.z));
         }
     }
 
@@ -299,9 +299,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Frame frame = (Leap.Frame)((Expression.Container)args[0]).Item;
+            Leap.Frame frame = (Leap.Frame)((Value.Container)args[0]).Item;
             if (frame == null)
                 throw new Exception("No Leap Frame.");
 
@@ -309,7 +309,7 @@ namespace Dynamo.Elements
             int age = 1;
             if (args.Length > 1 && args[1].IsNumber)
             {
-                age = (int)((Expression.Number)args[1]).Item;
+                age = (int)((Value.Number)args[1]).Item;
                 if (age < 0)
                     throw new Exception("Leap Frame Age must be >= 0");
             }
@@ -324,7 +324,7 @@ namespace Dynamo.Elements
             float angleY = frame.RotationAngle(sinceFrame, new Leap.Vector((float)0.0, (float)1.0, (float)0.0));
             float angleZ = frame.RotationAngle(sinceFrame, new Leap.Vector((float)0.0, (float)0.0, (float)1.0));
 
-            return Expression.NewContainer(new XYZ(angleX, angleY, angleZ));
+            return Value.NewContainer(new XYZ(angleX, angleY, angleZ));
         }
     }
 
@@ -344,14 +344,14 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Frame frame = (Leap.Frame)((Expression.Container)args[0]).Item;
+            Leap.Frame frame = (Leap.Frame)((Value.Container)args[0]).Item;
 
             // Index of the hand
             int idx = -1;
             if (args.Length > 1 && args[1].IsNumber)
-                idx = ((int)((Expression.Number)args[1]).Item) - 1;
+                idx = ((int)((Value.Number)args[1]).Item) - 1;
 
             Leap.Hand hand = Leap.Hand.Invalid;
 
@@ -361,7 +361,7 @@ namespace Dynamo.Elements
                     hand = frame.Hands[idx];
             }
 
-            return Expression.NewContainer(hand);
+            return Value.NewContainer(hand);
         }
     }
 
@@ -380,9 +380,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Frame frame = (Leap.Frame)((Expression.Container)args[0]).Item;
+            Leap.Frame frame = (Leap.Frame)((Value.Container)args[0]).Item;
 
             Leap.Hand hand = Leap.Hand.Invalid;
 
@@ -392,7 +392,7 @@ namespace Dynamo.Elements
                     hand = frame.Hands[0];
             }
 
-            return Expression.NewContainer(hand);
+            return Value.NewContainer(hand);
         }
     }
 
@@ -411,9 +411,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Frame frame = (Leap.Frame)((Expression.Container)args[0]).Item;
+            Leap.Frame frame = (Leap.Frame)((Value.Container)args[0]).Item;
 
             Leap.Hand hand = Leap.Hand.Invalid;
 
@@ -423,7 +423,7 @@ namespace Dynamo.Elements
                     hand = frame.Hands[1];
             }
 
-            return Expression.NewContainer(hand);
+            return Value.NewContainer(hand);
         }
     }
 
@@ -442,19 +442,19 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Expression> fingers = FSharpList<Expression>.Empty;
+            FSharpList<Value> fingers = FSharpList<Value>.Empty;
 
-            Leap.Hand hand = (Leap.Hand)((Expression.Container)args[0]).Item;
+            Leap.Hand hand = (Leap.Hand)((Value.Container)args[0]).Item;
 
             if (hand != null && hand.IsValid)
             {
                 foreach (Leap.Finger finger in hand.Fingers)
-                    fingers = FSharpList<Expression>.Cons(Expression.NewContainer(finger), fingers);
+                    fingers = FSharpList<Value>.Cons(Value.NewContainer(finger), fingers);
             }
 
-            return Expression.NewList(fingers);
+            return Value.NewList(fingers);
         }
     }
 
@@ -469,9 +469,9 @@ namespace Dynamo.Elements
             OutPortData = new PortData("Finger", "The finger data.", typeof(object));
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Hand hand = (Leap.Hand)((Expression.Container)args[0]).Item;
+            Leap.Hand hand = (Leap.Hand)((Value.Container)args[0]).Item;
 
             Leap.Finger finger = Leap.Finger.Invalid;
 
@@ -481,7 +481,7 @@ namespace Dynamo.Elements
                     finger = hand.Fingers[FingerIndex];
             }
 
-            return Expression.NewContainer(finger);
+            return Value.NewContainer(finger);
         }
 
         public int FingerIndex
@@ -506,11 +506,11 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             // Grab and set the finger index
             if (args.Length > 1 && args[1].IsNumber)
-                FingerIndex = ((int)((Expression.Number)args[1]).Item) - 1;
+                FingerIndex = ((int)((Value.Number)args[1]).Item) - 1;
             else
                 FingerIndex = -1;
             
@@ -599,9 +599,9 @@ namespace Dynamo.Elements
             OutPortData = new PortData("Tool", "The tool data.", typeof(object));
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Leap.Frame frame = (Leap.Frame)((Expression.Container)args[0]).Item;
+            Leap.Frame frame = (Leap.Frame)((Value.Container)args[0]).Item;
 
             Leap.Tool tool = Leap.Tool.Invalid;
 
@@ -611,7 +611,7 @@ namespace Dynamo.Elements
                     tool = frame.Tools[ToolIndex];
             }
 
-            return Expression.NewContainer(tool);
+            return Value.NewContainer(tool);
         }
 
         public int ToolIndex
@@ -636,11 +636,11 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             // Grab and set the tool index
             if (args.Length > 1 && args[1].IsNumber)
-                ToolIndex = ((int)((Expression.Number)args[1]).Item) - 1;
+                ToolIndex = ((int)((Value.Number)args[1]).Item) - 1;
             else
                 ToolIndex = -1;
 
@@ -677,13 +677,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             double x = 0.0;
             double y = 0.0;
             double z = 0.0;
 
-            object item = ((Expression.Container)args[0]).Item;
+            object item = ((Value.Container)args[0]).Item;
 
             if (item is Leap.Hand)
             {
@@ -702,7 +702,7 @@ namespace Dynamo.Elements
                 y = pointable.TipPosition.z;
             }
 
-            return Expression.NewContainer(new XYZ(x, y, z));
+            return Value.NewContainer(new XYZ(x, y, z));
         }
     }
 

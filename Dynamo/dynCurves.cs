@@ -168,7 +168,7 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override Value Evaluate(FSharpList<Value> args)
       {
          //Our eventual output.
          CurveByPoints c;
@@ -179,19 +179,19 @@ namespace Dynamo.Elements
          //If we are receiving a list, we must create a curve by points (CBPs) for each curve in the list.
          if (input.IsList)
          {
-             var curveList = (input as Expression.List).Item;
+             var curveList = (input as Value.List).Item;
 
              //Counter to keep track of how many CBPs we've made. We'll use this to delete old
              //elements later.
              int count = 0;
 
              //We create our output by...
-             var result = Utils.convertSequence(
+             var result = Utils.SequenceToFSharpList(
                 curveList.Select(
                  //..taking each element in the list and...
-                   delegate(Expression x)
+                   delegate(Value x)
                    {
-                       Curve gc = (Curve)((Expression.Container)x).Item;
+                       Curve gc = (Curve)((Value.Container)x).Item;
                        //Add the geometry curves start and end points to a ReferencePointArray.
                        ReferencePointArray refPtArr = new ReferencePointArray();
                        if (gc.GetType() == typeof(Line))
@@ -234,11 +234,11 @@ namespace Dynamo.Elements
                            //...and store it in the element list for future runs.
                            this.Elements.Add(c.Id);
                        }
-                       //Finally, we update the counter, and return a new Expression containing the CBP.
-                       //This Expression will be placed in the Expression.List that will be passed downstream from this
+                       //Finally, we update the counter, and return a new Value containing the CBP.
+                       //This Value will be placed in the Value.List that will be passed downstream from this
                        //node.
                        count++;
-                       return Expression.NewContainer(c);
+                       return Value.NewContainer(c);
                    }
                 )
              );
@@ -251,14 +251,14 @@ namespace Dynamo.Elements
              }
 
              //Fin
-             return Expression.NewList(result);
+             return Value.NewList(result);
          }
 
          else
          {
              //If we're not receiving a list, we will just assume we received one geometry curve.
 
-             Curve gc = (Curve)((Expression.Container)args[0]).Item;
+             Curve gc = (Curve)((Value.Container)args[0]).Item;
              //Add the geometry curves start and end points to a ReferencePointArray.
              ReferencePointArray refPtArr = new ReferencePointArray();
              if (gc.GetType() == typeof(Line))
@@ -297,7 +297,7 @@ namespace Dynamo.Elements
              }
          }
 
-         return Expression.NewContainer(c);
+         return Value.NewContainer(c);
       }
    }
 
@@ -400,27 +400,27 @@ namespace Dynamo.Elements
            base.RegisterInputsAndOutputs();
        }
 
-       private Expression extractCurve(object c, int count)
+       private Value extractCurve(object c, int count)
        {
            Curve curve = ((CurveElement)c).GeometryCurve;
 
-           return Expression.NewContainer(curve);
+           return Value.NewContainer(curve);
        }
 
 
-       public override Expression Evaluate(FSharpList<Expression> args)
+       public override Value Evaluate(FSharpList<Value> args)
        {
            var input = args[0];
 
            if (input.IsList)
            {
                int count = 0;
-               var result = Expression.NewList(
-                  Utils.convertSequence(
-                     (input as Expression.List).Item.Select(
+               var result = Value.NewList(
+                  Utils.SequenceToFSharpList(
+                     (input as Value.List).Item.Select(
                         x =>
                                this.extractCurve(
-                               ((Expression.Container)x).Item,
+                               ((Value.Container)x).Item,
                                count++
                            )
                      )
@@ -436,7 +436,7 @@ namespace Dynamo.Elements
            else
            {
                var result = this.extractCurve(
-                      ((Expression.Container)input).Item,
+                      ((Value.Container)input).Item,
                       0
 
                    );

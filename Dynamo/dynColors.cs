@@ -21,7 +21,7 @@ using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,11 +47,11 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Color c = (Color)((Expression.Container)args[0]).Item;
+            Color c = (Color)((Value.Container)args[0]).Item;
 
-            return Expression.NewNumber(c.GetBrightness());
+            return Value.NewNumber(c.GetBrightness());
         }
 
     }
