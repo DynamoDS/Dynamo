@@ -806,13 +806,22 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
         //At runtime, evaluate the expression and select the correct branch
         fun env -> if ccond env |> exprToBool then cthen env else celse env
 
+    //An empty begin statement is valid, but returns a dummy
+    | Begin([]) -> wrap <| Dummy("empty begin")
+    
     //A begin statement with one sub-expression is the same as just the sub-expression.
     | Begin([expr]) -> compile' expr
 
     //Expression sequences
     | Begin(exprs) ->
+        ///Merges all nested begin expressions
+        let rec merge a = function
+            | [Begin([]) as e]   -> merge (compile' e :: a) []
+            | Begin(exprs') :: t -> merge (merge a exprs') t
+            | h :: t             -> merge (compile' h :: a) t
+            | []                 -> List.rev a
         ///Compiled expressions
-        let body = List.map compile' exprs
+        let body = merge [] exprs
         ///Dummy value for empty begin statements
         let d = Dummy("empty begin")
         ///Tail-recursive helper for evaluating a sequence of expressions.
