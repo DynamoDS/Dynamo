@@ -811,7 +811,7 @@ namespace Dynamo.Utilities
                 {
                     nodeStack.Push(x);
                     //TODO: Use IsInteractiveAttribute as well as checking InPorts (Numbers are actually function calls)
-                    if (x.OutPort.Connectors.Count > 1 && checkConstant(x))// && x.InPorts.Any(y => y.Connectors.Any()))
+                    if (x.OutPort.Connectors.Count > 1 && !checkConstant(x))// && x.InPorts.Any(y => y.Connectors.Any()))
                         multiOuts.Push(x);
                 });
 
@@ -840,7 +840,7 @@ namespace Dynamo.Utilities
             int count = 0;
             foreach (var node in multiOuts)
             {
-                symbols[node] = node.GUID.ToString() + count++;
+                symbols[node] = node.NickName + "__" + node.GUID.ToString() + count++;
 
                 var parent = treeLookup[node].Parent;
 
