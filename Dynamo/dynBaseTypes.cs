@@ -691,6 +691,7 @@ namespace Dynamo.Elements
     [ElementDescription("An empty list")]
     [RequiresTransaction(false)]
     [IsInteractive(false)]
+    [IsConstant(true)]
     public class dynEmpty : dynNode
     {
         public dynEmpty()
@@ -714,7 +715,10 @@ namespace Dynamo.Elements
             return Value.NewList(FSharpList<Value>.Empty);
         }
 
-        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
+        protected internal override INode Build(
+            Dictionary<dynNode, string> symbols, 
+            Dictionary<dynNode, List<dynNode>> letEntries, 
+            bool useSymbol)
         {
             return new SymbolNode("empty");
         }
@@ -1294,6 +1298,7 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     [ElementSearchTags("pi", "trigonometry", "circle")]
     [IsInteractive(false)]
+    [IsConstant(true)]
     public class dynPi : dynNode
     {
         public dynPi()

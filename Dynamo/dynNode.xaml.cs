@@ -1900,6 +1900,17 @@ namespace Dynamo.Elements
     }
 
     #region class attributes
+    [AttributeUsage(AttributeTargets.Class)]
+    public class IsConstantAttribute : System.Attribute
+    {
+        public bool IsConstant;
+
+        public IsConstantAttribute(bool constant)
+        {
+            IsConstant = constant;
+        }
+    }
+
     [AttributeUsage(AttributeTargets.All)]
     public class ElementNameAttribute : System.Attribute
     {

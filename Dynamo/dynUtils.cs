@@ -784,6 +784,13 @@ namespace Dynamo.Utilities
             return trees.Pop();
         }
 
+        private static bool checkConstant(dynNode node)
+        {
+            return node.GetType()
+                .GetCustomAttributes(typeof(IsConstantAttribute), false)
+                .Any(x => (x as IsConstantAttribute).IsConstant);
+        }
+
         public static bool LetOptimizations(
             dynWorkspace workspace, 
             out Dictionary<dynNode, string> symbols, 
@@ -803,7 +810,8 @@ namespace Dynamo.Utilities
                 x => 
                 {
                     nodeStack.Push(x);
-                    if (x.OutPort.Connectors.Count > 1 && x.InPorts.Any(y => y.Connectors.Any()))
+                    //TODO: Use IsInteractiveAttribute as well as checking InPorts (Numbers are actually function calls)
+                    if (x.OutPort.Connectors.Count > 1 && checkConstant(x))// && x.InPorts.Any(y => y.Connectors.Any()))
                         multiOuts.Push(x);
                 });
 

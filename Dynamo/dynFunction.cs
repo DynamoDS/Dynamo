@@ -413,6 +413,7 @@ namespace Dynamo.Elements
     [ElementDescription("A function variable")]
     [RequiresTransaction(false)]
     [IsInteractive(false)]
+    [IsConstant(true)]
     public class dynSymbol : dynNode
     {
         TextBox tb;
