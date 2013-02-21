@@ -136,7 +136,7 @@ namespace Dynamo.Controls
         }
 
         private bool _activated = false;
-        
+
         protected override void OnActivated(EventArgs e)
         {
             if (!this._activated)
@@ -324,7 +324,7 @@ namespace Dynamo.Controls
             }
             catch (Exception e)
             {
-                dynElementSettings.SharedInstance.Bench.Log( "Could not load types. " + e.ToString());
+                dynElementSettings.SharedInstance.Bench.Log("Could not load types. " + e.ToString());
                 Log(e);
                 if (e is System.Reflection.ReflectionTypeLoadException)
                 {
@@ -514,7 +514,7 @@ namespace Dynamo.Controls
                         item.Click += new RoutedEventHandler(sample_Click);
                         samplesMenu.Items.Add(item);
                     }
-                    
+
                 }
 
                 // handle top-level dirs, TODO - factor out to a seperate function, make recusive
@@ -544,15 +544,15 @@ namespace Dynamo.Controls
                                 item.Click += new RoutedEventHandler(sample_Click);
                                 dirItem.Items.Add(item);
                             }
-                            
+
                         }
                         samplesMenu.Items.Add(dirItem);
-                        
+
                     }
                     return;
-                    
+
                 }
-            } 
+            }
             //this.fileMenu.Items.Remove(this.samplesMenu);
         }
 
@@ -726,7 +726,7 @@ namespace Dynamo.Controls
             {
                 selectedElements.Add(sel);
 
-                if(sel is dynNode)
+                if (sel is dynNode)
                     (sel as dynNode).Select();
             }
             if (!workBench.elementsBeingDragged.Contains(sel))
@@ -743,7 +743,7 @@ namespace Dynamo.Controls
             //set all other items to the unselected state
             foreach (System.Windows.Controls.UserControl el in selectedElements.ToList())
             {
-                if(el is dynNode)
+                if (el is dynNode)
                     (el as dynNode).Deselect();
             }
 
@@ -910,7 +910,6 @@ namespace Dynamo.Controls
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-
         {
             //Debug.WriteLine("Mouse move.");
 
@@ -933,8 +932,8 @@ namespace Dynamo.Controls
                         c.Redraw();
                     }
 
-                    }
-                ),DispatcherPriority.Render,null);
+                }
+                ), DispatcherPriority.Render, null);
             }
 
             //If we are panning the workspace, update the coordinate offset for the
@@ -1026,8 +1025,8 @@ namespace Dynamo.Controls
                 }
                 fltr += "|All files (*.*)|*.*";
 
-                
-                
+
+
                 System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog()
                 {
                     AddExtension = true,
@@ -1135,7 +1134,7 @@ namespace Dynamo.Controls
                     selectionBox.Visibility = Visibility.Visible;
                 }
             }
-            
+
         }
 
         /// <summary>
@@ -1442,7 +1441,7 @@ namespace Dynamo.Controls
         bool OpenDefinition(string xmlPath)
         {
             return OpenDefinition(
-                xmlPath, 
+                xmlPath,
                 new Dictionary<string, HashSet<dynWorkspace>>(),
                 new Dictionary<string, HashSet<string>>());
         }
@@ -2121,7 +2120,7 @@ namespace Dynamo.Controls
 
         //bubbling
         //from element up to root
-        
+
         private void OnKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
 
@@ -2190,7 +2189,7 @@ namespace Dynamo.Controls
 
             IInputElement focusElement = FocusManager.GetFocusedElement(this);
 
-            if (focusElement != null && focusElement.GetType() != typeof(System.Windows.Controls.TextBox) )
+            if (focusElement != null && focusElement.GetType() != typeof(System.Windows.Controls.TextBox))
             {
                 if (Keyboard.IsKeyDown(Key.Left))
                 {
@@ -2459,75 +2458,90 @@ namespace Dynamo.Controls
                 //TODO: Flesh out error handling
                 try
                 {
+                    Dictionary<dynNode, string> symbols;
+                    Dictionary<dynNode, List<dynNode>> letEntries;
+                    List<dynNode> topLevelLetEntries;
+                    if (!GraphAnalysis.LetOptimizations(
+                        homeSpace,
+                        out symbols,
+                        out letEntries,
+                        out topLevelLetEntries))
+                    {
+                        throw new Exception("Dependency loop found in workflow. Cannot evaluate.");
+                    }
+
+                    var topNode = new FSchemeInterop.Node.BeginNode(new List<string>());
+                    var i = 0;
+                    foreach (var topMost in topElements)
+                    {
+                        var inputName = i.ToString();
+                        topNode.AddInput(inputName);
+                        topNode.ConnectInput(inputName, topMost.Build(symbols, letEntries, true));
+                        i++;
+                    }
+
+                    Expression runningExpression = dynNode.wrapLets(
+                        topNode, symbols, letEntries, topLevelLetEntries).Compile();
+
                     //Run Delegate
                     Action run = delegate
                     {
-                        //For each entry point...
-                        foreach (dynNode topMost in topElements)
+                        //Print some stuff if we're in debug mode
+                        if (debug)
                         {
-                            //Build the expression from the entry point.
-                            Expression runningExpression = topMost.Build().Compile();
+                            //string exp = FScheme.print(runningExpression);
+                            this.Dispatcher.Invoke(new Action(
+                               delegate
+                               {
+                                   foreach (var node in topElements)
+                                   {
+                                       string exp = node.PrintExpression();
+                                       Log("> " + exp);
+                                   }
+                               }
+                            ));
+                        }
 
-                            //Print some stuff if we're in debug mode
-                            if (debug)
+                        try
+                        {
+                            //Evaluate the expression
+                            var expr = this.Environment.Evaluate(runningExpression);
+
+                            //Print some more stuff if we're in debug mode
+                            if (debug && expr != null)
                             {
-                                //string exp = FScheme.print(runningExpression);
+                                this.Dispatcher.Invoke(new Action(
+                                   () => Log(FScheme.print(expr))
+                                ));
+                            }
+                        }
+                        catch (CancelEvaluationException ex)
+                        {
+                            /* Evaluation was cancelled */
+
+                            this.CancelTransaction();
+                            //this.RunCancelled = false;
+                            if (ex.Force)
+                                this.runAgain = false;
+                        }
+                        catch (Exception ex)
+                        {
+                            /* Evaluation failed due to error */
+
+                            //Print unhandled exception
+                            if (ex.Message.Length > 0)
+                            {
                                 this.Dispatcher.Invoke(new Action(
                                    delegate
                                    {
-                                       string exp = topMost.PrintExpression();
-                                       Log("> " + exp);
+                                       Log("ERROR!");
+                                       Log(ex);
                                    }
                                 ));
                             }
-
-                            try
-                            {
-                                //Evaluate the expression
-                                var expr = this.Environment.Evaluate(runningExpression);
-
-                                //Print some more stuff if we're in debug mode
-                                if (debug && expr != null)
-                                {
-                                    this.Dispatcher.Invoke(new Action(
-                                       () => Log(FScheme.print(expr))
-                                    ));
-                                }
-                            }
-                            catch (CancelEvaluationException ex)
-                            {
-                                /* Evaluation was cancelled */
-
-                                this.CancelTransaction();
-                                //this.RunCancelled = false;
-                                if (ex.Force)
-                                    this.runAgain = false;
-
-                                //Stop evaluation of other entry points.
-                                break;
-                            }
-                            catch (Exception ex)
-                            {
-                                /* Evaluation failed due to error */
-
-                                //Print unhandled exception
-                                if (ex.Message.Length > 0)
-                                {
-                                    this.Dispatcher.Invoke(new Action(
-                                       delegate
-                                       {
-                                           Log("ERROR!");
-                                           Log(ex);
-                                       }
-                                    ));
-                                }
-                                this.CancelTransaction();
-                                this.RunCancelled = true;
-                                this.runAgain = false;
-
-                                //Stop evaluation of other entry points.
-                                break;
-                            }
+                            this.CancelTransaction();
+                            this.RunCancelled = true;
+                            this.runAgain = false;
                         }
 
                         //Cleanup Delegate
@@ -2935,7 +2949,7 @@ namespace Dynamo.Controls
             this.setHomeBackground();
         }
 
-        public void SaveFunction(dynWorkspace funcWorkspace, bool writeDefinition=true)
+        public void SaveFunction(dynWorkspace funcWorkspace, bool writeDefinition = true)
         {
             //Generate xml, and save it in a fixed place
             if (writeDefinition)
@@ -2957,7 +2971,7 @@ namespace Dynamo.Controls
                     Log(e);
                 }
             }
-            
+
             try
             {
                 //Find compile errors
@@ -2986,10 +3000,21 @@ namespace Dynamo.Controls
 
                 if (top != default(dynNode))
                 {
-                    Expression expression = Utils.MakeAnon(
-                       variableNames,
-                       top.Build().Compile()
-                    );
+                    Dictionary<dynNode, string> symbols;
+                    Dictionary<dynNode, List<dynNode>> letEntries;
+                    List<dynNode> topLevelLetEntries;
+                    if (!GraphAnalysis.LetOptimizations(
+                        funcWorkspace,
+                        out symbols,
+                        out letEntries,
+                        out topLevelLetEntries))
+                    {
+                        throw new Exception("Dependency loop found in workflow. Cannot evaluate.");
+                    }
+
+                    var topNode = top.Build(symbols, letEntries, true);
+                    
+                    Expression expression = Utils.MakeAnon(variableNames, topNode.Compile());
 
                     this.Environment.DefineSymbol(funcWorkspace.Name, expression);
                 }
@@ -3114,32 +3139,6 @@ namespace Dynamo.Controls
             //var sbBrush = (LinearGradientBrush)this.sidebarGrid.Background;
             //sbBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
             //sbBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0x9A, 0x9A, 0x9A); //Light
-        }
-
-
-        private void Print_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (dynNode el in this.Elements)
-            {
-                dynNode topMost = null;
-                if (!el.OutPort.Connectors.Any())
-                {
-                    topMost = el;
-
-                    Expression runningExpression = topMost.Build().Compile();
-
-                    //TODO: Flesh out error handling
-                    try
-                    {
-                        string exp = FScheme.printExpression("", runningExpression);
-                        Log("> " + exp);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log(ex);
-                    }
-                }
-            }
         }
 
         internal void RemoveConnector(dynConnector c)
@@ -3652,8 +3651,8 @@ namespace Dynamo.Controls
                 foreach (dynNode n in this.Elements)
                 {
                     Point relativePoint = n.TransformToAncestor(workBench)
-                          .Transform(new Point(0,0));
-                   
+                          .Transform(new Point(0, 0));
+
                     width = Math.Max(relativePoint.X + n.Width, width);
                     height = Math.Max(relativePoint.Y + n.Height, height);
                 }
@@ -3676,7 +3675,7 @@ namespace Dynamo.Controls
 
         public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
         {
-            
+
             //Size size = new Size(width, height);
             //canvas.Measure(size);
             //canvas.Arrange(new Rect(size));
@@ -3754,7 +3753,7 @@ namespace Dynamo.Controls
 
                 y += 60;
 
-                foreach(Type t in catTypes)
+                foreach (Type t in catTypes)
                 {
                     object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
 
@@ -3777,7 +3776,7 @@ namespace Dynamo.Controls
                 colCount = 0;
                 x += maxWidth + colGutter;
                 maxWidth = 0;
-                
+
             }
 
             UnlockUI();

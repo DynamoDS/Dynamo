@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Media;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis; //MDJ  - added for spatialfeildmanager access
@@ -738,5 +739,205 @@ namespace Dynamo.Utilities
         }
     }
 
+    public static class GraphAnalysis
+    {
+        private static Tree<T> lca<T>(IEnumerable<Tree<T>> descendants)
+        {
+            var trees = new Stack<Tree<T>>(descendants);
 
+            if (!trees.Any()) 
+                return null;
+
+            while (trees.Count > 1)
+            {
+                var stackA = new Stack<Tree<T>>();
+                for (var pathA = trees.Pop(); pathA != null; pathA = pathA.Parent)
+                {
+                    stackA.Push(pathA);
+                }
+
+                var stackB = new Stack<Tree<T>>();
+                for (var pathB = trees.Pop(); pathB != null; pathB = pathB.Parent)
+                {
+                    stackB.Push(pathB);
+                }
+
+                Tree<T> result = null;
+                while (stackA.Any() && stackB.Any())
+                {
+                    var a = stackA.Pop();
+                    var b = stackB.Pop();
+                    if (a == b)
+                    {
+                        result = a;
+                    }
+                    else
+                        break;
+                }
+
+                if (result == null)
+                    return null;
+
+                trees.Push(result);
+            }
+
+            return trees.Pop();
+        }
+
+        public static bool LetOptimizations(
+            dynWorkspace workspace, 
+            out Dictionary<dynNode, string> symbols, 
+            out Dictionary<dynNode, List<dynNode>> letEntries,
+            out List<dynNode> topEntries)
+        {
+            symbols = new Dictionary<dynNode, string>();
+            letEntries = new Dictionary<dynNode, List<dynNode>>();
+            topEntries = new List<dynNode>();
+            
+            var nodeStack = new Stack<dynNode>();
+
+            var multiOuts = new Stack<dynNode>();
+
+            var isDag = TopologicalTraversal(
+                workspace, 
+                x => 
+                {
+                    nodeStack.Push(x);
+                    if (x.OutPort.Connectors.Count > 1 && x.InPorts.Any(y => y.Connectors.Any()))
+                        multiOuts.Push(x);
+                });
+
+            if (!isDag)
+                return false;
+
+            var lcaTree = Tree<dynNode>.MakeTree(null);
+            var treeLookup = new Dictionary<dynNode, Tree<dynNode>>();
+
+            foreach (var node in nodeStack)
+            {
+                if (node.OutPort.Connectors.Any())
+                {
+                    var parent = lca(
+                        node.OutPort.Connectors.Select(
+                            x => treeLookup[x.End.Owner]));
+
+                    treeLookup[node] = parent.AddChild(node);
+                }
+                else
+                {
+                    treeLookup[node] = lcaTree.AddChild(node);
+                }
+            }
+
+            int count = 0;
+            foreach (var node in multiOuts)
+            {
+                symbols[node] = node.GUID.ToString() + count++;
+
+                var parent = treeLookup[node].Parent;
+
+                if (parent.Value == null)
+                    topEntries.Add(node);
+                else
+                {
+                    List<dynNode> childList;
+                    if (letEntries.TryGetValue(parent.Value, out childList))
+                        childList.Add(node);
+                    else
+                        letEntries[parent.Value] = new List<dynNode>() { node };
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Traverses the graph in depth-first topological order.
+        /// </summary>
+        /// <returns></returns>
+        public static bool TopologicalTraversal(dynWorkspace workspace, Action<dynNode> onMark)
+        {
+            var nodeAmt = workspace.Elements.Count;
+
+            var markedTemp = new HashSet<dynNode>();
+            var markedPerm = new HashSet<dynNode>();
+
+            while (markedPerm.Count != nodeAmt)
+            {
+                bool isDag = visit(
+                    workspace.Elements.First(x => !markedPerm.Contains(x)),
+                    markedTemp,
+                    markedPerm,
+                    onMark);
+
+                if (!isDag)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool visit(dynNode node, HashSet<dynNode> temps, HashSet<dynNode> perms, Action<dynNode> onMark)
+        {
+            if (temps.Contains(node))
+                return false;
+
+            if (!perms.Contains(node))
+            {
+                temps.Add(node);
+                foreach (var child in node.InPorts.Where(x => x.Connectors.Any()).Select(x => x.Connectors[0].Start.Owner))
+                {
+                    if (!visit(child, temps, perms, onMark))
+                        return false;
+                }
+                perms.Add(node);
+                temps.Remove(node);
+                onMark(node);
+            }
+
+            return true;
+        }
+
+        private class Tree<T>
+        {
+            public T Value { get; private set; }
+            public Tree<T> Parent { get; private set; }
+
+            private HashSet<Tree<T>> children = new HashSet<Tree<T>>();
+            public HashSet<Tree<T>> Children
+            {
+                get
+                {
+                    return new HashSet<Tree<T>>(children);
+                }
+            }
+
+            public bool IsRoot { get { return Parent == null; } }
+
+            Tree(T value) : this(value, null) { }
+
+            Tree(T value, Tree<T> parent)
+            {
+                Value = value;
+                Parent = parent;
+            }
+
+            public static Tree<T> MakeTree(T root)
+            {
+                return new Tree<T>(root);
+            }
+
+            public Tree<T> AddChild(T child)
+            {
+                var newChild = new Tree<T>(child, this);
+                children.Add(newChild);
+                return newChild;
+            }
+
+            public override string ToString()
+            {
+                return "( " + (Value == null ? "null" : Value.ToString()) + ": " + String.Join(" ", children.Select(x => x.ToString())) + ")";
+            }
+        }
+    }
 }

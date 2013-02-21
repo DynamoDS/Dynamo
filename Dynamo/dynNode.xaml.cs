@@ -31,6 +31,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+using Expression = Dynamo.FScheme.Expression;
 using Grid = System.Windows.Controls.Grid;
 
 namespace Dynamo.Elements
@@ -1061,17 +1062,56 @@ namespace Dynamo.Elements
             return;
         }
 
-
-        /// <summary>
-        /// Builds an INode out of this Element. Override this or Compile() if you want complete control over this Element's
-        /// execution.
-        /// </summary>
-        /// <returns>The INode representation of this Element.</returns>
-        protected internal virtual INode Build()
+        internal static INode wrapLets(INode body, Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, List<dynNode> bindings)
         {
+            foreach (var boundNode in bindings)
+            {
+                LetNode wrapper = new LetNode(symbols[boundNode]);
+                wrapper.ConnectBinding(boundNode.Build(symbols, letEntries, false));
+                wrapper.ConnectBody(body);
+                body = wrapper;
+            }
+            return body;
+        }
+
+        internal class LetNode : InputNode
+        {
+            public string Symbol;
+
+            public LetNode(string symbol)
+                : base("binding", "body")
+            {
+                Symbol = symbol;
+            }
+
+            public void ConnectBody(INode input)
+            {
+                ConnectInput("body", input);
+            }
+
+            public void ConnectBinding(INode input)
+            {
+                ConnectInput("binding", input);
+            }
+
+            public override Expression Compile()
+            {
+                return Expression.NewLet(
+                    Utils.MakeFSharpList(Symbol),
+                    Utils.MakeFSharpList(arguments["binding"].Compile()),
+                    arguments["body"].Compile());
+            }
+        }
+
+        private INode build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
+        {
+            string symbol;
+            if (useSymbol && symbols.TryGetValue(this, out symbol))
+                return new SymbolNode(symbol);
+
             //Fetch the names of input ports.
             var portNames = InPortData.Select(x => x.NickName);
-            
+
             //Compile the procedure for this node.
             InputNode node = Compile(portNames);
 
@@ -1093,7 +1133,7 @@ namespace Dynamo.Elements
                     //Compile input and connect it
                     node.ConnectInput(
                        data.NickName,
-                       port.Connectors[0].Start.Owner.Build()
+                       port.Connectors[0].Start.Owner.Build(symbols, letEntries, true)
                     );
                 }
                 else //othwise, remember that this is a partial application
@@ -1112,6 +1152,22 @@ namespace Dynamo.Elements
         }
 
         /// <summary>
+        /// Builds an INode out of this Element. Override this or Compile() if you want complete control over this Element's
+        /// execution.
+        /// </summary>
+        /// <returns>The INode representation of this Element.</returns>
+        protected internal virtual INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
+        {
+            var body = build(symbols, letEntries, useSymbol);
+
+            List<dynNode> bindings;
+            if (letEntries.TryGetValue(this, out bindings) && bindings.Count > 0)
+                body = wrapLets(body, symbols, letEntries, bindings);
+
+            return body;
+        }
+
+        /// <summary>
         /// Compiles this Element into a InputNode. Override this instead of Build() if you don't want to set up all
         /// of the inputs for the InputNode.
         /// </summary>
@@ -1120,10 +1176,7 @@ namespace Dynamo.Elements
         protected internal virtual InputNode Compile(IEnumerable<string> portNames)
         {
             //Return a Function that calls eval.
-            return new ExternalFunctionNode(
-                evalIfDirty,
-                portNames
-            );
+            return new ExternalFunctionNode(evalIfDirty, portNames);
         }
 
         /// <summary>

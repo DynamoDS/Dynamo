@@ -793,7 +793,7 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
             //If it's a function, then evaluate the arguments and apply the function.
             | Function(f) -> f <| List.map (fun x -> x env) cargs
             //Can't call something that's not a function
-            | m           -> printExpression "" expression |> sprintf "expected function for call: %s" |> failwith
+            | _           -> printExpression "" expression |> sprintf "expected function for call: %s" |> failwith
 
     //Conditionals
     | If(cond, then_expr, else_expr) ->

@@ -455,7 +455,7 @@ namespace Dynamo.Elements
             set { this.tb.Text = value; }
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
         {
             return new SymbolNode(
                (string)this.Dispatcher.Invoke(new Func<string>(

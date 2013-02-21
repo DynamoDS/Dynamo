@@ -714,7 +714,7 @@ namespace Dynamo.Elements
             return Value.NewList(FSharpList<Value>.Empty);
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
         {
             return new SymbolNode("empty");
         }
@@ -889,52 +889,66 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
         {
-            if (InPorts.All(x => x.Connectors.Any()))
-            {
-                var ifNode = new ConditionalNode();
-                ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build());
-                ifNode.ConnectInput("true", InPorts[1].Connectors[0].Start.Owner.Build());
-                ifNode.ConnectInput("false", new NumberNode(0));
-                return ifNode;
-            }
+            INode result;
+
+            string symbol;
+            if (useSymbol && symbols.TryGetValue(this, out symbol))
+                result = new SymbolNode(symbol);
             else
             {
-                var ifNode = new ConditionalNode();
-                ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
-                ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
-                ifNode.ConnectInput("false", new NumberNode(0));
-
-                var node = new AnonymousFunctionNode(
-                    InPortData.Select(x => x.NickName),
-                    ifNode);
-
-                //For each index in InPortData
-                for (int i = 0; i < InPortData.Count; i++)
+                if (InPorts.All(x => x.Connectors.Any()))
                 {
-                    //Fetch the corresponding port
-                    var port = InPorts[i];
-
-                    //If this port has connectors...
-                    if (port.Connectors.Any())
-                    {
-                        //Fetch the corresponding info for the port.
-                        var data = InPortData[i];
-
-                        //Compile input and connect it
-                        node.ConnectInput(
-                           data.NickName,
-                           port.Connectors[0].Start.Owner.Build()
-                        );
-                    }
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build(symbols, letEntries, true));
+                    ifNode.ConnectInput("true", InPorts[1].Connectors[0].Start.Owner.Build(symbols, letEntries, true));
+                    ifNode.ConnectInput("false", new NumberNode(0));
+                    result = ifNode;
                 }
+                else
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                    ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
+                    ifNode.ConnectInput("false", new NumberNode(0));
 
-                IsDirty = false;
-                OnEvaluate();
+                    var node = new AnonymousFunctionNode(
+                        InPortData.Select(x => x.NickName),
+                        ifNode);
 
-                return node;
+                    //For each index in InPortData
+                    for (int i = 0; i < InPortData.Count; i++)
+                    {
+                        //Fetch the corresponding port
+                        var port = InPorts[i];
+
+                        //If this port has connectors...
+                        if (port.Connectors.Any())
+                        {
+                            //Fetch the corresponding info for the port.
+                            var data = InPortData[i];
+
+                            //Compile input and connect it
+                            node.ConnectInput(
+                               data.NickName,
+                               port.Connectors[0].Start.Owner.Build(symbols, letEntries, true)
+                            );
+                        }
+                    }
+
+                    IsDirty = false;
+                    OnEvaluate();
+
+                    result = node;
+                }
             }
+
+            List<dynNode> bindings;
+            if (letEntries.TryGetValue(this, out bindings) && bindings.Count > 0)
+                result = wrapLets(result, symbols, letEntries, bindings);
+
+            return result;
         }
     }
 
@@ -956,52 +970,66 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
         {
-            if (InPorts.All(x => x.Connectors.Any()))
-            {
-                var ifNode = new ConditionalNode();
-                ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build());
-                ifNode.ConnectInput("true", new NumberNode(1));
-                ifNode.ConnectInput("false", InPorts[1].Connectors[0].Start.Owner.Build());
-                return ifNode;
-            }
+            INode result;
+
+            string symbol;
+            if (useSymbol && symbols.TryGetValue(this, out symbol))
+                result = new SymbolNode(symbol);
             else
             {
-                var ifNode = new ConditionalNode();
-                ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
-                ifNode.ConnectInput("true", new NumberNode(1));
-                ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
-
-                var node = new AnonymousFunctionNode(
-                    InPortData.Select(x => x.NickName),
-                    ifNode);
-
-                //For each index in InPortData
-                for (int i = 0; i < InPortData.Count; i++)
+                if (InPorts.All(x => x.Connectors.Any()))
                 {
-                    //Fetch the corresponding port
-                    var port = InPorts[i];
-
-                    //If this port has connectors...
-                    if (port.Connectors.Any())
-                    {
-                        //Fetch the corresponding info for the port.
-                        var data = InPortData[i];
-
-                        //Compile input and connect it
-                        node.ConnectInput(
-                           data.NickName,
-                           port.Connectors[0].Start.Owner.Build()
-                        );
-                    }
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build(symbols, letEntries, true));
+                    ifNode.ConnectInput("true", new NumberNode(1));
+                    ifNode.ConnectInput("false", InPorts[1].Connectors[0].Start.Owner.Build(symbols, letEntries, true));
+                    result = ifNode;
                 }
+                else
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                    ifNode.ConnectInput("true", new NumberNode(1));
+                    ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
 
-                IsDirty = false;
-                OnEvaluate();
+                    var node = new AnonymousFunctionNode(
+                        InPortData.Select(x => x.NickName),
+                        ifNode);
 
-                return node;
+                    //For each index in InPortData
+                    for (int i = 0; i < InPortData.Count; i++)
+                    {
+                        //Fetch the corresponding port
+                        var port = InPorts[i];
+
+                        //If this port has connectors...
+                        if (port.Connectors.Any())
+                        {
+                            //Fetch the corresponding info for the port.
+                            var data = InPortData[i];
+
+                            //Compile input and connect it
+                            node.ConnectInput(
+                               data.NickName,
+                               port.Connectors[0].Start.Owner.Build(symbols, letEntries, true)
+                            );
+                        }
+                    }
+
+                    IsDirty = false;
+                    OnEvaluate();
+
+                    result = node;
+                }
             }
+
+            List<dynNode> bindings;
+            if (letEntries.TryGetValue(this, out bindings) && bindings.Count > 0)
+                result = wrapLets(result, symbols, letEntries, bindings);
+
+            return result;
         }
     }
 
@@ -1286,7 +1314,7 @@ namespace Dynamo.Elements
             set { }
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
         {
             return new NumberNode(Math.PI);
         }
@@ -1932,7 +1960,7 @@ namespace Dynamo.Elements
             this.MainContextMenu.Items.Add(editWindowItem);
 
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-             
+
         }
 
         public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -2125,7 +2153,7 @@ namespace Dynamo.Elements
                     return;
 
                 base.Value = value;
-                
+
                 //this.nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
                 this.tb.Text = value.ToString();
                 this.tb.Pending = false;
