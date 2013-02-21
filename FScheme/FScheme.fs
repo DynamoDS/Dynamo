@@ -700,9 +700,9 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
             ///The index of the new identifier box in the mutated environment.
             let lastindex = compenv.Value.Head.Length
             //Update the compiler environment.
-            let cenv = ref <| (compenv.Value.Head @ [name]) :: compenv.Value.Tail
+            compenv := (compenv.Value.Head @ [name]) :: compenv.Value.Tail
             ///Compiled binding expression.
-            let cbody = compile cenv body
+            let cbody = compile compenv body
             ///Dummy value for undefined identifiers.
             let dummy' = Dummy(sprintf "define '%s'" name)
             //At runtime...
@@ -715,8 +715,6 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
                 env.Value.Head.Value.SetValue(def, lastindex)
                 //Evaluate the binding expression with the mutated environment
                 def := cbody env
-                ///Set the reference to the updated environment
-                compenv := !cenv
                 //Return the dummy for the define statement
                 dummy
    
