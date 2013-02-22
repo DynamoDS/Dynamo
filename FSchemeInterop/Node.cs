@@ -88,6 +88,8 @@ namespace Dynamo.FSchemeInterop.Node
                     body = Expression.NewBegin(Utils.MakeFSharpList(
                         Expression.NewSetId(symbol,binding),
                         body));
+
+                    initializedIds.Add(symbol);
                 }
                 return body;
             }
