@@ -53,21 +53,13 @@ namespace Dynamo.FSchemeInterop.Node
             Dictionary<INode, string> symbols,
             List<INode> bindings)
         {
-            foreach (var boundNode in bindings)
-            {
-                var symbol = symbols[boundNode];
-                
-                //symbols.Remove(boundNode);
-                //var binding = boundNode.compile(symbols, letEntries, initializedIds);
-                //symbols[boundNode] = symbol;
-                
-                body = Expression.NewLet(
-                    Utils.MakeFSharpList(symbol),
-                    Utils.MakeFSharpList(
-                        Expression.NewBegin(FSharpList<Expression>.Empty)),
-                    body);
-            }
-            return body;
+            return Expression.NewLet(
+                Utils.SequenceToFSharpList(bindings.Select(x => symbols[x])),
+                Utils.SequenceToFSharpList(
+                    Enumerable.Repeat(
+                        Expression.NewBegin(FSharpList<Expression>.Empty), 
+                        bindings.Count)),
+                body);
         }
 
         private Expression __compileBody(
