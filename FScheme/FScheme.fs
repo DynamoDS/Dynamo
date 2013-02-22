@@ -321,7 +321,7 @@ let rec printExpression indent syntax =
              | Number_E(n)                -> n.ToString()
              | String_E(s)                -> "\"" + s + "\""
              | Id(s)                      -> s
-             | SetId(s, expr)             -> "(set! " + s + " " + printExpression "" expr
+             | SetId(s, expr)             -> "(set! " + s + " " + printExpression "" expr + ")"
              | Let(names, exprs, body)    -> printLet "let" names exprs body
              | LetRec(names, exprs, body) -> printLet "letrec" names exprs body
              | Fun(names, body)           -> "(lambda (" + String.Join(" ", List.map printParam names) + ") " + printExpression "" body + ")"
