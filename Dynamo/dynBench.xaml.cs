@@ -2495,8 +2495,8 @@ namespace Dynamo.Controls
 
                     Expression runningExpression = topNode.Compile();
 
-                    Dispatcher.Invoke(new Action(
-                        () => Log(FScheme.printExpression("", runningExpression))));
+                    //Dispatcher.Invoke(new Action(
+                    //    () => Log(FScheme.printExpression("", runningExpression))));
 
                     //Run Delegate
                     Action run = delegate
