@@ -1000,7 +1000,14 @@ let RunTests (log : ErrorLog) =
     let rep ce env = List.ofSeq >> parse >> Begin >> eval ce env >> print
     let case source expected =
         try
-            let testEnv = List.map (fun (x : Frame) -> Array.map (fun (y : Value ref) -> ref y.Value) x.Value |> ref) environment.Value |> ref
+            let testEnv : Environment =
+                List.map (fun (x : Frame) ->
+                            Array.map (fun (y : Value ref)
+                                            -> ref y.Value)
+                                      x.Value
+                            |> ref)
+                         environment.Value
+                |> ref
             let testCEnv = compileEnvironment.Value |> ref
             let output = rep testCEnv testEnv source
             if output <> expected then
