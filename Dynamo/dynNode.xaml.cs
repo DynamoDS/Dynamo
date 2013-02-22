@@ -1062,52 +1062,21 @@ namespace Dynamo.Elements
             return;
         }
 
-        internal static INode wrapLets(INode body, Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, List<dynNode> bindings)
+        internal virtual INode BuildExpression()
         {
-            foreach (var boundNode in bindings)
-            {
-                LetNode wrapper = new LetNode(symbols[boundNode]);
-                wrapper.ConnectBinding(boundNode.Build(symbols, letEntries, false));
-                wrapper.ConnectBody(body);
-                body = wrapper;
-            }
-            return body;
+            return Build(new Dictionary<dynNode, INode>());
         }
 
-        internal class LetNode : InputNode
+        /// <summary>
+        /// Builds an INode out of this Element. Override this or Compile() if you want complete control over this Element's
+        /// execution.
+        /// </summary>
+        /// <returns>The INode representation of this Element.</returns>
+        protected internal virtual INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            public string Symbol;
-
-            public LetNode(string symbol)
-                : base("binding", "body")
-            {
-                Symbol = symbol;
-            }
-
-            public void ConnectBody(INode input)
-            {
-                ConnectInput("body", input);
-            }
-
-            public void ConnectBinding(INode input)
-            {
-                ConnectInput("binding", input);
-            }
-
-            public override Expression Compile()
-            {
-                return Expression.NewLet(
-                    Utils.MakeFSharpList(Symbol),
-                    Utils.MakeFSharpList(arguments["binding"].Compile()),
-                    arguments["body"].Compile());
-            }
-        }
-
-        private INode build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
-        {
-            string symbol;
-            if (useSymbol && symbols.TryGetValue(this, out symbol))
-                return new SymbolNode(symbol);
+            INode result;
+            if (preBuilt.TryGetValue(this, out result))
+                return result;
 
             //Fetch the names of input ports.
             var portNames = InPortData.Select(x => x.NickName);
@@ -1133,7 +1102,7 @@ namespace Dynamo.Elements
                     //Compile input and connect it
                     node.ConnectInput(
                        data.NickName,
-                       port.Connectors[0].Start.Owner.Build(symbols, letEntries, true)
+                       port.Connectors[0].Start.Owner.Build(preBuilt)
                     );
                 }
                 else //othwise, remember that this is a partial application
@@ -1147,24 +1116,12 @@ namespace Dynamo.Elements
                 OnEvaluate();
             }
 
+            result = node;
+            
+            preBuilt[this] = result;
+
             //And we're done
-            return node;
-        }
-
-        /// <summary>
-        /// Builds an INode out of this Element. Override this or Compile() if you want complete control over this Element's
-        /// execution.
-        /// </summary>
-        /// <returns>The INode representation of this Element.</returns>
-        protected internal virtual INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
-        {
-            var body = build(symbols, letEntries, useSymbol);
-
-            List<dynNode> bindings;
-            if (letEntries.TryGetValue(this, out bindings) && bindings.Count > 0)
-                body = wrapLets(body, symbols, letEntries, bindings);
-
-            return body;
+            return result;
         }
 
         /// <summary>

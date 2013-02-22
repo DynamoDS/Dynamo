@@ -28,17 +28,91 @@ namespace Dynamo.FSchemeInterop.Node
         public ApplierNodeException(string details) : base(details) { }
     }
 
-
     ///<summary>
     ///Common Node interface. All nodes can be compiled into FScheme.Expressions.
     ///</summary>
-    public interface INode
+    public abstract class INode
     {
         /// <summary>
         /// Converts this Node into an FScheme Expression.
         /// </summary>
         /// <returns></returns>
-        Expression Compile();
+        public Expression Compile()
+        {
+            var symbols = new Dictionary<INode, string>();
+            var letEntries = new Dictionary<INode, List<INode>>();
+
+            if (!GraphAnalysis.LetOptimizations(this, out symbols, out letEntries))
+                throw new Exception("Can't compile INode, graph is not a DAG.");
+
+            return compile(symbols, letEntries);
+        }
+
+        private static Expression wrapLets(
+            Expression body, 
+            Dictionary<INode, string> symbols, 
+            Dictionary<INode, List<INode>> letEntries, 
+            List<INode> bindings)
+        {
+            foreach (var boundNode in bindings)
+            {
+                var symbol = symbols[boundNode];
+                
+                symbols.Remove(boundNode);
+                var binding = boundNode.compile(symbols, letEntries);
+                symbols[boundNode] = symbol;
+                
+                body = Expression.NewLet(
+                    Utils.MakeFSharpList(symbol),
+                    Utils.MakeFSharpList(binding),
+                    body);
+            }
+            return body;
+        }
+
+        private Expression __compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
+        {
+            string symbol;
+            if (symbols.TryGetValue(this, out symbol))
+                return Expression.NewId(symbol);
+            else
+                return compileBody(symbols, letEntries);
+        }
+
+        public Expression compile(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
+        {
+            Expression body = __compileBody(symbols, letEntries);
+
+            List<INode> bindings;
+            if (letEntries.TryGetValue(this, out bindings) && bindings.Any())
+                body = wrapLets(body, symbols, letEntries, bindings);
+
+            return body;
+        }
+
+        protected abstract Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries);
+
+        protected internal List<INode> children = new List<INode>();
+        protected internal List<INode> parents = new List<INode>();
+
+        /// <summary>
+        /// All inputs to this node.
+        /// </summary>
+        public IEnumerable<INode> Children { get { return children; } }
+
+        public int ChildCount { get { return children.Count; } }
+        public int ParentCount { get { return parents.Count; } }
+
+        /// <summary>
+        /// All outputs from this node.
+        /// </summary>
+        public IEnumerable<INode> Parents { get { return parents; } }
     }
 
     //public class ExpressionNode : INode
@@ -47,12 +121,12 @@ namespace Dynamo.FSchemeInterop.Node
 
     //    public ExpressionNode(Expression v)
     //    {
-    //        this.expr = v;
+    //        expr = v;
     //    }
 
     //    public Expression Compile()
     //    {
-    //        return this.expr;
+    //        return expr;
     //    }
     //}
 
@@ -63,12 +137,14 @@ namespace Dynamo.FSchemeInterop.Node
 
         public NumberNode(double v)
         {
-            this.num = v;
+            num = v;
         }
 
-        public Expression Compile()
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols, 
+            Dictionary<INode, List<INode>> letEntries)
         {
-            return Expression.NewNumber_E(this.num);
+            return Expression.NewNumber_E(num);
         }
     }
 
@@ -79,12 +155,14 @@ namespace Dynamo.FSchemeInterop.Node
 
         public StringNode(string s)
         {
-            this.str = s;
+            str = s;
         }
 
-        public Expression Compile()
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
-            return Expression.NewString_E(this.str);
+            return Expression.NewString_E(str);
         }
     }
 
@@ -95,12 +173,14 @@ namespace Dynamo.FSchemeInterop.Node
 
         public ObjectNode(object o)
         {
-            this.obj = o;
+            obj = o;
         }
 
-        public Expression Compile()
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
-            return Expression.NewContainer_E(this.obj);
+            return Expression.NewContainer_E(obj);
         }
     }
 
@@ -111,12 +191,14 @@ namespace Dynamo.FSchemeInterop.Node
 
         public SymbolNode(string s)
         {
-            this.symbol = s;
+            symbol = s;
         }
 
-        public Expression Compile()
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
-            return Expression.NewId(this.symbol);
+            return Expression.NewId(symbol);
         }
     }
 
@@ -126,12 +208,14 @@ namespace Dynamo.FSchemeInterop.Node
         public ConditionalNode()
             : base("if", new List<string>() { "test", "true", "false" }) { }
 
-        public override Expression Compile()
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
             return Expression.NewIf(
-                this.arguments["test"].Compile(),
-                this.arguments["true"].Compile(),
-                this.arguments["false"].Compile());
+                arguments["test"].compile(symbols, letEntries),
+                arguments["true"].compile(symbols, letEntries),
+                arguments["false"].compile(symbols, letEntries));
         }
     }
 
@@ -145,11 +229,14 @@ namespace Dynamo.FSchemeInterop.Node
             : base("begin", inputs)
         { }
 
-        public override Expression Compile()
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
             return Expression.NewBegin(
                 Utils.SequenceToFSharpList(
-                    this.Inputs.Select(x => this.arguments[x].Compile())));
+                    Inputs.Select(
+                        x => arguments[x].compile(symbols, letEntries))));
         }
     }
 
@@ -159,11 +246,11 @@ namespace Dynamo.FSchemeInterop.Node
         {
             get
             {
-                return this.inputs;
+                return inputs;
             }
             set
             {
-                this.inputs = value;
+                inputs = value;
             }
         }
 
@@ -175,7 +262,7 @@ namespace Dynamo.FSchemeInterop.Node
 
         public InputNode(IEnumerable<string> inputNames)
         {
-            this.Inputs = inputNames.ToList();
+            Inputs = inputNames.ToList();
         }
 
         public InputNode(params string[] inputNames)
@@ -185,45 +272,55 @@ namespace Dynamo.FSchemeInterop.Node
         //Connects a Node to one of our inputs.
         public virtual void ConnectInput(string inputName, INode inputNode)
         {
-            this.arguments[inputName] = inputNode;
+            arguments[inputName] = inputNode;
+            children.Add(inputNode);
+            inputNode.parents.Add(this);
         }
 
         //Disconnects one of our inputs.
         public virtual void DisconnectInput(string inputName)
         {
-            this.arguments.Remove(inputName);
+            var child = arguments[inputName];
+            child.parents.Remove(this);
+            children.Remove(child);
+
+            arguments.Remove(inputName);
         }
 
         //Adds another input parameter with the given name.
         public virtual void AddInput(string inputName)
         {
-            this.inputs.Add(inputName);
+            inputs.Add(inputName);
         }
 
         //Adds another input parameter with a default name.
         public virtual void AddInput()
         {
-            this.AddInput("arg" + (this.inputs.Count + 1));
+            AddInput("arg" + (inputs.Count + 1));
         }
 
         //Removes an input parameter of the given name.
         public virtual void RemoveInput(string inputName)
         {
-            this.inputs.Remove(inputName);
+            if (arguments.ContainsKey(inputName))
+            {
+                DisconnectInput(inputName);
+            }
+            inputs.Remove(inputName);
         }
 
         //Removes the last input parameter.
         public virtual void RemoveInput()
         {
-            this.inputs.RemoveAt(this.inputs.Count - 1);
+            RemoveInput(inputs[inputs.Count - 1]);
         }
-
-        public abstract Expression Compile();
     }
 
     public abstract class ProcedureCallNode : InputNode
     {
-        protected abstract Expression Body { get; }
+        protected abstract Expression GetBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries);
 
         public ProcedureCallNode(IEnumerable<string> inputNames) 
             : base(inputNames) 
@@ -233,30 +330,34 @@ namespace Dynamo.FSchemeInterop.Node
         /// Compiles the node into an FScheme Expression.
         /// </summary>
         /// <returns></returns>
-        public override Expression Compile()
+        protected override Expression compileBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
-            return this.toExpression(
-               this.Body,
-               this.Inputs,
-               this.inputs.Count
-            );
+            return toExpression(
+                GetBody(symbols, letEntries), Inputs, inputs.Count, symbols, letEntries);
         }
 
         //Function used to construct our expression. This is used to properly create a curried function call, which will be
         //able to support partial function application.
-        protected Expression toExpression(Expression function, IEnumerable<string> parameters, int expectedArgs)
+        protected Expression toExpression(
+            Expression function, 
+            IEnumerable<string> parameters,
+            int expectedArgs,
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
             //If no arguments have been supplied and if we are expecting arguments, simply return the function.
-            if (this.arguments.Keys.Count == 0 && expectedArgs > 0)
+            if (arguments.Keys.Count == 0 && expectedArgs > 0)
                 return function;
 
             //If the number of expected arguments is greater than how many arguments have been supplied, we perform a partial
             //application, returning a function which takes the remaining arguments.
-            if (this.arguments.Keys.Count < expectedArgs)
+            if (arguments.Keys.Count < expectedArgs)
             {
                 //Get all of the missing arguments.
                 IEnumerable<string> missingArgs = parameters.Where(
-                   input => !this.arguments.ContainsKey(input)
+                   input => !arguments.ContainsKey(input)
                 );
                 //Return a function that...
                 return Utils.MakeAnon(
@@ -272,7 +373,7 @@ namespace Dynamo.FSchemeInterop.Node
                                 input =>
                                     missingArgs.Contains(input)
                                     ? Expression.NewId(input)
-                                    : this.arguments[input].Compile())))));
+                                    : arguments[input].compile(symbols, letEntries))))));
             }
 
             //If all the arguments were supplied, just return a standard function call expression.
@@ -282,7 +383,7 @@ namespace Dynamo.FSchemeInterop.Node
                    FSharpList<Expression>.Cons(
                       function,
                       Utils.SequenceToFSharpList(
-                         parameters.Select(input => this.arguments[input].Compile())
+                         parameters.Select(input => arguments[input].compile(symbols, letEntries))
                       )
                    )
                 );
@@ -308,9 +409,11 @@ namespace Dynamo.FSchemeInterop.Node
             }
         }
 
-        protected override Expression Body
+        protected override Expression GetBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
-            get { return this.procedure.Compile(); }
+            return procedure.compile(symbols, letEntries);
         }
 
         public ApplierNode(IEnumerable<string> inputs)
@@ -327,7 +430,7 @@ namespace Dynamo.FSchemeInterop.Node
             //Special case: if we are connecting to procedure, update our internal procedure reference.
             if (inputName.Equals("func"))
             {
-                this.procedure = inputNode;
+                procedure = inputNode;
             }
             base.ConnectInput(inputName, inputNode);
         }
@@ -335,14 +438,14 @@ namespace Dynamo.FSchemeInterop.Node
         //AddInput() overridden from FunctionNode
         public override void AddInput()
         {
-            base.Inputs.Add("arg" + this.Inputs.Count + 1);
+            base.Inputs.Add("arg" + Inputs.Count + 1);
         }
 
         //RemoveInput() overridden from FunctinNode
         public override void RemoveInput()
         {
             //TODO
-            if (this.Inputs.Count == 0)
+            if (Inputs.Count == 0)
                 throw new ApplierNodeException("Cannot remove Procedure parameter from Apply Node.");
             else
                 base.RemoveInput();
@@ -366,18 +469,17 @@ namespace Dynamo.FSchemeInterop.Node
         public string Symbol { get; private set; }
 
         //Symbol referenced by this function.
-        protected override Expression Body
+        protected override Expression GetBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
-            get
-            {
-                return new SymbolNode(this.Symbol).Compile();
-            }
+            return Expression.NewId(Symbol);
         }
 
         public FunctionNode(string funcName, IEnumerable<string> inputNames)
             : base(inputNames)
         {
-            this.Symbol = funcName;
+            Symbol = funcName;
         }
 
         public FunctionNode(string funcName)
@@ -391,18 +493,17 @@ namespace Dynamo.FSchemeInterop.Node
         //of this function.
         public INode EntryPoint { get; private set; }
 
-        protected override Expression Body
+        protected override Expression GetBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
-            get
-            {
-                return Utils.MakeAnon(this.Inputs, this.EntryPoint.Compile());
-            }
+            return Utils.MakeAnon(Inputs, EntryPoint.compile(symbols, letEntries));
         }
 
         public AnonymousFunctionNode(IEnumerable<string> inputList, INode entryPoint)
             : base(inputList)
         {
-            this.EntryPoint = entryPoint;
+            EntryPoint = entryPoint;
         }
 
         public AnonymousFunctionNode(INode entryPoint)
@@ -413,23 +514,208 @@ namespace Dynamo.FSchemeInterop.Node
     {
         public Converter<FSharpList<Value>, Value> EntryPoint { get; private set; }
 
-        protected override Expression Body
+        protected override Expression GetBody(
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries)
         {
-            get
-            {
-                return Expression.NewFunction_E(
-                    Utils.ConvertToFSchemeFunc(this.EntryPoint));
-            }
+            return Expression.NewFunction_E(
+                Utils.ConvertToFSchemeFunc(EntryPoint));
         }
 
         public ExternalFunctionNode(Converter<FSharpList<Value>, Value> f, IEnumerable<string> inputList)
             : base(inputList)
         {
-            this.EntryPoint = f;
+            EntryPoint = f;
         }
 
         public ExternalFunctionNode(Converter<FSharpList<Value>, Value> f)
             : this(f, new List<string>())
         { }
+    }
+
+    /// <summary>
+    /// Utility functions involving Node graph traversal.
+    /// </summary>
+    public static class GraphAnalysis
+    {
+        private static Tree<T> lca<T>(IEnumerable<Tree<T>> descendants)
+        {
+            var trees = new Stack<Tree<T>>(descendants);
+
+            if (!trees.Any()) 
+                return null;
+
+            while (trees.Count > 1)
+            {
+                var stackA = new Stack<Tree<T>>();
+                for (var pathA = trees.Pop(); pathA != null; pathA = pathA.Parent)
+                {
+                    stackA.Push(pathA);
+                }
+
+                var stackB = new Stack<Tree<T>>();
+                for (var pathB = trees.Pop(); pathB != null; pathB = pathB.Parent)
+                {
+                    stackB.Push(pathB);
+                }
+
+                Tree<T> result = null;
+                while (stackA.Any() && stackB.Any())
+                {
+                    var a = stackA.Pop();
+                    var b = stackB.Pop();
+                    if (a == b)
+                    {
+                        result = a;
+                    }
+                    else
+                        break;
+                }
+
+                if (result == null)
+                    return null;
+
+                trees.Push(result);
+            }
+
+            return trees.Pop();
+        }
+
+        /*
+        private static bool checkConstant(dynNode node)
+        {
+            return node.GetType()
+                .GetCustomAttributes(typeof(IsConstantAttribute), false)
+                .Any(x => (x as IsConstantAttribute).IsConstant);
+        }
+        */
+
+        public static bool LetOptimizations(
+            INode entry, 
+            out Dictionary<INode, string> symbols, 
+            out Dictionary<INode, List<INode>> letEntries)
+        {
+            symbols = new Dictionary<INode, string>();
+            letEntries = new Dictionary<INode, List<INode>>();
+            
+            var nodeStack = new Stack<INode>();
+
+            var multiOuts = new Stack<INode>();
+
+            var isDag = TopologicalTraversal(
+                entry, 
+                x => 
+                {
+                    nodeStack.Push(x);
+                    //TODO: Add CanOptimize property to INode
+                    if (x.ParentCount > 1 && x.Children.Any())
+                        multiOuts.Push(x);
+                },
+                x => x.Children);
+
+            if (!isDag)
+                return false;
+
+            var lcaTree = Tree<INode>.MakeTree(null);
+            var treeLookup = new Dictionary<INode, Tree<INode>>();
+
+            foreach (var node in nodeStack)
+            {
+                if (node.Parents.Any())
+                {
+                    treeLookup[node] =
+                        lca(node.Parents.Select(x => treeLookup[x]))
+                        .AddChild(node);
+                }
+                else
+                {
+                    treeLookup[node] = lcaTree.AddChild(node);
+                }
+            }
+
+            foreach (var node in multiOuts)
+            {
+                symbols[node] = Guid.NewGuid().ToString();
+
+                var parent = treeLookup[node].Parent;
+
+                if (parent.Value != null)
+                {
+                    List<INode> childList;
+                    if (letEntries.TryGetValue(parent.Value, out childList))
+                        childList.Add(node);
+                    else
+                        letEntries[parent.Value] = new List<INode>() { node };
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Traverses the graph in depth-first topological order.
+        /// </summary>
+        /// <returns></returns>
+        public static bool TopologicalTraversal<T>(T entryPoint, Action<T> onMark, Converter<T, IEnumerable<T>> childAccessor)
+        {
+            return visit(entryPoint, new HashSet<T>(), new HashSet<T>(), onMark, childAccessor);
+        }
+
+        private static bool visit<T>(T node, HashSet<T> temps, HashSet<T> perms, Action<T> onMark, Converter<T, IEnumerable<T>> childAccessor)
+        {
+            if (temps.Contains(node))
+                return false;
+
+            if (!perms.Contains(node))
+            {
+                temps.Add(node);
+                foreach (var child in childAccessor(node))
+                {
+                    if (!visit(child, temps, perms, onMark, childAccessor))
+                        return false;
+                }
+                perms.Add(node);
+                temps.Remove(node);
+                onMark(node);
+            }
+
+            return true;
+        }
+
+        private class Tree<T>
+        {
+            public T Value { get; private set; }
+            public Tree<T> Parent { get; private set; }
+
+            private HashSet<Tree<T>> children = new HashSet<Tree<T>>();
+            public IEnumerable<Tree<T>> Children { get { return children; } }
+
+            public bool IsRoot { get { return Parent == null; } }
+
+            Tree(T value) : this(value, null) { }
+
+            Tree(T value, Tree<T> parent)
+            {
+                Value = value;
+                Parent = parent;
+            }
+
+            public static Tree<T> MakeTree(T root)
+            {
+                return new Tree<T>(root);
+            }
+
+            public Tree<T> AddChild(T child)
+            {
+                var newChild = new Tree<T>(child, this);
+                children.Add(newChild);
+                return newChild;
+            }
+
+            public override string ToString()
+            {
+                return "( " + (Value == null ? "null" : Value.ToString()) + ": " + String.Join(" ", children.Select(x => x.ToString())) + ")";
+            }
+        }
     }
 }

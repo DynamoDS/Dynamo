@@ -71,9 +71,11 @@ namespace Dynamo.Elements
                 this.node = node;
             }
 
-            public override Expression Compile()
+            protected override Expression compileBody(
+                Dictionary<INode, string> symbols,
+                Dictionary<INode, List<INode>> letEntries)
             {
-                var arg =  arguments["expr"].Compile();
+                var arg =  arguments["expr"].compile(symbols, letEntries);
                 
                 //idle :: (() -> A) -> A
                 //Evaluates the given function in the Revit Idle thread.

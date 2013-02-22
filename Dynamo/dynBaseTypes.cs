@@ -715,12 +715,15 @@ namespace Dynamo.Elements
             return Value.NewList(FSharpList<Value>.Empty);
         }
 
-        protected internal override INode Build(
-            Dictionary<dynNode, string> symbols, 
-            Dictionary<dynNode, List<dynNode>> letEntries, 
-            bool useSymbol)
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new SymbolNode("empty");
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new SymbolNode("empty");
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 
@@ -893,20 +896,16 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
             INode result;
-
-            string symbol;
-            if (useSymbol && symbols.TryGetValue(this, out symbol))
-                result = new SymbolNode(symbol);
-            else
+            if (!preBuilt.TryGetValue(this, out result))
             {
                 if (InPorts.All(x => x.Connectors.Any()))
                 {
                     var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build(symbols, letEntries, true));
-                    ifNode.ConnectInput("true", InPorts[1].Connectors[0].Start.Owner.Build(symbols, letEntries, true));
+                    ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build(preBuilt));
+                    ifNode.ConnectInput("true", InPorts[1].Connectors[0].Start.Owner.Build(preBuilt));
                     ifNode.ConnectInput("false", new NumberNode(0));
                     result = ifNode;
                 }
@@ -936,7 +935,7 @@ namespace Dynamo.Elements
                             //Compile input and connect it
                             node.ConnectInput(
                                data.NickName,
-                               port.Connectors[0].Start.Owner.Build(symbols, letEntries, true)
+                               port.Connectors[0].Start.Owner.Build(preBuilt)
                             );
                         }
                     }
@@ -946,12 +945,8 @@ namespace Dynamo.Elements
 
                     result = node;
                 }
+                preBuilt[this] = result;
             }
-
-            List<dynNode> bindings;
-            if (letEntries.TryGetValue(this, out bindings) && bindings.Count > 0)
-                result = wrapLets(result, symbols, letEntries, bindings);
-
             return result;
         }
     }
@@ -974,21 +969,17 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
             INode result;
-
-            string symbol;
-            if (useSymbol && symbols.TryGetValue(this, out symbol))
-                result = new SymbolNode(symbol);
-            else
+            if (!preBuilt.TryGetValue(this, out result))
             {
                 if (InPorts.All(x => x.Connectors.Any()))
                 {
                     var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build(symbols, letEntries, true));
+                    ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build(preBuilt));
                     ifNode.ConnectInput("true", new NumberNode(1));
-                    ifNode.ConnectInput("false", InPorts[1].Connectors[0].Start.Owner.Build(symbols, letEntries, true));
+                    ifNode.ConnectInput("false", InPorts[1].Connectors[0].Start.Owner.Build(preBuilt));
                     result = ifNode;
                 }
                 else
@@ -1017,7 +1008,7 @@ namespace Dynamo.Elements
                             //Compile input and connect it
                             node.ConnectInput(
                                data.NickName,
-                               port.Connectors[0].Start.Owner.Build(symbols, letEntries, true)
+                               port.Connectors[0].Start.Owner.Build(preBuilt)
                             );
                         }
                     }
@@ -1027,12 +1018,8 @@ namespace Dynamo.Elements
 
                     result = node;
                 }
+                preBuilt[this] = result;
             }
-
-            List<dynNode> bindings;
-            if (letEntries.TryGetValue(this, out bindings) && bindings.Count > 0)
-                result = wrapLets(result, symbols, letEntries, bindings);
-
             return result;
         }
     }
@@ -1319,9 +1306,15 @@ namespace Dynamo.Elements
             set { }
         }
 
-        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new NumberNode(Math.PI);
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new NumberNode(Math.PI);
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 
@@ -1473,9 +1466,33 @@ namespace Dynamo.Elements
             return this.InPortData.Count + 1;
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        private INode nestedBegins(Stack<dynNode> inputs, Dictionary<dynNode, INode> preBuilt)
         {
-            return new BeginNode(portNames);
+            var firstVal = inputs.Pop().Build(preBuilt);
+
+            if (inputs.Any())
+            {
+                var newBegin = new BeginNode();
+                newBegin.ConnectInput("expr1", nestedBegins(inputs, preBuilt));
+                newBegin.ConnectInput("expr2", firstVal);
+                return newBegin;
+            }
+            else
+                return firstVal;
+        }
+
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
+        {
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = nestedBegins(
+                    new Stack<dynNode>(
+                        InPorts.Select(x => x.Connectors[0].Start.Owner).Reverse()),
+                    preBuilt);
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 

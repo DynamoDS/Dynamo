@@ -456,13 +456,17 @@ namespace Dynamo.Elements
             set { this.tb.Text = value; }
         }
 
-        protected internal override INode Build(Dictionary<dynNode, string> symbols, Dictionary<dynNode, List<dynNode>> letEntries, bool useSymbol)
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new SymbolNode(
-               (string)this.Dispatcher.Invoke(new Func<string>(
-                  () => this.Symbol
-               ))
-            );
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new SymbolNode(
+                   (string)this.Dispatcher.Invoke(new Func<string>(
+                      () => this.Symbol)));
+                preBuilt[this] = result;
+            }
+            return result;
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)

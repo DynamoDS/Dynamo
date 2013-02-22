@@ -2483,30 +2483,20 @@ namespace Dynamo.Controls
                 //TODO: Flesh out error handling
                 try
                 {
-                    Dictionary<dynNode, string> symbols;
-                    Dictionary<dynNode, List<dynNode>> letEntries;
-                    List<dynNode> topLevelLetEntries;
-                    if (!GraphAnalysis.LetOptimizations(
-                        homeSpace,
-                        out symbols,
-                        out letEntries,
-                        out topLevelLetEntries))
-                    {
-                        throw new Exception("Dependency loop found in workflow. Cannot evaluate.");
-                    }
-
                     var topNode = new FSchemeInterop.Node.BeginNode(new List<string>());
                     var i = 0;
                     foreach (var topMost in topElements)
                     {
                         var inputName = i.ToString();
                         topNode.AddInput(inputName);
-                        topNode.ConnectInput(inputName, topMost.Build(symbols, letEntries, true));
+                        topNode.ConnectInput(inputName, topMost.BuildExpression());
                         i++;
                     }
 
-                    Expression runningExpression = dynNode.wrapLets(
-                        topNode, symbols, letEntries, topLevelLetEntries).Compile();
+                    Expression runningExpression = topNode.Compile();
+
+                    Dispatcher.Invoke(new Action(
+                        () => Log(FScheme.printExpression("", runningExpression))));
 
                     //Run Delegate
                     Action run = delegate
@@ -3025,19 +3015,7 @@ namespace Dynamo.Controls
 
                 if (top != default(dynNode))
                 {
-                    Dictionary<dynNode, string> symbols;
-                    Dictionary<dynNode, List<dynNode>> letEntries;
-                    List<dynNode> topLevelLetEntries;
-                    if (!GraphAnalysis.LetOptimizations(
-                        funcWorkspace,
-                        out symbols,
-                        out letEntries,
-                        out topLevelLetEntries))
-                    {
-                        throw new Exception("Dependency loop found in workflow. Cannot evaluate.");
-                    }
-
-                    var topNode = top.Build(symbols, letEntries, true);
+                    var topNode = top.BuildExpression();
                     
                     Expression expression = Utils.MakeAnon(variableNames, topNode.Compile());
 
