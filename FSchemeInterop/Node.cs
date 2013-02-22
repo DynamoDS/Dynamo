@@ -45,26 +45,26 @@ namespace Dynamo.FSchemeInterop.Node
             if (!GraphAnalysis.LetOptimizations(this, out symbols, out letEntries))
                 throw new Exception("Can't compile INode, graph is not a DAG.");
 
-            return compile(symbols, letEntries);
+            return compile(symbols, letEntries, new HashSet<string>());
         }
 
         private static Expression wrapLets(
-            Expression body, 
-            Dictionary<INode, string> symbols, 
-            Dictionary<INode, List<INode>> letEntries, 
+            Expression body,
+            Dictionary<INode, string> symbols,
             List<INode> bindings)
         {
             foreach (var boundNode in bindings)
             {
                 var symbol = symbols[boundNode];
                 
-                symbols.Remove(boundNode);
-                var binding = boundNode.compile(symbols, letEntries);
-                symbols[boundNode] = symbol;
+                //symbols.Remove(boundNode);
+                //var binding = boundNode.compile(symbols, letEntries, initializedIds);
+                //symbols[boundNode] = symbol;
                 
                 body = Expression.NewLet(
                     Utils.MakeFSharpList(symbol),
-                    Utils.MakeFSharpList(binding),
+                    Utils.MakeFSharpList(
+                        Expression.NewBegin(FSharpList<Expression>.Empty)),
                     body);
             }
             return body;
@@ -72,31 +72,47 @@ namespace Dynamo.FSchemeInterop.Node
 
         private Expression __compileBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             string symbol;
             if (symbols.TryGetValue(this, out symbol))
-                return Expression.NewId(symbol);
+            {
+                var body = Expression.NewId(symbol);
+                if (!initializedIds.Contains(symbol))
+                {
+                    symbols.Remove(this);
+                    var binding = compile(symbols, letEntries, initializedIds);
+                    symbols[this] = symbol;
+
+                    body = Expression.NewBegin(Utils.MakeFSharpList(
+                        Expression.NewSetId(symbol,binding),
+                        body));
+                }
+                return body;
+            }
             else
-                return compileBody(symbols, letEntries);
+                return compileBody(symbols, letEntries, initializedIds);
         }
 
         public Expression compile(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
-            Expression body = __compileBody(symbols, letEntries);
+            Expression body = __compileBody(symbols, letEntries, initializedIds);
 
             List<INode> bindings;
             if (letEntries.TryGetValue(this, out bindings) && bindings.Any())
-                body = wrapLets(body, symbols, letEntries, bindings);
+                body = wrapLets(body, symbols, bindings);
 
             return body;
         }
 
         protected abstract Expression compileBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries);
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds);
 
         protected internal List<INode> children = new List<INode>();
         protected internal List<INode> parents = new List<INode>();
@@ -141,8 +157,9 @@ namespace Dynamo.FSchemeInterop.Node
         }
 
         protected override Expression compileBody(
-            Dictionary<INode, string> symbols, 
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, string> symbols,
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return Expression.NewNumber_E(num);
         }
@@ -160,7 +177,8 @@ namespace Dynamo.FSchemeInterop.Node
 
         protected override Expression compileBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return Expression.NewString_E(str);
         }
@@ -178,7 +196,8 @@ namespace Dynamo.FSchemeInterop.Node
 
         protected override Expression compileBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return Expression.NewContainer_E(obj);
         }
@@ -196,7 +215,8 @@ namespace Dynamo.FSchemeInterop.Node
 
         protected override Expression compileBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return Expression.NewId(symbol);
         }
@@ -210,12 +230,13 @@ namespace Dynamo.FSchemeInterop.Node
 
         protected override Expression compileBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return Expression.NewIf(
-                arguments["test"].compile(symbols, letEntries),
-                arguments["true"].compile(symbols, letEntries),
-                arguments["false"].compile(symbols, letEntries));
+                arguments["test"].compile(symbols, letEntries, initializedIds),
+                arguments["true"].compile(symbols, letEntries, initializedIds),
+                arguments["false"].compile(symbols, letEntries, initializedIds));
         }
     }
 
@@ -231,12 +252,13 @@ namespace Dynamo.FSchemeInterop.Node
 
         protected override Expression compileBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return Expression.NewBegin(
                 Utils.SequenceToFSharpList(
                     Inputs.Select(
-                        x => arguments[x].compile(symbols, letEntries))));
+                        x => arguments[x].compile(symbols, letEntries, initializedIds))));
         }
     }
 
@@ -320,7 +342,8 @@ namespace Dynamo.FSchemeInterop.Node
     {
         protected abstract Expression GetBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries);
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds);
 
         public ProcedureCallNode(IEnumerable<string> inputNames) 
             : base(inputNames) 
@@ -332,10 +355,16 @@ namespace Dynamo.FSchemeInterop.Node
         /// <returns></returns>
         protected override Expression compileBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return toExpression(
-                GetBody(symbols, letEntries), Inputs, inputs.Count, symbols, letEntries);
+                GetBody(symbols, letEntries, initializedIds), 
+                Inputs, 
+                inputs.Count, 
+                symbols, 
+                letEntries, 
+                initializedIds);
         }
 
         //Function used to construct our expression. This is used to properly create a curried function call, which will be
@@ -345,7 +374,8 @@ namespace Dynamo.FSchemeInterop.Node
             IEnumerable<string> parameters,
             int expectedArgs,
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             //If no arguments have been supplied and if we are expecting arguments, simply return the function.
             if (arguments.Keys.Count == 0 && expectedArgs > 0)
@@ -373,7 +403,7 @@ namespace Dynamo.FSchemeInterop.Node
                                 input =>
                                     missingArgs.Contains(input)
                                     ? Expression.NewId(input)
-                                    : arguments[input].compile(symbols, letEntries))))));
+                                    : arguments[input].compile(symbols, letEntries, initializedIds))))));
             }
 
             //If all the arguments were supplied, just return a standard function call expression.
@@ -383,7 +413,7 @@ namespace Dynamo.FSchemeInterop.Node
                    FSharpList<Expression>.Cons(
                       function,
                       Utils.SequenceToFSharpList(
-                         parameters.Select(input => arguments[input].compile(symbols, letEntries))
+                         parameters.Select(input => arguments[input].compile(symbols, letEntries, initializedIds))
                       )
                    )
                 );
@@ -411,9 +441,10 @@ namespace Dynamo.FSchemeInterop.Node
 
         protected override Expression GetBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
-            return procedure.compile(symbols, letEntries);
+            return procedure.compile(symbols, letEntries, initializedIds);
         }
 
         public ApplierNode(IEnumerable<string> inputs)
@@ -471,7 +502,8 @@ namespace Dynamo.FSchemeInterop.Node
         //Symbol referenced by this function.
         protected override Expression GetBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return Expression.NewId(Symbol);
         }
@@ -495,9 +527,10 @@ namespace Dynamo.FSchemeInterop.Node
 
         protected override Expression GetBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
-            return Utils.MakeAnon(Inputs, EntryPoint.compile(symbols, letEntries));
+            return Utils.MakeAnon(Inputs, EntryPoint.compile(symbols, letEntries, initializedIds));
         }
 
         public AnonymousFunctionNode(IEnumerable<string> inputList, INode entryPoint)
@@ -516,7 +549,8 @@ namespace Dynamo.FSchemeInterop.Node
 
         protected override Expression GetBody(
             Dictionary<INode, string> symbols,
-            Dictionary<INode, List<INode>> letEntries)
+            Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds)
         {
             return Expression.NewFunction_E(
                 Utils.ConvertToFSchemeFunc(EntryPoint));
