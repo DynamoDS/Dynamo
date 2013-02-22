@@ -1488,7 +1488,7 @@ namespace Dynamo.Elements
             {
                 result = nestedBegins(
                     new Stack<dynNode>(
-                        InPorts.Select(x => x.Connectors[0].Start.Owner).Reverse()),
+                        InPorts.Select(x => x.Connectors[0].Start.Owner)),
                     preBuilt);
                 preBuilt[this] = result;
             }
