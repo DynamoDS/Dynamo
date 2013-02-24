@@ -211,9 +211,11 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
-                tw.WriteLine("Dynamo log ended " + System.DateTime.Now.ToString());
-
-                tw.Close();
+                if(tw != null)
+                {
+                    tw.WriteLine("Dynamo log ended " + System.DateTime.Now.ToString());
+                    tw.Close();
+                }
                 System.Windows.Forms.MessageBox.Show(ex.ToString());
                 return Result.Failed;
             }

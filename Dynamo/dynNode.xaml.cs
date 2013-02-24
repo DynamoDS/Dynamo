@@ -281,10 +281,10 @@ namespace Dynamo.Elements
         #region events
         //public event dynElementUpdatedHandler dynElementUpdated;
         public event dynElementDestroyedHandler dynElementDestroyed;
-        public event dynElementReadyToBuildHandler dynElementReadyToBuild;
+        //public event dynElementReadyToBuildHandler dynElementReadyToBuild;
         public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
-        public event dynElementSelectedHandler dynElementSelected;
-        public event dynElementDeselectedHandler dynElementDeselected;
+        //public event dynElementSelectedHandler dynElementSelected;
+        //public event dynElementDeselectedHandler dynElementDeselected;
         #endregion
 
         #region constructors
@@ -355,13 +355,13 @@ namespace Dynamo.Elements
             }
         }
 
-        protected virtual void OnDynElementReadyToBuild(EventArgs e)
-        {
-            if (dynElementReadyToBuild != null)
-            {
-                dynElementReadyToBuild(this, e);
-            }
-        }
+        //protected virtual void OnDynElementReadyToBuild(EventArgs e)
+        //{
+        //    if (dynElementReadyToBuild != null)
+        //    {
+        //        dynElementReadyToBuild(this, e);
+        //    }
+        //}
 
         protected virtual void OnDynElementReadyToDestroy(EventArgs e)
         {
@@ -371,21 +371,21 @@ namespace Dynamo.Elements
             }
         }
 
-        protected virtual void OnDynElementSelected(EventArgs e)
-        {
-            if (dynElementSelected != null)
-            {
-                dynElementSelected(this, e);
-            }
-        }
+        //protected virtual void OnDynElementSelected(EventArgs e)
+        //{
+        //    if (dynElementSelected != null)
+        //    {
+        //        dynElementSelected(this, e);
+        //    }
+        //}
 
-        protected virtual void OnDynElementDeselected(EventArgs e)
-        {
-            if (dynElementDeselected != null)
-            {
-                dynElementDeselected(this, e);
-            }
-        }
+        //protected virtual void OnDynElementDeselected(EventArgs e)
+        //{
+        //    if (dynElementDeselected != null)
+        //    {
+        //        dynElementDeselected(this, e);
+        //    }
+        //}
 
         public void RegisterInputsAndOutputs()
         {
@@ -1062,6 +1062,23 @@ namespace Dynamo.Elements
             return;
         }
 
+        /// <summary>
+        /// Called when the node's workspace has been saved.
+        /// </summary>
+        protected internal virtual void OnSave() { }
+
+        internal void onSave()
+        {
+            //Save all of the connection states, so we can check if this is dirty
+            foreach (dynPort p in InPorts)
+            {
+                previousEvalPortMappings[p] = p.Connectors.Any()
+                   ? p.Connectors[0].Start.Owner
+                   : null;
+            }
+            OnSave();
+        }
+
         internal virtual INode BuildExpression()
         {
             return Build(new Dictionary<dynNode, INode>());
@@ -1141,23 +1158,6 @@ namespace Dynamo.Elements
         /// </summary>
         protected virtual void OnEvaluate() { }
 
-        /// <summary>
-        /// Called when the node's workspace has been saved.
-        /// </summary>
-        protected internal virtual void OnSave() { }
-
-        internal void onSave()
-        {
-            //Save all of the connection states, so we can check if this is dirty
-            foreach (dynPort p in InPorts)
-            {
-                previousEvalPortMappings[p] = p.Connectors.Any()
-                   ? p.Connectors[0].Start.Owner
-                   : null;
-            }
-            OnSave();
-        }
-
         protected internal ExecutionEnvironment macroEnvironment = null;
 
         private Value evalIfDirty(FSharpList<Value> args)
@@ -1177,7 +1177,6 @@ namespace Dynamo.Elements
             else
                 return evaluateNode(args);
         }
-
 
         protected internal Value evaluateNode(FSharpList<Value> args)
         {
@@ -1453,7 +1452,6 @@ namespace Dynamo.Elements
             if (!_isDirty)
                 _isDirty = count > 0;
         }
-
 
         /// <summary>
         /// Registers the given element id with the DMU such that any change in the element will
