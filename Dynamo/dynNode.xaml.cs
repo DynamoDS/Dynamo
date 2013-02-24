@@ -420,6 +420,24 @@ namespace Dynamo.Elements
             OutPort.Update();
         }
 
+        /// <summary>
+        /// Redraw the output connector
+        /// </summary>
+        public void RedrawConnectors()
+        {
+            foreach (dynConnector c in outPort.Connectors)
+            {
+                c.Redraw();
+            }
+            foreach (dynPort p in inPorts)
+            {
+                foreach (dynConnector c in p.Connectors)
+                {
+                    c.Redraw();
+                }
+            }
+        }
+
         private Dictionary<UIElement, bool> enabledDict = new Dictionary<UIElement, bool>();
 
         internal void DisableInteraction()
@@ -1826,8 +1844,17 @@ namespace Dynamo.Elements
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine("I am clicking on the node. Beatch.");
+            Debug.WriteLine("Node left selected.");
+            dynElementSettings.SharedInstance.Bench.ClearSelection();
+            dynElementSettings.SharedInstance.Bench.SelectElement(this);
         }
+
+        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("Node right selected.");
+            e.Handled = true;
+        }
+
     }
 
     [ValueConversion(typeof(double), typeof(Thickness))]

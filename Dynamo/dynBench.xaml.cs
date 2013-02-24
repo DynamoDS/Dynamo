@@ -56,7 +56,6 @@ namespace Dynamo.Controls
         double oldY = 0.0;
         double oldX = 0.0;
 
-        //private dynSelection selectedElements;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
         private bool isPanning = false;
         private StringWriter sw;
@@ -64,17 +63,9 @@ namespace Dynamo.Controls
         private ConnectorType connectorType;
         private bool isWindowSelecting = false;
         private Point mouseDownPos;
-        private List<dynConnector> connectorsToUpdate = new List<dynConnector>();
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         dynNode draggedElement;
         Point dragOffset;
-
-        //private bool isConnecting = false;
-        //public bool IsConnecting
-        //{
-        //    get { return isConnecting; }
-        //    set { isConnecting = value; }
-        //}
 
         private dynConnector activeConnector;
         public dynConnector ActiveConnector
@@ -129,8 +120,6 @@ namespace Dynamo.Controls
                 Log("All Tests Passed. Core library loaded OK.");
 
             this.Environment = new ExecutionEnvironment();
-
-            //selectedElements = new dynSelection();
 
             this.CurrentX = CANVAS_OFFSET_X;
             this.CurrentY = CANVAS_OFFSET_Y;
@@ -272,12 +261,6 @@ namespace Dynamo.Controls
         {
             get { return this.CurrentSpace.Elements; }
         }
-
-        //public dynSelection SelectedElements
-        //{
-        //    get { return selectedElements; }
-        //    set { selectedElements = value; }
-        //}
 
         public bool ViewingHomespace
         {
@@ -730,10 +713,6 @@ namespace Dynamo.Controls
                 if (sel is dynNode)
                     (sel as dynNode).Select();
             }
-            if (!workBench.Selection.Contains(sel))
-            {
-                workBench.Selection.Add(sel);
-            }
         }
 
         /// <summary>
@@ -742,14 +721,12 @@ namespace Dynamo.Controls
         public void ClearSelection()
         {
             //set all other items to the unselected state
-            //foreach (System.Windows.Controls.UserControl el in selectedElements.ToList())
             foreach (System.Windows.Controls.UserControl el in workBench.Selection)
             {
                 if (el is dynNode)
                     (el as dynNode).Deselect();
             }
 
-            //selectedElements.Clear();
             workBench.ClearSelection();
         }
 
@@ -849,7 +826,6 @@ namespace Dynamo.Controls
             return foundElement;
         }
 
-
         //Performs a hit test on the given point in the UI.
         void TestClick(System.Windows.Point pt)
         {
@@ -922,20 +898,17 @@ namespace Dynamo.Controls
                 activeConnector.Redraw(e.GetPosition(workBench));
             }
 
-            //If we are currently dragging an element, redraw the element to
+            //If we are currently dragging elements, redraw the element to
             //match the new mouse coordinates.
             if (workBench.isDragInProgress)
             {
-                this.Dispatcher.Invoke(new Action(
-                delegate
+                foreach (UIElement el in workBench.Selection)
                 {
-                    foreach (dynConnector c in connectorsToUpdate)
+                    if (el is dynNode)
                     {
-                        c.Redraw();
+                        ((dynNode)el).RedrawConnectors();
                     }
-
                 }
-                ), DispatcherPriority.Render, null);
             }
 
             //If we are panning the workspace, update the coordinate offset for the
@@ -1099,27 +1072,7 @@ namespace Dynamo.Controls
             {
                 #region window selection
 
-                connectorsToUpdate.Clear();
-
-                ////test if you're hitting a node
-                ////if so, don't start window selecting
-                //hitResultsList.Clear();
-                //TestClick(e.GetPosition(workBench));
-                //dynNode element = null;
-                //if (hitResultsList.Count > 0)
-                //{
-                //    foreach (DependencyObject depObj in hitResultsList)
-                //    {
-                //        element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
-                //        if (element != null && element.IsVisible)
-                //        {
-                //            //clear the selection but don't
-                //            //reselect until mouse up.
-                //            //ClearSelection();
-                //            return;
-                //        }
-                //    }
-                //}
+                ClearSelection();
 
                 //DEBUG WINDOW SELECTION
                 // Capture and track the mouse.
@@ -1244,37 +1197,37 @@ namespace Dynamo.Controls
 
                     //otherwise, assume that we want to select what's
                     //under the mouse
-                    hitResultsList.Clear();
-                    TestClick(e.GetPosition(workBench));
-                    dynNode element = null;
-                    if (hitResultsList.Count > 0)
-                    {
-                        foreach (DependencyObject depObj in hitResultsList)
-                        {
-                            element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
-                            if (element != null && element.IsVisible)
-                            {
-                                //Debug.WriteLine("Element clicked");
-                                ClearSelection();
-                                SelectElement(element);
+                    //hitResultsList.Clear();
+                    //TestClick(e.GetPosition(workBench));
+                    //dynNode element = null;
+                    //if (hitResultsList.Count > 0)
+                    //{
+                    //    foreach (DependencyObject depObj in hitResultsList)
+                    //    {
+                    //        element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
+                    //        if (element != null && element.IsVisible)
+                    //        {
+                    //            //Debug.WriteLine("Element clicked");
+                    //            ClearSelection();
+                    //            SelectElement(element);
 
-                                //we found an element, so just get out of here
-                                foreach (dynPort p in element.InPorts)
-                                {
-                                    foreach (dynConnector c in p.Connectors)
-                                    {
-                                        connectorsToUpdate.Add(c);
-                                    }
-                                }
-                                foreach (dynConnector c in element.OutPort.Connectors)
-                                {
-                                    connectorsToUpdate.Add(c);
-                                }
+                    //            //we found an element, so just get out of here
+                    //            foreach (dynPort p in element.InPorts)
+                    //            {
+                    //                foreach (dynConnector c in p.Connectors)
+                    //                {
+                    //                    connectorsToUpdate.Add(c);
+                    //                }
+                    //            }
+                    //            foreach (dynConnector c in element.OutPort.Connectors)
+                    //            {
+                    //                connectorsToUpdate.Add(c);
+                    //            }
 
-                                return;
-                            }
-                        }
-                    }
+                    //            return;
+                    //        }
+                    //    }
+                    //}
 
                     #endregion
                 }
@@ -2013,108 +1966,19 @@ namespace Dynamo.Controls
 
         void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            //Debug.WriteLine("Starting preview mouse down.");
+            //if you click on the canvas and you're connecting
+            //then drop the connector, otherwise do nothing
+            if (activeConnector != null)
+            {
+                activeConnector.Kill();
+                workBench.IsConnecting = false;
+                activeConnector = null;
+            }
 
-            //hitResultsList.Clear();
-            //TestClick(e.GetPosition(workBench));
-
-            //dynPort p = null;
-
-            ////figure out which element is hit
-            ////HACK: put the tests with break in highest to
-            ////lowest z order 
-            //if (hitResultsList.Count > 0)
-            //{
-            //    foreach (DependencyObject depObj in hitResultsList)
-            //    {
-            //        //traverse the tree through all the
-            //        //hit elements to see if you get a port
-            //        p = ElementClicked(depObj, typeof(dynPort)) as dynPort;
-            //        if (p != null && p.Owner.IsVisible)
-            //        {
-            //            break;
-            //        }
-            //    }
-            //}
-
-            #region test for a port
-            //if (p != null)
-            //{
-            //    //Debug.WriteLine("Port clicked");
-
-            //    if (!isConnecting)
-            //    {
-            //        //test if port already has a connection if so grab it
-            //        //and begin connecting to somewhere else
-            //        //don't allow the grabbing of the start connector
-            //        if (p.Connectors.Count > 0 && p.Connectors[0].Start != p)
-            //        {
-            //            activeConnector = p.Connectors[0];
-            //            activeConnector.Disconnect(p);
-            //            isConnecting = true;
-            //            workBench.isConnecting = true;
-            //            this.CurrentSpace.Connectors.Remove(activeConnector);
-            //        }
-            //        else
-            //        {
-            //            try
-            //            {
-            //                //you've begun creating a connector
-            //                dynConnector c = new dynConnector(p, workBench, e.GetPosition(workBench));
-            //                activeConnector = c;
-            //                isConnecting = true;
-            //                workBench.isConnecting = true;
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Debug.WriteLine(ex.Message);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        //attempt a connection between the port
-            //        //and the connector
-            //        if (!activeConnector.Connect(p))
-            //        {
-            //            activeConnector.Kill();
-            //            isConnecting = false;
-            //            workBench.isConnecting = false;
-            //            activeConnector = null;
-            //        }
-            //        else
-            //        {
-            //            //you've already started connecting
-            //            //now you're going to stop
-            //            this.CurrentSpace.Connectors.Add(activeConnector);
-            //            isConnecting = false;
-            //            workBench.isConnecting = false;
-            //            activeConnector = null;
-            //        }
-            //    }
-
-            //    //set the handled flag so that the element doesn't get dragged
-            //    e.Handled = true;
-            //}
-            //else
-            //{
-                //if you click on the canvas and you're connecting
-                //then drop the connector, otherwise do nothing
-                if (activeConnector != null)
-                {
-                    activeConnector.Kill();
-                    workBench.IsConnecting = false;
-                    activeConnector = null;
-                }
-
-                if (editingName && !hoveringEditBox)
-                {
-                    DisableEditNameBox();
-                }
-
-                //this.Focus();
-            //}
-            #endregion
+            if (editingName && !hoveringEditBox)
+            {
+                DisableEditNameBox();
+            }
 
         }
 

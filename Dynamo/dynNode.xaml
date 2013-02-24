@@ -9,7 +9,8 @@
     Loaded="topControl_Loaded" 
     KeyUp="OnKeyUp" 
     PreviewKeyUp="OnPreviewKeyUp"
-    MouseLeftButtonDown="topControl_MouseLeftButtonDown">
+    MouseLeftButtonDown="topControl_MouseLeftButtonDown"
+    MouseRightButtonDown="topControl_MouseRightButtonDown">
    <UserControl.Resources>
       <local:MarginConverter x:Key="MarginConverter" />
    </UserControl.Resources>
