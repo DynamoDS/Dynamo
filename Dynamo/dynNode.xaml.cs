@@ -1823,6 +1823,11 @@ namespace Dynamo.Elements
             Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
                 new object[] { p });
         }
+
+        private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("I am clicking on the node. Beatch.");
+        }
     }
 
     [ValueConversion(typeof(double), typeof(Thickness))]

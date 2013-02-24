@@ -50,29 +50,40 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class dynBench : Window, INotifyPropertyChanged
     {
-        private const int CANVAS_OFFSET_Y = 55;
-        private const int CANVAS_OFFSET_X = 10;
-
-        double zoom = 1.0;
+       
         double newX = 0.0;
         double newY = 0.0;
         double oldY = 0.0;
         double oldX = 0.0;
 
-        dynSelection selectedElements;
-        bool isConnecting = false;
-        dynConnector activeConnector;
-        List<DependencyObject> hitResultsList = new List<DependencyObject>();
-        bool isPanning = false;
-        StringWriter sw;
-        string logText;
-        ConnectorType connectorType;
+        private dynSelection selectedElements;
+        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private bool isPanning = false;
+        private StringWriter sw;
+        private string logText;
+        private ConnectorType connectorType;
+        private bool isWindowSelecting = false;
+        private Point mouseDownPos;
+        private List<dynConnector> connectorsToUpdate = new List<dynConnector>();
+        private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
+        dynNode draggedElement;
+        Point dragOffset;
 
-        bool isWindowSelecting = false;
-        Point mouseDownPos;
-        List<dynConnector> connectorsToUpdate = new List<dynConnector>();
+        private bool isConnecting = false;
+        public bool IsConnecting
+        {
+            get { return isConnecting; }
+            set { isConnecting = value; }
+        }
 
-        dynWorkspace _cspace;
+        private dynConnector activeConnector;
+        public dynConnector ActiveConnector
+        {
+            get { return activeConnector; }
+            set { activeConnector = value; }
+        }
+
+        private dynWorkspace _cspace;
         internal dynWorkspace CurrentSpace
         {
             get { return _cspace; }
@@ -85,11 +96,9 @@ namespace Dynamo.Controls
             }
         }
 
-        dynWorkspace homeSpace;
+        private dynWorkspace homeSpace;
         public Dictionary<string, dynWorkspace> dynFunctionDict = new Dictionary<string, dynWorkspace>();
         public event PropertyChangedEventHandler PropertyChanged;
-
-        SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
         SplashScreen splashScreen;
         public ConnectorType ConnectorType
@@ -226,6 +235,7 @@ namespace Dynamo.Controls
             }
         }
 
+        double zoom = 1.0;
         public double Zoom
         {
             get { return zoom; }
@@ -236,6 +246,8 @@ namespace Dynamo.Controls
             }
         }
 
+        private const int CANVAS_OFFSET_Y = 55;
+        private const int CANVAS_OFFSET_X = 10;
         public double CurrentX
         {
             get { return this.CurrentSpace.PositionX; }
@@ -256,16 +268,6 @@ namespace Dynamo.Controls
             }
         }
 
-        //public double ZoomCenterX
-        //{
-        //   get { return (this.CurrentX * -1) + ((this.outerCanvas.ActualWidth / 2) / this.Zoom); }
-        //}
-
-        //public double ZoomCenterY
-        //{
-        //   get { return (this.CurrentY * -1) + ((this.outerCanvas.ActualHeight / 2) / this.Zoom); }
-        //}
-
         public List<dynNode> Elements
         {
             get { return this.CurrentSpace.Elements; }
@@ -281,9 +283,6 @@ namespace Dynamo.Controls
         {
             get { return this.CurrentSpace == this.homeSpace; }
         }
-
-        dynNode draggedElement;
-        Point dragOffset;
 
         /// <summary>
         /// Setup the "Add" menu with all available dynElement types.
@@ -1144,7 +1143,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine("Starting mouse up.");
+            //Debug.WriteLine("Starting mouse up.");
 
             //Stop panning if we have released the middle mouse button.
             if (e.ChangedButton == MouseButton.Middle)
@@ -1248,7 +1247,7 @@ namespace Dynamo.Controls
                             element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
                             if (element != null && element.IsVisible)
                             {
-                                Debug.WriteLine("Element clicked");
+                                //Debug.WriteLine("Element clicked");
                                 ClearSelection();
                                 SelectElement(element);
 
@@ -2005,91 +2004,91 @@ namespace Dynamo.Controls
 
         void OnPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            Debug.WriteLine("Starting preview mouse down.");
+            //Debug.WriteLine("Starting preview mouse down.");
 
-            hitResultsList.Clear();
-            TestClick(e.GetPosition(workBench));
+            //hitResultsList.Clear();
+            //TestClick(e.GetPosition(workBench));
 
-            dynPort p = null;
+            //dynPort p = null;
 
-            //figure out which element is hit
-            //HACK: put the tests with break in highest to
-            //lowest z order 
-            if (hitResultsList.Count > 0)
-            {
-                foreach (DependencyObject depObj in hitResultsList)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get a port
-                    p = ElementClicked(depObj, typeof(dynPort)) as dynPort;
-                    if (p != null && p.Owner.IsVisible)
-                    {
-                        break;
-                    }
-                }
-            }
+            ////figure out which element is hit
+            ////HACK: put the tests with break in highest to
+            ////lowest z order 
+            //if (hitResultsList.Count > 0)
+            //{
+            //    foreach (DependencyObject depObj in hitResultsList)
+            //    {
+            //        //traverse the tree through all the
+            //        //hit elements to see if you get a port
+            //        p = ElementClicked(depObj, typeof(dynPort)) as dynPort;
+            //        if (p != null && p.Owner.IsVisible)
+            //        {
+            //            break;
+            //        }
+            //    }
+            //}
 
             #region test for a port
-            if (p != null)
-            {
-                Debug.WriteLine("Port clicked");
+            //if (p != null)
+            //{
+            //    //Debug.WriteLine("Port clicked");
 
-                if (!isConnecting)
-                {
-                    //test if port already has a connection if so grab it
-                    //and begin connecting to somewhere else
-                    //don't allow the grabbing of the start connector
-                    if (p.Connectors.Count > 0 && p.Connectors[0].Start != p)
-                    {
-                        activeConnector = p.Connectors[0];
-                        activeConnector.Disconnect(p);
-                        isConnecting = true;
-                        workBench.isConnecting = true;
-                        this.CurrentSpace.Connectors.Remove(activeConnector);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            //you've begun creating a connector
-                            dynConnector c = new dynConnector(p, workBench, e.GetPosition(workBench));
-                            activeConnector = c;
-                            isConnecting = true;
-                            workBench.isConnecting = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex.Message);
-                        }
-                    }
-                }
-                else
-                {
-                    //attempt a connection between the port
-                    //and the connector
-                    if (!activeConnector.Connect(p))
-                    {
-                        activeConnector.Kill();
-                        isConnecting = false;
-                        workBench.isConnecting = false;
-                        activeConnector = null;
-                    }
-                    else
-                    {
-                        //you've already started connecting
-                        //now you're going to stop
-                        this.CurrentSpace.Connectors.Add(activeConnector);
-                        isConnecting = false;
-                        workBench.isConnecting = false;
-                        activeConnector = null;
-                    }
-                }
+            //    if (!isConnecting)
+            //    {
+            //        //test if port already has a connection if so grab it
+            //        //and begin connecting to somewhere else
+            //        //don't allow the grabbing of the start connector
+            //        if (p.Connectors.Count > 0 && p.Connectors[0].Start != p)
+            //        {
+            //            activeConnector = p.Connectors[0];
+            //            activeConnector.Disconnect(p);
+            //            isConnecting = true;
+            //            workBench.isConnecting = true;
+            //            this.CurrentSpace.Connectors.Remove(activeConnector);
+            //        }
+            //        else
+            //        {
+            //            try
+            //            {
+            //                //you've begun creating a connector
+            //                dynConnector c = new dynConnector(p, workBench, e.GetPosition(workBench));
+            //                activeConnector = c;
+            //                isConnecting = true;
+            //                workBench.isConnecting = true;
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                Debug.WriteLine(ex.Message);
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        //attempt a connection between the port
+            //        //and the connector
+            //        if (!activeConnector.Connect(p))
+            //        {
+            //            activeConnector.Kill();
+            //            isConnecting = false;
+            //            workBench.isConnecting = false;
+            //            activeConnector = null;
+            //        }
+            //        else
+            //        {
+            //            //you've already started connecting
+            //            //now you're going to stop
+            //            this.CurrentSpace.Connectors.Add(activeConnector);
+            //            isConnecting = false;
+            //            workBench.isConnecting = false;
+            //            activeConnector = null;
+            //        }
+            //    }
 
-                //set the handled flag so that the element doesn't get dragged
-                e.Handled = true;
-            }
-            else
-            {
+            //    //set the handled flag so that the element doesn't get dragged
+            //    e.Handled = true;
+            //}
+            //else
+            //{
                 //if you click on the canvas and you're connecting
                 //then drop the connector, otherwise do nothing
                 if (activeConnector != null)
@@ -2106,7 +2105,7 @@ namespace Dynamo.Controls
                 }
 
                 //this.Focus();
-            }
+            //}
             #endregion
 
         }

@@ -1,7 +1,9 @@
 ﻿<UserControl x:Class="Dynamo.Connectors.dynPort"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Height="20" Width="20">
+    Height="20" 
+    Width="20"
+    MouseLeftButtonDown="UserControl_MouseLeftButtonDown">
     <Grid>
         <Grid.ToolTip>
             <ToolTip Name="toolTip1">

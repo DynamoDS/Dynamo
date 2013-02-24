@@ -212,15 +212,14 @@ namespace Dynamo.Applications
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show(ex.ToString());
-                return Result.Failed;
-            }
-            finally
-            {
                 if (tw != null)
                 {
+                    tw.WriteLine(ex.Message);
+                    tw.WriteLine(ex.StackTrace);
                     tw.WriteLine("Dynamo log ended " + System.DateTime.Now.ToString());
                     tw.Close();
                 }
+                return Result.Failed;
             }
 
             return Autodesk.Revit.UI.Result.Succeeded;
