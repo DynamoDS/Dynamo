@@ -211,13 +211,16 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
-                if(tw != null)
+                System.Windows.Forms.MessageBox.Show(ex.ToString());
+                return Result.Failed;
+            }
+            finally
+            {
+                if (tw != null)
                 {
                     tw.WriteLine("Dynamo log ended " + System.DateTime.Now.ToString());
                     tw.Close();
                 }
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
-                return Result.Failed;
             }
 
             return Autodesk.Revit.UI.Result.Succeeded;
