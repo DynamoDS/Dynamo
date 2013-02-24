@@ -13,7 +13,6 @@ using Value = Dynamo.FScheme.Value;
 using Microsoft.Kinect;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Coding4Fun.Kinect.Wpf;
 using System.Windows.Media;
 using System.Windows.Controls;
 
