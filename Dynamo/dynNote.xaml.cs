@@ -44,9 +44,13 @@ namespace Dynamo.Elements
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
+            //if (!dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
+            //{
+            //    dynElementSettings.SharedInstance.Bench.SelectedElements.Add(this);
+            //}
+            if (!dynElementSettings.SharedInstance.Bench.workBench.Selection.Contains(this))
             {
-                dynElementSettings.SharedInstance.Bench.SelectedElements.Add(this);
+                dynElementSettings.SharedInstance.Bench.workBench.Selection.Add(this);
             }
         }
 

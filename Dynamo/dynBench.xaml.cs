@@ -56,7 +56,7 @@ namespace Dynamo.Controls
         double oldY = 0.0;
         double oldX = 0.0;
 
-        private dynSelection selectedElements;
+        //private dynSelection selectedElements;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
         private bool isPanning = false;
         private StringWriter sw;
@@ -130,7 +130,7 @@ namespace Dynamo.Controls
 
             this.Environment = new ExecutionEnvironment();
 
-            selectedElements = new dynSelection();
+            //selectedElements = new dynSelection();
 
             this.CurrentX = CANVAS_OFFSET_X;
             this.CurrentY = CANVAS_OFFSET_Y;
@@ -273,11 +273,11 @@ namespace Dynamo.Controls
             get { return this.CurrentSpace.Elements; }
         }
 
-        public dynSelection SelectedElements
-        {
-            get { return selectedElements; }
-            set { selectedElements = value; }
-        }
+        //public dynSelection SelectedElements
+        //{
+        //    get { return selectedElements; }
+        //    set { selectedElements = value; }
+        //}
 
         public bool ViewingHomespace
         {
@@ -721,16 +721,18 @@ namespace Dynamo.Controls
         /// <param name="sel">The element to select.</param>
         public void SelectElement(System.Windows.Controls.UserControl sel)
         {
-            if (!selectedElements.Contains(sel))
+            //if (!selectedElements.Contains(sel))
+            if(!workBench.Selection.Contains(sel))
             {
-                selectedElements.Add(sel);
+                //selectedElements.Add(sel);
+                workBench.Selection.Add(sel);
 
                 if (sel is dynNode)
                     (sel as dynNode).Select();
             }
-            if (!workBench.elementsBeingDragged.Contains(sel))
+            if (!workBench.Selection.Contains(sel))
             {
-                workBench.elementsBeingDragged.Add(sel);
+                workBench.Selection.Add(sel);
             }
         }
 
@@ -740,14 +742,15 @@ namespace Dynamo.Controls
         public void ClearSelection()
         {
             //set all other items to the unselected state
-            foreach (System.Windows.Controls.UserControl el in selectedElements.ToList())
+            //foreach (System.Windows.Controls.UserControl el in selectedElements.ToList())
+            foreach (System.Windows.Controls.UserControl el in workBench.Selection)
             {
                 if (el is dynNode)
                     (el as dynNode).Deselect();
             }
 
-            selectedElements.Clear();
-            workBench.ClearDragElements();
+            //selectedElements.Clear();
+            workBench.ClearSelection();
         }
 
         /// <summary>
@@ -1187,10 +1190,10 @@ namespace Dynamo.Controls
                         bool contains = rect.Contains(x, y);
                         if (contains)
                         {
-                            if (!selectedElements.Contains(n))
-                                selectedElements.Add(n);
-                            if (!workBench.elementsBeingDragged.Contains(n))
-                                workBench.elementsBeingDragged.Add(n);
+                            //if (!selectedElements.Contains(n))
+                            //    selectedElements.Add(n);
+                            if (!workBench.Selection.Contains(n))
+                                workBench.Selection.Add(n);
 
                             if (n is dynNode)
                                 (n as dynNode).Select();
@@ -1201,7 +1204,7 @@ namespace Dynamo.Controls
 
                     //store all the connectors involved in this
                     //selection for updating
-                    foreach (UIElement selEl in workBench.ElementsBeingDragged)
+                    foreach (UIElement selEl in workBench.Selection)
                     {
                         dynNode el = selEl as dynNode;
                         if (el != null)
@@ -2002,7 +2005,7 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
-        void OnPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //Debug.WriteLine("Starting preview mouse down.");
 
@@ -2185,9 +2188,13 @@ namespace Dynamo.Controls
                 Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Delete))
             {
 
-                for (int i = selectedElements.Count - 1; i >= 0; i--)
+                //for (int i = selectedElements.Count - 1; i >= 0; i--)
+                //{
+                //    DeleteElement(selectedElements[i]);
+                //}
+                for (int i = workBench.Selection.Count - 1; i >= 0; i--)
                 {
-                    DeleteElement(selectedElements[i]);
+                    DeleteElement(workBench.Selection[i]);
                 }
 
                 e.Handled = true;
@@ -2258,7 +2265,8 @@ namespace Dynamo.Controls
             }
         }
 
-        internal void DeleteElement(System.Windows.Controls.UserControl el)
+        //internal void DeleteElement(System.Windows.Controls.UserControl el)
+        internal void DeleteElement(System.Windows.UIElement el)
         {
             dynNote note = el as dynNote;
             dynNode node = el as dynNode;
@@ -2284,7 +2292,8 @@ namespace Dynamo.Controls
             }
 
             //remove the item from the selection set
-            selectedElements.Remove(el);
+            //selectedElements.Remove(el);
+            workBench.Selection.Remove(el);
             dynElementSettings.SharedInstance.Workbench.Children.Remove(el);
             el = null;
         }
@@ -3783,8 +3792,6 @@ namespace Dynamo.Controls
 
             UnlockUI();
         }
-
-
 
     }
 

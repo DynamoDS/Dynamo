@@ -21,8 +21,8 @@ namespace Dynamo.Controls
       #region Data
 
       // Stores a reference to the UIElement currently being dragged by the user.
-      public List<UIElement> elementsBeingDragged = new List<UIElement>();
-      public List<OffsetData> offsets = new List<OffsetData>();
+      private List<UIElement> selection = new List<UIElement>();
+      private List<OffsetData> offsets = new List<OffsetData>();
 
       // Keeps track of where the mouse cursor was when a drag operation began.		
       private Point origCursorLocation;
@@ -208,12 +208,12 @@ namespace Dynamo.Controls
       //   }
       //}
 
-      public List<UIElement> ElementsBeingDragged
+      public List<UIElement> Selection
       {
-          get { return elementsBeingDragged; }
+          get { return selection; }
           set
           {
-              elementsBeingDragged = value;
+              selection = value;
           }
       }
       #endregion // ElementBeingDragged
@@ -275,10 +275,10 @@ namespace Dynamo.Controls
             // Cache the mouse cursor location.
             this.origCursorLocation = e.GetPosition(this);
 
-            if (this.elementsBeingDragged.Count == 0)
+            if (this.selection.Count == 0)
                 return;
 
-            foreach (UIElement el in elementsBeingDragged)
+            foreach (UIElement el in selection)
             {
 
                 // Get the element's offsets from the four sides of the Canvas.
@@ -313,7 +313,7 @@ namespace Dynamo.Controls
       {
          base.OnPreviewMouseMove(e);
 
-         if (this.elementsBeingDragged.Count == 0 || !this.isDragInProgress)
+         if (this.selection.Count == 0 || !this.isDragInProgress)
              return;
 
          // Get the position of the mouse cursor, relative to the Canvas.
@@ -322,7 +322,7 @@ namespace Dynamo.Controls
          #region Calculate Offsets
 
          int count = 0;
-         foreach (UIElement el in this.elementsBeingDragged)
+         foreach (UIElement el in this.selection)
          {
              OffsetData od = offsets[count];
  
@@ -349,7 +349,7 @@ namespace Dynamo.Controls
             #region Verify Drag Element Location
 
              count = 0;
-             foreach (UIElement el in this.elementsBeingDragged)
+             foreach (UIElement el in this.selection)
              {
                  OffsetData od = offsets[count];
 
@@ -386,7 +386,7 @@ namespace Dynamo.Controls
          this.Dispatcher.Invoke(new Action(
                delegate
                {
-                 foreach (UIElement el in this.elementsBeingDragged)
+                   foreach (UIElement el in this.selection)
                  {
                      OffsetData od = offsets[count];
  
@@ -423,9 +423,9 @@ namespace Dynamo.Controls
          this.isDragInProgress = false;
       }
 
-      public void ClearDragElements()
+      public void ClearSelection()
       {
-          this.elementsBeingDragged.Clear();
+          this.selection.Clear();
           this.offsets.Clear();
       }
       #endregion // OnHostPreviewMouseUp

@@ -5,7 +5,7 @@
         x:Name="_this"
         Height="768" Width="1024"
         MouseMove="OnMouseMove" 
-        PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
+        MouseLeftButtonDown="OnMouseLeftButtonDown"
         MouseWheel="OnMouseWheel"
         MouseDown="OnMouseDown"
         MouseUp="OnMouseUp"
