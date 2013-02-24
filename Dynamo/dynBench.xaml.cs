@@ -69,12 +69,12 @@ namespace Dynamo.Controls
         dynNode draggedElement;
         Point dragOffset;
 
-        private bool isConnecting = false;
-        public bool IsConnecting
-        {
-            get { return isConnecting; }
-            set { isConnecting = value; }
-        }
+        //private bool isConnecting = false;
+        //public bool IsConnecting
+        //{
+        //    get { return isConnecting; }
+        //    set { isConnecting = value; }
+        //}
 
         private dynConnector activeConnector;
         public dynConnector ActiveConnector
@@ -917,7 +917,7 @@ namespace Dynamo.Controls
 
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
-            if (isConnecting && activeConnector != null)
+            if (workBench.IsConnecting && activeConnector != null)
             {
                 activeConnector.Redraw(e.GetPosition(workBench));
             }
@@ -1095,48 +1095,49 @@ namespace Dynamo.Controls
                 workBench.Children.Remove(dynToolFinder.Instance);
             }
 
-            if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left && !workBench.IsConnecting)
             {
+                #region window selection
+
                 connectorsToUpdate.Clear();
 
-                if (!isConnecting)
-                {
-                    //test if you're hitting a node
-                    //if so, don't start window selecting
-                    hitResultsList.Clear();
-                    TestClick(e.GetPosition(workBench));
-                    dynNode element = null;
-                    if (hitResultsList.Count > 0)
-                    {
-                        foreach (DependencyObject depObj in hitResultsList)
-                        {
-                            element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
-                            if (element != null && element.IsVisible)
-                            {
-                                //clear the selection but don't
-                                //reselect until mouse up.
-                                //ClearSelection();
-                                return;
-                            }
-                        }
-                    }
+                ////test if you're hitting a node
+                ////if so, don't start window selecting
+                //hitResultsList.Clear();
+                //TestClick(e.GetPosition(workBench));
+                //dynNode element = null;
+                //if (hitResultsList.Count > 0)
+                //{
+                //    foreach (DependencyObject depObj in hitResultsList)
+                //    {
+                //        element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
+                //        if (element != null && element.IsVisible)
+                //        {
+                //            //clear the selection but don't
+                //            //reselect until mouse up.
+                //            //ClearSelection();
+                //            return;
+                //        }
+                //    }
+                //}
 
-                    // Capture and track the mouse.
-                    isWindowSelecting = true;
-                    mouseDownPos = e.GetPosition(workBench);
-                    workBench.CaptureMouse();
+                //DEBUG WINDOW SELECTION
+                // Capture and track the mouse.
+                //isWindowSelecting = true;
+                //mouseDownPos = e.GetPosition(workBench);
+                ////workBench.CaptureMouse();
 
-                    // Initial placement of the drag selection box.         
-                    Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                    Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                    selectionBox.Width = 0;
-                    selectionBox.Height = 0;
+                //// Initial placement of the drag selection box.         
+                //Canvas.SetLeft(selectionBox, mouseDownPos.X);
+                //Canvas.SetTop(selectionBox, mouseDownPos.Y);
+                //selectionBox.Width = 0;
+                //selectionBox.Height = 0;
 
-                    // Make the drag selection box visible.
-                    selectionBox.Visibility = Visibility.Visible;
-                }
+                //// Make the drag selection box visible.
+                //selectionBox.Visibility = Visibility.Visible;
+
+                #endregion
             }
-
         }
 
         /// <summary>
@@ -1164,75 +1165,78 @@ namespace Dynamo.Controls
 
                 if (isWindowSelecting)
                 {
-                    // Release the mouse capture and stop tracking it.
-                    isWindowSelecting = false;
-                    workBench.ReleaseMouseCapture();
+                    #region release window selection
+                    //DEBUG WINDOW SELECTION
+                    //// Release the mouse capture and stop tracking it.
+                    //isWindowSelecting = false;
+                    ////workBench.ReleaseMouseCapture();
 
-                    // Hide the drag selection box.
-                    selectionBox.Visibility = Visibility.Collapsed;
+                    //// Hide the drag selection box.
+                    //selectionBox.Visibility = Visibility.Collapsed;
 
-                    Point mouseUpPos = e.GetPosition(workBench);
+                    //Point mouseUpPos = e.GetPosition(workBench);
 
-                    //clear the selected elements
-                    ClearSelection();
+                    ////clear the selected elements
+                    //ClearSelection();
 
-                    foreach (dynNode n in this.Elements)
-                    {
-                        //check if the node is within the boundary
-                        double x = Canvas.GetLeft(n);
-                        double y = Canvas.GetTop(n);
-                        System.Windows.Rect rect =
-                            new System.Windows.Rect(Canvas.GetLeft(selectionBox),
-                                Canvas.GetTop(selectionBox),
-                                selectionBox.Width,
-                                selectionBox.Height);
+                    //foreach (dynNode n in this.Elements)
+                    //{
+                    //    //check if the node is within the boundary
+                    //    double x = Canvas.GetLeft(n);
+                    //    double y = Canvas.GetTop(n);
+                    //    System.Windows.Rect rect =
+                    //        new System.Windows.Rect(Canvas.GetLeft(selectionBox),
+                    //            Canvas.GetTop(selectionBox),
+                    //            selectionBox.Width,
+                    //            selectionBox.Height);
 
-                        bool contains = rect.Contains(x, y);
-                        if (contains)
-                        {
-                            //if (!selectedElements.Contains(n))
-                            //    selectedElements.Add(n);
-                            if (!workBench.Selection.Contains(n))
-                                workBench.Selection.Add(n);
+                    //    bool contains = rect.Contains(x, y);
+                    //    if (contains)
+                    //    {
+                    //        //if (!selectedElements.Contains(n))
+                    //        //    selectedElements.Add(n);
+                    //        if (!workBench.Selection.Contains(n))
+                    //            workBench.Selection.Add(n);
 
-                            if (n is dynNode)
-                                (n as dynNode).Select();
-                        }
-                    }
+                    //        if (n is dynNode)
+                    //            (n as dynNode).Select();
+                    //    }
+                    //}
 
-                    connectorsToUpdate.Clear();
+                    //connectorsToUpdate.Clear();
 
-                    //store all the connectors involved in this
-                    //selection for updating
-                    foreach (UIElement selEl in workBench.Selection)
-                    {
-                        dynNode el = selEl as dynNode;
-                        if (el != null)
-                        {
-                            foreach (dynPort p in el.InPorts)
-                            {
-                                foreach (dynConnector c in p.Connectors)
-                                {
-                                    if (!connectorsToUpdate.Contains(c))
-                                    {
-                                        connectorsToUpdate.Add(c);
-                                    }
-                                }
-                            }
-                            foreach (dynConnector c in el.OutPort.Connectors)
-                            {
-                                if (!connectorsToUpdate.Contains(c))
-                                {
-                                    connectorsToUpdate.Add(c);
-                                }
-                            }
-                        }
-                    }
+                    ////store all the connectors involved in this
+                    ////selection for updating
+                    //foreach (UIElement selEl in workBench.Selection)
+                    //{
+                    //    dynNode el = selEl as dynNode;
+                    //    if (el != null)
+                    //    {
+                    //        foreach (dynPort p in el.InPorts)
+                    //        {
+                    //            foreach (dynConnector c in p.Connectors)
+                    //            {
+                    //                if (!connectorsToUpdate.Contains(c))
+                    //                {
+                    //                    connectorsToUpdate.Add(c);
+                    //                }
+                    //            }
+                    //        }
+                    //        foreach (dynConnector c in el.OutPort.Connectors)
+                    //        {
+                    //            if (!connectorsToUpdate.Contains(c))
+                    //            {
+                    //                connectorsToUpdate.Add(c);
+                    //            }
+                    //        }
+                    //    }
+                    //}
 
-                    return;
+                    #endregion
                 }
                 else
                 {
+                    #region release selection
                     //if you're dragging a bunch of stuff, when you let go
                     //the stuff should stay highlighted
                     //if (this.SelectedElements.Count > 1)
@@ -1271,6 +1275,8 @@ namespace Dynamo.Controls
                             }
                         }
                     }
+
+                    #endregion
                 }
             }
         }
@@ -2097,8 +2103,7 @@ namespace Dynamo.Controls
                 if (activeConnector != null)
                 {
                     activeConnector.Kill();
-                    isConnecting = false;
-                    workBench.isConnecting = false;
+                    workBench.IsConnecting = false;
                     activeConnector = null;
                 }
 

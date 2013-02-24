@@ -16,7 +16,7 @@
                  HorizontalAlignment="Center" 
                  VerticalAlignment="Center" 
                  Fill="Gainsboro"
-                 IsHitTestVisible="False" 
+                 IsHitTestVisible="True" 
                  Stroke="Black"
                  StrokeThickness="2">
             <Ellipse.Clip>

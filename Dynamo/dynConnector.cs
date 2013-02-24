@@ -172,6 +172,8 @@ namespace Dynamo.Connectors
             Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
             dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
             endDot.Opacity = STROKE_OPACITY;
+            endDot.IsHitTestVisible = false;
+            endDot.MouseDown += new System.Windows.Input.MouseButtonEventHandler(endDot_MouseDown);
 
             connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
             connector.MouseLeave += delegate { Unhighlight(); };
@@ -292,6 +294,9 @@ namespace Dynamo.Connectors
          endDot.Fill = Brushes.Black;
          endDot.StrokeThickness = 2;
          endDot.Stroke = Brushes.Black;
+         endDot.IsHitTestVisible = false;
+         endDot.MouseDown += new System.Windows.Input.MouseButtonEventHandler(endDot_MouseDown);
+
          Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE/2);
          Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE/2);
          dynElementSettings.SharedInstance.Workbench.Children.Add(endDot);
@@ -318,6 +323,11 @@ namespace Dynamo.Connectors
          this.ConnectorType = dynElementSettings.SharedInstance.Bench.ConnectorType;
          dynElementSettings.SharedInstance.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
          dynElementSettings.SharedInstance.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
+      }
+
+      void endDot_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+      {
+          throw new NotImplementedException();
       }
 
       public dynConnector(dynNode start, dynNode end, int startIndex, int endIndex, int portType)
@@ -641,6 +651,8 @@ namespace Dynamo.Connectors
 
          return null;
       }
+        
+      
    }
 
    public class InvalidPortException : ApplicationException

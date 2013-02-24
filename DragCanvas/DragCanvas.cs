@@ -31,7 +31,12 @@ namespace Dynamo.Controls
       public bool isDragInProgress;
 
       //true if user is making a connection between elements
-      public bool isConnecting;
+      private bool isConnecting = false;
+      public bool IsConnecting
+      {
+          get { return isConnecting; }
+          set { isConnecting = value; }
+      }
 
       //true if we're ignoring clicks
       public bool ignoreClick;
@@ -431,6 +436,7 @@ namespace Dynamo.Controls
       #endregion // OnHostPreviewMouseUp
 
       #endregion // Host Event Handlers
+        
 
       #region Private Helpers
 

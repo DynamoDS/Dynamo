@@ -201,7 +201,7 @@ namespace Dynamo.Connectors
 
            dynBench bench = dynElementSettings.SharedInstance.Bench;
 
-           if (!bench.IsConnecting)
+           if (!bench.workBench.IsConnecting)
            {
                //test if port already has a connection if so grab it
                //and begin connecting to somewhere else
@@ -210,8 +210,7 @@ namespace Dynamo.Connectors
                {
                    bench.ActiveConnector = this.Connectors[0];
                    bench.ActiveConnector.Disconnect(this);
-                   bench.IsConnecting = true;
-                   bench.workBench.isConnecting = true;
+                   bench.workBench.IsConnecting = true;
                    bench.CurrentSpace.Connectors.Remove(bench.ActiveConnector);
                }
                else
@@ -221,8 +220,7 @@ namespace Dynamo.Connectors
                        //you've begun creating a connector
                        dynConnector c = new dynConnector(this, bench.workBench, e.GetPosition(bench.workBench));
                        bench.ActiveConnector = c;
-                       bench.IsConnecting = true;
-                       bench.workBench.isConnecting = true;
+                       bench.workBench.IsConnecting = true;
                    }
                    catch (Exception ex)
                    {
@@ -237,8 +235,7 @@ namespace Dynamo.Connectors
                if (!bench.ActiveConnector.Connect(this))
                {
                    bench.ActiveConnector.Kill();
-                   bench.IsConnecting = false;
-                   bench.workBench.isConnecting = false;
+                   bench.workBench.IsConnecting = false;
                    bench.ActiveConnector = null;
                }
                else
@@ -246,8 +243,7 @@ namespace Dynamo.Connectors
                    //you've already started connecting
                    //now you're going to stop
                    bench.CurrentSpace.Connectors.Add(bench.ActiveConnector);
-                   bench.IsConnecting = false;
-                   bench.workBench.isConnecting = false;
+                   bench.workBench.IsConnecting = false;
                    bench.ActiveConnector = null;
                }
            }
