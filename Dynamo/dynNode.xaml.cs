@@ -1845,6 +1845,7 @@ namespace Dynamo.Elements
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Debug.WriteLine("Node left selected.");
+            
             dynElementSettings.SharedInstance.Bench.ClearSelection();
             dynElementSettings.SharedInstance.Bench.SelectElement(this);
         }

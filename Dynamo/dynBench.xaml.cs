@@ -1076,18 +1076,18 @@ namespace Dynamo.Controls
 
                 //DEBUG WINDOW SELECTION
                 // Capture and track the mouse.
-                //isWindowSelecting = true;
-                //mouseDownPos = e.GetPosition(workBench);
-                ////workBench.CaptureMouse();
+                isWindowSelecting = true;
+                mouseDownPos = e.GetPosition(workBench);
+                //workBench.CaptureMouse();
 
-                //// Initial placement of the drag selection box.         
-                //Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                //Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                //selectionBox.Width = 0;
-                //selectionBox.Height = 0;
+                // Initial placement of the drag selection box.         
+                Canvas.SetLeft(selectionBox, mouseDownPos.X);
+                Canvas.SetTop(selectionBox, mouseDownPos.Y);
+                selectionBox.Width = 0;
+                selectionBox.Height = 0;
 
-                //// Make the drag selection box visible.
-                //selectionBox.Visibility = Visibility.Visible;
+                // Make the drag selection box visible.
+                selectionBox.Visibility = Visibility.Visible;
 
                 #endregion
             }
@@ -1120,114 +1120,41 @@ namespace Dynamo.Controls
                 {
                     #region release window selection
                     //DEBUG WINDOW SELECTION
-                    //// Release the mouse capture and stop tracking it.
-                    //isWindowSelecting = false;
-                    ////workBench.ReleaseMouseCapture();
+                    // Release the mouse capture and stop tracking it.
+                    isWindowSelecting = false;
+                    //workBench.ReleaseMouseCapture();
 
-                    //// Hide the drag selection box.
-                    //selectionBox.Visibility = Visibility.Collapsed;
+                    // Hide the drag selection box.
+                    selectionBox.Visibility = Visibility.Collapsed;
 
-                    //Point mouseUpPos = e.GetPosition(workBench);
+                    Point mouseUpPos = e.GetPosition(workBench);
 
-                    ////clear the selected elements
-                    //ClearSelection();
+                    //clear the selected elements
+                    ClearSelection();
 
-                    //foreach (dynNode n in this.Elements)
-                    //{
-                    //    //check if the node is within the boundary
-                    //    double x = Canvas.GetLeft(n);
-                    //    double y = Canvas.GetTop(n);
-                    //    System.Windows.Rect rect =
-                    //        new System.Windows.Rect(Canvas.GetLeft(selectionBox),
-                    //            Canvas.GetTop(selectionBox),
-                    //            selectionBox.Width,
-                    //            selectionBox.Height);
+                    foreach (dynNode n in this.Elements)
+                    {
+                        //check if the node is within the boundary
+                        double x = Canvas.GetLeft(n);
+                        double y = Canvas.GetTop(n);
+                        System.Windows.Rect rect =
+                            new System.Windows.Rect(Canvas.GetLeft(selectionBox),
+                                Canvas.GetTop(selectionBox),
+                                selectionBox.Width,
+                                selectionBox.Height);
 
-                    //    bool contains = rect.Contains(x, y);
-                    //    if (contains)
-                    //    {
-                    //        //if (!selectedElements.Contains(n))
-                    //        //    selectedElements.Add(n);
-                    //        if (!workBench.Selection.Contains(n))
-                    //            workBench.Selection.Add(n);
+                        bool contains = rect.Contains(x, y);
+                        if (contains)
+                        {
+                            //if (!selectedElements.Contains(n))
+                            //    selectedElements.Add(n);
+                            if (!workBench.Selection.Contains(n))
+                                workBench.Selection.Add(n);
 
-                    //        if (n is dynNode)
-                    //            (n as dynNode).Select();
-                    //    }
-                    //}
-
-                    //connectorsToUpdate.Clear();
-
-                    ////store all the connectors involved in this
-                    ////selection for updating
-                    //foreach (UIElement selEl in workBench.Selection)
-                    //{
-                    //    dynNode el = selEl as dynNode;
-                    //    if (el != null)
-                    //    {
-                    //        foreach (dynPort p in el.InPorts)
-                    //        {
-                    //            foreach (dynConnector c in p.Connectors)
-                    //            {
-                    //                if (!connectorsToUpdate.Contains(c))
-                    //                {
-                    //                    connectorsToUpdate.Add(c);
-                    //                }
-                    //            }
-                    //        }
-                    //        foreach (dynConnector c in el.OutPort.Connectors)
-                    //        {
-                    //            if (!connectorsToUpdate.Contains(c))
-                    //            {
-                    //                connectorsToUpdate.Add(c);
-                    //            }
-                    //        }
-                    //    }
-                    //}
-
-                    #endregion
-                }
-                else
-                {
-                    #region release selection
-                    //if you're dragging a bunch of stuff, when you let go
-                    //the stuff should stay highlighted
-                    //if (this.SelectedElements.Count > 1)
-                    //    return;
-
-                    //otherwise, assume that we want to select what's
-                    //under the mouse
-                    //hitResultsList.Clear();
-                    //TestClick(e.GetPosition(workBench));
-                    //dynNode element = null;
-                    //if (hitResultsList.Count > 0)
-                    //{
-                    //    foreach (DependencyObject depObj in hitResultsList)
-                    //    {
-                    //        element = ElementClicked(depObj, typeof(dynNode)) as dynNode;
-                    //        if (element != null && element.IsVisible)
-                    //        {
-                    //            //Debug.WriteLine("Element clicked");
-                    //            ClearSelection();
-                    //            SelectElement(element);
-
-                    //            //we found an element, so just get out of here
-                    //            foreach (dynPort p in element.InPorts)
-                    //            {
-                    //                foreach (dynConnector c in p.Connectors)
-                    //                {
-                    //                    connectorsToUpdate.Add(c);
-                    //                }
-                    //            }
-                    //            foreach (dynConnector c in element.OutPort.Connectors)
-                    //            {
-                    //                connectorsToUpdate.Add(c);
-                    //            }
-
-                    //            return;
-                    //        }
-                    //    }
-                    //}
+                            if (n is dynNode)
+                                (n as dynNode).Select();
+                        }
+                    }
 
                     #endregion
                 }
