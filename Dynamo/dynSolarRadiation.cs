@@ -37,9 +37,15 @@ namespace Dynamo.Nodes
         public dynComputeSolarRadiationValue()
         {
             InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
-            OutPortData = new PortData("data", "The solar radiation computed data", typeof(double));
+            outPortData = new PortData("data", "The solar radiation computed data", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -74,7 +80,7 @@ namespace Dynamo.Nodes
     {
         public dynAnalysisResultsBySelection()
         {
-            OutPortData = new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element));
+            outPortData = new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element));
 
             //add a button to the inputGrid on the dynElement
             Button analysisResultButt = new Button();
@@ -89,6 +95,12 @@ namespace Dynamo.Nodes
 
             NodeUI.RegisterInputsAndOutput();
 
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public Element pickedAnalysisResult;
@@ -163,7 +175,7 @@ namespace Dynamo.Nodes
 
         public dynSunPathDirection()
         {
-            OutPortData = new PortData("XYZ", "XYZ", typeof(XYZ));
+            outPortData = new PortData("XYZ", "XYZ", typeof(XYZ));
 
             //add a button to the inputGrid on the dynElement
             sunPathButt = new System.Windows.Controls.Button();
@@ -199,6 +211,12 @@ namespace Dynamo.Nodes
 
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
 
