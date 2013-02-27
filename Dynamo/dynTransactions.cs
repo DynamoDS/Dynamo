@@ -39,6 +39,8 @@ namespace Dynamo.Nodes
     {
         public dynTransaction()
         {
+            InPortData.Add(new PortData("expr", "Expression to run in a transaction.", typeof(object)));
+
             NodeUI.RegisterInputsAndOutput();
         }
 
