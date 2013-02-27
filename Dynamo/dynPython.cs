@@ -267,7 +267,7 @@ namespace Dynamo.Nodes
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
 
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            OutPortData = new PortData("OUT", "Result of the python script", typeof(object));
+            outPortData = new PortData("OUT", "Result of the python script", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
 
@@ -275,6 +275,12 @@ namespace Dynamo.Nodes
             //topControl.Width = 300;
 
             NodeUI.UpdateLayout();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         //TODO: Make this smarter
@@ -435,9 +441,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("script", "Script to run", typeof(string)));
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            OutPortData = new PortData("OUT", "Result of the python script", typeof(object));
+            outPortData = new PortData("OUT", "Result of the python script", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private delegate void LogDelegate(string msg);
