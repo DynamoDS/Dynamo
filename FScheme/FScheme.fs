@@ -1026,15 +1026,15 @@ let RunTests (log : ErrorLog) =
     case "(quasiquote (* 2 (unquote (- 5 2))))" "(* 2 3)" // quote nested unquote
     case "(let ((a 1)) (begin (set! a 2) a))" "2" // begin and assign
     case "(let* ((a 5) (dummy (set! a 10))) a)" "10" // re-assign after let
-    case "((? (_ . x) x) 1 2 3)" "(2 3)" // varargs
+    case "((λ (_ . x) x) 1 2 3)" "(2 3)" // varargs
     case "(reverse '(1 2 3))" "(3 2 1)" // reverse
     case "(list 1 2 3)" "(1 2 3)" //list
-    case "(let ((square (? (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
-    case "(let ((square (? (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
-    case "(let ((square (? (x) (* x x)))) (map square '()))" "()" // mapping empty
+    case "(let ((square (λ (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
+    case "(let ((square (λ (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
+    case "(let ((square (λ (x) (* x x)))) (map square '()))" "()" // mapping empty
 
     //Scope
-    case "(let ((y 6)) (let ((f (? (x) (+ x y)))) (let ((y 5)) (f 4))))" "10" //lexical
+    case "(let ((y 6)) (let ((f (λ (x) (+ x y)))) (let ((y 5)) (f 4))))" "10" //lexical
     case "(begin (define (t x) (define y 5) (+ x y)) (t 6))" "11" //nested defines
 
     //Not
@@ -1095,25 +1095,25 @@ let RunTests (log : ErrorLog) =
     case "(foldl * 1 '(2 3) '(4 5))"     "120"
 
     //Map
-    case "(map (? (x) x) '(1 2 3))" "(1 2 3)"
+    case "(map (λ (x) x) '(1 2 3))" "(1 2 3)"
     case "(map append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
 
     //Filter
-    case "(filter (? (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"
+    case "(filter (λ (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"
 
     //Cartesian Product
     case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))"
         "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
 
     //Sorting
-    case "(sort-by (? (x) (foldl + 0 x)) '((2 2) (2 1) (1 1)))" "((1 1) (2 1) (2 2))"
-    case "(sort-with (? (x y) (let ((size (? (l) (foldl + 0 l)))) (- (size x) (size y)))) '((2 2) (2 1) (1 1)))" "((1 1) (2 1) (2 2))"
+    case "(sort-by (λ (x) (foldl + 0 x)) '((2 2) (2 1) (1 1)))" "((1 1) (2 1) (2 2))"
+    case "(sort-with (λ (x y) (let ((size (λ (l) (foldl + 0 l)))) (- (size x) (size y)))) '((2 2) (2 1) (1 1)))" "((1 1) (2 1) (2 2))"
 
     //Y Combinator
-    case "((Y (? (f) (? (n) (if (<= n 1) 1 (* n (f (sub1 n))))))) 5)" "120"
+    case "((Y (λ (f) (λ (n) (if (<= n 1) 1 (* n (f (sub1 n))))))) 5)" "120"
 
     //For-Each
-    case "(let ((x empty)) (for-each (? (y) (set! x (cons y x))) '(1 2 3 4 5)) x)" "(5 4 3 2 1)"
+    case "(let ((x empty)) (for-each (λ (y) (set! x (cons y x))) '(1 2 3 4 5)) x)" "(5 4 3 2 1)"
 
     //Flatten
     case "(flatten '((1 2) (3 4) (5 6)))" "(1 2 3 4 5 6)"
