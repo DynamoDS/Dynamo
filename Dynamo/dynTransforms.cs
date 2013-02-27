@@ -17,9 +17,15 @@ namespace Dynamo.Nodes
     {
         public dynTransformIdentity()
         {
-            OutPortData = new PortData("t", "Transform", typeof(object));
+            outPortData = new PortData("t", "Transform", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -40,9 +46,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("o", "Origin(XYZ)", typeof(object)));
             InPortData.Add(new PortData("u", "Up(XYZ)", typeof(object)));
             InPortData.Add(new PortData("forward", "Up(XYZ)", typeof(object)));
-            OutPortData = new PortData("t", "Transform", typeof(object));
+            outPortData = new PortData("t", "Transform", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -72,9 +84,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("t", "TransformToScale(Transform)", typeof(object)));
             InPortData.Add(new PortData("d", "Scale(Number)", typeof(object)));
-            OutPortData = new PortData("ts", "Transform scaled.(Transform)", typeof(object));
+            outPortData = new PortData("ts", "Transform scaled.(Transform)", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -98,9 +116,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("or", "Origin(XYZ)", typeof(object)));
             InPortData.Add(new PortData("ax", "Axis(XYZ)", typeof(object)));
             InPortData.Add(new PortData("dn", "Angle(Number)", typeof(object)));
-            OutPortData = new PortData("t", "Transform", typeof(object));
+            outPortData = new PortData("t", "Transform", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -123,9 +147,15 @@ namespace Dynamo.Nodes
         public dynTransformTranslation()
         {
             InPortData.Add(new PortData("v", "Vector(XYZ)", typeof(object)));
-            OutPortData = new PortData("t", "Transform", typeof(object));
+            outPortData = new PortData("t", "Transform", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -146,9 +176,15 @@ namespace Dynamo.Nodes
         public dynTransformReflection()
         {
             InPortData.Add(new PortData("pl", "Plane(Plane)", typeof(object)));
-            OutPortData = new PortData("t", "Transform", typeof(object));
+            outPortData = new PortData("t", "Transform", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -170,9 +206,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("t", "Transform(Plane)", typeof(object)));
             InPortData.Add(new PortData("p1", "The point(XYZ)", typeof(object)));
-            OutPortData = new PortData("p2", "The transformed point.(XYZ)", typeof(object));
+            outPortData = new PortData("p2", "The transformed point.(XYZ)", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -217,9 +259,14 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(object)));
             InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(object)));
-            OutPortData = new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(object));
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
