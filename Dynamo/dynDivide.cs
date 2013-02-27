@@ -38,9 +38,15 @@ namespace Dynamo.Nodes
             //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
             //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
 
-            OutPortData = new PortData("dc ", "the divided path element", typeof(DividedPath));
+            outPortData = new PortData("dc ", "the divided path element", typeof(DividedPath));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -239,9 +245,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("U", "Spacing on face in U direction.", typeof(double)));
             InPortData.Add(new PortData("V", "Spacing on face in U direction", typeof(double)));
 
-            OutPortData = new PortData("ds ", "the divided surface element", typeof(DividedPath));
+            outPortData = new PortData("ds ", "the divided surface element", typeof(DividedPath));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
