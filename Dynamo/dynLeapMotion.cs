@@ -38,6 +38,53 @@ using Autodesk.Revit.DB;
 
 namespace Dynamo.Elements
 {
+    static class LeapManager
+    {
+        private static Leap.Controller controller;
+        public static Leap.Controller Controller
+        {
+            get
+            {
+                if (!LeapControllerEnabled)
+                    EnableController();
+                return controller;
+            }
+            set
+            {
+                controller = value;
+            }
+        }
+
+        public static void EnableController()
+        {
+            leapEnable(true);
+        }
+
+        public static bool LeapControllerEnabled { get { return controller != null; } }
+
+        private static object controllerLock = new object();
+
+        private static void leapEnable(bool enable)
+        {
+            lock (controllerLock)
+            {
+                if (enable == LeapControllerEnabled)
+                    return;
+
+                if (enable)
+                {
+                    Controller = new Leap.Controller();
+                }
+                else
+                {
+                    Controller.Dispose();
+                    Controller = null;
+                }
+            }
+        }
+    }
+
+
     [ElementName("Leap")]
     [ElementCategory(BuiltinElementCategories.COMMUNICATION)]
     [ElementDescription("Manages connection to a Leap Motion controller.")]
@@ -45,9 +92,6 @@ namespace Dynamo.Elements
     public class dynLeapController : dynNode
     {
         System.Windows.Controls.MenuItem menuItemLeapEnabled = null;
-
-        static object controllerLock = new object();
-        static Leap.Controller leapController = null;
 
         public dynLeapController()
         {
@@ -61,70 +105,44 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
 
-            this.dynElementDestroyed += new dynElementDestroyedHandler(OnDynLeapMotionDestroyed);
-            this.dynElementReadyToDestroy += new dynElementReadyToDestroyHandler(OnDynLeapMotionReadyToDestroy);
+            //this.dynElementDestroyed += new dynElementDestroyedHandler(OnDynLeapMotionDestroyed);
+            //this.dynElementReadyToDestroy += new dynElementReadyToDestroyHandler(OnDynLeapMotionReadyToDestroy);
 
             // Create a menuitem to enable/disable the Leap device
             menuItemLeapEnabled = new System.Windows.Controls.MenuItem();
             menuItemLeapEnabled.Header = "Enable Leap";
             menuItemLeapEnabled.IsCheckable = true;
-            menuItemLeapEnabled.IsChecked = (leapController != null);
+            menuItemLeapEnabled.IsChecked = false;
             menuItemLeapEnabled.Checked += new System.Windows.RoutedEventHandler(menuItemLeapEnabled_Checked);
             this.MainContextMenu.Items.Add(menuItemLeapEnabled);
-
-            LeapEnable(true);
         }
 
         void menuItemLeapEnabled_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             menuItemLeapEnabled.IsChecked = !menuItemLeapEnabled.IsChecked; // toggle state
 
-            if ( menuItemLeapEnabled.IsChecked )
+            if (menuItemLeapEnabled.IsChecked)
                 menuItemLeapEnabled.Header = "Disable Leap";
             else
                 menuItemLeapEnabled.Header = "Enable Leap";
-            
-            LeapEnable(menuItemLeapEnabled.IsChecked);
-        }
 
-        void OnDynLeapMotionDestroyed(object sender, EventArgs e)
-        {
-        }
-
-        void OnDynLeapMotionReadyToDestroy(object sender, EventArgs e)
-        {
-            // Disconnect Leap controller
-            LeapEnable(false);
+            if (menuItemLeapEnabled.IsChecked)
+            {
+                try
+                {
+                    LeapManager.EnableController();
+                }
+                catch
+                {
+                    this.Error("Could not enable Leap Controller");
+                    menuItemLeapEnabled.IsChecked = false;
+                }
+            }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewContainer(leapController);
-        }
-
-        public static Leap.Controller Controller
-        {
-            get { return leapController; }
-        }
-
-        private static void LeapEnable(bool bEnable)
-        {
-            lock (controllerLock)
-            {
-                bool bEnabled = (leapController != null);
-                if (bEnable == bEnabled)
-                    return;
-
-                if (bEnable)
-                {
-                    leapController = new Leap.Controller();
-                }
-                else
-                {
-                    leapController.Dispose();
-                    leapController = null;
-                }
-            }
+            return Value.NewContainer(LeapManager.Controller);
         }
     }
 
@@ -149,7 +167,7 @@ namespace Dynamo.Elements
             Leap.Controller controller = (Leap.Controller)((Value.Container)args[0]).Item;
             if (controller == null)
                 throw new Exception("No Leap Controller attached.");
-            
+
             int age = (int)((Value.Number)args[1]).Item;
             if (age < 0)
                 throw new Exception("Leap Frame Age must be >= 0");
@@ -227,7 +245,7 @@ namespace Dynamo.Elements
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = LeapManager.Controller;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
@@ -268,7 +286,7 @@ namespace Dynamo.Elements
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = LeapManager.Controller;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
@@ -314,7 +332,7 @@ namespace Dynamo.Elements
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = LeapManager.Controller;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
@@ -513,7 +531,7 @@ namespace Dynamo.Elements
                 FingerIndex = ((int)((Value.Number)args[1]).Item) - 1;
             else
                 FingerIndex = -1;
-            
+
             return base.Evaluate(args);
         }
     }
