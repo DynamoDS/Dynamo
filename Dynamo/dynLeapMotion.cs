@@ -98,7 +98,7 @@ namespace Dynamo.Elements
             // This input will drive the acquire of a frame of data from the Leap.
             // Attaching a timer node to it will then generate a flow of data from
             // the Leap into the system.
-            InPortData.Add(new PortData("Read", "Read a frame of data from the Leap", typeof(object)));
+            //InPortData.Add(new PortData("Read", "Read a frame of data from the Leap", typeof(object)));
 
             // Output from this node is the data from a single frame
             OutPortData = new PortData("Leap", "The Leap controller", typeof(object));
