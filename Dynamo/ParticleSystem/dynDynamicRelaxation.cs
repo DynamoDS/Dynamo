@@ -53,12 +53,18 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("numY", "Number of Particles in Y.", typeof(int)));
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(double)));
 
-            OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
+            outPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
             
             NodeUI.RegisterInputsAndOutput();
 
             particleSystem = new ParticleSystem();
 
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         void setupLineTest(int maxPartX, int maxPartY, double springDampening, double springRestLength, double springConstant, double mass)
@@ -297,10 +303,16 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("numV", "Number of Particles in V.", typeof(int)));
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(double)));
 
-            OutPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
+            outPortData = new PortData("ps", "Particle System", typeof(ParticleSystem));
             NodeUI.RegisterInputsAndOutput();
 
             particleSystem = new ParticleSystem();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         void setupParticleSystem(Face f, int uDiv, int vDiv, double springDampening, double springRestLength, double springConstant, double mass)
@@ -377,9 +389,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(ParticleSystem)));
             InPortData.Add(new PortData("step", "Time to step.", typeof(double)));
             InPortData.Add(new PortData("exec", "Execution interval.", typeof(object)));
-            OutPortData = new PortData("geom", "Relaxation data.", typeof(object));
+            outPortData = new PortData("geom", "Relaxation data.", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -402,9 +420,15 @@ namespace Dynamo.Nodes
         public dynXYZsFromPS()
         {
             InPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            OutPortData = new PortData("XYZs", "XYZs.", typeof(object));
+            outPortData = new PortData("XYZs", "XYZs.", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -437,9 +461,15 @@ namespace Dynamo.Nodes
         public dynCurvesFromPS()
         {
             InPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            OutPortData = new PortData("curves", "geometry curves.", typeof(object));
+            outPortData = new PortData("curves", "geometry curves.", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
