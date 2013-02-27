@@ -1030,12 +1030,6 @@ namespace Dynamo.Nodes
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData = new PortData("uv", "UV", typeof(UV));
-        public override PortData outPortData
-        {
-            get { return outPortData; }
-        }
-
         private PortData outPortData;
         public override PortData OutPortData
         {
@@ -1065,12 +1059,6 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
 
             NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("C", "Curve", typeof(CurveElement));
-        public override PortData outPortData
-        {
-            get { return outPortData; }
         }
 
         private PortData outPortData;
