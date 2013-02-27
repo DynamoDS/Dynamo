@@ -202,9 +202,9 @@ namespace Dynamo.Nodes
         TextBox tb;
         System.Windows.Controls.Button selectButton;
 
-        protected dynMultipleElementSelection(PortData outPortData)
+        protected dynMultipleElementSelection(PortData outData)
         {
-            this.OutPortData = outPortData;
+            outPortData = outData;
 
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
@@ -238,6 +238,12 @@ namespace Dynamo.Nodes
 
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
