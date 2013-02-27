@@ -64,9 +64,15 @@ namespace Dynamo.Nodes
         public dynXYZFromReferencePoint()
         {
             InPortData.Add(new PortData("pt", "Reference Point", typeof(object)));
-            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+            outPortData = new PortData("xyz", "XYZ", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -86,9 +92,15 @@ namespace Dynamo.Nodes
         public dynXYZGetX()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData = new PortData("X", "X value of given XYZ", typeof(double));
+            outPortData = new PortData("X", "X value of given XYZ", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -105,9 +117,15 @@ namespace Dynamo.Nodes
         public dynXYZGetY()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData = new PortData("Y", "Y value of given XYZ", typeof(double));
+            outPortData = new PortData("Y", "Y value of given XYZ", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -124,9 +142,15 @@ namespace Dynamo.Nodes
         public dynXYZGetZ()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(XYZ)));
-            OutPortData = new PortData("Z", "Z value of given XYZ", typeof(double));
+            outPortData = new PortData("Z", "Z value of given XYZ", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -142,9 +166,15 @@ namespace Dynamo.Nodes
     {
         public dynXYZZero()
         {
-            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+            outPortData = new PortData("xyz", "XYZ", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -161,9 +191,15 @@ namespace Dynamo.Nodes
     {
         public dynXYZBasisX()
         {
-            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+            outPortData = new PortData("xyz", "XYZ", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -180,9 +216,15 @@ namespace Dynamo.Nodes
     {
         public dynXYZBasisY()
         {
-            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+            outPortData = new PortData("xyz", "XYZ", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -199,9 +241,15 @@ namespace Dynamo.Nodes
     {
         public dynXYZBasisZ()
         {
-            OutPortData = new PortData("xyz", "XYZ", typeof(XYZ));
+            outPortData = new PortData("xyz", "XYZ", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -277,9 +325,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("dom", "A domain.", typeof(object)));
             InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(double)));
             InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
-            OutPortData = new PortData("UVs", "List of UVs in the grid", typeof(XYZ));
+            outPortData = new PortData("UVs", "List of UVs in the grid", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -325,9 +379,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("dom", "A domain.", typeof(object)));
             InPortData.Add(new PortData("U-count", "Number in the U direction.", typeof(double)));
             InPortData.Add(new PortData("V-count", "Number in the V direction.", typeof(double)));
-            OutPortData = new PortData("UVs", "List of UVs in the grid", typeof(XYZ));
+            outPortData = new PortData("UVs", "List of UVs in the grid", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -528,7 +588,7 @@ namespace Dynamo.Nodes
         public dynSketchPlane()
         {
             InPortData.Add(new PortData("plane", "The plane in which to define the sketch.", typeof(object))); // SketchPlane can accept Plane, Reference or PlanarFace
-            OutPortData = new PortData("sp", "SketchPlane", typeof(dynSketchPlane));
+            outPortData = new PortData("sp", "SketchPlane", typeof(dynSketchPlane));
 
             NodeUI.RegisterInputsAndOutput();
         }
@@ -643,7 +703,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
             //InPortData.Add(new PortData("bound?", "Boolean: Is this line bounded?", typeof(bool)));
 
-            OutPortData = new PortData("line", "Line", typeof(Line));
+            outPortData = new PortData("line", "Line", typeof(Line));
 
             NodeUI.RegisterInputsAndOutput();
         }
@@ -692,9 +752,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
             InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(XYZ)));
             InPortData.Add(new PortData("end", "End XYZ", typeof(XYZ)));
-            OutPortData = new PortData("arc", "Arc", typeof(Arc));
+            outPortData = new PortData("arc", "Arc", typeof(Arc));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -736,9 +802,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("radius", "Radius", typeof(double)));
             InPortData.Add(new PortData("start", "Start Param", typeof(double)));
             InPortData.Add(new PortData("end", "End Param", typeof(double)));
-            OutPortData = new PortData("arc", "Arc", typeof(Arc));
+            outPortData = new PortData("arc", "Arc", typeof(Arc));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -776,9 +848,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(object)));
             InPortData.Add(new PortData("t", "Transform(Transform)", typeof(object)));
-            OutPortData = new PortData("circle", "Circle CurveLoop", typeof(Curve));
+            outPortData = new PortData("circle", "Circle CurveLoop", typeof(Curve));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
 
@@ -800,9 +878,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("start", "Start XYZ", typeof(XYZ)));
             InPortData.Add(new PortData("rad", "Radius", typeof(double)));
-            OutPortData = new PortData("circle", "Circle CurveLoop", typeof(CurveLoop));
+            outPortData = new PortData("circle", "Circle CurveLoop", typeof(CurveLoop));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         const double RevitPI = 3.14159265358979;
@@ -840,9 +924,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("center", "Center XYZ", typeof(XYZ)));
             InPortData.Add(new PortData("radX", "Major Radius", typeof(double)));
             InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
-            OutPortData = new PortData("ell", "Ellipse", typeof(Ellipse));
+            outPortData = new PortData("ell", "Ellipse", typeof(Ellipse));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         const double RevitPI = 3.14159265358979;
@@ -887,9 +977,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("radY", "Minor Radius", typeof(double)));
             InPortData.Add(new PortData("start", "Start Param", typeof(double)));
             InPortData.Add(new PortData("end", "End Param", typeof(double)));
-            OutPortData = new PortData("ell", "Ellipse", typeof(Ellipse));
+            outPortData = new PortData("ell", "Ellipse", typeof(Ellipse));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -935,6 +1031,12 @@ namespace Dynamo.Nodes
         }
 
         private PortData outPortData = new PortData("uv", "UV", typeof(UV));
+        public override PortData outPortData
+        {
+            get { return outPortData; }
+        }
+
+        private PortData outPortData;
         public override PortData OutPortData
         {
             get { return outPortData; }
@@ -966,6 +1068,12 @@ namespace Dynamo.Nodes
         }
 
         private PortData outPortData = new PortData("C", "Curve", typeof(CurveElement));
+        public override PortData outPortData
+        {
+            get { return outPortData; }
+        }
+
+        private PortData outPortData;
         public override PortData OutPortData
         {
             get { return outPortData; }
@@ -1020,9 +1128,15 @@ namespace Dynamo.Nodes
         public dynHermiteSpline()
         {
             InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(object)));
-            OutPortData = new PortData("ell", "Ellipse", typeof(HermiteSpline));
+            outPortData = new PortData("ell", "Ellipse", typeof(HermiteSpline));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
