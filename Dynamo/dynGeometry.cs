@@ -1054,14 +1054,13 @@ namespace Dynamo.Nodes
     {
         public dynLineVectorfromXYZ()
         {
-
             InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(XYZ)));
             InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(XYZ)));
 
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData;
+        private PortData outPortData = new PortData("C", "Curve", typeof(CurveElement));
         public override PortData OutPortData
         {
             get { return outPortData; }
