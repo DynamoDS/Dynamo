@@ -825,9 +825,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
             InPortData.Add(new PortData("lev", "The Level to use for instantiation.", typeof(FamilySymbol)));
 
-            OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
+            outPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private Value makeFamilyInstance(object location, FamilySymbol fs, int count, Level level)
@@ -941,10 +947,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("fi", "family instance", typeof(object)));
 
-
-            OutPortData = new PortData("curves", "Curves extracted by this operation.", typeof(Curve));
+            outPortData = new PortData("curves", "Curves extracted by this operation.", typeof(Curve));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private Value GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, int count,
@@ -1268,9 +1279,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("fi", "Family instance.", typeof(FamilyInstance)));
             InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(string)));
 
-            OutPortData = new PortData("val", "Parameter value.", typeof(object));
+            outPortData = new PortData("val", "Parameter value.", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private static Value getParam(FamilyInstance fi, string paramName)
@@ -1512,9 +1529,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ft", "Family type.", typeof(FamilySymbol)));
             InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
 
-            OutPortData = new PortData("val", "Parameter value.", typeof(object));
+            outPortData = new PortData("val", "Parameter value.", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private static Value getParam(FamilySymbol fi, string paramName)
