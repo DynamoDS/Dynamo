@@ -83,10 +83,15 @@ namespace Dynamo.Nodes
        {
            InPortData.Add(new Connectors.PortData("exec", "Execution Interval", typeof(object)));
            InPortData.Add(new Connectors.PortData("udp port", "A UDP port to listen to.", typeof(object)));
-           OutPortData = new Connectors.PortData("str", "The string returned from the web request.", typeof(object));
-
+           outPortData = new Connectors.PortData("str", "The string returned from the web request.", typeof(object));
 
            NodeUI.RegisterInputsAndOutput();
+       }
+
+       private PortData outPortData;
+       public override PortData OutPortData
+       {
+           get { return outPortData; }
        }
 
        private delegate void LogDelegate(string msg);
