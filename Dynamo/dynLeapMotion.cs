@@ -148,6 +148,12 @@ namespace Dynamo.Nodes
             NodeUI.RegisterInputsAndOutput();
         }
 
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             Leap.Controller controller = (Leap.Controller)((Value.Container)args[0]).Item;
@@ -176,6 +182,12 @@ namespace Dynamo.Nodes
             outPortData = new PortData("Frame", "The frame of data", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
