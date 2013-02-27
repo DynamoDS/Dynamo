@@ -34,13 +34,19 @@ namespace Dynamo.Nodes
         ReferencePoint rightHandPt;
         System.Windows.Shapes.Ellipse rightHandEllipse;
 
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
+
         public dynKinect()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
             InPortData.Add(new PortData("X scale", "The amount to scale the skeletal measurements in the X direction.", typeof(double)));
             InPortData.Add(new PortData("Y scale", "The amount to scale the skeletal measurements in the Y direction.", typeof(double)));
             InPortData.Add(new PortData("Z scale", "The amount to scale the skeletal measurements in the Z direction.", typeof(double)));
-            OutPortData = new PortData("kinect data", "position data from the kinect", typeof(object));
+            outPortData = new PortData("kinect data", "position data from the kinect", typeof(object));
 
 
             int width = 320;
