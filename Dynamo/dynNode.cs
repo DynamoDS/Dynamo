@@ -308,7 +308,7 @@ namespace Dynamo.Nodes
 
         private Value evalIfDirty(FSharpList<Value> args)
         {
-            if (SaveResult && (RequiresRecalc || oldValue == null))
+            if (!SaveResult || RequiresRecalc || oldValue == null)
             {
                 //Evaluate arguments, then evaluate 
                 oldValue = evaluateNode(args);
