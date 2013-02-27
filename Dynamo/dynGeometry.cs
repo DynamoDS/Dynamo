@@ -1030,7 +1030,7 @@ namespace Dynamo.Nodes
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData;
+        private PortData outPortData = new PortData("uv", "UV", typeof(UV));
         public override PortData OutPortData
         {
             get { return outPortData; }
