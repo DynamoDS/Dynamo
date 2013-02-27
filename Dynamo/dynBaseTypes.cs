@@ -92,24 +92,10 @@ namespace Dynamo.Nodes
         {
             if (this.SaveResult)
             {
-                return new ExternalFunctionNode(
-                   macroEval,
-                   portNames
-                );
+                return base.Compile(portNames);
             }
             else
                 return new FunctionNode(this.Symbol, portNames);
-        }
-
-        private Value macroEval(FSharpList<Value> args)
-        {
-            if (this.RequiresRecalc || this.oldValue == null)
-            {
-                this.oldValue = this.evaluateNode(args);
-            }
-            else
-                this.OnEvaluate();
-            return this.oldValue;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -517,31 +503,17 @@ namespace Dynamo.Nodes
 
         protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
-            if (this.SaveResult)
+            if (SaveResult)
             {
-                return new ExternalFunctionNode(
-                   macroEval,
-                   portNames
-                );
+                return base.Compile(portNames);
             }
             else
                 return new FunctionNode("map", portNames);
         }
 
-        private Value macroEval(FSharpList<Value> args)
-        {
-            if (this.RequiresRecalc || this.oldValue == null)
-            {
-                this.oldValue = this.evaluateNode(args);
-            }
-            else
-                this.OnEvaluate();
-            return this.oldValue;
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)this.Bench.Environment.LookupSymbol("map"))
+            return ((Value.Function)Bench.Environment.LookupSymbol("map"))
                 .Item.Invoke(args);
         }
     }
@@ -613,24 +585,10 @@ namespace Dynamo.Nodes
         {
             if (this.SaveResult)
             {
-                return new ExternalFunctionNode(
-                   macroEval,
-                   portNames
-                );
+                return base.Compile(portNames);
             }
             else
                 return new FunctionNode("cartesian-product", portNames);
-        }
-
-        private Value macroEval(FSharpList<Value> args)
-        {
-            if (this.RequiresRecalc || this.oldValue == null)
-            {
-                this.oldValue = this.evaluateNode(args);
-            }
-            else
-                this.OnEvaluate();
-            return this.oldValue;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
