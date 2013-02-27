@@ -22,9 +22,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(object)));
             InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(object)));
 
-            OutPortData = new PortData("form", "Loft Form", typeof(object));
+            outPortData = new PortData("form", "Loft Form", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
