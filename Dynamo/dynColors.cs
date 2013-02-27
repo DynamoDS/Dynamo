@@ -41,9 +41,15 @@ namespace Dynamo.Nodes
         public dynColorBrightness()
         {
             InPortData.Add(new PortData("c", "The color", typeof(object)));
-            OutPortData = new PortData("mag", "The magnitude of the color's vector", typeof(double));
+            outPortData = new PortData("mag", "The magnitude of the color's vector", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
