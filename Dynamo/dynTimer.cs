@@ -33,9 +33,15 @@ namespace Dynamo.Nodes
         public dynPause()
         {
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
-            OutPortData = new PortData("", "Success", typeof(bool));
+            outPortData = new PortData("", "Success", typeof(bool));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -56,9 +62,15 @@ namespace Dynamo.Nodes
         public dynExecuteInterval()
         {
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
-            OutPortData = new PortData("", "Success?", typeof(bool));
+            outPortData = new PortData("", "Success?", typeof(bool));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         Thread delayThread;
