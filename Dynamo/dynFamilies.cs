@@ -27,13 +27,13 @@ using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Family Type Selector")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows you to select a Family Type from a drop down list.")]
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
     public class dynFamilyTypeSelector : dynNode
     {
@@ -97,14 +97,14 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             ComboBoxItem cbi = combo.SelectedItem as ComboBoxItem;
 
             if (cbi != null)
             {
                 var f = comboHash[cbi.Content as string];
-                return Expression.NewContainer(f);
+                return Value.NewContainer(f);
             }
 
             throw new Exception("Nothing selected!");
@@ -125,16 +125,16 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Instance Parameter Selector")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("Given a family instance, allows the user to select a paramter as a string.")]
+    [NodeName("Family Parameter Selector")]
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [IsInteractive(true)]
     public class dynFamilyInstanceParameterSelector : dynNode
     {
         ComboBox paramBox = new ComboBox();
         ElementId storedId = null;
-        string value = "";
-        Dictionary<int, string> values = new Dictionary<int, string>();
+        Definition value;
+        List<Definition> values = new List<Definition>();
 
         public dynFamilyInstanceParameterSelector()
         {
@@ -191,7 +191,7 @@ namespace Dynamo.Nodes
             this.values.Clear();
 
             SortedList<string, dynamic> paramList = new SortedList<string, dynamic>();
-            //var paramList = new List<string>();
+
             foreach (dynamic p in set)
             {
                 if ((readOnly && p.IsReadOnly) || p.StorageType == StorageType.None)
@@ -201,10 +201,9 @@ namespace Dynamo.Nodes
                 paramList.Add(val, p);
             }
 
-            int i = 0;
             foreach (dynamic p in paramList.Values)
             {
-                this.values[i++] = p.Definition.Name;
+                this.values.Add(p.Definition);
             }
 
             this.paramBox.Dispatcher.Invoke(new Action(
@@ -220,27 +219,27 @@ namespace Dynamo.Nodes
             ));
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var input = (Element)((Expression.Container)args[0]).Item;
+            var input = (Element)((Value.Container)args[0]).Item;
 
             if (!input.Id.Equals(this.storedId))
             {
                 this.storedId = input.Id;
                 if (input is FamilySymbol)
                 {
-                    var paramDict = new Dictionary<string, dynamic>();
+                    var paramDict = new Dictionary<Definition, dynamic>();
 
                     var fs = input as FamilySymbol;
 
                     foreach (dynamic p in fs.Parameters)
-                        paramDict[p.Definition.Name] = p;
+                        paramDict[p.Definition] = p;
 
                     var fd = dynSettings.Instance.Doc.Document.EditFamily(fs.Family);
                     var ps = fd.FamilyManager.Parameters;
 
                     foreach (dynamic p in ps)
-                        paramDict[p.Definition.Name] = p;
+                        paramDict[p.Definition] = p;
 
                     //this.PopulateComboBox(fs.Parameters, false);
                     this.PopulateComboBox(paramDict.Values, false);
@@ -252,7 +251,7 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return Expression.NewString(this.value);
+            return Value.NewContainer(this.value);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -330,9 +329,9 @@ namespace Dynamo.Nodes
 
     #region Disabled ParameterMapper
 
-    //[ElementName("Instance Parameter Mapper")]
-    //[ElementCategory(BuiltinElementCategories.REVIT)]
-    //[ElementDescription("An element which maps the parameters of a Family Type.")]
+    //[NodeName("Instance Parameter Mapper")]
+    //[NodeCategory(BuiltinNodeCategories.REVIT)]
+    //[NodeDescription("Maps the parameters of a Family Type.")]
     //[RequiresTransaction(true)]
     //public class dynInstanceParameterMapper : dynElement
     //{
@@ -363,7 +362,7 @@ namespace Dynamo.Nodes
     //      paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
     //      paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-    //      base.RegisterInputsAndOutputs();
+    //      NodeUI.RegisterInputsAndOutput();
 
     //   }
 
@@ -615,9 +614,9 @@ namespace Dynamo.Nodes
     //   }
     //}
 
-    //[ElementName("Family Instance Parameter Evaluation")]
-    //[ElementCategory(BuiltinElementCategories.REVIT)]
-    //[ElementDescription("An element which allows you to modify parameters on family instances.")]
+    //[NodeName("Family Instance Parameter Evaluation")]
+    //[NodeCategory(BuiltinNodeCategories.REVIT)]
+    //[NodeDescription("Modifies parameters on family instances.")]
     //[RequiresTransaction(true)]
     //public class dynFamilyInstanceParameterEvaluation : dynElement
     //{
@@ -628,7 +627,7 @@ namespace Dynamo.Nodes
     //      InPortData.Add(new PortData(null, "fi", "Family instances.", typeof(dynElement)));
     //      InPortData.Add(new PortData(null, "map", "Parameter map.", typeof(dynInstanceParameterMapper)));
 
-    //      base.RegisterInputsAndOutputs();
+    //      NodeUI.RegisterInputsAndOutput();
 
     //   }
 
@@ -702,13 +701,13 @@ namespace Dynamo.Nodes
 
     [NodeName("Family Instance Creator")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows you to create family instances.")]
+    [NodeDescription("Creates family instances at a given XYZ location.")]
     public class dynFamilyInstanceCreatorXYZ : dynRevitNode
     {
         public dynFamilyInstanceCreatorXYZ()
         {
             InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
-            InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
+            InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
 
             NodeUI.RegisterInputsAndOutput();
         }
@@ -719,7 +718,7 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        private Expression makeFamilyInstance(object location, FamilySymbol fs, int count)
+        private Value makeFamilyInstance(object location, FamilySymbol fs, int count)
         {
             XYZ pos = location is ReferencePoint
                ? (location as ReferencePoint).Position
@@ -763,26 +762,26 @@ namespace Dynamo.Nodes
                 this.Elements.Add(fi.Id);
             }
 
-            return Expression.NewContainer(fi);
+            return Value.NewContainer(fi);
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            FamilySymbol fs = (FamilySymbol)((Expression.Container)args[1]).Item;
+            FamilySymbol fs = (FamilySymbol)((Value.Container)args[1]).Item;
             var input = args[0];
 
             if (input.IsList)
             {
-                var locList = (input as Expression.List).Item;
+                var locList = (input as Value.List).Item;
 
                 int count = 0;
 
-                var result = Expression.NewList(
-                   Utils.convertSequence(
+                var result = Value.NewList(
+                   Utils.SequenceToFSharpList(
                       locList.Select(
                          x =>
                             this.makeFamilyInstance(
-                               ((Expression.Container)x).Item,
+                               ((Value.Container)x).Item,
                                fs,
                                count++
                             )
@@ -800,7 +799,7 @@ namespace Dynamo.Nodes
             else
             {
                 var result = this.makeFamilyInstance(
-                   ((Expression.Container)input).Item,
+                   ((Value.Container)input).Item,
                    fs,
                    0
                 );
@@ -815,10 +814,324 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Family Instance By Level Creator")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Creates family instances in the given level.")]
+    public class dynFamilyInstanceCreatorLevel : dynRevitNode
+    {
+        public dynFamilyInstanceCreatorLevel()
+        {
+            InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
+            InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
+            InPortData.Add(new PortData("lev", "The Level to use for instantiation.", typeof(FamilySymbol)));
+
+            OutPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private Value makeFamilyInstance(object location, FamilySymbol fs, int count, Level level)
+        {
+            XYZ pos = location is ReferencePoint
+               ? (location as ReferencePoint).Position
+               : (XYZ)location;
+
+            FamilyInstance fi;
+
+            if (this.Elements.Count > count)
+            {
+                Element e;
+                if (dynUtils.TryGetElement(this.Elements[count], out e))
+                {
+                    fi = this.UIDocument.Document.GetElement(this.Elements[count]) as FamilyInstance;
+                    fi.Symbol = fs;
+                    LocationPoint lp = fi.Location as LocationPoint;
+                    lp.Point = pos;
+                    //fi.Level = level;
+
+                }
+                else
+                {
+                    fi = this.UIDocument.Document.IsFamilyDocument
+                       ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                       pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+
+                       )
+                       : this.UIDocument.Document.Create.NewFamilyInstance(
+                          pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                       );
+
+                    this.Elements[count] = fi.Id;
+                }
+            }
+            else
+            {
+                fi = this.UIDocument.Document.IsFamilyDocument
+                   ? this.UIDocument.Document.FamilyCreate.NewFamilyInstance(
+                      pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                   )
+                   : this.UIDocument.Document.Create.NewFamilyInstance(
+                      pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural
+                   );
+
+                this.Elements.Add(fi.Id);
+            }
+
+            return Value.NewContainer(fi);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            FamilySymbol fs = (FamilySymbol)((Value.Container)args[1]).Item;
+            var input = args[0];
+            Level level = (Level)((Value.Container)args[2]).Item;
+
+            if (input.IsList)
+            {
+                var locList = (input as Value.List).Item;
+
+                int count = 0;
+
+                var result = Value.NewList(
+                   Utils.SequenceToFSharpList(
+                      locList.Select(
+                         x =>
+                            this.makeFamilyInstance(
+                               ((Value.Container)x).Item,
+                               fs,
+                               count++,
+                               level
+                            )
+                      )
+                   )
+                );
+
+                foreach (var e in this.Elements.Skip(count))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
+            }
+            else
+            {
+                var result = this.makeFamilyInstance(
+                   ((Value.Container)input).Item,
+                   fs,
+                   0,
+                   level
+                );
+
+                foreach (var e in this.Elements.Skip(1))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
+            }
+        }
+    }
+
+    [NodeName("Curves from Family")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Extracts curves from family instances.")]
+    public class dynCurvesFromFamilyInstance : dynRevitNode
+    {
+        public dynCurvesFromFamilyInstance()
+        {
+            InPortData.Add(new PortData("fi", "family instance", typeof(object)));
+
+
+            OutPortData = new PortData("curves", "Curves extracted by this operation.", typeof(Curve));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private Value GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, int count,
+                                   Autodesk.Revit.DB.Options options)
+        {
+            FamilySymbol fs = fi.Symbol;
+            //Autodesk.Revit.DB.GeometryElement geomElem = fs.get_Geometry(options);
+            Autodesk.Revit.DB.GeometryElement geomElem = fi.get_Geometry(options); // our particular case of a loaded mass family with no joins has no geom in the instance
+
+            //fi.GetOriginalGeometry(options);
+            //fi.GetTransform()
+
+            Autodesk.Revit.DB.CurveArray curves = new CurveArray();
+            Autodesk.Revit.DB.ReferenceArray curveRefs = new ReferenceArray();
+
+
+            //Find all curves and insert them into curve array
+            AddCurves(fi, geomElem, count, ref curves);
+
+            //curves.Append(GetCurve(fi, options)); //test 
+
+            //extract references for downstream use
+            foreach (Curve c in curves)
+            {
+                curveRefs.Append(c.Reference);
+            }
+
+            //convert curvearray into list using Stephens MakeEnumerable
+            Value result = Value.NewList(Utils.SequenceToFSharpList(
+                            dynUtils.MakeEnumerable(curves).Select(Value.NewContainer)
+                        ));
+
+
+            return result;
+
+        }
+
+        /// <summary>
+        /// Retrieve the first curve found for 
+        /// the given element. In case the element is a 
+        /// family instance, it may have its own non-empty
+        /// solid, in which case we use that. Otherwise we 
+        /// search the symbol geometry. If we use the 
+        /// symbol geometry, we have to keep track of the 
+        /// instance transform to map it to the actual
+        /// instance project location.
+        /// </summary>
+        Curve GetCurve(Element e, Options opt)
+        {
+            GeometryElement geo = e.get_Geometry(opt);
+
+            Curve curve = null;
+            GeometryInstance inst = null;
+            Transform t = Transform.Identity;
+
+            // Some columns have no solids, and we have to 
+            // retrieve the geometry from the symbol; 
+            // others do have solids on the instance itself 
+            // and no contents in the instance geometry 
+            // (e.g. in rst_basic_sample_project.rvt).
+
+            foreach (GeometryObject obj in geo)
+            {
+                curve = obj as Curve;
+
+                if (null != curve)
+                {
+                    break;
+                }
+
+                inst = obj as GeometryInstance;
+            }
+
+            if (null == curve && null != inst)
+            {
+                geo = inst.GetSymbolGeometry();
+                t = inst.Transform;
+
+                foreach (GeometryObject obj in geo)
+                {
+                    curve = obj as Curve;
+
+                    if (null != curve)
+                    {
+                        break;
+                    }
+                }
+            }
+            return curve;
+        }
+
+
+
+        private Value AddCurves(FamilyInstance fi, GeometryElement geomElem, int count, ref CurveArray curves)
+        {
+            foreach (GeometryObject geomObj in geomElem)
+            {
+                Curve curve = geomObj as Curve;
+                if (null != curve)
+                {
+                    curves.Append(curve);
+                    continue;
+                }
+
+                //If this GeometryObject is Instance, call AddCurve
+                GeometryInstance geomInst = geomObj as GeometryInstance;
+                if (null != geomInst)
+                {
+                    //curve live in family symbol in this case, need to apply the correct transform to get them in to 
+                    //the project coordinate system lining up with the instance
+                    // http://wikihelp.autodesk.com/Revit/enu/2012/Help/API_Dev_Guide/0074-Revit_Ge74/0108-Geometry108/0110-Geometry110/GeometryInstances
+
+                    //Autodesk.Revit.DB.GeometryElement transformedGeomElem // curves transformed into project coords
+                    //  = geomInst.GetInstanceGeometry(geomInst.Transform);
+                    //AddCurves(fi, transformedGeomElem, count, ref curves);
+
+                    GeometryElement transformedGeomElem // curves transformed into project coords
+                        = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
+                    AddCurves(fi, transformedGeomElem, count, ref curves);
+
+                    //Autodesk.Revit.DB.GeometryElement symbolTransformedGeomElem // curves in symbol coords
+                    //    = geomInst.GetSymbolGeometry(geomInst.Transform);
+                    //AddCurves(fi, symbolTransformedGeomElem, count, ref curves);
+                }
+            }
+            return Value.NewContainer(curves);
+        }
+        
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            //create some geometry options so that we compute references
+            Autodesk.Revit.DB.Options opts = new Options();
+            opts.ComputeReferences = true;
+            opts.DetailLevel = ViewDetailLevel.Medium;
+            opts.IncludeNonVisibleObjects = false;
+
+
+            if (input.IsList)
+            {
+                var familyList = (input as Value.List).Item;
+                int count = 0;
+
+                var result = Value.NewList(
+                  Utils.SequenceToFSharpList(
+                     familyList.Select(
+                        x =>
+                           this.GetCurvesFromFamily(
+                              (FamilyInstance)((Value.Container)x).Item,
+                              count++,
+                              opts
+                           )
+                     )
+                  )
+               );
+
+                foreach (var e in this.Elements.Skip(count))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
+            }
+            else // single instance passed in
+            {
+                int count = 0;
+                var result = this.GetCurvesFromFamily(
+                   (FamilyInstance)((Value.Container)input).Item,
+                   count,
+                   opts
+                );
+
+                foreach (var e in this.Elements.Skip(1)) // cleanup in case of going from list to single instance.
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
+            }
+        }
+    }
+
     //TODO: In Destroy(), have code that resets Elements back to their default.
     [NodeName("Set Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows you to modify parameters on family instances.")]
+    [NodeDescription("Modifies a parameter on a family instance.")]
     public class dynFamilyInstanceParameterSetter : dynRevitNode
     {
         public dynFamilyInstanceParameterSetter()
@@ -836,63 +1149,111 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        private static Expression setParam(FamilyInstance fi, string paramName, Expression valueExpr)
+        private static Value setParam(FamilyInstance fi, string paramName, Value valueExpr)
         {
             var p = fi.get_Parameter(paramName);
             if (p != null)
             {
-                if (p.StorageType == StorageType.Double)
-                {
-                    p.Set(((Expression.Number)valueExpr).Item);
-                }
-                else if (p.StorageType == StorageType.Integer)
-                {
-                    p.Set((int)((Expression.Number)valueExpr).Item);
-                }
-                else if (p.StorageType == StorageType.String)
-                {
-                    p.Set(((Expression.String)valueExpr).Item);
-                }
-                else if (valueExpr.IsNumber)
-                {
-                    p.Set(new ElementId((int)(valueExpr as Expression.Number).Item));
-                }
-                else
-                {
-                    p.Set((ElementId)((Expression.Container)valueExpr).Item);
-                }
-                return Expression.NewContainer(fi);
+                return _setParam(fi, p, valueExpr);
             }
             throw new Exception("Parameter \"" + paramName + "\" was not found!");
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        private static Value setParam(FamilyInstance fi, Definition paramDef, Value valueExpr)
         {
-            var paramName = ((Expression.String)args[1]).Item;
-            var valueExpr = args[2];
-
-            var input = args[0];
-            if (input.IsList)
+            var p = fi.get_Parameter(paramDef);
+            if (p != null)
             {
-                var fiList = (input as Expression.List).Item;
-                return Expression.NewList(
-                   Utils.convertSequence(
-                      fiList.Select(
-                         x =>
-                            setParam(
-                               (FamilyInstance)((Expression.Container)x).Item,
-                               paramName,
-                               valueExpr
-                            )
-                      )
-                   )
-                );
+                return _setParam(fi, p, valueExpr);
+            }
+            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
+        }
+
+        private static Value _setParam(FamilyInstance ft, Parameter p, Value valueExpr)
+        {
+            if (p.StorageType == StorageType.Double)
+            {
+                p.Set(((Value.Number)valueExpr).Item);
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+                p.Set((int)((Value.Number)valueExpr).Item);
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+                p.Set(((Value.String)valueExpr).Item);
+            }
+            else if (valueExpr.IsNumber)
+            {
+                p.Set(new ElementId((int)(valueExpr as Value.Number).Item));
             }
             else
             {
-                var fi = (FamilyInstance)((Expression.Container)input).Item;
+                p.Set((ElementId)((Value.Container)valueExpr).Item);
+            }
+            return Value.NewContainer(ft);
+        }
 
-                return setParam(fi, paramName, valueExpr);
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var valueExpr = args[2];
+
+            var param = args[1];
+            if (param.IsString)
+            {
+                var paramName = ((Value.String)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Value.List).Item;
+                    return Value.NewList(
+                       Utils.SequenceToFSharpList(
+                          fiList.Select(
+                             x =>
+                                setParam(
+                                   (FamilyInstance)((Value.Container)x).Item,
+                                   paramName,
+                                   valueExpr
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fs = (FamilyInstance)((Value.Container)input).Item;
+
+                    return setParam(fs, paramName, valueExpr);
+                }
+            }
+            else
+            {
+                var paramDef = (Definition)((Value.Container)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Value.List).Item;
+                    return Value.NewList(
+                       Utils.SequenceToFSharpList(
+                          fiList.Select(
+                             x =>
+                                setParam(
+                                   (FamilyInstance)((Value.Container)x).Item,
+                                   paramDef,
+                                   valueExpr
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fs = (FamilyInstance)((Value.Container)input).Item;
+
+                    return setParam(fs, paramDef, valueExpr);
+                }
             }
         }
     }
@@ -905,69 +1266,356 @@ namespace Dynamo.Nodes
         public dynFamilyInstanceParameterGetter()
         {
             InPortData.Add(new PortData("fi", "Family instance.", typeof(FamilyInstance)));
-            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
+            InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(string)));
+
+            OutPortData = new PortData("val", "Parameter value.", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData = new PortData("val", "Parameter value.", typeof(object));
+        private static Value getParam(FamilyInstance fi, string paramName)
+        {
+            var p = fi.get_Parameter(paramName);
+            if (p != null)
+            {
+                return _getParam(fi, p);
+            }
+            throw new Exception("Parameter \"" + paramName + "\" was not found!");
+        }
+
+        private static Value getParam(FamilyInstance fi, Definition paramDef)
+        {
+            var p = fi.get_Parameter(paramDef);
+            if (p != null)
+            {
+                return _getParam(fi, p);
+            }
+            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
+        }
+
+        private static Value _getParam(FamilyInstance fi, Parameter p)
+        {
+            if (p.StorageType == StorageType.Double)
+            {
+                return Value.NewNumber(p.AsDouble());
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+                return Value.NewNumber(p.AsInteger());
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+                return Value.NewString(p.AsString());
+            }
+            else
+            {
+                return Value.NewContainer(p.AsElementId());
+            }
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var param = args[1];
+            if (param.IsString)
+            {
+                var paramName = ((Value.String)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Value.List).Item;
+                    return Value.NewList(
+                       Utils.SequenceToFSharpList(
+                          fiList.Select(
+                             x =>
+                                getParam(
+                                   (FamilyInstance)((Value.Container)x).Item,
+                                   paramName
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fi = (FamilyInstance)((Value.Container)input).Item;
+
+                    return getParam(fi, paramName);
+                }
+            }
+            else
+            {
+                var paramDef = (Definition)((Value.Container)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Value.List).Item;
+                    return Value.NewList(
+                       Utils.SequenceToFSharpList(
+                          fiList.Select(
+                             x =>
+                                getParam(
+                                   (FamilyInstance)((Value.Container)x).Item,
+                                   paramDef
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fi = (FamilyInstance)((Value.Container)input).Item;
+
+                    return getParam(fi, paramDef);
+                }
+            }
+        }
+    }
+
+    [NodeName("Set Type Parameter")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Modifies a parameter on a family type.")]
+    public class dynFamilyTypeParameterSetter : dynRevitNode
+    {
+        public dynFamilyTypeParameterSetter()
+        {
+            InPortData.Add(new PortData("ft", "Family type.", typeof(object)));
+            InPortData.Add(new PortData("param", "Parameter to modify.", typeof(object)));
+            InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData = new PortData("ft", "Modified family type.", typeof(object));
         public override PortData OutPortData
         {
             get { return outPortData; }
         }
 
-        private static Expression getParam(FamilyInstance fi, string paramName)
+        private static Value setParam(FamilySymbol fi, string paramName, Value valueExpr)
         {
             var p = fi.get_Parameter(paramName);
             if (p != null)
             {
-                if (p.StorageType == StorageType.Double)
-                {
-                    return Expression.NewNumber(p.AsDouble());
-                }
-                else if (p.StorageType == StorageType.Integer)
-                {
-                    return Expression.NewNumber(p.AsInteger());
-                }
-                else if (p.StorageType == StorageType.String)
-                {
-                    return Expression.NewString(p.AsString());
-                }
-                else
-                {
-                    return Expression.NewContainer(p.AsElementId());
-                }
+                return _setParam(fi, p, valueExpr);
             }
             throw new Exception("Parameter \"" + paramName + "\" was not found!");
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        private static Value setParam(FamilySymbol fi, Definition paramDef, Value valueExpr)
         {
-            var paramName = ((Expression.String)args[1]).Item;
-
-            var input = args[0];
-            if (input.IsList)
+            var p = fi.get_Parameter(paramDef);
+            if (p != null)
             {
-                var fiList = (input as Expression.List).Item;
-                return Expression.NewList(
-                   Utils.convertSequence(
-                      fiList.Select(
-                         x =>
-                            getParam(
-                               (FamilyInstance)((Expression.Container)x).Item,
-                               paramName
-                            )
-                      )
-                   )
-                );
+                return _setParam(fi, p, valueExpr);
+            }
+            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
+        }
+
+        private static Value _setParam(FamilySymbol ft, Parameter p, Value valueExpr)
+        {
+            if (p.StorageType == StorageType.Double)
+            {
+                p.Set(((Value.Number)valueExpr).Item);
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+                p.Set((int)((Value.Number)valueExpr).Item);
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+                p.Set(((Value.String)valueExpr).Item);
+            }
+            else if (valueExpr.IsNumber)
+            {
+                p.Set(new ElementId((int)(valueExpr as Value.Number).Item));
             }
             else
             {
-                var fi = (FamilyInstance)((Expression.Container)input).Item;
+                p.Set((ElementId)((Value.Container)valueExpr).Item);
+            }
+            return Value.NewContainer(ft);
+        }
 
-                return getParam(fi, paramName);
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var valueExpr = args[2];
+
+            var param = args[1];
+            if (param.IsString)
+            {
+                var paramName = ((Value.String)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Value.List).Item;
+                    return Value.NewList(
+                       Utils.SequenceToFSharpList(
+                          fiList.Select(
+                             x =>
+                                setParam(
+                                   (FamilySymbol)((Value.Container)x).Item,
+                                   paramName,
+                                   valueExpr
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fs = (FamilySymbol)((Value.Container)input).Item;
+
+                    return setParam(fs, paramName, valueExpr);
+                }
+            }
+            else
+            {
+                var paramDef = (Definition)((Value.Container)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Value.List).Item;
+                    return Value.NewList(
+                       Utils.SequenceToFSharpList(
+                          fiList.Select(
+                             x =>
+                                setParam(
+                                   (FamilySymbol)((Value.Container)x).Item,
+                                   paramDef,
+                                   valueExpr
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fs = (FamilySymbol)((Value.Container)input).Item;
+
+                    return setParam(fs, paramDef, valueExpr);
+                }
+            }
+        }
+    }
+
+    [NodeName("Get Type Parameter")]
+    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeDescription("Fetches the value of a parameter of a Family Type.")]
+    public class dynFamilyTypeParameterGetter : dynRevitNode
+    {
+        public dynFamilyTypeParameterGetter()
+        {
+            InPortData.Add(new PortData("ft", "Family type.", typeof(FamilySymbol)));
+            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
+
+            OutPortData = new PortData("val", "Parameter value.", typeof(object));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private static Value getParam(FamilySymbol fi, string paramName)
+        {
+            var p = fi.get_Parameter(paramName);
+            if (p != null)
+            {
+                return _getParam(fi, p);
+            }
+            throw new Exception("Parameter \"" + paramName + "\" was not found!");
+        }
+
+        private static Value getParam(FamilySymbol fi, Definition paramDef)
+        {
+            var p = fi.get_Parameter(paramDef);
+            if (p != null)
+            {
+                return _getParam(fi, p);
+            }
+            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
+        }
+
+        private static Value _getParam(FamilySymbol fi, Parameter p)
+        {
+            if (p.StorageType == StorageType.Double)
+            {
+                return Value.NewNumber(p.AsDouble());
+            }
+            else if (p.StorageType == StorageType.Integer)
+            {
+                return Value.NewNumber(p.AsInteger());
+            }
+            else if (p.StorageType == StorageType.String)
+            {
+                return Value.NewString(p.AsString());
+            }
+            else
+            {
+                return Value.NewContainer(p.AsElementId());
+            }
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var param = args[1];
+            if (param.IsString)
+            {
+                var paramName = ((Value.String)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Value.List).Item;
+                    return Value.NewList(
+                       Utils.SequenceToFSharpList(
+                          fiList.Select(
+                             x =>
+                                getParam(
+                                   (FamilySymbol)((Value.Container)x).Item,
+                                   paramName
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fi = (FamilySymbol)((Value.Container)input).Item;
+
+                    return getParam(fi, paramName);
+                }
+            }
+            else
+            {
+                var paramDef = (Definition)((Value.Container)param).Item;
+
+                var input = args[0];
+                if (input.IsList)
+                {
+                    var fiList = (input as Value.List).Item;
+                    return Value.NewList(
+                       Utils.SequenceToFSharpList(
+                          fiList.Select(
+                             x =>
+                                getParam(
+                                   (FamilySymbol)((Value.Container)x).Item,
+                                   paramDef
+                                )
+                          )
+                       )
+                    );
+                }
+                else
+                {
+                    var fi = (FamilySymbol)((Value.Container)input).Item;
+
+                    return getParam(fi, paramDef);
+                }
             }
         }
     }
 }
+
 

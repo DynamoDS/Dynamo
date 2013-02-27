@@ -19,9 +19,13 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using System.Collections.Generic;
+using Dynamo.Nodes;
 
 namespace Dynamo.Connectors
 {
+    public enum ConnectorType { BEZIER, POLYLINE };
+
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
 
     public class dynConnector : UIElement
@@ -34,19 +38,25 @@ namespace Dynamo.Connectors
                 Connected(this, e);
         }
 
-        const int STROKE_THICKNESS = 1;
+        const int STROKE_THICKNESS = 2;
         const double STROKE_OPACITY = .6;
+        const double DEFAULT_BEZ_OFFSET = 20;
 
         dynPort pStart;
         dynPort pEnd;
 
         PathFigure connectorPoints;
         BezierSegment connectorCurve;
+        PathFigure plineFigure;
+        PolyLineSegment pline;
+        ConnectorType connectorType;
+
         Ellipse endDot;
         const int END_DOT_SIZE = 6;
         Path connector;
+        Path plineConnector;
 
-        double bezOffset = 100;
+        double bezOffset = 20;
 
         //Canvas workBench;
         bool isDrawing = false;
@@ -68,6 +78,28 @@ namespace Dynamo.Connectors
                 pEnd = value;
             }
         }
+        public ConnectorType ConnectorType
+        {
+            get { return connectorType; }
+            set
+            {
+                if (value == Connectors.ConnectorType.BEZIER)
+                {
+                    //hide the polyline
+                    plineConnector.Visibility = System.Windows.Visibility.Hidden;
+                    //show the bez
+                    connector.Visibility = System.Windows.Visibility.Visible;
+                }
+                else if (value == Connectors.ConnectorType.POLYLINE)
+                {
+                    //show the polyline
+                    plineConnector.Visibility = System.Windows.Visibility.Visible;
+                    //hide the bez
+                    connector.Visibility = System.Windows.Visibility.Hidden;
+                }
+                connectorType = value;
+            }
+        }
 
         public dynConnector(dynPort port, Canvas workBench, Point mousePt)
         {
@@ -80,10 +112,13 @@ namespace Dynamo.Connectors
 
                 pStart.Connect(this);
 
-                //Create a Bezier;
+                BrushConverter bc = new BrushConverter();
+                Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
+
+                #region bezier creation
                 connector = new Path();
 
-                connector.Stroke = Brushes.Black;
+                connector.Stroke = strokeBrush;
                 connector.StrokeThickness = STROKE_THICKNESS;
                 connector.Opacity = STROKE_OPACITY;
 
@@ -104,6 +139,29 @@ namespace Dynamo.Connectors
                 connectorGeometry.Figures.Add(connectorPoints);
                 connector.Data = connectorGeometry;
                 workBench.Children.Add(connector);
+                #endregion
+
+                #region polyline creation
+                plineConnector = new Path();
+                plineConnector.Stroke = strokeBrush;
+                plineConnector.StrokeThickness = STROKE_THICKNESS;
+                plineConnector.Opacity = STROKE_OPACITY;
+                plineConnector.StrokeDashArray = dashArray;
+
+                PathGeometry plineGeometry = new PathGeometry();
+                //http://msdn.microsoft.com/en-us/library/system.windows.media.polylinesegment(v=vs.85).aspx
+                plineFigure = new PathFigure();
+                plineFigure.StartPoint = connectorPoints.StartPoint;
+                Point[] polyLinePointArray = new Point[] { connectorPoints.StartPoint, 
+                connectorPoints.StartPoint,
+                connectorPoints.StartPoint};
+                pline = new PolyLineSegment(polyLinePointArray, true);
+                pline.Points = new PointCollection(polyLinePointArray);
+                plineFigure.Segments.Add(pline);
+                plineGeometry.Figures.Add(plineFigure);
+                plineConnector.Data = plineGeometry;
+                dynSettings.Instance.Workbench.Children.Add(plineConnector);
+                #endregion
 
                 endDot = new Ellipse();
                 endDot.Height = 6;
@@ -118,6 +176,8 @@ namespace Dynamo.Connectors
 
                 connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
                 connector.MouseLeave += delegate { Unhighlight(); };
+                plineConnector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
+                plineConnector.MouseLeave += delegate { Unhighlight(); };
 
                 isDrawing = true;
 
@@ -126,18 +186,34 @@ namespace Dynamo.Connectors
                 Dynamo.Controls.DragCanvas.SetCanBeDragged(connector, false);
 
                 //set the z order to the front
-                Canvas.SetZIndex(this, 300);
+                Canvas.SetZIndex(connector, 0);
+                Canvas.SetZIndex(endDot, 1);
 
                 //register an event listener for the start port update
                 //this will tell the connector to set the elements at either
                 //end to be equal if pStart and pEnd are not null
-                //pStart.Owner.Outputs[pStart.Index].dynElementUpdated += new Dynamo.Elements.dynElementUpdatedHandler(StartPortUpdated);
+                //pStart.Owner.Outputs[pStart.Index].dynElementUpdated += new Dynamo.Nodes.dynElementUpdatedHandler(StartPortUpdated);
+                this.ConnectorType = dynSettings.Instance.Bench.ConnectorType;
+                dynSettings.Instance.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
+                dynSettings.Instance.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
             }
             else
             {
                 throw new InvalidPortException();
             }
 
+        }
+
+        void settings_plines_Checked(object sender, RoutedEventArgs e)
+        {
+            this.ConnectorType = Connectors.ConnectorType.POLYLINE;
+            Redraw();
+        }
+
+        void settings_curves_Checked(object sender, RoutedEventArgs e)
+        {
+            this.ConnectorType = Connectors.ConnectorType.BEZIER;
+            Redraw();
         }
 
         public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType, bool visible)
@@ -159,9 +235,12 @@ namespace Dynamo.Connectors
 
             pStart.Connect(this);
 
+            BrushConverter bc = new BrushConverter();
+            Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
+
             #region bezier creation
             connector = new Path();
-            connector.Stroke = Brushes.Black;
+            connector.Stroke = strokeBrush;
             connector.StrokeThickness = STROKE_THICKNESS;
             connector.Opacity = STROKE_OPACITY;
 
@@ -182,6 +261,29 @@ namespace Dynamo.Connectors
             connectorGeometry.Figures.Add(connectorPoints);
             connector.Data = connectorGeometry;
             dynSettings.Instance.Workbench.Children.Add(connector);
+            #endregion
+
+            #region polyline creation
+            plineConnector = new Path();
+            plineConnector.Stroke = strokeBrush;
+            plineConnector.StrokeThickness = STROKE_THICKNESS;
+            plineConnector.Opacity = STROKE_OPACITY;
+            plineConnector.StrokeDashArray = dashArray;
+
+            PathGeometry plineGeometry = new PathGeometry();
+            //http://msdn.microsoft.com/en-us/library/system.windows.media.polylinesegment(v=vs.85).aspx
+            plineFigure = new PathFigure();
+            plineFigure.StartPoint = new Point(pStart.Center.X, pStart.Center.Y);
+            Point[] polyLinePointArray = new Point[] { connectorPoints.StartPoint, 
+                connectorPoints.StartPoint,
+                connectorPoints.StartPoint};
+            pline = new PolyLineSegment(polyLinePointArray, true);
+            pline.Points = new PointCollection(polyLinePointArray);
+            plineFigure.Segments.Add(pline);
+            plineGeometry.Figures.Add(plineFigure);
+            plineConnector.Data = plineGeometry;
+            dynSettings.Instance.Workbench.Children.Add(plineConnector);
+            #endregion
 
             endDot = new Ellipse();
             endDot.Height = 6;
@@ -198,8 +300,8 @@ namespace Dynamo.Connectors
 
             connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
             connector.MouseLeave += delegate { Unhighlight(); };
-
-            #endregion
+            plineConnector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
+            plineConnector.MouseLeave += delegate { Unhighlight(); };
 
             isDrawing = true;
 
@@ -212,7 +314,9 @@ namespace Dynamo.Connectors
 
             this.Connect(endPort);
 
-            this.Redraw();
+            this.ConnectorType = dynSettings.Instance.Bench.ConnectorType;
+            dynSettings.Instance.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
+            dynSettings.Instance.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
         }
 
         public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType)
@@ -222,13 +326,19 @@ namespace Dynamo.Connectors
         public void Highlight()
         {
             if (connector != null)
+            {
                 connector.StrokeThickness = STROKE_THICKNESS * 3;
+                plineConnector.StrokeThickness = STROKE_THICKNESS * 3;
+            }
         }
 
         public void Unhighlight()
         {
             if (connector != null)
+            {
                 connector.StrokeThickness = STROKE_THICKNESS;
+                plineConnector.StrokeThickness = STROKE_THICKNESS;
+            }
         }
 
         public void SendMessage()
@@ -293,7 +403,7 @@ namespace Dynamo.Connectors
 
             //turn the line solid
             connector.StrokeDashArray.Clear();
-
+            plineConnector.StrokeDashArray.Clear();
             pEnd = p;
 
             if (pEnd != null)
@@ -302,6 +412,7 @@ namespace Dynamo.Connectors
                 //starts evaulating immediately
                 //pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
                 p.Connect(this);
+                pEnd.Update();
             }
 
             return true;
@@ -318,11 +429,13 @@ namespace Dynamo.Connectors
                 if (value)
                 {
                     connector.Opacity = STROKE_OPACITY;
+                    plineConnector.Opacity = STROKE_OPACITY;
                     endDot.Opacity = STROKE_OPACITY;
                 }
                 else
                 {
                     connector.Opacity = 0;
+                    plineConnector.Opacity = 0;
                     endDot.Opacity = 0;
                 }
             }
@@ -356,6 +469,8 @@ namespace Dynamo.Connectors
             connector.StrokeDashArray.Add(5);
             connector.StrokeDashArray.Add(2);
 
+            plineConnector.StrokeDashArray.Add(5);
+            plineConnector.StrokeDashArray.Add(2);
         }
 
         public void Kill()
@@ -382,6 +497,7 @@ namespace Dynamo.Connectors
             pEnd = null;
 
             dynSettings.Instance.Workbench.Children.Remove(connector);
+            dynSettings.Instance.Workbench.Children.Remove(plineConnector);
             dynSettings.Instance.Workbench.Children.Remove(endDot);
 
             isDrawing = false;
@@ -396,16 +512,31 @@ namespace Dynamo.Connectors
                 if (pStart != null)
                 {
                     connectorPoints.StartPoint = pStart.Center;
+                    plineFigure.StartPoint = pStart.Center;
 
                     //calculate the bezier offset based on the distance
                     //between ports. if the distance is less than 2 * 100,
                     //make the offset 1/3 of the distance
-                    double distance = Math.Sqrt(Math.Pow(p2.X - pStart.Center.X, 2) + Math.Pow(p2.Y - pStart.Center.Y, 2));
-                    bezOffset = .3 * distance;
+                    double distance = 0.0;
+                    if (connectorType == Connectors.ConnectorType.BEZIER)
+                    {
+                        distance = Math.Sqrt(Math.Pow(p2.X - pStart.Center.X, 2) + Math.Pow(p2.Y - pStart.Center.Y, 2));
+                        bezOffset = .3 * distance;
+                    }
+                    else
+                    {
+                        distance = p2.X - pStart.Center.X;
+                        bezOffset = distance / 2;
+                    }
+
 
                     connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
                     connectorCurve.Point2 = new Point(p2.X - bezOffset, p2.Y);
                     connectorCurve.Point3 = p2;
+
+                    pline.Points[0] = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
+                    pline.Points[1] = new Point(p2.X - bezOffset, p2.Y);
+                    pline.Points[2] = p2;
 
                     Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
                     Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
@@ -416,14 +547,30 @@ namespace Dynamo.Connectors
 
         public void Redraw()
         {
-            double distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
-            bezOffset = .3 * distance;
+            if (pStart == null && pEnd == null)
+                return;
+
+            double distance = 0.0;
+            if (connectorType == Connectors.ConnectorType.BEZIER)
+            {
+                distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
+                bezOffset = .3 * distance;
+            }
+            else
+            {
+                distance = pEnd.Center.X - pStart.Center.X;
+                bezOffset = distance / 2;
+            }
+
 
             //don't redraw with null end points;
             if (pStart != null)
             {
                 connectorPoints.StartPoint = pStart.Center;
+                plineFigure.StartPoint = pStart.Center;
+
                 connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
+                pline.Points[0] = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
             }
             if (pEnd != null)
             {
@@ -431,12 +578,15 @@ namespace Dynamo.Connectors
                 if (pEnd.PortType == PortType.INPUT)
                 {
                     connectorCurve.Point2 = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
+                    pline.Points[1] = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
                 }
                 else if (pEnd.PortType == PortType.STATE)
                 {
                     connectorCurve.Point2 = new Point(pEnd.Center.X, pEnd.Center.Y + bezOffset);
+                    pline.Points[1] = new Point(pEnd.Center.X, pEnd.Center.Y + bezOffset);
                 }
                 connectorCurve.Point3 = pEnd.Center;
+                pline.Points[2] = pEnd.Center;
 
                 Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
                 Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);

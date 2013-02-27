@@ -20,36 +20,44 @@ using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Model Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which creates a model curve.")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeDescription("Creates a model curve.")]
     public class dynModelCurve : dynRevitNode
     {
         public dynModelCurve()
         {
-            InPortData.Add(new PortData("c", "A curve.", typeof(Curve)));
-            InPortData.Add(new PortData("sp", "The sketch plane.", typeof(SketchPlane)));
+            InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Curve)));
+            InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(SketchPlane)));
+            OutPortData = new PortData("mc", "Model Curve", typeof(ModelCurve));
 
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData = new PortData("mc", "ModelCurve", typeof(ModelCurve));
-        public override PortData OutPortData
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            get { return outPortData; }
-        }
+            Curve c = (Curve)((Value.Container)args[0]).Item;
+            SketchPlane sp = (SketchPlane)((Value.Container)args[1]).Item;
 
-        public override Expression Evaluate(FSharpList<Expression> args)
-        {
-            Curve c = (Curve)((Expression.Container)args[0]).Item;
-            SketchPlane sp = (SketchPlane)((Expression.Container)args[1]).Item;
 
             ModelCurve mc;
+            XYZ spOrigin = sp.Plane.Origin;
+            XYZ modelOrigin = XYZ.Zero;
+            Transform trf = Transform.get_Translation(spOrigin);
+            //trf =  trf.Multiply(Transform.get_Rotation(spOrigin,XYZ.BasisZ,spOrigin.AngleOnPlaneTo(XYZ.BasisY,spOrigin)));
+            //Curve ct = c.get_Transformed(trf);
+
+
+            // http://wikihelp.autodesk.com/Revit/enu/2013/Help/00006-API_Developer's_Guide/0074-Revit_Ge74/0114-Sketchin114/0117-ModelCur117
+            // The SetPlaneAndCurve() method and the Curve and SketchPlane property setters are used in different situations.
+            // When the new Curve lies in the same SketchPlane, or the new SketchPlane lies on the same planar face with the old SketchPlane, use the Curve or SketchPlane property setters.
+            // If new Curve does not lay in the same SketchPlane, or the new SketchPlane does not lay on the same planar face with the old SketchPlane, you must simultaneously change the Curve value and the SketchPlane value using SetPlaneAndCurve() to avoid internal data inconsistency.
+
 
             if (this.Elements.Any())
             {
@@ -57,8 +65,10 @@ namespace Dynamo.Nodes
                 if (dynUtils.TryGetElement(this.Elements[0], out e))
                 {
                     mc = e as ModelCurve;
+                    mc.SketchPlane = sp;
                     var loc = mc.Location as LocationCurve;
                     loc.Curve = c;
+
                 }
                 else
                 {
@@ -66,6 +76,9 @@ namespace Dynamo.Nodes
                        ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
                        : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                     this.Elements[0] = mc.Id;
+                    mc.SketchPlane = sp;
+
+
                 }
             }
             else
@@ -74,132 +87,34 @@ namespace Dynamo.Nodes
                    ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
                    : this.UIDocument.Document.Create.NewModelCurve(c, sp);
                 this.Elements.Add(mc.Id);
+                mc.SketchPlane = sp;
             }
 
-            return Expression.NewContainer(mc);
-        }
-    }
-
-    [NodeName("Loft Form")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
-    public class dynLoftForm : dynRevitNode
-    {
-        public dynLoftForm()
-        {
-            InPortData.Add(new PortData("solid?", "Is solid?", typeof(object)));
-            InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(object)));
-
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("form", "Loft Form", typeof(object));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
-        }
-
-        public override Expression Evaluate(FSharpList<Expression> args)
-        {
-            //If we already have a form stored...
-            if (this.Elements.Any())
-            {
-                //Dissolve it, we will re-make it later.
-                FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
-                //And register the form for deletion. Since we've already deleted it here manually, we can 
-                //pass "true" as the second argument.
-                this.DeleteElement(this.Elements[0], true);
-            }
-
-            //Solid argument
-            bool isSolid = ((Expression.Number)args[0]).Item == 1;
-
-            //Build up our list of list of references for the form by...
-            IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
-                //...first selecting everything in the topmost list...
-               delegate(Expression x)
-               {
-                   //If the element in the topmost list is a sub-list...
-                   if (x.IsList)
-                   {
-                       //...then we return a new IEnumerable of References by converting the sub list.
-                       return (x as Expression.List).Item.Select(
-                          delegate(Expression y)
-                          {
-                              //Since we're in a sub-list, we can assume it's a container.
-                              var item = ((Expression.Container)y).Item;
-                              if (item is CurveElement)
-                                  return (item as CurveElement).GeometryCurve.Reference;
-                              else
-                                  return (Reference)item;
-                          }
-                       );
-                   }
-                   //If the element is not a sub-list, then just assume it's a container.
-                   else
-                   {
-                       var obj = ((Expression.Container)x).Item;
-                       Reference r;
-                       if (obj is CurveElement)
-                       {
-                           r = (obj as CurveElement).GeometryCurve.Reference;
-                       }
-                       else
-                       {
-                           r = (Reference)obj;
-                       }
-                       //We return a list here since it's expecting an IEnumerable<Reference>. In reality,
-                       //just passing the element by itself instead of a sub-list is a shortcut for having
-                       //a list with one element, so this is just performing that for the user.
-                       return new List<Reference>() { r };
-                   }
-               }
-            );
-
-            //Now we add all of those references into ReferenceArrays
-            ReferenceArrayArray refArrArr = new ReferenceArrayArray();
-            foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
-            {
-                var refArr = new ReferenceArray();
-                foreach (Reference r in refs)
-                    refArr.Append(r);
-                refArrArr.Append(refArr);
-            }
-
-            //We use the ReferenceArrayArray to make the form, and we store it for later runs.
-            Form f = this.UIDocument.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr);
-            this.Elements.Add(f.Id);
-
-            return Expression.NewContainer(f);
+            return Value.NewContainer(mc);
         }
     }
 
     [NodeName("Curve By Points")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("doc.FamilyCreate.NewCurveByPoints")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
     public class dynCurveByPoints : dynRevitNode
     {
         public dynCurveByPoints()
         {
             InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
+            OutPortData = new PortData("curve", "Curve from ref points", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData = new PortData("curve", "Curve from ref points", typeof(object));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
-        }
-
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             //Our eventual output.
             CurveByPoints c;
 
-            //Build a sequence that unwraps the input list from it's Expression form.
-            IEnumerable<ReferencePoint> refPts = ((Expression.List)args[0]).Item.Select(
-               x => (ReferencePoint)((Expression.Container)x).Item
+            //Build a sequence that unwraps the input list from it's Value form.
+            IEnumerable<ReferencePoint> refPts = ((Value.List)args[0]).Item.Select(
+               x => (ReferencePoint)((Value.Container)x).Item
             );
 
             //Add all of the elements in the sequence to a ReferencePointArray.
@@ -233,103 +148,346 @@ namespace Dynamo.Nodes
                 this.Elements.Add(c.Id);
             }
 
-            return Expression.NewContainer(c);
+            return Value.NewContainer(c);
         }
     }
 
-    [NodeName("CurveElement Reference")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("CurveyPoints.GeometryCurve.Reference")]
-    public class dynCurveRef : dynNode
+    [NodeName("Curve By Points By Line")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeDescription("Create a new Curve by Points by passing in a geometry line in 3d space")]
+    public class dynCurveByPointsByLine : dynRevitNode
     {
-        public dynCurveRef()
+        public dynCurveByPointsByLine()
         {
-            InPortData.Add(new PortData("curve", "CurveByPoints", typeof(object)));
+            InPortData.Add(new PortData("curve", "geometry curve", typeof(object)));
+            OutPortData = new PortData("curve", "Curve from ref points", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData = new PortData("curveRef", "Reference", typeof(object));
-        public override PortData OutPortData
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            get { return outPortData; }
+            //Our eventual output.
+            CurveByPoints c;
+
+            var input = args[0];
+
+
+            //If we are receiving a list, we must create a curve by points (CBPs) for each curve in the list.
+            if (input.IsList)
+            {
+                var curveList = (input as Value.List).Item;
+
+                //Counter to keep track of how many CBPs we've made. We'll use this to delete old
+                //elements later.
+                int count = 0;
+
+                //We create our output by...
+                var result = Utils.SequenceToFSharpList(
+                   curveList.Select(
+                    //..taking each element in the list and...
+                      delegate(Value x)
+                      {
+                          Curve gc = (Curve)((Value.Container)x).Item;
+                          //Add the geometry curves start and end points to a ReferencePointArray.
+                          ReferencePointArray refPtArr = new ReferencePointArray();
+                          if (gc.GetType() == typeof(Line))
+                          {
+                              XYZ start = gc.get_EndPoint(0);
+                              XYZ end = gc.get_EndPoint(1);
+
+                              ReferencePoint refPointStart = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
+                              ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
+                              refPtArr.Append(refPointStart);
+                              refPtArr.Append(refPointEnd);
+                          }
+                          //only lines supported at this point
+
+                          //...if we already have elements made by this node in a previous run...
+                          if (this.Elements.Count > count)
+                          {
+                              Element e;
+                              //...we attempt to fetch it from the document...
+                              if (dynUtils.TryGetElement(this.Elements[count], out e))
+                              {
+                                  //...and if we're successful, update it's position... 
+                                  c = e as CurveByPoints;
+                                  //c.SetPoints(refPtArr);
+                                  //c.GetPoints().get_Item(0).Position.X = gc.get_EndPoint(0).X;
+                              }
+                              else
+                              {
+                                  //...otherwise, we can make a new CBP and replace it in the list of
+                                  //previously created CBPs.
+                                  c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                                  this.Elements[count] = c.Id;
+                              }
+                          }
+                          //...otherwise...
+                          else
+                          {
+                              //...we create a new point...
+                              c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                              //...and store it in the element list for future runs.
+                              this.Elements.Add(c.Id);
+                          }
+                          //Finally, we update the counter, and return a new Value containing the CBP.
+                          //This Value will be placed in the Value.List that will be passed downstream from this
+                          //node.
+                          count++;
+                          return Value.NewContainer(c);
+                      }
+                   )
+                );
+
+                //Now that we've created all the CBPs from this run, we delete all of the
+                //extra ones from the previous run.
+                foreach (var e in this.Elements.Skip(count))
+                {
+                    this.DeleteElement(e);
+                }
+
+                //Fin
+                return Value.NewList(result);
+            }
+
+            else
+            {
+                //If we're not receiving a list, we will just assume we received one geometry curve.
+
+                Curve gc = (Curve)((Value.Container)args[0]).Item;
+                //Add the geometry curves start and end points to a ReferencePointArray.
+                ReferencePointArray refPtArr = new ReferencePointArray();
+                if (gc.GetType() == typeof(Line))
+                {
+                    XYZ start = gc.get_EndPoint(0);
+                    XYZ end = gc.get_EndPoint(1);
+
+                    ReferencePoint refPointStart = this.UIDocument.Document.FamilyCreate.NewReferencePoint(start);
+                    ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
+                    refPtArr.Append(refPointStart);
+                    refPtArr.Append(refPointEnd);
+                }
+
+                //If we've made any elements previously...
+                if (this.Elements.Any())
+                {
+                    Element e;
+                    //...try to get the first one...
+                    if (dynUtils.TryGetElement(this.Elements[0], out e))
+                    {
+                        //..and if we do, update it's position.
+                        c = e as CurveByPoints;
+                        c.SetPoints(refPtArr);
+                    }
+                    else
+                    {
+                        c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                        this.Elements[0] = c.Id;
+                    }
+                }
+                //...otherwise...
+                else
+                {
+                    c = this.UIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                    this.Elements.Add(c.Id);
+                }
+            }
+
+            return Value.NewContainer(c);
+        }
+    }
+
+    [NodeName("Curve Element Reference")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
+    public class dynCurveRef : dynRevitNode
+    {
+        public dynCurveRef()
+        {
+            InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(object)));
+            OutPortData = new PortData("curveRef", "Curve Reference", typeof(object));
+
+            NodeUI.RegisterInputsAndOutput();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        private Value makeCurveRef(object c, int count)
+        {
+            Reference r = c is CurveElement
+               ? (c as CurveElement).GeometryCurve.Reference // curve element
+               : (c as Curve).Reference; // geometry curve
+
+            return Value.NewContainer(r);
+        }
+
+
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             if (input.IsList)
             {
-                return Expression.NewList(
-                   Utils.convertSequence(
-                      (input as Expression.List).Item.Select(
+                int count = 0;
+                var result = Value.NewList(
+                   Utils.SequenceToFSharpList(
+                      (input as Value.List).Item.Select(
                          x =>
-                            Expression.NewContainer(
-                               ((CurveElement)((Expression.Container)x).Item).GeometryCurve.Reference
+                                this.makeCurveRef(
+                                ((Value.Container)x).Item,
+                                count++
                             )
                       )
                    )
                 );
+                foreach (var e in this.Elements.Skip(count))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
             }
             else
             {
-                return Expression.NewContainer(
-                   ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference
-                );
+                var result = this.makeCurveRef(
+                       ((Value.Container)input).Item,
+                       0
+
+                    );
+
+                foreach (var e in this.Elements.Skip(1))
+                {
+                    this.DeleteElement(e);
+                }
+
+                return result;
             }
         }
 
     }
 
-    //[ElementName("Planar Curve By Points")]
-    //[ElementCategory(BuiltinElementCategories.REVIT)]
-    //[ElementDescription("Node to create a planar model curve.")]
-    //[RequiresTransaction(true)]
-    //public class dynModelCurveByPoints : dynElement
-    //{
-    //   public dynModelCurveByPoints()
-    //   {
-    //      InPortData.Add(new PortData("pts", "The points from which to create the curve", typeof(object)));
-    //      OutPortData = new PortData("cv", "The curve(s) by points created by this operation.", typeof(ModelNurbSpline));
+    [NodeName("Curve From Curve Element")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
+    [NodeDescription("Takes in a Model Curve and Extracts Geometry Curve")]
+    public class dynCurveFromModelCurve : dynRevitNode
+    {
+        public dynCurveFromModelCurve()
+        {
+            InPortData.Add(new PortData("mc", "Model Curve Element", typeof(object)));
+            OutPortData = new PortData("curve", "Curve", typeof(object));
 
-    //      base.RegisterInputsAndOutputs();
-    //   }
+            NodeUI.RegisterInputsAndOutput();
+        }
 
-    //   public override Expression Evaluate(FSharpList<Expression> args)
-    //   {
-    //      var pts = ((Expression.List)args[0]).Item.Select(
-    //         e => ((ReferencePoint)((Expression.Container)e).Item).Position
-    //      ).ToList();
+        private Value extractCurve(object c, int count)
+        {
+            Curve curve = ((CurveElement)c).GeometryCurve;
 
-    //      if (pts.Count <= 1)
-    //      {
-    //         throw new Exception("Not enough reference points to make a curve.");
-    //      }
+            return Value.NewContainer(curve);
+        }
 
-    //      //make a curve
-    //      NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
-    //         pts, Enumerable.Repeat(1.0, pts.Count).ToList()
-    //      );
 
-    //      double rawParam = ns.ComputeRawParameter(.5);
-    //      Transform t = ns.ComputeDerivatives(rawParam, false);
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
 
-    //      XYZ norm = t.BasisZ;
+            if (input.IsList)
+            {
+                int count = 0;
+                var result = Value.NewList(
+                   Utils.SequenceToFSharpList(
+                      (input as Value.List).Item.Select(
+                         x =>
+                                this.extractCurve(
+                                ((Value.Container)x).Item,
+                                count++
+                            )
+                      )
+                   )
+                );
+                foreach (var e in this.Elements.Skip(count))
+                {
+                    this.DeleteElement(e);
+                }
 
-    //      if (norm.GetLength() == 0)
-    //      {
-    //         norm = XYZ.BasisZ;
-    //      }
+                return result;
+            }
+            else
+            {
+                var result = this.extractCurve(
+                       ((Value.Container)input).Item,
+                       0
 
-    //      Plane p = new Plane(norm, t.Origin);
-    //      SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
-    //      //sps.Add(sp);
+                    );
 
-    //      ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+                foreach (var e in this.Elements.Skip(1))
+                {
+                    this.DeleteElement(e);
+                }
 
-    //      return Expression.NewContainer(c);
-    //   }
-    //}
+                return result;
+            }
+        }
+
+    }
+
+    [NodeName("Planar Nurb Spline")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
+    [NodeDescription("Node to create a planar model curve.")]
+    public class dynModelCurveNurbSpline : dynRevitNode
+    {
+        public dynModelCurveNurbSpline()
+        {
+            InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(object)));
+            OutPortData = new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var pts = ((Value.List)args[0]).Item.Select(
+               e => ((ReferencePoint)((Value.Container)e).Item).Position
+            ).ToList();
+
+
+            foreach (ElementId el in this.Elements)
+            {
+                Element e;
+                if (dynUtils.TryGetElement(el, out e))
+                {
+                    this.UIDocument.Document.Delete(el);
+                }
+            }
+            if (pts.Count <= 1)
+            {
+                throw new Exception("Not enough reference points to make a curve.");
+            }
+
+            //make a curve
+            NurbSpline ns = this.UIDocument.Application.Application.Create.NewNurbSpline(
+               pts, Enumerable.Repeat(1.0, pts.Count).ToList()
+            );
+
+            double rawParam = ns.ComputeRawParameter(.5);
+            Transform t = ns.ComputeDerivatives(rawParam, false);
+
+            XYZ norm = t.BasisZ;
+
+            if (norm.GetLength() == 0)
+            {
+                norm = XYZ.BasisZ;
+            }
+
+            Plane p = new Plane(norm, t.Origin);
+            SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
+            //sps.Add(sp);
+
+            ModelNurbSpline c = (ModelNurbSpline)this.UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp);
+
+            this.Elements.Add(c.Id);
+
+            return Value.NewContainer(c);
+        }
+    }
 }
 

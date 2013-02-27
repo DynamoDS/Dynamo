@@ -28,7 +28,7 @@ using Dynamo.Nodes.SyncedNodeExtensions; //Gives the RegisterEval... methods
 
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Nodes
@@ -155,12 +155,12 @@ namespace Dynamo.Nodes
         /// </summary>
         protected abstract string SelectionText { get; }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             if (this.SelectedElement == null)
                 throw new Exception("Nothing selected.");
 
-            return Expression.NewContainer(this.SelectedElement);
+            return Value.NewContainer(this.SelectedElement);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -196,9 +196,178 @@ namespace Dynamo.Nodes
         }
     }
 
+    [IsInteractive(true)]
+    public abstract class dynMultipleElementSelection : dynNode
+    {
+        TextBox tb;
+        System.Windows.Controls.Button selectButton;
+
+        protected dynMultipleElementSelection(PortData outPortData)
+        {
+            this.OutPortData = outPortData;
+
+            //add a button to the inputGrid on the dynElement
+            selectButton = new System.Windows.Controls.Button();
+            selectButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            selectButton.Click += new System.Windows.RoutedEventHandler(selectButton_Click);
+            selectButton.Content = "Select Instances";
+            selectButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            selectButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+            tb = new TextBox();
+            tb.Text = "Nothing Selected";
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+            tb.IsReadOnly = true;
+            tb.IsReadOnlyCaretVisible = false;
+
+            NodeUI.SetRowAmount(2);
+
+            NodeUI.inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(selectButton);
+
+            System.Windows.Controls.Grid.SetRow(selectButton, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 1);
+
+            NodeUI.RegisterInputsAndOutput();
+
+            NodeUI.topControl.Height = 60;
+            NodeUI.UpdateLayout();
+        }
+
+        private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.selectButton.IsEnabled = false;
+            IdlePromise.ExecuteOnIdle(new Action(
+                delegate
+                {
+                    this.OnSelectClick();
+                    this.selectButton.IsEnabled = true;
+                }
+            ));
+        }
+
+        /// <summary>
+        /// Callback for when the "Select" button has been clicked.
+        /// </summary>
+        /// 
+        /// 
+        protected abstract void OnSelectClick();
+
+        private IList<Element> selected;
+        /// <summary>
+        /// The Element which is selected. Setting this property will automatically register the Element
+        /// for proper updating, and will update this node's IsDirty value.
+        /// </summary>
+        public virtual IList<Element> SelectedElements
+        {
+            get { return selected; }
+            set
+            {
+                var dirty = false;
+                if (this.selected != null)
+                {
+                    foreach (Element selectedElement in this.selected)
+                    {
+                        foreach (Element previousElement in value)
+                        {
+
+                            if (previousElement != null && previousElement.Id.Equals(selectedElement.Id))
+                                return;
+
+                            dirty = true;
+                            this.UnregisterEvalOnModified(selectedElement.Id);
+                        }
+                    }
+                }
+                else
+                {
+                    dirty = value != null;
+                }
+
+                this.selected = value;
+                if (value != null)
+                {
+                    foreach (Element previousElement in value)
+                    {
+                        this.RegisterEvalOnModified(
+                           previousElement.Id,
+                           delAction: delegate { this.selected = null; this.SelectedElements = null; }
+                        );
+                    }
+
+                    this.tb.Text = this.SelectionText;
+                    this.selectButton.Content = "Change";
+                }
+                else
+                {
+                    this.tb.Text = "Nothing Selected.";
+                    this.selectButton.Content = "Select";
+                }
+
+                if (dirty)
+                    this.RequiresRecalc = true;
+            }
+        }
+
+        /// <summary>
+        /// Determines what the text should read on the node when the selection has been changed.
+        /// Is ignored in the case where nothing is selected.
+        /// </summary>
+        protected abstract string SelectionText { get; }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (this.SelectedElements == null)
+                throw new Exception("Nothing selected.");
+
+            return Value.NewContainer(this.SelectedElements);
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            if (this.SelectedElements != null)
+            {
+                foreach (Element selectedElement in this.SelectedElements)
+                {
+                    XmlElement outEl = xmlDoc.CreateElement("instance");
+                    outEl.SetAttribute("id", selectedElement.Id.ToString());
+                    dynEl.AppendChild(outEl);
+                }
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals("instance"))
+                {
+                    Element saved = null;
+                    var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
+                    try
+                    {
+                        saved = dynSettings.Instance.Doc.Document.GetElement(id) as FamilyInstance;
+                    }
+                    catch
+                    {
+                        this.Bench.Log("Unable to find element with ID: " + id.IntegerValue);
+                    }
+                    this.SelectedElements.Add(saved);
+                }
+            }
+        }
+    }
+
     [NodeName("Family Instance by Selection")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows you to select a family instance from the document and reference it in Dynamo.")]
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select a family instance from the document.")]
     public class dynFamilyInstanceCreatorSelection : dynElementSelection
     {
         public dynFamilyInstanceCreatorSelection()
@@ -219,26 +388,88 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Divided Surface by Selection")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows the user to select a divided surface.")]
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select a divided surface from the document.")]
     public class dynDividedSurfaceBySelection : dynElementSelection
     {
-        Expression data;
+        Value data;
 
         public dynDividedSurfaceBySelection()
             : base(new PortData("srf", "The divided surface family instance(s)", typeof(dynNodeUI)))
         { }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
+            var result = new List<List<FamilyInstance>>();
+
+            //"Get an interface to the divided surfaces on this element."
+            //TODO: do we want to select a face instead and try to get
+            //the divided surface that way?
+            DividedSurfaceData dsd = this.SelectedElement.GetDividedSurfaceData();
+
+            if (dsd != null)
+            {
+                foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
+                {
+                    DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
+
+                    GridNode gn = new GridNode();
+
+                    int u = 0;
+                    while (u < ds.NumberOfUGridlines)
+                    {
+
+                        var lst = new List<FamilyInstance>();
+
+                        gn.UIndex = u;
+
+                        int v = 0;
+                        while (v < ds.NumberOfVGridlines)
+                        {
+                            gn.VIndex = v;
+
+                            //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
+                            if (ds.IsSeedNode(gn))
+                            {
+                                FamilyInstance fi
+                                  = ds.GetTileFamilyInstance(gn, 0);
+
+                                //put the family instance into the tree
+                                lst.Add(fi);
+                            }
+                            v = v + 1;
+                        }
+
+                        //don't add list if it's empty
+                        if(lst.Count() > 0)
+                            result.Add(lst);
+
+                        u = u + 1;
+                    }
+                }
+
+                this.data = Value.NewList(
+                   Utils.SequenceToFSharpList(
+                      result.Select(
+                         row => Value.NewList(
+                            Utils.SequenceToFSharpList(
+                               row.Select(Value.NewContainer)
+                            )
+                         )
+                      )
+                   )
+                );
+            }
+
             return data;
         }
 
         protected override string SelectionText
         {
-            get { return "Loft ID: " + this.SelectedElement.Id; }
+            get { return "Element ID: " + this.SelectedElement.Id; }
         }
 
+        /*
         public override Element SelectedElement
         {
             get
@@ -291,12 +522,12 @@ namespace Dynamo.Nodes
                         }
                     }
 
-                    this.data = Expression.NewList(
-                       Utils.convertSequence(
+                    this.data = Value.NewList(
+                       Utils.SequenceToFSharpList(
                           result.Select(
-                             row => Expression.NewList(
-                                Utils.convertSequence(
-                                   row.Select(Expression.NewContainer)
+                             row => Value.NewList(
+                                Utils.SequenceToFSharpList(
+                                   row.Select(Value.NewContainer)
                                 )
                              )
                           )
@@ -305,9 +536,11 @@ namespace Dynamo.Nodes
                 }
             }
         }
+        */
 
         protected override void OnSelectClick()
         {
+            this.SelectedElement = null;
             this.SelectedElement = SelectionHelper.RequestFormSelection(
                dynSettings.Instance.Doc, "Select a form element.", dynSettings.Instance
             );
@@ -315,8 +548,8 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Face by Selection")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows the user to select a face.")]
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select a face from the document.")]
     public class dynFormElementBySelection : dynElementSelection
     {
         Reference f;
@@ -335,9 +568,9 @@ namespace Dynamo.Nodes
             this.SelectedElement = doc.Document.GetElement(f);
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewContainer(f);
+            return Value.NewContainer(f);
         }
 
         protected override string SelectionText
@@ -347,8 +580,8 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve by Selection")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows the user to select a curve.")] //or set of curves in the future
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select a curve from the document.")] //or set of curves in the future
     public class dynCurvesBySelection : dynElementSelection
     {
         public dynCurvesBySelection()
@@ -360,6 +593,7 @@ namespace Dynamo.Nodes
             this.SelectedElement = SelectionHelper.RequestCurveElementSelection(
                dynSettings.Instance.Doc, "Select a curve.", dynSettings.Instance
             );
+
         }
 
         protected override string SelectionText
@@ -368,9 +602,57 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Curves by Selection")]
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select a set of curves from the document.")]
+    public class dynMultipleCurvesBySelection : dynMultipleElementSelection
+    {
+        CurveArray curves;
+
+        public dynMultipleCurvesBySelection()
+            : base(new PortData("curves", "The curves", typeof(CurveElement)))
+        { }
+
+        protected override void OnSelectClick()
+        {
+            curves = SelectionHelper.RequestMultipleCurveElementsSelection(
+               dynSettings.Instance.Doc, "Select a set of curves.", dynSettings.Instance
+            );
+            this.SelectedElements.Clear();
+            try
+            {
+                foreach (Element e in curves)
+                {
+                    this.SelectedElements.Add(e);
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        string formatSelectionText(IList<Element> elements)
+        {
+            string selectionText = "";
+            foreach (Element e in elements)
+            {
+                selectionText = selectionText + " " + e.Id.ToString();
+            }
+            return selectionText;
+        }
+
+        protected override string SelectionText
+        {
+            get
+            {
+                return "Curve IDs:" + formatSelectionText(this.SelectedElements);
+            }
+        }
+    }
+
     [NodeName("Point by Selection")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows the user to select a reference point.")]
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select a reference point from the document.")]
     public class dynPointBySelection : dynElementSelection
     {
         public dynPointBySelection() :
@@ -390,158 +672,27 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("SunPath Direction")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which returns the current Sun Path direction.")]
-    public class dynSunPathDirection : dynNode
+    [NodeName("Level by Selection")]
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select a level from the document.")]
+    public class dynLevelBySelection : dynElementSelection
     {
-        System.Windows.Controls.TextBox tb;
-        System.Windows.Controls.Button sunPathButt;
-        Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+        public dynLevelBySelection() :
+            base(new PortData("lvl", "The selected level", typeof(Level)))
+        { }
 
-
-        public dynSunPathDirection()
+        protected override void OnSelectClick()
         {
-            //add a button to the inputGrid on the dynElement
-            sunPathButt = new System.Windows.Controls.Button();
-            //this.inputGrid.Children.Add(sunPathButt);
-            sunPathButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-            sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
-            sunPathButt.Content = "Use SunPath\nfrom Current View";
-            sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-            tb = new TextBox();
-            tb.Text = "No SunPath Registered";
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-            tb.Background = backgroundBrush;
-            tb.BorderThickness = new Thickness(0);
-            tb.IsReadOnly = true;
-            tb.IsReadOnlyCaretVisible = false;
-
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-
-            NodeUI.inputGrid.Children.Add(tb);
-            NodeUI.inputGrid.Children.Add(sunPathButt);
-
-            System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
-
-            NodeUI.RegisterInputsAndOutput();
-
-            NodeUI.topControl.Height = 60;
-            NodeUI.UpdateLayout();
+            this.SelectedElement = SelectionHelper.RequestLevelSelection(
+               dynSettings.Instance.Doc, "Select a level.", dynSettings.Instance
+            );
         }
 
-        private PortData outPortData = new PortData("XYZ", "XYZ", typeof(XYZ));
-        public override PortData OutPortData
+        protected override string SelectionText
         {
-            get { return outPortData; }
+            get { return this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")"; }
         }
-
-        /// <summary>
-        /// Description of ShadowCalculatorUtils.
-        /// NOTE: this is derived from Scott Connover's great class "Geometry API in Revit" from DevCamp 2012, source files accesed 6-8-12 from here 
-        /// https://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Homehttps://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Home
-        /// </summary>
-
-        public static XYZ GetSunDirection(SunAndShadowSettings sunSettings)
-        {
-            //SunAndShadowSettings sunSettings = view.SunAndShadowSettings;
-
-            XYZ initialDirection = XYZ.BasisY;
-
-            //double altitude = sunSettings.Altitude;
-            double altitude = sunSettings.GetFrameAltitude(sunSettings.ActiveFrame);
-            Autodesk.Revit.DB.Transform altitudeRotation = Autodesk.Revit.DB.Transform.get_Rotation(XYZ.Zero, XYZ.BasisX, altitude);
-            XYZ altitudeDirection = altitudeRotation.OfVector(initialDirection);
-
-            //double azimuth = sunSettings.Azimuth;
-            double azimuth = sunSettings.GetFrameAzimuth(sunSettings.ActiveFrame);
-            double actualAzimuth = 2 * Math.PI - azimuth;
-            Autodesk.Revit.DB.Transform azimuthRotation = Autodesk.Revit.DB.Transform.get_Rotation(XYZ.Zero, XYZ.BasisZ, actualAzimuth);
-            XYZ sunDirection = azimuthRotation.OfVector(altitudeDirection);
-            XYZ scaledSunVector = sunDirection.Multiply(100);
-
-            return scaledSunVector;
-        }
-
-        public SunAndShadowSettings PickedSunAndShadowSettings;
-
-        private ElementId sunAndShadowSettingsID;
-
-        void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            View activeView = dynSettings.Instance.Doc.ActiveView;
-            PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
-
-            if (PickedSunAndShadowSettings != null)
-            {
-                sunAndShadowSettingsID = activeView.SunAndShadowSettings.Id;
-                this.RegisterEvalOnModified(sunAndShadowSettingsID); // register with the DMU, TODO - watch out for view changes, as sun is view specific
-                XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
-
-                this.data = Expression.NewContainer(sunVector);
-
-                this.tb.Text = PickedSunAndShadowSettings.Name;
-            }
-            else
-            {
-                //sunPathButt.Content = "Select Instance";
-                this.tb.Text = "Nothing Selected";
-            }
-        }
-
-        public override Expression Evaluate(FSharpList<Expression> args)
-        {
-            if (PickedSunAndShadowSettings.Id.IntegerValue == sunAndShadowSettingsID.IntegerValue) // sanity check
-            {
-                XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
-                this.data = Expression.NewContainer(sunVector);
-                return data;
-            }
-            else
-                throw new Exception("SANITY CHECK FAILED");
-        }
-
-        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
-        {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            if (this.PickedSunAndShadowSettings != null)
-            {
-                XmlElement outEl = xmlDoc.CreateElement("instance");
-                outEl.SetAttribute("id", this.PickedSunAndShadowSettings.Id.ToString());
-                dynEl.AppendChild(outEl);
-            }
-        }
-
-        public override void LoadElement(XmlNode elNode)
-        {
-            foreach (XmlNode subNode in elNode.ChildNodes)
-            {
-                if (subNode.Name.Equals("instance"))
-                {
-                    try
-                    {
-                        this.PickedSunAndShadowSettings = dynSettings.Instance.Doc.Document.GetElement(
-                           new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
-                        ) as SunAndShadowSettings;
-                        if (this.PickedSunAndShadowSettings != null)
-                        {
-                            sunAndShadowSettingsID = PickedSunAndShadowSettings.Id;
-                            this.tb.Text = this.PickedSunAndShadowSettings.Name;
-                            this.sunPathButt.Content = "Use SunPath from Current View";
-                        }
-                    }
-                    catch { }
-                }
-            }
-        }
-
     }
 }
+
+

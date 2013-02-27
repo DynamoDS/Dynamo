@@ -1,0 +1,70 @@
+<dynWorkspace X="-647" Y="55">
+  <dynElements>
+    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="d420be08-e778-4f98-a2b5-5b18905a2635" nickname="List" x="647.5" y="66">
+      <Input name="item(s)" />
+      <Input name="index1" />
+    </Dynamo.Elements.dynNewList>
+    <Dynamo.Elements.dynFamilyInstanceCreatorSelection type="Dynamo.Elements.dynFamilyInstanceCreatorSelection" guid="5dfc94f8-9cba-4693-9861-9ae406dd2a84" nickname="Family Instance by Selection" x="5" y="17">
+      <instance id="33671" />
+    </Dynamo.Elements.dynFamilyInstanceCreatorSelection>
+    <Dynamo.Elements.dynFamilyInstanceCreatorSelection type="Dynamo.Elements.dynFamilyInstanceCreatorSelection" guid="326f1571-40f3-45a6-923b-15e3160a66f7" nickname="Family Instance by Selection" x="1.75" y="142.5">
+      <instance id="33646" />
+    </Dynamo.Elements.dynFamilyInstanceCreatorSelection>
+    <Dynamo.Elements.dynWatch type="Dynamo.Elements.dynWatch" guid="745e1410-c967-4751-8216-be2c82b1e3a1" nickname="Watch" x="780" y="260.25" />
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="d3dc7656-0f70-460b-814f-ea89aa569d41" nickname="Family Curve Loop" x="393.25" y="139.5">
+      <Symbol value="Family Curve Loop" />
+      <Output value="out" />
+      <Inputs>
+        <Input value="Z" />
+        <Input value="fi" />
+      </Inputs>
+    </Dynamo.Elements.dynFunction>
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="bde3ea67-c751-4ae4-af75-f349d510eedd" nickname="Number" x="264.25" y="111.75">
+      <System.Double value="0" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynLoftForm type="Dynamo.Elements.dynLoftForm" guid="80283604-54f5-43cb-85de-8b3ae391d8e0" nickname="Loft Form" x="954.5" y="45" />
+    <Dynamo.Elements.dynBoolSelector type="Dynamo.Elements.dynBoolSelector" guid="0c3f3879-089d-4784-9346-b55bbc2bec47" nickname="Boolean" x="650.25" y="0">
+      <System.Boolean value="True" />
+    </Dynamo.Elements.dynBoolSelector>
+    <Dynamo.Elements.dynBoolSelector type="Dynamo.Elements.dynBoolSelector" guid="91e9a914-204f-4908-b883-5a74b3fe6a6d" nickname="Boolean" x="665.25" y="180.75">
+      <System.Boolean value="False" />
+    </Dynamo.Elements.dynBoolSelector>
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="190353ec-4384-4a3e-a0d8-59a51095f13f" nickname="Family Curve Loop" x="392.75" y="23">
+      <Symbol value="Family Curve Loop" />
+      <Output value="out" />
+      <Inputs>
+        <Input value="Z" />
+        <Input value="fi" />
+      </Inputs>
+    </Dynamo.Elements.dynFunction>
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="19c0734f-93df-4c3e-977f-613cf8613251" nickname="Number" x="251.5" y="0">
+      <System.Double value="100" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="554ce2d3-ee44-4f63-8a2d-f08fb8c34254" nickname="Number" x="485.75" y="312.75">
+      <System.Double value="23" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynFamilyInstanceParameterSetter type="Dynamo.Elements.dynFamilyInstanceParameterSetter" guid="fbcb7577-6a02-42a7-8164-be651bf26895" nickname="Set Instance Parameter" x="611.5" y="321.5" />
+    <Dynamo.Elements.dynStringInput type="Dynamo.Elements.dynStringInput" guid="adcd880d-562c-45a8-8a47-65101529f5e3" nickname="String" x="477.5" y="442.75">
+      <System.String value="a" />
+    </Dynamo.Elements.dynStringInput>
+    <Dynamo.Elements.dynStringInput type="Dynamo.Elements.dynStringInput" guid="544dbc8f-7850-4273-a2b1-76d321ca1544" nickname="String" x="367.75" y="390.75">
+      <System.String value="" />
+    </Dynamo.Elements.dynStringInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="d420be08-e778-4f98-a2b5-5b18905a2635" start_index="0" end="80283604-54f5-43cb-85de-8b3ae391d8e0" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d420be08-e778-4f98-a2b5-5b18905a2635" start_index="0" end="745e1410-c967-4751-8216-be2c82b1e3a1" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="5dfc94f8-9cba-4693-9861-9ae406dd2a84" start_index="0" end="fbcb7577-6a02-42a7-8164-be651bf26895" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="326f1571-40f3-45a6-923b-15e3160a66f7" start_index="0" end="d3dc7656-0f70-460b-814f-ea89aa569d41" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d3dc7656-0f70-460b-814f-ea89aa569d41" start_index="0" end="d420be08-e778-4f98-a2b5-5b18905a2635" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="bde3ea67-c751-4ae4-af75-f349d510eedd" start_index="0" end="d3dc7656-0f70-460b-814f-ea89aa569d41" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="0c3f3879-089d-4784-9346-b55bbc2bec47" start_index="0" end="80283604-54f5-43cb-85de-8b3ae391d8e0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="91e9a914-204f-4908-b883-5a74b3fe6a6d" start_index="0" end="80283604-54f5-43cb-85de-8b3ae391d8e0" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="190353ec-4384-4a3e-a0d8-59a51095f13f" start_index="0" end="d420be08-e778-4f98-a2b5-5b18905a2635" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="19c0734f-93df-4c3e-977f-613cf8613251" start_index="0" end="190353ec-4384-4a3e-a0d8-59a51095f13f" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="554ce2d3-ee44-4f63-8a2d-f08fb8c34254" start_index="0" end="fbcb7577-6a02-42a7-8164-be651bf26895" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="fbcb7577-6a02-42a7-8164-be651bf26895" start_index="0" end="190353ec-4384-4a3e-a0d8-59a51095f13f" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="adcd880d-562c-45a8-8a47-65101529f5e3" start_index="0" end="fbcb7577-6a02-42a7-8164-be651bf26895" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

@@ -24,19 +24,20 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using System.Windows.Media.Effects;
 
 namespace Dynamo.Nodes
 {
     [IsInteractive(false)]
-    public class dynFunction : dynBuiltinMacro
+    public class dynFunction : dynBuiltinFunction
     {
         public dynFunction(IEnumerable<string> inputs, string output, string symbol)
             : base(symbol)
         {
             //Set inputs and output
-            this.SetInputs(inputs);
+            SetInputs(inputs);
             outPortData = new PortData(output, "function output", typeof(object));
 
             //Set the nickname
@@ -54,90 +55,24 @@ namespace Dynamo.Nodes
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
-        }
-
         public dynFunction()
             : base(null)
         {
             //Setup double-click behavior
             NodeUI.MouseDoubleClick += delegate
             {
-                dynSettings.Instance.Bench.DisplayFunction(this.Symbol);
+                dynSettings.Instance.Bench.DisplayFunction(Symbol);
             };
 
             //Add a drop-shadow
             ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
         }
 
-        //TODO: Move this logic
-
-        //protected internal override bool RequiresManualTransaction()
-        //{
-        //    //Check if we already know we require a Manual Transaction
-        //    bool baseManual = base.RequiresManualTransaction();
-        //    if (baseManual)
-        //        return true;
-
-        //    //Initialize our recursive function detection construct
-        //    bool start = _startTag;
-        //    _startTag = true;
-
-        //    //If we've already been here, then we know we're safe already, no need to check internals.
-        //    if (_taggedSymbols.Contains(this.Symbol))
-        //        return false;
-        //    //Remember we've been here.
-        //    _taggedSymbols.Add(this.Symbol);
-
-        //    //Grab the workspace inside this function, and check if any of it's internals require a manual transaction.
-        //    var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-        //    bool manualInternals = ws.Elements.Any(x => x.RequiresManualTransaction());
-
-        //    //If we started the traversal here, then end the recursive function detection.
-        //    if (!start)
-        //    {
-        //        _startTag = false;
-        //        _taggedSymbols.Clear();
-        //    }
-
-        //    //Fin
-        //    return manualInternals;
-        //}
-
-        //protected internal override bool RequiresTransaction()
-        //{
-        //    //Check if we already know we require a Transaction
-        //    bool baseManual = base.RequiresTransaction();
-        //    if (baseManual)
-        //        return true;
-
-        //    //Initialize our recursive function detection construct
-        //    bool start = _startTag;
-        //    _startTag = true;
-
-        //    //If we've already been here, then we know we're safe already, no need to check internals.
-        //    if (_taggedSymbols.Contains(this.Symbol))
-        //        return false;
-        //    //Remember we've been here.
-        //    _taggedSymbols.Add(this.Symbol);
-
-        //    //Grab the workspace inside this function, and check if any of it's internals require a transaction.
-        //    var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-        //    bool manualInternals = ws.Elements.Any(x => x.RequiresTransaction());
-
-        //    //If we started the traversal here, then end the recursive function detection.
-        //    if (!start)
-        //    {
-        //        _startTag = false;
-        //        _taggedSymbols.Clear();
-        //    }
-
-        //    //Fin
-        //    return manualInternals;
-        //}
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
+        }
 
         public override bool RequiresRecalc
         {
@@ -153,14 +88,28 @@ namespace Dynamo.Nodes
                 _startTag = true;
 
                 //If we've already been here, then we're not dirty.
-                if (_taggedSymbols.Contains(this.Symbol))
+                if (_taggedSymbols.Contains(Symbol))
                     return false;
                 //Remember we've been here.
-                _taggedSymbols.Add(this.Symbol);
+                _taggedSymbols.Add(Symbol);
+
+                if (!Bench.dynFunctionDict.ContainsKey(Symbol))
+                {
+                    Bench.Log("WARNING -- No implementation found for node: " + Symbol);
+                    NodeUI.Error("Could not find .dyf definition file for this node.");
+
+                    if (!start)
+                    {
+                        _startTag = false;
+                        _taggedSymbols.Clear();
+                    }
+
+                    return false;
+                }
 
                 //TODO: bugged? 
                 //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
-                var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+                var ws = Bench.dynFunctionDict[Symbol]; //TODO: Refactor
                 bool dirtyInternals = ws.Elements.Any(e => e.RequiresRecalc);
 
                 //If we started the traversal here, clean up.
@@ -184,13 +133,27 @@ namespace Dynamo.Nodes
                     _startTag = true;
 
                     //If we've been here, then we're done.
-                    if (_taggedSymbols.Contains(this.Symbol))
+                    if (_taggedSymbols.Contains(Symbol))
                         return;
                     //Remember
-                    _taggedSymbols.Add(this.Symbol);
+                    _taggedSymbols.Add(Symbol);
+
+                    if (!Bench.dynFunctionDict.ContainsKey(Symbol))
+                    {
+                        Bench.Log("WARNING -- No implementation found for node: " + Symbol);
+                        NodeUI.Error("Could not find .dyf definition file for this node.");
+
+                        if (!start)
+                        {
+                            _startTag = false;
+                            _taggedSymbols.Clear();
+                        }
+
+                        return;
+                    }
 
                     //Notifiy all internals that we're clean.
-                    var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+                    var ws = Bench.dynFunctionDict[Symbol]; //TODO: Refactor
                     foreach (var e in ws.Elements)
                         e.RequiresRecalc = false;
 
@@ -215,7 +178,7 @@ namespace Dynamo.Nodes
             {
                 PortData data = new PortData(input, "Input #" + (i + 1), typeof(object));
 
-                if (this.InPortData.Count > i)
+                if (InPortData.Count > i)
                 {
                     InPortData[i] = data;
                 }
@@ -237,7 +200,7 @@ namespace Dynamo.Nodes
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement("Symbol");
-            outEl.SetAttribute("value", this.Symbol);
+            outEl.SetAttribute("value", Symbol);
             dynEl.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Output");
@@ -260,7 +223,7 @@ namespace Dynamo.Nodes
             {
                 if (subNode.Name.Equals("Symbol"))
                 {
-                    this.Symbol = subNode.Attributes[0].Value;
+                    Symbol = subNode.Attributes[0].Value;
                 }
                 else if (subNode.Name.Equals("Output"))
                 {
@@ -292,48 +255,41 @@ namespace Dynamo.Nodes
             NodeUI.RegisterInputsAndOutput();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var procedure = this.Bench.Environment.LookupSymbol(this.Symbol);
+            var procedure = Bench.Environment.LookupSymbol(Symbol);
             if (procedure.IsFunction)
             {
-                return (procedure as Expression.Function).Item
-                   .Invoke(ExecutionEnvironment.IDENT)
-                   .Invoke(
-                      Utils.convertSequence(
-                         args.Select(
-                            this.macroEnvironment.Evaluate
-                         )
-                      )
-                   );
+                return (procedure as Value.Function).Item.Invoke(args);
             }
             else
                 return base.Evaluate(args);
         }
-
-        //protected internal override INode Build()
-        //{
-        //   if (this.SaveResult && !this.IsDirty)
-        //      return new ExpressionNode(this.oldValue);
-        //   else
-        //      return base.Build();
-        //}
-
-        //protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
-        //{
-        //   return new FunctionNode(this.Symbol, portNames);
-        //}
 
         public override void Destroy()
         {
             bool start = _startTag;
             _startTag = true;
 
-            if (_taggedSymbols.Contains(this.Symbol))
+            if (_taggedSymbols.Contains(Symbol))
                 return;
-            _taggedSymbols.Add(this.Symbol);
+            _taggedSymbols.Add(Symbol);
 
-            var ws = this.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
+            if (!Bench.dynFunctionDict.ContainsKey(Symbol))
+            {
+                Bench.Log("WARNING -- No implementation found for node: " + Symbol);
+                NodeUI.Error("Could not find .dyf definition file for this node.");
+
+                if (!start)
+                {
+                    _startTag = false;
+                    _taggedSymbols.Clear();
+                }
+
+                return;
+            }
+
+            var ws = Bench.dynFunctionDict[Symbol]; //TODO: Refactor
             foreach (var el in ws.Elements)
                 el.Destroy();
 
@@ -342,13 +298,6 @@ namespace Dynamo.Nodes
                 _startTag = false;
                 _taggedSymbols.Clear();
             }
-
-            //var ws = dynElementSettings.SharedInstance.Bench.dynFunctionDict[this.Symbol]; //TODO: Refactor
-            //foreach (var el in ws.Elements)
-            //{
-            //   if (!(el is dynFunction) || !((dynFunction)el).Symbol.Equals(this.Symbol))
-            //      el.Destroy();
-            //}
         }
     }
 
@@ -398,24 +347,28 @@ namespace Dynamo.Nodes
 
         public string Symbol
         {
-            get { return this.tb.Text; }
-            set { this.tb.Text = value; }
+            get { return tb.Text; }
+            set { tb.Text = value; }
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new SymbolNode(
-               (string)NodeUI.Dispatcher.Invoke(new Func<string>(
-                  () => this.Symbol
-               ))
-            );
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new SymbolNode(
+                   (string)NodeUI.Dispatcher.Invoke(new Func<string>(
+                      () => Symbol)));
+                preBuilt[this] = result;
+            }
+            return result;
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement("Symbol");
-            outEl.SetAttribute("value", this.Symbol);
+            outEl.SetAttribute("value", Symbol);
             dynEl.AppendChild(outEl);
         }
 
@@ -425,7 +378,7 @@ namespace Dynamo.Nodes
             {
                 if (subNode.Name == "Symbol")
                 {
-                    this.Symbol = subNode.Attributes[0].Value;
+                    Symbol = subNode.Attributes[0].Value;
                 }
             }
         }
@@ -448,14 +401,14 @@ namespace Dynamo.Nodes
 
     //      OutPortData = new PortData(null, output, "function output", typeof(object));
 
-    //      this.entryPoint = entryPoint;
+    //      entryPoint = entryPoint;
 
-    //      base.RegisterInputsAndOutputs();
+    //      NodeUI.RegisterInputsAndOutput();
     //   }
 
     //   protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
     //   {
-    //      return new AnonymousFunctionNode(portNames, this.entryPoint);
+    //      return new AnonymousFunctionNode(portNames, entryPoint);
     //   }
     //}
     #endregion

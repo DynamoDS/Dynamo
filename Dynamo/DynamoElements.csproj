@@ -44,6 +44,7 @@ limitations under the License.
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,15 +55,38 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Coding4Fun.Kinect.Wpf">
+      <HintPath>..\packages\Coding4Fun.Kinect.Wpf.1.1.0\lib\Coding4Fun.Kinect.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="HelixToolkit.Wpf">
+      <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf.Input">
+      <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="LeapCSharp.NET4.0">
+      <HintPath>..\packages\Leap SDK 0.7.3_2234 Binaries\LeapCSharp.NET4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Drawing">
       <HintPath>..\packages\Coding4Fun.Kinect.Wpf.1.1.0\lib\Microsoft.Expression.Drawing.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Kinect, Version=1.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\kinect\Microsoft.Kinect.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -72,15 +96,19 @@ limitations under the License.
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\revit\vDev\ReleaseWin32\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\revit\r2013\ReleaseWin32\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
@@ -105,6 +133,24 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dyn3D.cs" />
+    <Compile Include="dynAnalysis.cs" />
+    <Compile Include="dynColors.cs" />
+    <Compile Include="dynDivide.cs" />
+    <Compile Include="dynEditWindow.xaml.cs">
+      <DependentUpon>dynEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="dynGeometricForms.cs" />
+    <Compile Include="dynKinect.cs" />
+    <Compile Include="dynLeapMotion.cs" />
+    <Compile Include="dynMeasurement.cs" />
+    <Compile Include="dynSimplexNoise.cs" />
+    <Compile Include="dynTessellation.cs" />
+    <Compile Include="dynTimer.cs" />
+    <Compile Include="dynViews.cs" />
+    <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
+    <Compile Include="ParticleSystem\dynParticleSpring.cs" />
+    <Compile Include="ParticleSystem\dynParticle.cs" />
     <Compile Include="dynArduino.cs" />
     <Compile Include="dynBaseTypes.cs" />
     <Compile Include="dynBench.xaml.cs">
@@ -114,6 +160,7 @@ limitations under the License.
     <Compile Include="dynCommunication.cs" />
     <Compile Include="dynConnector.cs" />
     <Compile Include="dynCurves.cs" />
+    <Compile Include="dynDatums.cs" />
     <Compile Include="dynFamilies.cs" />
     <Compile Include="dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
@@ -124,6 +171,10 @@ limitations under the License.
       <DependentUpon>dynNodeUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynNormals.cs" />
+    <Compile Include="dynNote.xaml.cs">
+      <DependentUpon>dynNote.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ParticleSystem\dynParticleSystem.cs" />
     <Compile Include="dynPoints.cs" />
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
@@ -156,6 +207,8 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SearchDictionary.cs" />
+    <Compile Include="ParticleSystem\VerletIntegrator.cs" />
+    <Compile Include="dynTransforms.cs" />
     <Compile Include="WatchTree.xaml.cs">
       <DependentUpon>WatchTree.xaml</DependentUpon>
     </Compile>
@@ -177,8 +230,16 @@ limitations under the License.
       <SubType>Designer</SubType>
     </Page>
     <Page Include="dynNodeUI.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="dynEditWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="dynNote.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="dynPort.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -235,7 +296,16 @@ limitations under the License.
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy .\DynamoElements.dll ..\..\..\DynamoRevit\bin\Debug\DynamoElements.dll
-copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Debug\DynamoElements.pdb</PostBuildEvent>
+copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Debug\DynamoElements.pdb
+copy .\DynamoElements.dll ..\..\..\DynamoSandbox\bin\Debug\DynamoElements.dll
+copy .\DynamoElements.pdb ..\..\..\\DynamoSandbox\bin\Debug\DynamoElements.pdb
+
+copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.dll
+copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.Input.dll
+copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.pdb ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.pdb
+copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.pdb ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.Input.pdb
+copy ..\..\..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll  ..\..\..\DynamoRevit\bin\Debug\MIConvexHullPlugin.dll
+copy ..\..\..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.pdb  ..\..\..\DynamoRevit\bin\Debug\MIConvexHullPlugin.pdb</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

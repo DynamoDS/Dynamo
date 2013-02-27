@@ -23,199 +23,202 @@ using Autodesk.Revit.ApplicationServices;
 
 namespace Dynamo
 {
-   public delegate void DynElementUpdateDelegate(List<ElementId> updated);
+    public delegate void DynElementUpdateDelegate(List<ElementId> updated);
 
-   public enum ChangeTypeEnum
-   {
-      Delete,
-      Modify,
-      Add
-   };
+    public enum ChangeTypeEnum
+    {
+        Delete,
+        Modify,
+        Add
+    };
 
-   public class DynamoUpdater : IUpdater
-   {
-      static AddInId m_appId;
-      static UpdaterId m_updaterId;
+    public class DynamoUpdater : IUpdater
+    {
+        static AddInId m_appId;
+        static UpdaterId m_updaterId;
 
-      Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>> updateDict
-         = new Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>>();
-      
-      // constructor takes the AddInId for the add-in associated with this updater
-      public DynamoUpdater(AddInId id, ControlledApplication app)
-      {
-         m_appId = id;
-         m_updaterId = new UpdaterId(m_appId, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
+        Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>> updateDict
+           = new Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>>();
 
-         this.updateDict[ChangeTypeEnum.Delete] = new Dictionary<ElementId, DynElementUpdateDelegate>();
-         this.updateDict[ChangeTypeEnum.Modify] = new Dictionary<ElementId, DynElementUpdateDelegate>();
-         this.updateDict[ChangeTypeEnum.Add] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+        // constructor takes the AddInId for the add-in associated with this updater
+        public DynamoUpdater(AddInId id, ControlledApplication app)
+        {
+            m_appId = id;
+            m_updaterId = new UpdaterId(m_appId, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
 
-         app.DocumentChanged
-            += new EventHandler<DocumentChangedEventArgs>(Application_DocumentChanged);
-      }
+            this.updateDict[ChangeTypeEnum.Delete] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+            this.updateDict[ChangeTypeEnum.Modify] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+            this.updateDict[ChangeTypeEnum.Add] = new Dictionary<ElementId, DynElementUpdateDelegate>();
 
-      public void RollBack(IEnumerable<ElementId> deleted)
-      {
-         this.processUpdates(new List<ElementId>(), deleted, new List<ElementId>());
-      }
+            app.DocumentChanged
+               += new EventHandler<DocumentChangedEventArgs>(Application_DocumentChanged);
+        }
 
-      private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
-      {
-         //Document doc = data.GetDocument();
-         var bench = dynSettings.Instance.Bench; // MDJ HOOK
+        public void RollBack(IEnumerable<ElementId> deleted)
+        {
+            this.processUpdates(new List<ElementId>(), deleted, new List<ElementId>());
+        }
 
-         #region Modified
-         var modDict = this.updateDict[ChangeTypeEnum.Modify];
-         var dict = new Dictionary<DynElementUpdateDelegate, List<ElementId>>();
-         foreach (ElementId modifiedElementID in modified)
-         {
-            try
+        private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
+        {
+            //Document doc = data.GetDocument();
+            var bench = dynSettings.Instance.Bench; // MDJ HOOK
+
+            #region Modified
+            var modDict = this.updateDict[ChangeTypeEnum.Modify];
+            var dict = new Dictionary<DynElementUpdateDelegate, List<ElementId>>();
+            foreach (ElementId modifiedElementID in modified)
             {
-               if (!modDict.ContainsKey(modifiedElementID))
-                  continue;
+                try
+                {
+                    if (!modDict.ContainsKey(modifiedElementID))
+                        continue;
 
-               var k = modDict[modifiedElementID];
-               if (!dict.ContainsKey(k))
-                  dict[k] = new List<ElementId>();
-               dict[k].Add(modifiedElementID);
+                    var k = modDict[modifiedElementID];
+                    if (!dict.ContainsKey(k))
+                        dict[k] = new List<ElementId>();
+                    dict[k].Add(modifiedElementID);
+                }
+                catch (Exception e)
+                {
+                    bench.Log("Dynamic Model Update error while parsing modified elements.");
+                    bench.Log(e);
+                }
             }
-            catch (Exception e)
+
+            foreach (var pair in dict)
             {
-               bench.Log(e.ToString());
+                pair.Key(pair.Value);
             }
-         }
+            #endregion
 
-         foreach (var pair in dict)
-         {
-            pair.Key(pair.Value);
-         }
-         #endregion
-
-         #region Added
-         modDict = this.updateDict[ChangeTypeEnum.Add];
-         dict.Clear();
-         foreach (ElementId addedElementID in added)
-         {
-            try
+            #region Added
+            modDict = this.updateDict[ChangeTypeEnum.Add];
+            dict.Clear();
+            foreach (ElementId addedElementID in added)
             {
-               if (!modDict.ContainsKey(addedElementID))
-                  continue;
+                try
+                {
+                    if (!modDict.ContainsKey(addedElementID))
+                        continue;
 
-               var k = modDict[addedElementID];
-               if (!dict.ContainsKey(k))
-                  dict[k] = new List<ElementId>();
-               dict[k].Add(addedElementID);
+                    var k = modDict[addedElementID];
+                    if (!dict.ContainsKey(k))
+                        dict[k] = new List<ElementId>();
+                    dict[k].Add(addedElementID);
+                }
+                catch (Exception e)
+                {
+                    bench.Log("Dynamic Model Update error while parsing added elements.");
+                    bench.Log(e);
+                }
             }
-            catch (Exception e)
+
+            foreach (var pair in dict)
             {
-               bench.Log(e.ToString());
+                pair.Key(pair.Value);
             }
-         }
+            #endregion
 
-         foreach (var pair in dict)
-         {
-            pair.Key(pair.Value);
-         }
-         #endregion
-
-         #region Deleted
-         modDict = this.updateDict[ChangeTypeEnum.Delete];
-         dict.Clear();
-         foreach (ElementId deletedElementID in deleted)
-         {
-            try
+            #region Deleted
+            modDict = this.updateDict[ChangeTypeEnum.Delete];
+            dict.Clear();
+            foreach (ElementId deletedElementID in deleted)
             {
-               if (!modDict.ContainsKey(deletedElementID))
-                  continue;
+                try
+                {
+                    if (!modDict.ContainsKey(deletedElementID))
+                        continue;
 
-               var k = modDict[deletedElementID];
-               if (!dict.ContainsKey(k))
-                  dict[k] = new List<ElementId>();
-               dict[k].Add(deletedElementID);
+                    var k = modDict[deletedElementID];
+                    if (!dict.ContainsKey(k))
+                        dict[k] = new List<ElementId>();
+                    dict[k].Add(deletedElementID);
+                }
+                catch (Exception e)
+                {
+                    bench.Log("Dynamic Model Update error while parsing deleted elements.");
+                    bench.Log(e);
+                }
             }
-            catch (Exception e)
+
+            foreach (var pair in dict)
             {
-               bench.Log(e.ToString());
+                pair.Key(pair.Value);
             }
-         }
+            #endregion
+        }
 
-         foreach (var pair in dict)
-         {
-            pair.Key(pair.Value);
-         }
-         #endregion
-      }
+        void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
+        {
+            if (args.GetDocument().Equals(dynSettings.Instance.Doc.Document))
+            {
+                this.processUpdates(
+                   args.GetModifiedElementIds(),
+                   args.GetDeletedElementIds(),
+                   args.GetAddedElementIds()
+                );
+            }
+        }
 
-      void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
-      {
-         if (args.GetDocument().Equals(dynSettings.Instance.Doc.Document))
-         {
+        /// <summary>
+        /// Watches for changes of the given type to the Element with the given ID. When changed, executes
+        /// the given Delegate.
+        /// </summary>
+        /// <param name="e">ID of the Element being watched.</param>
+        /// <param name="type">Type of change to watch for.</param>
+        /// <param name="d">Delegate to be called when changed.</param>
+        public void RegisterChangeHook(ElementId e, ChangeTypeEnum type, DynElementUpdateDelegate d)
+        {
+            Dictionary<ElementId, DynElementUpdateDelegate> dict;
+            if (!this.updateDict.ContainsKey(type))
+            {
+                dict = new Dictionary<ElementId, DynElementUpdateDelegate>();
+                this.updateDict[type] = dict;
+            }
+            else
+                dict = this.updateDict[type];
+
+            dict[e] = d;
+        }
+
+        /// <summary>
+        /// Unregisters an element that has been registered via RegisterChangeHook()
+        /// </summary>
+        /// <param name="e">ID of the Element to unregister.</param>
+        /// <param name="type">Type of change to unsubscribe from.</param>
+        public void UnRegisterChangeHook(ElementId e, ChangeTypeEnum type)
+        {
+            this.updateDict[type].Remove(e);
+        }
+
+        public void Execute(UpdaterData data)
+        {
             this.processUpdates(
-               args.GetModifiedElementIds(),
-               args.GetDeletedElementIds(),
-               args.GetAddedElementIds()
+               data.GetModifiedElementIds(),
+               data.GetDeletedElementIds(),
+               data.GetAddedElementIds()
             );
-         }
-      }
+        }
 
-      /// <summary>
-      /// Watches for changes of the given type to the Element with the given ID. When changed, executes
-      /// the given Delegate.
-      /// </summary>
-      /// <param name="e">ID of the Element being watched.</param>
-      /// <param name="type">Type of change to watch for.</param>
-      /// <param name="d">Delegate to be called when changed.</param>
-      public void RegisterChangeHook(ElementId e, ChangeTypeEnum type, DynElementUpdateDelegate d)
-      {
-         Dictionary<ElementId, DynElementUpdateDelegate> dict;
-         if (!this.updateDict.ContainsKey(type))
-         {
-            dict = new Dictionary<ElementId, DynElementUpdateDelegate>();
-            this.updateDict[type] = dict;
-         }
-         else
-            dict = this.updateDict[type];
+        public string GetAdditionalInformation()
+        {
+            return "Watch for user-selected elements that have been changed or deleted and use this info to update Dynnamo";
+        }
 
-         dict[e] = d;
-      }
+        public ChangePriority GetChangePriority()
+        {
+            return ChangePriority.FloorsRoofsStructuralWalls;
+        }
 
-      /// <summary>
-      /// Unregisters an element that has been registered via RegisterChangeHook()
-      /// </summary>
-      /// <param name="e">ID of the Element to unregister.</param>
-      /// <param name="type">Type of change to unsubscribe from.</param>
-      public void UnRegisterChangeHook(ElementId e, ChangeTypeEnum type)
-      {
-         this.updateDict[type].Remove(e);
-      }
+        public UpdaterId GetUpdaterId()
+        {
+            return m_updaterId;
+        }
 
-      public void Execute(UpdaterData data)
-      {
-         this.processUpdates(
-            data.GetModifiedElementIds(), 
-            data.GetDeletedElementIds(),
-            data.GetAddedElementIds()
-         );
-      }
-
-      public string GetAdditionalInformation()
-      {
-         return "Watch for user-selected elements that have been changed or deleted and use this info to update Dynnamo";
-      }
-
-      public ChangePriority GetChangePriority()
-      {
-         return ChangePriority.FloorsRoofsStructuralWalls;
-      }
-
-      public UpdaterId GetUpdaterId()
-      {
-         return m_updaterId;
-      }
-
-      public string GetUpdaterName()
-      {
-         return "Dyanmo Element Watcher";
-      }
-   }
+        public string GetUpdaterName()
+        {
+            return "Dyanmo Element Watcher";
+        }
+    }
 }

@@ -22,31 +22,29 @@ using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
+using System.Xml;
+using System.Windows.Media;
+using Dynamo.Nodes.SyncedNodeExtensions;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Extract Solar Radiation Value")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("Create an element for extracting and computing the average solar radiation value based on a csv file.")]
+    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeDescription("Extracts and computes the average solar radiation value based on a CSV file.")]
     public class dynComputeSolarRadiationValue : dynNode
     {
         public dynComputeSolarRadiationValue()
         {
             InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
+            OutPortData = new PortData("data", "The solar radiation computed data", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData = new PortData("data", "The solar radiation computed data", typeof(double));
-        public override PortData OutPortData
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            get { return outPortData; }
-        }
-
-        public override Expression Evaluate(FSharpList<Expression> args)
-        {
-            string data = ((Expression.String)args[0]).Item;
+            string data = ((Value.String)args[0]).Item;
 
             var SumValue = 0.0;
             double doubleSRValue = 0;
@@ -65,17 +63,19 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return Expression.NewNumber(SumValue);
+            return Value.NewNumber(SumValue);
         }
     }
 
     [NodeName("Analysis Results by Selection")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("An element which allows you to select an analysis result object from the document and reference it in Dynamo.")]
-    public class dynAnalysisResultsBySelection : dynRevitNode
+    [NodeCategory(BuiltinNodeCategories.SELECTION)]
+    [NodeDescription("Select an analysis result object from the document.")]
+    public class dynAnalysisResultsBySelection : dynNode
     {
         public dynAnalysisResultsBySelection()
         {
+            OutPortData = new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element));
+
             //add a button to the inputGrid on the dynElement
             Button analysisResultButt = new Button();
             NodeUI.inputGrid.Children.Add(analysisResultButt);
@@ -88,12 +88,7 @@ namespace Dynamo.Nodes
             analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
 
             NodeUI.RegisterInputsAndOutput();
-        }
 
-        private PortData outPortData = new PortData("ar", "Analysis Results referenced by this operation.", typeof(Element));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         public Element pickedAnalysisResult;
@@ -104,6 +99,7 @@ namespace Dynamo.Nodes
             set
             {
                 pickedAnalysisResult = value;
+                //NotifyPropertyChanged("PickedAnalysisResult");
                 this.RequiresRecalc = true;
             }
         }
@@ -116,14 +112,14 @@ namespace Dynamo.Nodes
             set
             {
                 analysisResultID = value;
+                //NotifyPropertyChanged("AnalysisResultID");
             }
         }
-
         void analysisResultButt_Click(object sender, RoutedEventArgs e)
         {
             PickedAnalysisResult =
                Dynamo.Utilities.SelectionHelper.RequestAnalysisResultInstanceSelection(
-                  this.UIDocument,
+                  dynSettings.Instance.Doc,
                   "Select Analysis Result Object",
                   dynSettings.Instance
                );
@@ -134,7 +130,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+
+        public override Value Evaluate(FSharpList<Value> args)
         {
             if (PickedAnalysisResult != null)
             {
@@ -147,11 +144,188 @@ namespace Dynamo.Nodes
                         TaskDialog.Show("ah hah", "picked sfm equals saved one from dmu");
                     }
 
-                    return Expression.NewContainer(this.PickedAnalysisResult);
+                    return Value.NewContainer(this.PickedAnalysisResult);
                 }
             }
 
             throw new Exception("No data selected!");
         }
+    }
+
+    [NodeName("SunPath Direction")]
+    [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
+    [NodeDescription("Returns the current Sun Path direction.")]
+    public class dynSunPathDirection : dynNode
+    {
+        System.Windows.Controls.TextBox tb;
+        System.Windows.Controls.Button sunPathButt;
+        Value data = Value.NewList(FSharpList<Value>.Empty);
+
+        public dynSunPathDirection()
+        {
+            OutPortData = new PortData("XYZ", "XYZ", typeof(XYZ));
+
+            //add a button to the inputGrid on the dynElement
+            sunPathButt = new System.Windows.Controls.Button();
+            //this.inputGrid.Children.Add(sunPathButt);
+            sunPathButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+            sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
+            sunPathButt.Content = "Use SunPath\nfrom Current View";
+            sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+            tb = new System.Windows.Controls.TextBox();
+            tb.Text = "No SunPath Registered";
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+            tb.IsReadOnly = true;
+            tb.IsReadOnlyCaretVisible = false;
+
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+
+            NodeUI.inputGrid.Children.Add(tb);
+            NodeUI.inputGrid.Children.Add(sunPathButt);
+
+            System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 1);
+
+            NodeUI.RegisterInputsAndOutput();
+
+            NodeUI.topControl.Height = 60;
+            NodeUI.UpdateLayout();
+        }
+
+
+        /// <summary>
+        /// Description of ShadowCalculatorUtils.
+        /// NOTE: this is derived from Scott Connover's great class "Geometry API in Revit" from DevCamp 2012, source files accesed 6-8-12 from here 
+        /// https://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Homehttps://projectpoint.buzzsaw.com/_bz_rest/Web/Home/Index?folder=44#/_bz_rest/Web/Item/Items?folder=152&count=50&start=0&ownership=Home
+        /// </summary>
+
+        public static XYZ GetSunDirection(SunAndShadowSettings sunSettings)
+        {
+            //SunAndShadowSettings sunSettings = view.SunAndShadowSettings;
+
+            XYZ initialDirection = XYZ.BasisY;
+
+            //double altitude = sunSettings.Altitude;
+            double altitude = sunSettings.GetFrameAltitude(sunSettings.ActiveFrame);
+            Autodesk.Revit.DB.Transform altitudeRotation = Autodesk.Revit.DB.Transform.get_Rotation(XYZ.Zero, XYZ.BasisX, altitude);
+            XYZ altitudeDirection = altitudeRotation.OfVector(initialDirection);
+
+            //double azimuth = sunSettings.Azimuth;
+            double azimuth = sunSettings.GetFrameAzimuth(sunSettings.ActiveFrame);
+            double actualAzimuth = 2 * Math.PI - azimuth;
+            Autodesk.Revit.DB.Transform azimuthRotation = Autodesk.Revit.DB.Transform.get_Rotation(XYZ.Zero, XYZ.BasisZ, actualAzimuth);
+            XYZ sunDirection = azimuthRotation.OfVector(altitudeDirection);
+            XYZ scaledSunVector = sunDirection.Multiply(100);
+
+            return scaledSunVector;
+
+        }
+
+        public SunAndShadowSettings pickedSunAndShadowSettings;
+
+        public SunAndShadowSettings PickedSunAndShadowSettings
+        {
+            get { return pickedSunAndShadowSettings; }
+            set
+            {
+                pickedSunAndShadowSettings = value;
+                //NotifyPropertyChanged("PickedSunAndShadowSettings");
+            }
+        }
+
+        private ElementId sunAndShadowSettingsID;
+
+        private ElementId SunAndShadowSettingsID
+        {
+            get { return sunAndShadowSettingsID; }
+            set
+            {
+                sunAndShadowSettingsID = value;
+                //NotifyPropertyChanged("SunAndShadowSettingsID");
+            }
+        }
+
+        void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //data = Value.NewList(FSharpList<Value>.Empty);
+
+            View activeView = dynSettings.Instance.Doc.ActiveView;
+            PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
+
+
+            if (PickedSunAndShadowSettings != null)
+            {
+                sunAndShadowSettingsID = activeView.SunAndShadowSettings.Id;
+                this.RegisterEvalOnModified(sunAndShadowSettingsID); // register with the DMU, TODO - watch out for view changes, as sun is view specific
+                XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
+
+
+                this.data = Value.NewContainer(sunVector);
+
+                this.tb.Text = PickedSunAndShadowSettings.Name;
+            }
+            else
+            {
+                //sunPathButt.Content = "Select Instance";
+                this.tb.Text = "Nothing Selected";
+            }
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (PickedSunAndShadowSettings.Id.IntegerValue == sunAndShadowSettingsID.IntegerValue) // sanity check
+            {
+
+                XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
+                this.data = Value.NewContainer(sunVector);
+                return data;
+            }
+            else
+                throw new Exception("SANITY CHECK FAILED");
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            if (this.PickedSunAndShadowSettings != null)
+            {
+                XmlElement outEl = xmlDoc.CreateElement("instance");
+                outEl.SetAttribute("id", this.PickedSunAndShadowSettings.Id.ToString());
+                dynEl.AppendChild(outEl);
+            }
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals("instance"))
+                {
+                    try
+                    {
+                        this.PickedSunAndShadowSettings = dynSettings.Instance.Doc.Document.GetElement(
+                           new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
+                        ) as SunAndShadowSettings;
+                        if (this.PickedSunAndShadowSettings != null)
+                        {
+                            sunAndShadowSettingsID = PickedSunAndShadowSettings.Id;
+                            this.tb.Text = this.PickedSunAndShadowSettings.Name;
+                            this.sunPathButt.Content = "Use SunPath from Current View";
+                        }
+                    }
+                    catch { }
+                }
+            }
+        }
+
     }
 }

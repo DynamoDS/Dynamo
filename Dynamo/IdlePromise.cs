@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Dynamo.Utilities
 {
@@ -115,11 +116,13 @@ namespace Dynamo.Utilities
             Thread.Sleep(1);
          }
 
+         Debug.WriteLine(string.Format("Promise redeemed for {0}", this.value.ToString()));
          return this.value;
       }
 
       public static T ExecuteOnIdle(IdlePromiseDelegate<T> p)
       {
+         Debug.WriteLine(string.Format("Redeeming promise for {0}", p.GetType().ToString()));
          return new IdlePromise<T>(p).RedeemPromise();
       }
    }

@@ -38,7 +38,10 @@ using Transaction = Autodesk.Revit.DB.Transaction;
 using TransactionStatus = Autodesk.Revit.DB.TransactionStatus;
 using Path = System.IO.Path;
 using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Dynamo.Controls
 {
@@ -56,16 +59,21 @@ namespace Dynamo.Controls
         double oldY = 0.0;
         double oldX = 0.0;
 
-        dynSelection selectedNodes;
+        dynSelection selectedElements;
         bool isConnecting = false;
         dynConnector activeConnector;
         List<DependencyObject> hitResultsList = new List<DependencyObject>();
         bool isPanning = false;
         StringWriter sw;
         string logText;
+        ConnectorType connectorType;
+
+        bool isWindowSelecting = false;
+        Point mouseDownPos;
+        List<dynConnector> connectorsToUpdate = new List<dynConnector>();
 
         dynWorkspace _cspace;
-        dynWorkspace CurrentSpace
+        internal dynWorkspace CurrentSpace
         {
             get { return _cspace; }
             set
@@ -79,13 +87,15 @@ namespace Dynamo.Controls
 
         dynWorkspace homeSpace;
         public Dictionary<string, dynWorkspace> dynFunctionDict = new Dictionary<string, dynWorkspace>();
-
-        public dynToolFinder toolFinder;
         public event PropertyChangedEventHandler PropertyChanged;
 
         SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
         SplashScreen splashScreen;
+        public ConnectorType ConnectorType
+        {
+            get { return connectorType; }
+        }
 
         PredicateTraverser checkManualTransaction = null;
         PredicateTraverser checkRequiresTransaction = null;
@@ -98,21 +108,49 @@ namespace Dynamo.Controls
 
             Predicate<dynNode> manualTransactionPredicate = delegate(dynNode node)
             {
-                return node is dynTransaction
-                    || node is dynFunction
-                        && this.dynFunctionDict[((dynFunction)node).Symbol]
-                            .GetTopMostElements()
-                            .Any(checkManualTransaction.TraverseUntilAny);
+                if (node is dynRevitNode)
+                    return true;
+
+                if (node is dynFunction)
+                {
+                    var symbol = (node as dynFunction).Symbol;
+                    if (!dynFunctionDict.ContainsKey(symbol))
+                    {
+                        Log("WARNING -- No implementation found for node: " + symbol);
+                        node.NodeUI.Error("Could not find .dyf definition file for this node.");
+                        return false;
+                    }
+
+                    return dynFunctionDict[symbol]
+                        .GetTopMostElements()
+                        .Any(checkManualTransaction.TraverseUntilAny);
+                }
+
+                return false;
             };
             checkManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
             Predicate<dynNode> requiresTransactionPredicate = delegate(dynNode node)
             {
-                return node is dynRevitNode
-                    || node is dynFunction
-                        && this.dynFunctionDict[((dynFunction)node).Symbol]
-                            .GetTopMostElements()
-                            .Any(checkRequiresTransaction.TraverseUntilAny);
+                if (node is dynRevitNode)
+                    return true;
+
+                if (node is dynFunction)
+                {
+                    var symbol = (node as dynFunction).Symbol;
+                    if (!dynFunctionDict.ContainsKey(symbol))
+                    {
+                        Log("WARNING -- No implementation found for node: " + symbol);
+                        node.NodeUI.Error("Could not find .dyf definition file for this node.");
+                        return false;
+                    }
+
+                    return dynFunctionDict[symbol]
+                        .GetTopMostElements()
+                        .Any(checkRequiresTransaction.TraverseUntilAny);
+                }
+
+                return false;
             };
             checkRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
 
@@ -126,21 +164,13 @@ namespace Dynamo.Controls
             dynSettings.Instance.Workbench = workBench;
             dynSettings.Instance.Bench = this;
 
-            //run tests, also load core library
-            bool wasError = false;
-            FScheme.test(
-               delegate(string s)
-               {
-                   wasError = true;
-                   Log(s);
-               }
-            );
-            if (!wasError)
+            //run tests
+            if (FScheme.RunTests(Log))
                 Log("All Tests Passed. Core library loaded OK.");
 
             this.Environment = new ExecutionEnvironment();
 
-            selectedNodes = new dynSelection();
+            selectedElements = new dynSelection();
 
             this.CurrentX = CANVAS_OFFSET_X;
             this.CurrentY = CANVAS_OFFSET_Y;
@@ -148,9 +178,14 @@ namespace Dynamo.Controls
             LoadBuiltinTypes();
             PopulateSamplesMenu();
             //LoadUserTypes();
+
+            connectorType = ConnectorType.BEZIER;
+            settings_curves.IsChecked = true;
+            settings_curves.IsChecked = false;
         }
 
         private bool _activated = false;
+
         protected override void OnActivated(EventArgs e)
         {
             if (!this._activated)
@@ -287,8 +322,8 @@ namespace Dynamo.Controls
 
         public dynSelection SelectedElements
         {
-            get { return selectedNodes; }
-            set { selectedNodes = value; }
+            get { return selectedElements; }
+            set { selectedElements = value; }
         }
 
         public bool ViewingHomespace
@@ -307,20 +342,50 @@ namespace Dynamo.Controls
             //setup the menu with all the types by reflecting
             //the DynamoElements.dll
             Assembly elementsAssembly = Assembly.GetExecutingAssembly();
-            Type[] loadedTypes = elementsAssembly.GetTypes();
 
-            foreach (Type t in loadedTypes)
+
+            //try getting the element types via reflection. 
+            // MDJ - I wrapped this in a try-catch as we were having problems with an 
+            // external dll (MIConvexHullPlugin.dll) not loading correctly from \dynamo\packages 
+            // because the dll did not have a strong name by default and was not loaded into the GAC.
+            // The exceptions are now caught but if there is an exception no built-in types are loaded.
+            // TODO - move the try catch inside the for loop if possible to not fail all loads. this could slow down load times though.
+
+            try
             {
-                //only load types that are in the right namespace, are not abstract
-                //and have the elementname attribute
-                object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+                Type[] loadedTypes = elementsAssembly.GetTypes();
 
-                if (!t.IsAbstract && attribs.Length > 0 && t.IsSubclassOf(typeof(dynNode)))
+                foreach (Type t in loadedTypes)
                 {
-                    string typeName = (attribs[0] as NodeNameAttribute).ElementName;
-                    builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
+                    //only load types that are in the right namespace, are not abstract
+                    //and have the elementname attribute
+                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+
+                    if (t.Namespace == "Dynamo.Nodes" &&
+                        !t.IsAbstract &&
+                        attribs.Length > 0 &&
+                        t.IsSubclassOf(typeof(dynNode)))
+                    {
+                        string typeName = (attribs[0] as NodeNameAttribute).Name;
+                        builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Log("Could not load types. " + e.ToString());
+                Log(e);
+                if (e is System.Reflection.ReflectionTypeLoadException)
+                {
+                    var typeLoadException = e as ReflectionTypeLoadException;
+                    var loaderExceptions = typeLoadException.LoaderExceptions;
+                    Log("Dll Load Exception: " + loaderExceptions[0].ToString());
+                    Log(loaderExceptions[0].ToString());
+                    Log("Dll Load Exception: " + loaderExceptions[1].ToString());
+                    Log(loaderExceptions[1].ToString());
+                }
+            }
+            var threads = Process.GetCurrentProcess().Threads; // trying to understand why processor pegs after loading.
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
@@ -368,7 +433,8 @@ namespace Dynamo.Controls
                 }
                 catch (Exception e) //TODO: Narrow down
                 {
-                    Log("Error loading \"" + kvp.Key + "\": " + e.InnerException.Message);
+                    Log("Error loading \"" + kvp.Key);
+                    Log(e.InnerException);
                     continue;
                 }
 
@@ -452,7 +518,8 @@ namespace Dynamo.Controls
                 }
                 catch (Exception e)
                 {
-                    Log("Error loading \"" + kvp.Key + "\": " + e.Message);
+                    Log("Error loading \"" + kvp.Key);
+                    Log(e);
                 }
             }
 
@@ -481,7 +548,10 @@ namespace Dynamo.Controls
 
             if (System.IO.Directory.Exists(samplesPath))
             {
+                string[] dirPaths = Directory.GetDirectories(samplesPath);
                 string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
+
+                // handle top-level files
                 if (filePaths.Any())
                 {
                     foreach (string path in filePaths)
@@ -494,10 +564,46 @@ namespace Dynamo.Controls
                         item.Click += new RoutedEventHandler(sample_Click);
                         samplesMenu.Items.Add(item);
                     }
+
+                }
+
+                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
+                if (dirPaths.Any())
+                {
+                    foreach (string dirPath in dirPaths)
+                    {
+                        var dirItem = new System.Windows.Controls.MenuItem()
+                        {
+                            Header = Path.GetFileName(dirPath),
+                            Tag = Path.GetFileName(dirPath)
+                        };
+                        //item.Click += new RoutedEventHandler(sample_Click);
+                        //samplesMenu.Items.Add(dirItem);
+                        int menuItemCount = samplesMenu.Items.Count;
+
+                        filePaths = Directory.GetFiles(dirPath, "*.dyn");
+                        if (filePaths.Any())
+                        {
+                            foreach (string path in filePaths)
+                            {
+                                var item = new System.Windows.Controls.MenuItem()
+                                {
+                                    Header = Path.GetFileNameWithoutExtension(path),
+                                    Tag = path
+                                };
+                                item.Click += new RoutedEventHandler(sample_Click);
+                                dirItem.Items.Add(item);
+                            }
+
+                        }
+                        samplesMenu.Items.Add(dirItem);
+
+                    }
                     return;
+
                 }
             }
-            this.fileMenu.Items.Remove(this.samplesMenu);
+            //this.fileMenu.Items.Remove(this.samplesMenu);
         }
 
         void sample_Click(object sender, RoutedEventArgs e)
@@ -537,10 +643,12 @@ namespace Dynamo.Controls
 
         private void loadUserWorkspaces(string directory)
         {
+            var parentBuffer = new Dictionary<string, HashSet<string>>();
+            var childrenBuffer = new Dictionary<string, HashSet<dynWorkspace>>();
             string[] filePaths = Directory.GetFiles(directory, "*.dyf");
             foreach (string filePath in filePaths)
             {
-                this.OpenDefinition(filePath);
+                this.OpenDefinition(filePath, childrenBuffer, parentBuffer);
             }
             foreach (var e in this.AllElements)
             {
@@ -561,12 +669,12 @@ namespace Dynamo.Controls
                     //and have the elementname attribute
                     object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
-                    if (t.Namespace == "Dynamo.Elements" &&
+                    if (t.Namespace == "Dynamo.Nodes" &&
                         !t.IsAbstract &&
                         attribs.Length > 0 &&
                         t.IsSubclassOf(typeof(dynNode)))
                     {
-                        string typeName = (attribs[0] as NodeNameAttribute).ElementName;
+                        string typeName = (attribs[0] as NodeNameAttribute).Name;
                         //System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
                         //mi.Header = typeName;
                         //mi.Click += new RoutedEventHandler(AddElement_Click);
@@ -612,7 +720,7 @@ namespace Dynamo.Controls
                     NodeNameAttribute elNameAttrib = node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
                     if (elNameAttrib != null)
                     {
-                        nodeUI.NickName = elNameAttrib.ElementName;
+                        nodeUI.NickName = elNameAttrib.Name;
                     }
                 }
 
@@ -637,26 +745,43 @@ namespace Dynamo.Controls
 
                 return node;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                dynSettings.Instance.Bench.Log("Could not create an instance of the selected type.");
+                Log("Could not create an instance of the selected type: " + elementType);
+                Log(e);
                 return null;
             }
         }
 
+        public dynNote AddNote(string noteText, double x, double y, dynWorkspace workspace)
+        {
+            dynNote n = new dynNote();
+            Canvas.SetLeft(n, x);
+            Canvas.SetTop(n, y);
+            n.noteText.Text = noteText;
+
+            workspace.Notes.Add(n);
+            this.workBench.Children.Add(n);
+
+            return n;
+        }
 
         /// <summary>
         /// Adds the given element to the selection.
         /// </summary>
         /// <param name="sel">The element to select.</param>
-        public void SelectElement(dynNode sel)
+        public void SelectElement(System.Windows.Controls.UserControl sel)
         {
-            if (!selectedNodes.Contains(sel))
+            if (!selectedElements.Contains(sel))
             {
-                //set all other items to the unselected state
-                ClearSelection();
-                selectedNodes.Add(sel);
-                sel.NodeUI.Select();
+                selectedElements.Add(sel);
+
+                if (sel is dynNodeUI)
+                    (sel as dynNodeUI).Select();
+            }
+            if (!workBench.elementsBeingDragged.Contains(sel))
+            {
+                workBench.elementsBeingDragged.Add(sel);
             }
         }
 
@@ -666,13 +791,15 @@ namespace Dynamo.Controls
         public void ClearSelection()
         {
             //set all other items to the unselected state
-            foreach (dynNode el in selectedNodes.ToList())
+            foreach (System.Windows.Controls.UserControl el in selectedElements.ToList())
             {
-                el.NodeUI.Deselect();
+                if (el is dynNodeUI)
+                    (el as dynNodeUI).Deselect();
             }
-            selectedNodes.Clear();
-        }
 
+            selectedElements.Clear();
+            workBench.ClearDragElements();
+        }
 
         /// <summary>
         /// Called when the MouseWheel has been scrolled.
@@ -705,7 +832,6 @@ namespace Dynamo.Controls
             }
             return false;
         }
-
 
         /// <summary>
         /// Updates an element and all its ports.
@@ -828,7 +954,6 @@ namespace Dynamo.Controls
             }
         }
 
-
         /// <summary>
         /// Called when the mouse has been moved.
         /// </summary>
@@ -836,6 +961,8 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         public void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            //Debug.WriteLine("Mouse move.");
+
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
             if (isConnecting && activeConnector != null)
@@ -845,22 +972,23 @@ namespace Dynamo.Controls
 
             //If we are currently dragging an element, redraw the element to
             //match the new mouse coordinates.
-            if (workBench.isDragInProgress)
-            {
-                dynNodeUI el = workBench.elementBeingDragged as dynNodeUI;
-                if (el != null)
-                {
-                    foreach (dynPort p in el.InPorts)
-                    {
-                        p.Update();
-                    }
-                    el.OutPort.Update();
-                    //foreach (dynPort p in el.StatePorts)
-                    //{
-                    //   p.Update();
-                    //}
-                }
-            }
+            //if (workBench.isDragInProgress)
+            //{
+            //    dynNodeUI el = workBench.elementBeingDragged as dynNodeUI;
+            //    if (el != null)
+            //    {
+            //        this.Dispatcher.Invoke(new Action(
+            //            delegate
+            //            {
+            //                foreach (dynConnector c in connectorsToUpdate)
+            //                {
+            //                    c.Redraw();
+            //                }
+
+            //            }), 
+            //            DispatcherPriority.Render, null);
+            //    }
+            //}
 
             //If we are panning the workspace, update the coordinate offset for the
             //next time we are redrawn.
@@ -893,36 +1021,92 @@ namespace Dynamo.Controls
                     oldY = newY;
                 }
             }
+
+            if (isWindowSelecting)
+            {
+                // When the mouse is held down, reposition the drag selection box.
+
+                Point mousePos = e.GetPosition(workBench);
+
+                if (mouseDownPos.X < mousePos.X)
+                {
+                    Canvas.SetLeft(selectionBox, mouseDownPos.X);
+                    selectionBox.Width = mousePos.X - mouseDownPos.X;
+                }
+                else
+                {
+                    Canvas.SetLeft(selectionBox, mousePos.X);
+                    selectionBox.Width = mouseDownPos.X - mousePos.X;
+                }
+
+                if (mouseDownPos.Y < mousePos.Y)
+                {
+                    Canvas.SetTop(selectionBox, mouseDownPos.Y);
+                    selectionBox.Height = mousePos.Y - mouseDownPos.Y;
+                }
+                else
+                {
+                    Canvas.SetTop(selectionBox, mousePos.Y);
+                    selectionBox.Height = mouseDownPos.Y - mousePos.Y;
+                }
+            }
         }
 
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
+            SaveAs(string.Empty);
+        }
+
+        private void SaveAs(string xmlPath)
+        {
             //string xmlPath = "C:\\test\\myWorkbench.xml";
-            string xmlPath = "";
+            //string xmlPath = "";
 
-            string ext, fltr;
-            if (this.ViewingHomespace)
+            //if the incoming path is empty
+            //present the user with save options
+            if (string.IsNullOrEmpty(xmlPath))
             {
-                ext = ".dyn";
-                fltr = "Dynamo Workspace (*.dyn)|*.dyn";
-            }
-            else
-            {
-                ext = ".dyf";
-                fltr = "Dynamo Function (*.dyf)|*.dyf";
-            }
-            fltr += "|All files (*.*)|*.*";
+                string ext, fltr;
+                if (this.ViewingHomespace)
+                {
+                    ext = ".dyn";
+                    fltr = "Dynamo Workspace (*.dyn)|*.dyn";
+                }
+                else
+                {
+                    ext = ".dyf";
+                    fltr = "Dynamo Function (*.dyf)|*.dyf";
+                }
+                fltr += "|All files (*.*)|*.*";
 
-            System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog()
-            {
-                AddExtension = true,
-                DefaultExt = ext,
-                Filter = fltr
-            };
 
-            if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                xmlPath = saveDialog.FileName;
+
+                System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog()
+                {
+                    AddExtension = true,
+                    DefaultExt = ext,
+                    Filter = fltr,
+                };
+
+                //if the xmlPath is not empty set the default directory
+                if (!string.IsNullOrEmpty(xmlPath))
+                {
+                    FileInfo fi = new FileInfo(xmlPath);
+                    saveDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else if (!string.IsNullOrEmpty(CurrentSpace.FilePath))
+                {
+                    //if you've got the file location of the current
+                    //space cached then use its directory 
+                    FileInfo fi = new FileInfo(CurrentSpace.FilePath);
+                    saveDialog.InitialDirectory = fi.DirectoryName;
+                }
+
+                if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    xmlPath = saveDialog.FileName;
+                    CurrentSpace.FilePath = xmlPath;
+                }
             }
 
             if (!string.IsNullOrEmpty(xmlPath))
@@ -935,6 +1119,11 @@ namespace Dynamo.Controls
             }
         }
 
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            //save the active file
+            SaveAs(CurrentSpace.FilePath);
+        }
 
         /// <summary>
         /// Called when a mouse button is pressed.
@@ -943,6 +1132,8 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Debug.WriteLine("Starting mouse down.");
+
             //Pan with middle-click
             if (e.ChangedButton == MouseButton.Middle)
             {
@@ -951,13 +1142,54 @@ namespace Dynamo.Controls
 
             //close the tool finder if the user
             //has clicked anywhere else on the workbench
-            if (toolFinder != null)
+            if (dynToolFinder.Instance != null)
             {
-                workBench.Children.Remove(toolFinder);
-                toolFinder = null;
+                workBench.Children.Remove(dynToolFinder.Instance);
             }
-        }
 
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                connectorsToUpdate.Clear();
+
+                if (!isConnecting)
+                {
+                    //test if you're hitting a node
+                    //if so, don't start window selecting
+                    hitResultsList.Clear();
+                    TestClick(e.GetPosition(workBench));
+                    dynNodeUI element = null;
+                    if (hitResultsList.Count > 0)
+                    {
+                        foreach (DependencyObject depObj in hitResultsList)
+                        {
+                            element = ElementClicked(depObj, typeof(dynNodeUI)) as dynNodeUI;
+                            if (element != null && element.IsVisible)
+                            {
+                                //clear the selection but don't
+                                //reselect until mouse up.
+                                //ClearSelection();
+                                return;
+                            }
+                        }
+                    }
+
+                    // Capture and track the mouse.
+                    isWindowSelecting = true;
+                    mouseDownPos = e.GetPosition(workBench);
+                    workBench.CaptureMouse();
+
+                    // Initial placement of the drag selection box.         
+                    Canvas.SetLeft(selectionBox, mouseDownPos.X);
+                    Canvas.SetTop(selectionBox, mouseDownPos.Y);
+                    selectionBox.Width = 0;
+                    selectionBox.Height = 0;
+
+                    // Make the drag selection box visible.
+                    selectionBox.Visibility = Visibility.Visible;
+                }
+            }
+
+        }
 
         /// <summary>
         /// Called when a mouse button is released.
@@ -966,11 +1198,12 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            Debug.WriteLine("Starting mouse up.");
+
             //Stop panning if we have released the middle mouse button.
             if (e.ChangedButton == MouseButton.Middle)
             {
                 isPanning = false;
-
                 oldX = 0.0;
                 oldY = 0.0;
                 newX = 0.0;
@@ -978,9 +1211,126 @@ namespace Dynamo.Controls
             }
 
             if (e.ChangedButton == MouseButton.Left)
+            {
                 this.beginNameEditClick = false;
+
+                if (isWindowSelecting)
+                {
+                    // Release the mouse capture and stop tracking it.
+                    isWindowSelecting = false;
+                    workBench.ReleaseMouseCapture();
+
+                    // Hide the drag selection box.
+                    selectionBox.Visibility = Visibility.Collapsed;
+
+                    Point mouseUpPos = e.GetPosition(workBench);
+
+                    //clear the selected elements
+                    ClearSelection();
+
+                    foreach (dynNodeUI n in this.Nodes.Select(node => node.NodeUI))
+                    {
+                        //check if the node is within the boundary
+                        double x = Canvas.GetLeft(n);
+                        double y = Canvas.GetTop(n);
+                        System.Windows.Rect rect =
+                            new System.Windows.Rect(
+                                Canvas.GetLeft(selectionBox),
+                                Canvas.GetTop(selectionBox),
+                                selectionBox.Width,
+                                selectionBox.Height);
+
+                        bool contains = rect.Contains(x, y);
+                        if (contains)
+                        {
+                            if (!selectedElements.Contains(n))
+                                selectedElements.Add(n);
+                            if (!workBench.elementsBeingDragged.Contains(n))
+                                workBench.elementsBeingDragged.Add(n);
+                        }
+                    }
+
+                    connectorsToUpdate.Clear();
+
+                    //store all the connectors involved in this
+                    //selection for updating
+                    foreach (UIElement selEl in workBench.ElementsBeingDragged)
+                    {
+                        var el = selEl as dynNodeUI;
+                        if (el != null)
+                        {
+                            foreach (dynPort p in el.InPorts)
+                            {
+                                foreach (dynConnector c in p.Connectors)
+                                {
+                                    if (!connectorsToUpdate.Contains(c))
+                                    {
+                                        connectorsToUpdate.Add(c);
+                                    }
+                                }
+                            }
+                            foreach (dynConnector c in el.OutPort.Connectors)
+                            {
+                                if (!connectorsToUpdate.Contains(c))
+                                {
+                                    connectorsToUpdate.Add(c);
+                                }
+                            }
+                        }
+                    }
+
+                    return;
+                }
+                else
+                {
+                    //if you're dragging a bunch of stuff, when you let go
+                    //the stuff should stay highlighted
+                    //if (this.SelectedElements.Count > 1)
+                    //    return;
+
+                    //otherwise, assume that we want to select what's
+                    //under the mouse
+                    hitResultsList.Clear();
+                    TestClick(e.GetPosition(workBench));
+                    dynNodeUI element = null;
+                    if (hitResultsList.Count > 0)
+                    {
+                        foreach (DependencyObject depObj in hitResultsList)
+                        {
+                            element = ElementClicked(depObj, typeof(dynNodeUI)) as dynNodeUI;
+                            if (element != null && element.IsVisible)
+                            {
+                                Debug.WriteLine("Element clicked");
+                                ClearSelection();
+                                SelectElement(element);
+
+                                //we found an element, so just get out of here
+                                foreach (dynPort p in element.InPorts)
+                                {
+                                    foreach (dynConnector c in p.Connectors)
+                                    {
+                                        connectorsToUpdate.Add(c);
+                                    }
+                                }
+                                foreach (dynConnector c in element.OutPort.Connectors)
+                                {
+                                    connectorsToUpdate.Add(c);
+                                }
+
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
+        public void Log(Exception e)
+        {
+            Log(e.GetType().ToString() + ":");
+            Log(e.Message);
+            Log(e.StackTrace);
+        }
 
         private void BeginDragElement(string name, Point eleOffset)
         {
@@ -1027,7 +1377,7 @@ namespace Dynamo.Controls
                 }
                 catch (Exception e)
                 {
-                    dynSettings.Instance.Bench.Log(e.Message);
+                    Log(e);
                     return;
                 }
             }
@@ -1113,10 +1463,26 @@ namespace Dynamo.Controls
                     }
                 }
 
+                //save the notes
+                XmlElement noteList = xmlDoc.CreateElement("dynNotes");  //write the root element
+                root.AppendChild(noteList);
+                foreach (dynNote n in workSpace.Notes)
+                {
+                    XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
+                    noteList.AppendChild(note);
+                    note.SetAttribute("text", n.noteText.Text);
+                    note.SetAttribute("x", Canvas.GetLeft(n).ToString());
+                    note.SetAttribute("y", Canvas.GetTop(n).ToString());
+                }
+
                 xmlDoc.Save(xmlPath);
+
+                //cache the file path for future save operations
+                workSpace.FilePath = xmlPath;
             }
             catch (Exception ex)
             {
+                Log(ex);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
@@ -1125,6 +1491,17 @@ namespace Dynamo.Controls
         }
 
         bool OpenDefinition(string xmlPath)
+        {
+            return OpenDefinition(
+                xmlPath,
+                new Dictionary<string, HashSet<dynWorkspace>>(),
+                new Dictionary<string, HashSet<string>>());
+        }
+
+        bool OpenDefinition(
+            string xmlPath,
+            Dictionary<string, HashSet<dynWorkspace>> children,
+            Dictionary<string, HashSet<string>> parents)
         {
             try
             {
@@ -1185,10 +1562,15 @@ namespace Dynamo.Controls
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
 
                 XmlNode elNodesList = elNodes[0] as XmlNode;
                 XmlNode cNodesList = cNodes[0] as XmlNode;
+                XmlNode nNodesList = nNodes[0] as XmlNode;
 
+                var dependencies = new Stack<string>();
+
+                #region instantiate nodes
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes[0];
@@ -1206,6 +1588,12 @@ namespace Dynamo.Controls
 
                     Type t = Type.GetType(typeName);
 
+                    if (t == null)
+                    {
+                        Log("Error loading defintion. Could not load node of type: " + typeName);
+                        return false;
+                    }
+
                     dynNode el = AddDynElement(t, nickname, guid, x, y, ws, System.Windows.Visibility.Hidden);
 
                     if (el == null)
@@ -1213,10 +1601,19 @@ namespace Dynamo.Controls
 
                     el.DisableReporting();
                     el.LoadElement(elNode);
+
+                    if (el is dynFunction)
+                    {
+                        var fun = el as dynFunction;
+                        if (fun.Symbol != ws.Name)
+                            dependencies.Push(fun.Symbol);
+                    }
                 }
+                #endregion
 
                 this.workBench.UpdateLayout();
 
+                #region instantiate connectors
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
                     XmlAttribute guidStartAttrib = connector.Attributes[0];
@@ -1269,24 +1666,98 @@ namespace Dynamo.Controls
                         ws.Connectors.Add(newConnector);
                     }
                 }
+                #endregion
+
+                #region instantiate notes
+                if (nNodesList != null)
+                {
+                    foreach (XmlNode note in nNodesList.ChildNodes)
+                    {
+                        XmlAttribute textAttrib = note.Attributes[0];
+                        XmlAttribute xAttrib = note.Attributes[1];
+                        XmlAttribute yAttrib = note.Attributes[2];
+
+                        string text = textAttrib.Value.ToString();
+                        double x = Convert.ToDouble(xAttrib.Value.ToString());
+                        double y = Convert.ToDouble(yAttrib.Value.ToString());
+
+                        dynNote n = AddNote(text, x, y, ws);
+                    }
+                }
+                #endregion
 
                 foreach (var e in ws.Elements)
                     e.EnableReporting();
 
                 this.hideWorkspace(ws);
-                this.SaveFunction(ws, false);
+
                 #endregion
+
+                ws.FilePath = xmlPath;
+
+                bool canLoad = true;
+
+                //For each node this workspace depends on...
+                foreach (var dep in dependencies)
+                {
+                    //If the node hasn't been loaded...
+                    if (!dynFunctionDict.ContainsKey(dep))
+                    {
+                        canLoad = false;
+                        //Dep -> Ws
+                        if (children.ContainsKey(dep))
+                            children[dep].Add(ws);
+                        else
+                            children[dep] = new HashSet<dynWorkspace>() { ws };
+
+                        //Ws -> Deps
+                        if (parents.ContainsKey(ws.Name))
+                            parents[ws.Name].Add(dep);
+                        else
+                            parents[ws.Name] = new HashSet<string>() { dep };
+                    }
+                }
+
+                if (canLoad)
+                    SaveFunction(ws, false);
+
+                nodeWorkspaceWasLoaded(ws, children, parents);
             }
             catch (Exception ex)
             {
                 Log("There was an error opening the workbench.");
-                Log(ex.Message);
-                Log(ex.StackTrace);
+                Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
                 return false;
             }
+
             return true;
+        }
+
+        void nodeWorkspaceWasLoaded(
+            dynWorkspace ws, 
+            Dictionary<string, HashSet<dynWorkspace>> children,
+            Dictionary<string, HashSet<string>> parents)
+        {
+            //If there were some workspaces that depended on this node...
+            if (children.ContainsKey(ws.Name))
+            {
+                //For each workspace...
+                foreach (var child in children[ws.Name])
+                {
+                    //Nodes the workspace depends on
+                    var allParents = parents[child.Name];
+                    //Remove this workspace, since it's now loaded.
+                    allParents.Remove(ws.Name);
+                    //If everything the node depends on has been loaded...
+                    if (!allParents.Any())
+                    {
+                        this.SaveFunction(child, false);
+                        nodeWorkspaceWasLoaded(child, children, parents);
+                    }
+                }
+            }
         }
 
         void hideWorkspace(dynWorkspace ws)
@@ -1295,6 +1766,8 @@ namespace Dynamo.Controls
                 e.NodeUI.Visibility = System.Windows.Visibility.Collapsed;
             foreach (var c in ws.Connectors)
                 c.Visible = false;
+            foreach (var n in ws.Notes)
+                n.Visibility = System.Windows.Visibility.Hidden;
         }
 
         bool OpenWorkbench(string xmlPath)
@@ -1322,9 +1795,11 @@ namespace Dynamo.Controls
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
 
                 XmlNode elNodesList = elNodes[0] as XmlNode;
                 XmlNode cNodesList = cNodes[0] as XmlNode;
+                XmlNode nNodesList = nNodes[0] as XmlNode;
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
@@ -1342,6 +1817,9 @@ namespace Dynamo.Controls
                     double y = Convert.ToDouble(yAttrib.Value.ToString());
 
                     Type t = Type.GetType(typeName);
+
+                    if (t == null)
+                        throw new Exception("Could not find node of type: " + typeName);
 
                     dynNode el = AddDynElement(
                        t, nickname, guid, x, y,
@@ -1429,16 +1907,36 @@ namespace Dynamo.Controls
                     }
                 }
 
+                #region instantiate notes
+                if (nNodesList != null)
+                {
+                    foreach (XmlNode note in nNodesList.ChildNodes)
+                    {
+                        XmlAttribute textAttrib = note.Attributes[0];
+                        XmlAttribute xAttrib = note.Attributes[1];
+                        XmlAttribute yAttrib = note.Attributes[2];
+
+                        string text = textAttrib.Value.ToString();
+                        double x = Convert.ToDouble(xAttrib.Value.ToString());
+                        double y = Convert.ToDouble(yAttrib.Value.ToString());
+
+                        dynNote n = AddNote(text, x, y, this.CurrentSpace);
+
+                    }
+                }
+                #endregion
+
                 foreach (var e in this.CurrentSpace.Elements)
                     e.EnableReporting();
 
                 #endregion
+
+                homeSpace.FilePath = xmlPath;
             }
             catch (Exception ex)
             {
                 Log("There was an error opening the workbench.");
-                Log(ex.Message);
-                Log(ex.StackTrace);
+                Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
                 return false;
@@ -1486,8 +1984,14 @@ namespace Dynamo.Controls
                 dynSettings.Instance.Workbench.Children.Remove(el.NodeUI);
             }
 
+            foreach (dynNote n in this.CurrentSpace.Notes)
+            {
+                dynSettings.Instance.Workbench.Children.Remove(n);
+            }
+
             this.CurrentSpace.Elements.Clear();
             this.CurrentSpace.Connectors.Clear();
+            this.CurrentSpace.Notes.Clear();
             this.CurrentSpace.Modified();
         }
 
@@ -1537,7 +2041,7 @@ namespace Dynamo.Controls
             }
 
             //end the transaction 
-            //dynElementSettings.SharedInstance.MainTransaction.Commit();
+            //dynSettings.Instance.MainTransaction.Commit();
         }
 
         public void Log(string message)
@@ -1553,14 +2057,14 @@ namespace Dynamo.Controls
 
         void OnPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            //Keyboard.Focus(this);
+            Debug.WriteLine("Starting preview mouse down.");
 
             hitResultsList.Clear();
             TestClick(e.GetPosition(workBench));
 
             dynPort p = null;
             DragCanvas dc = null;
-            dynNodeUI elementUI = null;
+            dynNodeUI nodeUI = null;
 
             bool hit = false;
 
@@ -1582,19 +2086,12 @@ namespace Dynamo.Controls
 
                     //traverse the tree through all the
                     //hit elements to see if you get an element
-                    elementUI = ElementClicked(depObj, typeof(dynNodeUI)) as dynNodeUI;
-                    if (elementUI != null && elementUI.IsVisible)
+                    nodeUI = ElementClicked(depObj, typeof(dynNodeUI)) as dynNodeUI;
+                    if (nodeUI != null && nodeUI.IsVisible)
                     {
                         hit = true;
                         break;
                     }
-                }
-
-                if (!hit)
-                {
-                    //traverse the tree through all the
-                    //hit elements to see if you get the canvas
-                    dc = ElementClicked(hitResultsList[0], typeof(DragCanvas)) as DragCanvas;
                 }
             }
 
@@ -1678,10 +2175,10 @@ namespace Dynamo.Controls
             }
             #endregion
 
-            if (elementUI != null)
+            if (nodeUI != null)
             {
                 Debug.WriteLine("Element clicked");
-                SelectElement(elementUI.NodeLogic);
+                SelectElement(nodeUI);
             }
 
             if (dc != null)
@@ -1725,6 +2222,7 @@ namespace Dynamo.Controls
 
         //bubbling
         //from element up to root
+
         private void OnKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
 
@@ -1749,29 +2247,72 @@ namespace Dynamo.Controls
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.B))
             {
                 //get the mouse position
+                if (!dynSettings.Instance.Workbench.Children.Contains(dynToolFinder.Instance))
+                {
+                    dynSettings.Instance.Workbench.Children.Add(dynToolFinder.Instance);
 
-                toolFinder = new dynToolFinder();
-                dynSettings.Instance.Workbench.Children.Add(toolFinder);
-                toolFinder.ToolFinderFinished += new ToolFinderFinishedHandler(toolFinder_ToolFinderFinished);
-
-                Canvas.SetLeft(toolFinder, 100);
-                Canvas.SetTop(toolFinder, 100);
-                e.Handled = true;
+                    Point p = Mouse.GetPosition(dynSettings.Instance.Workbench);
+                    Canvas.SetLeft(dynToolFinder.Instance, p.X);
+                    Canvas.SetTop(dynToolFinder.Instance, p.Y);
+                    e.Handled = true;
+                }
             }
             //changed the delete key combination so as not to interfere with
             //keyboard events
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Back) ||
                 Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Delete))
             {
-                //don't do this if an input element has focus
-                //this keeps us from deleting nodes when the
-                //user is deleting text
 
-                for (int i = selectedNodes.Count - 1; i >= 0; i--)
+                for (int i = selectedElements.Count - 1; i >= 0; i--)
                 {
-                    DeleteElement(selectedNodes[i]);
+                    DeleteElement(selectedElements[i]);
                 }
+
                 e.Handled = true;
+            }
+
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
+            {
+                dynNote note = new dynNote();
+                dynSettings.Instance.Workbench.Children.Add(note);
+
+                //convert the current position of the mouse into canvas coordinates
+                Point p = Mouse.GetPosition(dynSettings.Instance.Workbench);
+
+                Canvas.SetLeft(note, p.X);
+                Canvas.SetTop(note, p.Y);
+
+                CurrentSpace.Notes.Add(note);
+                if (!ViewingHomespace)
+                    CurrentSpace.Modified(); //tell the workspace to save
+
+                e.Handled = true;
+            }
+
+            IInputElement focusElement = FocusManager.GetFocusedElement(this);
+
+            if (focusElement != null && focusElement.GetType() != typeof(System.Windows.Controls.TextBox))
+            {
+                if (Keyboard.IsKeyDown(Key.Left))
+                {
+                    this.CurrentX += 20;
+                    e.Handled = true;
+                }
+                if (Keyboard.IsKeyDown(Key.Right))
+                {
+                    this.CurrentX -= 20;
+                    e.Handled = true;
+                }
+                if (Keyboard.IsKeyDown(Key.Up))
+                {
+                    this.CurrentY += 20;
+                    e.Handled = true;
+                }
+                if (Keyboard.IsKeyDown(Key.Down))
+                {
+                    this.CurrentY -= 20;
+                    e.Handled = true;
+                }
             }
 
             if (editingName)
@@ -1795,37 +2336,50 @@ namespace Dynamo.Controls
             }
         }
 
-        internal void DeleteElement(dynNode el)
+        internal void DeleteElement(System.Windows.Controls.UserControl el)
         {
-            var elUI = el.NodeUI;
-            for (int i = elUI.OutPort.Connectors.Count - 1; i >= 0; i--)
+            dynNote note = el as dynNote;
+            dynNodeUI node = el as dynNodeUI;
+
+            if (node != null)
             {
-                elUI.OutPort.Connectors[i].Kill();
-            }
-            foreach (dynPort p in elUI.InPorts)
-            {
-                for (int i = p.Connectors.Count - 1; i >= 0; i--)
+                for (int i = node.OutPort.Connectors.Count - 1; i >= 0; i--)
                 {
-                    p.Connectors[i].Kill();
+                    node.OutPort.Connectors[i].Kill();
                 }
+            
+                foreach (dynPort p in node.InPorts)
+                {
+                    for (int i = p.Connectors.Count - 1; i >= 0; i--)
+                    {
+                        p.Connectors[i].Kill();
+                    }
+                }
+
+                selectedElements.Remove(node);
+                this.Nodes.Remove(node.NodeLogic);
+                dynSettings.Instance.Workbench.Children.Remove(node);
             }
-
-            selectedNodes.Remove(el);
-            this.Nodes.Remove(el);
-            dynSettings.Instance.Workbench.Children.Remove(elUI);
-            elUI = null;
+            else if (note != null)
+            {
+                this.CurrentSpace.Notes.Remove(note);
+            }
         }
 
-        void toolFinder_ToolFinderFinished(object sender, EventArgs e)
-        {
-            dynSettings.Instance.Workbench.Children.Remove(toolFinder);
-            toolFinder = null;
-        }
+        //void toolFinder_ToolFinderFinished(object sender, EventArgs e)
+        //{
+        //    dynSettings.Instance.Workbench.Children.Remove(toolFinder);
+        //    toolFinder = null;
+        //}
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             LockUI();
             CleanWorkbench();
+
+            //don't save the file path
+            CurrentSpace.FilePath = "";
+
             UnlockUI();
         }
 
@@ -1877,7 +2431,13 @@ namespace Dynamo.Controls
                 {
                     try
                     {
-                        valid.Add(dynSettings.Instance.Doc.Document.GetElement(delId).Id);
+                        Autodesk.Revit.DB.Element e = dynSettings.Instance.Doc.Document.GetElement(delId);
+                        if (e != null)
+                        {
+                            valid.Add(e.Id);
+                        }
+                        else
+                            invalid.Add(delId);
                     }
                     catch
                     {
@@ -1978,7 +2538,7 @@ namespace Dynamo.Controls
 
             //TODO: Hack. Might cause things to break later on...
             //Reset Cancel and Rerun flags
-            this.CancelRun = false;
+            this.RunCancelled = false;
             this.runAgain = false;
 
             //We are now considered running
@@ -2005,71 +2565,80 @@ namespace Dynamo.Controls
                 //TODO: Flesh out error handling
                 try
                 {
+                    var topNode = new FSchemeInterop.Node.BeginNode(new List<string>());
+                    var i = 0;
+                    foreach (var topMost in topElements)
+                    {
+                        var inputName = i.ToString();
+                        topNode.AddInput(inputName);
+                        topNode.ConnectInput(inputName, topMost.BuildExpression());
+                        i++;
+                    }
+
+                    Expression runningExpression = topNode.Compile();
+
+                    //Dispatcher.Invoke(new Action(
+                    //    () => Log(FScheme.printExpression("", runningExpression))));
+
                     //Run Delegate
                     Action run = delegate
                     {
-                        //For each entry point...
-                        foreach (dynNode topMost in topElements)
+                        //Print some stuff if we're in debug mode
+                        if (debug)
                         {
-                            //Build the expression from the entry point.
-                            Expression runningExpression = topMost.Build().Compile();
+                            //string exp = FScheme.print(runningExpression);
+                            this.Dispatcher.Invoke(new Action(
+                               delegate
+                               {
+                                   foreach (var node in topElements)
+                                   {
+                                       string exp = node.PrintExpression();
+                                       Log("> " + exp);
+                                   }
+                               }
+                            ));
+                        }
 
-                            //Print some stuff if we're in debug mode
-                            if (debug)
+                        try
+                        {
+                            //Evaluate the expression
+                            var expr = this.Environment.Evaluate(runningExpression);
+
+                            //Print some more stuff if we're in debug mode
+                            if (debug && expr != null)
                             {
-                                //string exp = FScheme.print(runningExpression);
+                                this.Dispatcher.Invoke(new Action(
+                                   () => Log(FScheme.print(expr))
+                                ));
+                            }
+                        }
+                        catch (CancelEvaluationException ex)
+                        {
+                            /* Evaluation was cancelled */
+
+                            this.CancelTransaction();
+                            //this.RunCancelled = false;
+                            if (ex.Force)
+                                this.runAgain = false;
+                        }
+                        catch (Exception ex)
+                        {
+                            /* Evaluation failed due to error */
+
+                            //Print unhandled exception
+                            if (ex.Message.Length > 0)
+                            {
                                 this.Dispatcher.Invoke(new Action(
                                    delegate
                                    {
-                                       string exp = topMost.PrintExpression();
-                                       Log("> " + exp);
+                                       Log("ERROR!");
+                                       Log(ex);
                                    }
                                 ));
                             }
-
-                            try
-                            {
-                                //Evaluate the expression
-                                var expr = this.Environment.Evaluate(runningExpression);
-
-                                //Print some more stuff if we're in debug mode
-                                if (debug && expr != null)
-                                {
-                                    this.Dispatcher.Invoke(new Action(
-                                       () => Log(FScheme.print(expr))
-                                    ));
-                                }
-                            }
-                            catch (CancelEvaluationException ex)
-                            {
-                                /* Evaluation was cancelled */
-
-                                this.CancelTransaction();
-                                this.CancelRun = false;
-                                if (ex.Force)
-                                    this.runAgain = false;
-
-                                //Stop evaluation of other entry points.
-                                break;
-                            }
-                            catch (Exception ex)
-                            {
-                                /* Evaluation failed due to error */
-
-                                //Print unhandled exception
-                                if (ex.Message.Length > 0)
-                                {
-                                    this.Dispatcher.Invoke(new Action(
-                                       () => Log("ERROR: " + ex.Message)
-                                    ));
-                                }
-                                this.CancelTransaction();
-                                this.CancelRun = false;
-                                this.runAgain = false;
-
-                                //Stop evaluation of other entry points.
-                                break;
-                            }
+                            this.CancelTransaction();
+                            this.RunCancelled = true;
+                            this.runAgain = false;
                         }
 
                         //Cleanup Delegate
@@ -2140,7 +2709,8 @@ namespace Dynamo.Controls
                     /* Evaluation was cancelled */
 
                     this.CancelTransaction();
-                    this.CancelRun = false; //Reset cancel flag
+                    //this.CancelRun = false; //Reset cancel flag
+                    this.RunCancelled = true;
 
                     //If we are forcing this, then make sure we don't run again either.
                     if (ex.Force)
@@ -2154,7 +2724,11 @@ namespace Dynamo.Controls
                     if (ex.Message.Length > 0)
                     {
                         this.Dispatcher.Invoke(new Action(
-                           () => Log("ERROR: " + ex.Message)
+                            delegate
+                            {
+                                Log("ERROR!");
+                                Log(ex);
+                            }
                         ));
                     }
 
@@ -2162,7 +2736,7 @@ namespace Dynamo.Controls
 
                     //Reset the flags
                     this.runAgain = false;
-                    this.CancelRun = false;
+                    this.RunCancelled = true;
                 }
                 finally
                 {
@@ -2387,6 +2961,10 @@ namespace Dynamo.Controls
                 {
                     dynC.Visible = false;
                 }
+                foreach (dynNote note in this.CurrentSpace.Notes)
+                {
+                    note.Visibility = System.Windows.Visibility.Hidden;
+                }
 
                 //this.currentFunctionName = name;
 
@@ -2428,7 +3006,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = false;
             }
-
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Hidden;
+            }
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             //Step 2: Store function workspace in the function dictionary
@@ -2452,6 +3033,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = true;
             }
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Visible;
+            }
 
             //this.saveFuncItem.IsEnabled = false;
             this.homeButton.IsEnabled = false;
@@ -2464,7 +3049,7 @@ namespace Dynamo.Controls
             this.setHomeBackground();
         }
 
-        public void SaveFunction(dynWorkspace funcWorkspace, bool writeDefinition = true)
+        public void SaveFunction(dynWorkspace functionWorkspace, bool writeDefinition = true)
         {
             //Generate xml, and save it in a fixed place
             if (writeDefinition)
@@ -2477,80 +3062,80 @@ namespace Dynamo.Controls
                     if (!Directory.Exists(pluginsPath))
                         Directory.CreateDirectory(pluginsPath);
 
-                    string path = Path.Combine(pluginsPath, FormatFileName(funcWorkspace.Name) + ".dyf");
-                    SaveWorkspace(path, funcWorkspace);
+                    string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
+                    SaveWorkspace(path, functionWorkspace);
                 }
                 catch (Exception e)
                 {
-                    Log("Error saving:" + e.GetType() + ": " + e.Message);
+                    Log("Error saving:" + e.GetType());
+                    Log(e);
                 }
             }
-
-            //Find compile errors
-            var topMost = funcWorkspace.Elements.Where(x => !x.NodeUI.OutPort.Connectors.Any()).ToList();
-            if (topMost.Count > 1)
-            {
-                foreach (var ele in topMost)
-                {
-                    ele.NodeUI.Error("Nodes can have only one output.");
-                }
-            }
-            else
-            {
-                foreach (var ele in topMost)
-                {
-                    ele.NodeUI.ValidateConnections();
-                }
-            }
-
-            //Find function entry point, and then compile the function and add it to our environment
-            dynNode top = topMost.FirstOrDefault();
-
-            var variables = funcWorkspace.Elements.Where(x => x is dynSymbol);
-            var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
 
             try
             {
+                //Find compile errors
+                var topMost = functionWorkspace.GetTopMostElements().ToList();
+
+                if (topMost.Count > 1)
+                {
+                    foreach (var ele in topMost)
+                    {
+                        ele.NodeUI.Error("Nodes can have only one output.");
+                    }
+                }
+                else
+                {
+                    foreach (var ele in topMost)
+                    {
+                        ele.NodeUI.ValidateConnections();
+                    }
+                }
+
+                //Find function entry point, and then compile the function and add it to our environment
+                dynNode top = topMost.FirstOrDefault();
+
+                var variables = functionWorkspace.Elements.Where(x => x is dynSymbol);
+                var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
+
                 if (top != default(dynNode))
                 {
-                    Expression expression = Utils.MakeAnon(
-                       variableNames,
-                       top.Build().Compile()
-                    );
+                    var topNode = top.BuildExpression();
+                    
+                    Expression expression = Utils.MakeAnon(variableNames, topNode.Compile());
 
-                    this.Environment.DefineSymbol(funcWorkspace.Name, expression);
+                    this.Environment.DefineSymbol(functionWorkspace.Name, expression);
                 }
-            }
-            catch
-            {
-                //TODO: flesh out error handling (build-loops?)
-            }
 
-            //Update existing function nodes which point to this function to match its changes
-            foreach (var el in this.AllElements)
-            {
-                if (el is dynFunction)
+                //Update existing function nodes which point to this function to match its changes
+                foreach (var el in this.AllElements)
                 {
-                    var node = (dynFunction)el;
+                    if (el is dynFunction)
+                    {
+                        var node = (dynFunction)el;
 
-                    if (!node.Symbol.Equals(funcWorkspace.Name))
-                        continue;
+                        if (!node.Symbol.Equals(functionWorkspace.Name))
+                            continue;
 
-                    node.SetInputs(variableNames);
-                    el.NodeUI.ReregisterInputs();
-                    //el.IsDirty = true;
+                        node.SetInputs(variableNames);
+                        el.NodeUI.ReregisterInputs();
+                    }
                 }
+
+                //Call OnSave for all saved elements
+                foreach (var el in functionWorkspace.Elements)
+                    el.onSave();
+
+                //Update new add menu
+                var addItem = (dynFunction)this.addMenuItemsDictNew[functionWorkspace.Name].NodeLogic;
+                addItem.SetInputs(variableNames);
+                addItem.NodeUI.ReregisterInputs();
+                addItem.NodeUI.State = ElementState.DEAD;
             }
-
-            //Call OnSave for all saved elements
-            foreach (var el in funcWorkspace.Elements)
-                el.onSave();
-
-            //Update new add menu
-            var addItem = (dynFunction)this.addMenuItemsDictNew[funcWorkspace.Name].NodeLogic;
-            addItem.SetInputs(variableNames);
-            addItem.NodeUI.ReregisterInputs();
-            addItem.NodeUI.State = ElementState.DEAD;
+            catch (Exception ex)
+            {
+                Log(ex.GetType().ToString() + ": " + ex.Message);
+            }
         }
 
         internal void DisplayFunction(string symbol)
@@ -2573,7 +3158,10 @@ namespace Dynamo.Controls
             {
                 con.Visible = false;
             }
-
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Hidden;
+            }
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             if (!this.ViewingHomespace)
@@ -2599,6 +3187,11 @@ namespace Dynamo.Controls
             foreach (var con in this.CurrentSpace.Connectors)
             {
                 con.Visible = true;
+            }
+
+            foreach (var note in this.CurrentSpace.Notes)
+            {
+                note.Visibility = System.Windows.Visibility.Visible;
             }
 
             //this.saveFuncItem.IsEnabled = true;
@@ -2634,32 +3227,6 @@ namespace Dynamo.Controls
             //var sbBrush = (LinearGradientBrush)this.sidebarGrid.Background;
             //sbBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
             //sbBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0x9A, 0x9A, 0x9A); //Light
-        }
-
-
-        private void Print_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (dynNode el in this.Nodes)
-            {
-                dynNode topMost = null;
-                if (!el.NodeUI.OutPort.Connectors.Any())
-                {
-                    topMost = el;
-
-                    Expression runningExpression = topMost.Build().Compile();
-
-                    //TODO: Flesh out error handling
-                    try
-                    {
-                        string exp = FScheme.print(runningExpression);
-                        Log("> " + exp);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log("ERROR: " + ex.Message);
-                    }
-                }
-            }
         }
 
         internal void RemoveConnector(dynConnector c)
@@ -3074,7 +3641,7 @@ namespace Dynamo.Controls
             //   this.searchBox.Text = "Search";
         }
 
-        public bool CancelRun
+        public bool RunCancelled
         {
             get;
             private set;
@@ -3082,7 +3649,7 @@ namespace Dynamo.Controls
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.CancelRun = true;
+            this.RunCancelled = true;
         }
 
         public bool DynamicRunEnabled
@@ -3111,7 +3678,7 @@ namespace Dynamo.Controls
 
         internal void QueueRun()
         {
-            this.CancelRun = true;
+            this.RunCancelled = true;
             this.runAgain = true;
         }
 
@@ -3135,9 +3702,179 @@ namespace Dynamo.Controls
         {
             this.dynamicCheckBox.IsEnabled = true;
         }
+
+        private void settings_curves_Checked(object sender, RoutedEventArgs e)
+        {
+            if (settings_plines != null)
+            {
+                this.connectorType = ConnectorType.BEZIER;
+                settings_plines.IsChecked = false;
+            }
+        }
+
+        private void settings_plines_Checked(object sender, RoutedEventArgs e)
+        {
+            if (settings_curves != null)
+            {
+                this.connectorType = ConnectorType.POLYLINE;
+                settings_curves.IsChecked = false;
+            }
+        }
+
+        private void saveImage_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "PNG Image|*.png";
+            sfd.Title = "Save you Workbench to an Image";
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string imagePath = sfd.FileName;
+
+                Transform trans = workBench.LayoutTransform;
+                workBench.LayoutTransform = null;
+                Size size = new Size(workBench.Width, workBench.Height);
+                workBench.Measure(size);
+                workBench.Arrange(new Rect(size));
+
+                //calculate the necessary width and height
+                double width = 0;
+                double height = 0;
+                foreach (dynNodeUI n in this.Nodes.Select(x => x.NodeUI))
+                {
+                    Point relativePoint = n.TransformToAncestor(workBench)
+                          .Transform(new Point(0, 0));
+
+                    width = Math.Max(relativePoint.X + n.Width, width);
+                    height = Math.Max(relativePoint.Y + n.Height, height);
+                }
+
+                Rect rect = VisualTreeHelper.GetDescendantBounds(workBench);
+
+                RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
+                  (int)rect.Bottom + 50, 96, 96, System.Windows.Media.PixelFormats.Default);
+                rtb.Render(workBench);
+                //endcode as PNG
+                BitmapEncoder pngEncoder = new PngBitmapEncoder();
+                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+                using (var stm = System.IO.File.Create(sfd.FileName))
+                {
+                    pngEncoder.Save(stm);
+                }
+            }
+        }
+
+        public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
+        {
+
+            //Size size = new Size(width, height);
+            //canvas.Measure(size);
+            //canvas.Arrange(new Rect(size));
+
+            var rtb = new RenderTargetBitmap(
+                (int)width, //width 
+                (int)height, //height 
+                dpi, //dpi x 
+                dpi, //dpi y 
+                PixelFormats.Pbgra32 // pixelformat 
+                );
+            rtb.Render(canvas);
+
+            SaveRTBAsPNG(rtb, filename);
+        }
+
+        private static void SaveRTBAsPNG(RenderTargetBitmap bmp, string filename)
+        {
+            var enc = new System.Windows.Media.Imaging.PngBitmapEncoder();
+            enc.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bmp));
+
+            using (var stm = System.IO.File.Create(filename))
+            {
+                enc.Save(stm);
+            }
+        }
+
+        private void layoutAll_Click(object sender, RoutedEventArgs e)
+        {
+            LockUI();
+            CleanWorkbench();
+
+            double x = 0;
+            double y = 0;
+            double maxWidth = 0;    //track max width of current column
+            double colGutter = 40;     //the space between columns
+            double rowGutter = 40;
+            int colCount = 0;
+
+            Hashtable typeHash = new Hashtable();
+
+            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                object[] attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+
+                if (t.Namespace == "Dynamo.Nodes" &&
+                    !t.IsAbstract &&
+                    attribs.Length > 0 &&
+                    t.IsSubclassOf(typeof(dynNode)))
+                {
+                    NodeCategoryAttribute elCatAttrib = attribs[0] as NodeCategoryAttribute;
+
+                    List<Type> catTypes = null;
+
+                    if (typeHash.ContainsKey(elCatAttrib.ElementCategory))
+                    {
+                        catTypes = typeHash[elCatAttrib.ElementCategory] as List<Type>;
+                    }
+                    else
+                    {
+                        catTypes = new List<Type>();
+                        typeHash.Add(elCatAttrib.ElementCategory, catTypes);
+                    }
+
+                    catTypes.Add(t);
+                }
+            }
+
+            foreach (DictionaryEntry de in typeHash)
+            {
+                List<Type> catTypes = de.Value as List<Type>;
+
+                //add the name of the category here
+                AddNote(de.Key.ToString(), x, y, this.CurrentSpace);
+
+                y += 60;
+
+                foreach (Type t in catTypes)
+                {
+                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+
+                    NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
+                    dynNode el = AddDynElement(
+                           t, elNameAttrib.Name, Guid.NewGuid(), x, y,
+                           this.CurrentSpace
+                        );
+
+                    el.DisableReporting();
+
+                    maxWidth = Math.Max(el.NodeUI.Width, maxWidth);
+
+                    colCount++;
+
+                    y += el.NodeUI.Height + rowGutter;
+                }
+
+                y = 0;
+                colCount = 0;
+                x += maxWidth + colGutter;
+                maxWidth = 0;
+
+            }
+
+            UnlockUI();
+        }
     }
 
-    public class dynSelection : ObservableCollection<dynNode>
+    public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>
     {
         public dynSelection() : base() { }
     }

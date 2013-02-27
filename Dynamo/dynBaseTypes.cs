@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
+using System.Web;
 
 using Dynamo.Connectors;
 using Dynamo.Controls;
@@ -32,8 +33,13 @@ using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
+using System.Diagnostics.Contracts;
+using System.Text;
+using System.Windows.Input;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace Dynamo.Nodes
 {
@@ -44,13 +50,31 @@ namespace Dynamo.Nodes
     /// </summary>
     public static class BuiltinNodeCategories
     {
+
         public const string MATH = "Math";
         public const string COMPARISON = "Comparison";
         public const string BOOLEAN = "Logic";
         public const string PRIMITIVES = "Primitives";
         public const string REVIT = "Revit";
+        public const string REVIT_XYZ_UV_VECTOR = "Revit XYZ UV Vector";
+        public const string REVIT_TRANSFORMS = "Revit Transforms";
+        public const string REVIT_POINTS = "Revit Points";
+        public const string REVIT_GEOM = "Revit Geometry";
+        public const string REVIT_CURVES = "Revit Model Curves";
+        public const string REVIT_DATUMS = "Revit Datums";
+        public const string COMMUNICATION = "Communication";
+        public const string SCRIPTING = "Scripting";
+        public const string STRINGS = "Strings";
         public const string MISC = "Miscellaneous";
+        public const string FILES = "Files";
         public const string LIST = "Lists";
+        public const string ANALYSIS = "Analysis";
+        public const string MEASUREMENT = "Measurement";
+        public const string TESSELLATION = "Tessellation";
+        public const string DEBUG = "Debug";
+        public const string SELECTION = "Selection";
+        public const string EXECUTION = "Execution";
+        public const string SIMULATION = "Simulation";
     }
 
     #region FScheme Builtin Interop
@@ -64,12 +88,12 @@ namespace Dynamo.Nodes
             this.Symbol = symbol;
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
             {
-                return new ExternalMacroNode(
-                   new ExternMacro(this.macroEval),
+                return new ExternalFunctionNode(
+                   macroEval,
                    portNames
                 );
             }
@@ -77,46 +101,21 @@ namespace Dynamo.Nodes
                 return new FunctionNode(this.Symbol, portNames);
         }
 
-        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        private Value macroEval(FSharpList<Value> args)
         {
             if (this.RequiresRecalc || this.oldValue == null)
             {
-                this.macroEnvironment = environment;
-                this.oldValue = this.eval(args);
+                this.oldValue = this.evaluateNode(args);
             }
             else
                 this.OnEvaluate();
             return this.oldValue;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var fun = ((Expression.Function)this.Bench.Environment
-               .LookupSymbol(this.Symbol)).Item;
-
-            return fun
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(
-                  Utils.convertSequence(args.Select(
-                     this.macroEnvironment.Evaluate
-                  ))
-               );
-        }
-    }
-
-    public abstract class dynBuiltinMacro : dynBuiltinFunction
-    {
-        internal dynBuiltinMacro(string symbol) : base(symbol) { }
-
-        public override Expression Evaluate(FSharpList<Expression> args)
-        {
-            var macro = ((Expression.Special)this.Bench.Environment
-               .LookupSymbol(this.Symbol)).Item;
-
-            return macro
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(this.macroEnvironment.Env)
-               .Invoke(args);
+            return ((Value.Function)Bench.Environment.LookupSymbol(Symbol))
+                .Item.Invoke(args);
         }
     }
 
@@ -244,7 +243,7 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             return args[0];
         }
@@ -279,6 +278,7 @@ namespace Dynamo.Nodes
     {
         public dynNewList()
         {
+            //InPortData.Add(new PortData("item(s)", "Item(s) to build a list out of", typeof(object)));
             NodeUI.RegisterInputsAndOutput();
         }
 
@@ -293,7 +293,22 @@ namespace Dynamo.Nodes
             return "index";
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count == 2)
+                InPortData[0] = new PortData("item(s)", "Item(s) to build a list out of", typeof(object));
+            if (InPortData.Count > 1)
+                base.RemoveInput(sender, args);
+        }
+
+        protected override void AddInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count == 1)
+                InPortData[0] = new PortData("index0", "First item", typeof(object));
+            base.AddInput(sender, args);
+        }
+
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
                 return base.Compile(portNames);
@@ -301,17 +316,17 @@ namespace Dynamo.Nodes
                 return new FunctionNode("list", portNames);
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol("list")).Item;
-            return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("list"))
+                .Item.Invoke(args);
         }
     }
 
     [NodeName("Sort-With")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Returns a sorted list, using the given comparitor.")]
-    public class dynSortWith : dynBuiltinMacro
+    public class dynSortWith : dynBuiltinFunction
     {
         public dynSortWith()
             : base("sort-with")
@@ -332,7 +347,7 @@ namespace Dynamo.Nodes
     [NodeName("Sort-By")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Returns a sorted list, using the given key mapper.")]
-    public class dynSortBy : dynBuiltinMacro
+    public class dynSortBy : dynBuiltinFunction
     {
         public dynSortBy()
             : base("sort-by")
@@ -373,11 +388,11 @@ namespace Dynamo.Nodes
     [NodeName("Reduce")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Reduces a sequence.")]
-    [NodeSearchTags("fold")]
-    public class dynFold : dynBuiltinMacro
+    [NodeSearchTags("foldl")]
+    public class dynFold : dynBuiltinFunction
     {
         public dynFold()
-            : base("fold")
+            : base("foldl")
         {
             InPortData.Add(new PortData("f(x, a)", "Reductor Funtion", typeof(object)));
             InPortData.Add(new PortData("a", "Seed", typeof(object)));
@@ -396,7 +411,7 @@ namespace Dynamo.Nodes
     [NodeName("Filter")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Filters a sequence by a given predicate")]
-    public class dynFilter : dynBuiltinMacro
+    public class dynFilter : dynBuiltinFunction
     {
         public dynFilter()
             : base("filter")
@@ -414,14 +429,14 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Build Sequence")]
+    [NodeName("Number Sequence")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Creates a sequence of numbers")]
     [NodeSearchTags("range")]
     public class dynBuildSeq : dynBuiltinFunction
     {
         public dynBuildSeq()
-            : base("build-seq")
+            : base("build-list")
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(double)));
             InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(double)));
@@ -465,72 +480,69 @@ namespace Dynamo.Nodes
 
         protected override void RemoveInput(object sender, RoutedEventArgs args)
         {
-            if (InPortData.Count > 3)
+            if (InPortData.Count == 3)
+                InPortData[1] = new PortData("lists", "List of lists to combine", typeof(object));
+            if (InPortData.Count > 2)
                 base.RemoveInput(sender, args);
+        }
+
+        protected override void AddInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count == 2)
+                InPortData[1] = new PortData("list1", "First list", typeof(object));
+            base.AddInput(sender, args);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData.Skip(3))
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                dynEl.AppendChild(input);
-            }
+            dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
         public override void LoadElement(XmlNode elNode)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            var inputAttr = elNode.Attributes["inputs"];
+            int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
+            if (inputs == 1)
+                this.RemoveInput(this, null);
+            else
             {
-                if (subNode.Name == "Input")
+                for (; inputs > 2; inputs--)
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
-                    if (!attr.Equals("comb"))
-                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    InPortData.Add(new PortData(this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
                 }
+
+                NodeUI.ReregisterInputs();
             }
-            NodeUI.ReregisterInputs();
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
             {
-                return new ExternalMacroNode(
-                   new ExternMacro(this.macroEval),
+                return new ExternalFunctionNode(
+                   macroEval,
                    portNames
                 );
             }
             else
-                return new FunctionNode("combine", portNames);
+                return new FunctionNode("map", portNames);
         }
 
-        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        private Value macroEval(FSharpList<Value> args)
         {
             if (this.RequiresRecalc || this.oldValue == null)
             {
-                this.macroEnvironment = environment;
-                this.oldValue = this.eval(args);
+                this.oldValue = this.evaluateNode(args);
             }
             else
                 this.OnEvaluate();
             return this.oldValue;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var macro = ((Expression.Special)this.Bench.Environment
-               .LookupSymbol("combine")).Item;
-
-            return macro
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(this.macroEnvironment.Env)
-               .Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("map"))
+                .Item.Invoke(args);
         }
     }
 
@@ -562,44 +574,47 @@ namespace Dynamo.Nodes
 
         protected override void RemoveInput(object sender, RoutedEventArgs args)
         {
-            if (InPortData.Count > 3)
+            if (InPortData.Count == 3)
+                InPortData[1] = new PortData("lists", "List of lists to combine", typeof(object));
+            if (InPortData.Count > 2)
                 base.RemoveInput(sender, args);
+        }
+
+        protected override void AddInput(object sender, RoutedEventArgs args)
+        {
+            if (InPortData.Count == 2)
+                InPortData[1] = new PortData("list1", "First list", typeof(object));
+            base.AddInput(sender, args);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData.Skip(3))
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                dynEl.AppendChild(input);
-            }
+            dynEl.SetAttribute("inputs", (InPortData.Count - 1).ToString());
         }
 
         public override void LoadElement(XmlNode elNode)
         {
-            foreach (XmlNode subNode in elNode.ChildNodes)
+            var inputAttr = elNode.Attributes["inputs"];
+            int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
+            if (inputs == 1)
+                this.RemoveInput(this, null);
+            else
             {
-                if (subNode.Name == "Input")
+                for (; inputs > 2; inputs--)
                 {
-                    var attr = subNode.Attributes["name"].Value;
-
-                    if (!attr.Equals("comb"))
-                        this.InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    InPortData.Add(new PortData(this.getInputRootName() + this.getNewInputIndex(), "", typeof(object)));
                 }
+
+                NodeUI.ReregisterInputs();
             }
-            NodeUI.ReregisterInputs();
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
             {
-                return new ExternalMacroNode(
-                   new ExternMacro(this.macroEval),
+                return new ExternalFunctionNode(
+                   macroEval,
                    portNames
                 );
             }
@@ -607,34 +622,28 @@ namespace Dynamo.Nodes
                 return new FunctionNode("cartesian-product", portNames);
         }
 
-        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        private Value macroEval(FSharpList<Value> args)
         {
             if (this.RequiresRecalc || this.oldValue == null)
             {
-                this.macroEnvironment = environment;
-                this.oldValue = this.eval(args);
+                this.oldValue = this.evaluateNode(args);
             }
             else
                 this.OnEvaluate();
             return this.oldValue;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var macro = ((Expression.Special)this.Bench.Environment
-               .LookupSymbol("cartesian-product")).Item;
-
-            return macro
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(this.macroEnvironment.Env)
-               .Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("cartesian-product"))
+                .Item.Invoke(args);
         }
     }
 
     [NodeName("Map")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Maps a sequence")]
-    public class dynMap : dynBuiltinMacro
+    public class dynMap : dynBuiltinFunction
     {
         public dynMap()
             : base("map")
@@ -762,14 +771,20 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewList(FSharpList<Expression>.Empty);
+            return Value.NewList(FSharpList<Value>.Empty);
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new SymbolNode("empty");
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new SymbolNode("empty");
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 
@@ -949,7 +964,7 @@ namespace Dynamo.Nodes
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
     [NodeDescription("Boolean AND.")]
-    public class dynAnd : dynBuiltinMacro
+    public class dynAnd : dynBuiltinFunction
     {
         public dynAnd()
             : base("and")
@@ -967,12 +982,65 @@ namespace Dynamo.Nodes
         {
             get { return outPortData; }
         }
+
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
+        {
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                if (InPortData.All(HasInput))
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", Inputs[InPortData[0]].Build(preBuilt));
+                    ifNode.ConnectInput("true", Inputs[InPortData[1]].Build(preBuilt));
+                    ifNode.ConnectInput("false", new NumberNode(0));
+                    result = ifNode;
+                }
+                else
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                    ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
+                    ifNode.ConnectInput("false", new NumberNode(0));
+
+                    var node = new AnonymousFunctionNode(
+                        InPortData.Select(x => x.NickName),
+                        ifNode);
+
+                    //For each index in InPortData
+                    //for (int i = 0; i < InPortData.Count; i++)
+                    foreach (var data in InPortData)
+                    {
+                        //Fetch the corresponding port
+                        //var port = InPorts[i];
+
+                        //If this port has connectors...
+                        //if (port.Connectors.Any())
+                        if (HasInput(data))
+                        {
+                            //Compile input and connect it
+                            node.ConnectInput(
+                               data.NickName,
+                               Inputs[data].Build(preBuilt)
+                            );
+                        }
+                    }
+
+                    RequiresRecalc = false;
+                    OnEvaluate();
+
+                    result = node;
+                }
+                preBuilt[this] = result;
+            }
+            return result;
+        }
     }
 
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
     [NodeDescription("Boolean OR.")]
-    public class dynOr : dynBuiltinMacro
+    public class dynOr : dynBuiltinFunction
     {
         public dynOr()
             : base("or")
@@ -990,12 +1058,65 @@ namespace Dynamo.Nodes
         {
             get { return outPortData; }
         }
+
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
+        {
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                if (InPortData.All(HasInput))
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", Inputs[InPortData[0]].Build(preBuilt));
+                    ifNode.ConnectInput("true", new NumberNode(1));
+                    ifNode.ConnectInput("false", Inputs[InPortData[1]].Build(preBuilt));
+                    result = ifNode;
+                }
+                else
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                    ifNode.ConnectInput("true", new NumberNode(1));
+                    ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
+
+                    var node = new AnonymousFunctionNode(
+                        InPortData.Select(x => x.NickName),
+                        ifNode);
+
+                    //For each index in InPortData
+                    //for (int i = 0; i < InPortData.Count; i++)
+                    foreach (var data in InPortData)
+                    {
+                        //Fetch the corresponding port
+                        //var port = InPorts[i];
+
+                        //If this port has connectors...
+                        //if (port.Connectors.Any())
+                        if (HasInput(data))
+                        {
+                            //Compile input and connect it
+                            node.ConnectInput(
+                               data.NickName,
+                               Inputs[data].Build(preBuilt)
+                            );
+                        }
+                    }
+
+                    RequiresRecalc = false;
+                    OnEvaluate();
+
+                    result = node;
+                }
+                preBuilt[this] = result;
+            }
+            return result;
+        }
     }
 
     [NodeName("Xor")]
     [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
     [NodeDescription("Boolean XOR.")]
-    public class dynXor : dynBuiltinMacro
+    public class dynXor : dynBuiltinFunction
     {
         public dynXor()
             : base("xor")
@@ -1018,7 +1139,7 @@ namespace Dynamo.Nodes
     [NodeName("Not")]
     [NodeCategory(BuiltinNodeCategories.BOOLEAN)]
     [NodeDescription("Boolean NOT.")]
-    public class dynNot : dynBuiltinMacro
+    public class dynNot : dynBuiltinFunction
     {
         public dynNot()
             : base("not")
@@ -1137,6 +1258,40 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Mod")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Remainder of division of two numbers.")]
+    [NodeSearchTags("%", "modulo", "remainder")]
+    public class dynModulo : dynBuiltinFunction
+    {
+        public dynModulo()
+            : base("%")
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x%y", "result", typeof(double));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+    }
+
+    [NodeName("Pow")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Raises a number to the power of another.")]
+    [NodeSearchTags("power", "exponentiation", "^")]
+    public class dynPow : dynBuiltinFunction
+    {
+        public dynPow()
+            : base("pow")
+        {
+            InPortData.Add(new PortData("x", "operand", typeof(double)));
+            InPortData.Add(new PortData("y", "operand", typeof(double)));
+            OutPortData = new PortData("x^y", "result", typeof(double));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+    }
+
     [NodeName("Round")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Rounds a number to the nearest integer value.")]
@@ -1155,10 +1310,10 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(
-               Math.Round(((Expression.Number)args[0]).Item)
+            return Value.NewNumber(
+               Math.Round(((Value.Number)args[0]).Item)
             );
         }
     }
@@ -1182,10 +1337,10 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(
-               Math.Floor(((Expression.Number)args[0]).Item)
+            return Value.NewNumber(
+               Math.Floor(((Value.Number)args[0]).Item)
             );
         }
     }
@@ -1209,10 +1364,10 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(
-               Math.Ceiling(((Expression.Number)args[0]).Item)
+            return Value.NewNumber(
+               Math.Ceiling(((Value.Number)args[0]).Item)
             );
         }
     }
@@ -1244,9 +1399,9 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(random.NextDouble());
+            return Value.NewNumber(random.NextDouble());
         }
     }
 
@@ -1279,9 +1434,15 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new NumberNode(Math.PI);
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new NumberNode(Math.PI);
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 
@@ -1303,25 +1464,25 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             if (input.IsList)
             {
-                return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
-                      ((Expression.List)input).Item.Select(
+                return Value.NewList(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
+                      ((Value.List)input).Item.Select(
                          x =>
-                            Expression.NewNumber(Math.Sin(((Expression.Number)x).Item))
+                            Value.NewNumber(Math.Sin(((Value.Number)x).Item))
                       )
                    )
                 );
             }
             else
             {
-                double theta = ((Expression.Number)input).Item;
-                return Expression.NewNumber(Math.Sin(theta));
+                double theta = ((Value.Number)input).Item;
+                return Value.NewNumber(Math.Sin(theta));
             }
         }
     }
@@ -1344,25 +1505,25 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             if (input.IsList)
             {
-                return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
-                      ((Expression.List)input).Item.Select(
+                return Value.NewList(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
+                      ((Value.List)input).Item.Select(
                          x =>
-                            Expression.NewNumber(Math.Cos(((Expression.Number)x).Item))
+                            Value.NewNumber(Math.Cos(((Value.Number)x).Item))
                       )
                    )
                 );
             }
             else
             {
-                double theta = ((Expression.Number)input).Item;
-                return Expression.NewNumber(Math.Cos(theta));
+                double theta = ((Value.Number)input).Item;
+                return Value.NewNumber(Math.Cos(theta));
             }
         }
     }
@@ -1385,25 +1546,25 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             if (input.IsList)
             {
-                return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
-                      ((Expression.List)input).Item.Select(
+                return Value.NewList(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
+                      ((Value.List)input).Item.Select(
                          x =>
-                            Expression.NewNumber(Math.Tan(((Expression.Number)x).Item))
+                            Value.NewNumber(Math.Tan(((Value.Number)x).Item))
                       )
                    )
                 );
             }
             else
             {
-                double theta = ((Expression.Number)input).Item;
-                return Expression.NewNumber(Math.Tan(theta));
+                double theta = ((Value.Number)input).Item;
+                return Value.NewNumber(Math.Tan(theta));
             }
         }
     }
@@ -1415,7 +1576,8 @@ namespace Dynamo.Nodes
     //TODO: Setup proper IsDirty smart execution management
     [NodeName("Perform All")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Executes expressions in a sequence")]
+    [NodeDescription("Executes Values in a sequence")]
+    [NodeSearchTags("begin")]
     public class dynBegin : dynVariableInput
     {
         public dynBegin()
@@ -1448,9 +1610,33 @@ namespace Dynamo.Nodes
             return this.InPortData.Count + 1;
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        private INode nestedBegins(Stack<dynNode> inputs, Dictionary<dynNode, INode> preBuilt)
         {
-            return new BeginNode(portNames);
+            var firstVal = inputs.Pop().Build(preBuilt);
+
+            if (inputs.Any())
+            {
+                var newBegin = new BeginNode();
+                newBegin.ConnectInput("expr1", nestedBegins(inputs, preBuilt));
+                newBegin.ConnectInput("expr2", firstVal);
+                return newBegin;
+            }
+            else
+                return firstVal;
+        }
+
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
+        {
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = nestedBegins(
+                    new Stack<dynNode>(
+                        InPortData.Select(x => Inputs[x])),
+                    preBuilt);
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 
@@ -1478,7 +1664,7 @@ namespace Dynamo.Nodes
             return "arg";
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             return new ApplierNode(portNames.Skip(1));
         }
@@ -1541,14 +1727,14 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             return new ConditionalNode();
         }
     }
-
+    
     [NodeName("Debug Breakpoint")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeCategory(BuiltinNodeCategories.DEBUG)]
     [NodeDescription("Halts execution until user clicks button.")]
     public class dynBreakpoint : dynNode
     {
@@ -1598,7 +1784,7 @@ namespace Dynamo.Nodes
             enabled = false;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var result = args[0];
 
@@ -1635,9 +1821,9 @@ namespace Dynamo.Nodes
     #region Mutative Math
 
     //MDJ dynOptimizer added 11/22-11 (or dynEvaluate?)
-    [NodeName("Optimizer")]
+    /*[NodeName("Optimizer")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
-    [NodeDescription("An element which evaluates one inpute against another and passes out the larger of the two values.")]
+    [NodeDescription("Evaluates one input against another and passes out the larger of the two values.")]
     public class dynOptimizer : dynNode
     {
         TextBox tb;
@@ -1705,22 +1891,29 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            double newValue = ((Expression.Number)args.Head).Item;
+            double newValue = ((Value.Number)args.Head).Item;
             if (newValue > this.CurrentValue)
             {
                 this.CurrentValue = newValue;
                 this.tb.Text = this.CurrentValue.ToString();
             }
-            return Expression.NewNumber(this.CurrentValue);
+            return Value.NewNumber(this.CurrentValue);
         }
     }
 
     //MDJ dynIncrementer added 11/22-11
+<<<<<<< HEAD
     [NodeName("Incrementer")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("An element which watches one input then if that changes, increments the output integer until it hits a max value.")]
+=======
+    [NodeName("Incrementer")]
+    [NodeCategory(BuiltinNodeCategories.MATH)]
+    [NodeDescription("Watches one input then if that changes, increments the output integer until it hits a max value.")]
+    [RequiresTransaction(false)]
+>>>>>>> origin/master
     public class dynIncrementer : dynNode
     {
         TextBox tb;
@@ -1782,10 +1975,10 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            double maxIterations = ((Expression.Number)args[0]).Item;
-            double newValue = ((Expression.Number)args[1]).Item;
+            double maxIterations = ((Value.Number)args[0]).Item;
+            double newValue = ((Value.Number)args[1]).Item;
             if (newValue != this.CurrentValue)
             {
                 this.NumIterations++;
@@ -1794,10 +1987,10 @@ namespace Dynamo.Nodes
                    delegate { this.tb.Text = this.NumIterations.ToString(); }
                 ));
             }
-            return Expression.NewNumber(this.NumIterations);
+            return Value.NewNumber(this.NumIterations);
         }
     }
-
+    */
     #endregion
 
     #region Interactive Primitive Types
@@ -1940,12 +2133,27 @@ namespace Dynamo.Nodes
         {
             Type type = typeof(T);
             outPortData = new PortData("", type.Name, type);
+            
+            //add an edit window option to the 
+            //main context window
+            System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
+            editWindowItem.Header = "Edit...";
+            editWindowItem.IsCheckable = false;
+
+            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+
+            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
         }
 
         private PortData outPortData;
         public override PortData OutPortData
         {
             get { return outPortData; }
+        }
+
+        public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            //override in child classes
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -1975,30 +2183,114 @@ namespace Dynamo.Nodes
 
     public abstract class dynDouble : dynBasicInteractive<double>
     {
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(this.Value);
+            return FScheme.Value.NewNumber(this.Value);
+        }
+
+        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+
+            dynEditWindow editWindow = new dynEditWindow();
+
+            //set the text of the edit window to begin
+            editWindow.editText.Text = base.Value.ToString();
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            //set the value from the text in the box
+            this.Value = this.DeserializeValue(editWindow.editText.Text);
         }
     }
 
     public abstract class dynBool : dynBasicInteractive<bool>
     {
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(this.Value ? 1 : 0);
+            return FScheme.Value.NewNumber(this.Value ? 1 : 0);
         }
     }
 
     public abstract class dynString : dynBasicInteractive<string>
     {
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override string Value
         {
-            return Expression.NewString(this.Value);
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = EscapeString(value);
+            }
+        }
+
+        // Taken from:
+        // http://stackoverflow.com/questions/6378681/how-can-i-use-net-style-escape-sequences-in-runtime-values
+        private static string EscapeString(string s)
+        {
+            Contract.Requires(s != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == '\\')
+                {
+                    i++;
+                    if (i == s.Length)
+                        throw new ArgumentException("Escape sequence starting at end of string", s);
+                    switch (s[i])
+                    {
+                        case '\\':
+                            sb.Append('\\');
+                            break;
+                        case 't':
+                            sb.Append('\t');
+                            break;
+                        case 'n':
+                            sb.Append('\n');
+                            break;
+                        case 'r':
+                            sb.Append('\r');
+                            break;
+                        //TODO: ADD MORE CASES HERE
+                    }
+                }
+                else
+                    sb.Append(s[i]);
+            }
+            return sb.ToString();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return FScheme.Value.NewString(this.Value);
         }
 
         public override string PrintExpression()
         {
             return "\"" + base.PrintExpression() + "\"";
+        }
+
+        public override void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+
+            dynEditWindow editWindow = new dynEditWindow();
+
+            //set the text of the edit window to begin
+            editWindow.editText.Text = base.Value.ToString();
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            //set the value from the text in the box
+            this.Value = this.DeserializeValue(editWindow.editText.Text);
         }
     }
 
@@ -2006,10 +2298,11 @@ namespace Dynamo.Nodes
 
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
-    [NodeDescription("An element which creates an unsigned floating point number.")]
+    [NodeDescription("Creates a number.")]
     public class dynDoubleInput : dynDouble
     {
         dynTextBox tb;
+        //TextBlock nodeLabel;
 
         public dynDoubleInput()
         {
@@ -2030,6 +2323,7 @@ namespace Dynamo.Nodes
             //and make this so it's not so wide
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             NodeUI.topControl.Width = 100;
+            NodeUI.topControl.Height = 50;
 
             NodeUI.UpdateLayout();
         }
@@ -2046,8 +2340,10 @@ namespace Dynamo.Nodes
                     return;
 
                 base.Value = value;
+
+                //this.nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
                 this.tb.Text = value.ToString();
-                //this.tb.Pending = false;
+                this.tb.Pending = false;
             }
         }
 
@@ -2062,17 +2358,20 @@ namespace Dynamo.Nodes
                 return 0;
             }
         }
+
+
     }
 
     //MDJ - added by Matt Jezyk 10.27.2011
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
-    [NodeDescription("An element which creates an unsigned floating point number, but using SLIDERS!.")]
+    [NodeDescription("Creates a number, but using SLIDERS!.")]
     public class dynDoubleSliderInput : dynDouble
     {
         Slider tb_slider;
         dynTextBox mintb;
         dynTextBox maxtb;
+        TextBox displayBox;
 
         public dynDoubleSliderInput()
         {
@@ -2088,7 +2387,30 @@ namespace Dynamo.Nodes
             tb_slider.Minimum = 0.0;
             tb_slider.Ticks = new System.Windows.Media.DoubleCollection(10);
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
-            tb_slider.ValueChanged += delegate { this.Value = this.tb_slider.Value; };
+            tb_slider.ValueChanged += delegate
+            {
+                this.Value = this.tb_slider.Value;
+
+                var pos = Mouse.GetPosition(NodeUI.elementCanvas);
+                Canvas.SetLeft(displayBox, pos.X);
+            };
+
+            tb_slider.PreviewMouseDown += delegate
+            {
+                if (NodeUI.IsEnabled && !NodeUI.elementCanvas.Children.Contains(displayBox))
+                {
+                    NodeUI.elementCanvas.Children.Add(displayBox);
+
+                    var pos = Mouse.GetPosition(NodeUI.elementCanvas);
+                    Canvas.SetLeft(displayBox, pos.X);
+                }
+            };
+
+            tb_slider.PreviewMouseUp += delegate
+            {
+                if (NodeUI.elementCanvas.Children.Contains(displayBox))
+                    NodeUI.elementCanvas.Children.Remove(displayBox);
+            };
 
             mintb = new dynTextBox();
             mintb.MaxLength = 3;
@@ -2134,11 +2456,50 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(mintb);
             NodeUI.inputGrid.Children.Add(maxtb);
 
+            //make the middle column containing the slider
+            //take up most of the width
+            NodeUI.inputGrid.ColumnDefinitions[1].Width = new GridLength(.75 * NodeUI.Width);
+
             System.Windows.Controls.Grid.SetColumn(mintb, 0);
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
 
             NodeUI.RegisterInputsAndOutput();
+
+            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+
+            displayBox = new TextBox()
+            {
+                IsReadOnly = true,
+                Background = Brushes.White,
+                Foreground = Brushes.Black
+            };
+            Canvas.SetTop(displayBox, NodeUI.Height);
+            Canvas.SetZIndex(displayBox, int.MaxValue);
+
+            var binding = new System.Windows.Data.Binding("Value")
+            {
+                Source = tb_slider,
+                Mode = System.Windows.Data.BindingMode.OneWay,
+                Converter = new DoubleDisplay()
+            };
+            displayBox.SetBinding(TextBox.TextProperty, binding);
         }
+
+        #region Value Conversion
+        [ValueConversion(typeof(double), typeof(String))]
+        private class DoubleDisplay : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return ((double)value).ToString("F4");
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return null;
+            }
+        }
+        #endregion
 
         protected override double DeserializeValue(string val)
         {
@@ -2208,11 +2569,12 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
     }
 
     [NodeName("Boolean")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
-    [NodeDescription("An element which allows selection between a true and false.")]
+    [NodeDescription("Selection between a true and false.")]
     [NodeSearchTags("true", "truth", "false")]
     public class dynBoolSelector : dynBool
     {
@@ -2304,15 +2666,17 @@ namespace Dynamo.Nodes
 
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
-    [NodeDescription("An element which creates a string value.")]
+    [NodeDescription("Creates a string.")]
     public class dynStringInput : dynString
     {
         dynTextBox tb;
+        //TextBlock tb;
 
         public dynStringInput()
         {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
+            //tb = new TextBlock();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             NodeUI.inputGrid.Children.Add(tb);
@@ -2323,6 +2687,9 @@ namespace Dynamo.Nodes
             tb.OnChangeCommitted += delegate { this.Value = this.tb.Text; };
 
             NodeUI.RegisterInputsAndOutput();
+
+            //remove the margins
+            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
         }
 
         public override string Value
@@ -2333,10 +2700,12 @@ namespace Dynamo.Nodes
                     return;
 
                 base.Value = value;
-                this.tb.Text = value;
+
+                this.tb.Text = dynUtils.Ellipsis(this.Value, 30);
             }
         }
 
+        /*
         void tb_LostFocus(object sender, RoutedEventArgs e)
         {
             this.Value = this.tb.Text;
@@ -2346,18 +2715,44 @@ namespace Dynamo.Nodes
         {
             if (e.Key.Equals(Keys.Enter))
                 this.Value = this.tb.Text;
-        }
+        }*/
 
         protected override string DeserializeValue(string val)
         {
             return val;
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
+            outEl.SetAttribute("value", System.Web.HttpUtility.UrlEncode(this.Value.ToString()));
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(string).FullName))
+                {
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("value"))
+                        {
+                            this.Value = this.DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
+                            this.tb.Text = dynUtils.Ellipsis(this.Value, 30);
+                        }
+
+                    }
+                }
+            }
         }
     }
 
     [NodeName("Filename")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
-    public class dynStringFilename : dynString
+    public class dynStringFilename : dynBasicInteractive<string>
     {
         System.Windows.Controls.TextBox tb;
 
@@ -2436,12 +2831,17 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             if (string.IsNullOrEmpty(this.Value))
                 throw new Exception("No file selected.");
 
-            return base.Evaluate(args);
+            return FScheme.Value.NewString(this.Value);
+        }
+
+        public override string PrintExpression()
+        {
+            return "\"" + base.PrintExpression() + "\"";
         }
     }
 
@@ -2451,7 +2851,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Concatenate Strings")]
     [NodeDescription("Concatenates two or more strings")]
-    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynConcatStrings : dynVariableInput
     {
         public dynConcatStrings()
@@ -2511,7 +2911,7 @@ namespace Dynamo.Nodes
             NodeUI.ReregisterInputs();
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
                 return base.Compile(portNames);
@@ -2519,16 +2919,16 @@ namespace Dynamo.Nodes
                 return new FunctionNode("concat-strings", portNames);
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol("concat-strings")).Item;
-            return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("concat-strings"))
+                .Item.Invoke(args);
         }
     }
 
     [NodeName("String -> Number")]
     [NodeDescription("Converts a string to a number")]
-    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynString2Num : dynBuiltinFunction
     {
         public dynString2Num()
@@ -2548,7 +2948,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Number -> String")]
     [NodeDescription("Converts a number to a string")]
-    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynNum2String : dynBuiltinFunction
     {
         public dynNum2String()
@@ -2567,36 +2967,107 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Split String")]
-    [NodeDescription("Separates a string based on the given delimiter")]
-    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeDescription("Splits given string around given delimiter into a list of sub strings.")]
+    [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynSplitString : dynNode
     {
         public dynSplitString()
         {
             InPortData.Add(new PortData("str", "String to split", typeof(string)));
             InPortData.Add(new PortData("del", "Delimiter", typeof(string)));
+            OutPortData = new PortData("strs", "List of split strings", typeof(IList<string>));
 
             NodeUI.RegisterInputsAndOutput();
         }
 
-        private PortData outPortData = new PortData("strs", "A list of strings", typeof(object));
-        public override PortData OutPortData
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            get { return outPortData; }
-        }
+            string str = ((Value.String)args[0]).Item;
+            string del = ((Value.String)args[1]).Item;
 
-        public override Expression Evaluate(FSharpList<Expression> args)
-        {
-            return Expression.NewList(
-                Utils.convertSequence(
-                    ((Expression.String)args[0]).Item.Split(
-                        ((Expression.String)args[1]).Item.ToCharArray()
-                    ).Select(Expression.NewString)
+            return Value.NewList(
+                Utils.SequenceToFSharpList(
+                    str.Split(new string[] { del }, StringSplitOptions.None)
+                       .Select(Value.NewString)
                 )
             );
         }
     }
 
+    [NodeName("Join Strings")]
+    [NodeDescription("Joins the given list of strings around the given delimiter.")]
+    [NodeCategory(BuiltinNodeCategories.STRINGS)]
+    public class dynJoinStrings : dynNode
+    {
+        public dynJoinStrings()
+        {
+            InPortData.Add(new PortData("strs", "List of strings to join.", typeof(IList<string>)));
+            InPortData.Add(new PortData("del", "Delimier", typeof(string)));
+            OutPortData = new PortData("str", "Joined string", typeof(string));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var strs = ((Value.List)args[0]).Item;
+            var del = ((Value.String)args[1]).Item;
+
+            return Value.NewString(
+                string.Join(del, strs.Select(x => ((Value.String)x).Item))
+            );
+        }
+    }
+
+    [NodeName("String Case")]
+    [NodeDescription("Converts a string to uppercase or lowercase")]
+    [NodeCategory(BuiltinNodeCategories.STRINGS)]
+    public class dynStringCase : dynNode
+    {
+        public dynStringCase()
+        {
+            InPortData.Add(new PortData("str", "String to convert", typeof(string)));
+            InPortData.Add(new PortData("upper?", "True = Uppercase, False = Lowercase", typeof(bool)));
+            OutPortData = new PortData("s", "Converted string", typeof(string));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            string s = ((Value.String)args[0]).Item;
+            bool upper = ((Value.Number)args[1]).Item == 1.0;
+
+            return Value.NewString(
+                upper ? s.ToUpper() : s.ToLower()
+            );
+        }
+    }
+
+    [NodeName("Substring")]
+    [NodeDescription("Gets a substring of a given string")]
+    [NodeCategory(BuiltinNodeCategories.STRINGS)]
+    public class dynSubstring : dynNode
+    {
+        public dynSubstring()
+        {
+            InPortData.Add(new PortData("str", "String to take substring from", typeof(string)));
+            InPortData.Add(new PortData("start", "Starting index of substring", typeof(double)));
+            InPortData.Add(new PortData("length", "Length of substring", typeof(double)));
+            OutPortData = new PortData("sub", "Substring", typeof(string));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            string s = ((Value.String)args[0]).Item;
+            double start = ((Value.Number)args[1]).Item;
+            double length = ((Value.Number)args[2]).Item;
+
+            return Value.NewString(s.Substring((int)start, (int)length));
+        }
+    }
+
     #endregion
 }
-

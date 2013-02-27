@@ -24,21 +24,21 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Autodesk.Revit.DB;
 using System.Diagnostics;
 using Dynamo.Controls;
+using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Transaction")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
+    [NodeCategory(BuiltinNodeCategories.EXECUTION)]
     [NodeDescription("Executes Expression inside of a Revit API transaction")]
     public class dynTransaction : dynNode
     {
         public dynTransaction()
         {
-            InPortData.Add(new PortData("expr", "Expression to run in a transaction.", typeof(object)));
-
             NodeUI.RegisterInputsAndOutput();
         }
 
@@ -48,74 +48,131 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        void setDirty(bool val)
         {
-            ExternMacro m = new ExternMacro(
-               delegate(FSharpList<Expression> args, ExecutionEnvironment environment)
-               {
-                   if (this.Bench.CancelRun)
-                       throw new CancelEvaluationException(false);
+            if (ReportingEnabled)
+            {
+                DisableReporting();
+                this.RequiresRecalc = val;
+                EnableReporting();
+            }
+            else
+                this.RequiresRecalc = val;
+        }
 
-                   var arg = args[0]; //Get the only argument
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        {
+            return new TransactionProcedureNode(this, portNames);
+        }
 
-                   if (dynSettings.Instance.Bench.RunInDebug)
-                   {
-                       return environment.Evaluate(arg);
-                   }
+        private class TransactionProcedureNode : InputNode
+        {
+            private dynTransaction node;
+            
+            public TransactionProcedureNode(dynTransaction node, IEnumerable<string> inputNames)
+                : base(inputNames)
+            {
+                this.node = node;
+            }
 
-                   var result = IdlePromise<Expression>.ExecuteOnIdle(
-                      delegate
-                      {
-                          this.Bench.InIdleThread = true;
-                          dynSettings.Instance.Bench.InitTransaction();
+            protected override Expression compileBody(
+                Dictionary<INode, string> symbols,
+                Dictionary<INode, List<INode>> letEntries,
+                HashSet<string> initializedIds)
+            {
+                var arg =  arguments["expr"].compile(symbols, letEntries, initializedIds);
+                
+                //idle :: (() -> A) -> A
+                //Evaluates the given function in the Revit Idle thread.
+                var idle = Expression.NewFunction_E(
+                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                        args =>
+                        {
+                            var f = (args[0] as Value.Function).Item;
 
-                          try
-                          {
-                              var exp = environment.Evaluate(arg);
+                            if (node.Bench.RunInDebug)
+                                return f.Invoke(FSharpList<Value>.Empty);
+                            else
+                            {
+                                return IdlePromise<Value>.ExecuteOnIdle(
+                                    () => f.Invoke(FSharpList<Value>.Empty));
+                            }
+                        }));
 
-                              dynSettings.Instance.Bench.EndTransaction();
+                //startTransaction :: () -> ()
+                //Starts a Dynamo Transaction.
+                var startTransaction = Expression.NewFunction_E(
+                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                        _ =>
+                        {
+                            if (node.Bench.RunCancelled)
+                                throw new CancelEvaluationException(false);
 
-                              NodeUI.Dispatcher.Invoke(new Action(
-                                  delegate
-                                  {
-                                      NodeUI.UpdateLayout();
-                                      NodeUI.ValidateConnections();
-                                  }
-                              ));
+                            if (!node.Bench.RunInDebug)
+                            {
+                                node.Bench.InIdleThread = true;
+                                node.Bench.InitTransaction();
+                            }
 
-                              return exp;
-                          }
-                          catch (CancelEvaluationException ex)
-                          {
-                              throw ex;
-                          }
-                          catch (Exception ex)
-                          {
-                              NodeUI.Dispatcher.Invoke(new Action(
-                                 delegate
-                                 {
-                                     Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                                     this.Bench.Log(ex.Message);
-                                     this.Bench.ShowElement(this);
+                            return Value.NewDummy("started transaction");
+                        }));
 
-                                     dynSettings.Instance.Writer.WriteLine(ex.Message);
-                                     dynSettings.Instance.Writer.WriteLine(ex.StackTrace);
-                                 }
-                              ));
+                //endTransaction :: () -> ()
+                //Ends a Dynamo Transaction.
+                var endTransaction = Expression.NewFunction_E(
+                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                        _ =>
+                        {
+                            if (!node.Bench.RunInDebug)
+                            {
+                                node.Bench.EndTransaction();
+                                node.Bench.InIdleThread = false;
 
-                              NodeUI.Error(ex.Message);
-                              return null;
-                          }
-                      }
-                   );
+                                dynNodeUI.UpdateLayoutDelegate uld = new dynNodeUI.UpdateLayoutDelegate(node.NodeUI.CallUpdateLayout);
+                                node.NodeUI.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { node.NodeUI });
+                                node.NodeUI.ValidateConnections();
+                            }
+                            else
+                                node.setDirty(false);
 
-                   this.Bench.InIdleThread = false;
+                            return Value.NewDummy("ended transaction");
+                        }));
 
-                   return result;
-               }
-            );
+                /*  (define (idleArg)
+                 *    (startTransaction)
+                 *    (let ((a <arg>))
+                 *      (endTransaction)
+                 *      a))
+                 */              
+                var idleArg = Expression.NewFun(
+                    FSharpList<FScheme.Parameter>.Empty,
+                    Expression.NewBegin(
+                        Utils.SequenceToFSharpList<Expression>(new List<Expression>() {
+                            Expression.NewList_E(
+                                Utils.SequenceToFSharpList<Expression>(
+                                    new List<Expression>() { startTransaction })),
+                            Expression.NewLet(
+                                Utils.SequenceToFSharpList<string>(
+                                    new List<string>() { "__result" }),
+                                Utils.SequenceToFSharpList<Expression>(
+                                    new List<Expression>() { arg }),
+                                Expression.NewBegin(
+                                    Utils.SequenceToFSharpList<Expression>(
+                                        new List<Expression>() {
+                                            Expression.NewList_E(
+                                                Utils.SequenceToFSharpList<Expression>(
+                                                    new List<Expression>() { endTransaction })),
+                                            Expression.NewId("__result") 
+                                        }))) 
+                        })));
 
-            return new ExternalMacroNode(m, portNames);
+                // (idle idleArg)
+                return Expression.NewList_E(
+                    Utils.SequenceToFSharpList<Expression>(new List<Expression>() {
+                        idle,
+                        idleArg 
+                    }));
+            }
         }
     }
 }

@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Media;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis; //MDJ  - added for spatialfeildmanager access
@@ -22,6 +23,9 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Microsoft.FSharp.Collections;
+using Expression = Dynamo.FScheme.Expression;
+using System.Collections;
 
 namespace Dynamo.Utilities
 {
@@ -38,8 +42,16 @@ namespace Dynamo.Utilities
             try
             {
                 e = dynSettings.Instance.Doc.Document.GetElement(id);
-                _testid = e.Id;
-                return true;
+                if (e != null)
+                {
+                    _testid = e.Id;
+                    return true;
+                }
+                else
+                {
+                    e = null;
+                    return false;
+                }
             }
             catch
             {
@@ -48,6 +60,42 @@ namespace Dynamo.Utilities
             }
         }
 
+
+        /// <summary>
+        /// Makes a new generic IEnumerable instance out of a non-generic one.
+        /// </summary>
+        /// <typeparam name="T">The out-type of the new IEnumerable</typeparam>
+        /// <param name="en">Non-generic IEnumerable</param>
+        /// <returns></returns>
+        public static IEnumerable<T> MakeEnumerable<T>(IEnumerable en)
+        {
+            foreach (T item in en)
+            {
+                yield return item;
+            }
+        }
+
+        /// <summary>
+        /// Makes a new generic IEnumerable instance out of a non-generic one.
+        /// </summary>
+        /// <param name="en">Non-generic IEnumerable</param>
+        /// <returns></returns>
+        public static IEnumerable<object> MakeEnumerable(IEnumerable en)
+        {
+            return MakeEnumerable<object>(en);
+        }
+
+        public static string Ellipsis(string value, int desiredLength)
+        {
+            if (desiredLength > value.Length)
+            {
+                return value;
+            }
+            else
+            {
+                return value.Remove(desiredLength - 1) + "...";
+            }
+        }
 
         /// <summary>
         /// Creates a sketch plane by projecting one point's z coordinate down to the other's z coordinate.
@@ -122,12 +170,15 @@ namespace Dynamo.Utilities
 
         //colors taken from:
         //http://cloford.com/resources/colours/500col.htm
+        //http://linaker-wall.net/Colour/Dynamic_Fmt/Swatch_rgb_numbers.htm
         System.Windows.Media.Color colorGreen1 = System.Windows.Media.Color.FromRgb(193, 255, 193);
         System.Windows.Media.Color colorGreen2 = System.Windows.Media.Color.FromRgb(155, 250, 155);
         System.Windows.Media.Color colorRed1 = System.Windows.Media.Color.FromRgb(255, 64, 64);
         System.Windows.Media.Color colorRed2 = System.Windows.Media.Color.FromRgb(205, 51, 51);
-        System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 193, 37);
-        System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(238, 180, 34);
+        //System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 193, 37);
+        //System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(238, 180, 34);
+        System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 207, 98);
+        System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(235,187,78);
         System.Windows.Media.Color colorGray1 = System.Windows.Media.Color.FromRgb(220, 220, 220);
         System.Windows.Media.Color colorGray2 = System.Windows.Media.Color.FromRgb(192, 192, 192);
 
@@ -295,25 +346,15 @@ namespace Dynamo.Utilities
                 FailureDefinitionId id
                     = f.GetFailureDefinitionId();
 
-                //      BuiltInFailures.JoinElementsFailures.CannotKeepJoined == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructural == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsStructuralError == id ||
-                //    BuiltInFailures.JoinElementsFailures.CannotJoinElementsWarn == id
-
                 if (BuiltInFailures.InaccurateFailures.InaccurateLine == id ||
                     BuiltInFailures.OverlapFailures.DuplicateInstances == id ||
                     BuiltInFailures.InaccurateFailures.InaccurateCurveBasedFamily == id ||
-                    BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id
+                    BuiltInFailures.InaccurateFailures.InaccurateBeamOrBrace == id ||
+                    BuiltInFailures.InaccurateFailures.InaccurateLine == id
                     )
                 {
                     a.DeleteWarning(f);
                 }
-                //else if(BuiltInFailures.CurveFailures.LineTooShortError == id ||
-                //    BuiltInFailures.CurveFailures.LineTooShortWarning == id
-                //    )
-                //{
-                //    a.RollBackPendingTransaction();
-                //}
                 else
                 {
                     a.RollBackPendingTransaction();
@@ -351,7 +392,7 @@ namespace Dynamo.Utilities
                 //Reference pointRef = IdlePromise<Reference>.ExecuteOnIdle(
                 //    () => doc.Selection.PickObject(ObjectType.Element)
                 //);
-                
+
 
                 if (pointRef != null)
                 {
@@ -361,7 +402,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
 
@@ -394,8 +435,62 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
+            }
+        }
+
+        public static CurveArray RequestMultipleCurveElementsSelection(UIDocument doc, string message, dynSettings settings)
+        {
+            try
+            {
+                //CurveElement c = null;
+                //Curve cv = null;
+
+                Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+
+                //MessageBox.Show(message);
+                dynSettings.Instance.Bench.Log(message);
+
+                CurveArray ca = new CurveArray();
+                ISelectionFilter selFilter = new CurveSelectionFilter();
+                IList<Element> eList = doc.Selection.PickElementsByRectangle(//selFilter,
+                    "Select multiple curves") as IList<Element>;
+
+
+                foreach (CurveElement c in eList)
+                {
+                    if (c != null)
+                    {
+                        ca.Append(c.GeometryCurve as Curve);
+                    }
+                }
+                return ca;
+            }
+            catch (Exception ex)
+            {
+                settings.Bench.Log(ex);
+                return null;
+            }
+        }
+
+        public class CurveSelectionFilter : ISelectionFilter
+        {
+            public bool AllowElement(Element element)
+            {
+                if (element.Category.Name == "Model Lines" || element.Category.Name == "Lines")
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public bool AllowReference(Reference refer, XYZ point)
+            {
+                return false;
             }
         }
 
@@ -431,56 +526,46 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
 
 
         }
 
-
         // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
-
         public static Reference RequestFaceReferenceSelection(UIDocument doc, string message, dynSettings settings)
         {
             try
             {
-                Face f = null;
-                //Reference r = null;
-
                 Selection choices = doc.Selection;
-
                 choices.Elements.Clear();
 
                 //MessageBox.Show(message);
                 settings.Bench.Log(message);
 
-                //create some geometry options so that we computer references
-                Autodesk.Revit.DB.Options opts = new Options();
-                opts.ComputeReferences = true;
-                opts.DetailLevel = ViewDetailLevel.Medium;
-                opts.IncludeNonVisibleObjects = false;
+                //create some geometry options so that we compute references
+                //Autodesk.Revit.DB.Options opts = new Options();
+                //opts.ComputeReferences = true;
+                //opts.DetailLevel = ViewDetailLevel.Medium;
+                //opts.IncludeNonVisibleObjects = false;
 
                 Reference faceRef = doc.Selection.PickObject(ObjectType.Face);
 
-                if (faceRef != null)
-                {
-
-                    GeometryObject geob = settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
-
-                    f = geob as Face;
-                }
-                //return f;
+                //if (faceRef != null)
+                //{
+                //    GeometryElement geom = settings.Doc.Document.GetElement(faceRef).get_Geometry(opts); 
+                //    settings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+                //}
                 return faceRef;
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
-
-
         }
+
         public static Form RequestFormSelection(UIDocument doc, string message, dynSettings settings)
         {
             try
@@ -511,13 +596,12 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
 
 
         }
-
 
         public static FamilySymbol RequestFamilySymbolByInstanceSelection(UIDocument doc, string message,
             dynSettings settings, ref FamilyInstance fi)
@@ -549,7 +633,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
         }
@@ -577,11 +661,37 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
         }
 
+        public static Element RequestLevelSelection(UIDocument doc, string message, dynSettings settings)
+        {
+            try
+            {
+                Selection choices = doc.Selection;
+
+                choices.Elements.Clear();
+
+                //MessageBox.Show(message);
+                settings.Bench.Log(message);
+
+                Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
+
+                if (fsRef != null)
+                {
+                    return doc.Document.GetElement(fsRef.ElementId) as Level;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                settings.Bench.Log(ex);
+                return null;
+            }
+        }
 
         public static Element RequestAnalysisResultInstanceSelection(UIDocument doc, string message, dynSettings settings)
         {
@@ -622,11 +732,9 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                settings.Bench.Log(ex.Message);
+                settings.Bench.Log(ex);
                 return null;
             }
         }
-
     }
-
 }

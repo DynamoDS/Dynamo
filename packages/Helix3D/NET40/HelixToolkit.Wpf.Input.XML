@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HelixToolkit.Wpf.Input</name>
+    </assembly>
+    <members>
+        <member name="T:HelixToolkit.Wpf.Input.SpaceNavigatorType">
+            <summary>
+            Space navigator type enumeration.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorType.UnknownDevice">
+            <summary>
+            Is a unknown device.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorType.SpaceNavigator">
+            <summary>
+            Is a SpaceNavigator.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorType.SpaceExplorer">
+            <summary>
+            Is a SpaceExplorer.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorType.SpaceTraveler">
+            <summary>
+            Is a SpaceTraveler.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorType.SpacePilot">
+            <summary>
+            Is a SpacePilot.
+            </summary>
+        </member>
+        <member name="T:HelixToolkit.Wpf.Input.SpaceNavigatorZoomMode">
+            <summary>
+            Zoom mode.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorZoomMode.InOut">
+            <summary>
+            In and out.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorZoomMode.UpDown">
+            <summary>
+            Up and down.
+            </summary>
+        </member>
+        <member name="T:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator">
+            <summary>
+            A decorator for the space navigator.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.CameraControlProperty">
+            <summary>
+            The camera control property.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.ConnectionChangedEvent">
+            <summary>
+            The connection changed event.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.IsConnectedProperty">
+            <summary>
+            The is connected property.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.IsPanEnabledProperty">
+            <summary>
+            The is pan enabled property.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.MyPropertyProperty">
+            <summary>
+            The my property property.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.NavigatorNameProperty">
+            <summary>
+            The navigator name property.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.SensivityProperty">
+            <summary>
+            The sensivity property.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.ZoomModeProperty">
+            <summary>
+            The zoom mode property.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.ZoomSensivityProperty">
+            <summary>
+            The zoom sensivity property.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator._input">
+            <summary>
+            The _input.
+            </summary>
+        </member>
+        <member name="F:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator._sensor">
+            <summary>
+            The _sensor.
+            </summary>
+        </member>
+        <member name="M:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator"/> class.
+            </summary>
+        </member>
+        <member name="M:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.Disconnect">
+            <summary>
+            Disconnects this instance.
+            </summary>
+        </member>
+        <member name="M:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.RaiseConnectionChanged">
+            <summary>
+            The raise connection changed.
+            </summary>
+        </member>
+        <member name="M:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.Connect">
+            <summary>
+            The connect.
+            </summary>
+        </member>
+        <member name="M:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.Sensor_SensorInput">
+            <summary>
+            The sensor_ sensor input.
+            </summary>
+        </member>
+        <member name="M:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.input_DeviceChange(System.Int32)">
+            <summary>
+            The input_ device change.
+            </summary>
+            <param name="reserved">
+            The reserved.
+            </param>
+        </member>
+        <member name="E:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.ConnectionChanged">
+            <summary>
+            Event when a property has been changed
+            </summary>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.CameraController">
+            <summary>
+            Gets or sets the camera controller.
+            </summary>
+            <value>The camera controller.</value>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.IsConnected">
+            <summary>
+            Gets or sets a value indicating whether this instance is connected.
+            </summary>
+            <value>
+             <c>true</c> if this instance is connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.IsPanEnabled">
+            <summary>
+            Gets or sets a value indicating whether pan is enabled.
+            </summary>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.NavigatorName">
+            <summary>
+            Gets or sets the name of the navigator.
+            </summary>
+            <value>The name of the navigator.</value>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.Sensitivity">
+            <summary>
+            Gets or sets the sensitivity.
+            </summary>
+            <value>The sensitivity.</value>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.Type">
+            <summary>
+            Gets or sets the type.
+            </summary>
+            <value>The type.</value>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.ZoomMode">
+            <summary>
+            Gets or sets the zoom mode.
+            </summary>
+            <value>The zoom mode.</value>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.ZoomSensitivity">
+            <summary>
+            Gets or sets the zoom sensitivity.
+            </summary>
+            <value>The zoom sensitivity.</value>
+        </member>
+        <member name="P:HelixToolkit.Wpf.Input.SpaceNavigatorDecorator.Controller">
+            <summary>
+            Gets the controller.
+            </summary>
+            <value>The controller.</value>
+        </member>
+    </members>
+</doc>

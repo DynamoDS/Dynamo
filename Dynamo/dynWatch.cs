@@ -14,18 +14,15 @@
 
 using System;
 using System.Windows;
-
 using Autodesk.Revit.DB;
-
 using Dynamo.Connectors;
-
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Watch")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeCategory(BuiltinNodeCategories.DEBUG)]
     [NodeDescription("Visualize the output of node.")]
     [NodeSearchTags("print", "output", "display")]
     class dynWatch : dynNode
@@ -67,7 +64,7 @@ namespace Dynamo.Nodes
             wtb.Clear();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             string content = "";
             string prefix = "";
@@ -79,7 +76,7 @@ namespace Dynamo.Nodes
                 {
                     wtb.Clear();
 
-                    foreach (Expression e in args)
+                    foreach (Value e in args)
                     {
                         wtb.Add(Process(e, ref content, prefix, count));
                         count++;
@@ -88,7 +85,7 @@ namespace Dynamo.Nodes
             ));
 
             //return the content that has been gathered
-            return Expression.NewString(content);
+            return args[0]; //watch should be a 'pass through' node
         }
 
         public void ShowClickedElementInView()
@@ -96,7 +93,7 @@ namespace Dynamo.Nodes
 
         }
 
-        WatchNode Process(Expression eIn, ref string content, string prefix, int count)
+        WatchNode Process(Value eIn, ref string content, string prefix, int count)
         {
             content += prefix + string.Format("[{0}]:", count.ToString());
 
@@ -104,21 +101,25 @@ namespace Dynamo.Nodes
             
             if (eIn.IsContainer)
             {
-                //TODO: make clickable hyperlinks to show the element in Revit
-                //http://stackoverflow.com/questions/7890159/programmatically-make-textblock-with-hyperlink-in-between-text
-
-                string id = "";
-                Element revitEl = (eIn as Expression.Container).Item as Autodesk.Revit.DB.Element;
-                if (revitEl != null)
+                if ((eIn as Value.Container).Item != null)
                 {
-                    id = revitEl.Id.ToString();
-                }
-                content += (eIn as Expression.Container).Item.ToString() + ":" + id + "\n";
+                    //TODO: make clickable hyperlinks to show the element in Revit
+                    //http://stackoverflow.com/questions/7890159/programmatically-make-textblock-with-hyperlink-in-between-text
 
-                node = new WatchNode((eIn as Expression.Container).Item.ToString());
-                node.Link = id;
+                    string id = "";
+                    Element revitEl = (eIn as Value.Container).Item as Autodesk.Revit.DB.Element;
+                    if (revitEl != null)
+                    {
+                        id = revitEl.Id.ToString();
+                    }
+
+                    content += (eIn as Value.Container).Item.ToString() + ":" + id + "\n";
+
+                    node = new WatchNode((eIn as Value.Container).Item.ToString());
+                    node.Link = id;
+                }
             }
-            else if (eIn.IsFunction || eIn.IsSpecial)
+            else if (eIn.IsFunction)
             {
                 content += eIn.ToString() + "\n";
                 node = new WatchNode(eIn.ToString());
@@ -132,7 +133,7 @@ namespace Dynamo.Nodes
 
                 node = new WatchNode(eIn.GetType().ToString());
 
-                foreach(Expression eIn2 in (eIn as Expression.List).Item)
+                foreach(Value eIn2 in (eIn as Value.List).Item)
                 {
                     node.Children.Add(Process(eIn2, ref content, newPrefix, innerCount));
                     innerCount++;
@@ -140,18 +141,18 @@ namespace Dynamo.Nodes
             }
             else if (eIn.IsNumber)
             {
-                content += (eIn as Expression.Number).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Expression.Number).Item.ToString());
+                content += (eIn as Value.Number).Item.ToString() + "\n";
+                node = new WatchNode((eIn as Value.Number).Item.ToString());
             }
             else if (eIn.IsString)
             {
-                content += (eIn as Expression.String).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Expression.String).Item.ToString());
+                content += (eIn as Value.String).Item.ToString() + "\n";
+                node = new WatchNode((eIn as Value.String).Item.ToString());
             }
             else if (eIn.IsSymbol)
             {
-                content += (eIn as Expression.Symbol).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Expression.Symbol).Item.ToString());
+                content += (eIn as Value.Symbol).Item.ToString() + "\n";
+                node = new WatchNode((eIn as Value.Symbol).Item.ToString());
             }
 
             return node;

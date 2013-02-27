@@ -39,6 +39,8 @@ using System.Windows.Interop;
 using System.Reflection;
 using System.Windows;
 
+//TAF added to get strings from resource files
+using System.Resources;
 
 namespace Dynamo.Applications
 {
@@ -50,21 +52,25 @@ namespace Dynamo.Applications
         static private string m_AssemblyName = System.Reflection.Assembly.GetExecutingAssembly().Location;
         static private string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
         static public DynamoUpdater updater;
+        static private ResourceManager res;
 
         public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
         {
             try
             {
+                //TAF load english_us TODO add a way to localize
+                res = Resource_en_us.ResourceManager;
                 // Create new ribbon panel
-                RibbonPanel ribbonPanel = application.CreateRibbonPanel("Visual Programming"); //MDJ todo - move hard-coded strings out to resource files
+                RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description")); //MDJ todo - move hard-coded strings out to resource files
 
                 //Create a push button in the ribbon panel 
 
                 PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
-                    "Dynamo", m_AssemblyName, "Dynamo.Applications.DynamoRevit")) as PushButton;
+                    res.GetString("App_Name"), m_AssemblyName, "Dynamo.Applications.DynamoRevit")) as PushButton;
 
                 System.Drawing.Bitmap dynamoIcon = Dynamo.Applications.Properties.Resources.Nodes_32_32;
-
+                
+                
                 BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                          dynamoIcon.GetHbitmap(),
                          IntPtr.Zero,
@@ -75,31 +81,27 @@ namespace Dynamo.Applications
                 pushButton.Image = bitmapSource;
 
                 // MDJ = element level events and dyanmic model update
-                // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-reun definitin when they are moved
+                // MDJ 6-8-12  trying to get new dynamo to watch for user created ref points and re-run definition when they are moved
 
                 IdlePromise.RegisterIdle(application);
 
                 updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
                 if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId())) UpdaterRegistry.RegisterUpdater(updater);
 
-                //ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
-                //ElementCategoryFilter massFilter = new ElementCategoryFilter(BuiltInCategory.OST_Mass);
-
+                ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
                 ElementClassFilter familyFilter = new ElementClassFilter(typeof(FamilyInstance));
                 ElementCategoryFilter refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
                 ElementClassFilter modelCurveFilter = new ElementClassFilter(typeof(CurveElement));
                 ElementClassFilter sunFilter = new ElementClassFilter(typeof(SunAndShadowSettings));
                 IList<ElementFilter> filterList = new List<ElementFilter>();
-                //filterList.Add(SpatialFieldFilter);
-
-                //filterList.Add(massFilter);
+                
+                filterList.Add(SpatialFieldFilter);
                 filterList.Add(familyFilter);
                 filterList.Add(modelCurveFilter);
                 filterList.Add(refPointFilter);
                 filterList.Add(sunFilter);
-                ElementFilter filter = new LogicalOrFilter(filterList);
 
-                //ElementFilter filter = new ElementClassFilter(typeof(Element));
+                ElementFilter filter = new LogicalOrFilter(filterList);
 
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
@@ -127,11 +129,17 @@ namespace Dynamo.Applications
     {
         Autodesk.Revit.UI.UIApplication m_revit;
         Autodesk.Revit.UI.UIDocument m_doc;
-        dynBench dynamoForm;
+        static dynBench dynamoForm;
         TextWriter tw;
 
         public Autodesk.Revit.UI.Result Execute(Autodesk.Revit.UI.ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            if (dynamoForm != null)
+            {
+                dynamoForm.Focus();
+                return Result.Succeeded;
+            }
+
             SplashScreen splashScreen = null;
             try
             {
@@ -170,7 +178,7 @@ namespace Dynamo.Applications
 
                         //prepare and show splash
                         splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
-                        splashScreen.Show(false, true);
+                        //splashScreen.Show(false, true);
 
                         //show the window
                         dynamoForm = new dynBench(DynamoRevitApp.updater, splashScreen);
@@ -196,6 +204,8 @@ namespace Dynamo.Applications
                         }
 
                         dynamoForm.Show();
+
+                        dynamoForm.Closed += new EventHandler(dynamoForm_Closed);
                     }
                 ));
             }
@@ -211,12 +221,16 @@ namespace Dynamo.Applications
             return Autodesk.Revit.UI.Result.Succeeded;
         }
 
+        void dynamoForm_Closed(object sender, EventArgs e)
+        {
+            dynamoForm = null;
+        }
+
         void dynamoForm_Loaded(object sender, RoutedEventArgs e)
         {
             ((dynBench)sender).WindowState = WindowState.Maximized;
         }
     }
-
 
     class WindowHandle : System.Windows.Interop.IWin32Window
     {

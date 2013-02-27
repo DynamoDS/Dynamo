@@ -27,9 +27,11 @@ namespace Dynamo.Nodes
     {
         public List<dynNode> Elements { get; private set; }
         public List<dynConnector> Connectors { get; private set; }
+        public List<dynNote> Notes { get; private set; }
 
         public double PositionX { get; set; }
         public double PositionY { get; set; }
+        public string FilePath { get; set; }
 
         public String Name { get; set; }
 
@@ -45,6 +47,7 @@ namespace Dynamo.Nodes
             this.Connectors = c;
             this.PositionX = x;
             this.PositionY = y;
+            this.Notes = new List<dynNote>();
         }
 
         public virtual void Modified()
@@ -86,7 +89,6 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
         public override void Modified()
         {
             base.Modified();
@@ -118,13 +120,17 @@ namespace Dynamo.Nodes
             base.Modified();
 
             var bench = dynSettings.Instance.Bench;
-            if (bench.DynamicRunEnabled)
-            {
-                if (!bench.Running)
-                    bench.RunExpression(false, false);
-                else
-                    bench.QueueRun();
-            }
+            bench.Dispatcher.BeginInvoke(new Action(
+                () =>
+                {
+                    if (bench.DynamicRunEnabled)
+                    {
+                        if (!bench.Running)
+                            bench.RunExpression(false, false);
+                        else
+                            bench.QueueRun();
+                    }
+                }));
         }
     }
 }

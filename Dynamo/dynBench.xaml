@@ -5,7 +5,7 @@
         x:Name="_this"
         Height="768" Width="1024"
         MouseMove="OnMouseMove" 
-        PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown" 
+        PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
         MouseWheel="OnMouseWheel"
         MouseDown="OnMouseDown"
         MouseUp="OnMouseUp"
@@ -15,7 +15,9 @@
         Closed="WindowClosed" 
         MinHeight="600" 
         MinWidth="800" 
-        Title="Dynamo">
+        Title="Dynamo"
+        AllowsTransparency="False"
+        FocusManager.FocusedElement="{Binding ElementName=searchBox}">
    <Grid>
       <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Name="menu1">
          <MenuItem Header="_File" Name="fileMenu">
@@ -36,12 +38,19 @@
                </MenuItem.Icon>
             </MenuItem>
             <Separator />
+            <MenuItem Header="_Save" Click="saveButton_Click" Name="saveThisButton">
+                <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+            </MenuItem>
             <MenuItem Header="_Save As..." Click="SaveAs_Click" Name="saveButton">
                <MenuItem.Icon>
                   <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                </MenuItem.Icon>
             </MenuItem>
-            <!--<MenuItem Header="_Save Function" Click="SaveFunction_Click" Name="saveFuncItem" IsEnabled="False" />
+            <MenuItem Header="_Save Image..." Click="saveImage_Click" Name="saveImage"/>
+            <MenuItem Header="_Layout All" Click="layoutAll_Click"  Name="layoutAll"/>
+                <!--<MenuItem Header="_Save Function" Click="SaveFunction_Click" Name="saveFuncItem" IsEnabled="False" />
             <MenuItem Header="_Run" Click="Run_Click" />
             <MenuItem Header="_Run Debug" Click="RunDebug_Click" />
             <MenuItem Header="_Print Expression" Click="Print_Click" />-->
@@ -54,7 +63,13 @@
             </MenuItem>
             <Separator />
          </MenuItem>
-         <!--<MenuItem Header="_Add" Name="AddMenu">
+        <MenuItem Header="Settings">
+                <MenuItem Header="_Connector Type" IsEnabled="True">
+                    <MenuItem Name="settings_curves" IsCheckable="True" IsChecked="True" Checked="settings_curves_Checked" Header="Curves"/>
+                    <MenuItem Name="settings_plines" IsCheckable="True" IsChecked="False" Checked="settings_plines_Checked" Header="Polylines"/>
+                </MenuItem>
+            </MenuItem>
+                <!--<MenuItem Header="_Add" Name="AddMenu">
             <MenuItem Header="_New Function" Click="NewFunction_Click"/>
             <MenuItem Header="Variable" Click="AddElement_Click" Name="varItem" IsEnabled="False" />
             <Separator />
@@ -63,7 +78,10 @@
       <Border Margin="291,20,0,0" BorderBrush="Black" BorderThickness="1" Name="border">
          <!--outer canvas clips the inner canvas-->
          <Canvas Name="outerCanvas" Margin="0,0,0,0" ClipToBounds="True">
-            <dynCtrl:DragCanvas x:Name="workBench" Width="100000" Height="100000" Visibility="Hidden">
+            <dynCtrl:DragCanvas x:Name="workBench"
+                                Width="100000" 
+                                Height="100000" 
+                                Visibility="Hidden">
                <Canvas.RenderTransform>
                   <TransformGroup>
                      <ScaleTransform CenterX="-10"
@@ -74,9 +92,17 @@
                                          Y="{Binding ElementName=_this, Path=CurrentY}" />
                   </TransformGroup>
                </Canvas.RenderTransform>
-            </dynCtrl:DragCanvas>
+                <Rectangle
+                    x:Name="selectionBox"
+                    Visibility="Collapsed"
+                    Stroke="Black"
+                    StrokeThickness="1"
+                />
+                </dynCtrl:DragCanvas>
             <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" HorizontalContentAlignment="Right" FontSize="24" FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
-            <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" />
+            <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" 
+                   MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
+                   MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" />
             <TextBox Canvas.Right="30" Canvas.Top="13" Height="23" Name="editNameBox" Width="263" Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
             <Canvas.Background>
                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -96,9 +122,11 @@
                <MenuItem Header="Clear" Click="ClearLog_Click" />
             </ContextMenu>
          </ScrollViewer.ContextMenu>
-         <TextBlock Margin="5"
-                           Text="{Binding ElementName=_this, Path=LogText}" 
-                           Foreground="White" TextWrapping="Wrap"/>
+         <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
+                  Background="#00000000" BorderThickness="0" BorderBrush="#00000000" 
+                  Margin="5" Foreground="White" TextWrapping="Wrap" Focusable="True"
+                  IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
+                  IsTabStop="False" />
       </ScrollViewer>
       <Grid Height="Auto" HorizontalAlignment="Left" Margin="0,20,0,0" Name="sidebarGrid" VerticalAlignment="Stretch" Width="290">
          <ScrollViewer HorizontalAlignment="Stretch" Margin="0,33,0,90" Name="scrollViewer1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
@@ -120,7 +148,9 @@
             </LinearGradientBrush>
          </Grid.Background>
       </Grid>
-      <Canvas HorizontalAlignment="Stretch" Margin="0,20,0,0" Name="overlayCanvas" VerticalAlignment="Stretch" Width="Auto" IsHitTestVisible="False" MouseUp="OverlayCanvas_OnMouseUp" PreviewMouseMove="OverlayCanvas_OnMouseMove">
+      <Canvas HorizontalAlignment="Stretch" Margin="0,20,0,0" Name="overlayCanvas" 
+              VerticalAlignment="Stretch" Width="Auto" IsHitTestVisible="False" 
+              MouseUp="OverlayCanvas_OnMouseUp" PreviewMouseMove="OverlayCanvas_OnMouseMove">
          <Canvas.Background>
             <SolidColorBrush />
          </Canvas.Background>

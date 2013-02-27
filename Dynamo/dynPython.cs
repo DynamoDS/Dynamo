@@ -24,7 +24,7 @@ using Dynamo.Nodes;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 using Microsoft.FSharp.Collections;
 
@@ -35,88 +35,86 @@ using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using System.Windows;
 using System.Xml;
+using Microsoft.FSharp.Core;
 
 namespace Dynamo.Nodes
 {
     internal static class Converters
     {
-        internal static Expression convertPyFunction(Func<IList<dynamic>, dynamic> pyf)
+        internal static Value convertPyFunction(Func<IList<dynamic>, dynamic> pyf)
         {
-            return FuncContainer.MakeFunction(
-               new FScheme.ExternFunc(
-                  args =>
-                     convertToExpression(
-                        pyf(args.Select(convertFromExpression).ToList())
-                     )
-               )
-            );
+            return Value.NewFunction(
+                FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                    args => 
+                        convertToValue(
+                            pyf(args.Select(ex => convertFromValue(ex)).ToList()))));
         }
 
-        internal static Expression convertToExpression(dynamic data)
+        internal static Value convertToValue(dynamic data)
         {
-            if (data is Expression)
+            if (data is Value)
                 return data;
             else if (data is string)
-                return Expression.NewString(data);
+                return Value.NewString(data);
             else if (data is double)
-                return Expression.NewNumber(data);
+                return Value.NewNumber(data);
             else if (data is IEnumerable<dynamic>)
             {
-                FSharpList<Expression> result = FSharpList<Expression>.Empty;
+                FSharpList<Value> result = FSharpList<Value>.Empty;
 
                 data.reverse();
 
                 foreach (var x in data)
                 {
-                    result = FSharpList<Expression>.Cons(convertToExpression(x), result);
+                    result = FSharpList<Value>.Cons(convertToValue(x), result);
                 }
 
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             //else if (data is PythonFunction)
             //{
             //   return FuncContainer.MakeFunction(
             //      new FScheme.ExternFunc(
             //         args =>
-            //            convertToExpression(
-            //               data(args.Select(convertFromExpression))
+            //            convertToValue(
+            //               data(args.Select(ex => convertFromValue(ex)))
             //            )
             //      )
             //   );
             //}
             //else if (data is Func<dynamic, dynamic>)
             //{
-            //   return Expression.NewCurrent(FuncContainer.MakeContinuation(
+            //   return Value.NewCurrent(FuncContainer.MakeContinuation(
             //      new Continuation(
             //         exp =>
-            //            convertToExpression(
-            //               data(convertFromExpression(exp))
+            //            convertToValue(
+            //               data(convertFromValue(exp))
             //            )
             //      )
             //   ));
             //}
             else
-                return Expression.NewContainer(data);
+                return Value.NewContainer(data);
         }
 
-        internal static dynamic convertFromExpression(Expression exp)
+        internal static dynamic convertFromValue(Value exp)
         {
             if (exp.IsList)
-                return ((Expression.List)exp).Item.Select(convertFromExpression).ToList();
+                return ((Value.List)exp).Item.Select(x => convertFromValue(x)).ToList();
             else if (exp.IsNumber)
-                return ((Expression.Number)exp).Item;
+                return ((Value.Number)exp).Item;
             else if (exp.IsString)
-                return ((Expression.String)exp).Item;
+                return ((Value.String)exp).Item;
             else if (exp.IsContainer)
-                return ((Expression.Container)exp).Item;
+                return ((Value.Container)exp).Item;
             //else if (exp.IsFunction)
             //{
             //   return new Func<IList<dynamic>, dynamic>(
             //      args =>
-            //         ((Expression.Function)exp).Item
+            //         ((Value.Function)exp).Item
             //            .Invoke(ExecutionEnvironment.IDENT)
             //            .Invoke(Utils.convertSequence(args.Select(
-            //               x => (Expression)Converters.convertToExpression(x)
+            //               x => (Value)Converters.convertToValue(x)
             //            )))
             //   );
             //}
@@ -124,7 +122,7 @@ namespace Dynamo.Nodes
             //{
             //   return new Func<IList<dynamic>, dynamic>(
             //      args =>
-            //         ((Expression.Special)exp).Item
+            //         ((Value.Special)exp).Item
             //            .Invoke(ExecutionEnvironment.IDENT)
             //            .Invoke(
             //}
@@ -132,8 +130,8 @@ namespace Dynamo.Nodes
             //{
             //   return new Func<dynamic, dynamic>(
             //      ex => 
-            //         Converters.convertFromExpression(
-            //            ((Expression.Current)exp).Item.Invoke(Converters.convertToExpression(ex))
+            //         Converters.convertFromValue(
+            //            ((Value.Current)exp).Item.Invoke(Converters.convertToValue(ex))
             //         )
             //   );
             //}
@@ -158,7 +156,7 @@ namespace Dynamo.Nodes
             this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 
-        public Expression Evaluate(IEnumerable<Binding> bindings)
+        public Value Evaluate(IEnumerable<Binding> bindings)
         {
             var scope = this.engine.CreateScope();
 
@@ -180,13 +178,13 @@ namespace Dynamo.Nodes
                 );
             }
 
-            Expression result = Expression.NewNumber(1);
+            Value result = Value.NewNumber(1);
 
             if (scope.ContainsVariable("OUT"))
             {
                 dynamic output = scope.GetVariable("OUT");
 
-                result = Converters.convertToExpression(output);
+                result = Converters.convertToValue(output);
             }
 
             return result;
@@ -206,18 +204,21 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Python Script")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded IronPython script")]
     public class dynPython : dynRevitNode
     {
         private DynPythonEngine engine = new DynPythonEngine();
         private bool dirty = true;
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
-
-        TextBox tb;
+        
+        //TextBox tb;
+        string script;
 
         public dynPython()
         {
+            /*
+>>>>>>> origin/master
             tb = new TextBox()
             {
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -232,6 +233,7 @@ namespace Dynamo.Nodes
 
             tb.TextChanged += delegate { this.dirty = true; };
 
+<<<<<<< HEAD
             NodeUI.ContentGrid.Children.Add(tb);
 
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
@@ -252,6 +254,31 @@ namespace Dynamo.Nodes
 
         //TODO: Make this smarter
         public override bool RequiresRecalc
+=======
+            this.ContentGrid.Children.Add(tb);
+            */
+
+            //add an edit window option to the 
+            //main context window
+            System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
+            editWindowItem.Header = "Edit...";
+            editWindowItem.IsCheckable = false;
+            NodeUI.MainContextMenu.Items.Add(editWindowItem);
+            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+
+            InPortData.Add(new PortData("IN", "Input", typeof(object)));
+            OutPortData = new PortData("OUT", "Result of the python script", typeof(object));
+
+            NodeUI.RegisterInputsAndOutput();
+
+            //topControl.Height = 200;
+            //topControl.Width = 300;
+
+            NodeUI.UpdateLayout();
+        }
+
+        //TODO: Make this smarter
+        public override bool RequiresRecalc
         {
             get
             {
@@ -260,11 +287,11 @@ namespace Dynamo.Nodes
             set { }
         }
 
-
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             XmlElement script = xmlDoc.CreateElement("Script");
-            script.InnerText = this.tb.Text;
+            //script.InnerText = this.tb.Text;
+            script.InnerText = this.script;
             dynEl.AppendChild(script);
         }
 
@@ -273,25 +300,161 @@ namespace Dynamo.Nodes
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
                 if (subNode.Name == "Script")
-                    this.tb.Text = subNode.InnerText;
+                    //this.tb.Text = subNode.InnerText;
+                    script = subNode.InnerText;
             }
         }
 
         private delegate void LogDelegate(string msg);
         private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
 
-        private List<Binding> makeBindings(IEnumerable<Expression> args)
+        private List<Binding> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = this.InPortData
                .Select(x => x.NickName)
-               .Zip(args, (s, v) => new Binding(s, Converters.convertFromExpression(v)))
+               .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
                .ToList();
 
             bindings.Add(new Binding("DynLog", new LogDelegate(this.Bench.Log))); //Logging
             //bindings.Add(new Binding(
             //   "DynFunction",
-            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Expression>(
+            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Value>(
+            //      Converters.convertPyFunction
+            //   )
+            //));
+            bindings.Add(new Binding(
+               "DynTransaction",
+               new Func<Autodesk.Revit.DB.SubTransaction>(
+                  delegate
+                  {
+                      if (!dynSettings.Instance.Bench.IsTransactionActive())
+                      {
+                          dynSettings.Instance.Bench.InitTransaction();
+                      }
+                      return new Autodesk.Revit.DB.SubTransaction(this.UIDocument.Document);
+                  }
+               )
+            ));
+            bindings.Add(new Binding("__revit__", this.UIDocument.Application));
+            bindings.Add(new Binding("__doc__", this.UIDocument.Application.ActiveUIDocument.Document));
+            bindings.Add(new Binding("__dynamo__", dynSettings.Instance.Bench));
+            bindings.Add(new Binding("__persistant__", this.stateDict));
+
+            // use this to pass into the python script a list of previously created elements from dynamo 
+            bindings.Add(new Binding("DynStoredElements", this.Elements));
+            return bindings;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            if (this.dirty)
+            {
+                /*this.engine.ProcessCode(
+                   (string)this.tb.Dispatcher.Invoke(new Func<string>(
+                      delegate { return this.tb.Text; }
+                   ))
+                );*/
+
+                this.engine.ProcessCode(script);
+
+                this.dirty = false;
+            }
+
+            var bindings = this.makeBindings(args);
+
+            bool transactionRunning
+               = dynSettings.Instance.Bench.Transaction != null
+               && dynSettings.Instance.Bench.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
+
+            Value result = null;
+
+            if (dynSettings.Instance.Bench.InIdleThread)
+                result = engine.Evaluate(bindings);
+            else
+            {
+                result = IdlePromise<Value>.ExecuteOnIdle(
+                   () => engine.Evaluate(bindings)
+                );
+            }
+
+            if (transactionRunning)
+            {
+                if (!dynSettings.Instance.Bench.IsTransactionActive())
+                {
+                    dynSettings.Instance.Bench.InitTransaction();
+                }
+                else
+                {
+                    var ts = dynSettings.Instance.Bench.Transaction.GetStatus();
+                    if (ts != Autodesk.Revit.DB.TransactionStatus.Started)
+                    {
+                        if (ts != Autodesk.Revit.DB.TransactionStatus.RolledBack)
+                            dynSettings.Instance.Bench.CancelTransaction();
+                        dynSettings.Instance.Bench.InitTransaction();
+                    }
+                }
+            }
+            else if (dynSettings.Instance.Bench.RunInDebug)
+            {
+                if (dynSettings.Instance.Bench.IsTransactionActive())
+                    dynSettings.Instance.Bench.EndTransaction();
+            }
+
+            return result;
+        }
+
+        void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            dynEditWindow editWindow = new dynEditWindow();
+
+            //set the text of the edit window to begin
+            editWindow.editText.Text = script;
+
+            if (editWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            //set the value from the text in the box
+            script = editWindow.editText.Text;
+            
+            this.dirty = true;
+        }
+     }
+
+    [NodeName("Python Script From String")]
+    [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
+    [NodeDescription("Runs a IronPython script from a string")]
+    public class dynPythonString : dynRevitNode
+    {
+        private DynPythonEngine engine = new DynPythonEngine();
+        private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
+
+        public dynPythonString()
+        {
+            InPortData.Add(new PortData("script", "Script to run", typeof(string)));
+            InPortData.Add(new PortData("IN", "Input", typeof(object)));
+            OutPortData = new PortData("OUT", "Result of the python script", typeof(object));
+
+            NodeUI.RegisterInputsAndOutput();
+        }
+
+        private delegate void LogDelegate(string msg);
+        private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
+
+        private List<Binding> makeBindings(IEnumerable<Value> args)
+        {
+            //Zip up our inputs
+            var bindings = this.InPortData
+               .Select(x => x.NickName)
+               .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
+               .ToList();
+
+            bindings.Add(new Binding("DynLog", new LogDelegate(this.Bench.Log))); //Logging
+            //bindings.Add(new Binding(
+            //   "DynFunction",
+            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Value>(
             //      Converters.convertPyFunction
             //   )
             //));
@@ -317,31 +480,25 @@ namespace Dynamo.Nodes
             return bindings;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            if (this.dirty)
-            {
-                this.engine.ProcessCode(
-                   (string)this.tb.Dispatcher.Invoke(new Func<string>(
-                      delegate { return this.tb.Text; }
-                   ))
-                );
-                this.dirty = false;
-            }
+            this.engine.ProcessCode(
+                ((Value.String)args[0]).Item
+            );
 
-            var bindings = this.makeBindings(args);
+            var bindings = this.makeBindings(args).Skip(1);
 
             bool transactionRunning
                = dynSettings.Instance.Bench.Transaction != null
                && dynSettings.Instance.Bench.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
 
-            Expression result = null;
+            Value result = null;
 
             if (dynSettings.Instance.Bench.InIdleThread)
                 result = engine.Evaluate(bindings);
             else
             {
-                result = IdlePromise<Expression>.ExecuteOnIdle(
+                result = IdlePromise<Value>.ExecuteOnIdle(
                    () => engine.Evaluate(bindings)
                 );
             }

@@ -3,7 +3,12 @@
     xmlns:local="clr-namespace:Dynamo.Nodes"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dropShadow="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-    Height="300" Width="160" Name="topControl" Loaded="topControl_Loaded" KeyUp="OnKeyUp" PreviewKeyUp="OnPreviewKeyUp">
+    Height="300" 
+    Width="160" 
+    Name="topControl" 
+    Loaded="topControl_Loaded" 
+    KeyUp="OnKeyUp" 
+    PreviewKeyUp="OnPreviewKeyUp">
    <UserControl.Resources>
       <local:MarginConverter x:Key="MarginConverter" />
    </UserControl.Resources>
@@ -11,36 +16,31 @@
       <Grid.ContextMenu>
          <ContextMenu Name="MainContextMenu" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
             <MenuItem Name="deleteElem_cm" Header="Delete" Click="deleteElem_cm_Click" />
-            <!-- <Separator Name="separator1_cm"/>
-            <MenuItem Name="longestList_cm" IsCheckable="True" Header="Longest List" Click="longestList_cm_Click" IsChecked="False"/>
-            <MenuItem Name="shortestList_cm" IsCheckable="True" Header="Shortest List" Click="shortestList_cm_Click" IsChecked="True"/>
-            <MenuItem Name="fullLace_cm" IsCheckable="True" Header="Full Lace" Click="fullLace_cm_Click" IsChecked="False"/> -->
          </ContextMenu>
       </Grid.ContextMenu>
       <Grid Name="gridLeft" 
-              HorizontalAlignment="Left" 
-              VerticalAlignment="Stretch"
-              Margin="-5,5,0,5" 
-              Width="Auto" 
-              IsHitTestVisible="True" 
-              Background="Transparent"
-              Canvas.ZIndex="99">
+            Margin="-7,5,0,5"
+            HorizontalAlignment="Left"
+            IsHitTestVisible="True" 
+            Background="Transparent"
+            Canvas.ZIndex="90">
          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="14"/>
+            <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="Auto"/>
          </Grid.ColumnDefinitions>
+
       </Grid>
       <Grid Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
-              Margin="0,5,-5,5" 
+              Margin="0,5,-7,5" 
               Width="Auto" 
               IsHitTestVisible="True" 
               Background="Transparent"
-              Canvas.ZIndex="99">
+              Canvas.ZIndex="90">
          <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="14"/>
+            <ColumnDefinition Width="20"/>
          </Grid.ColumnDefinitions>
       </Grid>
       <Canvas Canvas.Left="0" 
@@ -55,9 +55,8 @@
                        Name="elementRectangle" 
                        RadiusX="10" 
                        RadiusY="10"
-                       Stroke="black"
-                       StrokeThickness="2"
-                       Canvas.ZIndex="90">
+                       Canvas.ZIndex="90"
+                       Stroke="Black" StrokeThickness="2">
             <Rectangle.Effect>
                <DropShadowEffect Opacity="0" />
             </Rectangle.Effect>
@@ -68,11 +67,24 @@
                </LinearGradientBrush>
             </Rectangle.Fill>
          </Rectangle>
+         <!--<Rectangle HorizontalAlignment="Right" 
+                       Canvas.Left="0"
+                       Canvas.Top="0"
+                       Width="{Binding ElementName=topControl, Path=Width}"
+                       Height="{Binding ElementName=topControl, Path=Height}"
+                       Name="elementBorder" 
+                       RadiusX="10" 
+                       RadiusY="10"
+                       Stroke="#FF555555"
+                       StrokeThickness="2"
+                       Canvas.ZIndex="90" 
+                       IsHitTestVisible="False">
+            </Rectangle>-->
          <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="2"
                        Width="{Binding ElementName=topControl, Path=Width}"
-                       Height="50" 
+                       Height="20" 
                        Name="elementShine" 
                        RadiusX="10" 
                        RadiusY="10"

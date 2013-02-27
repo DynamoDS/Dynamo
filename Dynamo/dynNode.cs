@@ -9,7 +9,7 @@ using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="args">Arguments to the node. You are guaranteed to have as many arguments as you have InPorts at the time it is run.</param>
         /// <returns>An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is connected to.</returns>
-        public virtual Expression Evaluate(FSharpList<Expression> args)
+        public virtual Value Evaluate(FSharpList<Value> args)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
         /// </summary>
         private bool _report = true;
 
-        protected Expression oldValue;
+        protected Value oldValue;
         protected internal ExecutionEnvironment macroEnvironment = null;
 
         //TODO: don't make this static (maybe)
@@ -113,6 +113,9 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// Returns if this node requires a recalculation without checking input nodes.
+        /// </summary>
         protected internal bool isDirty
         {
             get { return this._isDirty; }
@@ -201,6 +204,10 @@ namespace Dynamo.Nodes
             return;
         }
 
+        internal virtual INode BuildExpression()
+        {
+            return Build(new Dictionary<dynNode, INode>());
+        }
 
         //TODO: do all of this as the Ui is modified, simply return this?
         /// <summary>
@@ -208,13 +215,17 @@ namespace Dynamo.Nodes
         /// execution.
         /// </summary>
         /// <returns>The INode representation of this Element.</returns>
-        protected internal virtual INode Build()
+        protected internal virtual INode Build(Dictionary<dynNode, INode> preBuilt)
         {
+            INode result;
+            if (preBuilt.TryGetValue(this, out result))
+                return result;
+
             //Fetch the names of input ports.
             var portNames = this.InPortData.Select(x => x.NickName);
 
             //Compile the procedure for this node.
-            ProcedureCallNode node = this.Compile(portNames);
+            InputNode node = this.Compile(portNames);
 
             //Is this a partial application?
             var partial = false;
@@ -233,7 +244,7 @@ namespace Dynamo.Nodes
                 if (this.TryGetInput(data, out input))
                 {
                     //Compile input and connect it
-                    node.ConnectInput(data.NickName, input.Build());
+                    node.ConnectInput(data.NickName, input.Build(preBuilt));
                 }
                 else //othwise, remember that this is a partial application
                     partial = true;
@@ -241,10 +252,17 @@ namespace Dynamo.Nodes
 
             //If this is a partial application, then remember not to re-eval.
             if (partial)
+            {
                 this.RequiresRecalc = false;
+                OnEvaluate();
+            }
+
+            result = node;
+
+            preBuilt[this] = result;
 
             //And we're done
-            return node;
+            return result;
         }
 
         /// <summary>
@@ -253,25 +271,10 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="portNames">The names of the inputs to the node.</param>
         /// <returns>A ProcedureCallNode which will then be processed recursively to be connected to its inputs.</returns>
-        protected internal virtual ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal virtual InputNode Compile(IEnumerable<string> portNames)
         {
-            //If we are optimizing re-calcs...
-            if (this.SaveResult)
-            {
-                //Return a Macro that calls evalIfDirty
-                return new ExternalMacroNode(
-                   new ExternMacro(this.evalIfDirty),
-                   portNames
-                );
-            }
-            else //otherwise...
-            {
-                //Return a Function that calls eval.
-                return new ExternalFunctionNode(
-                   new FScheme.ExternFunc(this.eval),
-                   portNames
-                );
-            }
+            //Return a Function that calls eval.
+            return new ExternalFunctionNode(evalIfDirty, portNames);
         }
 
         /// <summary>
@@ -303,33 +306,22 @@ namespace Dynamo.Nodes
             }
         }
 
-        private Expression evalIfDirty(FSharpList<Expression> args, ExecutionEnvironment environment)
+        private Value evalIfDirty(FSharpList<Value> args)
         {
-            //If this node requires a re-calc or if we haven't calc'd yet...
-            if (this.RequiresRecalc || this.oldValue == null)
+            if (SaveResult && (RequiresRecalc || oldValue == null))
             {
-                //Store the environment
-                this.macroEnvironment = environment;
-
-                //Evaluate arguments, then evaluate this.
-                this.oldValue = this.eval(
-                   Utils.convertSequence(
-                      args.Select(
-                         environment.Evaluate
-                      )
-                   )
-                );
+                //Evaluate arguments, then evaluate 
+                oldValue = evaluateNode(args);
             }
             else
-                this.OnEvaluate();
+                OnEvaluate();
 
-            //We're done here
-            return this.oldValue;
+            return oldValue;
         }
 
-        private delegate Expression innerEvaluationDelegate();
+        private delegate Value innerEvaluationDelegate();
 
-        protected internal virtual Expression eval(FSharpList<Expression> args)
+        protected internal virtual Value evaluateNode(FSharpList<Value> args)
         {
             if (this.SaveResult)
             {
@@ -341,9 +333,9 @@ namespace Dynamo.Nodes
 
             innerEvaluationDelegate evaluation = delegate
             {
-                Expression expr = null;
+                Value expr = null;
 
-                if (dynSettings.Instance.Bench.CancelRun)
+                if (Bench.RunCancelled)
                     throw new CancelEvaluationException(false);
 
                 try
@@ -360,20 +352,21 @@ namespace Dynamo.Nodes
                 }
                 catch (CancelEvaluationException ex)
                 {
+                    OnRunCancelled();
                     throw ex;
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Instance.Bench.Dispatcher.Invoke(new Action(
+                    Bench.Dispatcher.Invoke(new Action(
                        delegate
                        {
                            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                           dynSettings.Instance.Bench.Log(ex.Message);
+                           Bench.Log(ex.Message);
 
                            dynSettings.Instance.Writer.WriteLine(ex.Message);
                            dynSettings.Instance.Writer.WriteLine(ex.StackTrace);
 
-                           dynSettings.Instance.Bench.ShowElement(this);
+                           Bench.ShowElement(this);
                        }
                     ));
 
@@ -387,8 +380,8 @@ namespace Dynamo.Nodes
                 return expr;
             };
 
-            Expression result = isInteractive
-                ? (Expression)this.NodeUI.Dispatcher.Invoke(evaluation)
+            Value result = isInteractive
+                ? (Value)this.NodeUI.Dispatcher.Invoke(evaluation)
                 : evaluation();
 
             if (result != null)
@@ -397,13 +390,16 @@ namespace Dynamo.Nodes
                 throw new Exception("");
         }
 
+        protected virtual void OnRunCancelled()
+        {
 
-        protected internal virtual Expression __eval_internal(FSharpList<Expression> args)
+        }
+        
+        protected internal virtual Value __eval_internal(FSharpList<Value> args)
         {
             return this.Evaluate(args);
         }
-
-
+        
 
         /// <summary>
         /// Destroy this dynElement
@@ -419,6 +415,8 @@ namespace Dynamo.Nodes
         {
             this._report = true;
         }
+
+        internal bool ReportingEnabled { get { return _report; } }
 
         /// <summary>
         /// Creates a Scheme representation of this dynNode and all connected dynNodes.
@@ -592,32 +590,28 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected internal override Expression __eval_internal(FSharpList<Expression> args)
+        protected internal override Value __eval_internal(FSharpList<Value> args)
         {
-            //For convenience, store the bench.
-            var bench = dynSettings.Instance.Bench;
+            Value result = null;
 
-            Expression result = null;
-
-
-            bool debug = bench.RunInDebug;
+            bool debug = Bench.RunInDebug;
 
             if (!debug)
             {
                 #region no debug
 
-                if (bench.TransMode == TransactionMode.Manual && !bench.IsTransactionActive())
+                if (Bench.TransMode == TransactionMode.Manual && !Bench.IsTransactionActive())
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
 
-                bench.InitTransaction();
+                Bench.InitTransaction();
 
                 result = this.Evaluate(args);
 
                 foreach (ElementId eid in this.deletedIds)
                 {
-                    this.Bench.RegisterSuccessfulDeleteHook(
+                    Bench.RegisterSuccessfulDeleteHook(
                        eid,
                        onSuccessfulDelete
                     );
@@ -630,15 +624,15 @@ namespace Dynamo.Nodes
             {
                 #region debug
 
-                bench.Dispatcher.Invoke(new Action(
+                Bench.Dispatcher.Invoke(new Action(
                    () =>
-                      bench.Log("Starting a debug transaction for element: " + this.NodeUI.NickName)
+                      Bench.Log("Starting a debug transaction for element: " + this.NodeUI.NickName)
                 ));
 
-                result = IdlePromise<Expression>.ExecuteOnIdle(
+                result = IdlePromise<Value>.ExecuteOnIdle(
                    delegate
                    {
-                       bench.InitTransaction();
+                       Bench.InitTransaction();
 
                        try
                        {
@@ -653,7 +647,7 @@ namespace Dynamo.Nodes
                            }
                            this.deletedIds.Clear();
 
-                           bench.EndTransaction();
+                           Bench.EndTransaction();
 
                            this.NodeUI.Dispatcher.BeginInvoke(new Action(
                                delegate
@@ -667,7 +661,7 @@ namespace Dynamo.Nodes
                        }
                        catch (Exception ex)
                        {
-                           bench.CancelTransaction();
+                           Bench.CancelTransaction();
                            throw ex;
                        }
                    }
@@ -701,12 +695,10 @@ namespace Dynamo.Nodes
         /// </summary>
         public override void Destroy()
         {
-            var bench = dynSettings.Instance.Bench;
-
             IdlePromise.ExecuteOnIdle(
                delegate
                {
-                   bench.InitTransaction();
+                   Bench.InitTransaction();
                    try
                    {
                        this.runCount = 0;
@@ -734,13 +726,13 @@ namespace Dynamo.Nodes
                    }
                    catch (Exception ex)
                    {
-                       bench.Log(
+                       Bench.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
                           + " -- " + ex.Message
                        );
                    }
-                   bench.EndTransaction();
+                   Bench.EndTransaction();
                    this.WorkSpace.Modified();
                },
                true
@@ -840,11 +832,11 @@ namespace Dynamo.Nodes
     [AttributeUsage(AttributeTargets.All)]
     public class NodeNameAttribute : System.Attribute
     {
-        public string ElementName { get; set; }
+        public string Name { get; set; }
 
         public NodeNameAttribute(string elementName)
         {
-            this.ElementName = elementName;
+            this.Name = elementName;
         }
     }
 

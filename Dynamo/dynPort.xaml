@@ -1,22 +1,25 @@
 ﻿<UserControl x:Class="Dynamo.Connectors.dynPort"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Height="10" Width="10">
+    Height="20" Width="20">
     <Grid>
         <Grid.ToolTip>
             <ToolTip Name="toolTip1">
                 <TextBlock Name="toolTipText">This is the port's tooltip</TextBlock>
             </ToolTip>
         </Grid.ToolTip>
-        <Ellipse Height="10" 
-                 Width="10" 
+        <Ellipse Height="20" 
+                 Width="20" 
                  Name="ellipse1" 
-                 Stroke="Black" 
                  HorizontalAlignment="Center" 
                  VerticalAlignment="Center" 
-                 StrokeThickness="2" 
-                 Fill="White"
-                 IsHitTestVisible="False">
+                 Fill="Gainsboro"
+                 IsHitTestVisible="False" 
+                 Stroke="Black"
+                 StrokeThickness="2">
+            <Ellipse.Clip>
+                <RectangleGeometry Rect="0,0,10,20"/>
+            </Ellipse.Clip>
             <Ellipse.ContextMenu>
                 <ContextMenu Name="cm" Opened="OnOpened" Closed="OnClosed" StaysOpen="true">
                     <MenuItem Header="Item1"/>
@@ -25,8 +28,15 @@
                 </ContextMenu>
             </Ellipse.ContextMenu>
         </Ellipse>
-        <Ellipse Height="5" 
-                 Width="5" 
+        <Ellipse Height="10" 
+                 Width="10" 
+                 Name="alwaysWhite" 
+                 HorizontalAlignment="Center" 
+                 VerticalAlignment="Center" 
+                 Fill="White">
+        </Ellipse>
+        <Ellipse Height="6" 
+                 Width="6" 
                  Name="ellipse1Dot" 
                  HorizontalAlignment="Center" 
                  VerticalAlignment="Center" 

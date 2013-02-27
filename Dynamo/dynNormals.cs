@@ -17,19 +17,19 @@ using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Evaluate Normal")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
     class dynNormalEvaluate : dynNode
     {
         public dynNormalEvaluate()
         {
-            InPortData.Add(new PortData("pt", "The point to evaluate.", typeof(object)));
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
 
             NodeUI.RegisterInputsAndOutput();
@@ -41,41 +41,32 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Reference faceRef = (args[1] as Expression.Container).Item as Reference;
+            Reference faceRef = (args[1] as Value.Container).Item as Reference;
 
             Face f = dynSettings.Instance.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
             XYZ norm = null;
-
+            
             if (f != null)
             {
                 //each item in the list will be a reference point
-                ReferencePoint rp = (args[0] as Expression.Container).Item as ReferencePoint;
-
-                if (rp != null)
-                {
-                    PointOnFace pof = rp.GetPointElementReference() as PointOnFace;
-
-                    if (pof != null)
-                    {
-                        norm = f.ComputeNormal(pof.UV);
-                    }
-                }
+                UV uv = (UV)(args[0] as Value.Container).Item;
+                norm = f.ComputeNormal(uv);
             }
 
-            return Expression.NewContainer(norm);
+            return Value.NewContainer(norm);
         }
     }
 
-    [NodeName("Evaluate XYZ")]
-    [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Evaluate a point on a face to find the XYZ location.")]
+    [NodeName("Evaluate UV")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
+    [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
     class dynXYZEvaluate : dynNode
     {
         public dynXYZEvaluate()
         {
-            InPortData.Add(new PortData("pt", "The point to evaluate.", typeof(object)));
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
 
             NodeUI.RegisterInputsAndOutput();
@@ -87,30 +78,20 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Reference faceRef = (args[1] as Expression.Container).Item as Reference;
+            Reference faceRef = (args[1] as Value.Container).Item as Reference;
 
             Face f = dynSettings.Instance.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Face;
-            XYZ loc = null;
+            XYZ face_point = null;
 
             if (f != null)
             {
                 //each item in the list will be a reference point
-                ReferencePoint rp = (args[0] as Expression.Container).Item as ReferencePoint;
-
-                if (rp != null)
-                {
-                    PointOnFace pof = rp.GetPointElementReference() as PointOnFace;
-
-                    if (pof != null)
-                    {
-                        loc = f.Evaluate(pof.UV);
-                    }
-                }
+                UV param = (UV)(args[0] as Value.Container).Item;
+                face_point = f.Evaluate(param);
             }
-
-            return Expression.NewContainer(loc);
+            return Value.NewContainer(face_point);
         }
     }
 

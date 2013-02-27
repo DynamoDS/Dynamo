@@ -31,6 +31,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using Grid = System.Windows.Controls.Grid;
+using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -146,16 +147,47 @@ namespace Dynamo.Nodes
                 {
                     case ElementState.ACTIVE:
                         elementRectangle.Fill = dynSettings.Instance.ActiveBrush;
+                        foreach (dynPort p in inPorts)
+                        {
+                            p.ellipse1.Fill = dynSettings.Instance.ActiveBrush;
+                        }
+
+                        if (outPort != null)
+                            outPort.ellipse1.Fill = dynSettings.Instance.ActiveBrush;
+
                         break;
                     case ElementState.DEAD:
                         elementRectangle.Fill = dynSettings.Instance.DeadBrush;
+                        foreach (dynPort p in inPorts)
+                        {
+                            p.ellipse1.Fill = dynSettings.Instance.DeadBrush;
+                        }
+
+                        if (outPort != null)
+                            outPort.ellipse1.Fill = dynSettings.Instance.DeadBrush;
+
                         break;
                     case ElementState.ERROR:
                         elementRectangle.Fill = dynSettings.Instance.ErrorBrush;
+                        foreach (dynPort p in inPorts)
+                        {
+                            p.ellipse1.Fill = dynSettings.Instance.ErrorBrush;
+                        }
+
+                        if (outPort != null)
+                            outPort.ellipse1.Fill = dynSettings.Instance.ErrorBrush;
+
                         break;
                     case ElementState.SELECTED:
                     default:
                         elementRectangle.Fill = dynSettings.Instance.SelectedBrush;
+                        foreach (dynPort p in inPorts)
+                        {
+                            p.ellipse1.Fill = dynSettings.Instance.SelectedBrush;
+                        }
+
+                        if (outPort != null)
+                            outPort.ellipse1.Fill = dynSettings.Instance.SelectedBrush;
                         break;
                 }
 
@@ -182,9 +214,9 @@ namespace Dynamo.Nodes
 
         #region events
         //public event dynElementUpdatedHandler dynElementUpdated;
-        public event dynElementDestroyedHandler dynElementDestroyed;
+        public event dynElementDestroyedHandler dynNodeDestroyed;
         public event dynElementReadyToBuildHandler dynElementReadyToBuild;
-        public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
+        public event dynElementReadyToDestroyHandler dynNodeReadyToDestroy;
         public event dynElementSelectedHandler dynElementSelected;
         public event dynElementDeselectedHandler dynElementDeselected;
         #endregion
@@ -220,7 +252,7 @@ namespace Dynamo.Nodes
                 NodeNameAttribute elNameAttrib = nameArray[0] as NodeNameAttribute;
                 if (elNameAttrib != null)
                 {
-                    NickName = elNameAttrib.ElementName;
+                    NickName = elNameAttrib.Name;
                 }
             }
             else
@@ -244,9 +276,9 @@ namespace Dynamo.Nodes
 
         protected virtual void OnDynElementDestroyed(EventArgs e)
         {
-            if (dynElementDestroyed != null)
+            if (dynNodeDestroyed != null)
             {
-                dynElementDestroyed(this, e);
+                dynNodeDestroyed(this, e);
             }
         }
 
@@ -260,9 +292,9 @@ namespace Dynamo.Nodes
 
         protected virtual void OnDynElementReadyToDestroy(EventArgs e)
         {
-            if (dynElementReadyToDestroy != null)
+            if (dynNodeReadyToDestroy != null)
             {
-                dynElementReadyToDestroy(this, e);
+                dynNodeReadyToDestroy(this, e);
             }
         }
 
@@ -288,6 +320,9 @@ namespace Dynamo.Nodes
             SetupPortGrids();
             RegisterInputs();
             RegisterOutput();
+
+            UpdateLayout();
+
             SetToolTips();
             ValidateConnections();
         }
@@ -297,6 +332,9 @@ namespace Dynamo.Nodes
             ResizeElementForInputs();
             SetupPortGrids();
             RegisterInputs();
+
+            UpdateLayout();
+
             SetToolTips();
             ValidateConnections();
             UpdateConnections();
@@ -309,7 +347,8 @@ namespace Dynamo.Nodes
             this.OutPort.Update();
         }
 
-        private Dictionary<UIElement, bool> enabledDict = new Dictionary<UIElement, bool>();
+        private Dictionary<UIElement, bool> enabledDict 
+            = new Dictionary<UIElement, bool>();
 
         internal void DisableInteraction()
         {
@@ -363,7 +402,7 @@ namespace Dynamo.Nodes
 
             grid.UpdateLayout();
 
-            this.elementShine.Height = this.topControl.Height / 2;
+            //this.elementShine.Height = this.topControl.Height / 2;
 
             if (inputGrid.Children.Count == 0)
             {
@@ -470,6 +509,9 @@ namespace Dynamo.Nodes
 
             tb.HorizontalAlignment = HorizontalAlignment.Right;
 
+            ScaleTransform trans = new ScaleTransform(-1, 1, p.Width / 2, p.Height / 2);
+            p.RenderTransform = trans;
+
             p.PortType = PortType.OUTPUT;
             outPort = p;
             gridRight.Children.Add(p);
@@ -531,6 +573,8 @@ namespace Dynamo.Nodes
                 tb.Text = name;
 
                 tb.HorizontalAlignment = HorizontalAlignment.Left;
+
+                Canvas.SetZIndex(tb, 200);
 
                 p.PortType = PortType.INPUT;
                 inPorts.Add(p);
@@ -620,18 +664,15 @@ namespace Dynamo.Nodes
             //if it's selected
             if (state != ElementState.SELECTED)
             {
-                if (bad)
-                {
-                    Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ERROR });
-                }
-                else
-                {
-                    Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ACTIVE });
-                }
+                Dispatcher.Invoke(
+                    stateSetter,
+                    DispatcherPriority.Background,
+                    new object[] {
+                        this,
+                        bad ? ElementState.ERROR : ElementState.ACTIVE
+                    });
             }
         }
-
-
 
         protected internal void SetColumnAmount(int amt)
         {
@@ -771,7 +812,7 @@ namespace Dynamo.Nodes
             var bench = dynSettings.Instance.Bench;
             this.nodeLogic.DisableReporting();
             this.nodeLogic.Destroy();
-            bench.DeleteElement(this.NodeLogic);
+            bench.DeleteElement(this);
         }
 
         internal void Error(string p)
