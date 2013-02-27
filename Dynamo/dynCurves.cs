@@ -34,9 +34,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Curve)));
             InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(SketchPlane)));
-            OutPortData = new PortData("mc", "Model Curve", typeof(ModelCurve));
+            outPortData = new PortData("mc", "Model Curve", typeof(ModelCurve));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -102,9 +108,15 @@ namespace Dynamo.Nodes
         public dynCurveByPoints()
         {
             InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
-            OutPortData = new PortData("curve", "Curve from ref points", typeof(object));
+            outPortData = new PortData("curve", "Curve from ref points", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -160,9 +172,15 @@ namespace Dynamo.Nodes
         public dynCurveByPointsByLine()
         {
             InPortData.Add(new PortData("curve", "geometry curve", typeof(object)));
-            OutPortData = new PortData("curve", "Curve from ref points", typeof(object));
+            outPortData = new PortData("curve", "Curve from ref points", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -306,9 +324,15 @@ namespace Dynamo.Nodes
         public dynCurveRef()
         {
             InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(object)));
-            OutPortData = new PortData("curveRef", "Curve Reference", typeof(object));
+            outPortData = new PortData("curveRef", "Curve Reference", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private Value makeCurveRef(object c, int count)
@@ -373,9 +397,15 @@ namespace Dynamo.Nodes
         public dynCurveFromModelCurve()
         {
             InPortData.Add(new PortData("mc", "Model Curve Element", typeof(object)));
-            OutPortData = new PortData("curve", "Curve", typeof(object));
+            outPortData = new PortData("curve", "Curve", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         private Value extractCurve(object c, int count)
@@ -438,9 +468,15 @@ namespace Dynamo.Nodes
         public dynModelCurveNurbSpline()
         {
             InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(object)));
-            OutPortData = new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline));
+            outPortData = new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
