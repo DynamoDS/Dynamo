@@ -17,17 +17,23 @@ namespace Dynamo.Nodes
     [NodeName("Colored Surface Spatial Field")]
     [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
     [NodeDescription("Gets or creates the spatial field manager on the view.")]
-    class dynSpatialFieldManager:dynNode
+    class dynSpatialFieldManager : dynNode
     {
         AnalysisDisplayStyle analysisDisplayStyle;
 
         public dynSpatialFieldManager()
         {
             InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
-            OutPortData = new PortData("sfm", "Spatial field manager for the active view", typeof(object));
+            outPortData = new PortData("sfm", "Spatial field manager for the active view", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
 
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -59,10 +65,16 @@ namespace Dynamo.Nodes
 
         public dynAnalysisResultsDisplayStyleColor()
         {
-            OutPortData = new PortData("ads", "Colored surface Analysis Display Style", typeof(object));
+            outPortData = new PortData("ads", "Colored surface Analysis Display Style", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
 
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -142,7 +154,7 @@ namespace Dynamo.Nodes
         public dynVectorSpatialField()
         {
             InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
-            OutPortData = new PortData("sfm", "Spatial field manager for the active view", typeof(object));
+            outPortData = new PortData("sfm", "Spatial field manager for the active view", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
 
@@ -250,9 +262,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(object)));
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
             InPortData.Add(new PortData("face", "Face", typeof(Reference)));
-            OutPortData = new PortData("idx", "Analysis results object index", typeof(object));
+            outPortData = new PortData("idx", "Analysis results object index", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -333,9 +351,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("pts", "Sample locations as a list of UVs.", typeof(object)));
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
             InPortData.Add(new PortData("face", "Curve", typeof(Curve)));
-            OutPortData = new PortData("idx", "Analysis results object index", typeof(object));
+            outPortData = new PortData("idx", "Analysis results object index", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -441,9 +465,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("lst", "List of sets of xys that will define line segments.", typeof(object)));
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
-            OutPortData = new PortData("idx", "Analysis results object index", typeof(object));
+            outPortData = new PortData("idx", "Analysis results object index", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
