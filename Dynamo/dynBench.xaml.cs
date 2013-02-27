@@ -1580,6 +1580,10 @@ namespace Dynamo.Controls
                     XmlAttribute yAttrib = elNode.Attributes[4];
 
                     string typeName = typeAttrib.Value.ToString();
+
+                    if (typeName.StartsWith("Dynamo.Elements."))
+                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 16);
+
                     Guid guid = new Guid(guidAttrib.Value.ToString());
                     string nickname = nicknameAttrib.Value.ToString();
 
@@ -1815,6 +1819,9 @@ namespace Dynamo.Controls
 
                     double x = Convert.ToDouble(xAttrib.Value.ToString());
                     double y = Convert.ToDouble(yAttrib.Value.ToString());
+
+                    if (typeName.StartsWith("Dynamo.Elements."))
+                        typeName = "Dynamo.Nodes." + typeName.Remove(0, 16);
 
                     Type t = Type.GetType(typeName);
 
