@@ -56,7 +56,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Read", "Read a frame of data from the Leap", typeof(object)));
 
             // Output from this node is the data from a single frame
-            OutPortData = new PortData("Leap", "The Leap controller", typeof(object));
+            outPortData = new PortData("Leap", "The Leap controller", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
 
@@ -72,6 +72,12 @@ namespace Dynamo.Nodes
             NodeUI.MainContextMenu.Items.Add(menuItemLeapEnabled);
 
             LeapEnable(true);
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         void menuItemLeapEnabled_Checked(object sender, System.Windows.RoutedEventArgs e)
@@ -137,7 +143,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Leap", "The Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the frame to retrieve (0 == current, 1..N previous).", typeof(int)));
 
-            OutPortData = new PortData("Frame", "The frame of data", typeof(object));
+            outPortData = new PortData("Frame", "The frame of data", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
         }
@@ -167,7 +173,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Leap", "The Leap controller", typeof(object)));
 
-            OutPortData = new PortData("Frame", "The frame of data", typeof(object));
+            outPortData = new PortData("Frame", "The frame of data", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
         }
@@ -204,9 +210,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame (1..N).", typeof(int)));
 
-            OutPortData = new PortData("ScaleFactor", "The scale factor", typeof(double));
+            outPortData = new PortData("ScaleFactor", "The scale factor", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -243,9 +255,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
-            OutPortData = new PortData("Translation", "The translation vector", typeof(XYZ));
+            outPortData = new PortData("Translation", "The translation vector", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -288,9 +306,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
-            OutPortData = new PortData("Rotation", "The XYZ rotation in radians", typeof(XYZ));
+            outPortData = new PortData("Rotation", "The XYZ rotation in radians", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -332,9 +356,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Frame", "The frame of data from the Leap device", typeof(object)));
             InPortData.Add(new PortData("Index", "The index of the hand to read (1..N).", typeof(int)));
 
-            OutPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
+            outPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -367,9 +397,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Frame", "The frame of data from the Leap device", typeof(object)));
 
-            OutPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
+            outPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -397,9 +433,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Frame", "The frame of data from the Leap device", typeof(object)));
 
-            OutPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
+            outPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -427,9 +469,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Hand", "The hand containing the fingers.", typeof(object)));
 
-            OutPortData = new PortData("Fingers", "The list of fingers.", typeof(object));
+            outPortData = new PortData("Fingers", "The list of fingers.", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -456,7 +504,13 @@ namespace Dynamo.Nodes
 
             InPortData.Add(new PortData("Hand", "The hand containing the finger.", typeof(object)));
 
-            OutPortData = new PortData("Finger", "The finger data.", typeof(object));
+            outPortData = new PortData("Finger", "The finger data.", typeof(object));
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -580,7 +634,13 @@ namespace Dynamo.Nodes
 
             InPortData.Add(new PortData("Frame", "The frame of data from the Leap Motion controller", typeof(object)));
 
-            OutPortData = new PortData("Tool", "The tool data.", typeof(object));
+            outPortData = new PortData("Tool", "The tool data.", typeof(object));
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -653,9 +713,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Object", "The Hand, Finger, or Tool from the Leap controller", typeof(object)));
 
-            OutPortData = new PortData("XYZ", "The XYZ position in mms", typeof(XYZ));
+            outPortData = new PortData("XYZ", "The XYZ position in mms", typeof(XYZ));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
