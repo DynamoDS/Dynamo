@@ -79,6 +79,7 @@
          <!--outer canvas clips the inner canvas-->
          <Canvas Name="outerCanvas" Margin="0,0,0,0" ClipToBounds="True">
             <dynCtrl:DragCanvas x:Name="workBench"
+                                x:FieldModifier="public"
                                 Width="100000" 
                                 Height="100000" 
                                 Visibility="Hidden">

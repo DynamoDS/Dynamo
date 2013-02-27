@@ -271,7 +271,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="portNames">The names of the inputs to the node.</param>
         /// <returns>A ProcedureCallNode which will then be processed recursively to be connected to its inputs.</returns>
-        protected internal virtual InputNode Compile(IEnumerable<string> portNames)
+        protected virtual InputNode Compile(IEnumerable<string> portNames)
         {
             //Return a Function that calls eval.
             return new ExternalFunctionNode(evalIfDirty, portNames);

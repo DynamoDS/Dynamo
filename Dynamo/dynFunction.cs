@@ -110,7 +110,7 @@ namespace Dynamo.Nodes
                 //TODO: bugged? 
                 //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
                 var ws = Bench.dynFunctionDict[Symbol]; //TODO: Refactor
-                bool dirtyInternals = ws.Elements.Any(e => e.RequiresRecalc);
+                bool dirtyInternals = ws.Nodes.Any(e => e.RequiresRecalc);
 
                 //If we started the traversal here, clean up.
                 if (!start)
@@ -154,7 +154,7 @@ namespace Dynamo.Nodes
 
                     //Notifiy all internals that we're clean.
                     var ws = Bench.dynFunctionDict[Symbol]; //TODO: Refactor
-                    foreach (var e in ws.Elements)
+                    foreach (var e in ws.Nodes)
                         e.RequiresRecalc = false;
 
                     //If we started traversal here, cleanup.
@@ -290,7 +290,7 @@ namespace Dynamo.Nodes
             }
 
             var ws = Bench.dynFunctionDict[Symbol]; //TODO: Refactor
-            foreach (var el in ws.Elements)
+            foreach (var el in ws.Nodes)
                 el.Destroy();
 
             if (!start)

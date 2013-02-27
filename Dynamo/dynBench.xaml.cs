@@ -240,14 +240,14 @@ namespace Dynamo.Controls
             //this.workBench.Visibility = System.Windows.Visibility.Visible;
         }
 
-        public IEnumerable<dynNode> AllElements
+        public IEnumerable<dynNode> AllNodes
         {
             get
             {
-                return this.homeSpace.Elements.Concat(
+                return this.homeSpace.Nodes.Concat(
                    this.dynFunctionDict.Values.Aggregate(
                       (IEnumerable<dynNode>)new List<dynNode>(),
-                      (a, x) => a.Concat(x.Elements)
+                      (a, x) => a.Concat(x.Nodes)
                    )
                 );
             }
@@ -317,7 +317,7 @@ namespace Dynamo.Controls
 
         public List<dynNode> Nodes
         {
-            get { return this.CurrentSpace.Elements; }
+            get { return this.CurrentSpace.Nodes; }
         }
 
         public dynSelection SelectedElements
@@ -331,7 +331,7 @@ namespace Dynamo.Controls
             get { return this.CurrentSpace == this.homeSpace; }
         }
 
-        dynNodeUI draggedElement;
+        dynNodeUI draggedNode;
         Point dragOffset;
 
         /// <summary>
@@ -341,8 +341,9 @@ namespace Dynamo.Controls
         {
             //setup the menu with all the types by reflecting
             //the DynamoElements.dll
-            Assembly elementsAssembly = Assembly.GetExecutingAssembly();
+            Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
 
+            var location = Path.GetDirectoryName(dynamoAssembly.Location);
 
             //try getting the element types via reflection. 
             // MDJ - I wrapped this in a try-catch as we were having problems with an 
@@ -351,44 +352,62 @@ namespace Dynamo.Controls
             // The exceptions are now caught but if there is an exception no built-in types are loaded.
             // TODO - move the try catch inside the for loop if possible to not fail all loads. this could slow down load times though.
 
-            try
+            //var loadedAssemblies = new List<Assembly>();
+            //var assembliesToLoad = new List<string>();
+
+            #region determine assemblies to load
+            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>(
+                AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.Location));
+
+            var allLoadedAssemblies = new Dictionary<string, Assembly>(
+                AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.FullName));
+
+            //var tempDomain = AppDomain.CreateDomain("TemporaryAppDomain");
+
+            var allDynamoAssemblyPaths = 
+                Directory.GetFiles(location, "*.dll")
+                .Concat(Directory.GetFiles(
+                    Path.Combine(location, "Packages"), 
+                    "*.dll", 
+                    SearchOption.AllDirectories));
+
+            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {
-                Type[] loadedTypes = elementsAssembly.GetTypes();
+                Assembly result;
+                allLoadedAssemblies.TryGetValue(args.Name, out result);
+                return result;
+            });
 
-                foreach (Type t in loadedTypes)
+            AppDomain.CurrentDomain.AssemblyResolve += resolver;
+
+            foreach (var assemblyPath in allDynamoAssemblyPaths)
+            {
+                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
+                    loadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
+                    //loadedAssemblies.Add(allLoadedAssemblies[assemblyPath]);
+                else
                 {
-                    //only load types that are in the right namespace, are not abstract
-                    //and have the elementname attribute
-                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
-
-                    if (t.Namespace == "Dynamo.Nodes" &&
-                        !t.IsAbstract &&
-                        attribs.Length > 0 &&
-                        t.IsSubclassOf(typeof(dynNode)))
+                    try
                     {
-                        string typeName = (attribs[0] as NodeNameAttribute).Name;
-                        builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
+                        var assembly = Assembly.LoadFrom(assemblyPath);
+                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
+                        loadNodesFromAssembly(assembly);
                     }
+                    catch { }
                 }
             }
-            catch (Exception e)
-            {
-                Log("Could not load types. " + e.ToString());
-                Log(e);
-                if (e is System.Reflection.ReflectionTypeLoadException)
-                {
-                    var typeLoadException = e as ReflectionTypeLoadException;
-                    var loaderExceptions = typeLoadException.LoaderExceptions;
-                    Log("Dll Load Exception: " + loaderExceptions[0].ToString());
-                    Log(loaderExceptions[0].ToString());
-                    Log("Dll Load Exception: " + loaderExceptions[1].ToString());
-                    Log(loaderExceptions[1].ToString());
-                }
-            }
+
+            AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+
+            //AppDomain.Unload(tempDomain);
+            #endregion
+
+            //foreach (var assembly in loadedAssemblies.Concat(assembliesToLoad.Select(Assembly.LoadFile)))
+            //    loadNodesFromAssembly(assembly);
+
             var threads = Process.GetCurrentProcess().Threads; // trying to understand why processor pegs after loading.
 
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
+            string pluginsPath = Path.Combine(location, "definitions");
 
             if (Directory.Exists(pluginsPath))
             {
@@ -538,6 +557,48 @@ namespace Dynamo.Controls
             #endregion
         }
 
+        private bool isNodeSubType(Type t)
+        {
+            return t.Namespace == "Dynamo.Nodes" &&
+                !t.IsAbstract &&
+                t.IsSubclassOf(typeof(dynNode));
+        }
+
+        private void loadNodesFromAssembly(Assembly assembly)
+        {
+            try
+            {
+                Type[] loadedTypes = assembly.GetTypes();
+
+                foreach (Type t in loadedTypes)
+                {
+                    //only load types that are in the right namespace, are not abstract
+                    //and have the elementname attribute
+                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+
+                    if (isNodeSubType(t) && attribs.Length > 0)
+                    {
+                        string typeName = (attribs[0] as NodeNameAttribute).Name;
+                        builtinTypes.Add(typeName, new TypeLoadData(assembly, t));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log("Could not load types.");
+                Log(e);
+                if (e is System.Reflection.ReflectionTypeLoadException)
+                {
+                    var typeLoadException = e as ReflectionTypeLoadException;
+                    var loaderExceptions = typeLoadException.LoaderExceptions;
+                    Log("Dll Load Exception: " + loaderExceptions[0].ToString());
+                    Log(loaderExceptions[0].ToString());
+                    Log("Dll Load Exception: " + loaderExceptions[1].ToString());
+                    Log(loaderExceptions[1].ToString());
+                }
+            }
+        }
+
         /// <summary>
         /// Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
@@ -650,7 +711,7 @@ namespace Dynamo.Controls
             {
                 this.OpenDefinition(filePath, childrenBuffer, parentBuffer);
             }
-            foreach (var e in this.AllElements)
+            foreach (var e in this.AllNodes)
             {
                 e.EnableReporting();
             }
@@ -729,7 +790,7 @@ namespace Dynamo.Controls
                 string name = nodeUI.NickName;
 
                 //store the element in the elements list
-                ws.Elements.Add(node);
+                ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
                 nodeUI.Visibility = vis;
@@ -1351,7 +1412,7 @@ namespace Dynamo.Controls
                 dynWorkspace ws = this.dynFunctionDict[name];
 
                 newEl = new dynFunction(
-                   ws.Elements.Where(e => e is dynSymbol)
+                   ws.Nodes.Where(e => e is dynSymbol)
                       .Select(s => ((dynSymbol)s).Symbol),
                    "out",
                    name
@@ -1396,7 +1457,7 @@ namespace Dynamo.Controls
             Canvas.SetLeft(newEl.NodeUI, x);
             Canvas.SetTop(newEl.NodeUI, y);
 
-            this.draggedElement = newEl.NodeUI;
+            this.draggedNode = newEl.NodeUI;
 
             this.overlayCanvas.IsHitTestVisible = true;
         }
@@ -1426,7 +1487,7 @@ namespace Dynamo.Controls
                 XmlElement elementList = xmlDoc.CreateElement("dynElements");  //write the root element
                 root.AppendChild(elementList);
 
-                foreach (dynNode el in workSpace.Elements)
+                foreach (dynNode el in workSpace.Nodes)
                 {
                     Point relPoint = el.NodeUI.TransformToAncestor(workBench).Transform(new Point(0, 0));
 
@@ -1447,7 +1508,7 @@ namespace Dynamo.Controls
                 XmlElement connectorList = xmlDoc.CreateElement("dynConnectors");  //write the root element
                 root.AppendChild(connectorList);
 
-                foreach (dynNode el in workSpace.Elements)
+                foreach (dynNode el in workSpace.Nodes)
                 {
                     foreach (dynConnector c in el.NodeUI.OutPort.Connectors)
                     {
@@ -1636,7 +1697,7 @@ namespace Dynamo.Controls
                     dynNode start = null;
                     dynNode end = null;
 
-                    foreach (dynNode e in ws.Elements)
+                    foreach (dynNode e in ws.Nodes)
                     {
                         if (e.NodeUI.GUID == guidStart)
                         {
@@ -1690,7 +1751,7 @@ namespace Dynamo.Controls
                 }
                 #endregion
 
-                foreach (var e in ws.Elements)
+                foreach (var e in ws.Nodes)
                     e.EnableReporting();
 
                 this.hideWorkspace(ws);
@@ -1740,7 +1801,7 @@ namespace Dynamo.Controls
         }
 
         void nodeWorkspaceWasLoaded(
-            dynWorkspace ws, 
+            dynWorkspace ws,
             Dictionary<string, HashSet<dynWorkspace>> children,
             Dictionary<string, HashSet<string>> parents)
         {
@@ -1766,7 +1827,7 @@ namespace Dynamo.Controls
 
         void hideWorkspace(dynWorkspace ws)
         {
-            foreach (var e in ws.Elements)
+            foreach (var e in ws.Nodes)
                 e.NodeUI.Visibility = System.Windows.Visibility.Collapsed;
             foreach (var c in ws.Connectors)
                 c.Visible = false;
@@ -1933,7 +1994,7 @@ namespace Dynamo.Controls
                 }
                 #endregion
 
-                foreach (var e in this.CurrentSpace.Elements)
+                foreach (var e in this.CurrentSpace.Nodes)
                     e.EnableReporting();
 
                 #endregion
@@ -1996,7 +2057,7 @@ namespace Dynamo.Controls
                 dynSettings.Instance.Workbench.Children.Remove(n);
             }
 
-            this.CurrentSpace.Elements.Clear();
+            this.CurrentSpace.Nodes.Clear();
             this.CurrentSpace.Connectors.Clear();
             this.CurrentSpace.Notes.Clear();
             this.CurrentSpace.Modified();
@@ -2354,7 +2415,7 @@ namespace Dynamo.Controls
                 {
                     node.OutPort.Connectors[i].Kill();
                 }
-            
+
                 foreach (dynPort p in node.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
@@ -2561,7 +2622,7 @@ namespace Dynamo.Controls
                 /* Execution Thread */
 
                 //Get our entry points (elements with nothing connected to output)
-                var topElements = this.homeSpace.Elements.Where(
+                var topElements = this.homeSpace.Nodes.Where(
                    x => !x.NodeUI.OutPort.Connectors.Any()
                 );
 
@@ -2654,7 +2715,7 @@ namespace Dynamo.Controls
                             this.InitTransaction(); //Initialize a transaction (if one hasn't been aleady)
 
                             //Reset all elements
-                            foreach (var element in this.AllElements)
+                            foreach (var element in this.AllNodes)
                             {
                                 if (element is dynRevitTransactionNode)
                                     (element as dynRevitTransactionNode).ResetRuns();
@@ -2848,7 +2909,7 @@ namespace Dynamo.Controls
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(name, category, CANVAS_OFFSET_X, CANVAS_OFFSET_Y);
 
-            var newElements = workSpace.Elements;
+            var newElements = workSpace.Nodes;
             var newConnectors = workSpace.Connectors;
 
             this.dynFunctionDict[name] = workSpace;
@@ -2868,7 +2929,7 @@ namespace Dynamo.Controls
             //this.addMenuItemsDict[name] = mi;
 
             dynFunction newEl = new dynFunction(
-               workSpace.Elements.Where(el => el is dynSymbol)
+               workSpace.Nodes.Where(el => el is dynSymbol)
                   .Select(s => ((dynSymbol)s).Symbol),
                "out",
                name
@@ -3102,20 +3163,20 @@ namespace Dynamo.Controls
                 //Find function entry point, and then compile the function and add it to our environment
                 dynNode top = topMost.FirstOrDefault();
 
-                var variables = functionWorkspace.Elements.Where(x => x is dynSymbol);
+                var variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
                 var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
 
                 if (top != default(dynNode))
                 {
                     var topNode = top.BuildExpression();
-                    
+
                     Expression expression = Utils.MakeAnon(variableNames, topNode.Compile());
 
                     this.Environment.DefineSymbol(functionWorkspace.Name, expression);
                 }
 
                 //Update existing function nodes which point to this function to match its changes
-                foreach (var el in this.AllElements)
+                foreach (var el in this.AllNodes)
                 {
                     if (el is dynFunction)
                     {
@@ -3130,7 +3191,7 @@ namespace Dynamo.Controls
                 }
 
                 //Call OnSave for all saved elements
-                foreach (var el in functionWorkspace.Elements)
+                foreach (var el in functionWorkspace.Nodes)
                     el.onSave();
 
                 //Update new add menu
@@ -3248,7 +3309,7 @@ namespace Dynamo.Controls
 
             if (!this.Nodes.Contains(e))
             {
-                if (this.homeSpace != null && this.homeSpace.Elements.Contains(e))
+                if (this.homeSpace != null && this.homeSpace.Nodes.Contains(e))
                 {
                     //Show the homespace
                     Home_Click(null, null);
@@ -3257,7 +3318,7 @@ namespace Dynamo.Controls
                 {
                     foreach (var funcPair in this.dynFunctionDict)
                     {
-                        if (funcPair.Value.Elements.Contains(e))
+                        if (funcPair.Value.Nodes.Contains(e))
                         {
                             DisplayFunction(funcPair.Key);
                             break;
@@ -3399,7 +3460,7 @@ namespace Dynamo.Controls
             //------------------//
 
             //Update existing function nodes
-            foreach (var el in this.AllElements)
+            foreach (var el in this.AllNodes)
             {
                 if (el is dynFunction)
                 {
@@ -3490,7 +3551,7 @@ namespace Dynamo.Controls
             if (this.uiLocked)
                 return;
 
-            var el = draggedElement;
+            var el = draggedNode;
 
             var pos = e.GetPosition(overlayCanvas);
 
@@ -3503,7 +3564,7 @@ namespace Dynamo.Controls
             if (this.uiLocked)
                 return;
 
-            var el = draggedElement;
+            var el = draggedNode;
 
             var pos = e.GetPosition(this.workBench);
 

@@ -62,7 +62,7 @@ namespace Dynamo.Nodes
                 this.RequiresRecalc = val;
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        protected override InputNode Compile(IEnumerable<string> portNames)
         {
             return new TransactionProcedureNode(this, portNames);
         }

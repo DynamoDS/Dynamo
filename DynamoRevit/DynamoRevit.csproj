@@ -106,10 +106,22 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DynamoKinect\DynamoKinect.csproj">
+      <Project>{861DA6B9-9483-4F27-B47D-007BD9A428AA}</Project>
+      <Name>DynamoKinect</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoLeapMotion\DynamoLeapMotion.csproj">
+      <Project>{7C61601E-BD56-4731-A491-416AFCB10525}</Project>
+      <Name>DynamoLeapMotion</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoPython\DynamoPython.csproj">
+      <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
+      <Name>DynamoPython</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoElements</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

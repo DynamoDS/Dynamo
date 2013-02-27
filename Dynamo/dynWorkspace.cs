@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
 {
     public class dynWorkspace
     {
-        public List<dynNode> Elements { get; private set; }
+        public List<dynNode> Nodes { get; private set; }
         public List<dynConnector> Connectors { get; private set; }
         public List<dynNote> Notes { get; private set; }
 
@@ -43,7 +43,7 @@ namespace Dynamo.Nodes
         protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y)
         {
             this.Name = name;
-            this.Elements = e;
+            this.Nodes = e;
             this.Connectors = c;
             this.PositionX = x;
             this.PositionY = y;
@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
 
         public IEnumerable<dynNode> GetTopMostElements()
         {
-            return this.Elements.Where(
+            return this.Nodes.Where(
                x => !x.NodeUI.OutPort.Connectors.Any()
             );
         }

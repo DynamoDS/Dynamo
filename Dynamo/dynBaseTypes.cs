@@ -88,7 +88,7 @@ namespace Dynamo.Nodes
             this.Symbol = symbol;
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        protected override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
             {
@@ -294,7 +294,7 @@ namespace Dynamo.Nodes
             base.AddInput(sender, args);
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        protected override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
                 return base.Compile(portNames);
@@ -501,7 +501,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        protected override InputNode Compile(IEnumerable<string> portNames)
         {
             if (SaveResult)
             {
@@ -581,7 +581,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        protected override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
             {
@@ -1634,7 +1634,7 @@ namespace Dynamo.Nodes
             return "arg";
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        protected override InputNode Compile(IEnumerable<string> portNames)
         {
             return new ApplierNode(portNames.Skip(1));
         }
@@ -1697,7 +1697,7 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        protected override InputNode Compile(IEnumerable<string> portNames)
         {
             return new ConditionalNode();
         }
@@ -2881,7 +2881,7 @@ namespace Dynamo.Nodes
             NodeUI.ReregisterInputs();
         }
 
-        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        protected override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
                 return base.Compile(portNames);
