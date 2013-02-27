@@ -69,7 +69,7 @@ namespace Dynamo.Nodes
         public dyn3DPreview()
         {
             InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
-            OutPortData = new PortData("OUT", "Watch contents, passed through", typeof(object));
+            outPortData = new PortData("OUT", "Watch contents, passed through", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
 
@@ -171,6 +171,12 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(view);
 
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
