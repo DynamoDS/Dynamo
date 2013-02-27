@@ -1269,9 +1269,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
-            OutPortData = new PortData("x%y", "result", typeof(double));
+            outPortData = new PortData("x%y", "result", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
     }
 
@@ -1286,9 +1292,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
-            OutPortData = new PortData("x^y", "result", typeof(double));
+            outPortData = new PortData("x^y", "result", typeof(double));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
     }
 
@@ -2975,9 +2987,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("str", "String to split", typeof(string)));
             InPortData.Add(new PortData("del", "Delimiter", typeof(string)));
-            OutPortData = new PortData("strs", "List of split strings", typeof(IList<string>));
+            outPortData = new PortData("strs", "List of split strings", typeof(IList<string>));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -3003,9 +3021,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("strs", "List of strings to join.", typeof(IList<string>)));
             InPortData.Add(new PortData("del", "Delimier", typeof(string)));
-            OutPortData = new PortData("str", "Joined string", typeof(string));
+            outPortData = new PortData("str", "Joined string", typeof(string));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -3028,9 +3052,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("str", "String to convert", typeof(string)));
             InPortData.Add(new PortData("upper?", "True = Uppercase, False = Lowercase", typeof(bool)));
-            OutPortData = new PortData("s", "Converted string", typeof(string));
+            outPortData = new PortData("s", "Converted string", typeof(string));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -3054,9 +3084,15 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("str", "String to take substring from", typeof(string)));
             InPortData.Add(new PortData("start", "Starting index of substring", typeof(double)));
             InPortData.Add(new PortData("length", "Length of substring", typeof(double)));
-            OutPortData = new PortData("sub", "Substring", typeof(string));
+            outPortData = new PortData("sub", "Substring", typeof(string));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
