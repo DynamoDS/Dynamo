@@ -29,7 +29,7 @@ namespace Dynamo.Nodes
     [NodeName("Divided Path")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Divides curves or edges and makes a DividedPath.")]
-    public class dynDividedPath : dynRevitNode
+    public class dynDividedPath : dynRevitTransactionNode
     {
         public dynDividedPath()
         {
@@ -237,7 +237,7 @@ namespace Dynamo.Nodes
     [NodeName("Divided Surface")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("An element which divides surfaces into patterns and faces")]
-    public class dynDividedSurface : dynRevitNode
+    public class dynDividedSurface : dynRevitTransactionNode
     {
         public dynDividedSurface()
         {

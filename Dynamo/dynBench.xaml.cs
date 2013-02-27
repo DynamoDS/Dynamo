@@ -108,7 +108,7 @@ namespace Dynamo.Controls
 
             Predicate<dynNode> manualTransactionPredicate = delegate(dynNode node)
             {
-                if (node is dynRevitNode)
+                if (node is dynTransaction)
                     return true;
 
                 if (node is dynFunction)
@@ -132,7 +132,7 @@ namespace Dynamo.Controls
 
             Predicate<dynNode> requiresTransactionPredicate = delegate(dynNode node)
             {
-                if (node is dynRevitNode)
+                if (node is dynRevitTransactionNode)
                     return true;
 
                 if (node is dynFunction)
@@ -2656,8 +2656,8 @@ namespace Dynamo.Controls
                             //Reset all elements
                             foreach (var element in this.AllElements)
                             {
-                                if (element is dynRevitNode)
-                                    (element as dynRevitNode).ResetRuns();
+                                if (element is dynRevitTransactionNode)
+                                    (element as dynRevitTransactionNode).ResetRuns();
                             }
 
                             //////

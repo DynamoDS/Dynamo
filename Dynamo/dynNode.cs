@@ -361,7 +361,7 @@ namespace Dynamo.Nodes
                        delegate
                        {
                            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                           Bench.Log(ex.Message);
+                           Bench.Log(ex);
 
                            dynSettings.Instance.Writer.WriteLine(ex.Message);
                            dynSettings.Instance.Writer.WriteLine(ex.StackTrace);
@@ -494,12 +494,11 @@ namespace Dynamo.Nodes
         /// <returns>True if there is an input, false otherwise.</returns>
         protected bool HasInput(PortData data)
         {
-            dynNode input;
-            return this.TryGetInput(data, out input);
+            return Inputs.ContainsKey(data) && Inputs[data] != null;
         }
     }
 
-    public abstract class dynRevitNode : dynNode
+    public abstract class dynRevitTransactionNode : dynNode
     {
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
@@ -528,7 +527,7 @@ namespace Dynamo.Nodes
         /// </summary>
         private int runCount;
 
-        public dynRevitNode() : base()
+        public dynRevitTransactionNode() : base()
         {
             elements = new List<List<ElementId>>() { new List<ElementId>() };
         }

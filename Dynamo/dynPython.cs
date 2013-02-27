@@ -206,7 +206,7 @@ namespace Dynamo.Nodes
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class dynPython : dynRevitNode
+    public class dynPython : dynRevitTransactionNode
     {
         private DynPythonEngine engine = new DynPythonEngine();
         private bool dirty = true;
@@ -432,7 +432,7 @@ namespace Dynamo.Nodes
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs a IronPython script from a string")]
-    public class dynPythonString : dynRevitNode
+    public class dynPythonString : dynRevitTransactionNode
     {
         private DynPythonEngine engine = new DynPythonEngine();
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();

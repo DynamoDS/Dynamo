@@ -15,7 +15,7 @@ namespace Dynamo.Nodes
     [NodeName("Delaunay Tessellation")]
     [NodeCategory(BuiltinNodeCategories.TESSELLATION)]
     [NodeDescription("Create a delaunay tesselation from a number of reference points.")]
-    public class dynDelaunayTessellation : dynRevitNode
+    public class dynDelaunayTessellation : dynRevitTransactionNode
     {
         public dynDelaunayTessellation()
         {

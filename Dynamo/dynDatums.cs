@@ -28,7 +28,7 @@ namespace Dynamo.Nodes
     [NodeName("Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a level datum.")]
-    public class dynLevel : dynRevitNode
+    public class dynLevel : dynRevitTransactionNode
     {
         public dynLevel()
         {
@@ -174,7 +174,7 @@ namespace Dynamo.Nodes
     [NodeName("Ref Plane")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a reference plane.")]
-    public class dynReferencePlane : dynRevitNode
+    public class dynReferencePlane : dynRevitTransactionNode
     {
         public dynReferencePlane()
         {
@@ -430,7 +430,7 @@ namespace Dynamo.Nodes
     [NodeName("Column Grid")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a column grid datum.")]
-    public class dynColumnGrid : dynRevitNode
+    public class dynColumnGrid : dynRevitTransactionNode
     {
         public dynColumnGrid()
         {

@@ -14,7 +14,7 @@ namespace Dynamo.Nodes
     [NodeName("Loft Form")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
-    public class dynLoftForm : dynRevitNode
+    public class dynLoftForm : dynRevitTransactionNode
     {
         public dynLoftForm()
         {

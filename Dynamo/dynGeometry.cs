@@ -583,7 +583,7 @@ namespace Dynamo.Nodes
     [NodeName("Sketch Plane")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric sketch plane.")]
-    public class dynSketchPlane : dynRevitNode
+    public class dynSketchPlane : dynRevitTransactionNode
     {
         public dynSketchPlane()
         {

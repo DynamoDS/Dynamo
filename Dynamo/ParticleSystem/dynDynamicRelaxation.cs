@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
     [NodeName("Create Particle System")]
     [NodeCategory(BuiltinNodeCategories.SIMULATION)]
     [NodeDescription("A node which allows you to drive the position of elmenets via a particle system.")]
-    class dynDynamicRelaxation : dynRevitNode
+    class dynDynamicRelaxation : dynRevitTransactionNode
     {
         ParticleSystem particleSystem;
         private int extraParticlesCounter = 0;

@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
     [NodeName("Surface Domain")]
     [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
     [NodeDescription("An element which measures the domain of a surface in U and V.")]
-    public class dynSurfaceDomain : dynRevitNode
+    public class dynSurfaceDomain : dynRevitTransactionNode
     {
         public dynSurfaceDomain()
         {

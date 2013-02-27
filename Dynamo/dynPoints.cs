@@ -28,7 +28,7 @@ namespace Dynamo.Nodes
     [NodeName("Reference Point")]
     [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
     [NodeDescription("Creates a reference point.")]
-    public class dynReferencePointByXYZ : dynRevitNode
+    public class dynReferencePointByXYZ : dynRevitTransactionNode
     {
         public dynReferencePointByXYZ()
         {
@@ -214,7 +214,7 @@ namespace Dynamo.Nodes
     [NodeName("Reference Point On Edge")]
     [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
-    public class dynPointOnEdge : dynRevitNode
+    public class dynPointOnEdge : dynRevitTransactionNode
     {
         public dynPointOnEdge()
         {
@@ -274,7 +274,7 @@ namespace Dynamo.Nodes
     [NodeName("Reference Point On Face by UV components")]
     [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
-    public class dynPointOnFace : dynRevitNode
+    public class dynPointOnFace : dynRevitTransactionNode
     {
         public dynPointOnFace()
         {
@@ -354,7 +354,7 @@ namespace Dynamo.Nodes
     [NodeName("Reference Point On Face by UV")]
     [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
-    public class dynPointOnFaceUV : dynRevitNode
+    public class dynPointOnFaceUV : dynRevitTransactionNode
     {
         public dynPointOnFaceUV()
         {
@@ -423,7 +423,7 @@ namespace Dynamo.Nodes
     [NodeName("Reference Point By Normal")]
     [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
-    public class dynPointNormalDistance : dynRevitNode
+    public class dynPointNormalDistance : dynRevitTransactionNode
     {
         public dynPointNormalDistance()
         {
@@ -481,7 +481,7 @@ namespace Dynamo.Nodes
     [NodeName("Plane from Reference Point")]
     [NodeCategory(BuiltinNodeCategories.REVIT_POINTS)]
     [NodeDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
-    public class dynPlaneFromRefPoint : dynRevitNode
+    public class dynPlaneFromRefPoint : dynRevitTransactionNode
     {
         ComboBox combo;
 

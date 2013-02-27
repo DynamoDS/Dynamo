@@ -702,7 +702,7 @@ namespace Dynamo.Nodes
     [NodeName("Family Instance Creator")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates family instances at a given XYZ location.")]
-    public class dynFamilyInstanceCreatorXYZ : dynRevitNode
+    public class dynFamilyInstanceCreatorXYZ : dynRevitTransactionNode
     {
         public dynFamilyInstanceCreatorXYZ()
         {
@@ -817,7 +817,7 @@ namespace Dynamo.Nodes
     [NodeName("Family Instance By Level Creator")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates family instances in the given level.")]
-    public class dynFamilyInstanceCreatorLevel : dynRevitNode
+    public class dynFamilyInstanceCreatorLevel : dynRevitTransactionNode
     {
         public dynFamilyInstanceCreatorLevel()
         {
@@ -941,7 +941,7 @@ namespace Dynamo.Nodes
     [NodeName("Curves from Family")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Extracts curves from family instances.")]
-    public class dynCurvesFromFamilyInstance : dynRevitNode
+    public class dynCurvesFromFamilyInstance : dynRevitTransactionNode
     {
         public dynCurvesFromFamilyInstance()
         {
@@ -1143,7 +1143,7 @@ namespace Dynamo.Nodes
     [NodeName("Set Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Modifies a parameter on a family instance.")]
-    public class dynFamilyInstanceParameterSetter : dynRevitNode
+    public class dynFamilyInstanceParameterSetter : dynRevitTransactionNode
     {
         public dynFamilyInstanceParameterSetter()
         {
@@ -1272,7 +1272,7 @@ namespace Dynamo.Nodes
     [NodeName("Get Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
-    public class dynFamilyInstanceParameterGetter : dynRevitNode
+    public class dynFamilyInstanceParameterGetter : dynRevitTransactionNode
     {
         public dynFamilyInstanceParameterGetter()
         {
@@ -1393,7 +1393,7 @@ namespace Dynamo.Nodes
     [NodeName("Set Type Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Modifies a parameter on a family type.")]
-    public class dynFamilyTypeParameterSetter : dynRevitNode
+    public class dynFamilyTypeParameterSetter : dynRevitTransactionNode
     {
         public dynFamilyTypeParameterSetter()
         {
@@ -1522,7 +1522,7 @@ namespace Dynamo.Nodes
     [NodeName("Get Type Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Fetches the value of a parameter of a Family Type.")]
-    public class dynFamilyTypeParameterGetter : dynRevitNode
+    public class dynFamilyTypeParameterGetter : dynRevitTransactionNode
     {
         public dynFamilyTypeParameterGetter()
         {
