@@ -91,17 +91,17 @@ namespace Dynamo.Nodes
                         //create an element with the type name selected
                         foreach (Type t in elementsAssembly.GetTypes())
                         {
-                            object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+                            object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
                             if (attribs.Length > 0)
                             {
-                                if (((ElementNameAttribute)attribs[0]).ElementName == ((ListBoxItem)toolSelectListBox.Items[toolSelectListBox.SelectedIndex]).Content.ToString())
+                                if (((NodeNameAttribute)attribs[0]).Name == ((ListBoxItem)toolSelectListBox.Items[toolSelectListBox.SelectedIndex]).Content.ToString())
                                 {
-                                   // dynNode newEl = dynSettings.Instance.Bench.AddDynElement(t, (attribs[0] as ElementNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0, dynSettings.Instance.Workbench.work);
+                                   // dynNode newEl = dynSettings.Instance.Bench.AddDynElement(t, (attribs[0] as NodeNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0, dynSettings.Instance.Workbench.work);
 
                                     Point p = Mouse.GetPosition(dynSettings.Instance.Bench.outerCanvas);
                                     dynNode newEl = dynSettings.Instance.Bench.AddDynElement(
-                                                    t, (attribs[0] as ElementNameAttribute).ElementName, Guid.NewGuid(), p.X,p.Y, dynSettings.Instance.Bench.CurrentSpace);
-                                    newEl.CheckInputs();
+                                                    t, (attribs[0] as NodeNameAttribute).Name, Guid.NewGuid(), p.X,p.Y, dynSettings.Instance.Bench.CurrentSpace);
+                                    //newEl.NodeUI.CheckInputs();
 
                                     //turn off the tool list box by sending an event
                                     //that is picked up by the bench
@@ -154,23 +154,23 @@ namespace Dynamo.Nodes
             {
                 //only load types that are in the right namespace, are not abstract
                 //and have the elementname attribute
-                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
-                object[] descrips = t.GetCustomAttributes(typeof(ElementDescriptionAttribute), false);
+                object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+                object[] descrips = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
 
                 if (t.Namespace == "Dynamo.Nodes" && !t.IsAbstract && attribs.Length > 0)
                 {
-                    if ((attribs[0] as ElementNameAttribute).ElementName.ToLower().Contains(toolNameBox.Text.ToLower()) && toolNameBox.Text != "")
+                    if ((attribs[0] as NodeNameAttribute).Name.ToLower().Contains(toolNameBox.Text.ToLower()) && toolNameBox.Text != "")
                     {
                         if (!toolNames.Contains(t.Name))
                         {
                             ListBoxItem lbi = new ListBoxItem();
 
                             //lbi.Content = t.Name;
-                            lbi.Content = ((ElementNameAttribute)attribs[0]).ElementName;
+                            lbi.Content = ((NodeNameAttribute)attribs[0]).Name;
 
                             if (descrips.Length > 0)
                             {
-                                lbi.ToolTip = ((ElementDescriptionAttribute)descrips[0]).ElementDescription;
+                                lbi.ToolTip = ((NodeDescriptionAttribute)descrips[0]).ElementDescription;
                             }
                             lbi.PreviewMouseUp += new MouseButtonEventHandler(lbi_PreviewMouseUp);
                             toolSelectListBox.Items.Add(lbi);
@@ -197,7 +197,7 @@ namespace Dynamo.Nodes
                 Point p = Mouse.GetPosition(dynSettings.Instance.Workbench);
                 dynNode newEl = dynSettings.Instance.Bench.AddDynElement(
                                 Type.GetType("Dynamo.Nodes." + toolNames[toolSelectListBox.SelectedIndex]), lbi.Content.ToString(), Guid.NewGuid(), p.X, p.Y, dynSettings.Instance.Bench.CurrentSpace);
-                newEl.CheckInputs();
+                //newEl.CheckInputs();
 
                 //turn off the tool list box by sending an event
                 //that is picked up by the bench
