@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
         public dynArduino()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
-            OutPortData = new PortData("arduino", "Serial port for later read/write", typeof(object));
+            outPortData = new PortData("arduino", "Serial port for later read/write", typeof(object));
 
             NodeUI.RegisterInputsAndOutput();
 
@@ -79,6 +79,12 @@ namespace Dynamo.Nodes
             this.dynElementDestroyed += new dynElementDestroyedHandler(OnDynArduinoDestroyed);
             this.dynElementReadyToDestroy += new dynElementReadyToDestroyHandler(OnDynArduinoReadyToDestroy);
 
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public new event dynElementDestroyedHandler dynElementDestroyed;
@@ -204,10 +210,16 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
             InPortData.Add(new PortData("range", "Number of lines to read", typeof(double)));
-            OutPortData = new PortData("output", "Serial output line", typeof(string));
+            outPortData = new PortData("output", "Serial output line", typeof(string));
 
             NodeUI.RegisterInputsAndOutput();
 
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
       
@@ -292,9 +304,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
             InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
-            OutPortData = new PortData("success?", "Whether or not the operation was successful.", typeof(bool));
+            outPortData = new PortData("success?", "Whether or not the operation was successful.", typeof(bool));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
 
