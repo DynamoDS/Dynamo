@@ -33,9 +33,15 @@ namespace Dynamo.Nodes
         public dynDraftingView()
         {
             InPortData.Add(new PortData("name", "Name", typeof(string)));
-            OutPortData = new PortData("v", "Drafting View", typeof(dynDraftingView));
+            outPortData = new PortData("v", "Drafting View", typeof(dynDraftingView));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
