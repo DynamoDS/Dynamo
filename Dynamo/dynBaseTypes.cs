@@ -278,7 +278,7 @@ namespace Dynamo.Nodes
     {
         public dynNewList()
         {
-            //InPortData.Add(new PortData("item(s)", "Item(s) to build a list out of", typeof(object)));
+            InPortData.Add(new PortData("item(s)", "Item(s) to build a list out of", typeof(object)));
             NodeUI.RegisterInputsAndOutput();
         }
 
