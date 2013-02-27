@@ -33,9 +33,15 @@ namespace Dynamo.Nodes
         public dynLevel()
         {
             InPortData.Add(new PortData("h", "Height.", typeof(double)));
-            OutPortData = new PortData("l", "Level", typeof(Level));
+            outPortData = new PortData("l", "Level", typeof(Level));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -173,9 +179,15 @@ namespace Dynamo.Nodes
         public dynReferencePlane()
         {
             InPortData.Add(new PortData("l", "Geometry Line.", typeof(Line)));
-            OutPortData = new PortData("ref", "Reference Plane", typeof(ReferencePlane));
+            outPortData = new PortData("ref", "Reference Plane", typeof(ReferencePlane));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -423,9 +435,15 @@ namespace Dynamo.Nodes
         public dynColumnGrid()
         {
             InPortData.Add(new PortData("line", "Geometry Line.", typeof(Line))); // MDJ TODO - expand this to work with curved grids.
-            OutPortData = new PortData("grid", "Grid", typeof(Grid));
+            outPortData = new PortData("grid", "Grid", typeof(Grid));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
