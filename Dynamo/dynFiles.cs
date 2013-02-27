@@ -60,9 +60,15 @@ namespace Dynamo.Nodes
             this.handler = new FileSystemEventHandler(watcher_FileChanged);
 
             InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
-            OutPortData = new PortData("contents", "File contents", typeof(string));
+            outPortData = new PortData("contents", "File contents", typeof(string));
 
             //NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
@@ -111,9 +117,15 @@ namespace Dynamo.Nodes
             this.handler = new FileSystemEventHandler(watcher_FileChanged);
 
             InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
-            OutPortData = new PortData("contents", "File contents", typeof(string));
+            outPortData = new PortData("contents", "File contents", typeof(string));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
@@ -247,9 +259,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
             InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
-            OutPortData = new PortData("success?", "Whether or not the operation was successful.", typeof(bool));
+            outPortData = new PortData("success?", "Whether or not the operation was successful.", typeof(bool));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -282,9 +300,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("path", "Filename to write to", typeof(string)));
             InPortData.Add(new PortData("data", "List of lists to write into CSV", typeof(IList<IList<string>>)));
-            OutPortData = new PortData("success?", "Whether or not the file writing was successful", typeof(bool));
+            outPortData = new PortData("success?", "Whether or not the file writing was successful", typeof(bool));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -324,9 +348,15 @@ namespace Dynamo.Nodes
         public dynFileWatcher()
         {
             this.InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
-            this.OutPortData = new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher));
+            this.outPortData = new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -344,9 +374,15 @@ namespace Dynamo.Nodes
         public dynFileWatcherChanged()
         {
             this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
-            this.OutPortData = new PortData("changed?", "Whether or not the file has been changed.", typeof(bool));
+            this.outPortData = new PortData("changed?", "Whether or not the file has been changed.", typeof(bool));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -367,9 +403,15 @@ namespace Dynamo.Nodes
         {
             this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
             this.InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(double)));
-            this.OutPortData = new PortData("changed?", "True: File was changed. False: Timed out.", typeof(bool));
+            this.outPortData = new PortData("changed?", "True: File was changed. False: Timed out.", typeof(bool));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -405,10 +447,16 @@ namespace Dynamo.Nodes
     {
         public dynFileWatcherReset()
         {
-            this.InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
-            this.OutPortData = new PortData("fw", "Updated watcher.", typeof(FileWatcher));
+            InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
+            outPortData = new PortData("fw", "Updated watcher.", typeof(FileWatcher));
 
             NodeUI.RegisterInputsAndOutput();
+        }
+
+        private PortData outPortData;
+        public override PortData OutPortData
+        {
+            get { return outPortData; }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
