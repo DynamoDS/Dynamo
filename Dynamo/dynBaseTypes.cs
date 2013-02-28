@@ -1466,30 +1466,39 @@ namespace Dynamo.Elements
             return this.InPortData.Count + 1;
         }
 
-        private INode nestedBegins(Stack<dynNode> inputs, Dictionary<dynNode, INode> preBuilt)
-        {
-            var firstVal = inputs.Pop().Build(preBuilt);
+        //private static INode nestedBegins(Stack<dynNode> inputs, Dictionary<dynNode, INode> preBuilt)
+        //{
+        //    var firstVal = inputs.Pop().Build(preBuilt);
 
-            if (inputs.Any())
-            {
-                var newBegin = new BeginNode();
-                newBegin.ConnectInput("expr1", nestedBegins(inputs, preBuilt));
-                newBegin.ConnectInput("expr2", firstVal);
-                return newBegin;
-            }
-            else
-                return firstVal;
-        }
+        //    if (inputs.Any())
+        //    {
+        //        var newBegin = new BeginNode();
+        //        newBegin.ConnectInput("expr1", nestedBegins(inputs, preBuilt));
+        //        newBegin.ConnectInput("expr2", firstVal);
+        //        return newBegin;
+        //    }
+        //    else
+        //        return firstVal;
+        //}
 
         protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
             INode result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                result = nestedBegins(
-                    new Stack<dynNode>(
-                        InPorts.Select(x => x.Connectors[0].Start.Owner)),
-                    preBuilt);
+                var beginNode = new BeginNode(InPortData.Select(x => x.NickName));
+
+                foreach (var input in InPortData.Zip(InPorts, (data, port) => new { Data = data, Port = port }))
+                {
+                    beginNode.ConnectInput(input.Data.NickName, input.Port.Connectors[0].Start.Owner.Build(preBuilt));
+                }
+
+                result = beginNode;
+
+                //result = nestedBegins(
+                //    new Stack<dynNode>(
+                //        InPorts.Select(x => x.Connectors[0].Start.Owner)),
+                //    preBuilt);
                 preBuilt[this] = result;
             }
             return result;
