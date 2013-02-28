@@ -813,13 +813,15 @@ let rec private compile (compenv : CompilerEnv) expression : (Environment -> Val
     //Expression sequences
     | Begin(exprs) ->
         ///Merges all nested begin expressions
-        let rec merge a = function
-            | [Begin([]) as e]   -> merge (compile' e :: a) []
-            | Begin(exprs') :: t -> merge (merge a exprs') t
-            | h :: t             -> merge (compile' h :: a) t
-            | []                 -> List.rev a
+        let merge =
+            let rec merge' a = function
+               | [Begin([]) as e]   -> merge' (compile' e :: a) []
+               | Begin(exprs') :: t -> merge' (merge' a exprs') t
+               | h :: t             -> merge' (compile' h :: a) t
+               | []                 -> a
+            merge' [] >> List.rev
         ///Compiled expressions
-        let body = merge [] exprs
+        let body = merge exprs
         ///Dummy value for empty begin statements
         let d = Dummy("empty begin")
         ///Tail-recursive helper for evaluating a sequence of expressions.
@@ -1031,6 +1033,8 @@ let RunTests (log : ErrorLog) =
     case "(let ((square (λ (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
     case "(let ((square (λ (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
     case "(let ((square (λ (x) (* x x)))) (map square '()))" "()" // mapping empty
+
+    case "(let ((a (begin)) (b (begin)) (c (begin)) (d 0)) (begin (begin (begin (begin (begin (begin (set! a d)) (set! d (+ d 1))) (set! b d)) (set! d (+ d 1))) (set! c d)) (list a b c)))" "(0 1 2)"
 
     //Scope
     case "(let ((y 6)) (let ((f (λ (x) (+ x y)))) (let ((y 5)) (f 4))))" "10" //lexical

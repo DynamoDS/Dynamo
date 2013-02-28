@@ -40,7 +40,7 @@ limitations under the License.
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -49,7 +49,7 @@ limitations under the License.
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -58,11 +58,11 @@ limitations under the License.
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="HelixToolkit.Wpf.Input">
       <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -74,7 +74,7 @@ limitations under the License.
     <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Drawing">
@@ -291,17 +291,8 @@ limitations under the License.
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy .\DynamoElements.dll ..\..\..\DynamoRevit\bin\Debug\DynamoElements.dll
-copy .\DynamoElements.pdb ..\..\..\DynamoRevit\bin\Debug\DynamoElements.pdb
-copy .\DynamoElements.dll ..\..\..\DynamoSandbox\bin\Debug\DynamoElements.dll
-copy .\DynamoElements.pdb ..\..\..\\DynamoSandbox\bin\Debug\DynamoElements.pdb
-
-copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.dll
-copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.Input.dll
-copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.pdb ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.pdb
-copy ..\..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.pdb ..\..\..\DynamoRevit\bin\Debug\HelixToolkit.Wpf.Input.pdb
-copy ..\..\..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll  ..\..\..\DynamoRevit\bin\Debug\MIConvexHullPlugin.dll
-copy ..\..\..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.pdb  ..\..\..\DynamoRevit\bin\Debug\MIConvexHullPlugin.pdb</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

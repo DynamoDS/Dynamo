@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>FScheme</name></assembly>
+<members>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="T:Dynamo.FScheme.Expression">
+<summary>
+AST for FScheme expressions
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="T:Dynamo.FScheme.ExternMacro">
+<summary>
+FScheme Macro delegate.
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="T:Dynamo.FScheme.ExternFunc">
+<summary>
+FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="T:Dynamo.FScheme.Value.Dummy">
+<summary>
+Invalid value (used for mutation, where expressions shouldn&apos;t return anything).
+</summary>
+</member>
+<member name="T:Dynamo.FScheme.Value.Function">
+<summary>
+Expression representing a function.
+</summary>
+</member>
+<member name="T:Dynamo.FScheme.Value.List">
+<summary>
+Expression representing a list of sub expressions.
+</summary>
+</member>
+<member name="T:Dynamo.FScheme.Value.Symbol">
+<summary>
+Expression representing a symbol.
+</summary>
+</member>
+<member name="T:Dynamo.FScheme.Value.String">
+<summary>
+Expression representing a string.
+</summary>
+</member>
+<member name="T:Dynamo.FScheme.Value.Number">
+<summary>
+Expression representing a number (double).
+</summary>
+</member>
+<member name="T:Dynamo.FScheme.Value.Container">
+<summary>
+Expression representing any .NET object.
+</summary>
+</member>
+<member name="T:Dynamo.FScheme.Value">
+<summary>
+Types of FScheme Values
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.RunTests(Dynamo.FScheme.ErrorLog)">
+<summary>
+Tests
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.REPL(System.Boolean)">
+<summary>
+Read/Eval/Print Loop
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.REPd(System.String)">
+<summary>
+Debug version of rep
+</summary>
+</member>
+<member name="P:Dynamo.FScheme.REP">
+<summary>
+Read/Eval/Print
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="P:Dynamo.FScheme.ParseText">
+<summary>
+Parses and evaluates an expression given in text form, and returns the resulting expression
+</summary>
+</member>
+<member name="P:Dynamo.FScheme.EvaluateInEnvironment">
+<summary>
+Evaluates the given Syntax in the given Environment
+</summary>
+</member>
+<member name="P:Dynamo.FScheme.Evaluate">
+<summary>
+Evaluates the given Syntax
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.AddDefaultBinding(System.String,Dynamo.FScheme.Value)">
+<summary>
+Adds a new binding to the default environment
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="P:Dynamo.FScheme.environment">
+<summary>
+Our base environment
+</summary>
+</member>
+<member name="P:Dynamo.FScheme.compileEnvironment">
+<summary>
+Our base compiler environment
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.load(System.String)">
+<summary>
+Load construct -- loads library files, reads them using the simple tokenizer and parser.
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.Eval(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Eval construct -- evaluates code quotations
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.makeQuote(System.Boolean,Microsoft.FSharp.Core.FSharpRef{Microsoft.FSharp.Collections.FSharpList{Microsoft.FSharp.Collections.FSharpList{System.String}}},Dynamo.FScheme.Syntax)">
+<summary>
+Creates a code quotation
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.compile(Microsoft.FSharp.Core.FSharpRef{Microsoft.FSharp.Collections.FSharpList{Microsoft.FSharp.Collections.FSharpList{System.String}}},Dynamo.FScheme.Expression)">
+<summary>
+Compiles Syntax
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.Display(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Display construct -- used to print to stdout
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.Throw``1(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Error construct
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.StringToNum(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Converts strings to numbers
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.BuildSeq(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Build List
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.Flatten(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Flatten List
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.Sort(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Sorts using natural ordering. Only works for primitive types (numbers, strings)
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.boolMath(Microsoft.FSharp.Core.FSharpFunc`2{System.IComparable,Microsoft.FSharp.Core.FSharpFunc`2{System.IComparable,System.Boolean}},System.String,Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Simple wrapper for comparison operations.
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.mathbin(Microsoft.FSharp.Core.FSharpFunc`2{System.Double,Microsoft.FSharp.Core.FSharpFunc`2{System.Double,System.Double}},System.String,Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Value})">
+<summary>
+Simple wrapper for arithmatic operations.
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.malformed``1(System.String,Dynamo.FScheme.Value)">
+<summary>
+Prints a malformed statement error.
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.print(Dynamo.FScheme.Value)">
+<summary>
+Converts the given Value to a string.
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.makeExternMacro(Dynamo.FScheme.ExternMacro)">
+<summary>
+Makes a Macro out of an ExternMacro
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="M:Dynamo.FScheme.Or(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Syntax})">
+<summary>
+Or macro
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.And(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Syntax})">
+<summary>
+And macro
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.LetStar(Microsoft.FSharp.Collections.FSharpList{Dynamo.FScheme.Syntax})">
+<summary>
+Let* macro
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.makeExternFunc(Dynamo.FScheme.ExternFunc)">
+<summary>
+Makes an Expression.Function out of an ExternFunc
+</summary>
+</member>
+<member name="M:Dynamo.FScheme.exprToBool(Dynamo.FScheme.Value)">
+<summary>
+Converts an expression to a boolean value
+</summary>
+</member>
+<member name="">
+
+</member>
+<member name="T:Dynamo.FScheme">
+
+</member>
+</members>
+</doc>

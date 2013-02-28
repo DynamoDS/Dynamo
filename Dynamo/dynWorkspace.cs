@@ -92,7 +92,13 @@ namespace Dynamo.Elements
         {
             if (OnModified != null)
                 OnModified();
-            dynElementSettings.SharedInstance.Bench.SaveFunction(this);
+
+            var bench = dynElementSettings.SharedInstance.Bench;
+            bench.Dispatcher.BeginInvoke(new Action(
+                delegate
+                {
+                    bench.SaveFunction(this);
+                }));
         }
     }
 

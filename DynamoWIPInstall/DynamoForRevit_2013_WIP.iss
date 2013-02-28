@@ -2,25 +2,25 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=Revit 2013 WIP Dynamo Add-In
-AppVerName=Dynamo For Revit 2013
+AppName=Dynamo
+AppVerName=Dynamo WIP 0.3.0 for Revit 2013
 AppPublisher=Autodesk, Inc.
 AppID={{12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
 AppCopyright=
 AppPublisherURL=http://labs.autodesk.com/utilities/vasari
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=2013
-VersionInfoVersion=2013.0
-VersionInfoCompany=
-VersionInfoDescription==Revit 2013 WIP Dynamo Add-In
-VersionInfoTextVersion==Revit 2013 WIP Dynamo Add-In
+AppVersion=0.3.0
+VersionInfoVersion=0.3.0
+VersionInfoCompany=Autodesk 
+VersionInfoDescription=Dynamo WIP for Revit 2013
+VersionInfoTextVersion=Dynamo WIP for Revit 2013
 VersionInfoCopyright=
-DefaultDirName=C:\VasariWIP\Revit_2013\Dynamo 
+DefaultDirName=C:\Autodesk\Revit_2013\DynamoWIP
 DefaultGroupName=
-OutputDir=.
-OutputBaseFilename=Revit_2013_WIP_Dynamo_Add-In
-SetupIconFile=Nodes_32_32.ico
+OutputDir=Installers
+OutputBaseFilename=DynamoWIPForRevit
+SetupIconFile=Extra\Nodes_32_32.ico
 Compression=lzma
 SolidCompression=true
 RestartIfNeededByRun=false
@@ -28,9 +28,9 @@ FlatComponentsList=false
 ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
-UninstallDisplayIcon={app}\Nodes_32_32.ico   
-UninstallDisplayName=Revit 2013 WIP Dynamo Add-In
-PrivilegesRequired=admin
+UninstallDisplayIcon={app}\Nodes_32_32.ico
+UninstallDisplayName=Dynamo WIP for Revit 2013
+PrivilegesRequired=none
 UsePreviousAppDir=no
 
 [Types]
@@ -43,27 +43,21 @@ Name: "{app}\definitions"
 Name: "{app}\samples"
 
 [Components]
-Name: "DynamoForRevit_2012WIP"; Description: "Dynamo For Revit_2012 WIP"; Types: full compact custom; Flags: fixed
+Name: "DynamoWIPForRevit2013"; Description: "Dynamo WIP For Revit 2013"; Types: full compact custom; Flags: fixed
 Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 
 [Files]
 ;Core Files
-Source: DynamoRevit.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
-Source: DynamoElements.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
-Source: DragCanvas.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
-Source: FSchemeInterop.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
-Source: FScheme.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
-Source: HelixToolkit.Wpf.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP 
-Source: MIConvexHullPlugin.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP 
-Source: Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
-Source: readme.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
-Source: fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit_2012WIP
+Source: bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
+Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
+Source: Extra\readme.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
+Source: Extra\fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
 ;Training Files
 Source: Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 Source: Definitions\*.dyf; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 [UninstallDelete]
-Type: files; Name: "{userappdata}\Autodesk\Revit\Addins\2013\DynamoforRevit_2013_WIP.addin"
+Type: files; Name: "{userappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin"
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
@@ -137,27 +131,27 @@ begin
   begin
 
 	{ GET LOCATION OF USER AppData (Roaming) }
-	AddInFilePath := ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2013\DynamoforRevit_2013_WIP.addin');
+	AddInFilePath := ExpandConstant('{userappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin');
 
 	{ CREATE NEW ADDIN FILE }
 	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
 	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
-    AddInFileContents := AddInFileContents + '    <Name>Dynamo For Revit 2012</Name>' + #13#10;
+    AddInFileContents := AddInFileContents + '    <Name>Dynamo For Revit</Name>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevit.dll</Assembly>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <AddInId>188B9080-EEBE-40C3-865A-8FC31DEEC12F</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorId>GOBD</VendorId>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorDescription>dyanmo, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
 	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Command">' + #13#10;
 	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevit.dll</Assembly>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <AddInId>dc09be67-aa31-4ea7-86c9-d06c080cd3e9</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorId>GOBD</VendorId>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorDescription>dynamo, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
-    AddInFileContents := AddInFileContents + '    <Text>DynamoForRevit</Text>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Description>Visual programming using the Revit API.</Description>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
+	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
+    AddInFileContents := AddInFileContents + '    <Text>Dynamo For Revit</Text>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <Description>Visual programming for Revit.</Description>' + #13#10;
 	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
     AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
 	SaveStringToFile(AddInFilePath, AddInFileContents, False);

@@ -120,8 +120,10 @@ namespace Dynamo.Elements
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
-            if (!this.Bench.Running)
+            if (!this.Bench.Running && SaveResult)
+            {
                 this.IsDirty = true;
+            }
             else
             {
                 //TODO: Refactor
