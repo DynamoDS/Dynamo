@@ -18,7 +18,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Linq;
-using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -347,8 +346,8 @@ namespace Dynamo.Nodes
     {
         public dynFileWatcher()
         {
-            this.InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
-            this.outPortData = new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher));
+            InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
+            outPortData = new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher));
 
             NodeUI.RegisterInputsAndOutput();
         }

@@ -17,10 +17,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Analysis; //MDJ  - added for spatialfeildmanager access
-using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Microsoft.FSharp.Collections;
@@ -85,17 +81,7 @@ namespace Dynamo.Utilities
             return MakeEnumerable<object>(en);
         }
 
-        public static string Ellipsis(string value, int desiredLength)
-        {
-            if (desiredLength > value.Length)
-            {
-                return value;
-            }
-            else
-            {
-                return value.Remove(desiredLength - 1) + "...";
-            }
-        }
+        
 
         /// <summary>
         /// Creates a sketch plane by projecting one point's z coordinate down to the other's z coordinate.

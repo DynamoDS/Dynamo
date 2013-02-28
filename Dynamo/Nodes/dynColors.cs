@@ -17,7 +17,6 @@ using System.IO;
 using System.Threading;
 using System.Windows.Controls;
 using System.Linq;
-using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;

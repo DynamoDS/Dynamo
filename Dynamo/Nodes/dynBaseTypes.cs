@@ -50,7 +50,6 @@ namespace Dynamo.Nodes
     /// </summary>
     public static class BuiltinNodeCategories
     {
-
         public const string MATH = "Math";
         public const string COMPARISON = "Comparison";
         public const string BOOLEAN = "Logic";
@@ -75,6 +74,21 @@ namespace Dynamo.Nodes
         public const string SELECTION = "Selection";
         public const string EXECUTION = "Execution";
         public const string SIMULATION = "Simulation";
+    }
+
+    static class Utilities
+    {
+        public static string Ellipsis(string value, int desiredLength)
+        {
+            if (desiredLength > value.Length)
+            {
+                return value;
+            }
+            else
+            {
+                return value.Remove(desiredLength - 1) + "...";
+            }
+        }
     }
 
     #region FScheme Builtin Interop
@@ -2671,7 +2685,7 @@ namespace Dynamo.Nodes
 
                 base.Value = value;
 
-                this.tb.Text = dynUtils.Ellipsis(this.Value, 30);
+                this.tb.Text = Utilities.Ellipsis(this.Value, 30);
             }
         }
 
@@ -2710,7 +2724,7 @@ namespace Dynamo.Nodes
                         if (attr.Name.Equals("value"))
                         {
                             this.Value = this.DeserializeValue(System.Web.HttpUtility.UrlDecode(attr.Value));
-                            this.tb.Text = dynUtils.Ellipsis(this.Value, 30);
+                            this.tb.Text = Utilities.Ellipsis(this.Value, 30);
                         }
 
                     }

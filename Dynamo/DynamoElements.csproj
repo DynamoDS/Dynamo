@@ -56,19 +56,6 @@ limitations under the License.
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="HelixToolkit.Wpf">
-      <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HelixToolkit.Wpf.Input">
-      <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Drawing">
       <HintPath>..\packages\Coding4Fun.Kinect.Wpf.1.1.0\lib\Microsoft.Expression.Drawing.dll</HintPath>
@@ -84,14 +71,6 @@ limitations under the License.
     </Reference>
     <Reference Include="PresentationFramework.Aero">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -123,63 +102,40 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dyn3D.cs" />
-    <Compile Include="dynAnalysis.cs" />
-    <Compile Include="dynColors.cs" />
-    <Compile Include="dynDivide.cs" />
+    <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynGeometricForms.cs" />
-    <Compile Include="dynMeasurement.cs" />
-    <Compile Include="dynSimplexNoise.cs" />
-    <Compile Include="dynTessellation.cs" />
-    <Compile Include="dynTimer.cs" />
-    <Compile Include="dynViews.cs" />
-    <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
-    <Compile Include="ParticleSystem\dynParticleSpring.cs" />
-    <Compile Include="ParticleSystem\dynParticle.cs" />
-    <Compile Include="dynArduino.cs" />
-    <Compile Include="dynBaseTypes.cs" />
+    <Compile Include="Nodes\dynTimer.cs" />
+    <Compile Include="Nodes\dynArduino.cs" />
+    <Compile Include="Nodes\dynBaseTypes.cs" />
     <Compile Include="dynBench.xaml.cs">
       <DependentUpon>dynBench.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynCollection.cs" />
-    <Compile Include="dynCommunication.cs" />
+    <Compile Include="Nodes\dynCommunication.cs" />
     <Compile Include="dynConnector.cs" />
-    <Compile Include="dynCurves.cs" />
-    <Compile Include="dynDatums.cs" />
-    <Compile Include="dynFamilies.cs" />
-    <Compile Include="dynFiles.cs" />
+    <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
-    <Compile Include="dynGeometry.cs" />
-    <Compile Include="dynModelUpdater.cs" />
     <Compile Include="dynNode.cs" />
     <Compile Include="dynNodeUI.xaml.cs">
       <DependentUpon>dynNodeUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynNormals.cs" />
     <Compile Include="dynNote.xaml.cs">
       <DependentUpon>dynNote.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ParticleSystem\dynParticleSystem.cs" />
-    <Compile Include="dynPoints.cs" />
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynSelection.cs" />
-    <Compile Include="dynSolarRadiation.cs" />
     <Compile Include="dynToolFinder.xaml.cs">
       <DependentUpon>dynToolFinder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynTransactions.cs" />
     <Compile Include="dynUtils.cs" />
-    <Compile Include="dynWatch.cs" />
+    <Compile Include="Nodes\dynWatch.cs" />
     <Compile Include="dynWorkspace.cs" />
     <Compile Include="FunctionNamePrompt.xaml.cs">
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IdlePromise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -194,8 +150,6 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SearchDictionary.cs" />
-    <Compile Include="ParticleSystem\VerletIntegrator.cs" />
-    <Compile Include="dynTransforms.cs" />
     <Compile Include="WatchTree.xaml.cs">
       <DependentUpon>WatchTree.xaml</DependentUpon>
     </Compile>
