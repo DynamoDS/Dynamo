@@ -102,6 +102,7 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoController.cs" />
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>

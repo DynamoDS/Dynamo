@@ -20,7 +20,7 @@ using System.Windows.Shapes;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using System.Collections.Generic;
-using Dynamo.Nodes;
+using Dynamo.Controls;
 
 namespace Dynamo.Connectors
 {

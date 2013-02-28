@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynRevitTransactionNode.cs" />
     <Compile Include="Nodes\dyn3D.cs" />
     <Compile Include="DynamoRevit.cs" />

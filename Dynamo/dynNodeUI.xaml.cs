@@ -24,7 +24,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Dynamo.Connectors;
-using Dynamo.Controls;
+using Dynamo.Nodes;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
@@ -33,7 +33,7 @@ using Expression = Dynamo.FScheme.Expression;
 using Grid = System.Windows.Controls.Grid;
 using System.Windows.Threading;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Controls
 {
     /// <summary>
     /// Interaction logic for dynControl.xaml

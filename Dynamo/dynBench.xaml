@@ -32,7 +32,7 @@
                   <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
                </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Samples" Name="samplesMenu">
+            <MenuItem Header="Samples" Name="SamplesMenu">
                <MenuItem.Icon>
                   <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
                </MenuItem.Icon>
@@ -131,12 +131,12 @@
       </ScrollViewer>
       <Grid Height="Auto" HorizontalAlignment="Left" Margin="0,20,0,0" Name="sidebarGrid" VerticalAlignment="Stretch" Width="290">
          <ScrollViewer HorizontalAlignment="Stretch" Margin="0,33,0,90" Name="scrollViewer1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
-            <StackPanel Height="Auto" Name="stackPanel1" Width="Auto"/>
+            <StackPanel Height="Auto" Name="SideStackPanel" Width="Auto"/>
          </ScrollViewer>
          <Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" />
          <TextBox Height="23" HorizontalAlignment="Stretch" Margin="48,5,74,0" Name="searchBox" VerticalAlignment="Top" Text="" IsEnabled="True" TextChanged="SearchBox_OnTextChanged" LostFocus="searchBox_LostFocus" />
          <Button Margin="0,5,5,0" Height="25" Width="Auto" HorizontalAlignment="Right" Content="New Node" VerticalAlignment="Top" Click="NewFunction_Click" />
-         <Button Margin="35,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Run" Click="Run_Click" Name="runButton" />
+         <Button Margin="35,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Run" Click="Run_Click" Name="RunButton" />
          <Button Margin="155,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Cancel" Click="Cancel_Click" Name="cancelButton" />
          <CheckBox Margin="60,0,0,35" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="dynamicCheckBox" />
          <Label Margin="72,0,0,29" Content="Run Automatically" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
