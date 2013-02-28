@@ -20,7 +20,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
@@ -39,7 +39,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
             var input = args[0];
@@ -47,17 +47,17 @@ namespace Dynamo.Elements
             //If we are receiving a list, we must create levels for each double in the list.
             if (input.IsList)
             {
-                var doubleList = (input as Expression.List).Item;
+                var doubleList = (input as Value.List).Item;
 
                 //Counter to keep track of how many levels we've made. We'll use this to delete old
                 //elements later.
                 int count = 0;
 
                 //We create our output by...
-                var result = Utils.convertSequence(
+                var result = Utils.SequenceToFSharpList(
                    doubleList.Select(
                     //..taking each element in the list and...
-                      delegate(Expression x)
+                      delegate(Value x)
                       {
                           Level lev;
                           //...if we already have elements made by this node in a previous run...
@@ -69,7 +69,7 @@ namespace Dynamo.Elements
                               {
                                   //...and if we're successful, update it's position... 
                                   lev = e as Level;
-                                  lev.Elevation = (double)((Expression.Number)x).Item;
+                                  lev.Elevation = (double)((Value.Number)x).Item;
                               }
                               else
                               {
@@ -77,10 +77,10 @@ namespace Dynamo.Elements
                                   //previously created levels.
                                   lev = this.UIDocument.Document.IsFamilyDocument
                                   ? this.UIDocument.Document.FamilyCreate.NewLevel(
-                                     (double)((Expression.Number)x).Item
+                                     (double)((Value.Number)x).Item
                                   )
                                   : this.UIDocument.Document.Create.NewLevel(
-                                     (double)((Expression.Number)x).Item
+                                     (double)((Value.Number)x).Item
                                   );
                                   this.Elements[0] = lev.Id;
 
@@ -92,20 +92,20 @@ namespace Dynamo.Elements
                               //...we create a new level...
                               lev = this.UIDocument.Document.IsFamilyDocument
                               ? this.UIDocument.Document.FamilyCreate.NewLevel(
-                                 (double)((Expression.Number)x).Item
+                                 (double)((Value.Number)x).Item
                               )
                               : this.UIDocument.Document.Create.NewLevel(
-                                 (double)((Expression.Number)x).Item
+                                 (double)((Value.Number)x).Item
                               );
                               //...and store it in the element list for future runs.
                               this.Elements.Add(lev.Id);
 
                           }
-                          //Finally, we update the counter, and return a new Expression containing the level.
-                          //This Expression will be placed in the Expression.List that will be passed downstream from this
+                          //Finally, we update the counter, and return a new Value containing the level.
+                          //This Value will be placed in the Value.List that will be passed downstream from this
                           //node.
                           count++;
-                          return Expression.NewContainer(lev);
+                          return Value.NewContainer(lev);
                       }
                    )
                 );
@@ -118,13 +118,13 @@ namespace Dynamo.Elements
                 }
 
                 //Fin
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             //If we're not receiving a list, we will just assume we received one double height.
             else
             {
                 //Level elements take in one double for the z elevation (height)f
-                double h = (double)((Expression.Number)args[0]).Item;
+                double h = (double)((Value.Number)args[0]).Item;
 
                 Level lev;
 
@@ -161,7 +161,7 @@ namespace Dynamo.Elements
                     this.DeleteElement(e);
                 }
 
-                return Expression.NewContainer(lev);
+                return Value.NewContainer(lev);
             }
         }
     }
@@ -180,7 +180,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
             var input = args[0];
@@ -188,17 +188,17 @@ namespace Dynamo.Elements
             //If we are receiving a list, we must create reg planes for each curve in the list.
             if (input.IsList)
             {
-                var curveList = (input as Expression.List).Item;
+                var curveList = (input as Value.List).Item;
 
                 //Counter to keep track of how many ref planes we've made. We'll use this to delete old
                 //elements later.
                 int count = 0;
 
                 //We create our output by...
-                var result = Utils.convertSequence(
+                var result = Utils.SequenceToFSharpList(
                    curveList.Select(
                     //..taking each element in the list and...
-                      delegate(Expression x)
+                      delegate(Value x)
                       {
                           ReferencePlane refPlane;
                           Line line;
@@ -217,10 +217,10 @@ namespace Dynamo.Elements
                                   name = refPlane.Name;
                                   this.UIDocument.Document.Delete(refPlane.Id);//delete old one for now
 
-                                  //refPlane.Reference = (Line)((Expression.Container)x).Item;// these are all readonly, how to modify exising grid then?
+                                  //refPlane.Reference = (Line)((Value.Container)x).Item;// these are all readonly, how to modify exising grid then?
 
                                   //then make a new one using new line and old name 
-                                  line = (Line)((Expression.Container)x).Item; 
+                                  line = (Line)((Value.Container)x).Item; 
                                   bubbleEnd = line.get_EndPoint(0);
                                   freeEnd = line.get_EndPoint(1);
 
@@ -245,7 +245,7 @@ namespace Dynamo.Elements
                               {
                                   //...otherwise, we can make a new ref plane and replace it in the list of
                                   //previously created ref planes.
-                                  line = (Line)((Expression.Container)x).Item;
+                                  line = (Line)((Value.Container)x).Item;
                                   bubbleEnd = line.get_EndPoint(0);
                                   freeEnd = line.get_EndPoint(1);
 
@@ -271,7 +271,7 @@ namespace Dynamo.Elements
                           else
                           {
                               //...we create a new ref plane...
-                            line = (Line)((Expression.Container)x).Item;
+                            line = (Line)((Value.Container)x).Item;
                             bubbleEnd = line.get_EndPoint(0);
                             freeEnd = line.get_EndPoint(1);
 
@@ -293,11 +293,11 @@ namespace Dynamo.Elements
                               this.Elements.Add(refPlane.Id);
 
                           }
-                          //Finally, we update the counter, and return a new Expression containing the level.
-                          //This Expression will be placed in the Expression.List that will be passed downstream from this
+                          //Finally, we update the counter, and return a new Value containing the level.
+                          //This Value will be placed in the Value.List that will be passed downstream from this
                           //node.
                           count++;
-                          return Expression.NewContainer(refPlane);
+                          return Value.NewContainer(refPlane);
                       }
                    )
                 );
@@ -310,13 +310,13 @@ namespace Dynamo.Elements
                 }
 
                 //Fin
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             //If we're not receiving a list, we will just assume we received one curve.
             else
             {
                 //Ref plane elements take in one geometry curve 
-                Line c = (Line)((Expression.Container)args[0]).Item;
+                Line c = (Line)((Value.Container)args[0]).Item;
 
                 ReferencePlane refPlane;
                 Line line;
@@ -335,7 +335,7 @@ namespace Dynamo.Elements
                         name = refPlane.Name;
                         this.UIDocument.Document.Delete(refPlane.Id);//delete old one for now
 
-                        //refPlane.Reference = (Line)((Expression.Container)x).Item;// these are all readonly, how to modify exising grid then?
+                        //refPlane.Reference = (Line)((Value.Container)x).Item;// these are all readonly, how to modify exising grid then?
 
                         //then make a new one using new line and old name 
                         line = (Line)c;
@@ -412,7 +412,7 @@ namespace Dynamo.Elements
                     this.DeleteElement(e);
                 }
 
-                return Expression.NewContainer(refPlane);
+                return Value.NewContainer(refPlane);
             }
         }
     }
@@ -431,7 +431,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
             var input = args[0];
@@ -439,17 +439,17 @@ namespace Dynamo.Elements
             //If we are receiving a list, we must create a column grid for each curve in the list.
             if (input.IsList)
             {
-                var curveList = (input as Expression.List).Item;
+                var curveList = (input as Value.List).Item;
 
                 //Counter to keep track of how many column grids we've made. We'll use this to delete old
                 //elements later.
                 int count = 0;
 
                 //We create our output by...
-                var result = Utils.convertSequence(
+                var result = Utils.SequenceToFSharpList(
                    curveList.Select(
                     //..taking each element in the list and...
-                      delegate(Expression x)
+                      delegate(Value x)
                       {
                           Grid grid;
                           //...if we already have elements made by this node in a previous run...
@@ -461,12 +461,12 @@ namespace Dynamo.Elements
                               {
                                   //...and if we're successful, update it's position... 
                                   grid = e as Grid;
-                                  //grid.Curve = (Curve)((Expression.Container)x).Item; // these are all readonly, how to modify exising grid then?
+                                  //grid.Curve = (Curve)((Value.Container)x).Item; // these are all readonly, how to modify exising grid then?
                                   //MDJ TODO - figure out how to move grid or use document.Create.NewGrid(geomLine)
                                   // hack - make a new one for now
                                   string gridNum = grid.Name;
                                   grid = this.UIDocument.Document.Create.NewGrid(
-                                     (Line)((Expression.Container)x).Item
+                                     (Line)((Value.Container)x).Item
                                   );
                                   grid.Name = gridNum;
 
@@ -478,11 +478,11 @@ namespace Dynamo.Elements
                                   //grid = this.UIDocument.Document.IsFamilyDocument
                                   //?
                                     //this.UIDocument.Document.FamilyCreate.NewLevel(
-                                    // (double)((Expression.Number)x).Item
+                                    // (double)((Value.Number)x).Item
                                   //)
                                   //: 
                                   grid = this.UIDocument.Document.Create.NewGrid(
-                                     (Line)((Expression.Container)x).Item
+                                     (Line)((Value.Container)x).Item
                                   );
                                   this.Elements[0] = grid.Id;
 
@@ -495,21 +495,21 @@ namespace Dynamo.Elements
                               //grid = this.UIDocument.Document.IsFamilyDocument
                               //?
                               //this.UIDocument.Document.FamilyCreate.NewLevel(
-                              // (double)((Expression.Number)x).Item
+                              // (double)((Value.Number)x).Item
                               //)
                               //: 
                               grid = this.UIDocument.Document.Create.NewGrid(
-                                 (Line)((Expression.Container)x).Item
+                                 (Line)((Value.Container)x).Item
                               );
                               //...and store it in the element list for future runs.
                               this.Elements.Add(grid.Id);
 
                           }
-                          //Finally, we update the counter, and return a new Expression containing the grid.
-                          //This Expression will be placed in the Expression.List that will be passed downstream from this
+                          //Finally, we update the counter, and return a new Value containing the grid.
+                          //This Value will be placed in the Value.List that will be passed downstream from this
                           //node.
                           count++;
-                          return Expression.NewContainer(grid);
+                          return Value.NewContainer(grid);
                       }
                    )
                 );
@@ -522,13 +522,13 @@ namespace Dynamo.Elements
                 }
 
                 //Fin
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             //If we're not receiving a list, we will just assume we received one double height.
             else
             {
                 //Column grid elements take in one curve for their geometry
-                Line c = (Line)((Expression.Container)args[0]).Item;
+                Line c = (Line)((Value.Container)args[0]).Item;
 
                 Grid grid;
 
@@ -567,7 +567,7 @@ namespace Dynamo.Elements
                     this.DeleteElement(e);
                 }
 
-                return Expression.NewContainer(grid);
+                return Value.NewContainer(grid);
             }
         }
     }

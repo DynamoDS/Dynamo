@@ -24,9 +24,11 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Autodesk.Revit.DB;
 using System.Diagnostics;
 using Dynamo.Controls;
+using System.Windows.Threading;
 
 namespace Dynamo.Elements
 {
@@ -49,71 +51,124 @@ namespace Dynamo.Elements
             return true;
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        void setDirty(bool val)
         {
-            ExternMacro m = new ExternMacro(
-               delegate(FSharpList<Expression> args, ExecutionEnvironment environment)
-               {
-                   if (this.Bench.RunCancelled)
-                       throw new CancelEvaluationException(false);
+            this._isDirty = val;
+        }
 
-                   IdlePromiseDelegate<Expression> eval = delegate
-                    {
-                        this.Bench.InIdleThread = true;
-                        dynElementSettings.SharedInstance.Bench.InitTransaction();
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
+        {
+            return new TransactionProcedureNode(this, portNames);
+        }
 
-                        try
+        private class TransactionProcedureNode : InputNode
+        {
+            private dynTransaction node;
+            
+            public TransactionProcedureNode(dynTransaction node, IEnumerable<string> inputNames)
+                : base(inputNames)
+            {
+                this.node = node;
+            }
+
+            protected override Expression compileBody(
+                Dictionary<INode, string> symbols,
+                Dictionary<INode, List<INode>> letEntries,
+                HashSet<string> initializedIds)
+            {
+                var arg =  arguments["expr"].compile(symbols, letEntries, initializedIds);
+                
+                //idle :: (() -> A) -> A
+                //Evaluates the given function in the Revit Idle thread.
+                var idle = Expression.NewFunction_E(
+                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                        args =>
                         {
-                            var exp = environment.Evaluate(args[0]);
+                            var f = (args[0] as Value.Function).Item;
 
-                            UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
-                            Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
+                            if (node.Bench.RunInDebug)
+                                return f.Invoke(FSharpList<Value>.Empty);
+                            else
+                            {
+                                return IdlePromise<Value>.ExecuteOnIdle(
+                                    () => f.Invoke(FSharpList<Value>.Empty));
+                            }
+                        }));
 
-                            dynElementSettings.SharedInstance.Bench.EndTransaction();
-
-                            this.ValidateConnections();
-
-                            return exp;
-                        }
-                        catch (CancelEvaluationException ex)
+                //startTransaction :: () -> ()
+                //Starts a Dynamo Transaction.
+                var startTransaction = Expression.NewFunction_E(
+                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                        _ =>
                         {
-                            throw ex;
-                        }
-                        catch (Exception ex)
+                            if (node.Bench.RunCancelled)
+                                throw new CancelEvaluationException(false);
+
+                            if (!node.Bench.RunInDebug)
+                            {
+                                node.Bench.InIdleThread = true;
+                                node.Bench.InitTransaction();
+                            }
+
+                            return Value.NewDummy("started transaction");
+                        }));
+
+                //endTransaction :: () -> ()
+                //Ends a Dynamo Transaction.
+                var endTransaction = Expression.NewFunction_E(
+                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                        _ =>
                         {
-                            this.Dispatcher.Invoke(new Action(
-                                delegate
-                                {
-                                    Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                                    this.Bench.Log(ex);
-                                    this.Bench.ShowElement(this);
+                            if (!node.Bench.RunInDebug)
+                            {
+                                node.Bench.EndTransaction();
+                                node.Bench.InIdleThread = false;
 
-                                    dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
-                                    dynElementSettings.SharedInstance.Writer.WriteLine(ex.StackTrace);
-                                }
-                            ));
+                                UpdateLayoutDelegate uld = new UpdateLayoutDelegate(node.CallUpdateLayout);
+                                node.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { node });
+                                node.ValidateConnections();
+                            }
+                            else
+                                node.setDirty(false);
 
-                            this.Error(ex.Message);
-                            return null;
-                        }
-                    };
+                            return Value.NewDummy("ended transaction");
+                        }));
 
-                   if (dynElementSettings.SharedInstance.Bench.RunInDebug)
-                   {
-                       var val = environment.Evaluate(args[0]);
-                       this._isDirty = false;
-                       return val;
-                   }
-                   
-                   var result = IdlePromise<Expression>.ExecuteOnIdle(eval);
+                /*  (define (idleArg)
+                 *    (startTransaction)
+                 *    (let ((a <arg>))
+                 *      (endTransaction)
+                 *      a))
+                 */              
+                var idleArg = Expression.NewFun(
+                    FSharpList<FScheme.Parameter>.Empty,
+                    Expression.NewBegin(
+                        Utils.SequenceToFSharpList<Expression>(new List<Expression>() {
+                            Expression.NewList_E(
+                                Utils.SequenceToFSharpList<Expression>(
+                                    new List<Expression>() { startTransaction })),
+                            Expression.NewLet(
+                                Utils.SequenceToFSharpList<string>(
+                                    new List<string>() { "__result" }),
+                                Utils.SequenceToFSharpList<Expression>(
+                                    new List<Expression>() { arg }),
+                                Expression.NewBegin(
+                                    Utils.SequenceToFSharpList<Expression>(
+                                        new List<Expression>() {
+                                            Expression.NewList_E(
+                                                Utils.SequenceToFSharpList<Expression>(
+                                                    new List<Expression>() { endTransaction })),
+                                            Expression.NewId("__result") 
+                                        }))) 
+                        })));
 
-                   this.Bench.InIdleThread = false;
-
-                   return result;
-               }
-            );
-
-            return new ExternalMacroNode(m, portNames);
+                // (idle idleArg)
+                return Expression.NewList_E(
+                    Utils.SequenceToFSharpList<Expression>(new List<Expression>() {
+                        idle,
+                        idleArg 
+                    }));
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Connectors;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 
@@ -38,11 +38,11 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             double area = 0.0;
 
-            object arg0 = ((Expression.Container)args[0]).Item;
+            object arg0 = ((Value.Container)args[0]).Item;
             if (arg0 is Reference)
             {
                 Reference faceRef = arg0 as Reference;
@@ -58,7 +58,7 @@ namespace Dynamo.Elements
             }
 
             //Fin
-            return Expression.NewNumber(area);
+            return Value.NewNumber(area);
         }
     }
 
@@ -76,13 +76,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-
-            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+            FSharpList<Value> result = FSharpList<Value>.Empty;
             BoundingBoxUV bbox = null;
 
-            object arg0 = ((Expression.Container)args[0]).Item;
+            object arg0 = ((Value.Container)args[0]).Item;
             if (arg0 is Reference)
             {
                 Reference faceRef = arg0 as Reference;
@@ -97,22 +96,21 @@ namespace Dynamo.Elements
                 throw new Exception("Cannot cast first argument to Face.");
             }
 
-            result = FSharpList<Expression>.Cons(
-                           Expression.NewNumber(bbox.Max.V - bbox.Min.V),
+            result = FSharpList<Value>.Cons(
+                           Value.NewNumber(bbox.Max.V - bbox.Min.V),
                            result);
-            result = FSharpList<Expression>.Cons(
-                           Expression.NewNumber(bbox.Max.U - bbox.Min.U),
+            result = FSharpList<Value>.Cons(
+                           Value.NewNumber(bbox.Max.U - bbox.Min.U),
                            result);
-            result = FSharpList<Expression>.Cons(
-                           Expression.NewContainer(bbox.Max),
+            result = FSharpList<Value>.Cons(
+                           Value.NewContainer(bbox.Max),
                            result);
-            result = FSharpList<Expression>.Cons(
-                           Expression.NewContainer(bbox.Min),
+            result = FSharpList<Value>.Cons(
+                           Value.NewContainer(bbox.Min),
                            result);
             
-
             //Fin
-            return Expression.NewList(result);
+            return Value.NewList(result);
         }
     }
 
@@ -131,12 +129,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var a = (XYZ)((Expression.Container)args[0]).Item;
-            var b = (XYZ)((Expression.Container)args[1]).Item;
+            var a = (XYZ)((Value.Container)args[0]).Item;
+            var b = (XYZ)((Value.Container)args[1]).Item;
 
-            return Expression.NewNumber(a.DistanceTo(b));
+            return Value.NewNumber(a.DistanceTo(b));
         }
     }
 
@@ -187,15 +185,13 @@ namespace Dynamo.Elements
 
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var a = ((Expression.Container)args[0]).Item;
+            var a = ((Value.Container)args[0]).Item;
 
-            return Expression.NewNumber(getHeight(a));
+            return Value.NewNumber(getHeight(a));
         }
     }
-
-
 }
 
 

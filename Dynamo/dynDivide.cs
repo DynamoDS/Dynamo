@@ -20,7 +20,7 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 
@@ -44,13 +44,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
             double xi;//, x0, xs;
-            xi = ((Expression.Number)args[1]).Item;// Number
-            //x0 = ((Expression.Number)args[2]).Item;// Starting Coord
-            //xs = ((Expression.Number)args[3]).Item;// Spacing
+            xi = ((Value.Number)args[1]).Item;// Number
+            //x0 = ((Value.Number)args[2]).Item;// Starting Coord
+            //xs = ((Value.Number)args[3]).Item;// Spacing
 
             DividedPath divPath;
             List<Reference> refList = new List<Reference>();
@@ -75,7 +75,7 @@ namespace Dynamo.Elements
             {
                 refList.Clear();
 
-                var curveList = (input as Expression.List).Item;
+                var curveList = (input as Value.List).Item;
 
                 //Counter to keep track of how many references and divided path. We'll use this to delete old
                 //elements later.
@@ -83,10 +83,10 @@ namespace Dynamo.Elements
 
 
                 //We create our output by...
-                var result = Utils.convertSequence(
+                var result = Utils.SequenceToFSharpList(
                    curveList.Select(
                     //..taking each curve in the list and...
-                      delegate(Expression x)
+                      delegate(Value x)
                       {
                           //Reference r;
                           CurveElement c;
@@ -112,7 +112,7 @@ namespace Dynamo.Elements
                                       //...otherwise, we can make a new divided path and replace it in the list of
                                       //previously created divided paths.
                                       //...we extract a curve element from the container.
-                                      c = (CurveElement)((Expression.Container)x).Item;
+                                      c = (CurveElement)((Value.Container)x).Item;
                                       //...we create a new curve ref
                                       Curve crvRef = c.GeometryCurve;
                                       refList.Add(crvRef.Reference);
@@ -128,7 +128,7 @@ namespace Dynamo.Elements
                                   //...otherwise, we can make a new divided path and replace it in the list of
                                   //previously created divided paths.
                                   //...we extract a curve element from the container.
-                                  c = (CurveElement)((Expression.Container)x).Item;
+                                  c = (CurveElement)((Value.Container)x).Item;
                                   //...we create a new curve ref
                                   Curve crvRef = c.GeometryCurve;
                                   refList.Add(crvRef.Reference);
@@ -143,7 +143,7 @@ namespace Dynamo.Elements
                           else
                           {
                               //...we extract a curve element from the container.
-                              c = (CurveElement)((Expression.Container)x).Item;
+                              c = (CurveElement)((Value.Container)x).Item;
                               //...we create a new curve ref
                               Curve crvRef = c.GeometryCurve;
                               refList.Add(crvRef.Reference);
@@ -153,10 +153,10 @@ namespace Dynamo.Elements
                               this.Elements.Add(divPath.Id);
                               refList.Clear();
                           }
-                          //Finally, we update the counter, and return a new Expression containing the reference list.
+                          //Finally, we update the counter, and return a new Value containing the reference list.
 
                           count++;
-                          return Expression.NewContainer(divPath);
+                          return Value.NewContainer(divPath);
                       }
                    )
                 );
@@ -170,7 +170,7 @@ namespace Dynamo.Elements
                 }
 
 
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
 
             //If we're not receiving a list, we will just assume we received one curve.
@@ -178,10 +178,10 @@ namespace Dynamo.Elements
             {
                 refList.Clear();
 
-                CurveElement c = (CurveElement)((Expression.Container)input).Item;
+                CurveElement c = (CurveElement)((Value.Container)input).Item;
 
 
-                FSharpList<Expression> result = FSharpList<Expression>.Empty;
+                FSharpList<Value> result = FSharpList<Value>.Empty;
 
                 //double x = x0;
                 Curve crvRef = c.GeometryCurve;
@@ -224,7 +224,7 @@ namespace Dynamo.Elements
                 refList.Clear();
 
                 //Fin
-                return Expression.NewContainer(divPath);
+                return Value.NewContainer(divPath);
             }
         }
     }
@@ -246,13 +246,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
             double xi;//, x0, xs;
-            xi = ((Expression.Number)args[1]).Item;// Number
-            //x0 = ((Expression.Number)args[2]).Item;// Starting Coord
-            //xs = ((Expression.Number)args[3]).Item;// Spacing
+            xi = ((Value.Number)args[1]).Item;// Number
+            //x0 = ((Value.Number)args[2]).Item;// Starting Coord
+            //xs = ((Value.Number)args[3]).Item;// Spacing
 
             DividedSurface divSurf;
             List<Reference> refList = new List<Reference>();
@@ -264,7 +264,7 @@ namespace Dynamo.Elements
             //{
             //    refList.Clear();
 
-            //    var curveList = (input as Expression.List).Item;
+            //    var curveList = (input as Value.List).Item;
 
             //    //Counter to keep track of how many references and divided path. We'll use this to delete old
             //    //elements later.
@@ -275,7 +275,7 @@ namespace Dynamo.Elements
             //    var result = Utils.convertSequence(
             //       curveList.Select(
             //        //..taking each curve in the list and...
-            //          delegate(Expression x)
+            //          delegate(Value x)
             //          {
             //              Reference r;
             //              CurveElement c;
@@ -301,7 +301,7 @@ namespace Dynamo.Elements
             //                          //...otherwise, we can make a new divided path and replace it in the list of
             //                          //previously created divided paths.
             //                          //...we extract a curve element from the container.
-            //                          c = (CurveElement)((Expression.Container)x).Item;
+            //                          c = (CurveElement)((Value.Container)x).Item;
             //                          //...we create a new curve ref
             //                          Curve crvRef = c.GeometryCurve;
             //                          refList.Add(crvRef.Reference);
@@ -317,7 +317,7 @@ namespace Dynamo.Elements
             //                      //...otherwise, we can make a new divided path and replace it in the list of
             //                      //previously created divided paths.
             //                      //...we extract a curve element from the container.
-            //                      c = (CurveElement)((Expression.Container)x).Item;
+            //                      c = (CurveElement)((Value.Container)x).Item;
             //                      //...we create a new curve ref
             //                      Curve crvRef = c.GeometryCurve;
             //                      refList.Add(crvRef.Reference);
@@ -332,7 +332,7 @@ namespace Dynamo.Elements
             //              else
             //              {
             //                  //...we extract a curve element from the container.
-            //                  c = (CurveElement)((Expression.Container)x).Item;
+            //                  c = (CurveElement)((Value.Container)x).Item;
             //                  //...we create a new curve ref
             //                  Curve crvRef = c.GeometryCurve;
             //                  refList.Add(crvRef.Reference);
@@ -342,10 +342,10 @@ namespace Dynamo.Elements
             //                  this.Elements.Add(divPath.Id);
             //                  refList.Clear();
             //              }
-            //              //Finally, we update the counter, and return a new Expression containing the reference list.
+            //              //Finally, we update the counter, and return a new Value containing the reference list.
 
             //              count++;
-            //              return Expression.NewContainer(divPath);
+            //              return Value.NewContainer(divPath);
             //          }
             //       )
             //    );
@@ -359,7 +359,7 @@ namespace Dynamo.Elements
             //    }
 
 
-            //    return Expression.NewList(result);
+            //    return Value.NewList(result);
             //}
 
             ////If we're not receiving a list, we will just assume we received one curve.
@@ -367,10 +367,10 @@ namespace Dynamo.Elements
             //{
                 refList.Clear();
 
-                Reference r = (Reference)((Expression.Container)input).Item;
+                Reference r = (Reference)((Value.Container)input).Item;
 
 
-                FSharpList<Expression> result = FSharpList<Expression>.Empty;
+                FSharpList<Value> result = FSharpList<Value>.Empty;
 
 
                 refList.Add(r);
@@ -413,7 +413,7 @@ namespace Dynamo.Elements
                 refList.Clear();
 
                 //Fin
-                return Expression.NewContainer(divSurf);
+                return Value.NewContainer(divSurf);
             }
         //}
     }

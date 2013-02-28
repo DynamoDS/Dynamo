@@ -22,7 +22,7 @@ using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
@@ -120,8 +120,10 @@ namespace Dynamo.Elements
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
-            if (!this.Bench.Running)
+            if (!this.Bench.Running && SaveResult)
+            {
                 this.IsDirty = true;
+            }
             else
             {
                 //TODO: Refactor
@@ -131,9 +133,9 @@ namespace Dynamo.Elements
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            storedPath = ((Expression.String)args[0]).Item;
+            storedPath = ((Value.String)args[0]).Item;
 
             if (File.Exists(storedPath))
             {
@@ -143,10 +145,10 @@ namespace Dynamo.Elements
                 string contents = reader.ReadToEnd();
                 reader.Close();
 
-                return Expression.NewString(contents);
+                return Value.NewString(contents);
             }
             else
-                return Expression.NewString("");
+                return Value.NewString("");
         }
     }
 
@@ -188,13 +190,13 @@ namespace Dynamo.Elements
 
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            storedPath = ((Expression.String)args[0]).Item;
-            double xDiv = ((Expression.Number)args[1]).Item;
-            double yDiv = ((Expression.Number)args[1]).Item;
+            storedPath = ((Value.String)args[0]).Item;
+            double xDiv = ((Value.Number)args[1]).Item;
+            double yDiv = ((Value.Number)args[1]).Item;
 
-            FSharpList<Expression> result = FSharpList<Expression>.Empty;
+            FSharpList<Value> result = FSharpList<Value>.Empty;
             if (File.Exists(storedPath))
             {
 
@@ -223,7 +225,7 @@ namespace Dynamo.Elements
                                 for (int x = 0; x < xDiv; x++)
                                 {
                                     Color pixelColor = bmp.GetPixel(x * (int)(bmp.Width / xDiv), y * (int)(bmp.Height / yDiv));
-                                    result = FSharpList<Expression>.Cons(Expression.NewContainer(pixelColor), result);
+                                    result = FSharpList<Value>.Cons(Value.NewContainer(pixelColor), result);
                                 }
                             }
                         }
@@ -234,10 +236,10 @@ namespace Dynamo.Elements
                     }
 
 
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             else
-                return Expression.NewList(FSharpList<Expression>.Empty);
+                return Value.NewList(FSharpList<Value>.Empty);
         }
     }
 
@@ -255,10 +257,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            string path = ((Expression.String)args[0]).Item;
-            string text = ((Expression.String)args[1]).Item;
+            string path = ((Value.String)args[0]).Item;
+            string text = ((Value.String)args[1]).Item;
 
             try
             {
@@ -269,10 +271,10 @@ namespace Dynamo.Elements
             catch (Exception e)
             {
                 this.Bench.Log(e);
-                return Expression.NewNumber(0);
+                return Value.NewNumber(0);
             }
 
-            return Expression.NewNumber(1);
+            return Value.NewNumber(1);
         }
     }
 
@@ -290,18 +292,18 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            string path = ((Expression.String)args[0]).Item;
-            var data = ((Expression.List)args[1]).Item;
+            string path = ((Value.String)args[0]).Item;
+            var data = ((Value.List)args[1]).Item;
 
             try
             {
                 StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write));
 
-                foreach (Expression line in data)
+                foreach (Value line in data)
                 {
-                    writer.WriteLine(string.Join(",", ((Expression.List)line).Item.Select(x => ((Expression.String)x))));
+                    writer.WriteLine(string.Join(",", ((Value.List)line).Item.Select(x => ((Value.String)x))));
                 }
 
                 writer.Close();
@@ -309,10 +311,10 @@ namespace Dynamo.Elements
             catch (Exception e)
             {
                 this.Bench.Log(e);
-                return Expression.NewNumber(0);
+                return Value.NewNumber(0);
             }
 
-            return Expression.NewNumber(1);
+            return Value.NewNumber(1);
         }
     }
 
@@ -333,10 +335,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            string fileName = ((Expression.String)args[0]).Item;
-            return Expression.NewContainer(new FileWatcher(fileName));
+            string fileName = ((Value.String)args[0]).Item;
+            return Value.NewContainer(new FileWatcher(fileName));
         }
     }
 
@@ -354,11 +356,11 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
+            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
 
-            return Expression.NewNumber(watcher.Changed ? 1 : 0);
+            return Value.NewNumber(watcher.Changed ? 1 : 0);
         }
     }
 
@@ -378,10 +380,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
-            double timeout = ((Expression.Number)args[1]).Item;
+            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
+            double timeout = ((Value.Number)args[1]).Item;
 
             timeout = timeout == 0 ? double.PositiveInfinity : timeout;
 
@@ -400,7 +402,7 @@ namespace Dynamo.Elements
                 }
             }
 
-            return Expression.NewNumber(1);
+            return Value.NewNumber(1);
         }
     }
 
@@ -418,13 +420,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            FileWatcher watcher = (FileWatcher)((Expression.Container)args[0]).Item;
+            FileWatcher watcher = (FileWatcher)((Value.Container)args[0]).Item;
 
             watcher.Reset();
 
-            return Expression.NewContainer(watcher);
+            return Value.NewContainer(watcher);
         }
     }
 

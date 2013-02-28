@@ -33,7 +33,7 @@ using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
 using System.Diagnostics.Contracts;
 using System.Text;
@@ -88,12 +88,12 @@ namespace Dynamo.Elements
             this.Symbol = symbol;
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
             {
-                return new ExternalMacroNode(
-                   new ExternMacro(this.macroEval),
+                return new ExternalFunctionNode(
+                   macroEval,
                    portNames
                 );
             }
@@ -101,46 +101,21 @@ namespace Dynamo.Elements
                 return new FunctionNode(this.Symbol, portNames);
         }
 
-        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        private Value macroEval(FSharpList<Value> args)
         {
             if (this.IsDirty || this.oldValue == null)
             {
-                this.macroEnvironment = environment;
-                this.oldValue = this.eval(args);
+                this.oldValue = this.evaluateNode(args);
             }
             else
                 this.runCount++;
             return this.oldValue;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var fun = ((Expression.Function)this.Bench.Environment
-               .LookupSymbol(this.Symbol)).Item;
-
-            return fun
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(
-                  Utils.convertSequence(args.Select(
-                     x => this.macroEnvironment.Evaluate(x)
-                  ))
-               );
-        }
-    }
-
-    public abstract class dynBuiltinMacro : dynBuiltinFunction
-    {
-        internal dynBuiltinMacro(string symbol) : base(symbol) { }
-
-        public override Expression Evaluate(FSharpList<Expression> args)
-        {
-            var macro = ((Expression.Special)this.Bench.Environment
-               .LookupSymbol(this.Symbol)).Item;
-
-            return macro
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(this.macroEnvironment.Env)
-               .Invoke(args);
+            return ((Value.Function)Bench.Environment.LookupSymbol(Symbol))
+                .Item.Invoke(args);
         }
     }
 
@@ -265,7 +240,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             return args[0];
         }
@@ -324,7 +299,7 @@ namespace Dynamo.Elements
             base.AddInput(sender, args);
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
                 return base.Compile(portNames);
@@ -332,10 +307,10 @@ namespace Dynamo.Elements
                 return new FunctionNode("list", portNames);
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol("list")).Item;
-            return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("list"))
+                .Item.Invoke(args);
         }
     }
 
@@ -343,7 +318,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Returns a sorted list, using the given comparitor.")]
     [RequiresTransaction(false)]
-    public class dynSortWith : dynBuiltinMacro
+    public class dynSortWith : dynBuiltinFunction
     {
         public dynSortWith()
             : base("sort-with")
@@ -361,7 +336,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Returns a sorted list, using the given key mapper.")]
     [RequiresTransaction(false)]
-    public class dynSortBy : dynBuiltinMacro
+    public class dynSortBy : dynBuiltinFunction
     {
         public dynSortBy()
             : base("sort-by")
@@ -395,12 +370,12 @@ namespace Dynamo.Elements
     [ElementName("Reduce")]
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Reduces a sequence.")]
-    [ElementSearchTags("fold")]
+    [ElementSearchTags("foldl")]
     [RequiresTransaction(false)]
-    public class dynFold : dynBuiltinMacro
+    public class dynFold : dynBuiltinFunction
     {
         public dynFold()
-            : base("fold")
+            : base("foldl")
         {
             InPortData.Add(new PortData("f(x, a)", "Reductor Funtion", typeof(object)));
             InPortData.Add(new PortData("a", "Seed", typeof(object)));
@@ -415,7 +390,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Filters a sequence by a given predicate")]
     [RequiresTransaction(false)]
-    public class dynFilter : dynBuiltinMacro
+    public class dynFilter : dynBuiltinFunction
     {
         public dynFilter()
             : base("filter")
@@ -436,7 +411,7 @@ namespace Dynamo.Elements
     public class dynBuildSeq : dynBuiltinFunction
     {
         public dynBuildSeq()
-            : base("build-seq")
+            : base("build-list")
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at", typeof(double)));
             InPortData.Add(new PortData("end", "Number to end the sequence at", typeof(double)));
@@ -505,40 +480,34 @@ namespace Dynamo.Elements
             }
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
             {
-                return new ExternalMacroNode(
-                   new ExternMacro(this.macroEval),
+                return new ExternalFunctionNode(
+                   macroEval,
                    portNames
                 );
             }
             else
-                return new FunctionNode("combine", portNames);
+                return new FunctionNode("map", portNames);
         }
 
-        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        private Value macroEval(FSharpList<Value> args)
         {
             if (this.IsDirty || this.oldValue == null)
             {
-                this.macroEnvironment = environment;
-                this.oldValue = this.eval(args);
+                this.oldValue = this.evaluateNode(args);
             }
             else
                 this.runCount++;
             return this.oldValue;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var macro = ((Expression.Special)this.Bench.Environment
-               .LookupSymbol("combine")).Item;
-
-            return macro
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(this.macroEnvironment.Env)
-               .Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("map"))
+                .Item.Invoke(args);
         }
     }
 
@@ -600,12 +569,12 @@ namespace Dynamo.Elements
             }
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
             {
-                return new ExternalMacroNode(
-                   new ExternMacro(this.macroEval),
+                return new ExternalFunctionNode(
+                   macroEval,
                    portNames
                 );
             }
@@ -613,27 +582,22 @@ namespace Dynamo.Elements
                 return new FunctionNode("cartesian-product", portNames);
         }
 
-        private Expression macroEval(FSharpList<Expression> args, ExecutionEnvironment environment)
+        private Value macroEval(FSharpList<Value> args)
         {
             if (this.IsDirty || this.oldValue == null)
             {
-                this.macroEnvironment = environment;
-                this.oldValue = this.eval(args);
+                this.oldValue = this.evaluateNode(args);
             }
             else
                 this.runCount++;
+
             return this.oldValue;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var macro = ((Expression.Special)this.Bench.Environment
-               .LookupSymbol("cartesian-product")).Item;
-
-            return macro
-               .Invoke(ExecutionEnvironment.IDENT)
-               .Invoke(this.macroEnvironment.Env)
-               .Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("cartesian-product"))
+                .Item.Invoke(args);
         }
     }
 
@@ -641,7 +605,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.LIST)]
     [ElementDescription("Maps a sequence")]
     [RequiresTransaction(false)]
-    public class dynMap : dynBuiltinMacro
+    public class dynMap : dynBuiltinFunction
     {
         public dynMap()
             : base("map")
@@ -727,6 +691,7 @@ namespace Dynamo.Elements
     [ElementDescription("An empty list")]
     [RequiresTransaction(false)]
     [IsInteractive(false)]
+    [IsConstant(true)]
     public class dynEmpty : dynNode
     {
         public dynEmpty()
@@ -745,14 +710,20 @@ namespace Dynamo.Elements
             set { }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewList(FSharpList<Expression>.Empty);
+            return Value.NewList(FSharpList<Value>.Empty);
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new SymbolNode("empty");
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new SymbolNode("empty");
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 
@@ -911,7 +882,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Boolean AND.")]
     [RequiresTransaction(false)]
-    public class dynAnd : dynBuiltinMacro
+    public class dynAnd : dynBuiltinFunction
     {
         public dynAnd()
             : base("and")
@@ -924,13 +895,67 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
         }
+
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
+        {
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                if (InPorts.All(x => x.Connectors.Any()))
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build(preBuilt));
+                    ifNode.ConnectInput("true", InPorts[1].Connectors[0].Start.Owner.Build(preBuilt));
+                    ifNode.ConnectInput("false", new NumberNode(0));
+                    result = ifNode;
+                }
+                else
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                    ifNode.ConnectInput("true", new SymbolNode(InPortData[1].NickName));
+                    ifNode.ConnectInput("false", new NumberNode(0));
+
+                    var node = new AnonymousFunctionNode(
+                        InPortData.Select(x => x.NickName),
+                        ifNode);
+
+                    //For each index in InPortData
+                    for (int i = 0; i < InPortData.Count; i++)
+                    {
+                        //Fetch the corresponding port
+                        var port = InPorts[i];
+
+                        //If this port has connectors...
+                        if (port.Connectors.Any())
+                        {
+                            //Fetch the corresponding info for the port.
+                            var data = InPortData[i];
+
+                            //Compile input and connect it
+                            node.ConnectInput(
+                               data.NickName,
+                               port.Connectors[0].Start.Owner.Build(preBuilt)
+                            );
+                        }
+                    }
+
+                    IsDirty = false;
+                    OnEvaluate();
+
+                    result = node;
+                }
+                preBuilt[this] = result;
+            }
+            return result;
+        }
     }
 
     [ElementName("Or")]
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Boolean OR.")]
     [RequiresTransaction(false)]
-    public class dynOr : dynBuiltinMacro
+    public class dynOr : dynBuiltinFunction
     {
         public dynOr()
             : base("or")
@@ -943,13 +968,67 @@ namespace Dynamo.Elements
 
             base.RegisterInputsAndOutputs();
         }
+
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
+        {
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                if (InPorts.All(x => x.Connectors.Any()))
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", InPorts[0].Connectors[0].Start.Owner.Build(preBuilt));
+                    ifNode.ConnectInput("true", new NumberNode(1));
+                    ifNode.ConnectInput("false", InPorts[1].Connectors[0].Start.Owner.Build(preBuilt));
+                    result = ifNode;
+                }
+                else
+                {
+                    var ifNode = new ConditionalNode();
+                    ifNode.ConnectInput("test", new SymbolNode(InPortData[0].NickName));
+                    ifNode.ConnectInput("true", new NumberNode(1));
+                    ifNode.ConnectInput("false", new SymbolNode(InPortData[1].NickName));
+
+                    var node = new AnonymousFunctionNode(
+                        InPortData.Select(x => x.NickName),
+                        ifNode);
+
+                    //For each index in InPortData
+                    for (int i = 0; i < InPortData.Count; i++)
+                    {
+                        //Fetch the corresponding port
+                        var port = InPorts[i];
+
+                        //If this port has connectors...
+                        if (port.Connectors.Any())
+                        {
+                            //Fetch the corresponding info for the port.
+                            var data = InPortData[i];
+
+                            //Compile input and connect it
+                            node.ConnectInput(
+                               data.NickName,
+                               port.Connectors[0].Start.Owner.Build(preBuilt)
+                            );
+                        }
+                    }
+
+                    IsDirty = false;
+                    OnEvaluate();
+
+                    result = node;
+                }
+                preBuilt[this] = result;
+            }
+            return result;
+        }
     }
 
     [ElementName("Xor")]
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Boolean XOR.")]
     [RequiresTransaction(false)]
-    public class dynXor : dynBuiltinMacro
+    public class dynXor : dynBuiltinFunction
     {
         public dynXor()
             : base("xor")
@@ -968,7 +1047,7 @@ namespace Dynamo.Elements
     [ElementCategory(BuiltinElementCategories.BOOLEAN)]
     [ElementDescription("Boolean NOT.")]
     [RequiresTransaction(false)]
-    public class dynNot : dynBuiltinMacro
+    public class dynNot : dynBuiltinFunction
     {
         public dynNot()
             : base("not")
@@ -1116,10 +1195,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(
-               Math.Round(((Expression.Number)args[0]).Item)
+            return Value.NewNumber(
+               Math.Round(((Value.Number)args[0]).Item)
             );
         }
     }
@@ -1139,10 +1218,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(
-               Math.Floor(((Expression.Number)args[0]).Item)
+            return Value.NewNumber(
+               Math.Floor(((Value.Number)args[0]).Item)
             );
         }
     }
@@ -1162,10 +1241,10 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(
-               Math.Ceiling(((Expression.Number)args[0]).Item)
+            return Value.NewNumber(
+               Math.Ceiling(((Value.Number)args[0]).Item)
             );
         }
     }
@@ -1194,9 +1273,9 @@ namespace Dynamo.Elements
             set { }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(random.NextDouble());
+            return Value.NewNumber(random.NextDouble());
         }
     }
 
@@ -1206,6 +1285,7 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     [ElementSearchTags("pi", "trigonometry", "circle")]
     [IsInteractive(false)]
+    [IsConstant(true)]
     public class dynPi : dynNode
     {
         public dynPi()
@@ -1226,9 +1306,15 @@ namespace Dynamo.Elements
             set { }
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new NumberNode(Math.PI);
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new NumberNode(Math.PI);
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 
@@ -1246,25 +1332,25 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             if (input.IsList)
             {
-                return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
-                      ((Expression.List)input).Item.Select(
+                return Value.NewList(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
+                      ((Value.List)input).Item.Select(
                          x =>
-                            Expression.NewNumber(Math.Sin(((Expression.Number)x).Item))
+                            Value.NewNumber(Math.Sin(((Value.Number)x).Item))
                       )
                    )
                 );
             }
             else
             {
-                double theta = ((Expression.Number)input).Item;
-                return Expression.NewNumber(Math.Sin(theta));
+                double theta = ((Value.Number)input).Item;
+                return Value.NewNumber(Math.Sin(theta));
             }
         }
     }
@@ -1283,25 +1369,25 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             if (input.IsList)
             {
-                return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
-                      ((Expression.List)input).Item.Select(
+                return Value.NewList(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
+                      ((Value.List)input).Item.Select(
                          x =>
-                            Expression.NewNumber(Math.Cos(((Expression.Number)x).Item))
+                            Value.NewNumber(Math.Cos(((Value.Number)x).Item))
                       )
                    )
                 );
             }
             else
             {
-                double theta = ((Expression.Number)input).Item;
-                return Expression.NewNumber(Math.Cos(theta));
+                double theta = ((Value.Number)input).Item;
+                return Value.NewNumber(Math.Cos(theta));
             }
         }
     }
@@ -1320,25 +1406,25 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             if (input.IsList)
             {
-                return Expression.NewList(
-                   FSchemeInterop.Utils.convertSequence(
-                      ((Expression.List)input).Item.Select(
+                return Value.NewList(
+                   FSchemeInterop.Utils.SequenceToFSharpList(
+                      ((Value.List)input).Item.Select(
                          x =>
-                            Expression.NewNumber(Math.Tan(((Expression.Number)x).Item))
+                            Value.NewNumber(Math.Tan(((Value.Number)x).Item))
                       )
                    )
                 );
             }
             else
             {
-                double theta = ((Expression.Number)input).Item;
-                return Expression.NewNumber(Math.Tan(theta));
+                double theta = ((Value.Number)input).Item;
+                return Value.NewNumber(Math.Tan(theta));
             }
         }
     }
@@ -1350,16 +1436,16 @@ namespace Dynamo.Elements
     //TODO: Setup proper IsDirty smart execution management
     [ElementName("Perform All")]
     [ElementCategory(BuiltinElementCategories.MISC)]
-    [ElementDescription("Executes expressions in a sequence")]
+    [ElementDescription("Executes Values in a sequence")]
     [ElementSearchTags("begin")]
     [RequiresTransaction(false)]
     public class dynBegin : dynVariableInput
     {
         public dynBegin()
         {
-            InPortData.Add(new PortData("expr1", "Expression #1", typeof(object)));
-            InPortData.Add(new PortData("expr2", "Expression #2", typeof(object)));
-            OutPortData = new PortData("last", "Result of final expression", typeof(object));
+            InPortData.Add(new PortData("expr1", "Value #1", typeof(object)));
+            InPortData.Add(new PortData("expr2", "Value #2", typeof(object)));
+            OutPortData = new PortData("last", "Result of final Value", typeof(object));
 
             base.RegisterInputsAndOutputs();
         }
@@ -1380,9 +1466,42 @@ namespace Dynamo.Elements
             return this.InPortData.Count + 1;
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        //private static INode nestedBegins(Stack<dynNode> inputs, Dictionary<dynNode, INode> preBuilt)
+        //{
+        //    var firstVal = inputs.Pop().Build(preBuilt);
+
+        //    if (inputs.Any())
+        //    {
+        //        var newBegin = new BeginNode();
+        //        newBegin.ConnectInput("expr1", nestedBegins(inputs, preBuilt));
+        //        newBegin.ConnectInput("expr2", firstVal);
+        //        return newBegin;
+        //    }
+        //    else
+        //        return firstVal;
+        //}
+
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new BeginNode(portNames);
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                var beginNode = new BeginNode(InPortData.Select(x => x.NickName));
+
+                foreach (var input in InPortData.Zip(InPorts, (data, port) => new { Data = data, Port = port }))
+                {
+                    beginNode.ConnectInput(input.Data.NickName, input.Port.Connectors[0].Start.Owner.Build(preBuilt));
+                }
+
+                result = beginNode;
+
+                //result = nestedBegins(
+                //    new Stack<dynNode>(
+                //        InPorts.Select(x => x.Connectors[0].Start.Owner)),
+                //    preBuilt);
+                preBuilt[this] = result;
+            }
+            return result;
         }
     }
 
@@ -1406,7 +1525,7 @@ namespace Dynamo.Elements
             return "arg";
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             return new ApplierNode(portNames.Skip(1));
         }
@@ -1466,7 +1585,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             return new ConditionalNode();
         }
@@ -1519,7 +1638,7 @@ namespace Dynamo.Elements
             enabled = false;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var result = args[0];
 
@@ -1626,15 +1745,15 @@ namespace Dynamo.Elements
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            double newValue = ((Expression.Number)args.Head).Item;
+            double newValue = ((Value.Number)args.Head).Item;
             if (newValue > this.CurrentValue)
             {
                 this.CurrentValue = newValue;
                 this.tb.Text = this.CurrentValue.ToString();
             }
-            return Expression.NewNumber(this.CurrentValue);
+            return Value.NewNumber(this.CurrentValue);
         }
     }
 
@@ -1704,10 +1823,10 @@ namespace Dynamo.Elements
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            double maxIterations = ((Expression.Number)args[0]).Item;
-            double newValue = ((Expression.Number)args[1]).Item;
+            double maxIterations = ((Value.Number)args[0]).Item;
+            double newValue = ((Value.Number)args[1]).Item;
             if (newValue != this.CurrentValue)
             {
                 this.NumIterations++;
@@ -1716,7 +1835,7 @@ namespace Dynamo.Elements
                    delegate { this.tb.Text = this.NumIterations.ToString(); }
                 ));
             }
-            return Expression.NewNumber(this.NumIterations);
+            return Value.NewNumber(this.NumIterations);
         }
     }
 
@@ -1872,7 +1991,7 @@ namespace Dynamo.Elements
             this.MainContextMenu.Items.Add(editWindowItem);
 
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-             
+
         }
 
         public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -1907,9 +2026,9 @@ namespace Dynamo.Elements
 
     public abstract class dynDouble : dynBasicInteractive<double>
     {
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(this.Value);
+            return FScheme.Value.NewNumber(this.Value);
         }
 
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -1932,9 +2051,9 @@ namespace Dynamo.Elements
 
     public abstract class dynBool : dynBasicInteractive<bool>
     {
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewNumber(this.Value ? 1 : 0);
+            return FScheme.Value.NewNumber(this.Value ? 1 : 0);
         }
     }
 
@@ -1990,9 +2109,9 @@ namespace Dynamo.Elements
             return sb.ToString();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewString(this.Value);
+            return FScheme.Value.NewString(this.Value);
         }
 
         public override string PrintExpression()
@@ -2065,7 +2184,7 @@ namespace Dynamo.Elements
                     return;
 
                 base.Value = value;
-                
+
                 //this.nodeLabel.Text = dynUtils.Ellipsis(value.ToString(), 5);
                 this.tb.Text = value.ToString();
                 this.tb.Pending = false;
@@ -2561,12 +2680,12 @@ namespace Dynamo.Elements
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             if (string.IsNullOrEmpty(this.Value))
                 throw new Exception("No file selected.");
 
-            return Expression.NewString(this.Value);
+            return FScheme.Value.NewString(this.Value);
         }
 
         public override string PrintExpression()
@@ -2637,7 +2756,7 @@ namespace Dynamo.Elements
             base.ReregisterInputs();
         }
 
-        protected internal override ProcedureCallNode Compile(IEnumerable<string> portNames)
+        protected internal override InputNode Compile(IEnumerable<string> portNames)
         {
             if (this.SaveResult)
                 return base.Compile(portNames);
@@ -2645,10 +2764,10 @@ namespace Dynamo.Elements
                 return new FunctionNode("concat-strings", portNames);
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var fun = ((Expression.Function)this.Bench.Environment.LookupSymbol("concat-strings")).Item;
-            return fun.Invoke(ExecutionEnvironment.IDENT).Invoke(args);
+            return ((Value.Function)this.Bench.Environment.LookupSymbol("concat-strings"))
+                .Item.Invoke(args);
         }
     }
 
@@ -2698,15 +2817,15 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            string str = ((Expression.String)args[0]).Item;
-            string del = ((Expression.String)args[1]).Item;
+            string str = ((Value.String)args[0]).Item;
+            string del = ((Value.String)args[1]).Item;
 
-            return Expression.NewList(
-                Utils.convertSequence(
+            return Value.NewList(
+                Utils.SequenceToFSharpList(
                     str.Split(new string[] { del }, StringSplitOptions.None)
-                       .Select(Expression.NewString)
+                       .Select(Value.NewString)
                 )
             );
         }
@@ -2726,13 +2845,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            var strs = ((Expression.List)args[0]).Item;
-            var del = ((Expression.String)args[1]).Item;
+            var strs = ((Value.List)args[0]).Item;
+            var del = ((Value.String)args[1]).Item;
 
-            return Expression.NewString(
-                string.Join(del, strs.Select(x => ((Expression.String)x).Item))
+            return Value.NewString(
+                string.Join(del, strs.Select(x => ((Value.String)x).Item))
             );
         }
     }
@@ -2751,12 +2870,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            string s = ((Expression.String)args[0]).Item;
-            bool upper = ((Expression.Number)args[1]).Item == 1.0;
+            string s = ((Value.String)args[0]).Item;
+            bool upper = ((Value.Number)args[1]).Item == 1.0;
 
-            return Expression.NewString(
+            return Value.NewString(
                 upper ? s.ToUpper() : s.ToLower()
             );
         }
@@ -2777,13 +2896,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            string s = ((Expression.String)args[0]).Item;
-            double start = ((Expression.Number)args[1]).Item;
-            double length = ((Expression.Number)args[2]).Item;
+            string s = ((Value.String)args[0]).Item;
+            double start = ((Value.Number)args[1]).Item;
+            double length = ((Value.Number)args[2]).Item;
 
-            return Expression.NewString(s.Substring((int)start, (int)length));
+            return Value.NewString(s.Substring((int)start, (int)length));
         }
     }
 

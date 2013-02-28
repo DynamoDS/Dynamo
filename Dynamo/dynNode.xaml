@@ -3,7 +3,12 @@
     xmlns:local="clr-namespace:Dynamo.Elements"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dropShadow="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-    Height="300" Width="160" Name="topControl" Loaded="topControl_Loaded" KeyUp="OnKeyUp" PreviewKeyUp="OnPreviewKeyUp">
+    Height="300" 
+    Width="160" 
+    Name="topControl" 
+    Loaded="topControl_Loaded" 
+    KeyUp="OnKeyUp" 
+    PreviewKeyUp="OnPreviewKeyUp">
    <UserControl.Resources>
       <local:MarginConverter x:Key="MarginConverter" />
    </UserControl.Resources>
@@ -11,10 +16,6 @@
       <Grid.ContextMenu>
          <ContextMenu Name="MainContextMenu" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
             <MenuItem Name="deleteElem_cm" Header="Delete" Click="deleteElem_cm_Click" />
-            <!-- <Separator Name="separator1_cm"/>
-            <MenuItem Name="longestList_cm" IsCheckable="True" Header="Longest List" Click="longestList_cm_Click" IsChecked="False"/>
-            <MenuItem Name="shortestList_cm" IsCheckable="True" Header="Shortest List" Click="shortestList_cm_Click" IsChecked="True"/>
-            <MenuItem Name="fullLace_cm" IsCheckable="True" Header="Full Lace" Click="fullLace_cm_Click" IsChecked="False"/> -->
          </ContextMenu>
       </Grid.ContextMenu>
       <Grid Name="gridLeft" 

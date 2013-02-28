@@ -16,739 +16,1113 @@ module Dynamo.FScheme
 #light
 
 //An F# Scheme Interpreter
-
 open System
-open System.Numerics
 open System.IO
+open System.Diagnostics
 
 //Simple Tokenizer for quickly defining expressions in Scheme syntax.
-type Token =
-   | Open | Close
-   | Quote | Unquote
-   | Number of string
-   | String of string
-   | Symbol of string
+type private Token =
+    | Open | Close
+    | QuoteT | QuasiT | Unquote
+    | Number of string
+    | String of string
+    | Symbol of string
 
-let tokenize source =
-   let rec string acc = function
-      | '\\' :: '"' :: t -> string (acc + "\"") t // escaped quote becomes quote
-      | '\\' :: 'b' :: t -> string (acc + "\b") t // escaped backspace
-      | '\\' :: 'f' :: t -> string (acc + "\f") t // escaped formfeed
-      | '\\' :: 'n' :: t -> string (acc + "\n") t // escaped newline
-      | '\\' :: 'r' :: t -> string (acc + "\r") t // escaped return
-      | '\\' :: 't' :: t -> string (acc + "\t") t // escaped tab
-      | '\\' :: '\\' :: t -> string (acc + "\\") t // escaped backslash
-      | '"' :: t -> acc, t // closing quote terminates
-      | c :: t -> string (acc + (c.ToString())) t // otherwise accumulate chars
-      | _ -> failwith "Malformed string."
-   let rec comment = function
-      | '\r' :: t | '\n' :: t -> t // terminated by line end
-      | [] -> [] // or by EOF
-      | _ :: t -> comment t
-   let rec token acc = function
-      | (')' :: _) as t -> acc, t // closing paren terminates
-      | w :: t when Char.IsWhiteSpace(w) -> acc, t // whitespace terminates
-      | [] -> acc, [] // end of list terminates
-      | c :: t -> token (acc + (c.ToString())) t // otherwise accumulate chars
-   let rec tokenize' acc = function
-      | w :: t when Char.IsWhiteSpace(w) -> tokenize' acc t // skip whitespace
-      | '(' :: t -> tokenize' (Open :: acc) t
-      | ')' :: t -> tokenize' (Close :: acc) t
-      | '\'' :: t -> tokenize' (Quote :: acc) t
-      | ',' :: t -> tokenize' (Unquote :: acc) t
-      | ';' :: t -> comment t |> tokenize' acc // skip over comments
-      | '"' :: t -> // start of string
-         let s, t' = string "" t
-         tokenize' (Token.String(s) :: acc) t'
-      | '-' :: d :: t when Char.IsDigit(d) -> // start of negative number
-         let n, t' = token ("-" + d.ToString()) t
-         tokenize' (Token.Number(n) :: acc) t'
-      | '+' :: d :: t | d :: t when Char.IsDigit(d) -> // start of positive number
-         let n, t' = token (d.ToString()) t
-         tokenize' (Token.Number(n) :: acc) t'
-      | s :: t -> // otherwise start of symbol
-         let s, t' = token (s.ToString()) t
-         tokenize' (Token.Symbol(s) :: acc) t'
-      | [] -> List.rev acc // end of list terminates
-   tokenize' [] source
+let private tokenize source =
+    let rec string acc = function
+        | '\\' :: '"' :: t -> string (acc + "\"") t // escaped quote becomes quote
+        | '\\' :: 'b' :: t -> string (acc + "\b") t // escaped backspace
+        | '\\' :: 'f' :: t -> string (acc + "\f") t // escaped formfeed
+        | '\\' :: 'n' :: t -> string (acc + "\n") t // escaped newline
+        | '\\' :: 'r' :: t -> string (acc + "\r") t // escaped return
+        | '\\' :: 't' :: t -> string (acc + "\t") t // escaped tab
+        | '\\' :: '\\' :: t -> string (acc + "\\") t // escaped backslash
+        | '"' :: t -> acc, t // closing quote terminates
+        | c :: t -> string (acc + (c.ToString())) t // otherwise accumulate chars
+        | _ -> failwith "Malformed string."
+    let rec comment = function
+        | '\r' :: t | '\n' :: t -> t // terminated by line end
+        | [] -> [] // or by EOF
+        | _ :: t -> comment t
+    let rec token acc = function
+        | (')' :: _) as t -> acc, t // closing paren terminates
+        | w :: t when Char.IsWhiteSpace(w) -> acc, t // whitespace terminates
+        | [] -> acc, [] // end of list terminates
+        | c :: t -> token (acc + (c.ToString())) t // otherwise accumulate chars
+    let rec tokenize' acc = function
+        | w :: t when Char.IsWhiteSpace(w) -> tokenize' acc t // skip whitespace
+        | '(' :: t -> tokenize' (Open :: acc) t
+        | ')' :: t -> tokenize' (Close :: acc) t
+        | '\'' :: t -> tokenize' (QuoteT :: acc) t
+        | '`' :: t -> tokenize' (QuasiT :: acc) t
+        | ',' :: t -> tokenize' (Unquote :: acc) t
+        | ';' :: t -> comment t |> tokenize' acc // skip over comments
+        | '"' :: t -> // start of string
+            let s, t' = string "" t
+            tokenize' (Token.String(s) :: acc) t'
+        | '-' :: d :: t when Char.IsDigit(d) -> // start of negative number
+            let n, t' = token ("-" + d.ToString()) t
+            tokenize' (Token.Number(n) :: acc) t'
+        | '+' :: d :: t | d :: t when Char.IsDigit(d) -> // start of positive number
+            let n, t' = token (d.ToString()) t
+            tokenize' (Token.Number(n) :: acc) t'
+        | s :: t -> // otherwise start of symbol
+            let s, t' = token (s.ToString()) t
+            tokenize' (Token.Symbol(s) :: acc) t'
+        | [] -> List.rev acc // end of list terminates
+    tokenize' [] source
 
-///Types of FScheme Expressions
-type Expression =
-   ///Expression representing any .NET object.
-   | Container of obj
-   ///Expression representing a number (double).
-   | Number of double
-   ///Expression representing a string.
-   | String of string
-   ///Expression representing a variable.
-   | Symbol of string
-   ///Expression representing a list of sub expressions.
-   | List of Expression list
-   ///Expression representing a function.
-   | Function of (Continuation -> Expression list -> Expression)
-   ///Expression representing a "macro".
-   | Special of (Continuation -> Environment -> Expression list -> Expression)
-   ///Expression representing a continuation (used by call/cc in Scheme).
-   | Current of Continuation
-   ///Expression representing an invalid value (used for mutation, where expressions shouldn't return anything).
-   ///Should NOT be used except internally by this interpreter.
-   | Dummy of string
-///Function that takes an Expression and returns an Expression.
-and Continuation = Expression -> Expression
-///Reference to a Map that maps strings to references to Expressions.
-and Environment = Map<string, Expression ref> ref
+
+///Types of FScheme Values
+type Value =
+    ///Expression representing any .NET object.
+    | Container of obj
+    ///Expression representing a number (double).
+    | Number of double
+    ///Expression representing a string.
+    | String of string
+    ///Expression representing a symbol.
+    | Symbol of string
+    ///Expression representing a list of sub expressions.
+    | List of Value list
+    ///Expression representing a function.
+    | Function of (Value list -> Value)
+    ///Invalid value (used for mutation, where expressions shouldn't return anything).
+    | Dummy of string
+
+
+///Converts an expression to a boolean value
+let private exprToBool = function
+    //Empty list or empty string is false, evaluate else branch.
+    | List([]) | String("") -> false
+    //Zero is false, evaluate else branch.
+    | Number(n) when n = 0. -> false
+    //Everything else is true, evaluate then branch.
+    | _ -> true
+
+type Frame = Value ref [] ref
+type Environment = Frame list ref
 
 ///FScheme Function delegate. Takes a list of Expressions as arguments, and returns an Expression.
-type ExternFunc = delegate of Expression list -> Expression
-
-///FScheme Macro delegate. Takes a list of unevaluated Expressions and an Environment as arguments, and returns an Expression.
-type ExternMacro = delegate of Expression list * Environment -> Expression
+type ExternFunc = delegate of Value list -> Value
 
 ///Makes an Expression.Function out of an ExternFunc
 let makeExternFunc (externFunc : ExternFunc) =
-   Function(fun c args -> externFunc.Invoke(args) |> c)
+    Function(externFunc.Invoke)
 
-///Makes an Expression.Special out of an ExternMacro
-let makeExternMacro (externMacro : ExternMacro) =
-   Special(fun c e args -> externMacro.Invoke(args, e) |> c)
+type Syntax =
+    | Number_S of double
+    | String_S of string
+    | Symbol_S of string
+    | Dot_S
+    | Func_S of (Value list -> Value)
+    | List_S of Syntax list
+    | Container_S of obj
+
+type Macro = Syntax list -> Syntax
+type MacroEnvironment = Map<string, Macro>
+
+///Let* macro
+let LetStar : Macro = function
+    | List_S(bindings) :: body ->
+        let folder b a =
+            match b with
+            | List_S([Symbol_S(name); expr]) as let' ->
+                List_S([Symbol_S("let"); List_S([let']); a])
+            | m -> failwith "bad let*"
+        List.foldBack folder bindings <| List_S(Symbol_S("begin") :: body)
+    | m -> failwith "bad let*"
+
+///And macro
+let rec And : Macro = function
+    | []     -> Number_S(1.)
+    | [expr] -> expr
+    | h :: t -> List_S([Symbol_S("if"); h; And t; Number_S(0.)])
+
+///Or macro
+let rec Or : Macro = function
+    | []     -> Number_S(0.)
+    | [expr] -> expr
+    | h :: t -> List_S([Symbol_S("if"); h; Number_S(1.); Or t])
+
+//Cond macro
+let rec Cond : Macro = function
+    | [List_S([Symbol_S("else"); expr])] -> expr
+    | List_S([condition; expr]) :: t     -> List_S([Symbol_S("if"); condition; expr; Cond t])
+    | []                                 -> List_S([Symbol_S("begin")])
+    | m                                  -> failwith "bad cond"
+
+let macroEnv =
+    Map.ofList [
+        "let*", LetStar
+        "cond", Cond
+        "and", And
+        "or", Or
+    ]
+
+///FScheme Macro delegate.
+type ExternMacro = delegate of Syntax list -> Syntax
+
+///Makes a Macro out of an ExternMacro
+let makeExternMacro (ex : ExternMacro) : Macro = ex.Invoke
+
+///AST for FScheme expressions
+type Expression =
+    | Number_E of double
+    | String_E of string
+    | Id of string
+    | SetId of string * Expression
+    | Let of string list * Expression list * Expression
+    | LetRec of string list * Expression list * Expression
+    | Fun of Parameter list * Expression
+    | List_E of Expression list
+    | If of Expression * Expression * Expression
+    | Define of string * Expression
+    | Begin of Expression list
+    | Quote of Syntax
+    | Quasi of Syntax
+    | Function_E of (Value list -> Value)
+    | Container_E of obj
+
+and Parameter =
+    | Normal of string
+    | Tail of string
+
+let rec private printSyntax = function
+    | Number_S(n)    -> n.ToString()
+    | String_S(s)    -> "\"" + s + "\""
+    | Symbol_S(s)    -> s
+    | Func_S(_)      -> "#<procedure>"
+    | Dot_S          -> "."
+    | List_S(ps)     -> "(" + String.Join(" ", List.map printSyntax ps) + ")"
+    | Container_S(o) -> sprintf "#<object:\"%s\">" <| o.ToString()
 
 //A simple parser
-let parse source =
-   let map = function
-      | Token.Number(n) -> Expression.Number(Double.Parse(n))
-      | Token.String(s) -> Expression.String(s)
-      | Token.Symbol(s) -> Expression.Symbol(s)
-      | _ -> failwith "Syntax error."
-   let rec list f t acc =
-      let e, t' = parse' [] t
-      parse' (List(f e) :: acc) t'
-   and parse' acc = function
-      | Open :: t -> list id t acc
-      | Close :: t -> (List.rev acc), t
-      | Quote :: Open :: t -> list (fun e -> [Symbol("quote"); List(e)]) t acc
-      | Quote :: h :: t -> parse' (List([Symbol("quote"); map h]) :: acc) t
-      | Unquote :: Open :: t -> list (fun e -> [Symbol("unquote"); List(e)]) t acc
-      | Unquote :: h :: t -> parse' (List([Symbol("unquote"); map h]) :: acc) t
-      | h :: t -> parse' ((map h) :: acc) t
-      | [] -> (List.rev acc), []
-   let result, _ = parse' [] (tokenize source)
-   result
+let rec private syntaxToExpression (macro_env : MacroEnvironment) parser =
+    let parse' = syntaxToExpression macro_env
+    match parser with
+    | Dot_S          -> failwith "illegal use of \".\""
+    | Number_S(n)    -> Number_E(n)
+    | String_S(s)    -> String_E(s)
+    | Symbol_S(s)    -> Id(s)
+    | Func_S(f)      -> Function_E(f)
+    | Container_S(o) -> Container_E(o)
+    | List_S([])     -> List_E([])
+    | List_S(h :: t) ->
+        match h with
+        //Set!
+        | Symbol_S("set!") ->
+            match t with
+            | Symbol_S(name) :: body -> SetId(name, Begin(List.map parse' body))
+            | m                      -> failwith "Syntax error in set!"
 
-///Converts the given Expression to a string.
+        //let and letrec
+        | Symbol_S(s) when s = "let" || s = "letrec" ->
+            match t with
+            | List_S(bindings) :: body ->
+                let rec makeLet names bndings = function
+                    | List_S([Symbol_S(name); bind]) :: t ->
+                        makeLet (name :: names) ((parse' bind) :: bndings) t
+                    | [] ->
+                        let f = if s = "let" then Let else LetRec
+                        f(names, bndings, Begin(List.map parse' body))
+                    | m -> failwith <| sprintf "Syntax error in %s bindings." s
+                makeLet [] [] bindings
+            | m -> failwith <| sprintf "Syntax error in %s." s
+
+        //lambda
+        | Symbol_S("lambda") | Symbol_S("λ") ->
+            match t with
+            | List_S(parameters) :: body ->
+                let rec paramMap acc = function
+                    | [Dot_S; Symbol_S(s)] -> Tail(s) :: acc |> List.rev
+                    | Symbol_S(s) :: t     -> paramMap (Normal(s) :: acc) t
+                    | []                   -> List.rev acc
+                    | m                    -> failwith "Syntax error in function definition."
+                Fun(paramMap [] parameters, Begin(List.map parse' body))
+            | m -> List_S(t) |> printSyntax |> sprintf "Syntax error in function definition: %s" |> failwith
+
+        //if
+        | Symbol_S("if") ->
+            match t with
+            | [cond; then_case]            -> If(parse' cond, parse' then_case, Begin([]))
+            | [cond; then_case; else_case] -> If(parse' cond, parse' then_case, parse' else_case)
+            | m                            -> failwith "Syntax error in if"//: %s" expr |> failwith
+
+        //define
+        | Symbol_S("define") as d ->
+            match t with
+            | Symbol_S(name) :: body -> Define(name, Begin(List.map parse' body))
+            | List_S(name :: ps) :: body ->
+                parse' <| List_S([d; name; List_S(Symbol_S("lambda") :: List_S(ps) :: body)])
+            | m -> failwith "Syntax error in define"//: %s" expr |> failwith
+
+        //quote
+        | Symbol_S("quote") ->
+            match t with
+            | [expr] -> Quote(expr)
+            | m      -> failwith "Syntax error in quote"
+        | Symbol_S("quasiquote") ->
+            match t with
+            | [expr] -> Quasi(expr)
+            | m      -> failwith "Syntax error in quasiquote"
+
+        //unquote
+        | Symbol_S("unquote") -> failwith "unquote outside of quote"
+
+        //begin
+        | Symbol_S("begin") -> Begin(List.map parse' t)
+
+        //defined macros
+        | Symbol_S(s) when macro_env.ContainsKey s ->  parse' <| macro_env.[s] t
+
+        //otherwise...
+        | _ -> List_E(List.map parse' <| h :: t)
+
+//A simple parser
+let private stringToSyntax source =
+    let map = function
+        | Token.Number(n)   -> Number_S(Double.Parse(n))
+        | Token.String(s)   -> String_S(s)
+        | Token.Symbol(".") -> Dot_S
+        | Token.Symbol(s)   -> Symbol_S(s)
+        | _                 -> failwith "Syntax error."
+    let rec list f t acc =
+        let e, t' = parse' [] t
+        parse' (List_S(f e) :: acc) t'
+    and parse' acc = function
+        | Open :: t            -> list id t acc
+        | Close :: t           -> (List.rev acc), t
+        | QuoteT :: Open :: t  -> list (fun e -> [Symbol_S("quote"); List_S(e)]) t acc
+        | QuoteT :: h :: t     -> parse' (List_S([Symbol_S("quote"); map h]) :: acc) t
+        | QuasiT :: Open :: t  -> list (fun e -> [Symbol_S("quasiquote"); List_S(e)]) t acc
+        | QuasiT :: h :: t     -> parse' (List_S([Symbol_S("quasiquote"); map h]) :: acc) t
+        | Unquote :: Open :: t -> list (fun e -> [Symbol_S("unquote"); List_S(e)]) t acc
+        | Unquote :: h :: t    -> parse' (List_S([Symbol_S("unquote"); map h]) :: acc) t
+        | h :: t               -> parse' ((map h) :: acc) t
+        | []                   -> (List.rev acc), []
+    let result, _ = parse' [] (tokenize source)
+    result
+
+let private parse = stringToSyntax >> List.map (syntaxToExpression macroEnv)
+
+let rec printExpression indent syntax =
+    let printLet name names exprs body =
+        "(" + name +  " ("
+            + String.Join(
+                "\n" + indent + "      ",
+                List.map (function (n, b) -> "[" + n + (printExpression " " b) + "]")
+                         (List.zip names exprs))
+            + ")\n"
+            + printExpression (indent + "  ") body
+            + ")"
+    let printParam = function Normal(s) | Tail(s) -> s
+    indent + match syntax with
+             | Number_E(n)                -> n.ToString()
+             | String_E(s)                -> "\"" + s + "\""
+             | Id(s)                      -> s
+             | SetId(s, expr)             -> "(set! " + s + " " + printExpression "" expr + ")"
+             | Let(names, exprs, body)    -> printLet "let" names exprs body
+             | LetRec(names, exprs, body) -> printLet "letrec" names exprs body
+             | Fun(names, body)           -> "(lambda (" + String.Join(" ", List.map printParam names) + ") " + printExpression "" body + ")"
+             | List_E(exprs)              -> "(" + String.Join(" ", List.map (printExpression "") exprs) + ")"
+             | If(c, t, e)                -> "(if " + String.Join(" ", List.map (printExpression "") [c; t; e]) + ")"
+             | Define(name, body)         -> "(define " + name + printExpression " " body + ")"
+             | Begin(exprs)               -> "(begin " + String.Join(" ", List.map (printExpression "") exprs) + ")"
+             | Quote(p)                   -> "(quote " + printSyntax p + ")"
+             | Quasi(p)                   -> "(quasiquote " + printSyntax p + ")"
+             | Function_E(_)              -> "#<procedure>"
+             | Container_E(o)             -> sprintf "#<object:\"%s\">" <| o.ToString()
+
+///Converts the given Value to a string.
 let rec print = function
-   | List(Dummy(_) :: _) -> "" // don't print accumulated statement dummy values
-   | List(list) -> "(" + String.Join(" ", (List.map print list)) + ")"
-   | String(s) -> "\"" + s + "\""
-   | Symbol(s) -> s
-   | Number(n) -> n.ToString()
-   | Container(o) -> o.ToString()
-   | Function(_) | Special(_) | Current(_) -> "Function"
-   | Dummy(_) -> "" // sometimes useful to emit value for debugging, but normally we ignore
+    | List(Dummy(_)::_) -> "" // don't print accumulated statement dummy values
+    | List(list)        -> "(" + String.Join(" ", List.map print list) + ")"
+    | String(s)         -> "\"" + s + "\""
+    | Symbol(s)         -> s
+    | Number(n)         -> n.ToString()
+    | Container(o)      -> sprintf "#<object:\"%s\">" <| o.ToString()
+    | Function(_)       -> "#<procedure>"
+    | Dummy(_)          -> "" // sometimes useful to emit value for debugging, but normally we ignore
 
 ///Prints a malformed statement error.
-let malformed n e = sprintf "Malformed '%s': %s" n (print (List([e]))) |> failwith
+let private malformed n e = sprintf "Malformed '%s': %s" n (print (List([e]))) |> failwith
 
 ///Simple wrapper for arithmatic operations.
-let math op name cont = function
-   //If the arguments coming in consist of at least two numbers...
-   | Number(n) :: Number(n2) :: ns ->
-      //op': function that takes two Expression.Numbers and applies the given op.
-      //     if the second argument is not an Expression.Number, then throw exception
-      let op' a = function Number(b) -> op a b | m -> malformed (sprintf "%s arg" name) m
-      //Reduce list of Expressions (ns) using op'. Pass result to continuation.
-      Number(List.fold op' (op n n2) ns) |> cont
-   //Otherwise, fail.
-   | m -> malformed name (List(m))
+let private mathbin op name = function
+    //If the arguments coming in consist of at least two numbers...
+    | Number(n) :: Number(n2) :: ns ->
+        ///function that takes two Numbers and applies the given op.
+        ///if the second argument is not an Number, then throw exception
+        let op' a = function Number(b) -> op a b | m -> malformed (sprintf "%s arg" name) m
+        //Reduce list of Values (ns) using op'. Pass result to continuation.
+        Number(List.fold op' (op n n2) ns)
+    //Otherwise, fail.
+    | m -> malformed name <| List(m)
+
+let private math0 op name start exprs =
+    let op' a = function
+        | Number(b) -> op a b
+        | m         -> malformed (sprintf "%s arg" name) m
+    Number(List.fold op' start exprs)
+
+let private math1 op op2 unary name = function
+    | [Number(n)] -> Number(unary n)
+    | Number(n) :: ns ->
+        match op2 ns with
+        | Number(x) -> Number(op n x)
+        | m         -> malformed (sprintf "%s arg" name) m
+    | m -> malformed name <| List(m)
 
 //Arithmatic functions
-let Add = math (+) "addition"
-let Subtract = math (-) "subtraction"
-let Multiply = math (*) "multiplication"
-let Divide = math (/) "division"
-let Modulus = math (%) "modulus"
-let Exponent = math ( ** ) "exponent"
+let Add =      math0 (+) "addition" 0.
+let Subtract = math1 (-) Add (fun x -> -x) "subtraction"
+let Multiply = math0 (*) "multiplication" 1.
+let Divide =
+    let div a b = if b = 0. then failwith "Divide by zero" else a / b
+    math1 div Multiply (div 1.) "division"
+let Modulus =  mathbin (%) "modulus"
+let Exponent = mathbin ( ** ) "exponent"
+
+let Sqrt = function
+   | [Number(n)] -> Number(Math.Sqrt n)
+   | m -> malformed "square root" <| List(m)
 
 ///Simple wrapper for comparison operations.
-let boolMath (op : (IComparable -> IComparable -> bool)) name cont args =
-   let comp a' b' = 
-      match (op a' b') with
-      | true -> Number(1.0) |> cont
-      | _ -> Number(0.0) |> cont
-   match args with
-   | [Number(a); Number(b)] -> comp a b
-   | [String(a); String(b)] -> comp a b
-   | m -> malformed name (List(m))
+let private boolMath (op : (IComparable -> IComparable -> bool)) name args =
+    let comp a' b' =
+        match op a' b' with
+        | true -> Number(1.)
+        | _ -> Number(0.)
+    match args with
+    | [Number(a); Number(b)] -> comp a b
+    | [String(a); String(b)] -> comp a b
+    | m -> malformed name <| List(m)
 
 //Comparison operations.
 let LTE = boolMath (<=) "less-than-or-equals"
 let GTE = boolMath (>=) "greater-than-or-equals"
-let LT = boolMath (<) "less-than"
-let GT = boolMath (>) "greater-than"
-let EQ = boolMath (=) "equals"
+let LT =  boolMath (<) "less-than"
+let GT =  boolMath (>) "greater-than"
+let EQ =  boolMath (=) "equals"
+
+let Not = function
+    | [expr] -> if exprToBool expr then Number(0.) else Number(1.)
+    | m -> malformed "not" <| List(m)
+
+let Xor = function
+    | [a; b] ->
+        if exprToBool a then
+            if exprToBool b then Number(0.) else Number(1.)
+        else
+            if exprToBool b then Number(1.) else Number(0.)
+    | m -> malformed "xor" <| List(m)
 
 //Random Number
-let _r = new Random()
-let RandomDbl cont = function _ -> Number(_r.NextDouble()) |> cont
+let private _r = new Random()
+let RandomDbl = function
+    | [] -> Number(_r.NextDouble())
+    | m  -> malformed "random" <| List(m)
 
 //List Functions
-let IsEmpty cont = function [List([])] -> Number(1.0) |> cont | _ -> Number (0.0) |> cont
-let Cons cont = function [h; List(t)] -> (List(h :: t)) |> cont | m -> malformed "cons" (List(m))
-let Car cont = function [List(h :: _)] -> h |> cont | m -> malformed "car" (List(m))
-let Cdr cont = function [List(_ :: t)] -> List(t) |> cont | m -> malformed "cdr" (List(m))
-let Rev cont = function [List(l)] -> List(List.rev l) |> cont | m -> malformed "reverse" (List(m))
-let MakeList cont = function (elements : Expression list) -> List(elements) |> cont
-let Len cont = function [List(l)] -> Number(double (List.length l)) |> cont | m -> malformed "len" (List(m))
-let Append cont = function [List(l1); List(l2)] -> List(List.append l1 l2) |> cont | m -> malformed "append" (List(m))
-let Take cont = function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) |> cont | m -> malformed "take" (List(m))
-let Get cont = function [Number(n); List(l)] -> l.Item (int n) |> cont | m -> malformed "get" (List(m))
-let Drop cont = function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) |> cont | m -> malformed "drop" (List(m))
+let Car =      function [List(h :: _)]       -> h                                      | m -> malformed "car"    <| List(m)
+let Cdr =      function [List(_ :: t)]       -> List(t)                                | m -> malformed "cdr"    <| List(m)
+let Cons =     function [h; List(t)]         -> (List(h :: t))                         | m -> malformed "cons"   <| List(m)
+let Get =      function [Number(n); List(l)] -> l.Item (int n)                         | m -> malformed "get"    <| List(m)
+let Rev =      function [List(l)]            -> List(List.rev l)                       | m -> malformed "reverse"<| List(m)
+let Len =      function [List(l)]            -> Number(double l.Length)                | m -> malformed "len"    <| List(m)
+let Append =   function [List(l1); List(l2)] -> List(List.append l1 l2)                | m -> malformed "append" <| List(m)
+let Take =     function [Number(n); List(l)] -> List(Seq.take (int n) l |> List.ofSeq) | m -> malformed "take"   <| List(m)
+let Drop =     function [Number(n); List(l)] -> List(Seq.skip (int n) l |> List.ofSeq) | m -> malformed "drop"   <| List(m)
+let IsEmpty =  function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?" <| List(m)
 
-///Sorts using natural ordering. Only works for primitive types (numbers, strings, etc.)
-let Sort cont = function
-   //We expect a list of expressions as the only argument.
-   | [List(l)] ->
-      //Peek and see what kind of data we're sorting
-      match l with
-      //If the first element is an Expression.Number...
-      | Number(n) :: _ ->
-         //converter: Makes sure given Expression is an Expression.Number.
-         //           If it is an Expression.Number, pull the Number from it.
-         //           Otherwise, fail.
-         let converter = function
-            | Number(n) -> n
-            | m -> malformed "sort" m
-         //Convert Expression.Numbers to doubles, sort them, then convert them back to Expression.Numbers.
-         List(List.map converter l |> List.sort |> List.map (fun n -> Number(n))) |> cont
-      //If the first element is an Expression.String...
-      | String(s) :: _ ->
-         //converter: Makes sure given Expression is an Expression.String.
-         //           If it is an Expression.String, pull the string from it.
-         //           Otherwise, fail.
-         let converter = function
-            | String(s) -> s
-            | m -> malformed "sort" m
-         //Convert Expression.Strings to strings, sort them, then convert them back to Expression.Strings.
-         List(List.map converter l |> List.sort |> List.map (fun n -> String(n))) |> cont
-      //Otherwise, fail.
-      | _ -> malformed "sort" (List(l))
-   //Otherwise, fail.
-   | m -> malformed "sort" (List(m))
+let rec private reduceLists = function
+    | []     -> Seq.empty
+    | [xs]   -> seq { for x in xs -> [x] }
+    | h :: t -> reduceLists t |> Seq.zip h |> Seq.map (fun (a,b) -> a::b)
 
-///Build Sequence
-let BuildSeq cont = function
-   | [Number(start); Number(stop); Number(step)] -> [start .. step .. stop] |> List.map Number |> List |> cont
-   | m -> malformed "build-seq" (List(m))
+let Map = function
+    | Function(f) :: lists ->
+        List(List.map (function List(l) -> l | m -> failwith "bad map arg") lists
+                |> reduceLists |> Seq.map f |> Seq.toList)
+    | m -> malformed "map" <| List(m)
 
-let String2Num cont = function
-    | [String(s)] -> Number(Convert.ToDouble(s)) |> cont
-    | m -> malformed "string" (List(m))
+let FoldL = function
+    | Function(f) :: a :: lists ->
+        List.map (function List(l) -> l | m -> failwith "bad fold arg") lists
+            |> reduceLists
+            |> Seq.fold (fun a x -> f (x @ [a])) a
+    | m -> malformed "foldl" <| List(m)
 
-let Num2String cont = function
-    | [Number(n)] -> String(n.ToString()) |> cont
-    | m -> malformed "number" (List(m))
+let FoldR = function
+    | Function(f) :: a :: lists ->
+        List.foldBack (fun x a' -> f (x @ [a']))
+                      (List.map (function List(l) -> l | m -> failwith "bad fold arg") lists
+                        |> reduceLists |> Seq.toList)
+                      a
+    | m -> malformed "foldr" <| List(m)
 
-let Concat cont = function
-    | [List(l)] -> 
+let Filter = function
+    | [Function(p); List(l)] ->
+        List(List.filter (fun x -> [x] |> p |> exprToBool) l)
+    | m -> malformed "filter" <| List(m)
+
+let CartProd = function
+    | Function(f) :: lists ->
+        let product2 xs ys = seq { for x in xs do for y in ys do yield x,y }
+        let rec reduceLists = function
+            | []        -> seq { yield [] }
+            | xs :: xss -> reduceLists xss |> product2 xs |> Seq.map (fun (a,b) -> a::b)
+        List(List.map (function List(l) -> l | m -> failwith "bad cart prod arg") lists |> reduceLists |> Seq.map f |> Seq.toList)
+    | m -> malformed "cartesian-product" <| List(m)
+
+let ForEach = function
+    | [Function(f); List(l)] ->
+        for e in l do f [e] |> ignore
+        Dummy("for-each")
+    | m -> malformed "for-each" <| List(m)
+
+///Sorts using natural ordering. Only works for primitive types (numbers, strings)
+let Sort = function
+    //We expect a list of expressions as the only argument.
+    | [List(l)] ->
+        //Peek and see what kind of data we're sorting
+        match l with
+        //If the first element is an Number...
+        | Number(n) :: _ ->
+            //converter: Makes sure given Value is an Number.
+            //           If it is a Number, pull the double from it.
+            //           Otherwise, fail.
+            let converter = function
+                | Number(n) -> n
+                | m         -> malformed "sort" m
+            //Convert Numbers to doubles, sort them, then convert them back to Numbers.
+            List(List.map converter l |> List.sort |> List.map Number)
+        //If the first element is a String...
+        | String(s) :: _ ->
+            //converter: Makes sure given Value is a String.
+            //           If it is aa String, pull the string from it.
+            //           Otherwise, fail.
+            let converter = function
+                | String(s) -> s
+                | m         -> malformed "sort" m
+            //Convert Strings to strings, sort them, then convert them back to Strings.
+            List(List.map converter l |> List.sort |> List.map String)
+        //Otherwise, fail.
+        | _ -> malformed "sort" <| List(l)
+    //Otherwise, fail.
+    | m -> malformed "sort" <| List(m)
+
+let SortBy = function
+    | [Function(key); List(h :: t)] ->
+        let mapper x = key [x], x
+        let first = mapper h
+        let sortBy keyed =
+            List(List.sortBy (function key, _ -> key) keyed
+                 |> List.map (function _, value -> value))
+        match first with
+        | Number(n), x ->
+            let mapper' x =
+                match mapper x with
+                | Number(n), t -> n, t
+                | m            -> failwith "sort-by key function must always return the same type"
+            (n, x) :: List.map mapper' t |> sortBy
+        | String(s), x ->
+            let mapper' x =
+                match mapper x with
+                | String(s), t -> s, t
+                | m            -> failwith "sort-by key function must always return the same type"
+            (s, x) :: List.map mapper' t |> sortBy
+        | _ -> failwith "key function for sort-by must return strings or numbers"
+    | m -> malformed "sort-by" <| List(m)
+
+let SortWith = function
+    | [Function(comp); List(l)] ->
+        let comp' x y =
+            match comp [x; y] with
+            | Number(n) -> int n
+            | _         -> failwith "sort-with comparitor must return numbers"
+        List(List.sortWith comp' l)
+    | m -> malformed "sort-with" <| List(m)
+
+///Flatten List
+let Flatten = function
+    | [List(l2d)] ->
+        let rec flatten' a = function
+            | List(l) :: t ->
+                let rec flatten'' a' = function
+                    | h :: t -> flatten'' (h :: a') t
+                    | []     -> a'
+                flatten' (flatten'' a l) t
+            | [] -> List(List.rev a)
+            | m  -> malformed "flatten" <| List(m)
+        flatten' [] l2d
+    | m -> malformed "flatten" <| List(m)
+
+///Build List
+let BuildSeq = function
+    | [Number(start); Number(stop); Number(step)] -> [start .. step .. stop] |> List.map Number |> List
+    | m -> malformed "build-list" <| List(m)
+
+///Converts strings to numbers
+let StringToNum = function
+    | [String(s)] -> Number(Convert.ToDouble(s))
+    | m -> malformed "string->num" <| List(m)
+
+let NumToString = function
+    | [Number(n)] -> String(n.ToString())
+    | m -> malformed "num->string" <| List(m)
+
+let Concat = function
+    | [List(l)] ->
         let rec concat a = function
             | String(s) :: l -> concat (a + s) l
-            | [] -> String(a) |> cont
-            | m :: _ -> malformed "string" m
+            | []             -> String(a)
+            | m :: _         -> malformed "string" m
         concat "" l
-    | m -> malformed "concat" (List(m))
-
-///Extends the given environment with the given bindings.
-let rec extend (env : Environment) = function
-   | [] -> env
-   | (a, b) :: t -> extend (Map.add a b env.Value |> ref) t
-
-///Looks up a symbol in the given environment.
-let lookup (env : Environment) symbol = 
-   match Map.tryFind symbol env.Value with
-   | Some(e) -> e
-   | None -> sprintf "No binding for '%s'." symbol |> failwith
-
-///Zips given lists into a list of bindings.
-let zip args parameters =
-   let args' = // passing more args than params results in last param treated as list
-      let plen = List.length parameters
-      if List.length args = plen then
-         args
-      else
-         let split ts = ts (plen - 1) args |> List.ofSeq
-         split Seq.take @ [List(Symbol("list") :: split Seq.skip)]
-   List.zip parameters args'
+    | m -> malformed "concat" <| List(m)
 
 ///Error construct
-let Throw cont = function
-   | [String(s)] -> failwith s
-   | m -> malformed "throw" (List(m))
-
-///If construct
-let rec If cont env = function
-   | [condition; t; f] -> //(if [condition] [t] [f])
-      eval (function
-         | List([]) | String("") -> 
-            eval cont env f // empty list or empty string is false
-         | Number(n) when n = 0.0 ->
-            eval cont env f // zero is false
-         | _ -> eval cont env t) env condition // everything else is true
-   | m -> malformed "if" (List(m))
-
-///Let construct
-and Let cont env = function
-   | [List(bindings); body] ->
-      let rec mapbind acc = function
-         | List([Symbol(s); e]) :: t -> eval (fun x -> mapbind ((s, ref x) :: acc) t) env e
-         | [] ->
-            let frame = List.rev acc
-            let env' = extend env frame
-            eval cont env' body
-         | _ -> failwith "Malformed 'let' binding."
-      mapbind [] bindings
-   | m -> malformed "let" (List(m))
-
-///LetRec (Recursive Let) construct
-and LetRec cont env = function
-   //Input is two arguments, a list of bindings and the letrec body
-   | [List(bindings); body] -> 
-      //bind is a function that takes a Expression.List of two arguments, the second of which is ignored
-      let bind = function
-         | List([Symbol(s); _]) -> s, ref (Dummy("Dummy 'letrec'"))
-         | m -> malformed "letrec binding" m
-      //Map all of the bindings to dummys
-      let env' = List.map bind bindings |> extend env
-      // now update dummy env - assumes dummy env will be captured but not actually accessed (e.g. lambda)
-      let rec mapupdate = function
-         //If the input is a List (of symbol/expression pairs), then we evaluate the expression in the dummy environment
-         //and then update the environment with the result, and recurse
-         | List([Symbol(s); e]) :: t -> eval (fun x -> (env'.Value.Item s) := x; mapupdate t) env' e
-         //If the input is empty (base case), then we simply evaluate the body with the dummy environment
-         | [] -> eval cont env' body
-         //Error case
-         | _ -> failwith "Malformed 'let' binding."
-      mapupdate bindings
-   | m -> malformed "letrec" (List(m))
-
-///Let* construct
-and LetStar cont env = function
-   | [List(bindings); body] ->
-      let rec foldbind env' = function
-         | List([Symbol(s); e]) :: t -> eval (fun x -> foldbind ([s, ref x] |> extend env') t) env' e
-         | [] -> eval cont env' body
-         | _ -> failwith "Malformed 'let*' binding."
-      foldbind env bindings
-   | m -> malformed "let*" (List(m))
-
-///Anonymous function (lambda) construct
-and Lambda cont env = function
-   | [List(parameters); body] ->
-      let closure cont' env' args =
-         // bind parameters to actual arguments (evaluated in the caller's environment)
-         let rec mapbind acc = function
-            // If the list of bindings isn't empty, evaluate the parameter (a), place it on the accumulator,
-            // and continue mapbind with the rest of the list.
-            | (Symbol(p), a) :: t -> eval (fun x -> mapbind ((p, ref x) :: acc) t) env' a
-            //If the list is empty...
-            | [] ->
-               // env :: definition-time environment
-               // env' :: run-time environment (for evaluating arguments)
-               
-               //let env'' = Map.fold (fun state key value -> Map.add key value state) env'.Value env.Value |> ref
-               
-               //extend the captured definition-time environment
-               let env''' = if not acc.IsEmpty
-                            then List.rev acc |> extend env//''
-                            else env//''
-               //and evaluate the body with the new environment
-               eval cont' env''' body
-            | _ -> failwith "Malformed lambda param."
-         // Use mapbind to create our closure
-         mapbind [] (zip args parameters)
-      // Return the closure function as a special form
-      Special(closure) |> cont
-   | m -> malformed "lambda" (List(m))
-
-///Code quotation construct
-and Quote cont env =
-   let rec unquote cont' = function
-      | List([Symbol("unquote"); e]) -> eval cont' env e
-      | List(Symbol("unquote") :: _) as m -> malformed "unquote (too many args)" m
-      | List(lst) ->
-         let rec mapunquote acc = function
-            | h' :: t' ->
-               unquote (fun x -> mapunquote (x :: acc) t') h'
-            | [] -> List(List.rev acc)
-         mapunquote [] lst |> cont'
-      | e -> cont' e
-   function [e] -> unquote cont e | m -> malformed "quote" (List(m))
-
-///Eval construct -- evaluates code quotations
-and Eval cont env = function 
-   | [args] -> eval (eval cont env) env args
-   | m -> malformed "eval" (List(m))
-
-///Macro construct -- similar to functions, but arguments are passed unevaluated. Useful for short-circuiting.
-and Macro cont env = function
-   | [List(parameters); body] ->
-      let closure cont' env' args =
-         // bind parameters to actual arguments (but unevaluated, unlike lambda)
-         let bind = function 
-            | Symbol(p), a -> p, ref a 
-            | _, m -> malformed "macro parameter" m // bound unevaluated
-         let env'' = zip args parameters |> List.map bind |> extend env // extend the captured definition-time environment
-         //Evaluate the body in the extended environment (params mapped to args), then evaluate the result in the passed
-         //environment.
-         eval (eval cont' env') env'' body
-      Special(closure) |> cont
-   | m -> malformed "macro" (List(m))
-
-///Set! construct -- mutation
-and Set cont env = function
-   | [Symbol(s); e] -> eval (fun x -> (lookup env s) := x; Dummy(sprintf "Set %s" s) |> cont) env e
-   | m -> malformed "set!" (List(m))
-
-///Begin construct
-and Begin cont env =
-   let rec foldeval last = function
-      | h :: t -> eval (fun x -> foldeval x t) env h
-      | [] -> last |> cont
-   foldeval (Dummy("Empty 'begin'"))
-  
-///Define construct -- Mutates base environment to contain the given definition
-and Define cont env = function
-   | [Symbol(s); e] ->
-      let def = ref (Dummy("Dummy 'define'"))
-      env := Map.add s def env.Value
-      eval (fun x -> def := x; Dummy(sprintf "Defined %s" s) |> cont) env e
-   | m -> malformed "define" (List(m))
-
-///Load construct -- loads library files, reads them using the simple tokenizer and parser.
-and load file = Load (fun _ -> Dummy("")) [String(file)] |> ignore
-and Load cont = function
-   | [String(file)] ->
-      (File.OpenText(file)).ReadToEnd() |> List.ofSeq |> parse |> List.iter (eval (fun _ -> Dummy("Dummy 'load'")) environment >> ignore)
-      Symbol(sprintf "Loaded '%s'." file) |> cont
-   | m -> malformed "load" (List(m))
+let Throw = function
+    | [String(s)] -> failwith s
+    | m -> malformed "throw" <| List(m)
 
 ///Display construct -- used to print to stdout
-and Display cont = function
-   | [e] -> print e |> printf "DISPLAY: %s \n"; Dummy("Dummy 'display'") |> cont
-   | m -> malformed "display" (List(m))
+let Display = function
+    | [e] -> printf "DISPLAY: %s \n" <| print e; Dummy("display")
+    | m   -> malformed "display" <| List(m)
 
-///Call/cc -- gives access to the current interpreter continuation.
-and CallCC cont env = function
-   | [callee] -> eval (function Special(fn) -> fn cont env [Current(cont)] | m -> malformed "call/cc" m) env callee
-   | m -> malformed "call/cc" (List(m))
+let Apply = function
+    | [Function(f); List(args)] -> f args
+    | m -> malformed "apply" <| List(m)
+
+let Add1 = function
+    | [Number(n)] -> Number(n + 1.)
+    | m -> malformed "add1" <| List(m)
+
+let Sub1 = function
+    | [Number(n)] -> Number(n - 1.)
+    | m -> malformed "sub1" <| List(m)
+
+let Identity = function
+   | [e] -> e
+   | m   -> malformed "identity" <| List(m)
+
+
+type private CompilerFrame = string list
+type private CompilerEnv = CompilerFrame list ref
+
+let FindInCompilerEnv (name : string) compenv =
+    let rec find acc = function
+        | h :: t ->
+            match List.tryFindIndex ((=) name) h with
+            | Some(i) -> Some(acc, i)
+            | None    -> find (acc + 1) t
+        | [] -> None
+    find 0 compenv
+
+//Returns a function that takes an argument, ignores it, and returns the given input to wrap.
+let private wrap x = fun _ -> x
+
+///Compiles Syntax
+let rec private compile (compenv : CompilerEnv) expression : (Environment -> Value) =
+    ///Utility function that compiles the given expression in the current environment
+    let compile' = compile compenv
+
+    //And let's begin the match
+    match expression with
+    //Objects are passed as their Expression equivalent
+    | Number_E(n)    -> wrap <| Number(n)
+    | String_E(s)    -> wrap <| String(s)
+    | Function_E(f)  -> wrap <| Function(f)
+    | Container_E(o) -> wrap <| Container(o)
+
+    //Identifiers
+    | Id(id) ->
+        match FindInCompilerEnv id compenv.Value with
+        //If the identifier is in the compiler environment (name registry),
+        //then we fetch it from the environment at runtime.
+        | Some(i1, i2) -> fun env -> (env.Value.Item i1).Value.[i2].Value
+        //If it's not there, then it's a free identifier.
+        | None         -> failwith <| sprintf "Unbound identifier: %s" id
+
+    //Set!
+    | SetId(id, expr) ->
+        match FindInCompilerEnv id compenv.Value with
+        //If the identifier is in the compiler environment...
+        | Some(i1, i2) ->
+            ///Compiled sub-expression
+            let ce = compile' expr
+            //At runtime we...
+            fun env ->
+                //Store the result of the expression in the identifier's box
+                (env.Value.Item i1).Value.[i2] := ce env
+                //And return a dummy
+                Dummy(sprintf "set! %s" id)
+        //If it's not there, then it's a free identifier.
+        | None -> failwith <| sprintf "Unbound identifier: %s" id
+
+    //Lets are really just anonymous function calls.
+    | Let(names, exprs, body) -> compile' (List_E(Fun(List.map Normal names, body) :: exprs))
+
+    //Recursive let, all identifiers must be added to the environment before any binding expressions are evaluated.
+    | LetRec(names, exprs, body) ->
+        ///Environment containing recursive bindings
+        let compenv' = ref <| names :: compenv.Value
+        ///Compiled body
+        let cbody = compile compenv' body
+        ///Compiled binding expressions
+        let cargs = List.map (compile compenv') exprs
+        ///Runtime identifier boxes
+        let boxes = [| for _ in cargs -> ref (Dummy("letrec")) |]
+        //At runtime...
+        fun env ->
+            //We append the new frame to the environment
+            let env' = ref <| ref boxes :: env.Value
+            //We evaluate all the binding expressions and store them in their respective identifier's box.
+            for (expr, box) in Seq.zip cargs boxes do box := expr env'
+            //We evaluate the body in the new environment and return the result.
+            cbody env'
+
+    //Define mutates the current environment with new identifier bindings.
+    | Define(name, body) ->
+        ///Dummy value returned by define statements.
+        let dummy = Dummy(sprintf "defined '%s'" name)
+        match List.tryFindIndex ((=) name) compenv.Value.Head with
+        //If the identifier being defined is already in the environment, replace it with the new binding.
+        | Some(idx) ->
+            let cbody = compile' body
+            fun env ->
+                env.Value.Head.Value.[idx] := cbody env
+                dummy
+        //If it's not there, then we need to add it.
+        | None ->
+            ///The index of the new identifier box in the mutated environment.
+            let lastindex = compenv.Value.Head.Length
+            //Update the compiler environment.
+            compenv := (compenv.Value.Head @ [name]) :: compenv.Value.Tail
+            ///Compiled binding expression.
+            let cbody = compile compenv body
+            ///Dummy value for undefined identifiers.
+            let dummy' = Dummy(sprintf "define '%s'" name)
+            //At runtime...
+            fun env ->
+                ///New identifier's box
+                let def = ref dummy'
+                //Resize the environment to accomodate the new identifier
+                Array.Resize(env.Value.Head, lastindex + 1)
+                //Place the box in the environment
+                env.Value.Head.Value.SetValue(def, lastindex)
+                //Evaluate the binding expression with the mutated environment
+                def := cbody env
+                //Return the dummy for the define statement
+                dummy
+   
+    //Functions
+    | Fun(parameters, body) ->
+        ///Traverses a syntax tree looking for new identifiers from define statements.
+        let findAllDefs = function
+            | Begin(exprs) ->
+                let rec pred defacc = function
+                    | h :: t ->
+                        match h with
+                        | Define(name, _) -> pred (name :: defacc) t
+                        | Begin(exprs)    -> pred (pred defacc exprs) t
+                        | _               -> pred defacc t
+                    | [] -> List.rev defacc
+                pred [] exprs
+            | Define(name, _) -> [name]
+            | _               -> []
+        ///All identifiers being defined in the funtion's body.
+        let defs = findAllDefs body
+        ///Utility to extract the name of the given parameter.
+        let paramToString = function Normal(s) | Tail(s) -> s
+        ///Compiler environment containing the parameter names
+        let compenv' = ref <| (defs @ List.map paramToString parameters) :: compenv.Value
+        ///Compiled function body
+        let cbody = compile compenv' body
+        ///Number of sub-definitions
+        let buffer = defs.Length
+        ///Size of the environment frame to be created for this function
+        let framesize = parameters.Length + buffer
+        ///Default value for uninitialized identifiers
+        let dummy = Dummy("undefined")
+        ///Creates a new runtime environment frame from the arguments to this function
+        let pack args =
+            ///New frame for the function call
+            let frame = Array.zeroCreate framesize
+            ///Recursive helper for processing arguments
+            let rec pack' idx args = function
+                //If there's one parameter left and it's a Tail, then store the parameter's argument as all the arguments in a list.
+                | [Tail(_)] -> frame.[idx] <- ref <| List(args)
+                //If there is more than one parameter left...
+                | _ :: xs ->
+                    match args with
+                    //Reference the first arg in the list, then pack the remaining args with the remaining names.
+                    | h :: t -> frame.[idx] <- ref h; pack' (idx + 1) t xs
+                    //Not enough arguments.
+                    | _      -> failwith <| sprintf "Arity mismatch: Cannot apply %i-arity function on %i arguments." parameters.Length args.Length
+                //If there are no parameters left...
+                | [] ->
+                    match args with
+                    //If there are also no arguments left, we're done.
+                    | [] -> ()
+                    //Too many arguments.
+                    | _  -> failwith <| sprintf "Arity mismatch: Cannot apply %i-arity function on %i arguments." parameters.Length args.Length
+            ///List of identifier boxes for parameters
+            pack' buffer args parameters
+            //Initialize inner-define identifiers with dummy value
+            for i in 0 .. buffer - 1 do frame.[i] <- ref dummy
+            //If we don't, just create a frame out of the packed arguments.
+            frame
+        //At runtime, we need to add the arguments to the environment and evaluate the body.
+        fun env -> Function(fun exprs -> (ref <| pack exprs) :: env.Value |> ref |> cbody)
+
+    //Function calls
+    | List_E(fun_expr :: args) ->
+        ///Compiled function
+        let cfun = compile' fun_expr
+        ///Compiled arguments
+        let cargs = List.map compile' args
+        ///At runtime...
+        fun env ->
+            //Evaluate the function expression
+            match cfun env with
+            //If it's a function, then evaluate the arguments and apply the function.
+            | Function(f) -> f <| List.map (fun x -> x env) cargs
+            //Can't call something that's not a function
+            | _           -> printExpression "" expression |> sprintf "expected function for call: %s" |> failwith
+
+    //Conditionals
+    | If(cond, then_expr, else_expr) ->
+        ///Compiled test
+        let ccond = compile' cond
+        ///Compiled then branch
+        let cthen = compile' then_expr
+        ///Compiled else branch
+        let celse = compile' else_expr
+        //At runtime, evaluate the expression and select the correct branch
+        fun env -> if ccond env |> exprToBool then cthen env else celse env
+
+    //An empty begin statement is valid, but returns a dummy
+    | Begin([]) -> wrap <| Dummy("empty begin")
+    
+    //A begin statement with one sub-expression is the same as just the sub-expression.
+    | Begin([expr]) -> compile' expr
+
+    //Expression sequences
+    | Begin(exprs) ->
+        ///Merges all nested begin expressions
+        let merge =
+            let rec merge' a = function
+               | [Begin([]) as e]   -> merge' (compile' e :: a) []
+               | Begin(exprs') :: t -> merge' (merge' a exprs') t
+               | h :: t             -> merge' (compile' h :: a) t
+               | []                 -> a
+            merge' [] >> List.rev
+        ///Compiled expressions
+        let body = merge exprs
+        ///Dummy value for empty begin statements
+        let d = Dummy("empty begin")
+        ///Tail-recursive helper for evaluating a sequence of expressions.
+        let rec fold env = function
+            | [x]    -> x env
+            | h :: t -> h env |> ignore; fold env t
+            | []     -> d
+        //At runtime, evaluate all expressions in the body and return the result of the last one.
+        fun env -> fold env body
+
+    //Code quotations
+    | Quote(parser) -> makeQuote false compenv parser //quote (')
+    | Quasi(parser) -> makeQuote true compenv parser //quasiquote (`)
+
+    //Anything else isn't right.
+    | m -> failwith "Malformed expression"
+
+///Creates a code quotation
+and private makeQuote isQuasi compenv = function
+    | Number_S(n)    -> wrap <| Number(n)
+    | String_S(s)    -> wrap <| String(s)
+    | Symbol_S(s)    -> wrap <| Symbol(s)
+    | Dot_S          -> wrap <| Symbol(".")
+    | Func_S(f)      -> wrap <| Function(f)
+    | Container_S(o) -> wrap <| Container(o)
+    | List_S(Symbol_S("unquote") :: t) when isQuasi ->
+        match t with
+        | [expr] -> syntaxToExpression macroEnv expr |> compile compenv
+        | _      -> failwith "malformed 'unquote'"
+    | List_S(exprs) ->
+        let qargs = List.map (makeQuote isQuasi compenv) exprs
+        fun env -> List(List.map (fun x -> x env) qargs)
+
+///Eval construct -- evaluates code quotations
+and Eval args =
+    let rec toParser = function
+        | Symbol(s)   -> Symbol_S(s)
+        | Number(n)   -> Number_S(n)
+        | String(s)   -> String_S(s)
+        | Function(f) -> Func_S(f)
+        | List(l)     -> List_S(List.map toParser l)
+        | m           -> malformed "eval" m
+    match args with
+    | [arg] -> (toParser arg |> syntaxToExpression macroEnv |> compile compileEnvironment) environment
+    | m     -> malformed "eval" <| List(m)
+
+
+///Load construct -- loads library files, reads them using the simple tokenizer and parser.
+and load file = Load [String(file)] |> ignore
+and Load = function
+    | [String(file)] ->
+         (File.OpenText(file)).ReadToEnd()
+             |> List.ofSeq |> parse
+             |> List.iter (fun x -> compile compileEnvironment x environment |> ignore)
+         Dummy(sprintf "Loaded '%s'." file)
+    | m -> malformed "load" <| List(m)
+
+///Our base compiler environment
+and compileEnvironment : CompilerEnv = ref [[]]
 
 ///Our base environment
-and environment =
-   Map.ofList
-      ["*", ref (Function(Multiply))
-       "/", ref (Function(Divide))
-       "%", ref (Function(Modulus))
-       "+", ref (Function(Add))
-       "-", ref (Function(Subtract))
-       "pow", ref (Function(Exponent))
-       "if", ref (Special(If))
-       "let", ref (Special(Let))
-       "letrec", ref (Special(LetRec))
-       "let*", ref (Special(LetStar))
-       "lambda", ref (Special(Lambda))
-       "cons", ref (Function(Cons))
-       "car", ref (Function(Car))
-       "first", ref (Function(Car))
-       "cdr", ref (Function(Cdr))
-       "rest", ref (Function(Cdr))
-       "len", ref (Function(Len))
-       "length", ref (Function(Len))
-       "append", ref (Function(Append))
-       "take", ref (Function(Take))
-       "get", ref (Function(Get))
-       "drop", ref (Function(Drop))
-       "build-seq", ref (Function(BuildSeq))
-       "quote", ref (Special(Quote))
-       "eval", ref (Special(Eval))
-       "macro", ref (Special(Macro))
-       "set!", ref (Special(Set))
-       "begin", ref (Special(Begin))
-       "define", ref (Special(Define))
-       "load", ref (Function(Load))
-       "display", ref (Function(Display))
-       "call/cc", ref (Special(CallCC))
-       "true", ref (Number(1.0))
-       "false", ref (Number(0.0))
-       "<=", ref (Function(LTE))
-       ">=", ref (Function(GTE))
-       "<", ref (Function(LT))
-       ">", ref (Function(GT))
-       "=", ref (Function(EQ))
-       "empty", ref (List([]))
-       "empty?", ref (Function(IsEmpty))
-       "reverse", ref (Function(Rev))
-       "rev", ref (Function(Rev))
-       "list", ref (Function(MakeList))
-       "sort", ref (Function(Sort))
-       "throw", ref (Function(Throw))
-       "rand", ref (Function(RandomDbl))
-       "string->num", ref (Function(String2Num))
-       "num->string", ref (Function(Num2String))
-       "concat-strings", ref (Function(Concat))
-      ] |> ref
+and environment : Environment = ref [ref [||]]
 
-///Our eval loop
-and eval cont env expression =
-   match expression with
-   //Basic values get passed to the continuation as themselves
-   | Number(_) | String(_) | Current(_) | Container(_) 
-   //As do function-like objects
-   | Function(_) | Special(_) as lit -> lit |> cont 
-   //Symbols are looked up in the environment, dereferenced, and then passed to the continuation.
-   | Symbol(s) -> (lookup env s).Value |> cont 
-   //Lists are function calls. First the head is evaluated into a function object, then depending
-   //on the object...
-   | List(h :: t) ->
-      eval (function
-         //Functions have their arguments evaluated and then applied to the function
-         | Function(f) -> apply cont env f t 
-         //Special forms have their unevaluated arguments passed to them, along with the environment
-         | Special(f) -> f cont env t 
-         //Continuations take one argument, and have that argument passed
-         | Current(f) -> match t with [rtn] -> f rtn | m -> malformed "call/cc args" (List(m))
-         | m -> h :: t |> apply cont env MakeList) (*malformed "expression" m*) env h
-   //Anything else causes an error.
-   | Dummy(s) -> sprintf "Cannot evaluate dummy value: %s" s |> failwith
-   | _ -> failwith "Malformed expression."
+let mutable private tempEnv : (string * Value ref) list = []
 
-///Our apply loop
-and apply cont env fn args =
-   //Tail recursive function used to evaluate a list of expressions.
-   let rec mapeval acc = function
-      //If the list is not empty, evaluate the head, then evaluate the rest of the list
-      | h :: t -> eval (fun a -> mapeval (a :: acc) t) env h
-      //Otherwise, we're done here. Pass the reversed accumulated list to the function.
-      | [] -> fn cont (List.rev acc)
-   mapeval [] args
+let EnvironmentMap : Map<string, Value ref> ref = ref Collections.Map.empty
 
-///REP -- Read/Eval/Print
-let rep env = List.ofSeq >> parse >> List.head >> eval id env >> print
+///Adds a new binding to the default environment
+let AddDefaultBinding name expr = 
+   let eRef = ref expr
+   tempEnv <- (name, eRef) :: tempEnv
+   EnvironmentMap := Collections.Map.add name eRef EnvironmentMap.Value
 
-///REPL -- Read/Eval/Print Loop
-let rec repl output : unit =
-   printf "%s\n> " output
-   try Console.ReadLine() |> rep environment |> repl
-   with ex -> repl ex.Message
+let private makeEnvironments() =
+    AddDefaultBinding "*" (Function(Multiply))
+    AddDefaultBinding "/" (Function(Divide))
+    AddDefaultBinding "%" (Function(Modulus))
+    AddDefaultBinding "+" (Function(Add))
+    AddDefaultBinding "-" (Function(Subtract))
+    AddDefaultBinding "pow" (Function(Exponent))
+    AddDefaultBinding "cons" (Function(Cons))
+    AddDefaultBinding "car" (Function(Car))
+    AddDefaultBinding "first" (Function(Car))
+    AddDefaultBinding "cdr" (Function(Cdr))
+    AddDefaultBinding "rest" (Function(Cdr))
+    AddDefaultBinding "len" (Function(Len))
+    AddDefaultBinding "length" (Function(Len))
+    AddDefaultBinding "append" (Function(Append))
+    AddDefaultBinding "take" (Function(Take))
+    AddDefaultBinding "get" (Function(Get))
+    AddDefaultBinding "drop" (Function(Drop))
+    AddDefaultBinding "build-list" (Function(BuildSeq))
+    AddDefaultBinding "load" (Function(Load))
+    AddDefaultBinding "display" (Function(Display))
+    AddDefaultBinding "true" (Number(1.))
+    AddDefaultBinding "false" (Number(0.))
+    AddDefaultBinding "<=" (Function(LTE))
+    AddDefaultBinding ">=" (Function(GTE))
+    AddDefaultBinding "<" (Function(LT))
+    AddDefaultBinding ">" (Function(GT))
+    AddDefaultBinding "=" (Function(EQ))
+    AddDefaultBinding "empty" (List([]))
+    AddDefaultBinding "null" (List([]))
+    AddDefaultBinding "empty?" (Function(IsEmpty))
+    AddDefaultBinding "reverse" (Function(Rev))
+    AddDefaultBinding "rev" (Function(Rev))
+    AddDefaultBinding "list" (Function(List))
+    AddDefaultBinding "sort" (Function(Sort))
+    AddDefaultBinding "throw" (Function(Throw))
+    AddDefaultBinding "rand" (Function(RandomDbl))
+    AddDefaultBinding "string->num" (Function(StringToNum))
+    AddDefaultBinding "num->string"(Function(NumToString))
+    AddDefaultBinding "concat-strings" (Function(Concat))
+    AddDefaultBinding "eval" (Function(Eval))
+    AddDefaultBinding "apply" (Function(Apply))
+    AddDefaultBinding "add1" (Function(Add1))
+    AddDefaultBinding "sub1" (Function(Sub1))
+    AddDefaultBinding "identity" (Function(Identity))
+    AddDefaultBinding "map" (Function(Map))
+    AddDefaultBinding "filter" (Function(Filter))
+    AddDefaultBinding "foldl" (Function(FoldL))
+    AddDefaultBinding "foldr" (Function(FoldR))
+    AddDefaultBinding "not" (Function(Not))
+    AddDefaultBinding "xor" (Function(Xor))
+    AddDefaultBinding "cartesian-product" (Function(CartProd))
+    AddDefaultBinding "sort-with" (Function(SortWith))
+    AddDefaultBinding "sort-by" (Function(SortBy))
+    AddDefaultBinding "for-each" (Function(ForEach))
+    AddDefaultBinding "flatten" (Function(Flatten))
+    AddDefaultBinding "sqrt" (Function(Sqrt))
+
+let private eval ce env syntax = compile ce syntax env
+
+///Evaluates the given Syntax
+let Evaluate = eval compileEnvironment environment
+
+///Evaluates the given Syntax in the given Environment
+let EvaluateInEnvironment = eval
+
+///Parses and evaluates an expression given in text form, and returns the resulting expression
+let ParseText = List.ofSeq >> parse >> Begin >> Evaluate
+
+let private evaluateSchemeDefs() =
+    "
+    ;; Y Combinator
+    (define (Y f) ((λ (x) (x x)) (λ (x) (f (λ (g) ((x x) g))))))
+    " |> ParseText |> ignore
+
+makeEnvironments()
+environment := [Seq.map (fun (_, x) -> x) tempEnv |> Seq.toArray |> ref]
+compileEnvironment := [List.map (fun (x, _) -> x) tempEnv]
+evaluateSchemeDefs()
+
+///Read/Eval/Print
+let REP = ParseText >> print
+
+///Debug version of rep
+let private REPd text =
+    let watch = Stopwatch.StartNew()
+    let x = ParseText text
+    watch.Stop()
+    sprintf "%s\nTime Elapsed: %d ms" (print x) watch.ElapsedMilliseconds
+
+///Read/Eval/Print Loop
+let REPL debug : unit =
+    let runner = if debug then REPd else REP
+    let rec repl' output =
+        printf "%s\n> " output
+        try Console.ReadLine() |> runner |> repl'
+        with ex -> repl' ex.Message
+    repl' ""
 
 type ErrorLog = delegate of string -> unit
 
-//Tests
-let test (log : ErrorLog) =
-   let case source expected =
-      try
-         //printfn "TEST: %s" source
-         let output = rep environment source
-         //Console.WriteLine(sprintf "TESTING: %s" source)
-         if output <> expected then
-            sprintf "TEST FAILED: %s [Expected: %s, Actual: %s]" source expected output |> log.Invoke
-      with ex -> sprintf "TEST CRASHED: %s [%s]" ex.Message source |> log.Invoke
-   
-   //Not
-   case "(define not 
-            (lambda (x) (if x 0 1)))" ""
-   case "(not true)" "0"
-   case "(not false)" "1"
-   case "(not 0)" "1" // or (true)
-   case "(not 1)" "0" // or (false)
-   
-   //And
-   case "(define and 
-            (macro (a b) 
-               '(if ,a (if ,b 1 0) 0)))" ""
-   case "(and 0 0)" "0" // or (false)
-   case "(and 1 0)" "0" // or (false)
-   case "(and 0 1)" "0" // or (false)
-   case "(and 1 1)" "1" // or (true)
-   
-   //Or
-   case "(define or 
-            (macro (a b) 
-               '(if ,a 1 (if ,b 1 0))))" ""
-   case "(or 0 0)" "0" // or (false)
-   case "(or 1 0)" "1" // or (true)
-   case "(or 0 1)" "1" // or (true)
-   case "(or 1 1)" "1" // or (true)
+///Tests
+let RunTests (log : ErrorLog) =
+    let success = ref true
+    let rep ce env = List.ofSeq >> parse >> Begin >> eval ce env >> print
+    let case source expected =
+        try
+            let testEnv : Environment =
+                List.map (fun (x : Frame) ->
+                            Array.map (fun (y : Value ref)
+                                            -> ref y.Value)
+                                      x.Value
+                            |> ref)
+                         environment.Value
+                |> ref
+            let testCEnv = compileEnvironment.Value |> ref
+            let output = rep testCEnv testEnv source
+            if output <> expected then
+                success := false
+                sprintf "TEST FAILED: %s [Expected: %s, Actual: %s]" source expected output |> log.Invoke
+        with ex ->
+            success := false
+            sprintf "TEST CRASHED: %s [%s]" ex.Message source |> log.Invoke
 
-   //Xor
-   case "(define xor 
-            (lambda (a b) 
-               (and (or a b) 
-                    (not (and a b)))))" ""
-   case "(xor 0 0)" "0" // xor (false)
-   case "(xor 1 0)" "1" // xor (true)
-   case "(xor 0 1)" "1" // xor (true)
-   case "(xor 1 1)" "0" // xor (false)
-   
-   //Apply
-   case "(define apply 
-            ;; apply :: (X Y ... Z -> A) [list X Y ... Z] -> A
-            (macro (f args) 
-               '(eval (cons ,f ,args))))" ""
-   case "(apply + '(1 2))" "3"
-   case "(apply append '((1) (2)))" "(1 2)"
-   
-   //Fold
-   case "(begin 
-            (define fold 
-               ;; fold :: (X Y -> Y) Y [listof X] -> Y
-               (lambda (f a xs) 
-                  (if (empty? xs) 
-                      a 
-                      (fold f (f (first xs) a) (rest xs))))) 
-            (fold + 0 '(1 2 3)))" 
-        "6"
-   case "(fold * 1 '(2 3 4 5))" "120" // fold
-   
-   //Map
-   case "(begin 
-            (define map
-               ;; map :: (X -> Y) [listof X] -> [listof Y] 
-               (lambda (f lst) 
-                  (reverse (fold (lambda (fold-first fold-acc) (cons (f fold-first) fold-acc)) 
-                                 empty
-                                 lst)))) 
-            (map (lambda (x) x) '(1 2 3)))" 
-        "(1 2 3)"
-   
-   //Filter
-   case "(begin 
-            (define filter 
-               ;; filter :: (X -> bool) [listof X] -> [listof X]
-               (lambda (p lst) 
-                  (reverse (fold (lambda (f a) (if (p f) (cons f a) a)) 
-                                 empty 
-                                 lst)))) 
-            (filter (lambda (x) (< x 2)) '(0 2 3 4 1 6 5)))"
-        "(0 1)"
-   
-   //Cartesian Product
-   case "(begin 
-            (define cp-atom-list 
-               (lambda (at lst) 
-                  (letrec ((cal* (lambda (x l a) 
-                                    (if (empty? l) 
-                                        (reverse a) 
-                                        (cal* x (rest l) (cons (cons x (first l)) a)))))) 
-                     (cal* at lst empty)))) 
-            
-            (define cp-list-list 
-               (lambda (l1 l2)
-                  (letrec ((cll* (lambda (m n a) 
-                                    (if (or (empty? m) (empty? n))
-                                        a 
-                                        (cll* (rest m) n (append a (cp-atom-list (first m) n)))))))
-                     (cll* l1 l2 empty)))) 
-                     
-            (define cartesian-product 
-               ;; cartesian-product :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
-               (lambda (comb lsts) 
-                  (let* ((lofls (reverse lsts)) 
-                         (rst (rest lofls))
-                         (cp (lambda (lsts) 
-                                 (fold cp-list-list 
-                                       (map list (first lofls))
-                                       rst))))
-                     (map (lambda (args) (apply comb args)) (cp lofls))))))" ""
-   case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))" "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
-   
-   //Sorting
-   case "(begin 
-            (define qs 
-               ;; qs :: [listof X] (X -> Y) (Y Y -> bool) -> [listof X]
-               (lambda (lst f c) 
-                  (if (empty? lst) 
-                      empty 
-                      (let* ((pivot (f (first lst))) 
-                            (lt (filter (lambda (x) (c (f x) pivot)) (rest lst)))
-                            (gt (filter (lambda (x) (not (c (f x) pivot))) (rest lst))))
-                        (append (qs lt f c) (cons (first lst) (qs gt f c))))))) 
-            
-            (define sort-with 
-               ;; sort-with :: [listof X] (X X -> int) -> [listof X]
-               (lambda (lst comp) 
-                  (qs lst 
-                      (lambda (x) x)
-                      (lambda (a b) (< (comp a b) 0))))) 
-                      
-            (define sort-by
-               ;; sort-by :: [listof X] (X -> IComparable) -> [listof X]
-               (lambda (lst proj) 
-                  (map (lambda (x) (first x))                       ;; Convert back to original list
-                       (qs (map (lambda (x) (list x (proj x))) lst) ;; Sort list of original element/projection pairs
-                           (lambda (y) (first (rest y)))            ;; Sort based on the second element in the sub-lists
-                           <)))))                                   ;; Compare using less-than" ""
-   case "(sort-by '((2 2) (2 1) (1 1)) (lambda (x) (fold + 0 x)))" "((1 1) (2 1) (2 2))"
-   case "(sort-with '((2 2) (2 1) (1 1)) (lambda (x y) (let ((size (lambda (l) (fold + 0 l)))) (- (size x) (size y)))))" "((1 1) (2 1) (2 2))"
-   
-   //Combine
-   case "(define zip
-            ;; zip :: [listof X] [listof Y] ... [listof Z] -> [listof [listof X Y ... Z]]
-            (lambda (lofls) 
-               (letrec ((zip'' (lambda (lofls a al) 
-                                 (if (empty? lofls) 
-                                     (list (reverse a) (reverse al)) 
-                                     (if (empty? (first lofls)) 
-                                         (list empty al) 
-                                         (zip'' (rest lofls) (cons (first (first lofls)) a) (cons (rest (first lofls)) al)))))) 
-                        (zip' (lambda (lofls acc) 
-                                 (let ((result (zip'' lofls empty empty))) 
-                                    (if (empty? (first result)) 
-                                        (reverse acc) 
-                                        (let ((p (first result)) 
-                                              (t (first (rest result)))) 
-                                          (zip' t (cons p acc)))))))) 
-                  (zip' lofls empty))))" ""
-   case "(define combine 
-            ;; combine :: (X Y ... Z -> A) [listof X] [listof Y] ... [listof Z] -> [listof A]
-            (lambda (f lofls) 
-               (map (lambda (x) (apply f x)) 
-                    (zip lofls))))" ""
-   case "(zip '((1) (2) (3)) '((4) (5) (6)))" "(((1) (4)) ((2) (5)) ((3) (6)))"
-   case "(combine (lambda (x y) (begin (display x) (display y) (append x y))) '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
-   
-   //Engine Tests
-   case "(quote (* 2 3))" "(* 2 3)" // quote primitive
-   case "(eval '(* 2 3))" "6" // eval quoted expression
-   case "(quote (* 2 (- 5 2)))" "(* 2 (- 5 2))" // quote nested
-   case "(quote (* 2 (unquote (- 5 2))))" "(* 2 3)" // quote nested unquote
-   case "(let ((a 1)) (begin (set! a 2) a))" "2" // begin and assign
-   case "(let* ((a 5) (dummy (set! a 10))) a)" "10" // re-assign after let
-   case "(begin (define too-many (lambda (a x) x)) (too-many 1 2 3))" "(2 3)"
-   case "(too-many '(1 1) '(2 2) '(3 3))" "((2 2) (3 3))"
-   case "(reverse '(1 2 3))" "(3 2 1)" // reverse
-   case "(list 1 2 3)" "(1 2 3)"
-   case "(let ((square (lambda (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
-   case "(let ((square (lambda (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
-   case "(let ((square (lambda (x) (* x x)))) (map square '()))" "()" // mapping empty
-   case "(call/cc (lambda (c) (c 10)))" "10" // super-simple call/cc
-   case "(call/cc (lambda (c) (if (c 10) 20 30)))" "10" // call/cc bailing out of 'if'
-   case "(+ 8 (call/cc (lambda (k^) (* (k^ 5) 100))))" "13" // call/cc bailing out of multiplication
-   case "(* (+ (call/cc (lambda (k^) (/ (k^ 5) 4))) 8) 3)" "39" // call/cc nesting
-   case "(let ((divide (lambda (x y) (call/cc (lambda (k^) (if (= y 0) (k^ \"error\") (/ x y))))))) (divide 1 0))" "\"error\"" // call/cc as an error handler
-   
-   //Built-in Tests
-   case "(cons 1 (cons 5 (cons \"hello\" empty)))" "(1 5 \"hello\")" // cons and empty
-   case "(car (list 5 6 2))" "5" // car / first
-   case "(cdr (list 5 6 2))" "(6 2)" // cdr / rest
-   case "(len (list 5 6 2))" "3" // len
-   case "(append '(1 2 3) '(4 5 6))" "(1 2 3 4 5 6)" // append
-   case "(take 2 '(1 2 3))" "(1 2)" // take
-   case "(get 2 '(1 2 3))" "3" // get
-   case "(drop 2 '(1 2 3))" "(3)" // drop
-   case "(build-seq 0 10 1)" "(0 1 2 3 4 5 6 7 8 9 10)" // build-seq
-   case "(reverse '(1 2 3))" "(3 2 1)" // reverse
-   case "(empty? '())" "1" // empty?
-   case "(empty? '(1))" "0" // empty?
-   case "(sort '(8 4 7 6 1 0 2 9))" "(0 1 2 4 6 7 8 9)" // sort
-   case "(sort (list \"b\" \"c\" \"a\"))" "(\"a\" \"b\" \"c\")" // sort
+    //Engine Tests
+    case "(quote (* 2 3))" "(* 2 3)" // quote primitive
+    case "(eval '(* 2 3))" "6" // eval quoted expression
+    case "(quote (* 2 (- 5 2)))" "(* 2 (- 5 2))" // quote nested
+    case "(quote (* 2 (unquote (- 5 2))))" "(* 2 (unquote (- 5 2)))" // quote nested unquote
+    case "(quasiquote (* 2 (unquote (- 5 2))))" "(* 2 3)" // quote nested unquote
+    case "(let ((a 1)) (begin (set! a 2) a))" "2" // begin and assign
+    case "(let* ((a 5) (dummy (set! a 10))) a)" "10" // re-assign after let
+    case "((λ (_ . x) x) 1 2 3)" "(2 3)" // varargs
+    case "(reverse '(1 2 3))" "(3 2 1)" // reverse
+    case "(list 1 2 3)" "(1 2 3)" //list
+    case "(let ((square (λ (x) (* x x)))) (map square '(1 2 3 4 5 6 7 8 9)))" "(1 4 9 16 25 36 49 64 81)" // mapping
+    case "(let ((square (λ (x) (* x x)))) (map square '(9)))" "(81)" // mapping single
+    case "(let ((square (λ (x) (* x x)))) (map square '()))" "()" // mapping empty
 
-   //Scope
-   case "(let ((y 6)) (let ((f (lambda (x) (+ x y)))) (let ((y 5)) (f 4))))" "10"
+    case "(let ((a (begin)) (b (begin)) (c (begin)) (d 0)) (begin (begin (begin (begin (begin (begin (set! a d)) (set! d (+ d 1))) (set! b d)) (set! d (+ d 1))) (set! c d)) (list a b c)))" "(0 1 2)"
+
+    //Scope
+    case "(let ((y 6)) (let ((f (λ (x) (+ x y)))) (let ((y 5)) (f 4))))" "10" //lexical
+    case "(begin (define (t x) (define y 5) (+ x y)) (t 6))" "11" //nested defines
+
+    //Not
+    case "(not true)" "0"
+    case "(not false)" "1"
+    case "(not 0)" "1" // or (true)
+    case "(not 1)" "0" // or (false)
+
+    //And
+    case "(and 0 0)" "0" // or (false)
+    case "(and 1 0)" "0" // or (false)
+    case "(and 0 1)" "0" // or (false)
+    case "(and 1 1)" "1" // or (true)
+
+    //Or
+    case "(or 0 0)" "0" // or (false)
+    case "(or 1 0)" "1" // or (true)
+    case "(or 0 1)" "1" // or (true)
+    case "(or 1 1)" "1" // or (true)
+
+    //Cond
+    case "(cond (else 10))" "10"
+    case "(cond ((< 0 1) 10))" "10"
+    case "(cond ((> 0 1) 10))" ""
+    case "(cond ((> 0 1) 10) (else 20))" "20"
+
+    //Xor
+    case "(xor 0 0)" "0" // xor (false)
+    case "(xor 1 0)" "1" // xor (true)
+    case "(xor 0 1)" "1" // xor (true)
+    case "(xor 1 1)" "0" // xor (false)
+
+    //Built-in Function Tests
+    case "(cons 1 (cons 5 (cons \"hello\" empty)))" "(1 5 \"hello\")" // cons and empty
+    case "(car (list 5 6 2))" "5" // car / first
+    case "(cdr (list 5 6 2))" "(6 2)" // cdr / rest
+    case "(len (list 5 6 2))" "3" // len
+    case "(append '(1 2 3) '(4 5 6))" "(1 2 3 4 5 6)" // append
+    case "(take 2 '(1 2 3))" "(1 2)" // take
+    case "(get 2 '(1 2 3))" "3" // get
+    case "(drop 2 '(1 2 3))" "(3)" // drop
+    case "(build-list 0 10 1)" "(0 1 2 3 4 5 6 7 8 9 10)" // build-list
+    case "(reverse '(1 2 3))" "(3 2 1)" // reverse
+    case "(empty? '())" "1" // empty?
+    case "(empty? '(1))" "0" // empty?
+    case "(sort '(8 4 7 6 1 0 2 9))" "(0 1 2 4 6 7 8 9)" // sort
+    case "(sort (list \"b\" \"c\" \"a\"))" "(\"a\" \"b\" \"c\")" // sort
+
+    //Apply
+    case "(apply + '(1 2))" "3"
+    case "(apply append '((1) (2)))" "(1 2)"
+
+    //Fold
+    case "(foldl cons empty '(1 2 3))"   "(3 2 1)"
+    case "(foldr cons empty '(1 2 3))"   "(1 2 3)"
+    case "(foldl + 0 '(1 2 3))"          "6"
+    case "(foldr + 0 '(1 2 3) '(4 5 6))" "21"
+    case "(foldl * 1 '(2 3) '(4 5))"     "120"
+
+    //Map
+    case "(map (λ (x) x) '(1 2 3))" "(1 2 3)"
+    case "(map append '((1) (2) (3)) '((4) (5) (6)))" "((1 4) (2 5) (3 6))"
+
+    //Filter
+    case "(filter (λ (x) (< x 2)) '(0 2 3 4 1 6 5))" "(0 1)"
+
+    //Cartesian Product
+    case "(cartesian-product list (list 1 2) (list 3 4) (list 5 6))"
+        "((1 3 5) (1 3 6) (1 4 5) (1 4 6) (2 3 5) (2 3 6) (2 4 5) (2 4 6))"
+
+    //Sorting
+    case "(sort-by (λ (x) (foldl + 0 x)) '((2 2) (2 1) (1 1)))" "((1 1) (2 1) (2 2))"
+    case "(sort-with (λ (x y) (let ((size (λ (l) (foldl + 0 l)))) (- (size x) (size y)))) '((2 2) (2 1) (1 1)))" "((1 1) (2 1) (2 2))"
+
+    //Y Combinator
+    case "((Y (λ (f) (λ (n) (if (<= n 1) 1 (* n (f (sub1 n))))))) 5)" "120"
+
+    //For-Each
+    case "(let ((x empty)) (for-each (λ (y) (set! x (cons y x))) '(1 2 3 4 5)) x)" "(5 4 3 2 1)"
+
+    //Flatten
+    case "(flatten '((1 2) (3 4) (5 6)))" "(1 2 3 4 5 6)"
+
+    success.Value
+
+let RunTestsInConsole() =
+    if RunTests <| ErrorLog(Console.WriteLine) then
+        Console.WriteLine("All Tests Passed.")

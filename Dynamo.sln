@@ -1,11 +1,10 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
+# Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoElements", "Dynamo\DynamoElements.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F9B766BE-A5A3-4680-840F-649462340EE7} = {F9B766BE-A5A3-4680-840F-649462340EE7}
 		{F25808D6-DF62-4732-9453-D4978079864C} = {F25808D6-DF62-4732-9453-D4978079864C}
-		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F} = {F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevit", "DynamoRevit\DynamoRevit.csproj", "{FD56AE51-739E-4893-8DE4-925D60C7097C}"
@@ -19,9 +18,6 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FScheme", "FScheme\FScheme.fsproj", "{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSchemeInterop", "FSchemeInterop\FSchemeInterop.csproj", "{F25808D6-DF62-4732-9453-D4978079864C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F} = {F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoSandbox", "DynamoSandbox\DynamoSandbox.csproj", "{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}"
 EndProject

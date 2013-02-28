@@ -22,7 +22,7 @@ using Autodesk.Revit.UI;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using System.Xml;
 using System.Windows.Media;
 
@@ -42,9 +42,9 @@ namespace Dynamo.Elements
          base.RegisterInputsAndOutputs();
       }
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override Value Evaluate(FSharpList<Value> args)
       {
-         string data = ((Expression.String)args[0]).Item;
+         string data = ((Value.String)args[0]).Item;
 
          var SumValue = 0.0;
          double doubleSRValue = 0;
@@ -63,7 +63,7 @@ namespace Dynamo.Elements
             }
          }
 
-         return Expression.NewNumber(SumValue);
+         return Value.NewNumber(SumValue);
       }
    }
 
@@ -132,7 +132,7 @@ namespace Dynamo.Elements
       }
 
 
-      public override Expression Evaluate(FSharpList<Expression> args)
+      public override Value Evaluate(FSharpList<Value> args)
       {
          if (PickedAnalysisResult != null)
          {
@@ -145,7 +145,7 @@ namespace Dynamo.Elements
                   TaskDialog.Show("ah hah", "picked sfm equals saved one from dmu");
                }
 
-               return Expression.NewContainer(this.PickedAnalysisResult);
+               return Value.NewContainer(this.PickedAnalysisResult);
             }
          }
 
@@ -161,7 +161,7 @@ namespace Dynamo.Elements
    {
        System.Windows.Controls.TextBox tb;
        System.Windows.Controls.Button sunPathButt;
-       Expression data = Expression.NewList(FSharpList<Expression>.Empty);
+       Value data = Value.NewList(FSharpList<Value>.Empty);
 
 
        public dynSunPathDirection()
@@ -259,7 +259,7 @@ namespace Dynamo.Elements
        }
        void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
        {
-           //data = Expression.NewList(FSharpList<Expression>.Empty);
+           //data = Value.NewList(FSharpList<Value>.Empty);
 
            View activeView = this.UIDocument.ActiveView;
            PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
@@ -272,7 +272,7 @@ namespace Dynamo.Elements
                XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
 
 
-               this.data = Expression.NewContainer(sunVector);
+               this.data = Value.NewContainer(sunVector);
 
                this.tb.Text = PickedSunAndShadowSettings.Name;
            }
@@ -283,13 +283,13 @@ namespace Dynamo.Elements
            }
        }
 
-       public override Expression Evaluate(FSharpList<Expression> args)
+       public override Value Evaluate(FSharpList<Value> args)
        {
            if (PickedSunAndShadowSettings.Id.IntegerValue == sunAndShadowSettingsID.IntegerValue) // sanity check
            {
 
                XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
-               this.data = Expression.NewContainer(sunVector);
+               this.data = Value.NewContainer(sunVector);
                return data;
            }
            else

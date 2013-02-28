@@ -21,7 +21,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Dynamo.FSchemeInterop;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Elements
 {
@@ -39,24 +39,24 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
             //If we are receiving a list, we must create reference points for each XYZ in the list.
             if (input.IsList)
             {
-                var xyzList = (input as Expression.List).Item;
+                var xyzList = (input as Value.List).Item;
 
                 //Counter to keep track of how many ref points we've made. We'll use this to delete old
                 //elements later.
                 int count = 0;
 
                 //We create our output by...
-                var result = Utils.convertSequence(
+                var result = Utils.SequenceToFSharpList(
                    xyzList.Select(
                     //..taking each element in the list and...
-                      delegate(Expression x)
+                      delegate(Value x)
                       {
                           ReferencePoint pt;
                           //...if we already have elements made by this node in a previous run...
@@ -68,14 +68,14 @@ namespace Dynamo.Elements
                               {
                                   //...and if we're successful, update it's position... 
                                   pt = e as ReferencePoint;
-                                  pt.Position = (XYZ)((Expression.Container)x).Item;
+                                  pt.Position = (XYZ)((Value.Container)x).Item;
                               }
                               else
                               {
                                   //...otherwise, we can make a new reference point and replace it in the list of
                                   //previously created points.
                                   pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-                                     (XYZ)((Expression.Container)x).Item
+                                     (XYZ)((Value.Container)x).Item
                                   );
                                   this.Elements[count] = pt.Id;
                               }
@@ -85,16 +85,16 @@ namespace Dynamo.Elements
                           {
                               //...we create a new point...
                               pt = this.UIDocument.Document.FamilyCreate.NewReferencePoint(
-                                 (XYZ)((Expression.Container)x).Item
+                                 (XYZ)((Value.Container)x).Item
                               );
                               //...and store it in the element list for future runs.
                               this.Elements.Add(pt.Id);
                           }
-                          //Finally, we update the counter, and return a new Expression containing the reference point.
-                          //This Expression will be placed in the Expression.List that will be passed downstream from this
+                          //Finally, we update the counter, and return a new Value containing the reference point.
+                          //This Value will be placed in the Value.List that will be passed downstream from this
                           //node.
                           count++;
-                          return Expression.NewContainer(pt);
+                          return Value.NewContainer(pt);
                       }
                    )
                 );
@@ -107,12 +107,12 @@ namespace Dynamo.Elements
                 }
 
                 //Fin
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
             //If we're not receiving a list, we will just assume we received one XYZ.
             else
             {
-                XYZ xyz = (XYZ)((Expression.Container)input).Item;
+                XYZ xyz = (XYZ)((Value.Container)input).Item;
 
                 ReferencePoint pt;
 
@@ -149,7 +149,7 @@ namespace Dynamo.Elements
                 }
 
                 //Fin
-                return Expression.NewContainer(pt);
+                return Value.NewContainer(pt);
             }
         }
     }
@@ -190,14 +190,14 @@ namespace Dynamo.Elements
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             //Grab our inputs and turn them into XYZs.
-            XYZ ptA = this.getXYZ(((Expression.Container)args[0]).Item);
-            XYZ ptB = this.getXYZ(((Expression.Container)args[1]).Item);
+            XYZ ptA = this.getXYZ(((Value.Container)args[0]).Item);
+            XYZ ptB = this.getXYZ(((Value.Container)args[1]).Item);
 
             //Return the calculated distance.
-            return Expression.NewNumber(ptA.DistanceTo(ptB));
+            return Value.NewNumber(ptA.DistanceTo(ptB));
         }
     }
 
@@ -216,11 +216,11 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            Reference r = ((CurveElement)((Expression.Container)args[0]).Item).GeometryCurve.Reference;
+            Reference r = ((CurveElement)((Value.Container)args[0]).Item).GeometryCurve.Reference;
 
-            double t = ((Expression.Number)args[1]).Item;
+            double t = ((Value.Number)args[1]).Item;
             //Autodesk.Revit.DB..::.PointElementReference
             //Autodesk.Revit.DB..::.PointOnEdge
             //Autodesk.Revit.DB..::.PointOnEdgeEdgeIntersection
@@ -252,7 +252,7 @@ namespace Dynamo.Elements
                 this.Elements.Add(p.Id);
             }
 
-            return Expression.NewContainer(p);
+            return Value.NewContainer(p);
         }
     }
 
@@ -272,18 +272,18 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            object arg0 = ((Expression.Container)args[0]).Item;
+            object arg0 = ((Value.Container)args[0]).Item;
             if (arg0 is Reference)
             {
                 // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
 
-                //Face f = ((Face)((FScheme.Expression.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
+                //Face f = ((Face)((FScheme.Value.Container)args[0]).Item).Reference; // MDJ TODO this returns null but should not, figure out why and then change selection code to just pass back face not ref
                 Reference r = arg0 as Reference;
 
-                double u = ((Expression.Number)args[1]).Item;
-                double v = ((Expression.Number)args[2]).Item;
+                double u = ((Value.Number)args[1]).Item;
+                double v = ((Value.Number)args[2]).Item;
 
                 //Autodesk.Revit.DB..::.PointElementReference
                 //Autodesk.Revit.DB..::.PointOnEdge
@@ -322,7 +322,7 @@ namespace Dynamo.Elements
                     }
                 }
 
-                return Expression.NewContainer(pt);
+                return Value.NewContainer(pt);
             }
             else
             {
@@ -346,15 +346,15 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            object arg0 = ((Expression.Container)args[0]).Item;
+            object arg0 = ((Value.Container)args[0]).Item;
             if (arg0 is Reference)
             {
                
                 Reference r = arg0 as Reference;
 
-                UV uv = ((Expression.Container)args[1]).Item as UV;
+                UV uv = ((Value.Container)args[1]).Item as UV;
 
                 PointElementReference facePoint = this.UIDocument.Application.Application.Create.NewPointOnFace(r, uv);
 
@@ -386,7 +386,7 @@ namespace Dynamo.Elements
                     }
                 }
 
-                return Expression.NewContainer(pt);
+                return Value.NewContainer(pt);
             }
             else
             {
@@ -411,7 +411,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             foreach (ElementId el in this.Elements)
             {
@@ -423,9 +423,9 @@ namespace Dynamo.Elements
             }
             ReferencePoint p = null;
 
-            ReferencePoint pt = ((Expression.Container)args[0]).Item as ReferencePoint;
-            XYZ norm = ((Expression.Container)args[1]).Item as XYZ;
-            double dist = ((Expression.Number)args[2]).Item;
+            ReferencePoint pt = ((Value.Container)args[0]).Item as ReferencePoint;
+            XYZ norm = ((Value.Container)args[1]).Item as XYZ;
+            double dist = ((Value.Number)args[2]).Item;
 
             XYZ location = null;
             PointElementReference per = pt.GetPointElementReference();
@@ -443,7 +443,7 @@ namespace Dynamo.Elements
 
             }
 
-            return Expression.NewContainer(p);
+            return Value.NewContainer(p);
         }
 
     }
@@ -525,7 +525,7 @@ namespace Dynamo.Elements
         }
 
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             foreach (ElementId el in this.Elements)
             {
@@ -537,10 +537,7 @@ namespace Dynamo.Elements
             }
             Plane p = null;
             Reference r = null;
-            ReferencePoint pt = ((Expression.Container)args[0]).Item as ReferencePoint;
-            //Transform t = pt.GetCoordinateSystem();
-            //XYZ norm = t.BasisZ;
-            //XYZ origin = TransformPoint(XYZ.Zero, t); // origin in 'local' coordinates to handle point element orientation 
+            ReferencePoint pt = ((Value.Container)args[0]).Item as ReferencePoint;
 
             int n = combo.SelectedIndex;
             switch (n)
@@ -558,9 +555,7 @@ namespace Dynamo.Elements
                     r = pt.GetCoordinatePlaneReferenceXY();
                     break;
             }
-            
-            
-            return Expression.NewContainer(r);
+            return Value.NewContainer(r);
         }
 
     }

@@ -91,7 +91,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
 
             var input = args[0];
@@ -104,7 +104,7 @@ namespace Dynamo.Elements
             //If we're not receiving a list, we will just assume we received one double height.
             else
             {
-                double x = ((FScheme.Expression.Number) input).Item;
+                double x = ((FScheme.Value.Number) input).Item;
 
                 int i0 = SimplexHelper.FastFloor(x);
             int i1 = i0 + 1;
@@ -122,7 +122,7 @@ namespace Dynamo.Elements
             n1 = t1 * t1 * SimplexHelper.Grad(SimplexHelper.perm[i1 & 0xff], x1);
             // The maximum value of this noise is 8*(3/4)^4 = 2.53125
             // A factor of 0.395 scales to fit exactly within [-1,1]
-                return FScheme.Expression.NewNumber(0.395f*(n0 + n1));
+                return FScheme.Value.NewNumber(0.395f*(n0 + n1));
 
             }
         }
@@ -147,7 +147,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
 
             var xinput = args[0];
@@ -163,8 +163,8 @@ namespace Dynamo.Elements
             //If we're not receiving a list, we will just assume we received one double height.
             else
             {
-                double x = ((FScheme.Expression.Number)xinput).Item;
-                double y = ((FScheme.Expression.Number)yinput).Item;
+                double x = ((FScheme.Value.Number)xinput).Item;
+                double y = ((FScheme.Value.Number)yinput).Item;
 
 
                 const double F2 = 0.366025403f; // F2 = 0.5*(sqrt(3.0)-1.0)
@@ -231,7 +231,7 @@ namespace Dynamo.Elements
 
                 // Add contributions from each corner to get the final noise value.
                 // The result is scaled to return values in the interval [-1,1].
-                return FScheme.Expression.NewNumber(40.0f * (n0 + n1 + n2)); // TODO: The scale factor is preliminary!
+                return FScheme.Value.NewNumber(40.0f * (n0 + n1 + n2)); // TODO: The scale factor is preliminary!
 
             }
         }
@@ -256,7 +256,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override FScheme.Expression Evaluate(FSharpList<FScheme.Expression> args)
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
 
             var xinput = args[0];
@@ -273,9 +273,9 @@ namespace Dynamo.Elements
             //If we're not receiving a list, we will just assume we received one double height.
             else
             {
-                double x = ((FScheme.Expression.Number)xinput).Item;
-                double y = ((FScheme.Expression.Number)yinput).Item;
-                double z = ((FScheme.Expression.Number)zinput).Item;
+                double x = ((FScheme.Value.Number)xinput).Item;
+                double y = ((FScheme.Value.Number)yinput).Item;
+                double z = ((FScheme.Value.Number)zinput).Item;
 
 
                 // Simple skewing factors for the 3D case
@@ -376,7 +376,7 @@ namespace Dynamo.Elements
 
                 // Add contributions from each corner to get the final noise value.
                 // The result is scaled to stay just inside [-1,1]
-                return FScheme.Expression.NewNumber(32.0f * (n0 + n1 + n2 + n3)); // TODO: The scale factor is preliminary!
+                return FScheme.Value.NewNumber(32.0f * (n0 + n1 + n2 + n3)); // TODO: The scale factor is preliminary!
 
 
             }

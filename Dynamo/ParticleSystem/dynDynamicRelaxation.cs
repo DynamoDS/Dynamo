@@ -23,7 +23,7 @@ using System.IO.Ports;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Autodesk.Revit.DB;
 using System.Timers;
 using System.Threading;
@@ -213,17 +213,17 @@ namespace Dynamo.Elements
             return null;
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];//point list
             //var curves = args[1];//curves
-            double d = ((Expression.Number)args[2]).Item;//dampening
-            double s = ((Expression.Number)args[3]).Item;//spring constant
-            double r = ((Expression.Number)args[4]).Item;//rest length
-            double m = ((Expression.Number)args[5]).Item;//nodal mass
-            int numX = (int)((Expression.Number)args[6]).Item;//number of particles in X
-            int numY = (int)((Expression.Number)args[7]).Item;//number of particles in Y
-            double g = ((Expression.Number)args[8]).Item;//gravity z component
+            double d = ((Value.Number)args[2]).Item;//dampening
+            double s = ((Value.Number)args[3]).Item;//spring constant
+            double r = ((Value.Number)args[4]).Item;//rest length
+            double m = ((Value.Number)args[5]).Item;//nodal mass
+            int numX = (int)((Value.Number)args[6]).Item;//number of particles in X
+            int numY = (int)((Value.Number)args[7]).Item;//number of particles in Y
+            double g = ((Value.Number)args[8]).Item;//gravity z component
 
 
             particleSystem.Clear();
@@ -243,30 +243,29 @@ namespace Dynamo.Elements
             //If we are receiving a list, we must create fixed particles for each reference point in the list.
             if (input.IsList)
             {
-                var pointList = (input as Expression.List).Item;
+                var pointList = (input as Value.List).Item;
 
                 if (pointList.Count() > 1)
                 {
                     Array pointArray = pointList.ToArray();
-                    //foreach (var elem in pointList)
 
                     for (int i = 0; i < pointArray.Length-1; i++)
                     {
 
-                        pt1 = (ReferencePoint)((Expression.Container)pointArray.GetValue(i)).Item as ReferencePoint;
-                        pt2 = (ReferencePoint)((Expression.Container)pointArray.GetValue(i+1)).Item as ReferencePoint;
+                        pt1 = (ReferencePoint)((Value.Container)pointArray.GetValue(i)).Item as ReferencePoint;
+                        pt2 = (ReferencePoint)((Value.Container)pointArray.GetValue(i+1)).Item as ReferencePoint;
                         CreateChainWithTwoFixedEnds(pt1, pt2, numX, d, r, s, m);
                     }
 
                 }
                 else // just one point (still in a list)
                 {
-                    pt1 = (ReferencePoint)((Expression.Container)pointList.ElementAt(0)).Item as ReferencePoint;
+                    pt1 = (ReferencePoint)((Value.Container)pointList.ElementAt(0)).Item as ReferencePoint;
                     CreateChainWithOneFixedEnd(pt1,numX, d, r, s, m);
 
                 }
 
-                return Expression.NewContainer(particleSystem);
+                return Value.NewContainer(particleSystem);
             }
             //If we're not receiving a list, we will just assume we don't care about the point input and will just run our test function.
             else
@@ -276,7 +275,7 @@ namespace Dynamo.Elements
         
 
 
-            return Expression.NewContainer(particleSystem);
+            return Value.NewContainer(particleSystem);
         }
     }
 
@@ -303,7 +302,6 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
 
             particleSystem = new ParticleSystem();
-
         }
 
         void setupParticleSystem(Face f, int uDiv, int vDiv, double springDampening, double springRestLength, double springConstant, double mass)
@@ -342,9 +340,9 @@ namespace Dynamo.Elements
             }
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            object arg0 = ((Expression.Container)args[0]).Item;
+            object arg0 = ((Value.Container)args[0]).Item;
             Face f = null;
             if (arg0 is Reference)
             {
@@ -352,13 +350,13 @@ namespace Dynamo.Elements
                 f = this.UIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
             }
 
-            double d = ((Expression.Number)args[1]).Item;//dampening
-            double s = ((Expression.Number)args[2]).Item;//spring constant
-            double r = ((Expression.Number)args[3]).Item;//rest length
-            double m = ((Expression.Number)args[4]).Item;//nodal mass
-            int numX = (int)((Expression.Number)args[5]).Item;//number of particles in X
-            int numY = (int)((Expression.Number)args[6]).Item;//number of particles in Y
-            double g = ((Expression.Number)args[7]).Item;//gravity z component
+            double d = ((Value.Number)args[1]).Item;//dampening
+            double s = ((Value.Number)args[2]).Item;//spring constant
+            double r = ((Value.Number)args[3]).Item;//rest length
+            double m = ((Value.Number)args[4]).Item;//nodal mass
+            int numX = (int)((Value.Number)args[5]).Item;//number of particles in X
+            int numY = (int)((Value.Number)args[6]).Item;//number of particles in Y
+            double g = ((Value.Number)args[7]).Item;//gravity z component
 
             particleSystem.setIsFaceConstrained(true);
             particleSystem.setConstraintFace(f);
@@ -368,7 +366,7 @@ namespace Dynamo.Elements
             setupParticleSystem(f, numX, numY, d, r, s, m);
             particleSystem.setGravity(g);
 
-            return Expression.NewContainer(particleSystem);
+            return Value.NewContainer(particleSystem);
         }
     }
 
@@ -388,15 +386,15 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            ParticleSystem particleSystem = (ParticleSystem)((Expression.Container)args[0]).Item;
-            double timeStep = ((Expression.Number)args[1]).Item;
-            //var result = FSharpList<Expression>.Empty;
+            ParticleSystem particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
+            double timeStep = ((Value.Number)args[1]).Item;
+            //var result = FSharpList<Value>.Empty;
 
             particleSystem.step(timeStep);//in ms
 
-            return Expression.NewContainer(particleSystem);
+            return Value.NewContainer(particleSystem);
         }
     }
 
@@ -414,12 +412,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
-            ParticleSystem particleSystem = (ParticleSystem)((Expression.Container)args[0]).Item;
+            ParticleSystem particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
 
-            var result = FSharpList<Expression>.Empty;
+            var result = FSharpList<Value>.Empty;
 
             Particle p;
             XYZ pt;
@@ -429,10 +427,10 @@ namespace Dynamo.Elements
             {
                 p = particleSystem.getParticle(i);
                 pt = new XYZ(p.getPosition().X, p.getPosition().Y, p.getPosition().Z);
-                result = FSharpList<Expression>.Cons(Expression.NewContainer(pt), result);
+                result = FSharpList<Value>.Cons(Value.NewContainer(pt), result);
             }
 
-            return Expression.NewList(result);
+            return Value.NewList(result);
         }
     }
 
@@ -450,12 +448,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
-            ParticleSystem particleSystem = (ParticleSystem)((Expression.Container)args[0]).Item;
+            ParticleSystem particleSystem = (ParticleSystem)((Value.Container)args[0]).Item;
 
-            var result = FSharpList<Expression>.Empty;
+            var result = FSharpList<Value>.Empty;
 
             ParticleSpring s;
             Particle springEnd1;
@@ -475,10 +473,10 @@ namespace Dynamo.Elements
                 springXYZ2 = springEnd2.getPosition();
                 springLine = this.UIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
 
-                result = FSharpList<Expression>.Cons(Expression.NewContainer(springLine), result);
+                result = FSharpList<Value>.Cons(Value.NewContainer(springLine), result);
             }
 
-            return Expression.NewList(result);
+            return Value.NewList(result);
         }
     }
 }

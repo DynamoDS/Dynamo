@@ -17,7 +17,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Microsoft.FSharp.Core;
 using Microsoft.FSharp.Collections;
+using Value = Dynamo.FScheme.Value;
 using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo.FSchemeInterop
@@ -28,31 +30,49 @@ namespace Dynamo.FSchemeInterop
     public static class Utils
     {
         /// <summary>
-        ///Makes an FScheme Expression representing an anonymous function.
+        /// Makes an FScheme Expression representing an anonymous function.
         /// </summary>
         public static Expression MakeAnon(IEnumerable<string> inputSyms, Expression body)
         {
-            return mkExprList(
-               Expression.NewSymbol("lambda"),
-               Expression.NewList(convertSequence(
-                  inputSyms.Select(x => Expression.NewSymbol(x))
-               )),
-               body
-            );
+            return Expression.NewFun(
+                SequenceToFSharpList(inputSyms.Select(FScheme.Parameter.NewNormal)),
+                body);
         }
 
         /// <summary>
-        ///Makes an FScheme List Expression out of all given arguments.
+        /// Makes an FScheme Expression representing an anonymous function, where all extra
+        /// arguments are packed into the last parameter.
         /// </summary>
-        public static Expression mkExprList(params Expression[] ar)
+        /// <param name="inputSyms">List of parameters</param>
+        /// <param name="body">Body of the function</param>
+        /// <returns></returns>
+        public static Expression MakeVarArgAnon(IEnumerable<string> inputSyms, Expression body)
         {
-            return Expression.NewList(mkList(ar));
+            var cnt = inputSyms.Count();
+
+            return Expression.NewFun(
+                SequenceToFSharpList(inputSyms.Select(
+                    (x, i) => 
+                        i == cnt 
+                        ? FScheme.Parameter.NewTail(x) 
+                        : FScheme.Parameter.NewNormal(x))),
+                body);
         }
 
         /// <summary>
-        ///Makes an FSharp list from all given arguments.
+        /// Converts a Func to an FSharpFunc.
         /// </summary>
-        public static FSharpList<T> mkList<T>(params T[] ar)
+        /// <param name="f"></param>
+        /// <returns></returns>
+        public static FSharpFunc<FSharpList<Value>, Value> ConvertToFSchemeFunc(Converter<FSharpList<Value>, Value> f)
+        {
+            return FSharpFunc<FSharpList<Value>, Value>.FromConverter(f);
+        }
+
+        /// <summary>
+        /// Makes an FSharp list from all given arguments.
+        /// </summary>
+        public static FSharpList<T> MakeFSharpList<T>(params T[] ar)
         {
             FSharpList<T> foo = FSharpList<T>.Empty;
             for (int n = ar.Length - 1; n >= 0; n--)
@@ -66,14 +86,22 @@ namespace Dynamo.FSchemeInterop
         /// <typeparam name="T"></typeparam>
         /// <param name="seq"></param>
         /// <returns></returns>
-        public static FSharpList<T> convertSequence<T>(IEnumerable<T> seq)
+        public static FSharpList<T> SequenceToFSharpList<T>(IEnumerable<T> seq)
         {
             FSharpList<T> result = FSharpList<T>.Empty;
             foreach (T element in seq.Reverse<T>())
-            {
                 result = FSharpList<T>.Cons(element, result);
-            }
             return result;
+        }
+
+        /// <summary>
+        /// A better ToString() for Values.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static string Print(this Value v)
+        {
+            return FScheme.print(v);
         }
     }
 }

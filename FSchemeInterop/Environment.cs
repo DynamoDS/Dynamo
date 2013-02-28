@@ -16,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using Value = Dynamo.FScheme.Value;
 using Expression = Dynamo.FScheme.Expression;
 
 using Microsoft.FSharp.Core;
@@ -23,120 +25,164 @@ using Microsoft.FSharp.Collections;
 
 namespace Dynamo.FSchemeInterop
 {
-   //Class wrapping an FScheme environment.
-   internal class EnvironmentWrapper
-   {
-      //Our FScheme environment.
-      private FSharpRef<FSharpMap<string, FSharpRef<Expression>>> env;
+    //Class wrapping an FScheme environment.
+    internal class EnvironmentWrapper
+    {
+        //Our FScheme compilation environment.
+        private FSharpRef<FSharpList<FSharpList<string>>> cEnv;
 
-      //Public property accessor.
-      public FSharpRef<FSharpMap<string, FSharpRef<Expression>>> Env
-      {
-         get { return this.env; }
-      }
+        //Our FScheme runtime environment.
+        private FSharpRef<FSharpList<FSharpRef<FSharpRef<Value>[]>>> rEnv;
 
-      //Default constructor. Sets the environment contained by this EnvironmentWrapper
-      //to the one provided by FScheme by default.
-      public EnvironmentWrapper()
-      {
-         this.env = FScheme.environment;
-      }
+        /// <summary>
+        /// Environment containing compile-time symbols.
+        /// </summary>
+        public FSharpRef<FSharpList<FSharpList<string>>> CompilationEnvironment 
+        {
+            get { return cEnv; }
+        }
 
-      public EnvironmentWrapper(FSharpRef<FSharpMap<string, FSharpRef<Expression>>> e)
-      {
-         this.env = e;
-      }
+        /// <summary>
+        /// Environment containing runtime values. Indeces correspond to symbols
+        /// in CompilationEnvironemnt.
+        /// </summary>
+        public FSharpRef<FSharpList<FSharpRef<FSharpRef<Value>[]>>> RuntimeEnvironment
+        {
+            get { return rEnv; }
+        }
 
-      //Indexor providing a quick way to lookup symbols in the environment.
-      public FSharpRef<Expression> this[string symbol]
-      {
-         get
-         {
-            return this.Lookup(symbol);
-         }
-      }
+        //Sets the environment contained by this EnvironmentWrapper
+        //to the one provided by FScheme by default.
+        public EnvironmentWrapper()
+        {
+            this.cEnv = FScheme.compileEnvironment;
+            this.rEnv = FScheme.environment;
+        }
 
-      //Looks up the given symbol in this environment.
-      public FSharpRef<Expression> Lookup(string symbol)
-      {
-         return FScheme.lookup(env, symbol);
-      }
+        /// <summary>
+        /// Removes an identifier from this environment.
+        /// </summary>
+        /// <param name="symbol">Identifier to remove.</param>
+        public void Delete(string symbol)
+        {
+            var removedIndeces = new HashSet<int>();
+            
+            this.cEnv.Value = Utils.SequenceToFSharpList(
+                this.cEnv.Value.Select(
+                    x => Utils.SequenceToFSharpList(
+                        x.Where((y, i) => 
+                            {
+                                var remove = !symbol.Equals(y);
+                                if (remove)
+                                    removedIndeces.Add(i);
+                                return remove; 
+                            })))
+                .Where(x => x.Any()));
 
-      //Adds a symbol to this environment.
-      public void Add(string symbol, Expression expr)
-      {
-         this.env.Value = MapModule.Add(symbol, new FSharpRef<Expression>(expr), this.env.contents);
-      }
+            this.rEnv.Value.Head.Value = this.rEnv.Value.Head.Value.Where(
+                (_, i) => !removedIndeces.Contains(i)
+            ).ToArray();
+        }
 
-      public void Delete(string symbol)
-      {
-         this.env.Value = MapModule.Remove(symbol, this.env.contents);
-      }
-   }
+        public override string ToString()
+        {
+            return this.CompilationEnvironment.ToString() + "\n" + this.RuntimeEnvironment.ToString();
+        }
+    }
 
-   //Class representing an FScheme Execution Environment. Used to evaluate FScheme Expressions.
-   public class ExecutionEnvironment
-   {
-      //Environment used to store symbols.
-      private EnvironmentWrapper env;
+    //Class representing an FScheme Execution Environment. Used to evaluate FScheme Expressions.
+    public class ExecutionEnvironment
+    {
+        //Environment used to store symbols.
+        private EnvironmentWrapper env;
 
-      //Identity function, used as the default FScheme Continuation.
-      public static FSharpFunc<Expression, Expression> IDENT
-         = FuncConvert.ToFSharpFunc((Converter<Expression, Expression>)(x => x));
+        //private FSharpRef<FSharpMap<string, FSharpRef<Value>>> frozenEnv;
 
-      //Default constructor, simply creates a default environment.
-      public ExecutionEnvironment()
-      {
-         this.env = new EnvironmentWrapper();
-      }
+        //Default constructor, simply creates a default environment.
+        public ExecutionEnvironment()
+        {
+            this.env = new EnvironmentWrapper();
+            //this.frozenEnv = FScheme.EnvironmentMap;
+        }
 
-      public ExecutionEnvironment(FSharpRef<FSharpMap<string, FSharpRef<Expression>>> e)
-      {
-         this.env = new EnvironmentWrapper(e);
-      }
+        //Binds symbols of the given string to the given body.
+        public void DefineSymbol(string name, Expression body)
+        {
+            Evaluate(Expression.NewDefine(name, body));
 
-      //Binds symbols of the given string to the given body.
-      public void DefineSymbol(string name, Expression body)
-      {
-         FScheme.Define(
-            IDENT, env.Env, Utils.mkList(Expression.NewSymbol(name), body)
-         );
-         //this.env.Add(name, body);
-      }
+            //frozenEnv.Value = frozenEnv.Value.Add(name, env.Lookup(name));
+        }
 
-      //Binds symbols of the given string to the given Expression.
-      //private void DefineExternal(string name, Expression func)
-      //{
-      //   this.env.Add(name, func);
-      //}
+        //private void add(string name, Value v)
+        //{
+        //    var box = env.Add(name, v);
 
-      //Binds symbols of the given string to the given External Function.
-      public void DefineExternal(string name, FScheme.ExternFunc func)
-      {
-         this.DefineSymbol(name, FuncContainer.MakeFunction(func));
-      }
+        //    //if (frozenEnv.Value.ContainsKey(name))
+        //    //    frozenEnv.Value[name].Value = v;
+        //    //else
+        //    //    frozenEnv.Value = frozenEnv.Value.Add(name, box);
+        //}
 
-      //Evaluates the given expression.
-      public Expression Evaluate(Expression expr)
-      {
-         return FScheme.eval(IDENT, env.Env, expr);
-      }
+        //Binds symbols of the given string to the given External Function.
+        public void DefineExternal(string name, Converter<FSharpList<Value>, Value> func)
+        {
+            DefineExternal(
+                name,
+                Utils.ConvertToFSchemeFunc(func));
+        }
 
-      ///Removes the given symbol from the environment.
-      public void RemoveSymbol(string p)
-      {
-         this.env.Delete(p);
-      }
+        //Binds symbols of the given string to the given External Function.
+        public void DefineExternal(string name, FSharpFunc<FSharpList<Value>, Value> func)
+        {
+            //add(name, Value.NewFunction(func));
+            Evaluate(Expression.NewDefine(name, Expression.NewFunction_E(func)));
+        }
 
-      public Expression LookupSymbol(string p)
-      {
-         return this.env.Env.Value[p].Value;
-      }
+        /// <summary>
+        /// Evaluates the given expression.
+        /// </summary>
+        /// <param name="expr"></param>
+        /// <returns></returns>
+        public Value Evaluate(Expression expr)
+        {
+            return FScheme.EvaluateInEnvironment
+                .Invoke(this.env.CompilationEnvironment)
+                .Invoke(this.env.RuntimeEnvironment)
+                .Invoke(expr);
+        }
 
-      //Public property accessor.
-      public FSharpRef<FSharpMap<string, FSharpRef<Expression>>> Env
-      {
-         get { return this.env.Env; }
-      }
-   }
+        ///Removes the given symbol from the environment.
+        public void RemoveSymbol(string p)
+        {
+            //TODO: Implement
+
+            //this.env.Delete(p); //no worky?
+            
+            //frozenEnv.Value = frozenEnv.Value.Remove(p);
+        }
+
+        /// <summary>
+        /// Looks up the value associated with the given symbol in this environment.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public Value LookupSymbol(string p)
+        {
+            //try
+            //{
+            //    return this.frozenEnv.Value[p];
+            //}
+            //catch (Exception)
+            //{
+            //    throw new Exception("Could not find key " + p + " in environment");
+            //}
+            //return env.Lookup(p);
+            return Evaluate(Expression.NewId(p));
+        }
+
+        public override string ToString()
+        {
+            return env.ToString();
+        }
+    }
 }

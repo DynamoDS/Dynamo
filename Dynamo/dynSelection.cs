@@ -26,7 +26,7 @@ using Dynamo.Connectors;
 
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
@@ -146,12 +146,12 @@ namespace Dynamo.Elements
         /// </summary>
         protected abstract string SelectionText { get; }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             if (this.SelectedElement == null)
                 throw new Exception("Nothing selected.");
 
-            return Expression.NewContainer(this.SelectedElement);
+            return Value.NewContainer(this.SelectedElement);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -312,12 +312,12 @@ namespace Dynamo.Elements
         /// </summary>
         protected abstract string SelectionText { get; }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             if (this.SelectedElements == null)
                 throw new Exception("Nothing selected.");
 
-            return Expression.NewContainer(this.SelectedElements);
+            return Value.NewContainer(this.SelectedElements);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -385,13 +385,13 @@ namespace Dynamo.Elements
     [RequiresTransaction(false)]
     public class dynDividedSurfaceBySelection : dynElementSelection
     {
-        Expression data;
+        Value data;
 
         public dynDividedSurfaceBySelection()
             : base(new PortData("srf", "The divided surface family instance(s)", typeof(dynNode)))
         { }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var result = new List<List<FamilyInstance>>();
 
@@ -441,12 +441,12 @@ namespace Dynamo.Elements
                     }
                 }
 
-                this.data = Expression.NewList(
-                   Utils.convertSequence(
+                this.data = Value.NewList(
+                   Utils.SequenceToFSharpList(
                       result.Select(
-                         row => Expression.NewList(
-                            Utils.convertSequence(
-                               row.Select(Expression.NewContainer)
+                         row => Value.NewList(
+                            Utils.SequenceToFSharpList(
+                               row.Select(Value.NewContainer)
                             )
                          )
                       )
@@ -515,12 +515,12 @@ namespace Dynamo.Elements
                         }
                     }
 
-                    this.data = Expression.NewList(
-                       Utils.convertSequence(
+                    this.data = Value.NewList(
+                       Utils.SequenceToFSharpList(
                           result.Select(
-                             row => Expression.NewList(
-                                Utils.convertSequence(
-                                   row.Select(Expression.NewContainer)
+                             row => Value.NewList(
+                                Utils.SequenceToFSharpList(
+                                   row.Select(Value.NewContainer)
                                 )
                              )
                           )
@@ -560,9 +560,9 @@ namespace Dynamo.Elements
             this.SelectedElement = this.UIDocument.Document.GetElement(f);
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            return Expression.NewContainer(f);
+            return Value.NewContainer(f);
         }
 
         protected override string SelectionText
@@ -689,8 +689,6 @@ namespace Dynamo.Elements
             get { return this.SelectedElement.Name + " (" + this.SelectedElement.Id + ")"; }
         }
     }
-    
-    
 }
 
 

@@ -6,7 +6,7 @@ using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using MIConvexHull;
 
@@ -27,7 +27,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             foreach (var e in this.Elements)
             {
@@ -35,19 +35,19 @@ namespace Dynamo.Elements
             }
             
             var input = args[0];
-            var result = FSharpList<Expression>.Empty;
+            var result = FSharpList<Value>.Empty;
 
             //see dynSketchPlane
             if (input.IsList)
             {
-                var uvList = (input as Expression.List).Item;
+                var uvList = (input as Value.List).Item;
                 int length = uvList.Length;
 
                 List<Vertex> verts = new List<Vertex>();
 
                 for (int i = 0; i < length; i++)
                 {
-                    UV uv = (UV)((Expression.Container)uvList[i]).Item;
+                    UV uv = (UV)((Value.Container)uvList[i]).Item;
                     Vertex vert = new Vertex(uv.U, uv.V);
                     verts.Add(vert);
                 }
@@ -55,7 +55,7 @@ namespace Dynamo.Elements
                 //ConvexHull<IVertex, DefaultConvexFace<IVertex>> ch = ConvexHull.Create(verts);
                 VoronoiMesh<Vertex, Cell, VoronoiEdge<Vertex, Cell>> voronoiMesh = voronoiMesh = VoronoiMesh.Create<Vertex, Cell>(verts);
 
-                object arg0 = ((Expression.Container)args[1]).Item;
+                object arg0 = ((Value.Container)args[1]).Item;
                 if (arg0 is Reference)
                 {
                     Reference faceRef = arg0 as Reference;
@@ -82,21 +82,21 @@ namespace Dynamo.Elements
                             continue;
                         }
 
-                        //FSharpList<Expression> pts = FSharpList<Expression>.Empty;
-                        //pts = FSharpList<Expression>.Cons(Expression.NewContainer(start), pts);
-                        //pts = FSharpList<Expression>.Cons(Expression.NewContainer(end), pts);
+                        //FSharpList<Value> pts = FSharpList<Value>.Empty;
+                        //pts = FSharpList<Value>.Cons(Value.NewContainer(start), pts);
+                        //pts = FSharpList<Value>.Cons(Value.NewContainer(end), pts);
 
                         Line l = this.UIDocument.Application.Application.Create.NewLineBound(start, end);
 
-                        //result = FSharpList<Expression>.Cons(Expression.NewList(pts), result);
-                        result = FSharpList<Expression>.Cons(Expression.NewContainer(l), result);
+                        //result = FSharpList<Value>.Cons(Value.NewList(pts), result);
+                        result = FSharpList<Value>.Cons(Value.NewContainer(l), result);
 
                     }
                 }
-                return Expression.NewList(result);
+                return Value.NewList(result);
             }
 
-            return Expression.NewList(result);
+            return Value.NewList(result);
         }
     }
 

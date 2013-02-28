@@ -24,6 +24,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using System.Windows.Media.Effects;
 
@@ -31,7 +32,7 @@ namespace Dynamo.Elements
 {
     [RequiresTransaction(false)]
     [IsInteractive(false)]
-    public class dynFunction : dynBuiltinMacro
+    public class dynFunction : dynBuiltinFunction
     {
         public dynFunction(IEnumerable<string> inputs, string output, string symbol)
             : base(symbol)
@@ -341,20 +342,12 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             var procedure = this.Bench.Environment.LookupSymbol(this.Symbol);
             if (procedure.IsFunction)
             {
-                return (procedure as Expression.Function).Item
-                   .Invoke(ExecutionEnvironment.IDENT)
-                   .Invoke(
-                      Utils.convertSequence(
-                         args.Select(
-                            input => this.macroEnvironment.Evaluate(input)
-                         )
-                      )
-                   );
+                return (procedure as Value.Function).Item.Invoke(args);
             }
             else
                 return base.Evaluate(args);
@@ -420,6 +413,7 @@ namespace Dynamo.Elements
     [ElementDescription("A function variable")]
     [RequiresTransaction(false)]
     [IsInteractive(false)]
+    [IsConstant(true)]
     public class dynSymbol : dynNode
     {
         TextBox tb;
@@ -462,13 +456,17 @@ namespace Dynamo.Elements
             set { this.tb.Text = value; }
         }
 
-        protected internal override INode Build()
+        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
         {
-            return new SymbolNode(
-               (string)this.Dispatcher.Invoke(new Func<string>(
-                  () => this.Symbol
-               ))
-            );
+            INode result;
+            if (!preBuilt.TryGetValue(this, out result))
+            {
+                result = new SymbolNode(
+                   (string)this.Dispatcher.Invoke(new Func<string>(
+                      () => this.Symbol)));
+                preBuilt[this] = result;
+            }
+            return result;
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)

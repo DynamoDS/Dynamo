@@ -24,7 +24,7 @@ using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 
 
@@ -83,11 +83,11 @@ namespace Dynamo.Elements
 
         }
 
-        public event dynElementDestroyedHandler dynElementDestroyed;
-        public event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
+        public new event dynElementDestroyedHandler dynElementDestroyed;
+        public new event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
 
-        public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
-        public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
+        public new delegate void dynElementDestroyedHandler(object sender, EventArgs e);
+        public new delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
 
         System.Windows.Controls.MenuItem lastComItem = null;
         
@@ -161,9 +161,9 @@ namespace Dynamo.Elements
         }
 
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            if (((Expression.Number)args[0]).Item == 1)
+            if (((Value.Number)args[0]).Item == 1)
             {
                 if (port != null)
                 {
@@ -186,7 +186,7 @@ namespace Dynamo.Elements
                 }
             }
 
-            return Expression.NewContainer(port); // pass the port downstream
+            return Value.NewContainer(port); // pass the port downstream
         }
 
 
@@ -248,10 +248,10 @@ namespace Dynamo.Elements
         }
 
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            port = (SerialPort)((Expression.Container)args[0]).Item;
-            range = (int)((Expression.Number)args[1]).Item;
+            port = (SerialPort)((Value.Container)args[0]).Item;
+            range = (int)((Value.Number)args[1]).Item;
             
 
             if (port != null)
@@ -278,7 +278,7 @@ namespace Dynamo.Elements
             }
 
 
-            return Expression.NewList(Utils.convertSequence(serialLine.Select(Expression.NewString)));
+            return Value.NewList(Utils.SequenceToFSharpList(serialLine.Select(Value.NewString)));
         }
 
 
@@ -310,11 +310,11 @@ namespace Dynamo.Elements
 
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
 
-            port = (SerialPort)((Expression.Container)args[0]).Item;
-            string dataToWrite = ((Expression.String)args[1]).Item;// ((Expression.Container)args[1]).Item;
+            port = (SerialPort)((Value.Container)args[0]).Item;
+            string dataToWrite = ((Value.String)args[1]).Item;// ((Value.Container)args[1]).Item;
 
             if (port != null)
             {
@@ -339,7 +339,7 @@ namespace Dynamo.Elements
             }
             
 
-            return Expression.NewNumber(1);// catch failures here 
+            return Value.NewNumber(1);// catch failures here 
         }
 
 

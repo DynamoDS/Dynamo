@@ -6,7 +6,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Elements
@@ -28,7 +28,7 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             //If we already have a form stored...
             if (this.Elements.Any())
@@ -41,25 +41,25 @@ namespace Dynamo.Elements
             }
 
             //Solid argument
-            bool isSolid = ((Expression.Number)args[0]).Item == 1;
+            bool isSolid = ((Value.Number)args[0]).Item == 1;
 
             //Surface argument
-            bool isSurface = ((Expression.Number)args[2]).Item == 1;
+            bool isSurface = ((Value.Number)args[2]).Item == 1;
 
             //Build up our list of list of references for the form by...
-            IEnumerable<IEnumerable<Reference>> refArrays = ((Expression.List)args[1]).Item.Select(
+            IEnumerable<IEnumerable<Reference>> refArrays = ((Value.List)args[1]).Item.Select(
                 //...first selecting everything in the topmost list...
-               delegate(Expression x)
+               delegate(Value x)
                {
                    //If the element in the topmost list is a sub-list...
                    if (x.IsList)
                    {
                        //...then we return a new IEnumerable of References by converting the sub list.
-                       return (x as Expression.List).Item.Select(
-                          delegate(Expression y)
+                       return (x as Value.List).Item.Select(
+                          delegate(Value y)
                           {
                               //Since we're in a sub-list, we can assume it's a container.
-                              var item = ((Expression.Container)y).Item;
+                              var item = ((Value.Container)y).Item;
                               if (item is CurveElement)
                                   return (item as CurveElement).GeometryCurve.Reference;
                               else
@@ -70,7 +70,7 @@ namespace Dynamo.Elements
                    //If the element is not a sub-list, then just assume it's a container.
                    else
                    {
-                       var obj = ((Expression.Container)x).Item;
+                       var obj = ((Value.Container)x).Item;
                        Reference r;
                        if (obj is CurveElement)
                        {
@@ -124,7 +124,7 @@ namespace Dynamo.Elements
 
             this.Elements.Add(f.Id);
 
-            return Expression.NewContainer(f);
+            return Value.NewContainer(f);
         }
     }
 }

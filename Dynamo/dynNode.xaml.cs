@@ -30,6 +30,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using Value = Dynamo.FScheme.Value;
 using Expression = Dynamo.FScheme.Expression;
 using Grid = System.Windows.Controls.Grid;
 
@@ -109,7 +110,7 @@ namespace Dynamo.Elements
 
         public dynNode TopControl
         {
-            get { return this.topControl; }
+            get { return topControl; }
         }
 
         public string ToolTipText
@@ -175,13 +176,13 @@ namespace Dynamo.Elements
         {
             get
             {
-                while (this.elements.Count <= this.runCount)
-                    this.elements.Add(new List<ElementId>());
-                return this.elements[this.runCount];
+                while (elements.Count <= runCount)
+                    elements.Add(new List<ElementId>());
+                return elements[runCount];
             }
             private set
             {
-                this.elements[this.runCount] = value;
+                elements[runCount] = value;
             }
         }
 
@@ -263,7 +264,7 @@ namespace Dynamo.Elements
 
         public Grid ContentGrid
         {
-            get { return this.inputGrid; }
+            get { return inputGrid; }
         }
 
         protected Autodesk.Revit.UI.UIDocument UIDocument
@@ -311,10 +312,10 @@ namespace Dynamo.Elements
             inPortTextBlocks = new Dictionary<dynPort, TextBlock>();
 
             stateSetter = new SetStateDelegate(SetState);
-            this.State = ElementState.DEAD;
+            State = ElementState.DEAD;
 
             //Fetch the element name from the custom attribute.
-            var nameArray = this.GetType().GetCustomAttributes(typeof(ElementNameAttribute), true);
+            var nameArray = GetType().GetCustomAttributes(typeof(ElementNameAttribute), true);
 
             if (nameArray.Length > 0)
             {
@@ -337,7 +338,7 @@ namespace Dynamo.Elements
             //dirtyEllipse.Height = 20;
             //dirtyEllipse.Width = 20;
             //dirtyEllipse.Fill = Brushes.Red;
-            //this.elementCanvas.Children.Add(dirtyEllipse);
+            //elementCanvas.Children.Add(dirtyEllipse);
             //Canvas.SetBottom(dirtyEllipse, 10);
             //Canvas.SetRight(dirtyEllipse, 10);
             //Canvas.SetZIndex(dirtyEllipse, 100);
@@ -414,9 +415,9 @@ namespace Dynamo.Elements
 
         void UpdateConnections()
         {
-            foreach (var p in this.InPorts)
+            foreach (var p in InPorts)
                 p.Update();
-            this.OutPort.Update();
+            OutPort.Update();
         }
 
         private Dictionary<UIElement, bool> enabledDict = new Dictionary<UIElement, bool>();
@@ -425,23 +426,23 @@ namespace Dynamo.Elements
         {
             enabledDict.Clear();
 
-            foreach (UIElement e in this.inputGrid.Children)
+            foreach (UIElement e in inputGrid.Children)
             {
                 enabledDict[e] = e.IsEnabled;
 
                 e.IsEnabled = false;
             }
-            this.State = ElementState.DEAD;
+            State = ElementState.DEAD;
         }
 
         internal void EnableInteraction()
         {
-            foreach (UIElement e in this.inputGrid.Children)
+            foreach (UIElement e in inputGrid.Children)
             {
                 if (enabledDict.ContainsKey(e))
                     e.IsEnabled = enabledDict[e];
             }
-            this.ValidateConnections();
+            ValidateConnections();
         }
 
         /// <summary>
@@ -450,19 +451,19 @@ namespace Dynamo.Elements
         /// <returns>S-Expression</returns>
         public virtual string PrintExpression()
         {
-            var nick = this.NickName.Replace(' ', '_');
+            var nick = NickName.Replace(' ', '_');
 
-            if (!this.InPortData.Any() || !this.InPorts.Any(x => x.Connectors.Any()))
+            if (!InPortData.Any() || !InPorts.Any(x => x.Connectors.Any()))
                 return nick;
 
             string s = "";
 
-            if (this.InPorts.All(x => x.Connectors.Any()))
+            if (InPorts.All(x => x.Connectors.Any()))
             {
                 s += "(" + nick;
-                for (int i = 0; i < this.InPortData.Count; i++)
+                for (int i = 0; i < InPortData.Count; i++)
                 {
-                    var port = this.InPorts[i];
+                    var port = InPorts[i];
                     s += " " + port.Connectors[0].Start.Owner.PrintExpression();
                 }
                 s += ")";
@@ -470,16 +471,16 @@ namespace Dynamo.Elements
             else
             {
                 s += "(lambda ("
-                   + string.Join(" ", this.InPortData.Where((x, i) => !this.InPorts[i].Connectors.Any()).Select(x => x.NickName))
+                   + string.Join(" ", InPortData.Where((x, i) => !InPorts[i].Connectors.Any()).Select(x => x.NickName))
                    + ") (" + nick;
-                for (int i = 0; i < this.InPortData.Count; i++)
+                for (int i = 0; i < InPortData.Count; i++)
                 {
                     s += " ";
-                    var port = this.InPorts[i];
+                    var port = InPorts[i];
                     if (port.Connectors.Any())
                         s += port.Connectors[0].Start.Owner.PrintExpression();
                     else
-                        s += this.InPortData[i].NickName;
+                        s += InPortData[i].NickName;
                 }
                 s += "))";
             }
@@ -489,7 +490,7 @@ namespace Dynamo.Elements
 
         protected internal virtual bool RequiresManualTransaction()
         {
-            return this.InPorts.Any(
+            return InPorts.Any(
                x =>
                   x.Connectors.Any() && x.Connectors[0].Start.Owner.RequiresManualTransaction()
             );
@@ -497,10 +498,10 @@ namespace Dynamo.Elements
 
         protected internal virtual bool RequiresTransaction()
         {
-            object[] attribs = this.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
+            object[] attribs = GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
 
             return (attribs.Length > 0 && (attribs[0] as RequiresTransactionAttribute).RequiresTransaction)
-               || this.InPorts.Any(
+               || InPorts.Any(
                      x =>
                         x.Connectors.Any() && x.Connectors[0].Start.Owner.RequiresTransaction()
                   );
@@ -514,11 +515,11 @@ namespace Dynamo.Elements
             //HACK
             //We don't want to remove these grids for the Instance Parameter mapper
             //because it will need them later
-            //if (this.GetType() != typeof(dynInstanceParameterMapper))
+            //if (GetType() != typeof(dynInstanceParameterMapper))
             //{
             //size the height of the controller based on the 
             //whichever is larger the inport or the outport list
-            this.topControl.Height = Math.Max(inPortData.Count, 1) * 20 + 10; //spacing for inputs + title space + bottom space
+            topControl.Height = Math.Max(inPortData.Count, 1) * 20 + 10; //spacing for inputs + title space + bottom space
             //grid.Children.Remove(gridBottom);
             //grid.Children.Remove(portNamesBottom);
 
@@ -539,19 +540,17 @@ namespace Dynamo.Elements
             //}
             //else
             //{
-            //   this.topControl.Height = Math.Max(inPortData.Count, outPortData.Count) * 20 + 10; //spacing for inputs + title space 
+            //   topControl.Height = Math.Max(inPortData.Count, outPortData.Count) * 20 + 10; //spacing for inputs + title space 
             //}
-
-            //this.elementShine.Height = this.topControl.Height / 2;
 
             if (inputGrid.Children.Count == 0)
             {
                 //decrease the width of the node because
                 //there's nothing in the middle grid
-                this.topControl.Width = 100;
+                topControl.Width = 100;
             }
             else
-                this.topControl.Width = Math.Max(200, StatePortData.Count * 20) + 10;
+                topControl.Width = Math.Max(200, StatePortData.Count * 20) + 10;
 
 
         }
@@ -658,14 +657,14 @@ namespace Dynamo.Elements
                 count++;
             }
 
-            if (this.inPorts.Count > count)
+            if (inPorts.Count > count)
             {
-                foreach (var inport in this.inPorts.Skip(count))
+                foreach (var inport in inPorts.Skip(count))
                 {
                     RemovePort(inport);
                 }
 
-                this.inPorts.RemoveRange(count, this.inPorts.Count - count);
+                inPorts.RemoveRange(count, inPorts.Count - count);
             }
         }
 
@@ -673,10 +672,10 @@ namespace Dynamo.Elements
         {
             if (inport.PortType == PortType.INPUT)
             {
-                int index = this.inPorts.FindIndex(x => x == inport);
+                int index = inPorts.FindIndex(x => x == inport);
 
                 gridLeft.Children.Remove(inport);
-                gridLeft.Children.Remove(this.inPortTextBlocks[inport]);
+                gridLeft.Children.Remove(inPortTextBlocks[inport]);
 
                 while (inport.Connectors.Any())
                 {
@@ -705,7 +704,7 @@ namespace Dynamo.Elements
         /// </summary>
         public void RegisterOutputs()
         {
-            //this.outPorts.Clear();
+            //outPorts.Clear();
 
             //read the outputs list and create a number of 
             //output ports
@@ -779,7 +778,7 @@ namespace Dynamo.Elements
             {
                 if (inPorts.Count > index)
                 {
-                    this.inPortTextBlocks[this.inPorts[index]].Text = name;
+                    inPortTextBlocks[inPorts[index]].Text = name;
                 }
                 else
                 {
@@ -823,12 +822,12 @@ namespace Dynamo.Elements
 
         void CheckPortsForRecalc()
         {
-            this.IsDirty = this.InPorts.Any(
+            IsDirty = InPorts.Any(
                delegate(dynPort port)
                {
                    dynNode oldInput;
                    var connectors = port.Connectors;
-                   return !this.previousEvalPortMappings.TryGetValue(port, out oldInput)
+                   return !previousEvalPortMappings.TryGetValue(port, out oldInput)
                       || (oldInput == null && connectors.Any())
                       || (connectors.Any() && oldInput != port.Connectors[0].Start.Owner);
                }
@@ -877,12 +876,12 @@ namespace Dynamo.Elements
 
             if (flag)
             {
-                this.State = ElementState.DEAD;
+                State = ElementState.DEAD;
                 //Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.DEAD });
             }
             else
             {
-                this.State = ElementState.ACTIVE;
+                State = ElementState.ACTIVE;
                 //Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ACTIVE });
             }
         }
@@ -932,7 +931,7 @@ namespace Dynamo.Elements
         {
             get
             {
-                return this.OutPort == null || !this.OutPort.Connectors.Any();
+                return OutPort == null || !OutPort.Connectors.Any();
             }
         }
 
@@ -943,30 +942,30 @@ namespace Dynamo.Elements
 
         internal void ResetRuns()
         {
-            if (this.runCount > 0)
+            if (runCount > 0)
             {
                 PruneRuns();
-                this.runCount = 0;
+                runCount = 0;
             }
         }
 
         void PruneRuns()
         {
-            for (int i = this.elements.Count - 1; i >= this.runCount; i--)
+            for (int i = elements.Count - 1; i >= runCount; i--)
             {
-                var elems = this.elements[i];
+                var elems = elements[i];
                 foreach (var e in elems)
                 {
-                    this.UIDocument.Document.Delete(e);
+                    UIDocument.Document.Delete(e);
                 }
                 elems.Clear();
             }
 
-            if (this.elements.Count > this.runCount)
+            if (elements.Count > runCount)
             {
-                this.elements.RemoveRange(
-                   this.runCount,
-                   this.elements.Count - this.runCount
+                elements.RemoveRange(
+                   runCount,
+                   elements.Count - runCount
                 );
             }
         }
@@ -980,7 +979,7 @@ namespace Dynamo.Elements
         //    set
         //    {
         //        __isDirty = value;
-        //        this.Dispatcher.BeginInvoke(new Action(() => this.dirtyEllipse.Fill = __isDirty ? Brushes.Red : Brushes.Green));
+        //        Dispatcher.BeginInvoke(new Action(() => dirtyEllipse.Fill = __isDirty ? Brushes.Red : Brushes.Green));
         //    }
         //}
         ///<summary>
@@ -992,7 +991,7 @@ namespace Dynamo.Elements
         {
             get
             {
-                if (this._isDirty)
+                if (_isDirty)
                     return true;
                 else
                 {
@@ -1000,8 +999,8 @@ namespace Dynamo.Elements
                     bool start = _startTag;
                     _startTag = true;
 
-                    bool dirty = this.InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
-                    this._isDirty = dirty;
+                    bool dirty = InPorts.Any(x => x.Connectors.Any(y => y.Start.Owner.IsDirty));
+                    _isDirty = dirty;
 
                     if (!start)
                     {
@@ -1014,15 +1013,15 @@ namespace Dynamo.Elements
             }
             set
             {
-                this._isDirty = value;
-                if (value && this._report && this.WorkSpace != null)
-                    this.WorkSpace.Modified();
+                _isDirty = value;
+                if (value && _report && WorkSpace != null)
+                    WorkSpace.Modified();
             }
         }
 
         private bool _report = true;
 
-        protected Expression oldValue;
+        protected Value oldValue;
 
         private bool _saveResult = false;
         /// <summary>
@@ -1033,12 +1032,12 @@ namespace Dynamo.Elements
         {
             get
             {
-                return this._saveResult
-                   && this.InPorts.All(x => x.Connectors.Any());
+                return _saveResult
+                   && InPorts.All(x => x.Connectors.Any());
             }
             set
             {
-                this._saveResult = value;
+                _saveResult = value;
             }
         }
 
@@ -1048,7 +1047,7 @@ namespace Dynamo.Elements
         public void MarkDirty()
         {
             bool dirty = false;
-            foreach (var p in this.InPorts)
+            foreach (var p in InPorts)
             {
                 foreach (var c in p.Connectors)
                 {
@@ -1058,44 +1057,52 @@ namespace Dynamo.Elements
                         dirty = true;
                 }
             }
-            if (!this._isDirty)
-                this._isDirty = dirty;
+            if (!_isDirty)
+                _isDirty = dirty;
             return;
         }
 
+        internal virtual INode BuildExpression()
+        {
+            return Build(new Dictionary<dynNode, INode>());
+        }
 
         /// <summary>
         /// Builds an INode out of this Element. Override this or Compile() if you want complete control over this Element's
         /// execution.
         /// </summary>
         /// <returns>The INode representation of this Element.</returns>
-        protected internal virtual INode Build()
+        protected internal virtual INode Build(Dictionary<dynNode, INode> preBuilt)
         {
+            INode result;
+            if (preBuilt.TryGetValue(this, out result))
+                return result;
+
             //Fetch the names of input ports.
-            var portNames = this.InPortData.Select(x => x.NickName);
-            
+            var portNames = InPortData.Select(x => x.NickName);
+
             //Compile the procedure for this node.
-            ProcedureCallNode node = this.Compile(portNames);
+            InputNode node = Compile(portNames);
 
             //Is this a partial application?
             var partial = false;
 
             //For each index in InPortData
-            for (int i = 0; i < this.InPortData.Count; i++)
+            for (int i = 0; i < InPortData.Count; i++)
             {
                 //Fetch the corresponding port
-                var port = this.InPorts[i];
+                var port = InPorts[i];
 
                 //If this port has connectors...
                 if (port.Connectors.Any())
                 {
                     //Fetch the corresponding info for the port.
-                    var data = this.InPortData[i];
+                    var data = InPortData[i];
 
                     //Compile input and connect it
                     node.ConnectInput(
                        data.NickName,
-                       port.Connectors[0].Start.Owner.Build()
+                       port.Connectors[0].Start.Owner.Build(preBuilt)
                     );
                 }
                 else //othwise, remember that this is a partial application
@@ -1105,39 +1112,28 @@ namespace Dynamo.Elements
             //If this is a partial application, then remember not to re-eval.
             if (partial)
             {
-                this.IsDirty = false;
-                this.OnEvaluate();
+                IsDirty = false;
+                OnEvaluate();
             }
 
+            result = node;
+            
+            preBuilt[this] = result;
+
             //And we're done
-            return node;
+            return result;
         }
 
         /// <summary>
-        /// Compiles this Element into a ProcedureCallNode. Override this instead of Build() if you don't want to set up all
-        /// of the inputs for the ProcedureCallNode.
+        /// Compiles this Element into a InputNode. Override this instead of Build() if you don't want to set up all
+        /// of the inputs for the InputNode.
         /// </summary>
         /// <param name="portNames">The names of the inputs to the node.</param>
-        /// <returns>A ProcedureCallNode which will then be processed recursively to be connected to its inputs.</returns>
-        protected internal virtual ProcedureCallNode Compile(IEnumerable<string> portNames)
+        /// <returns>A InputNode which will then be processed recursively to be connected to its inputs.</returns>
+        protected internal virtual InputNode Compile(IEnumerable<string> portNames)
         {
-            //If we are optimizing re-calcs...
-            if (this.SaveResult)
-            {
-                //Return a Macro that calls evalIfDirty
-                return new ExternalMacroNode(
-                   new ExternMacro(this.evalIfDirty),
-                   portNames
-                );
-            }
-            else //otherwise...
-            {
-                //Return a Function that calls eval.
-                return new ExternalFunctionNode(
-                   new FScheme.ExternFunc(this.eval),
-                   portNames
-                );
-            }
+            //Return a Function that calls eval.
+            return new ExternalFunctionNode(evalIfDirty, portNames);
         }
 
         /// <summary>
@@ -1153,65 +1149,59 @@ namespace Dynamo.Elements
         internal void onSave()
         {
             //Save all of the connection states, so we can check if this is dirty
-            foreach (dynPort p in this.InPorts)
+            foreach (dynPort p in InPorts)
             {
-                this.previousEvalPortMappings[p] = p.Connectors.Any()
+                previousEvalPortMappings[p] = p.Connectors.Any()
                    ? p.Connectors[0].Start.Owner
                    : null;
             }
-            this.OnSave();
+            OnSave();
         }
 
         protected internal ExecutionEnvironment macroEnvironment = null;
 
-        private Expression evalIfDirty(FSharpList<Expression> args, ExecutionEnvironment environment)
+        private Value evalIfDirty(FSharpList<Value> args)
         {
-            //If this node requires a re-calc or if we haven't calc'd yet...
-            if (this.IsDirty || this.oldValue == null)
+            if (SaveResult)
             {
-                //Store the environment
-                this.macroEnvironment = environment;
-                
-                //Evaluate arguments, then evaluate this.
-                this.oldValue = this.eval(
-                   Utils.convertSequence(
-                      args.Select(
-                         input => environment.Evaluate(input)
-                      )
-                   )
-                );
-            }
-            else //Otherwise, just increment the run counter.
-                this.runCount++;
+                //If this node requires a re-calc or if we haven't calc'd yet...
+                if (IsDirty || oldValue == null)
+                    //Evaluate arguments, then evaluate 
+                    oldValue = evaluateNode(args);
+                else //Otherwise, just increment the run counter.
+                    runCount++;
 
-            //We're done here
-            return this.oldValue;
+                //We're done here
+                return oldValue;
+            }
+            else
+                return evaluateNode(args);
         }
 
 
-        protected internal Expression eval(FSharpList<Expression> args)
+        protected internal Value evaluateNode(FSharpList<Value> args)
         {
             //For convenience, store the bench.
             var bench = dynElementSettings.SharedInstance.Bench;
 
-            if (this.SaveResult)
+            if (SaveResult)
             {
                 //Store the port mappings for this evaluate. We will compare later to see if it is dirty;
-                foreach (dynPort p in this.InPorts)
+                foreach (dynPort p in InPorts)
                 {
-                    this.previousEvalPortMappings[p] = p.Connectors.Any()
+                    previousEvalPortMappings[p] = p.Connectors.Any()
                        ? p.Connectors[0].Start.Owner
                        : null;
                 }
             }
 
-            object[] rtAttribs = this.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
+            object[] rtAttribs = GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
             bool useTransaction = rtAttribs.Length > 0 && ((RequiresTransactionAttribute)rtAttribs[0]).RequiresTransaction;
 
-            object[] iaAttribs = this.GetType().GetCustomAttributes(typeof(IsInteractiveAttribute), false);
+            object[] iaAttribs = GetType().GetCustomAttributes(typeof(IsInteractiveAttribute), false);
             bool isInteractive = iaAttribs.Length > 0 && ((IsInteractiveAttribute)iaAttribs[0]).IsInteractive;
 
-            Expression result = null;
+            Value result = null;
 
             Action evaluation = delegate
             {
@@ -1220,7 +1210,7 @@ namespace Dynamo.Elements
 
                 bool debug = bench.RunInDebug;
 
-                this.OnEvaluate();
+                OnEvaluate();
 
                 if (useTransaction)
                 {
@@ -1235,37 +1225,37 @@ namespace Dynamo.Elements
                             if (bench.TransMode == TransactionMode.Manual && !bench.IsTransactionActive())
                             {
                                 var msg = "A Revit transaction is required in order evaluate this element.";
-                                this.Error(msg);
+                                Error(msg);
                                 throw new Exception(msg);
                             }
 
                             bench.InitTransaction();
 
-                            result = this.Evaluate(args);
+                            result = Evaluate(args);
 
-                            foreach (ElementId eid in this.deletedIds)
+                            foreach (ElementId eid in deletedIds)
                             {
-                                this.Bench.RegisterSuccessfulDeleteHook(
+                                Bench.RegisterSuccessfulDeleteHook(
                                    eid,
                                    onSuccessfulDelete
                                 );
                             }
-                            this.deletedIds.Clear();
+                            deletedIds.Clear();
 
                             UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                             Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
 
                             elementsHaveBeenDeleted = false;
-                            this.ValidateConnections();
+                            ValidateConnections();
                         }
                         catch (CancelEvaluationException ex)
                         {
-                            this.OnRunCancelled();
+                            OnRunCancelled();
                             throw ex;
                         }
                         catch (Exception ex)
                         {
-                            this.Dispatcher.Invoke(new Action(
+                            Dispatcher.Invoke(new Action(
                                delegate
                                {
                                    Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
@@ -1277,7 +1267,7 @@ namespace Dynamo.Elements
                                }
                             ));
 
-                            this.Error(ex.Message);
+                            Error(ex.Message);
                         }
 
                         #endregion
@@ -1286,28 +1276,28 @@ namespace Dynamo.Elements
                     {
                         #region debug
 
-                        this.Dispatcher.Invoke(new Action(
+                        Dispatcher.Invoke(new Action(
                            () =>
-                              bench.Log("Starting a debug transaction for element: " + this.NickName)
+                              bench.Log("Starting a debug transaction for element: " + NickName)
                         ));
 
-                        result = IdlePromise<Expression>.ExecuteOnIdle(
+                        result = IdlePromise<Value>.ExecuteOnIdle(
                            delegate
                            {
                                bench.InitTransaction();
 
                                try
                                {
-                                   var exp = this.Evaluate(args);
+                                   var exp = Evaluate(args);
 
-                                   foreach (ElementId eid in this.deletedIds)
+                                   foreach (ElementId eid in deletedIds)
                                    {
-                                       this.Bench.RegisterSuccessfulDeleteHook(
+                                       Bench.RegisterSuccessfulDeleteHook(
                                           eid,
                                           onSuccessfulDelete
                                        );
                                    }
-                                   this.deletedIds.Clear();
+                                   deletedIds.Clear();
 
                                    UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                                    Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
@@ -1317,19 +1307,19 @@ namespace Dynamo.Elements
                                    bench.EndTransaction();
 
                                    Dispatcher.BeginInvoke(new Action(
-                                       () => this.ValidateConnections()
+                                       () => ValidateConnections()
                                    ));
 
                                    return exp;
                                }
                                catch (CancelEvaluationException ex)
                                {
-                                   this.OnRunCancelled();
+                                   OnRunCancelled();
                                    throw ex;
                                }
                                catch (Exception ex)
                                {
-                                   this.Dispatcher.Invoke(new Action(
+                                   Dispatcher.Invoke(new Action(
                                       delegate
                                       {
                                           Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
@@ -1338,11 +1328,11 @@ namespace Dynamo.Elements
                                       }
                                    ));
 
-                                   this.Error(ex.Message);
+                                   Error(ex.Message);
 
                                    bench.CancelTransaction();
 
-                                   this.Dispatcher.Invoke(new Action(
+                                   Dispatcher.Invoke(new Action(
                                       delegate
                                       {
                                           dynElementSettings.SharedInstance.Writer.WriteLine(ex.Message);
@@ -1366,7 +1356,7 @@ namespace Dynamo.Elements
 
                     try
                     {
-                        result = this.Evaluate(args);
+                        result = Evaluate(args);
 
                         UpdateLayoutDelegate uld = new UpdateLayoutDelegate(CallUpdateLayout);
                         Dispatcher.Invoke(uld, System.Windows.Threading.DispatcherPriority.Background, new object[] { this });
@@ -1374,17 +1364,17 @@ namespace Dynamo.Elements
                         elementsHaveBeenDeleted = false;
 
                         Dispatcher.BeginInvoke(new Action(
-                            () => this.ValidateConnections()
+                            () => ValidateConnections()
                         ));
                     }
                     catch (CancelEvaluationException ex)
                     {
-                        this.OnRunCancelled();
+                        OnRunCancelled();
                         throw ex;
                     }
                     catch (Exception ex)
                     {
-                        this.Dispatcher.Invoke(new Action(
+                        Dispatcher.Invoke(new Action(
                            delegate
                            {
                                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
@@ -1397,7 +1387,7 @@ namespace Dynamo.Elements
                            }
                         ));
 
-                        this.Error(ex.Message);
+                        Error(ex.Message);
                     }
 
                     #endregion
@@ -1405,21 +1395,21 @@ namespace Dynamo.Elements
 
                 #region Register Elements w/ DMU
 
-                var del = new DynElementUpdateDelegate(this.onDeleted);
+                var del = new DynElementUpdateDelegate(onDeleted);
 
-                foreach (ElementId id in this.Elements)
-                    this.Bench.RegisterDeleteHook(id, del);
+                foreach (ElementId id in Elements)
+                    Bench.RegisterDeleteHook(id, del);
 
                 #endregion
 
                 //Increment the run counter
-                this.runCount++;
+                runCount++;
 
-                this.IsDirty = false;
+                IsDirty = false;
             };
 
             if (isInteractive)
-                this.Dispatcher.Invoke(evaluation);
+                Dispatcher.Invoke(evaluation);
             else
                 evaluation();
 
@@ -1438,7 +1428,7 @@ namespace Dynamo.Elements
         protected void DeleteElement(ElementId id, bool hookOnly = false)
         {
             if (!hookOnly)
-                this.UIDocument.Document.Delete(id);
+                UIDocument.Document.Delete(id);
             deletedIds.Add(id);
         }
 
@@ -1447,7 +1437,7 @@ namespace Dynamo.Elements
         /// </summary>
         /// <param name="args">Arguments to the node. You are guaranteed to have as many arguments as you have InPorts at the time it is run.</param>
         /// <returns>An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is connected to.</returns>
-        public virtual Expression Evaluate(FSharpList<Expression> args)
+        public virtual Value Evaluate(FSharpList<Value> args)
         {
             throw new NotImplementedException();
         }
@@ -1455,13 +1445,13 @@ namespace Dynamo.Elements
         void onDeleted(List<ElementId> deleted)
         {
             int count = 0;
-            foreach (var els in this.elements)
+            foreach (var els in elements)
             {
                 count += els.RemoveAll(x => deleted.Contains(x));
             }
 
-            if (!this._isDirty)
-                this._isDirty = count > 0;
+            if (!_isDirty)
+                _isDirty = count > 0;
         }
 
 
@@ -1472,16 +1462,16 @@ namespace Dynamo.Elements
         /// <param name="id">ElementId of the element to watch.</param>
         public void RegisterEvalOnModified(ElementId id, Action modAction = null, Action delAction = null)
         {
-            var u = this.Bench.Updater;
+            var u = Bench.Updater;
             u.RegisterChangeHook(
                id,
                ChangeTypeEnum.Modify,
-               this.ReEvalOnModified(modAction)
+               ReEvalOnModified(modAction)
             );
             u.RegisterChangeHook(
                id,
                ChangeTypeEnum.Delete,
-               this.UnRegOnDelete(delAction)
+               UnRegOnDelete(delAction)
             );
         }
 
@@ -1492,7 +1482,7 @@ namespace Dynamo.Elements
         /// <param name="id">ElementId of the element to stop watching.</param>
         public void UnregisterEvalOnModified(ElementId id)
         {
-            var u = this.Bench.Updater;
+            var u = Bench.Updater;
             u.UnRegisterChangeHook(
                id, ChangeTypeEnum.Modify
             );
@@ -1507,7 +1497,7 @@ namespace Dynamo.Elements
             {
                 foreach (var d in deleted)
                 {
-                    var u = this.Bench.Updater;
+                    var u = Bench.Updater;
                     u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
                     u.UnRegisterChangeHook(d, ChangeTypeEnum.Modify);
                 }
@@ -1520,54 +1510,54 @@ namespace Dynamo.Elements
         {
             return delegate(List<ElementId> modified)
             {
-                if (!this.IsDirty && !this.Bench.Running)
+                if (!IsDirty && !Bench.Running)
                 {
                     if (modifiedAction != null)
                         modifiedAction();
-                    this.IsDirty = true;
+                    IsDirty = true;
                 }
             };
         }
 
         void onSuccessfulDelete(List<ElementId> deleted)
         {
-            foreach (var els in this.elements)
+            foreach (var els in elements)
                 els.RemoveAll(x => deleted.Contains(x));
         }
 
         protected internal void SetColumnAmount(int amt)
         {
-            int count = this.inputGrid.ColumnDefinitions.Count;
+            int count = inputGrid.ColumnDefinitions.Count;
             if (count == amt)
                 return;
             else if (count < amt)
             {
                 int diff = amt - count;
                 for (int i = 0; i < diff; i++)
-                    this.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                    inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
             else
             {
                 int diff = count - amt;
-                this.inputGrid.ColumnDefinitions.RemoveRange(amt, diff);
+                inputGrid.ColumnDefinitions.RemoveRange(amt, diff);
             }
         }
 
         protected internal void SetRowAmount(int amt)
         {
-            int count = this.inputGrid.RowDefinitions.Count;
+            int count = inputGrid.RowDefinitions.Count;
             if (count == amt)
                 return;
             else if (count < amt)
             {
                 int diff = amt - count;
                 for (int i = 0; i < diff; i++)
-                    this.inputGrid.RowDefinitions.Add(new RowDefinition());
+                    inputGrid.RowDefinitions.Add(new RowDefinition());
             }
             else
             {
                 int diff = count - amt;
-                this.inputGrid.RowDefinitions.RemoveRange(amt, diff);
+                inputGrid.RowDefinitions.RemoveRange(amt, diff);
             }
         }
 
@@ -1578,16 +1568,16 @@ namespace Dynamo.Elements
 
         public void SetTooltip(string message)
         {
-            this.ToolTip = message;
+            ToolTip = message;
         }
 
         void SetTooltip()
         {
-            object[] rtAttribs = this.GetType().GetCustomAttributes(typeof(ElementDescriptionAttribute), false);
+            object[] rtAttribs = GetType().GetCustomAttributes(typeof(ElementDescriptionAttribute), false);
             if (rtAttribs.Length > 0)
             {
                 string description = ((ElementDescriptionAttribute)rtAttribs[0]).ElementDescription;
-                this.ToolTip = description;
+                ToolTip = description;
             }
         }
 
@@ -1600,8 +1590,8 @@ namespace Dynamo.Elements
         /// </summary>
         public virtual void Destroy()
         {
-            this.runCount = 0;
-            foreach (var els in this.elements)
+            runCount = 0;
+            foreach (var els in elements)
             {
                 foreach (ElementId e in els)
                 {
@@ -1721,24 +1711,24 @@ namespace Dynamo.Elements
                new object[] { this, ElementState.SELECTED }
             );
 
-            this.UIDocument.Selection.Elements.Clear();
-            foreach (List<ElementId> elList in this.elements)
-            {
-                foreach (ElementId id in elList)
-                {
-                    Element e = this.UIDocument.Document.get_Element(id);
-                    if (e != null)
-                    {
-                        this.UIDocument.Selection.Elements.Add(e);
-                    }
+            //this.UIDocument.Selection.Elements.Clear();
+            //foreach (List<ElementId> elList in this.elements)
+            //{
+            //    foreach (ElementId id in elList)
+            //    {
+            //        Element e = this.UIDocument.Document.get_Element(id);
+            //        if (e != null)
+            //        {
+            //            this.UIDocument.Selection.Elements.Add(e);
+            //        }
 
-                }
-            }
+            //    }
+            //}
         }
 
         public void Deselect()
         {
-            this.ValidateConnections();
+            ValidateConnections();
         }
 
         void SetState(dynNode el, ElementState state)
@@ -1806,7 +1796,7 @@ namespace Dynamo.Elements
 
         private void deleteElem_cm_Click(object sender, RoutedEventArgs e)
         {
-            this.DisableReporting();
+            DisableReporting();
             var bench = dynElementSettings.SharedInstance.Bench;
 
             IdlePromise.ExecuteOnIdle(
@@ -1815,7 +1805,7 @@ namespace Dynamo.Elements
                    bench.InitTransaction();
                    try
                    {
-                       this.Destroy();
+                       Destroy();
                    }
                    catch (Exception ex)
                    {
@@ -1825,7 +1815,7 @@ namespace Dynamo.Elements
                    bench.EndTransaction();
 
                    bench.DeleteElement(this);
-                   this.WorkSpace.Modified();
+                   WorkSpace.Modified();
                },
                true
             );
@@ -1833,12 +1823,12 @@ namespace Dynamo.Elements
 
         internal void DisableReporting()
         {
-            this._report = false;
+            _report = false;
         }
 
         internal void EnableReporting()
         {
-            this._report = true;
+            _report = true;
         }
 
         internal void Error(string p)
@@ -1867,6 +1857,17 @@ namespace Dynamo.Elements
     }
 
     #region class attributes
+    [AttributeUsage(AttributeTargets.Class)]
+    public class IsConstantAttribute : System.Attribute
+    {
+        public bool IsConstant;
+
+        public IsConstantAttribute(bool constant)
+        {
+            IsConstant = constant;
+        }
+    }
+
     [AttributeUsage(AttributeTargets.All)]
     public class ElementNameAttribute : System.Attribute
     {
@@ -1874,7 +1875,7 @@ namespace Dynamo.Elements
 
         public ElementNameAttribute(string elementName)
         {
-            this.ElementName = elementName;
+            ElementName = elementName;
         }
     }
 
@@ -1885,7 +1886,7 @@ namespace Dynamo.Elements
 
         public ElementCategoryAttribute(string category)
         {
-            this.ElementCategory = category;
+            ElementCategory = category;
         }
     }
 
@@ -1896,7 +1897,7 @@ namespace Dynamo.Elements
 
         public ElementSearchTagsAttribute(params string[] tags)
         {
-            this.Tags = tags.ToList();
+            Tags = tags.ToList();
         }
     }
 
@@ -1907,41 +1908,29 @@ namespace Dynamo.Elements
 
         public IsInteractiveAttribute(bool isInteractive)
         {
-            this.IsInteractive = isInteractive;
+            IsInteractive = isInteractive;
         }
     }
 
     [AttributeUsage(AttributeTargets.All)]
     public class RequiresTransactionAttribute : System.Attribute
     {
-        private bool requiresTransaction;
+        public bool RequiresTransaction { get; set; }
 
-        public bool RequiresTransaction
+        public RequiresTransactionAttribute(bool required)
         {
-            get { return requiresTransaction; }
-            set { requiresTransaction = value; }
-        }
-
-        public RequiresTransactionAttribute(bool requiresTransaction)
-        {
-            this.requiresTransaction = requiresTransaction;
+            RequiresTransaction = required;
         }
     }
 
     [AttributeUsage(AttributeTargets.All)]
     public class ElementDescriptionAttribute : System.Attribute
     {
-        private string description;
-
-        public string ElementDescription
-        {
-            get { return description; }
-            set { description = value; }
-        }
+        public string ElementDescription { get; set; }
 
         public ElementDescriptionAttribute(string description)
         {
-            this.description = description;
+            ElementDescription = description;
         }
     }
     #endregion

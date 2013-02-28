@@ -9,7 +9,7 @@ using Dynamo.Utilities;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Elements
 {
@@ -31,7 +31,7 @@ namespace Dynamo.Elements
 
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             SpatialFieldManager sfm;
 
@@ -43,10 +43,10 @@ namespace Dynamo.Elements
             }
             else
             {
-                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView, Convert.ToInt16(((Expression.Number)args[0]).Item));
+                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
             }
 
-            return Expression.NewContainer(sfm);
+            return Value.NewContainer(sfm);
             
         }
     }
@@ -67,11 +67,11 @@ namespace Dynamo.Elements
 
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             AnalysisDisplayStyle ads = CreateDisplayStyle();
 
-            return Expression.NewContainer(ads);
+            return Value.NewContainer(ads);
 
         }
 
@@ -150,7 +150,7 @@ namespace Dynamo.Elements
 
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
             SpatialFieldManager sfm;
 
@@ -167,11 +167,16 @@ namespace Dynamo.Elements
             }
             else
             {
-                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView, Convert.ToInt16(((Expression.Number)args[0]).Item));
+                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynElementSettings.SharedInstance.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
             }
 
-            return Expression.NewContainer(sfm);
+<<<<<<< HEAD
+            return Value.NewContainer(sfm);
 
+=======
+            return Value.NewContainer(sfm);
+            
+>>>>>>> Now builds and runs!
         }
 
         void CreateDisplayStyle()
@@ -253,9 +258,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            SpatialFieldManager sfm = ((Expression.Container)args[2]).Item as SpatialFieldManager;
+            SpatialFieldManager sfm = ((Value.Container)args[2]).Item as SpatialFieldManager;
 
             //first, cleanup the old one
             if (idx != -1)
@@ -263,20 +268,20 @@ namespace Dynamo.Elements
                 sfm.RemoveSpatialFieldPrimitive(idx);
             }
 
-            Reference reference = ((Expression.Container)args[3]).Item as Reference;
+            Reference reference = ((Value.Container)args[3]).Item as Reference;
             idx = sfm.AddSpatialFieldPrimitive(reference);
 
             Face face = dynElementSettings.SharedInstance.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
 
             //unwrap the sample locations
-            IEnumerable<UV> pts = ((Expression.List)args[1]).Item.Select(
-               x => (UV)((Expression.Container)x).Item
+            IEnumerable<UV> pts = ((Value.List)args[1]).Item.Select(
+               x => (UV)((Value.Container)x).Item
             );
             FieldDomainPointsByUV sample_pts = new FieldDomainPointsByUV(pts.ToList<UV>());
             
             //unwrap the values
-            IEnumerable<double> nvals = ((Expression.List)args[0]).Item.Select(
-               x => (double)((Expression.Number)x).Item
+            IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(
+               x => (double)((Value.Number)x).Item
             );
 
             //for every sample location add a list
@@ -311,7 +316,7 @@ namespace Dynamo.Elements
 
             sfm.UpdateSpatialFieldPrimitive(idx, sample_pts, sample_values, schemaIndex);
 
-            return Expression.NewContainer(idx);
+            return Value.NewContainer(idx);
 
         }
     }
@@ -337,13 +342,13 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            SpatialFieldManager sfm = ((Expression.Container)args[2]).Item as SpatialFieldManager;
+            SpatialFieldManager sfm = ((Value.Container)args[2]).Item as SpatialFieldManager;
 
 
             // Place analysis results in the form of vectors at each of a beam or column's analytical model curve
-            Curve curve = ((Expression.Container)args[3]).Item as Curve;
+            Curve curve = ((Value.Container)args[3]).Item as Curve;
 
 
             int index = sfm.AddSpatialFieldPrimitive(curve, Transform.Identity);
@@ -372,20 +377,20 @@ namespace Dynamo.Elements
                 sfm.RemoveSpatialFieldPrimitive(idx);
             }
 
-            Reference reference = ((Expression.Container)args[3]).Item as Reference;
+            Reference reference = ((Value.Container)args[3]).Item as Reference;
             idx = sfm.AddSpatialFieldPrimitive(reference);
 
             Face face = dynElementSettings.SharedInstance.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
 
             //unwrap the sample locations
-            IEnumerable<UV> pts = ((Expression.List)args[1]).Item.Select(
-               x => (UV)((Expression.Container)x).Item
+            IEnumerable<UV> pts = ((Value.List)args[1]).Item.Select(
+               x => (UV)((Value.Container)x).Item
             );
             FieldDomainPointsByUV sample_pts = new FieldDomainPointsByUV(pts.ToList<UV>());
 
             //unwrap the values
-            IEnumerable<double> nvals = ((Expression.List)args[0]).Item.Select(
-               x => (double)((Expression.Number)x).Item
+            IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(
+               x => (double)((Value.Number)x).Item
             );
 
             //for every sample location add a list
@@ -421,7 +426,7 @@ namespace Dynamo.Elements
             sfm.UpdateSpatialFieldPrimitive(idx, sample_pts, sample_values, schemaIndex);
             */
 
-            return Expression.NewContainer(idx);
+            return Value.NewContainer(idx);
 
         }
     }
@@ -446,9 +451,9 @@ namespace Dynamo.Elements
             base.RegisterInputsAndOutputs();
         }
 
-        public override Expression Evaluate(FSharpList<Expression> args)
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            SpatialFieldManager sfm = ((Expression.Container)args[1]).Item as SpatialFieldManager;
+            SpatialFieldManager sfm = ((Value.Container)args[1]).Item as SpatialFieldManager;
 
             //first, cleanup the old one
             if(idxs.Count > 0)
@@ -481,13 +486,13 @@ namespace Dynamo.Elements
             Transform trf = Transform.Identity;
 
             //get the list of pairs
-            FSharpList<Expression> listOfPairs = ((Expression.List)args[0]).Item;
-            foreach (Expression expr in listOfPairs)
+            FSharpList<Value> listOfPairs = ((Value.List)args[0]).Item;
+            foreach (Value expr in listOfPairs)
             {
-                FSharpList<Expression> pair = ((Expression.List)expr).Item;
+                FSharpList<Value> pair = ((Value.List)expr).Item;
 
-                XYZ start = (XYZ)((Expression.Container)pair[0]).Item;
-                XYZ end = (XYZ)((Expression.Container)pair[1]).Item;
+                XYZ start = (XYZ)((Value.Container)pair[0]).Item;
+                XYZ end = (XYZ)((Value.Container)pair[1]).Item;
                 XYZ start1 = start + XYZ.BasisZ * .1;
                 XYZ end1 = end + XYZ.BasisZ * .1;
 
@@ -538,7 +543,7 @@ namespace Dynamo.Elements
                 }
             }
 
-            return Expression.NewList(Utils.convertSequence(idxs.Select(x => Expression.NewNumber(x))));
+            return Value.NewList(Utils.SequenceToFSharpList(idxs.Select(x => Value.NewNumber(x))));
 
         }
     }
