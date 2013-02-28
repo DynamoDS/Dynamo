@@ -117,6 +117,12 @@
   <ItemGroup>
     <Resource Include="splash.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="DynamoForRevit.addin">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="DynamoForVasari.addin" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
