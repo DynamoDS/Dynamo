@@ -1,0 +1,1 @@
+C:/Python27/python auto_build.py
