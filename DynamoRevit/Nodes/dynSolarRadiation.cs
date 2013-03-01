@@ -25,7 +25,7 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using System.Xml;
 using System.Windows.Media;
-using Dynamo.Nodes.SyncedNodeExtensions;
+using Dynamo.Revit.SyncedNodeExtensions;
 
 namespace Dynamo.Nodes
 {
@@ -130,10 +130,9 @@ namespace Dynamo.Nodes
         void analysisResultButt_Click(object sender, RoutedEventArgs e)
         {
             PickedAnalysisResult =
-               Dynamo.Utilities.SelectionHelper.RequestAnalysisResultInstanceSelection(
-                  dynSettings.Instance.Doc,
-                  "Select Analysis Result Object",
-                  dynSettings.Instance
+               dynRevitSettings.SelectionHelper.RequestAnalysisResultInstanceSelection(
+                  dynRevitSettings.Doc,
+                  "Select Analysis Result Object"
                );
 
             if (PickedAnalysisResult != null)
@@ -149,7 +148,7 @@ namespace Dynamo.Nodes
             {
                 if (PickedAnalysisResult.Id.IntegerValue == AnalysisResultID.IntegerValue) // sanity check
                 {
-                    SpatialFieldManager dmu_sfm = dynSettings.Instance.SpatialFieldManagerUpdated as SpatialFieldManager;
+                    SpatialFieldManager dmu_sfm = dynRevitSettings.SpatialFieldManagerUpdated as SpatialFieldManager;
 
                     if (pickedAnalysisResult.Id.IntegerValue == dmu_sfm.Id.IntegerValue)
                     {
@@ -276,7 +275,7 @@ namespace Dynamo.Nodes
         {
             //data = Value.NewList(FSharpList<Value>.Empty);
 
-            View activeView = dynSettings.Instance.Doc.ActiveView;
+            View activeView = dynRevitSettings.Doc.ActiveView;
             PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
 
 
@@ -330,7 +329,7 @@ namespace Dynamo.Nodes
                 {
                     try
                     {
-                        this.PickedSunAndShadowSettings = dynSettings.Instance.Doc.Document.GetElement(
+                        this.PickedSunAndShadowSettings = dynRevitSettings.Doc.Document.GetElement(
                            new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
                         ) as SunAndShadowSettings;
                         if (this.PickedSunAndShadowSettings != null)

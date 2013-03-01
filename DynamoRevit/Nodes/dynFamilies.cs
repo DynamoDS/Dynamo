@@ -28,6 +28,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
+using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
@@ -82,7 +83,7 @@ namespace Dynamo.Nodes
             combo.Items.Clear();
 
             //load all the currently loaded types into the combo list
-            FilteredElementCollector fec = new FilteredElementCollector(dynSettings.Instance.Doc.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             fec.OfClass(typeof(Family));
             foreach (Family f in fec.ToElements())
             {
@@ -235,7 +236,7 @@ namespace Dynamo.Nodes
                     foreach (dynamic p in fs.Parameters)
                         paramDict[p.Definition] = p;
 
-                    var fd = dynSettings.Instance.Doc.Document.EditFamily(fs.Family);
+                    var fd = dynRevitSettings.Doc.Document.EditFamily(fs.Family);
                     var ps = fd.FamilyManager.Parameters;
 
                     foreach (dynamic p in ps)
@@ -267,7 +268,7 @@ namespace Dynamo.Nodes
 
         public override void LoadElement(XmlNode elNode)
         {
-            var doc = dynSettings.Instance.Doc.Document;
+            var doc = dynRevitSettings.Doc.Document;
 
             int selection = -1;
             foreach (XmlNode subNode in elNode.ChildNodes)

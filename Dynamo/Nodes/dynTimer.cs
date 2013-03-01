@@ -92,13 +92,13 @@ namespace Dynamo.Nodes
                     {
                         Thread.Sleep(delay);
 
-                        if (this.Bench.RunCancelled)
+                        if (Controller.RunCancelled)
                             return;
 
-                        while (this.Bench.Running)
+                        while (Controller.Running)
                         {
                             Thread.Sleep(1);
-                            if (this.Bench.RunCancelled)
+                            if (Controller.RunCancelled)
                                 return;
                         }
 

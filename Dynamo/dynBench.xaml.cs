@@ -88,8 +88,8 @@ namespace Dynamo.Controls
             sw = new StringWriter();
             Log(String.Format("Dynamo -- Build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
 
-            dynSettings.Instance.Workbench = WorkBench;
-            dynSettings.Instance.Bench = this;
+            dynSettings.Workbench = WorkBench;
+            dynSettings.Bench = this;
 
             selectedElements = new dynSelection();
 
@@ -788,8 +788,8 @@ namespace Dynamo.Controls
                     //MessageBox.Show("Workbench could not be opened.");
                     Log("Workbench could not be opened.");
 
-                    dynSettings.Instance.Writer.WriteLine("Workbench could not be opened.");
-                    dynSettings.Instance.Writer.WriteLine(xmlPath);
+                    dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    dynSettings.Writer.WriteLine(xmlPath);
                 }
                 UnlockUI();
             }
@@ -800,12 +800,12 @@ namespace Dynamo.Controls
             if (sw != null)
             {
                 sw.Close();
-                dynSettings.Instance.Writer.WriteLine("Dynamo ended " + System.DateTime.Now.ToString());
-                dynSettings.Instance.Writer.Close();
+                dynSettings.Writer.WriteLine("Dynamo ended " + System.DateTime.Now.ToString());
+                dynSettings.Writer.Close();
             }
 
             //end the transaction 
-            //dynSettings.Instance.MainTransaction.Commit();
+            //dynSettings.MainTransaction.Commit();
         }
 
         public void Log(string message)
@@ -814,7 +814,7 @@ namespace Dynamo.Controls
             LogText = sw.ToString();
             //LogScroller.ScrollToEnd();
 
-            dynSettings.Instance.Writer.WriteLine(message);
+            dynSettings.Writer.WriteLine(message);
 
             LogScroller.ScrollToBottom();
         }
@@ -1011,11 +1011,11 @@ namespace Dynamo.Controls
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.B))
             {
                 //get the mouse position
-                if (!dynSettings.Instance.Workbench.Children.Contains(dynToolFinder.Instance))
+                if (!dynSettings.Workbench.Children.Contains(dynToolFinder.Instance))
                 {
-                    dynSettings.Instance.Workbench.Children.Add(dynToolFinder.Instance);
+                    dynSettings.Workbench.Children.Add(dynToolFinder.Instance);
 
-                    Point p = Mouse.GetPosition(dynSettings.Instance.Workbench);
+                    Point p = Mouse.GetPosition(dynSettings.Workbench);
                     Canvas.SetLeft(dynToolFinder.Instance, p.X);
                     Canvas.SetTop(dynToolFinder.Instance, p.Y);
                     e.Handled = true;
@@ -1038,10 +1038,10 @@ namespace Dynamo.Controls
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
             {
                 dynNote note = new dynNote();
-                dynSettings.Instance.Workbench.Children.Add(note);
+                dynSettings.Workbench.Children.Add(note);
 
                 //convert the current position of the mouse into canvas coordinates
-                Point p = Mouse.GetPosition(dynSettings.Instance.Workbench);
+                Point p = Mouse.GetPosition(dynSettings.Workbench);
 
                 Canvas.SetLeft(note, p.X);
                 Canvas.SetTop(note, p.Y);
@@ -1083,7 +1083,7 @@ namespace Dynamo.Controls
             {
                 if (Keyboard.IsKeyDown(Key.Enter))
                 {
-                    SaveNameEdit();
+                    Controller.SaveNameEdit();
                     DisableEditNameBox();
                     e.Handled = true;
                 }
@@ -1122,7 +1122,7 @@ namespace Dynamo.Controls
 
                 selectedElements.Remove(node);
                 Controller.Nodes.Remove(node.NodeLogic);
-                dynSettings.Instance.Workbench.Children.Remove(node);
+                dynSettings.Workbench.Children.Remove(node);
             }
             else if (note != null)
             {
@@ -1132,7 +1132,7 @@ namespace Dynamo.Controls
 
         //void toolFinder_ToolFinderFinished(object sender, EventArgs e)
         //{
-        //    dynSettings.Instance.Workbench.Children.Remove(toolFinder);
+        //    dynSettings.Workbench.Children.Remove(toolFinder);
         //    toolFinder = null;
         //}
 

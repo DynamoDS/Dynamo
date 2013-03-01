@@ -42,8 +42,7 @@ namespace Dynamo.Nodes
     {
         public WatchTree()
         {
-            InitializeComponent();
-
+            //InitializeComponent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -53,10 +52,10 @@ namespace Dynamo.Nodes
             FrameworkElement fe = sender as FrameworkElement;
             int elId = Convert.ToInt32(((WatchNode)fe.DataContext).Link);  
             
-            Element el = dynSettings.Instance.Doc.Document.GetElement(new ElementId(elId));
+            Element el = dynRevitSettings.Doc.Document.GetElement(new ElementId(elId));
             if (el != null)
             {
-                dynSettings.Instance.Doc.ShowElements(el);
+                dynRevitSettings.Doc.ShowElements(el);
             }
         }
     }

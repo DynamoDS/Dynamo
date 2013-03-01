@@ -23,6 +23,8 @@ namespace Dynamo
         {
             Updater = updater;
 
+            dynRevitSettings.Controller = this;
+
             Predicate<dynNode> manualTransactionPredicate = delegate(dynNode node)
             {
                 if (node is dynTransaction)
@@ -74,7 +76,13 @@ namespace Dynamo
             
         }
 
-        public bool RunInDebugTransactionMode { get { return this.TransMode == TransactionMode.Debug; } }
+        public override bool RunInDebug
+        {
+            get 
+            { 
+                return this.TransMode == TransactionMode.Debug;
+            } 
+        }
 
         public bool InIdleThread;
 
@@ -86,20 +94,19 @@ namespace Dynamo
         }
         public TransactionMode TransMode;
 
-        public bool DynamicRunEnabled
+        public override bool DynamicRunEnabled
         {
             get
             {
+                var result = base.DynamicRunEnabled;
+
                 bool manTran = ExecutionRequiresManualTransaction();
 
                 Bench.dynamicCheckBox.IsEnabled = !manTran && Bench.debugCheckBox.IsChecked == false;
                 if (manTran)
                     Bench.dynamicCheckBox.IsChecked = false;
 
-                return !manTran
-                   && Bench.dynamicCheckBox.IsEnabled
-                   && Bench.debugCheckBox.IsChecked == false
-                   && Bench.dynamicCheckBox.IsChecked == true;
+                return !manTran && result;
             }
         }
 
@@ -146,7 +153,7 @@ namespace Dynamo
                 {
                     try
                     {
-                        Autodesk.Revit.DB.Element e = dynSettings.Instance.Doc.Document.GetElement(delId);
+                        Autodesk.Revit.DB.Element e = dynRevitSettings.Doc.Document.GetElement(delId);
                         if (e != null)
                         {
                             valid.Add(e.Id);
@@ -198,7 +205,7 @@ namespace Dynamo
             if (_trans == null || _trans.GetStatus() != TransactionStatus.Started)
             {
                 _trans = new Transaction(
-                   dynSettings.Instance.Doc.Document,
+                   dynRevitSettings.Doc.Document,
                    "Dynamo Script"
                 );
                 _trans.Start();
@@ -271,7 +278,7 @@ namespace Dynamo
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
-            if (RunInDebugTransactionMode || !InIdleThread)
+            if (RunInDebug || !InIdleThread)
                 IdlePromise.ExecuteOnIdle(cleanup, false);
             else
                 cleanup();

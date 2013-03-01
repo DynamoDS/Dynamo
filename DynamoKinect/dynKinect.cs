@@ -19,8 +19,6 @@ using System.Windows.Controls;
 
 namespace Dynamo.Nodes
 {
-
-
     [NodeName("Kinect")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Read  from a Kinect.")]
@@ -139,7 +137,7 @@ namespace Dynamo.Nodes
             {
                 //create a reference point to track the right hand
                 //rightHandPt = dynSettings.Instance.Doc.Document.FamilyCreate.NewReferencePoint(rightHandLoc);
-                System.Windows.Point relativePoint = rightHandEllipse.TransformToAncestor(dynSettings.Instance.Bench.WorkBench)
+                System.Windows.Point relativePoint = rightHandEllipse.TransformToAncestor(dynSettings.Bench.WorkBench)
                               .Transform(new System.Windows.Point(0, 0));
                 Canvas.SetLeft(rightHandEllipse, relativePoint.X);
                 Canvas.SetTop(rightHandEllipse, relativePoint.Y);

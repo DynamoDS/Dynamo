@@ -36,6 +36,8 @@ using Microsoft.Scripting.Hosting;
 using System.Windows;
 using System.Xml;
 using Microsoft.FSharp.Core;
+using Dynamo.Revit;
+using Autodesk.Revit.DB;
 
 namespace Dynamo.Nodes
 {
@@ -217,47 +219,6 @@ namespace Dynamo.Nodes
 
         public dynPython()
         {
-            /*
->>>>>>> origin/master
-            tb = new TextBox()
-            {
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                TextWrapping = System.Windows.TextWrapping.NoWrap,
-                Height = double.NaN,
-                Width = double.NaN,
-                AcceptsReturn = true,
-                AcceptsTab = true,
-                FontFamily = new System.Windows.Media.FontFamily("Courier New")
-            };
-
-            tb.TextChanged += delegate { this.dirty = true; };
-
-<<<<<<< HEAD
-            NodeUI.ContentGrid.Children.Add(tb);
-
-            InPortData.Add(new PortData("IN", "Input", typeof(object)));
-
-            NodeUI.RegisterInputsAndOutput();
-
-            NodeUI.topControl.Height = 200;
-            NodeUI.topControl.Width = 300;
-
-            NodeUI.UpdateLayout();
-        }
-
-        private PortData outPortData = new PortData("OUT", "Result of the python script", typeof(object));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
-        }
-
-        //TODO: Make this smarter
-        public override bool RequiresRecalc
-=======
-            this.ContentGrid.Children.Add(tb);
-            */
-
             //add an edit window option to the 
             //main context window
             System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
@@ -334,9 +295,9 @@ namespace Dynamo.Nodes
                new Func<Autodesk.Revit.DB.SubTransaction>(
                   delegate
                   {
-                      if (!dynSettings.Instance.Bench.IsTransactionActive())
+                      if (!dynRevitSettings.Controller.IsTransactionActive())
                       {
-                          dynSettings.Instance.Bench.InitTransaction();
+                          dynRevitSettings.Controller.InitTransaction();
                       }
                       return new Autodesk.Revit.DB.SubTransaction(this.UIDocument.Document);
                   }
@@ -344,7 +305,7 @@ namespace Dynamo.Nodes
             ));
             bindings.Add(new Binding("__revit__", this.UIDocument.Application));
             bindings.Add(new Binding("__doc__", this.UIDocument.Application.ActiveUIDocument.Document));
-            bindings.Add(new Binding("__dynamo__", dynSettings.Instance.Bench));
+            bindings.Add(new Binding("__dynamo__", dynSettings.Controller));
             bindings.Add(new Binding("__persistant__", this.stateDict));
 
             // use this to pass into the python script a list of previously created elements from dynamo 
@@ -370,12 +331,12 @@ namespace Dynamo.Nodes
             var bindings = this.makeBindings(args);
 
             bool transactionRunning
-               = dynSettings.Instance.Bench.Transaction != null
-               && dynSettings.Instance.Bench.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
+               = dynRevitSettings.Controller.Transaction != null
+               && dynRevitSettings.Controller.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
 
             Value result = null;
 
-            if (dynSettings.Instance.Bench.InIdleThread)
+            if (dynRevitSettings.Controller.InIdleThread)
                 result = engine.Evaluate(bindings);
             else
             {
@@ -386,25 +347,25 @@ namespace Dynamo.Nodes
 
             if (transactionRunning)
             {
-                if (!dynSettings.Instance.Bench.IsTransactionActive())
+                if (!dynRevitSettings.Controller.IsTransactionActive())
                 {
-                    dynSettings.Instance.Bench.InitTransaction();
+                    dynRevitSettings.Controller.InitTransaction();
                 }
                 else
                 {
-                    var ts = dynSettings.Instance.Bench.Transaction.GetStatus();
+                    var ts = dynRevitSettings.Controller.Transaction.GetStatus();
                     if (ts != Autodesk.Revit.DB.TransactionStatus.Started)
                     {
                         if (ts != Autodesk.Revit.DB.TransactionStatus.RolledBack)
-                            dynSettings.Instance.Bench.CancelTransaction();
-                        dynSettings.Instance.Bench.InitTransaction();
+                            dynRevitSettings.Controller.CancelTransaction();
+                        dynRevitSettings.Controller.InitTransaction();
                     }
                 }
             }
-            else if (dynSettings.Instance.Bench.RunInDebug)
+            else if (dynRevitSettings.Controller.RunInDebug)
             {
-                if (dynSettings.Instance.Bench.IsTransactionActive())
-                    dynSettings.Instance.Bench.EndTransaction();
+                if (dynRevitSettings.Controller.IsTransactionActive())
+                    dynRevitSettings.Controller.EndTransaction();
             }
 
             return result;
@@ -475,16 +436,16 @@ namespace Dynamo.Nodes
                new Func<Autodesk.Revit.DB.SubTransaction>(
                   delegate
                   {
-                      if (!dynSettings.Instance.Bench.IsTransactionActive())
+                      if (!dynRevitSettings.Controller.IsTransactionActive())
                       {
-                          dynSettings.Instance.Bench.InitTransaction();
+                          dynRevitSettings.Controller.InitTransaction();
                       }
                       return new Autodesk.Revit.DB.SubTransaction(this.UIDocument.Document);
                   }
                )
             ));
             bindings.Add(new Binding("__revit__", this.UIDocument.Application));
-            bindings.Add(new Binding("__dynamo__", dynSettings.Instance.Bench));
+            bindings.Add(new Binding("__dynamo__", dynRevitSettings.Controller));
             bindings.Add(new Binding("__persistant__", this.stateDict));
 
             // use this to pass into the python script a list of previously created elements from dynamo 
@@ -501,12 +462,12 @@ namespace Dynamo.Nodes
             var bindings = this.makeBindings(args).Skip(1);
 
             bool transactionRunning
-               = dynSettings.Instance.Bench.Transaction != null
-               && dynSettings.Instance.Bench.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
+               = dynRevitSettings.Controller.Transaction != null
+               && dynRevitSettings.Controller.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
 
             Value result = null;
 
-            if (dynSettings.Instance.Bench.InIdleThread)
+            if (dynRevitSettings.Controller.InIdleThread)
                 result = engine.Evaluate(bindings);
             else
             {
@@ -517,25 +478,25 @@ namespace Dynamo.Nodes
 
             if (transactionRunning)
             {
-                if (!dynSettings.Instance.Bench.IsTransactionActive())
+                if (!dynRevitSettings.Controller.IsTransactionActive())
                 {
-                    dynSettings.Instance.Bench.InitTransaction();
+                    dynRevitSettings.Controller.InitTransaction();
                 }
                 else
                 {
-                    var ts = dynSettings.Instance.Bench.Transaction.GetStatus();
-                    if (ts != Autodesk.Revit.DB.TransactionStatus.Started)
+                    var ts = dynRevitSettings.Controller.Transaction.GetStatus();
+                    if (ts != TransactionStatus.Started)
                     {
-                        if (ts != Autodesk.Revit.DB.TransactionStatus.RolledBack)
-                            dynSettings.Instance.Bench.CancelTransaction();
-                        dynSettings.Instance.Bench.InitTransaction();
+                        if (ts != TransactionStatus.RolledBack)
+                            dynRevitSettings.Controller.CancelTransaction();
+                        dynRevitSettings.Controller.InitTransaction();
                     }
                 }
             }
-            else if (dynSettings.Instance.Bench.RunInDebug)
+            else if (dynRevitSettings.Controller.RunInDebug)
             {
-                if (dynSettings.Instance.Bench.IsTransactionActive())
-                    dynSettings.Instance.Bench.EndTransaction();
+                if (dynRevitSettings.Controller.IsTransactionActive())
+                    dynRevitSettings.Controller.EndTransaction();
             }
 
             return result;

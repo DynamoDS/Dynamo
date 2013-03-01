@@ -114,7 +114,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Bench.Environment.LookupSymbol(Symbol))
+            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
                 .Item.Invoke(args);
         }
     }
@@ -318,7 +318,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)this.Bench.Environment.LookupSymbol("list"))
+            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("list"))
                 .Item.Invoke(args);
         }
     }
@@ -527,7 +527,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Bench.Environment.LookupSymbol("map"))
+            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("map"))
                 .Item.Invoke(args);
         }
     }
@@ -607,7 +607,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)this.Bench.Environment.LookupSymbol("cartesian-product"))
+            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("cartesian-product"))
                 .Item.Invoke(args);
         }
     }
@@ -1772,21 +1772,21 @@ namespace Dynamo.Nodes
         {
             var result = args[0];
 
-            dynSettings.Instance.Bench.Dispatcher.Invoke(new Action(
+            Bench.Dispatcher.Invoke(new Action(
                delegate
                {
-                   dynSettings.Instance.Bench.Log(FScheme.print(result));
+                   Bench.Log(FScheme.print(result));
                }
             ));
 
-            if (dynSettings.Instance.Bench.RunInDebug)
+            if (Controller.RunInDebug)
             {
                 button.Dispatcher.Invoke(new Action(
                    delegate
                    {
                        enabled = true;
                        this.NodeUI.Select();
-                       dynSettings.Instance.Bench.ShowElement(this);
+                       Controller.ShowElement(this);
                    }
                 ));
 
@@ -2004,7 +2004,7 @@ namespace Dynamo.Nodes
                 numeric = value;
                 if (value && this.Text.Length > 0)
                 {
-                    this.Text = dynBench.RemoveChars(
+                    this.Text = DynamoController.RemoveChars(
                        this.Text,
                        this.Text.ToCharArray()
                           .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
@@ -2055,7 +2055,7 @@ namespace Dynamo.Nodes
 
         private bool shouldCommit()
         {
-            return !dynSettings.Instance.Bench.DynamicRunEnabled;
+            return !dynSettings.Controller.DynamicRunEnabled;
         }
 
         protected override void OnTextChanged(TextChangedEventArgs e)
@@ -2066,7 +2066,7 @@ namespace Dynamo.Nodes
             {
                 var p = this.CaretIndex;
 
-                base.Text = dynBench.RemoveChars(
+                base.Text = DynamoController.RemoveChars(
                    this.Text,
                    this.Text.ToCharArray()
                       .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
@@ -2905,7 +2905,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)this.Bench.Environment.LookupSymbol("concat-strings"))
+            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("concat-strings"))
                 .Item.Invoke(args);
         }
     }

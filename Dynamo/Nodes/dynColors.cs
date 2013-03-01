@@ -12,23 +12,10 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-using System;
-using System.IO;
-using System.Threading;
-using System.Windows.Controls;
-using System.Linq;
+using System.Drawing;
 using Dynamo.Connectors;
-using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Drawing;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Dynamo.Nodes
 {

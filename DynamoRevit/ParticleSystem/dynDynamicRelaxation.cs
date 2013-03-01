@@ -28,6 +28,7 @@ using Autodesk.Revit.DB;
 using System.Timers;
 using System.Threading;
 using Dynamo.Nodes;
+using Dynamo.Revit;
 
 
 namespace Dynamo.Nodes
@@ -356,7 +357,7 @@ namespace Dynamo.Nodes
             if (arg0 is Reference)
             {
                 Reference faceRef = arg0 as Reference;
-                f = dynSettings.Instance.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
             }
 
             double d = ((Value.Number)args[1]).Item;//dampening
@@ -495,7 +496,7 @@ namespace Dynamo.Nodes
 
                 springXYZ1 = springEnd1.getPosition();
                 springXYZ2 = springEnd2.getPosition();
-                springLine = dynSettings.Instance.Doc.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
+                springLine = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
 
                 result = FSharpList<Value>.Cons(Value.NewContainer(springLine), result);
             }

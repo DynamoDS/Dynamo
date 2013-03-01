@@ -93,7 +93,7 @@ namespace Dynamo.Nodes
         {
             base.Modified();
 
-            dynSettings.Instance.Bench.SaveFunction(this);
+            dynSettings.Controller.SaveFunction(this);
         }
     }
 
@@ -119,16 +119,16 @@ namespace Dynamo.Nodes
         {
             base.Modified();
 
-            var bench = dynSettings.Instance.Bench;
-            bench.Dispatcher.BeginInvoke(new Action(
+            var controller = dynSettings.Controller;
+            controller.Bench.Dispatcher.BeginInvoke(new Action(
                 () =>
                 {
-                    if (bench.DynamicRunEnabled)
+                    if (controller.DynamicRunEnabled)
                     {
-                        if (!bench.Running)
-                            bench.RunExpression(false, false);
+                        if (!controller.Running)
+                            controller.RunExpression(false, false);
                         else
-                            bench.QueueRun();
+                            controller.QueueRun();
                     }
                 }));
         }

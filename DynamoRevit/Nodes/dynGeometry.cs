@@ -22,6 +22,7 @@ using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
+using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
@@ -572,7 +573,7 @@ namespace Dynamo.Nodes
             XYZ ptA = (XYZ)((Value.Container)args[0]).Item;
             XYZ ptB = (XYZ)((Value.Container)args[1]).Item;
 
-            var plane = dynSettings.Instance.Doc.Application.Application.Create.NewPlane(
+            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(
                ptA, ptB
             );
 
@@ -724,7 +725,7 @@ namespace Dynamo.Nodes
             if (ptA is XYZ)
             {
 
-                line = dynSettings.Instance.Doc.Application.Application.Create.NewLineBound(
+                line = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(
                   (XYZ)ptA, (XYZ)ptB
                   );
 
@@ -732,7 +733,7 @@ namespace Dynamo.Nodes
             }
             else if (ptA is ReferencePoint)
             {
-                line = dynSettings.Instance.Doc.Application.Application.Create.NewLineBound(
+                line = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(
                   (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position
                );
 
@@ -775,14 +776,14 @@ namespace Dynamo.Nodes
             if (ptA is XYZ)
             {
 
-                a = dynSettings.Instance.Doc.Application.Application.Create.NewArc(
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
                    (XYZ)ptA, (XYZ)ptC, (XYZ)ptB //start, end, middle 
                 );
 
 
             }else if (ptA is ReferencePoint)
             {
-                a = dynSettings.Instance.Doc.Application.Application.Create.NewArc(
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
                    (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position, (XYZ)((ReferencePoint)ptC).Position //start, end, middle 
                 );
 
@@ -824,13 +825,13 @@ namespace Dynamo.Nodes
 
             if (ptA is XYZ)
             {
-                a = dynSettings.Instance.Doc.Application.Application.Create.NewArc(
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
                    (XYZ)ptA, radius, start, end, XYZ.BasisX, XYZ.BasisY
                 );
             }
             else if (ptA is ReferencePoint)
             {
-                a = dynSettings.Instance.Doc.Application.Application.Create.NewArc(
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
                    (XYZ)((ReferencePoint)ptA).Position, radius, start, end, XYZ.BasisX, XYZ.BasisY
                 );
             }
@@ -901,13 +902,13 @@ namespace Dynamo.Nodes
             if (ptA is XYZ)
             {
                 //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
-                circle = dynSettings.Instance.Doc.Application.Application.Create.NewArc((XYZ)ptA, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+                circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)ptA, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
 
             }
             else if (ptA is ReferencePoint)
             {
                 //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
-                circle = dynSettings.Instance.Doc.Application.Application.Create.NewArc((XYZ)((ReferencePoint)ptA).Position, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+                circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)((ReferencePoint)ptA).Position, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
             }
 
             return Value.NewContainer(circle);
@@ -947,7 +948,7 @@ namespace Dynamo.Nodes
 
             if (ptA is XYZ)
             {
-                ell = dynSettings.Instance.Doc.Application.Application.Create.NewEllipse(
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                   (XYZ)ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
                );
@@ -955,7 +956,7 @@ namespace Dynamo.Nodes
             }
             else if (ptA is ReferencePoint)
             {
-                ell = dynSettings.Instance.Doc.Application.Application.Create.NewEllipse(
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
                 );
@@ -1000,7 +1001,7 @@ namespace Dynamo.Nodes
 
             if (ptA is XYZ)
             {
-                ell = dynSettings.Instance.Doc.Application.Application.Create.NewEllipse(
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                   (XYZ)ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
                );
@@ -1008,7 +1009,7 @@ namespace Dynamo.Nodes
             }
             else if (ptA is ReferencePoint)
             {
-                ell = dynSettings.Instance.Doc.Application.Application.Create.NewEllipse(
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
                 );
@@ -1072,7 +1073,7 @@ namespace Dynamo.Nodes
             var ptB = (XYZ)((Value.Container)args[1]).Item;
 
             // CurveElement c = MakeLine(this.UIDocument.Document, ptA, ptB);
-            CurveElement c = MakeLineCBP(dynSettings.Instance.Doc.Document, ptA, ptB);
+            CurveElement c = MakeLineCBP(dynRevitSettings.Doc.Document, ptA, ptB);
 
             return FScheme.Value.NewContainer(c);
         }
@@ -1145,7 +1146,7 @@ namespace Dynamo.Nodes
             }
             if (pts.Count() > 0)
             {
-                hs = dynSettings.Instance.Doc.Application.Application.Create.NewHermiteSpline(ctrlPts, false);
+                hs = dynRevitSettings.Doc.Application.Application.Create.NewHermiteSpline(ctrlPts, false);
             }
 
             return Value.NewContainer(hs);

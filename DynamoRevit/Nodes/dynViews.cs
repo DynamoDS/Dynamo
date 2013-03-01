@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
                     return Value.NewContainer(vd);
                 }
 
-                FilteredElementCollector fec = new FilteredElementCollector(dynSettings.Instance.Doc.Document);
+                FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
                 fec.OfClass(typeof(ViewDrafting));
 
                 IList<Element> els = fec.ToElements();
@@ -73,7 +73,7 @@ namespace Dynamo.Nodes
                     try
                     {
                         //create the view
-                        vd = dynSettings.Instance.Doc.Document.Create.NewViewDrafting();
+                        vd = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
                         if (vd != null)
                         {
                             vd.Name = viewName;

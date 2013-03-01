@@ -38,6 +38,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="HelixToolkit.Wpf">
+      <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf.Input">
+      <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="MIConvexHullPlugin">
+      <HintPath>..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -77,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamoController_Revit.cs" />
+    <Compile Include="dynRevitSettings.cs" />
     <Compile Include="dynRevitTransactionNode.cs" />
     <Compile Include="Nodes\dyn3D.cs" />
     <Compile Include="DynamoRevit.cs" />
@@ -99,6 +110,10 @@
     <Compile Include="Nodes\dynTransforms.cs" />
     <Compile Include="Nodes\dynViews.cs" />
     <Compile Include="IdlePromise.cs" />
+    <Compile Include="Nodes\Watch\dynWatch.cs" />
+    <Compile Include="Nodes\Watch\WatchTree.xaml.cs">
+      <DependentUpon>WatchTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
@@ -142,14 +157,14 @@
       <Project>{7C61601E-BD56-4731-A491-416AFCB10525}</Project>
       <Name>DynamoLeapMotion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoPython\DynamoPython.csproj">
-      <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
-      <Name>DynamoPython</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoElements</Name>
       <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
+      <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
+      <Name>FSchemeInterop</Name>
     </ProjectReference>
     <ProjectReference Include="..\FScheme\FScheme.fsproj">
       <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
@@ -158,6 +173,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="splash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Nodes\Watch\WatchTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

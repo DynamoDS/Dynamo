@@ -92,7 +92,7 @@ namespace Dynamo.Nodes
                         {
                             var f = (args[0] as Value.Function).Item;
 
-                            if (node.Bench.RunInDebug)
+                            if (node.Controller.RunInDebug)
                                 return f.Invoke(FSharpList<Value>.Empty);
                             else
                             {
@@ -107,13 +107,13 @@ namespace Dynamo.Nodes
                     FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                         _ =>
                         {
-                            if (node.Bench.RunCancelled)
+                            if (node.Controller.RunCancelled)
                                 throw new CancelEvaluationException(false);
 
-                            if (!node.Bench.RunInDebug)
+                            if (!node.Controller.RunInDebug)
                             {
-                                node.Bench.InIdleThread = true;
-                                node.Bench.InitTransaction();
+                                dynRevitSettings.Controller.InIdleThread = true;
+                                dynRevitSettings.Controller.InitTransaction();
                             }
 
                             return Value.NewDummy("started transaction");
@@ -125,10 +125,10 @@ namespace Dynamo.Nodes
                     FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                         _ =>
                         {
-                            if (!node.Bench.RunInDebug)
+                            if (!dynRevitSettings.Controller.RunInDebug)
                             {
-                                node.Bench.EndTransaction();
-                                node.Bench.InIdleThread = false;
+                                dynRevitSettings.Controller.EndTransaction();
+                                dynRevitSettings.Controller.InIdleThread = false;
 
                                 dynNodeUI.UpdateLayoutDelegate uld = new dynNodeUI.UpdateLayoutDelegate(node.NodeUI.CallUpdateLayout);
                                 node.NodeUI.Dispatcher.Invoke(uld, DispatcherPriority.Background, new object[] { node.NodeUI });

@@ -160,7 +160,7 @@ namespace Dynamo.Connectors
                 plineFigure.Segments.Add(pline);
                 plineGeometry.Figures.Add(plineFigure);
                 plineConnector.Data = plineGeometry;
-                dynSettings.Instance.Workbench.Children.Add(plineConnector);
+                dynSettings.Workbench.Children.Add(plineConnector);
                 #endregion
 
                 endDot = new Ellipse();
@@ -171,7 +171,7 @@ namespace Dynamo.Connectors
                 endDot.Stroke = Brushes.Black;
                 Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
                 Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
-                dynSettings.Instance.Workbench.Children.Add(endDot);
+                dynSettings.Workbench.Children.Add(endDot);
                 endDot.Opacity = STROKE_OPACITY;
 
                 connector.MouseEnter += delegate { if (pEnd != null) Highlight(); };
@@ -193,9 +193,9 @@ namespace Dynamo.Connectors
                 //this will tell the connector to set the elements at either
                 //end to be equal if pStart and pEnd are not null
                 //pStart.Owner.Outputs[pStart.Index].dynElementUpdated += new Dynamo.Nodes.dynElementUpdatedHandler(StartPortUpdated);
-                this.ConnectorType = dynSettings.Instance.Bench.ConnectorType;
-                dynSettings.Instance.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
-                dynSettings.Instance.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
+                this.ConnectorType = dynSettings.Bench.ConnectorType;
+                dynSettings.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
+                dynSettings.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
             }
             else
             {
@@ -260,7 +260,7 @@ namespace Dynamo.Connectors
             connectorPoints.Segments.Add(connectorCurve);
             connectorGeometry.Figures.Add(connectorPoints);
             connector.Data = connectorGeometry;
-            dynSettings.Instance.Workbench.Children.Add(connector);
+            dynSettings.Workbench.Children.Add(connector);
             #endregion
 
             #region polyline creation
@@ -282,7 +282,7 @@ namespace Dynamo.Connectors
             plineFigure.Segments.Add(pline);
             plineGeometry.Figures.Add(plineFigure);
             plineConnector.Data = plineGeometry;
-            dynSettings.Instance.Workbench.Children.Add(plineConnector);
+            dynSettings.Workbench.Children.Add(plineConnector);
             #endregion
 
             endDot = new Ellipse();
@@ -293,7 +293,7 @@ namespace Dynamo.Connectors
             endDot.Stroke = Brushes.Black;
             Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
             Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
-            dynSettings.Instance.Workbench.Children.Add(endDot);
+            dynSettings.Workbench.Children.Add(endDot);
             endDot.Opacity = STROKE_OPACITY;
 
             this.Visible = visible;
@@ -314,9 +314,9 @@ namespace Dynamo.Connectors
 
             this.Connect(endPort);
 
-            this.ConnectorType = dynSettings.Instance.Bench.ConnectorType;
-            dynSettings.Instance.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
-            dynSettings.Instance.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
+            this.ConnectorType = dynSettings.Bench.ConnectorType;
+            dynSettings.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
+            dynSettings.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
         }
 
         public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType)
@@ -496,13 +496,13 @@ namespace Dynamo.Connectors
             pStart = null;
             pEnd = null;
 
-            dynSettings.Instance.Workbench.Children.Remove(connector);
-            dynSettings.Instance.Workbench.Children.Remove(plineConnector);
-            dynSettings.Instance.Workbench.Children.Remove(endDot);
+            dynSettings.Workbench.Children.Remove(connector);
+            dynSettings.Workbench.Children.Remove(plineConnector);
+            dynSettings.Workbench.Children.Remove(endDot);
 
             isDrawing = false;
 
-            dynSettings.Instance.Bench.RemoveConnector(this);
+            dynSettings.Bench.RemoveConnector(this);
         }
 
         public void Redraw(Point p2)
@@ -595,7 +595,7 @@ namespace Dynamo.Connectors
 
         public dynNodeUI FindDynElementByGuid(Guid guid)
         {
-            foreach (UIElement uiel in dynSettings.Instance.Workbench.Children)
+            foreach (UIElement uiel in dynSettings.Workbench.Children)
             {
                 dynNodeUI testEl = null;
 

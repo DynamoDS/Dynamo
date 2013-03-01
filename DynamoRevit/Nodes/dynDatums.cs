@@ -22,6 +22,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
+using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {

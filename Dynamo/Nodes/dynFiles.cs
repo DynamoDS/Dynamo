@@ -72,7 +72,7 @@ namespace Dynamo.Nodes
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
-            if (!this.Bench.Running)
+            if (!Controller.Running)
                 this.RequiresRecalc = true;
             else
             {
@@ -129,7 +129,7 @@ namespace Dynamo.Nodes
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
-            if (!this.Bench.Running)
+            if (!Controller.Running)
                 this.RequiresRecalc = true;
             else
             {
@@ -423,7 +423,7 @@ namespace Dynamo.Nodes
             int tick = 0;
             while (!watcher.Changed)
             {
-                if (Bench.RunCancelled)
+                if (Controller.RunCancelled)
                     throw new Dynamo.Controls.CancelEvaluationException(false);
 
                 Thread.Sleep(10);

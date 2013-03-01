@@ -24,7 +24,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 
-using Dynamo.Nodes.SyncedNodeExtensions; //Gives the RegisterEval... methods
+using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
                     var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
                     try
                     {
-                        saved = dynSettings.Instance.Doc.Document.GetElement(id) as FamilyInstance;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id) as FamilyInstance;
                     }
                     catch
                     {
@@ -359,7 +359,7 @@ namespace Dynamo.Nodes
                     var id = new ElementId(Convert.ToInt32(subNode.Attributes[0].Value));
                     try
                     {
-                        saved = dynSettings.Instance.Doc.Document.GetElement(id) as FamilyInstance;
+                        saved = dynRevitSettings.Doc.Document.GetElement(id) as FamilyInstance;
                     }
                     catch
                     {
@@ -382,8 +382,8 @@ namespace Dynamo.Nodes
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = Dynamo.Utilities.SelectionHelper.RequestFamilyInstanceSelection(
-               dynSettings.Instance.Doc, "Select Massing Family Instance", dynSettings.Instance
+            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestFamilyInstanceSelection(
+               dynRevitSettings.Doc, "Select Massing Family Instance"
             );
         }
 
@@ -401,7 +401,7 @@ namespace Dynamo.Nodes
         Value data;
 
         public dynDividedSurfaceBySelection()
-            : base(new PortData("srf", "The divided surface family instance(s)", typeof(dynNodeUI)))
+            : base(new PortData("srf", "The divided surface family instance(s)", typeof(object)))
         { }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -547,8 +547,8 @@ namespace Dynamo.Nodes
         protected override void OnSelectClick()
         {
             this.SelectedElement = null;
-            this.SelectedElement = SelectionHelper.RequestFormSelection(
-               dynSettings.Instance.Doc, "Select a form element.", dynSettings.Instance
+            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestFormSelection(
+               dynRevitSettings.Doc, "Select a form element."
             );
         }
     }
@@ -561,15 +561,15 @@ namespace Dynamo.Nodes
         Reference f;
 
         public dynFormElementBySelection()
-            : base(new PortData("face", "The face", typeof(dynNodeUI)))
+            : base(new PortData("face", "The face", typeof(object)))
         { }
 
         protected override void OnSelectClick()
         {
-            var doc = dynSettings.Instance.Doc;
+            var doc = dynRevitSettings.Doc;
 
-            f = SelectionHelper.RequestFaceReferenceSelection(
-               doc, "Select a face.", dynSettings.Instance
+            f = dynRevitSettings.SelectionHelper.RequestFaceReferenceSelection(
+               doc, "Select a face."
             );
             this.SelectedElement = doc.Document.GetElement(f);
         }
@@ -596,8 +596,8 @@ namespace Dynamo.Nodes
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = SelectionHelper.RequestCurveElementSelection(
-               dynSettings.Instance.Doc, "Select a curve.", dynSettings.Instance
+            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestCurveElementSelection(
+               dynRevitSettings.Doc, "Select a curve."
             );
 
         }
@@ -621,8 +621,8 @@ namespace Dynamo.Nodes
 
         protected override void OnSelectClick()
         {
-            curves = SelectionHelper.RequestMultipleCurveElementsSelection(
-               dynSettings.Instance.Doc, "Select a set of curves.", dynSettings.Instance
+            curves = dynRevitSettings.SelectionHelper.RequestMultipleCurveElementsSelection(
+               dynRevitSettings.Doc, "Select a set of curves."
             );
             this.SelectedElements.Clear();
             try
@@ -667,8 +667,8 @@ namespace Dynamo.Nodes
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = SelectionHelper.RequestReferencePointSelection(
-               dynSettings.Instance.Doc, "Select a reference point.", dynSettings.Instance
+            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestReferencePointSelection(
+               dynRevitSettings.Doc, "Select a reference point."
             );
         }
 
@@ -689,8 +689,8 @@ namespace Dynamo.Nodes
 
         protected override void OnSelectClick()
         {
-            this.SelectedElement = SelectionHelper.RequestLevelSelection(
-               dynSettings.Instance.Doc, "Select a level.", dynSettings.Instance
+            this.SelectedElement = dynRevitSettings.SelectionHelper.RequestLevelSelection(
+               dynRevitSettings.Doc, "Select a level."
             );
         }
 

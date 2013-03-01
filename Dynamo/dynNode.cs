@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
@@ -59,7 +58,12 @@ namespace Dynamo.Nodes
         //TODO: don't make this static (maybe)
         protected dynBench Bench
         {
-            get { return dynSettings.Instance.Bench; }
+            get { return dynSettings.Bench; }
+        }
+
+        protected DynamoController Controller
+        {
+            get { return dynSettings.Controller; }
         }
 
         protected internal static HashSet<string> _taggedSymbols = new HashSet<string>();
@@ -335,7 +339,7 @@ namespace Dynamo.Nodes
             {
                 Value expr = null;
 
-                if (Bench.RunCancelled)
+                if (Controller.RunCancelled)
                     throw new CancelEvaluationException(false);
 
                 try
@@ -363,10 +367,10 @@ namespace Dynamo.Nodes
                            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                            Bench.Log(ex);
 
-                           dynSettings.Instance.Writer.WriteLine(ex.Message);
-                           dynSettings.Instance.Writer.WriteLine(ex.StackTrace);
+                           dynSettings.Writer.WriteLine(ex.Message);
+                           dynSettings.Writer.WriteLine(ex.StackTrace);
 
-                           Bench.ShowElement(this);
+                           Controller.ShowElement(this);
                        }
                     ));
 
@@ -406,17 +410,17 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual void Destroy() { }
 
-        internal void DisableReporting()
+        protected internal void DisableReporting()
         {
             this._report = false;
         }
 
-        internal void EnableReporting()
+        protected internal void EnableReporting()
         {
             this._report = true;
         }
 
-        internal bool ReportingEnabled { get { return _report; } }
+        protected internal bool ReportingEnabled { get { return _report; } }
 
         /// <summary>
         /// Creates a Scheme representation of this dynNode and all connected dynNodes.

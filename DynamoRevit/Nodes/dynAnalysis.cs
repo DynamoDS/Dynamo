@@ -40,15 +40,15 @@ namespace Dynamo.Nodes
         {
             SpatialFieldManager sfm;
 
-            sfm = SpatialFieldManager.GetSpatialFieldManager(dynSettings.Instance.Doc.ActiveView);
+            sfm = SpatialFieldManager.GetSpatialFieldManager(dynRevitSettings.Doc.ActiveView);
             
             if (sfm != null)
             {
-                dynSettings.Instance.SpatialFieldManagerUpdated = sfm;
+                dynRevitSettings.SpatialFieldManagerUpdated = sfm;
             }
             else
             {
-                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynSettings.Instance.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
+                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
             }
 
             return Value.NewContainer(sfm);
@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
         {
             AnalysisDisplayStyle analysisDisplayStyle = null;
 
-            Document doc = dynSettings.Instance.Doc.Document;
+            Document doc = dynRevitSettings.Doc.Document;
 
             // Look for an existing analysis display style with a specific name
             FilteredElementCollector collector1 = new FilteredElementCollector(doc);
@@ -169,7 +169,7 @@ namespace Dynamo.Nodes
                 CreateDisplayStyle();
             }
 
-            sfm = SpatialFieldManager.GetSpatialFieldManager(dynSettings.Instance.Doc.ActiveView);
+            sfm = SpatialFieldManager.GetSpatialFieldManager(dynRevitSettings.Doc.ActiveView);
             
             if (sfm != null)
             {
@@ -177,7 +177,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynSettings.Instance.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
+                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
             }
 
 <<<<<<< HEAD
@@ -191,7 +191,7 @@ namespace Dynamo.Nodes
 
         void CreateDisplayStyle()
         {
-            Document doc = dynSettings.Instance.Doc.Document;
+            Document doc = dynRevitSettings.Doc.Document;
 
             analysisDisplayStyle = null;
             // Look for an existing analysis display style with a specific name
@@ -286,7 +286,7 @@ namespace Dynamo.Nodes
             Reference reference = ((Value.Container)args[3]).Item as Reference;
             idx = sfm.AddSpatialFieldPrimitive(reference);
 
-            Face face = dynSettings.Instance.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
+            Face face = dynRevitSettings.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
 
             //unwrap the sample locations
             IEnumerable<UV> pts = ((Value.List)args[1]).Item.Select(
@@ -400,7 +400,7 @@ namespace Dynamo.Nodes
             Reference reference = ((Value.Container)args[3]).Item as Reference;
             idx = sfm.AddSpatialFieldPrimitive(reference);
 
-            Face face = dynSettings.Instance.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
+            Face face = dynRevitSettings.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
 
             //unwrap the sample locations
             IEnumerable<UV> pts = ((Value.List)args[1]).Item.Select(
@@ -523,7 +523,7 @@ namespace Dynamo.Nodes
 
                 //http://thebuildingcoder.typepad.com/blog/2012/09/sphere-creation-for-avf-and-filtering.html#3
 
-                var create = dynSettings.Instance.Doc.Application.Application.Create;
+                var create = dynRevitSettings.Doc.Application.Application.Create;
 
                 Line l1 = create.NewLineBound(start, end);
                 Line l2 = create.NewLineBound(end, end1);

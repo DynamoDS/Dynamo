@@ -78,7 +78,7 @@
       <Border Margin="291,20,0,0" BorderBrush="Black" BorderThickness="1" Name="border">
          <!--outer canvas clips the inner canvas-->
          <Canvas Name="outerCanvas" Margin="0,0,0,0" ClipToBounds="True">
-            <dynCtrl:DragCanvas x:Name="workBench"
+            <dynCtrl:DragCanvas x:Name="WorkBench"
                                 x:FieldModifier="public"
                                 Width="100000" 
                                 Height="100000" 
@@ -138,9 +138,9 @@
          <Button Margin="0,5,5,0" Height="25" Width="Auto" HorizontalAlignment="Right" Content="New Node" VerticalAlignment="Top" Click="NewFunction_Click" />
          <Button Margin="35,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Run" Click="Run_Click" Name="RunButton" />
          <Button Margin="155,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Cancel" Click="Cancel_Click" Name="cancelButton" />
-         <CheckBox Margin="60,0,0,35" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="dynamicCheckBox" />
+         <CheckBox Margin="60,0,0,35" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="dynamicCheckBox" x:FieldModifier="public" />
          <Label Margin="72,0,0,29" Content="Run Automatically" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-         <CheckBox Margin="60,0,0,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="debugCheckBox" Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" />
+         <CheckBox Margin="60,0,0,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:FieldModifier="public" Name="debugCheckBox" Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" />
          <Label Margin="72,0,0,7" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
          <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

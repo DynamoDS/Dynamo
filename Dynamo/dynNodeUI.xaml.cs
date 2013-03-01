@@ -146,48 +146,48 @@ namespace Dynamo.Controls
                 switch (value)
                 {
                     case ElementState.ACTIVE:
-                        elementRectangle.Fill = dynSettings.Instance.ActiveBrush;
+                        elementRectangle.Fill = dynSettings.ActiveBrush;
                         foreach (dynPort p in inPorts)
                         {
-                            p.ellipse1.Fill = dynSettings.Instance.ActiveBrush;
+                            p.ellipse1.Fill = dynSettings.ActiveBrush;
                         }
 
                         if (outPort != null)
-                            outPort.ellipse1.Fill = dynSettings.Instance.ActiveBrush;
+                            outPort.ellipse1.Fill = dynSettings.ActiveBrush;
 
                         break;
                     case ElementState.DEAD:
-                        elementRectangle.Fill = dynSettings.Instance.DeadBrush;
+                        elementRectangle.Fill = dynSettings.DeadBrush;
                         foreach (dynPort p in inPorts)
                         {
-                            p.ellipse1.Fill = dynSettings.Instance.DeadBrush;
+                            p.ellipse1.Fill = dynSettings.DeadBrush;
                         }
 
                         if (outPort != null)
-                            outPort.ellipse1.Fill = dynSettings.Instance.DeadBrush;
+                            outPort.ellipse1.Fill = dynSettings.DeadBrush;
 
                         break;
                     case ElementState.ERROR:
-                        elementRectangle.Fill = dynSettings.Instance.ErrorBrush;
+                        elementRectangle.Fill = dynSettings.ErrorBrush;
                         foreach (dynPort p in inPorts)
                         {
-                            p.ellipse1.Fill = dynSettings.Instance.ErrorBrush;
+                            p.ellipse1.Fill = dynSettings.ErrorBrush;
                         }
 
                         if (outPort != null)
-                            outPort.ellipse1.Fill = dynSettings.Instance.ErrorBrush;
+                            outPort.ellipse1.Fill = dynSettings.ErrorBrush;
 
                         break;
                     case ElementState.SELECTED:
                     default:
-                        elementRectangle.Fill = dynSettings.Instance.SelectedBrush;
+                        elementRectangle.Fill = dynSettings.SelectedBrush;
                         foreach (dynPort p in inPorts)
                         {
-                            p.ellipse1.Fill = dynSettings.Instance.SelectedBrush;
+                            p.ellipse1.Fill = dynSettings.SelectedBrush;
                         }
 
                         if (outPort != null)
-                            outPort.ellipse1.Fill = dynSettings.Instance.SelectedBrush;
+                            outPort.ellipse1.Fill = dynSettings.SelectedBrush;
                         break;
                 }
 
@@ -692,7 +692,7 @@ namespace Dynamo.Controls
             }
         }
 
-        protected internal void SetRowAmount(int amt)
+        public void SetRowAmount(int amt)
         {
             int count = this.inputGrid.RowDefinitions.Count;
             if (count == amt)
@@ -809,13 +809,13 @@ namespace Dynamo.Controls
 
         private void deleteElem_cm_Click(object sender, RoutedEventArgs e)
         {
-            var bench = dynSettings.Instance.Bench;
+            var bench = dynSettings.Bench;
             this.nodeLogic.DisableReporting();
             this.nodeLogic.Destroy();
             bench.DeleteElement(this);
         }
 
-        internal void Error(string p)
+        public void Error(string p)
         {
             MarkConnectionState(true);
 

@@ -44,9 +44,9 @@ namespace Dynamo.Nodes
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!dynSettings.Instance.Bench.SelectedElements.Contains(this))
+            if (!dynSettings.Bench.SelectedElements.Contains(this))
             {
-                dynSettings.Instance.Bench.SelectedElements.Add(this);
+                dynSettings.Bench.SelectedElements.Add(this);
             }
         }
 
@@ -68,15 +68,8 @@ namespace Dynamo.Nodes
 
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
-            var bench = dynSettings.Instance.Bench;
-
-            IdlePromise.ExecuteOnIdle(
-               delegate
-               {
-                   bench.DeleteElement(this);
-               },
-               true
-            );
+            var bench = dynSettings.Bench;
+            bench.DeleteElement(this);
         }
     }
 }

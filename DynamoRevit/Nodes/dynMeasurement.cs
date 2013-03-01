@@ -22,6 +22,7 @@ using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
+using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
@@ -52,7 +53,7 @@ namespace Dynamo.Nodes
             if (arg0 is Reference)
             {
                 Reference faceRef = arg0 as Reference;
-                Face f = dynSettings.Instance.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
+                Face f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Face;
                 if (f != null)
                 {
                     area = f.Area;

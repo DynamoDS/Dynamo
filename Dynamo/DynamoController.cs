@@ -89,6 +89,9 @@ namespace Dynamo
             Bench = new dynBench(this);
             Bench.Activated += new EventHandler(Bench_Activated);
 
+            dynSettings.Bench = Bench;
+            dynSettings.Controller = this;
+
             Bench.LockUI();
 
             //run tests
@@ -116,8 +119,8 @@ namespace Dynamo
                     //MessageBox.Show("Workbench could not be opened.");
                     Bench.Log("Workbench could not be opened.");
 
-                    dynSettings.Instance.Writer.WriteLine("Workbench could not be opened.");
-                    dynSettings.Instance.Writer.WriteLine(UnlockLoadPath);
+                    dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    dynSettings.Writer.WriteLine(UnlockLoadPath);
                 }
 
                 UnlockLoadPath = null;
@@ -1433,7 +1436,7 @@ namespace Dynamo
 
                 }
 
-                dynSettings.Instance.Workbench.UpdateLayout();
+                dynSettings.Workbench.UpdateLayout();
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
@@ -1551,12 +1554,12 @@ namespace Dynamo
                 for (int i = el.NodeUI.OutPort.Connectors.Count - 1; i >= 0; i--)
                     el.NodeUI.OutPort.Connectors[i].Kill();
 
-                dynSettings.Instance.Workbench.Children.Remove(el.NodeUI);
+                dynSettings.Workbench.Children.Remove(el.NodeUI);
             }
 
             foreach (dynNote n in this.CurrentSpace.Notes)
             {
-                dynSettings.Instance.Workbench.Children.Remove(n);
+                dynSettings.Workbench.Children.Remove(n);
             }
 
             CurrentSpace.Nodes.Clear();
@@ -1581,6 +1584,24 @@ namespace Dynamo
 
         protected bool _debug;
         private bool _showErrors;
+
+        public virtual bool DynamicRunEnabled
+        {
+            get
+            {
+                return Bench.dynamicCheckBox.IsEnabled
+                   && Bench.debugCheckBox.IsChecked == false
+                   && Bench.dynamicCheckBox.IsChecked == true;
+            }
+        }
+
+        public virtual bool RunInDebug
+        {
+            get
+            {
+                return _debug;
+            }
+        }
 
         internal void QueueRun()
         {

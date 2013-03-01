@@ -17,7 +17,7 @@ namespace Dynamo.Revit
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
         {
-            get { return dynSettings.Instance.Doc; }
+            get { return dynRevitSettings.Doc; }
         }
 
         private List<List<ElementId>> elements;
@@ -63,26 +63,6 @@ namespace Dynamo.Revit
             this.runCount++;
         }
 
-        //protected internal virtual bool RequiresManualTransaction()
-        //{
-        //    return this.InPorts.Any(
-        //       x =>
-        //          x.Connectors.Any() && x.Connectors[0].Start.Owner.RequiresManualTransaction()
-        //    );
-        //}
-
-        //TODO: return true? is this even necessary?
-        //protected internal virtual bool RequiresTransaction()
-        //{
-        //    object[] attribs = this.GetType().GetCustomAttributes(typeof(RequiresTransactionAttribute), false);
-
-        //    return (attribs.Length > 0 && (attribs[0] as RequiresTransactionAttribute).RequiresTransaction)
-        //       || this.InPorts.Any(
-        //             x =>
-        //                x.Connectors.Any() && x.Connectors[0].Start.Owner.RequiresTransaction()
-        //          );
-        //}
-
         internal void PruneRuns(int runCount)
         {
             for (int i = this.elements.Count - 1; i >= runCount; i--)
@@ -104,28 +84,30 @@ namespace Dynamo.Revit
             }
         }
 
-        protected internal override Value __eval_internal(FSharpList<Value> args)
+        protected override Value __eval_internal(FSharpList<Value> args)
         {
             Value result = null;
 
-            bool debug = Bench.RunInDebug;
+            var controller = dynRevitSettings.Controller;
+
+            bool debug = controller.RunInDebug;
 
             if (!debug)
             {
                 #region no debug
 
-                if (Bench.TransMode == TransactionMode.Manual && !Bench.IsTransactionActive())
+                if (controller.TransMode == DynamoController_Revit.TransactionMode.Manual && !controller.IsTransactionActive())
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
 
-                Bench.InitTransaction();
+                controller.InitTransaction();
 
                 result = this.Evaluate(args);
 
                 foreach (ElementId eid in this.deletedIds)
                 {
-                    Bench.RegisterSuccessfulDeleteHook(
+                    controller.RegisterSuccessfulDeleteHook(
                        eid,
                        onSuccessfulDelete
                     );
@@ -146,7 +128,7 @@ namespace Dynamo.Revit
                 result = IdlePromise<Value>.ExecuteOnIdle(
                    delegate
                    {
-                       Bench.InitTransaction();
+                       controller.InitTransaction();
 
                        try
                        {
@@ -154,14 +136,14 @@ namespace Dynamo.Revit
 
                            foreach (ElementId eid in this.deletedIds)
                            {
-                               this.Bench.RegisterSuccessfulDeleteHook(
+                               controller.RegisterSuccessfulDeleteHook(
                                   eid,
                                   onSuccessfulDelete
                                );
                            }
                            this.deletedIds.Clear();
 
-                           Bench.EndTransaction();
+                           controller.EndTransaction();
 
                            this.NodeUI.Dispatcher.BeginInvoke(new Action(
                                delegate
@@ -175,7 +157,7 @@ namespace Dynamo.Revit
                        }
                        catch (Exception ex)
                        {
-                           Bench.CancelTransaction();
+                           controller.CancelTransaction();
                            throw ex;
                        }
                    }
@@ -189,7 +171,7 @@ namespace Dynamo.Revit
             var del = new DynElementUpdateDelegate(this.onDeleted);
 
             foreach (ElementId id in this.Elements)
-                this.Bench.RegisterDeleteHook(id, del);
+                controller.RegisterDeleteHook(id, del);
 
             #endregion
 
@@ -209,10 +191,12 @@ namespace Dynamo.Revit
         /// </summary>
         public override void Destroy()
         {
+            var controller = dynRevitSettings.Controller;
+
             IdlePromise.ExecuteOnIdle(
                delegate
                {
-                   Bench.InitTransaction();
+                   controller.InitTransaction();
                    try
                    {
                        this.runCount = 0;
@@ -222,7 +206,7 @@ namespace Dynamo.Revit
                            {
                                try
                                {
-                                   dynSettings.Instance.Doc.Document.Delete(e);
+                                   dynRevitSettings.Doc.Document.Delete(e);
                                }
                                catch (Autodesk.Revit.Exceptions.InvalidOperationException)
                                {
@@ -246,7 +230,7 @@ namespace Dynamo.Revit
                           + " -- " + ex.Message
                        );
                    }
-                   Bench.EndTransaction();
+                   controller.EndTransaction();
                    this.WorkSpace.Modified();
                },
                true
@@ -283,7 +267,7 @@ namespace Dynamo.Revit
             /// <param name="id">ElementId of the element to watch.</param>
             public static void RegisterEvalOnModified(this dynNode node, ElementId id, Action modAction = null, Action delAction = null)
             {
-                var u = dynSettings.Instance.Bench.Updater;
+                var u = dynRevitSettings.Controller.Updater;
                 u.RegisterChangeHook(
                    id,
                    ChangeTypeEnum.Modify,
@@ -303,7 +287,7 @@ namespace Dynamo.Revit
             /// <param name="id">ElementId of the element to stop watching.</param>
             public static void UnregisterEvalOnModified(this dynNode node, ElementId id)
             {
-                var u = dynSettings.Instance.Bench.Updater;
+                var u = dynRevitSettings.Controller.Updater;
                 u.UnRegisterChangeHook(
                    id, ChangeTypeEnum.Modify
                 );
@@ -318,7 +302,7 @@ namespace Dynamo.Revit
                 {
                     foreach (var d in deleted)
                     {
-                        var u = dynSettings.Instance.Bench.Updater;
+                        var u = dynRevitSettings.Controller.Updater;
                         u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
                         u.UnRegisterChangeHook(d, ChangeTypeEnum.Modify);
                     }
@@ -331,7 +315,7 @@ namespace Dynamo.Revit
             {
                 return delegate(List<ElementId> modified)
                 {
-                    if (!node.RequiresRecalc && !dynSettings.Instance.Bench.Running)
+                    if (!node.RequiresRecalc && !dynRevitSettings.Controller.Running)
                     {
                         if (modifiedAction != null)
                             modifiedAction();

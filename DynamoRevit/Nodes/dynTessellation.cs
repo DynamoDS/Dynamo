@@ -9,6 +9,7 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using MIConvexHull;
+using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {

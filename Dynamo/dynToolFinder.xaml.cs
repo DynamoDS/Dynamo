@@ -96,16 +96,16 @@ namespace Dynamo.Nodes
                             {
                                 if (((NodeNameAttribute)attribs[0]).Name == ((ListBoxItem)toolSelectListBox.Items[toolSelectListBox.SelectedIndex]).Content.ToString())
                                 {
-                                   // dynNode newEl = dynSettings.Instance.Bench.AddDynElement(t, (attribs[0] as NodeNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0, dynSettings.Instance.Workbench.work);
+                                   // dynNode newEl = dynSettings.Bench.AddDynElement(t, (attribs[0] as NodeNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0, dynSettings.Workbench.work);
 
-                                    Point p = Mouse.GetPosition(dynSettings.Instance.Bench.outerCanvas);
-                                    dynNode newEl = dynSettings.Instance.Bench.AddDynElement(
-                                                    t, (attribs[0] as NodeNameAttribute).Name, Guid.NewGuid(), p.X,p.Y, dynSettings.Instance.Bench.CurrentSpace);
+                                    Point p = Mouse.GetPosition(dynSettings.Bench.outerCanvas);
+                                    dynNode newEl = dynSettings.Controller.AddDynElement(
+                                                    t, (attribs[0] as NodeNameAttribute).Name, Guid.NewGuid(), p.X, p.Y, dynSettings.Controller.CurrentSpace);
                                     //newEl.NodeUI.CheckInputs();
 
                                     //turn off the tool list box by sending an event
                                     //that is picked up by the bench
-                                    dynSettings.Instance.Workbench.Children.Remove(this);
+                                    dynSettings.Workbench.Children.Remove(this);
 
                                     break;
                                 }
@@ -133,7 +133,7 @@ namespace Dynamo.Nodes
             //}
             else if (e.Key == Key.Escape)
             {
-                dynSettings.Instance.Workbench.Children.Remove(this);
+                dynSettings.Workbench.Children.Remove(this);
             }
 
             //clear the list of list box items
@@ -194,14 +194,14 @@ namespace Dynamo.Nodes
             if (lbi != null)
             {   
                 //we've clicked a list item
-                Point p = Mouse.GetPosition(dynSettings.Instance.Workbench);
-                dynNode newEl = dynSettings.Instance.Bench.AddDynElement(
-                                Type.GetType("Dynamo.Nodes." + toolNames[toolSelectListBox.SelectedIndex]), lbi.Content.ToString(), Guid.NewGuid(), p.X, p.Y, dynSettings.Instance.Bench.CurrentSpace);
+                Point p = Mouse.GetPosition(dynSettings.Workbench);
+                dynNode newEl = dynSettings.Controller.AddDynElement(
+                                Type.GetType("Dynamo.Nodes." + toolNames[toolSelectListBox.SelectedIndex]), lbi.Content.ToString(), Guid.NewGuid(), p.X, p.Y, dynSettings.Controller.CurrentSpace);
                 //newEl.CheckInputs();
 
                 //turn off the tool list box by sending an event
                 //that is picked up by the bench
-                dynSettings.Instance.Workbench.Children.Remove(this);
+                dynSettings.Workbench.Children.Remove(this);
             }
         }
 
