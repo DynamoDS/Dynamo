@@ -79,26 +79,15 @@ namespace Dynamo.Controls
 
         DynamoController Controller;
 
-        public dynBench(DynamoController controller)
+        internal dynBench(DynamoController controller)
         {
             Controller = controller;
 
-            InitializeComponent();
-
             sw = new StringWriter();
-            Log(String.Format("Dynamo -- Build {0}.", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-
-            dynSettings.Workbench = WorkBench;
-            dynSettings.Bench = this;
 
             selectedElements = new dynSelection();
 
-            this.CurrentX = CANVAS_OFFSET_X;
-            this.CurrentY = CANVAS_OFFSET_Y;
-
             connectorType = ConnectorType.BEZIER;
-            settings_curves.IsChecked = true;
-            settings_curves.IsChecked = false;
         }
 
         public void LockUI()
@@ -1613,13 +1602,13 @@ namespace Dynamo.Controls
 
     public class TypeLoadData
     {
-        public Assembly assembly;
-        public Type t;
+        public Assembly Assembly;
+        public Type Type;
 
         public TypeLoadData(Assembly assemblyIn, Type typeIn)
         {
-            assembly = assemblyIn;
-            t = typeIn;
+            Assembly = assemblyIn;
+            Type = typeIn;
         }
     }
 

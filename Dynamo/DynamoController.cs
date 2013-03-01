@@ -43,7 +43,8 @@ namespace Dynamo
             }
         }
 
-        SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
+        SortedDictionary<string, TypeLoadData> builtinTypesByNickname = new SortedDictionary<string, TypeLoadData>();
+        Dictionary<string, TypeLoadData> builtinTypesByTypeName = new Dictionary<string, TypeLoadData>();
 
         SplashScreen splashScreen;
 
@@ -83,14 +84,26 @@ namespace Dynamo
         #region Constructor and Initialization
         public DynamoController(SplashScreen splash)
         {
+            Bench = new dynBench(this);
+
             splashScreen = splash;
             homeSpace = CurrentSpace = new HomeWorkspace();
 
-            Bench = new dynBench(this);
-            Bench.Activated += new EventHandler(Bench_Activated);
+            Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
+            Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
 
+            Bench.InitializeComponent();
+            Bench.Log(String.Format(
+                "Dynamo -- Build {0}.", 
+                Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+
+            //WTF
+            Bench.settings_curves.IsChecked = true;
+            Bench.settings_curves.IsChecked = false;
+            
             dynSettings.Bench = Bench;
             dynSettings.Controller = this;
+            dynSettings.Workbench = Bench.WorkBench;
 
             Bench.LockUI();
 
@@ -102,6 +115,8 @@ namespace Dynamo
 
             LoadBuiltinTypes();
             PopulateSamplesMenu();
+
+            Bench.Activated += Bench_Activated;
         }
 
         private bool _activated = false;
@@ -212,18 +227,18 @@ namespace Dynamo
 
             var threads = Process.GetCurrentProcess().Threads; // trying to understand why processor pegs after loading.
 
-            string pluginsPath = Path.Combine(location, "definitions");
+            //string pluginsPath = Path.Combine(location, "definitions");
 
-            if (Directory.Exists(pluginsPath))
-            {
-                loadUserAssemblies(pluginsPath);
-            }
+            //if (Directory.Exists(pluginsPath))
+            //{
+            //    loadUserAssemblies(pluginsPath);
+            //}
 
             #region PopulateUI
 
             var sortedExpanders = new SortedDictionary<string, Tuple<Expander, SortedList<string, dynNodeUI>>>();
 
-            foreach (KeyValuePair<string, TypeLoadData> kvp in builtinTypes)
+            foreach (KeyValuePair<string, TypeLoadData> kvp in builtinTypesByNickname)
             {
                 //if (!kvp.Value.t.Equals(typeof(dynSymbol)))
                 //{
@@ -235,7 +250,7 @@ namespace Dynamo
 
                 //---------------------//
 
-                var catAtts = kvp.Value.t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+                var catAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
                 string categoryName;
                 if (catAtts.Length > 0)
                 {
@@ -251,7 +266,7 @@ namespace Dynamo
 
                 try
                 {
-                    var obj = Activator.CreateInstance(kvp.Value.t);
+                    var obj = Activator.CreateInstance(kvp.Value.Type);
                     //var obj = Activator.CreateInstanceFrom(kvp.Value.assembly.Location, kvp.Value.t.FullName);
                     newNode = (dynNode)obj;//.Unwrap();
                 }
@@ -324,7 +339,7 @@ namespace Dynamo
 
                     //--------------//
 
-                    var tagAtts = kvp.Value.t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
+                    var tagAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
                     List<string> tags = null;
                     if (tagAtts.Length > 0)
                     {
@@ -383,7 +398,9 @@ namespace Dynamo
                     if (isNodeSubType(t) && attribs.Length > 0)
                     {
                         string typeName = (attribs[0] as NodeNameAttribute).Name;
-                        builtinTypes.Add(typeName, new TypeLoadData(assembly, t));
+                        var data = new TypeLoadData(assembly, t);
+                        builtinTypesByNickname.Add(typeName, data);
+                        builtinTypesByTypeName.Add(t.FullName, data);
                     }
                 }
             }
@@ -513,36 +530,6 @@ namespace Dynamo
             foreach (var e in this.AllNodes)
             {
                 e.EnableReporting();
-            }
-        }
-
-        private void loadUserAssemblies(string directory)
-        {
-            string[] filePaths = Directory.GetFiles(directory, "*.dll");
-            foreach (string filePath in filePaths)
-            {
-                Assembly currAss = Assembly.LoadFrom(filePath);
-                Type[] loadedTypes = currAss.GetTypes();
-                foreach (Type t in loadedTypes)
-                {
-                    //only load types that are in the right namespace, are not abstract
-                    //and have the elementname attribute
-                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
-
-                    if (t.Namespace == "Dynamo.Nodes" &&
-                        !t.IsAbstract &&
-                        attribs.Length > 0 &&
-                        t.IsSubclassOf(typeof(dynNode)))
-                    {
-                        string typeName = (attribs[0] as NodeNameAttribute).Name;
-                        //System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
-                        //mi.Header = typeName;
-                        //mi.Click += new RoutedEventHandler(AddElement_Click);
-                        //AddMenu.Items.Add(mi);
-
-                        builtinTypes.Add(typeName, new TypeLoadData(currAss, t)); //TODO: this was once usertypes
-                    }
-                }
             }
         }
         #endregion
@@ -779,9 +766,9 @@ namespace Dynamo
             }
             else
             {
-                TypeLoadData tld = builtinTypes[name];
+                TypeLoadData tld = builtinTypesByNickname[name];
 
-                var obj = Activator.CreateInstanceFrom(tld.assembly.Location, tld.t.FullName);
+                var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                 var newEl = (dynNode)obj.Unwrap();
                 newEl.NodeUI.DisableInteraction();
                 result = newEl;
@@ -1164,13 +1151,21 @@ namespace Dynamo
                     double x = Convert.ToDouble(xAttrib.Value.ToString());
                     double y = Convert.ToDouble(yAttrib.Value.ToString());
 
-                    Type t = Type.GetType(typeName);
+                    //Type t = Type.GetType(typeName);
+                    TypeLoadData tData;
+                    Type t;
 
-                    if (t == null)
+                    if (!builtinTypesByTypeName.TryGetValue(typeName, out tData))
                     {
-                        Bench.Log("Error loading defintion. Could not load node of type: " + typeName);
-                        return false;
+                        t = Type.GetType(typeName);
+                        if (t == null)
+                        {
+                            Bench.Log("Error loading definition. Could not load node of type: " + typeName);
+                            return false;
+                        }
                     }
+                    else
+                        t = tData.Type;
 
                     dynNode el = AddDynElement(t, nickname, guid, x, y, ws, System.Windows.Visibility.Hidden);
 
@@ -1399,10 +1394,20 @@ namespace Dynamo
                     if (typeName.StartsWith("Dynamo.Elements."))
                         typeName = "Dynamo.Nodes." + typeName.Remove(0, 16);
 
-                    Type t = Type.GetType(typeName);
+                    TypeLoadData tData;
+                    Type t;
 
-                    if (t == null)
-                        throw new Exception("Could not find node of type: " + typeName);
+                    if (!builtinTypesByTypeName.TryGetValue(typeName, out tData))
+                    {
+                        t = Type.GetType(typeName);
+                        if (t == null)
+                        {
+                            Bench.Log("Error loading workspace. Could not load node of type: " + typeName);
+                            return false;
+                        }
+                    }
+                    else
+                        t = tData.Type;
 
                     dynNode el = AddDynElement(
                        t, nickname, guid, x, y,
