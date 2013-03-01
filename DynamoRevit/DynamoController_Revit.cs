@@ -8,6 +8,9 @@ using Dynamo.Revit;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using Dynamo.Nodes.PythonNode;
+using Binding = Dynamo.Nodes.PythonNode.Binding;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo
 {
@@ -73,15 +76,87 @@ namespace Dynamo
             };
             checkRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
 
-            
+            AddPythonBindings();
+        }
+
+
+        private delegate void LogDelegate(string msg);
+        private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
+
+        void AddPythonBindings()
+        {
+            var pyBindings = PythonBindings.Bindings;
+
+            pyBindings.Add(new Binding("DynLog", new LogDelegate(Bench.Log))); //Logging
+
+            pyBindings.Add(new Binding(
+               "DynTransaction",
+               new Func<Autodesk.Revit.DB.SubTransaction>(
+                  delegate
+                  {
+                      if (!dynRevitSettings.Controller.IsTransactionActive())
+                      {
+                          dynRevitSettings.Controller.InitTransaction();
+                      }
+                      return new Autodesk.Revit.DB.SubTransaction(dynRevitSettings.Doc.Document);
+                  }
+               )
+            ));
+            pyBindings.Add(new Binding("__revit__", dynRevitSettings.Doc.Application));
+            pyBindings.Add(new Binding("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document));
+
+            var oldPyEval = PythonEngine.Evaluator;
+
+            PythonEngine.Evaluator = delegate(bool dirty, string script, IEnumerable<Binding> bindings)
+            {
+                bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
+
+                Value result = null;
+
+                if (dynRevitSettings.Controller.InIdleThread)
+                    result = oldPyEval(dirty, script, bindings);
+                else
+                {
+                    result = IdlePromise<Value>.ExecuteOnIdle(
+                       () => oldPyEval(dirty, script, bindings));
+                }
+
+                if (transactionRunning)
+                {
+                    if (!IsTransactionActive())
+                    {
+                        InitTransaction();
+                    }
+                    else
+                    {
+                        var ts = Transaction.GetStatus();
+                        if (ts != TransactionStatus.Started)
+                        {
+                            if (ts != TransactionStatus.RolledBack)
+                                CancelTransaction();
+                            InitTransaction();
+                        }
+                    }
+                }
+                else if (RunInDebug)
+                {
+                    if (IsTransactionActive())
+                        EndTransaction();
+                }
+
+                return result;
+            };
+            // use this to pass into the python script a list of previously created elements from dynamo
+            //TODO: ADD BACK IN
+            //bindings.Add(new Binding("DynStoredElements", this.Elements));
         }
 
         public override bool RunInDebug
         {
-            get 
-            { 
+            get
+            {
                 return this.TransMode == TransactionMode.Debug;
-            } 
+            }
         }
 
         public bool InIdleThread;

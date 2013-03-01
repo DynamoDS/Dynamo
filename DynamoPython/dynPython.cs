@@ -36,10 +36,8 @@ using Microsoft.Scripting.Hosting;
 using System.Windows;
 using System.Xml;
 using Microsoft.FSharp.Core;
-using Dynamo.Revit;
-using Autodesk.Revit.DB;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Nodes.PythonNode
 {
     internal static class Converters
     {
@@ -47,7 +45,7 @@ namespace Dynamo.Nodes
         {
             return Value.NewFunction(
                 FSharpFunc<FSharpList<Value>, Value>.FromConverter(
-                    args => 
+                    args =>
                         convertToValue(
                             pyf(args.Select(ex => convertFromValue(ex)).ToList()))));
         }
@@ -193,7 +191,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    internal struct Binding
+    public struct Binding
     {
         public string Symbol;
         public dynamic Value;
@@ -205,15 +203,48 @@ namespace Dynamo.Nodes
         }
     }
 
+    public static class PythonBindings
+    {
+        static PythonBindings()
+        {
+            Bindings = new HashSet<Binding>();
+            Bindings.Add(new Binding("__dynamo__", dynSettings.Controller));
+        }
+
+        public static HashSet<Binding> Bindings { get; private set; }
+    }
+
+    public static class PythonEngine
+    {
+        public delegate Value EvaluationDelegate(bool dirty, string script, IEnumerable<Binding> bindings);
+
+        public static EvaluationDelegate Evaluator;
+        
+        private static DynPythonEngine engine = new DynPythonEngine();
+
+        static PythonEngine()
+        {
+            Evaluator = delegate(bool dirty, string script, IEnumerable<Binding> bindings)
+            {
+                if (dirty)
+                {
+                    engine.ProcessCode(script);
+                    dirty = false;
+                }
+
+                return engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
+            };
+        }
+    }
+
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class dynPython : dynRevitTransactionNode
+    public class dynPython : dynNode
     {
-        private DynPythonEngine engine = new DynPythonEngine();
         private bool dirty = true;
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
-        
+
         //TextBox tb;
         string script;
 
@@ -272,103 +303,23 @@ namespace Dynamo.Nodes
             }
         }
 
-        private delegate void LogDelegate(string msg);
-        private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
-
         private List<Binding> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = this.InPortData
                .Select(x => x.NickName)
                .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
+               .Concat(PythonBindings.Bindings)
                .ToList();
 
-            bindings.Add(new Binding("DynLog", new LogDelegate(this.Bench.Log))); //Logging
-            //bindings.Add(new Binding(
-            //   "DynFunction",
-            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Value>(
-            //      Converters.convertPyFunction
-            //   )
-            //));
-            bindings.Add(new Binding(
-               "DynTransaction",
-               new Func<Autodesk.Revit.DB.SubTransaction>(
-                  delegate
-                  {
-                      if (!dynRevitSettings.Controller.IsTransactionActive())
-                      {
-                          dynRevitSettings.Controller.InitTransaction();
-                      }
-                      return new Autodesk.Revit.DB.SubTransaction(this.UIDocument.Document);
-                  }
-               )
-            ));
-            bindings.Add(new Binding("__revit__", this.UIDocument.Application));
-            bindings.Add(new Binding("__doc__", this.UIDocument.Application.ActiveUIDocument.Document));
-            bindings.Add(new Binding("__dynamo__", dynSettings.Controller));
             bindings.Add(new Binding("__persistant__", this.stateDict));
 
-            // use this to pass into the python script a list of previously created elements from dynamo 
-            bindings.Add(new Binding("DynStoredElements", this.Elements));
             return bindings;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (this.dirty)
-            {
-                /*this.engine.ProcessCode(
-                   (string)this.tb.Dispatcher.Invoke(new Func<string>(
-                      delegate { return this.tb.Text; }
-                   ))
-                );*/
-
-                this.engine.ProcessCode(script);
-
-                this.dirty = false;
-            }
-
-            var bindings = this.makeBindings(args);
-
-            bool transactionRunning
-               = dynRevitSettings.Controller.Transaction != null
-               && dynRevitSettings.Controller.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
-
-            Value result = null;
-
-            if (dynRevitSettings.Controller.InIdleThread)
-                result = engine.Evaluate(bindings);
-            else
-            {
-                result = IdlePromise<Value>.ExecuteOnIdle(
-                   () => engine.Evaluate(bindings)
-                );
-            }
-
-            if (transactionRunning)
-            {
-                if (!dynRevitSettings.Controller.IsTransactionActive())
-                {
-                    dynRevitSettings.Controller.InitTransaction();
-                }
-                else
-                {
-                    var ts = dynRevitSettings.Controller.Transaction.GetStatus();
-                    if (ts != Autodesk.Revit.DB.TransactionStatus.Started)
-                    {
-                        if (ts != Autodesk.Revit.DB.TransactionStatus.RolledBack)
-                            dynRevitSettings.Controller.CancelTransaction();
-                        dynRevitSettings.Controller.InitTransaction();
-                    }
-                }
-            }
-            else if (dynRevitSettings.Controller.RunInDebug)
-            {
-                if (dynRevitSettings.Controller.IsTransactionActive())
-                    dynRevitSettings.Controller.EndTransaction();
-            }
-
-            return result;
+            return PythonEngine.Evaluator(dirty, script, makeBindings(args));
         }
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -385,15 +336,15 @@ namespace Dynamo.Nodes
 
             //set the value from the text in the box
             script = editWindow.editText.Text;
-            
+
             this.dirty = true;
         }
-     }
+    }
 
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs a IronPython script from a string")]
-    public class dynPythonString : dynRevitTransactionNode
+    public class dynPythonString : dynNode
     {
         private DynPythonEngine engine = new DynPythonEngine();
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
@@ -413,93 +364,26 @@ namespace Dynamo.Nodes
             get { return outPortData; }
         }
 
-        private delegate void LogDelegate(string msg);
-        private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
-
         private List<Binding> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = this.InPortData
                .Select(x => x.NickName)
                .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
+               .Concat(PythonBindings.Bindings)
                .ToList();
 
-            bindings.Add(new Binding("DynLog", new LogDelegate(this.Bench.Log))); //Logging
-            //bindings.Add(new Binding(
-            //   "DynFunction",
-            //   new Func<Func<IEnumerable<dynamic>, dynamic>, Value>(
-            //      Converters.convertPyFunction
-            //   )
-            //));
-            bindings.Add(new Binding(
-               "DynTransaction",
-               new Func<Autodesk.Revit.DB.SubTransaction>(
-                  delegate
-                  {
-                      if (!dynRevitSettings.Controller.IsTransactionActive())
-                      {
-                          dynRevitSettings.Controller.InitTransaction();
-                      }
-                      return new Autodesk.Revit.DB.SubTransaction(this.UIDocument.Document);
-                  }
-               )
-            ));
-            bindings.Add(new Binding("__revit__", this.UIDocument.Application));
-            bindings.Add(new Binding("__dynamo__", dynRevitSettings.Controller));
             bindings.Add(new Binding("__persistant__", this.stateDict));
 
-            // use this to pass into the python script a list of previously created elements from dynamo 
-            bindings.Add(new Binding("DynStoredElements", this.Elements));
             return bindings;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            this.engine.ProcessCode(
-                ((Value.String)args[0]).Item
-            );
-
-            var bindings = this.makeBindings(args).Skip(1);
-
-            bool transactionRunning
-               = dynRevitSettings.Controller.Transaction != null
-               && dynRevitSettings.Controller.Transaction.GetStatus() == Autodesk.Revit.DB.TransactionStatus.Started;
-
-            Value result = null;
-
-            if (dynRevitSettings.Controller.InIdleThread)
-                result = engine.Evaluate(bindings);
-            else
-            {
-                result = IdlePromise<Value>.ExecuteOnIdle(
-                   () => engine.Evaluate(bindings)
-                );
-            }
-
-            if (transactionRunning)
-            {
-                if (!dynRevitSettings.Controller.IsTransactionActive())
-                {
-                    dynRevitSettings.Controller.InitTransaction();
-                }
-                else
-                {
-                    var ts = dynRevitSettings.Controller.Transaction.GetStatus();
-                    if (ts != TransactionStatus.Started)
-                    {
-                        if (ts != TransactionStatus.RolledBack)
-                            dynRevitSettings.Controller.CancelTransaction();
-                        dynRevitSettings.Controller.InitTransaction();
-                    }
-                }
-            }
-            else if (dynRevitSettings.Controller.RunInDebug)
-            {
-                if (dynRevitSettings.Controller.IsTransactionActive())
-                    dynRevitSettings.Controller.EndTransaction();
-            }
-
-            return result;
+            return PythonEngine.Evaluator(
+                RequiresRecalc, 
+                ((Value.String)args[0]).Item, 
+                makeBindings(args.Skip(1)));
         }
     }
 }
