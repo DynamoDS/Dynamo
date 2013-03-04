@@ -1029,7 +1029,7 @@ namespace Dynamo
 
                 var variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
                 var inputNames = variables.Select(x => ((dynSymbol)x).Symbol);
-                var outputNames = outputs.Select(x => (x as dynOutput).Symbol);
+                var outputNames = topMost.Select(x => x.Item2 is dynOutput ? (x.Item2 as dynOutput).Symbol : x.Item1.NickName);
 
                 INode top;
                 var buildDict = new Dictionary<dynNode, Dictionary<PortData, INode>>();
