@@ -259,7 +259,7 @@ namespace Dynamo.Nodes
             //Is this a partial application?
             var partial = false;
 
-            var partialSymList = new List<string>();
+            var partialSymList = new List<PortData>();
 
             //For each index in InPortData
             //for (int i = 0; i < InPortData.Count; i++)
@@ -280,8 +280,7 @@ namespace Dynamo.Nodes
                 else //othwise, remember that this is a partial application
                 {
                     partial = true;
-                    node.ConnectInput(data.NickName, new SymbolNode(data.NickName));
-                    partialSymList.Add(data.NickName);
+                    partialSymList.Add(data);
                 }
             }
 
@@ -289,7 +288,9 @@ namespace Dynamo.Nodes
 
             if (OutPortData.Count > 1)
             {
-                //TODO: Optimize for non-connected outports by using FScheme.Drop. Do not generate "rests" if they won't be used!
+                foreach (var data in partialSymList)
+                    node.ConnectInput(data.NickName, new SymbolNode(data.NickName));
+
                 InputNode prev = node;
                 int prevIndex = 0;
 
@@ -320,7 +321,7 @@ namespace Dynamo.Nodes
                         firstNode.ConnectInput("list", prev);
 
                         if (partial)
-                            nodes[data.Data] = new AnonymousFunctionNode(partialSymList, firstNode);
+                            nodes[data.Data] = new AnonymousFunctionNode(partialSymList.Select(x => x.NickName), firstNode);
                         else
                             nodes[data.Data] = firstNode;
                     }
