@@ -33,12 +33,13 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     public class dynFunction : dynBuiltinFunction
     {
-        public dynFunction(IEnumerable<string> inputs, string output, string symbol)
+        public dynFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, string symbol)
             : base(symbol)
         {
             //Set inputs and output
             SetInputs(inputs);
-            OutPortData.Add(new PortData(output, "function output", typeof(object)));
+            foreach (var output in outputs)
+                OutPortData.Add(new PortData(output, "function output", typeof(object)));
 
             //Set the nickname
             NodeUI.NickName = symbol;

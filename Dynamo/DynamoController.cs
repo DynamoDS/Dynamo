@@ -628,9 +628,10 @@ namespace Dynamo
             dynFunction newEl = new dynFunction(
                workSpace.Nodes.Where(el => el is dynSymbol)
                   .Select(s => ((dynSymbol)s).Symbol),
-               "out",
+               new List<String>() { "out" },
                name
             );
+
             newEl.NodeUI.DisableInteraction();
             newEl.NodeUI.MouseDown += delegate
             {
@@ -758,12 +759,33 @@ namespace Dynamo
             {
                 dynWorkspace ws = dynFunctionDict[name];
 
-                result = new dynFunction(
-                   ws.Nodes.Where(e => e is dynSymbol)
-                      .Select(s => ((dynSymbol)s).Symbol),
-                   "out",
-                   name
-                );
+                var inputs = 
+                    ws.Nodes.Where(e => e is dynSymbol)
+                        .Select(s => (s as dynSymbol).Symbol);
+
+                var outputs =
+                    ws.Nodes.Where(e => e is dynOutput)
+                        .Select(o => (o as dynOutput).Symbol);
+
+                if (!outputs.Any())
+                {
+                    var topMost = new List<Tuple<PortData, dynNode>>();
+
+                    var topMostNodes = ws.GetTopMostElements();
+
+                    foreach (var topNode in topMostNodes)
+                    {
+                        foreach (var output in topNode.OutPortData)
+                        {
+                            if (!topNode.HasOutput(output))
+                                topMost.Add(Tuple.Create(output, topNode));
+                        }
+                    }
+
+                    outputs = topMost.Select(x => x.Item1.NickName);
+                }
+                
+                result = new dynFunction(inputs, outputs, name);
             }
             else
             {
