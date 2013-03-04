@@ -1,1 +1,0 @@
-C:\Python27\python auto_build_unit_tests.py

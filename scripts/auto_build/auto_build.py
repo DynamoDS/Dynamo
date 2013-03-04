@@ -5,6 +5,7 @@ import datetime
 import sys
 from collections import namedtuple
 import shutil
+import re
 import os
 
 from email.MIMEMultipart import MIMEMultipart
@@ -50,10 +51,16 @@ def main():
 
 	print 'cloning...'
 	pull_result = clone( remote_path, sandbox_path, repo_name ) 
+
+	print 'getting commit history...'
+	commits = run_cmd([ 'git','log','--since=1.day'], cwd = repo_root)
+	print commits
 	
 	print 'building....'
 	build_result = build( msbuild_path, solution_path )
 	build_result_debug = build( msbuild_path, solution_path, build_config = "Debug" )
+
+	installers_result = "Installers not formed.\n"
 
 	if (build_result['success'] == True and build_result_debug['success'] == True):
 		print 'making installers...'
@@ -66,10 +73,10 @@ def main():
 		print 'build failed'
 
 	print 'interpreting results...'
-	[subject, message] = get_email_content( repo_date, pull_result, [build_result, build_result_debug], installers_result )
+	[subject, message] = get_email_content( repo_date, pull_result, [build_result, build_result_debug], installers_result, commits )
 	
 	print 'logging...'
-	log = log_results(log_prefix, pull_result, [build_result, build_result_debug], installers_result)
+	log = log_results(log_prefix, pull_result, [build_result, build_result_debug], installers_result, commits)
 
 	print 'emailing results...'
 	email_result = email_all( email_list_path, email_sender, subject, message, log )
@@ -77,12 +84,8 @@ def main():
 
 def interpret_build(result):
 
-	results_split = result.split('\r\n')
-	for elem in results_split:
-		print elem
-
-	errors = int( results_split[-4].strip().split(' ')[0] )
-	warnings = int( results_split[-5].strip().split(' ')[0] )
+	errors = int( re.search( r"[0-9]* Error", result).group(0).split(' ')[0] )
+	warnings = int( re.search( r"[0-9]* Warning", result).group(0).split(' ')[0] )
 
 	return {'result': result, 'errors': errors, 'warnings': warnings, 'success': ( errors == 0) }
 
@@ -95,13 +98,11 @@ def cleanup(pull_to):
 def rm_dir(path):
 	if os.path.exists(path):
 		run_cmd(['rmdir', path, '/S', '/Q'])
-		print 'removed directory ' + path
 
 def mkdir(path):
 	if os.path.exists(path):
 		return
 	os.makedirs(path)
-	print 'created directory ' + path
 
 def update_realtimedev( installer_dir, installer_bin_dir, repo_root, realtimedev_root ):
 
@@ -126,10 +127,10 @@ def copy_folder_contents(path, endpath):
 def make_installers(path_to_installer_bats, installer_bat):
 	return run_cmd( installer_bat, cwd = path_to_installer_bats )
 
-def log_results(log_prefix, pull_result, build_result, email_result):
+def log_results(log_prefix, pull_result, build_result, email_result, commits):
 	path = log_prefix + date_string() + '.log'
 	
-	log = [pull_result, build_result[0], build_result[1], email_result]
+	log = [pull_result, commits, build_result[0]["result"], build_result[1]["result"], email_result]
 	log = map( lambda v: str(v), log )  
 	log_string = '\n############\n'.join( log )
 
@@ -166,7 +167,7 @@ def run_cmd( args, printOutput = True, cwd = None ):
 		
 	return out
 	
-def get_email_content( repo_date, pull_result, build_results, installer_result ):
+def get_email_content( repo_date, pull_result, build_results, installer_result, commits ):
 
 	if (installer_result == None):
 		installer_result = "No installers created"
@@ -180,11 +181,16 @@ def get_email_content( repo_date, pull_result, build_results, installer_result )
 
 	subject = "Dynamo autobuild for " + repo_date + ": " + success_string
 	message = "The build was a " + success_string + "\n\n"
+	message = message + "------------------------- \n\n"
 	message = message + "There were " + str( build_results[0]["errors"]) + " errors and "
 	message = message + str( build_results[0]["warnings"] ) + " warnings in the Release build. \n\n"
 
 	message = message + "There were " + str( build_results[1]["errors"]) + " errors and "
 	message = message + str( build_results[0]["warnings"] ) + " warnings in the Debug build. \n\n"
+	message = message + "------------------------- \n\n"
+	message = message + "Commits since last build: \n\n"
+	message = message + commits
+	message = message + "------------------------- \n\n"
 
 	if success:
 		message = message + "The installers were copied to the DynamoRealtimeDev/builds/" + repo_date + "/install\n\n"
