@@ -30,49 +30,13 @@ namespace Dynamo
 
             Predicate<dynNode> manualTransactionPredicate = delegate(dynNode node)
             {
-                if (node is dynTransaction)
-                    return true;
-
-                if (node is dynFunction)
-                {
-                    var symbol = (node as dynFunction).Symbol;
-                    if (!dynFunctionDict.ContainsKey(symbol))
-                    {
-                        Bench.Log("WARNING -- No implementation found for node: " + symbol);
-                        node.NodeUI.Error("Could not find .dyf definition file for this node.");
-                        return false;
-                    }
-
-                    return dynFunctionDict[symbol]
-                        .GetTopMostElements()
-                        .Any(checkManualTransaction.TraverseUntilAny);
-                }
-
-                return false;
+                return node is dynTransaction;
             };
             checkManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
             Predicate<dynNode> requiresTransactionPredicate = delegate(dynNode node)
             {
-                if (node is dynRevitTransactionNode)
-                    return true;
-
-                if (node is dynFunction)
-                {
-                    var symbol = (node as dynFunction).Symbol;
-                    if (!dynFunctionDict.ContainsKey(symbol))
-                    {
-                        Bench.Log("WARNING -- No implementation found for node: " + symbol);
-                        node.NodeUI.Error("Could not find .dyf definition file for this node.");
-                        return false;
-                    }
-
-                    return dynFunctionDict[symbol]
-                        .GetTopMostElements()
-                        .Any(checkRequiresTransaction.TraverseUntilAny);
-                }
-
-                return false;
+                return node is dynRevitTransactionNode;
             };
             checkRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
 

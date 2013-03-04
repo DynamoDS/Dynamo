@@ -589,12 +589,12 @@ namespace Dynamo.Nodes
         /// <param name="data">PortData to look for an input for.</param>
         /// <param name="input">If an input is found, it will be assigned.</param>
         /// <returns>True if there is an input, false otherwise.</returns>
-        protected bool TryGetInput(PortData data, out Tuple<PortData, dynNode> input)
+        public bool TryGetInput(PortData data, out Tuple<PortData, dynNode> input)
         {
             return Inputs.TryGetValue(data, out input) && input != null;
         }
 
-        private bool TryGetOutput(PortData output, out HashSet<dynNode> newOutputs)
+        public bool TryGetOutput(PortData output, out HashSet<dynNode> newOutputs)
         {
             return Outputs.TryGetValue(output, out newOutputs);
         }
@@ -604,12 +604,12 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="data">PortData to look for an input for.</param>
         /// <returns>True if there is an input, false otherwise.</returns>
-        protected bool HasInput(PortData data)
+        public bool HasInput(PortData data)
         {
             return Inputs.ContainsKey(data) && Inputs[data] != null;
         }
 
-        protected bool HasOutput(PortData portData)
+        public bool HasOutput(PortData portData)
         {
             return Outputs.ContainsKey(portData) && Outputs[portData].Any();
         }
@@ -701,6 +701,8 @@ namespace Dynamo.Nodes
 
         Dictionary<dynNode, bool> resultDict = new Dictionary<dynNode, bool>();
 
+        bool inProgress;
+
         public PredicateTraverser(Predicate<dynNode> p)
         {
             predicate = p;
@@ -708,9 +710,19 @@ namespace Dynamo.Nodes
 
         public bool TraverseUntilAny(dynNode entry)
         {
+            inProgress = true;
             bool result = traverseAny(entry);
             resultDict.Clear();
+            inProgress = false;
             return result;
+        }
+
+        public bool ContinueTraversalUntilAny(dynNode entry)
+        {
+            if (inProgress)
+                return traverseAny(entry);
+            else
+                throw new Exception("ContinueTraversalUntilAny cannot be used except in a traversal predicate.");
         }
 
         private bool traverseAny(dynNode entry)
@@ -720,34 +732,29 @@ namespace Dynamo.Nodes
                 return result;
 
             result = predicate(entry);
+            resultDict[entry] = result;
             if (result)
-            {
                 return result;
+
+            if (entry is dynFunction)
+            {
+                var symbol = (entry as dynFunction).Symbol;
+                if (!dynSettings.Controller.dynFunctionDict.ContainsKey(symbol))
+                {
+                    dynSettings.Bench.Log("WARNING -- No implementation found for node: " + symbol);
+                    entry.NodeUI.Error("Could not find .dyf definition file for this node.");
+                    return false;
+                }
+
+                result = dynSettings.Controller.dynFunctionDict[symbol]
+                    .GetTopMostElements()
+                    .Any(ContinueTraversalUntilAny);
             }
             resultDict[entry] = result;
+            if (result)
+                return result;
 
             return entry.Inputs.Values.Any(x => x != null && traverseAny(x.Item2));
-        }
-
-        public bool TraverseForAll(dynNode entry)
-        {
-            bool result = traverseAll(entry);
-            resultDict.Clear();
-            return result;
-        }
-
-        private bool traverseAll(dynNode entry)
-        {
-            bool result;
-            if (resultDict.TryGetValue(entry, out result))
-                return result;
-
-            result = predicate(entry);
-            if (!result)
-                return result;
-            resultDict[entry] = result;
-
-            return entry.Inputs.Values.Any(x => x != null && traverseAll(x.Item2));
         }
     }
 }

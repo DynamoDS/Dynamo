@@ -190,6 +190,31 @@ namespace Dynamo.Nodes
             }
         }
 
+        public void SetOutputs(IEnumerable<string> outputs)
+        {
+            int i = 0;
+            foreach (string output in outputs)
+            {
+                PortData data = new PortData(output, "Output #" + (i + 1), typeof(object));
+
+                if (OutPortData.Count > i)
+                {
+                    OutPortData[i] = data;
+                }
+                else
+                {
+                    OutPortData.Add(data);
+                }
+
+                i++;
+            }
+
+            if (i < OutPortData.Count)
+            {
+                OutPortData.RemoveRange(i, OutPortData.Count - i);
+            }
+        }
+
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
@@ -294,6 +319,72 @@ namespace Dynamo.Nodes
             {
                 _startTag = false;
                 _taggedSymbols.Clear();
+            }
+        }
+    }
+
+    [NodeName("Output")]
+    [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
+    [NodeDescription("A function output")]
+    [IsInteractive(false)]
+    public class dynOutput : dynNode
+    {
+        TextBox tb;
+
+        public dynOutput()
+        {
+            //add a text box to the input grid of the control
+            tb = new TextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            NodeUI.inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Text = "";
+            //tb.KeyDown += new System.Windows.Input.KeyEventHandler(tb_KeyDown);
+            //tb.LostFocus += new System.Windows.RoutedEventHandler(tb_LostFocus);
+
+            //turn off the border
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+
+            InPortData.Add(new PortData("", "", typeof(object)));
+
+            NodeUI.RegisterAllPorts();
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
+
+        public string Symbol
+        {
+            get { return tb.Text; }
+            set { tb.Text = value; }
+        }
+
+        public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement("Symbol");
+            outEl.SetAttribute("value", Symbol);
+            dynEl.AppendChild(outEl);
+        }
+
+        public override void LoadElement(XmlNode elNode)
+        {
+            foreach (XmlNode subNode in elNode.ChildNodes)
+            {
+                if (subNode.Name == "Symbol")
+                {
+                    Symbol = subNode.Attributes[0].Value;
+                }
             }
         }
     }

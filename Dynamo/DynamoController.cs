@@ -95,13 +95,13 @@ namespace Dynamo
 
             Bench.InitializeComponent();
             Bench.Log(String.Format(
-                "Dynamo -- Build {0}.", 
+                "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version.ToString()));
 
             //WTF
             Bench.settings_curves.IsChecked = true;
             Bench.settings_curves.IsChecked = false;
-            
+
             dynSettings.Bench = Bench;
             dynSettings.Controller = this;
             dynSettings.Workbench = Bench.WorkBench;
@@ -977,37 +977,85 @@ namespace Dynamo
             try
             {
                 //Find compile errors
-                var topMost = functionWorkspace.GetTopMostElements().ToList();
+                //var topMost = functionWorkspace.GetTopMostElements().ToList();
 
-                if (topMost.Count > 1)
+                var outputs = functionWorkspace.Nodes
+                    .Where(x => x is dynOutput);
+
+
+                var topMost = new List<Tuple<PortData, dynNode>>();
+
+                if (outputs.Any())
                 {
-                    foreach (var ele in topMost)
-                    {
-                        ele.NodeUI.Error("Nodes can have only one output.");
-                    }
+                    topMost.AddRange(outputs.Select(
+                        x =>
+                        {
+                            Tuple<PortData, dynNode> input;
+                            x.TryGetInput(x.InPortData[0], out input);
+                            return input;
+                        }));
                 }
                 else
                 {
-                    foreach (var ele in topMost)
+                    var topMostNodes = functionWorkspace.GetTopMostElements();
+
+                    foreach (var topNode in topMostNodes)
                     {
-                        ele.NodeUI.ValidateConnections();
+                        foreach (var output in topNode.OutPortData)
+                        {
+                            if (!topNode.HasOutput(output))
+                                topMost.Add(Tuple.Create(output, topNode));
+                        }
                     }
                 }
+                    
+                //if (topMost.Count > 1)
+                //{
+                //    foreach (var ele in topMost)
+                //    {
+                //        ele.NodeUI.Error("Nodes can have only one output.");
+                //    }
+                //}
+                //else
+                //{
+                foreach (var ele in topMost)
+                {
+                    ele.Item2.NodeUI.ValidateConnections();
+                }
+                //}
 
                 //Find function entry point, and then compile the function and add it to our environment
-                dynNode top = topMost.FirstOrDefault();
+                //dynNode top = topMost.FirstOrDefault();
 
                 var variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
-                var variableNames = variables.Select(x => ((dynSymbol)x).Symbol);
+                var inputNames = variables.Select(x => ((dynSymbol)x).Symbol);
+                var outputNames = outputs.Select(x => (x as dynOutput).Symbol);
 
-                if (top != default(dynNode))
+                INode top;
+                var buildDict = new Dictionary<dynNode, Dictionary<PortData, INode>>();
+
+                if (topMost.Count > 1)
                 {
-                    var topNode = top.BuildExpression(new Dictionary<dynNode, Dictionary<PortData, INode>>());
+                    InputNode node = new ExternalFunctionNode(
+                        FScheme.Value.NewList,
+                        Enumerable.Range(0, topMost.Count).Select(x => x.ToString()));
 
-                    Expression expression = Utils.MakeAnon(variableNames, topNode.Compile());
+                    var i = 0;
+                    foreach (var topNode in topMost)
+                    {
+                        var inputName = i.ToString();
+                        node.ConnectInput(inputName, topNode.Item2.Build(buildDict, topNode.Item1));
+                        i++;
+                    }
 
-                    FSchemeEnvironment.DefineSymbol(functionWorkspace.Name, expression);
+                    top = node;
                 }
+                else
+                    top = topMost[0].Item2.BuildExpression(buildDict);
+
+                Expression expression = Utils.MakeAnon(inputNames, top.Compile());
+
+                FSchemeEnvironment.DefineSymbol(functionWorkspace.Name, expression);
 
                 //Update existing function nodes which point to this function to match its changes
                 foreach (var el in this.AllNodes)
@@ -1019,7 +1067,8 @@ namespace Dynamo
                         if (!node.Symbol.Equals(functionWorkspace.Name))
                             continue;
 
-                        node.SetInputs(variableNames);
+                        node.SetInputs(inputNames);
+                        node.SetOutputs(outputNames);
                         el.NodeUI.RegisterAllPorts();
                     }
                 }
@@ -1030,7 +1079,8 @@ namespace Dynamo
 
                 //Update new add menu
                 var addItem = (dynFunction)Bench.addMenuItemsDictNew[functionWorkspace.Name].NodeLogic;
-                addItem.SetInputs(variableNames);
+                addItem.SetInputs(inputNames);
+                addItem.SetOutputs(outputNames);
                 addItem.NodeUI.RegisterAllPorts();
                 addItem.NodeUI.State = ElementState.DEAD;
             }
