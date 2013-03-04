@@ -594,6 +594,9 @@ namespace Dynamo.Controls
                     p.PortConnected += new PortConnectedHandler(p_PortConnected);
                     p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
 
+                    ScaleTransform trans = new ScaleTransform(-1, 1, p.Width / 2, p.Height / 2);
+                    p.RenderTransform = trans;
+
                     return p;
                 }
             }
