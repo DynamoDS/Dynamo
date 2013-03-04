@@ -20,6 +20,7 @@ using Expression = Dynamo.FScheme.Expression;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
+using Dynamo.FSchemeInterop.Node;
 
 namespace Dynamo
 {
@@ -906,17 +907,20 @@ namespace Dynamo
 
                 foreach (dynNode el in workSpace.Nodes)
                 {
-                    foreach (dynConnector c in el.NodeUI.OutPort.Connectors)
+                    foreach (var port in el.NodeUI.OutPorts)
                     {
-                        XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
-                        connectorList.AppendChild(connector);
-                        connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
-                        connector.SetAttribute("start_index", c.Start.Index.ToString());
-                        connector.SetAttribute("end", c.End.Owner.GUID.ToString());
-                        connector.SetAttribute("end_index", c.End.Index.ToString());
+                        foreach (dynConnector c in port.Connectors)
+                        {
+                            XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
+                            connectorList.AppendChild(connector);
+                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
+                            connector.SetAttribute("start_index", c.Start.Index.ToString());
+                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
+                            connector.SetAttribute("end_index", c.End.Index.ToString());
 
-                        if (c.End.PortType == PortType.INPUT)
-                            connector.SetAttribute("portType", "0");
+                            if (c.End.PortType == PortType.INPUT)
+                                connector.SetAttribute("portType", "0");
+                        }
                     }
                 }
 
@@ -998,7 +1002,7 @@ namespace Dynamo
 
                 if (top != default(dynNode))
                 {
-                    var topNode = top.BuildExpression();
+                    var topNode = top.BuildExpression(new Dictionary<dynNode, Dictionary<PortData, INode>>());
 
                     Expression expression = Utils.MakeAnon(variableNames, topNode.Compile());
 
@@ -1016,7 +1020,7 @@ namespace Dynamo
                             continue;
 
                         node.SetInputs(variableNames);
-                        el.NodeUI.ReregisterInputs();
+                        el.NodeUI.RegisterAllPorts();
                     }
                 }
 
@@ -1027,7 +1031,7 @@ namespace Dynamo
                 //Update new add menu
                 var addItem = (dynFunction)Bench.addMenuItemsDictNew[functionWorkspace.Name].NodeLogic;
                 addItem.SetInputs(variableNames);
-                addItem.NodeUI.ReregisterInputs();
+                addItem.NodeUI.RegisterAllPorts();
                 addItem.NodeUI.State = ElementState.DEAD;
             }
             catch (Exception ex)
@@ -1556,8 +1560,11 @@ namespace Dynamo
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
                         p.Connectors[i].Kill();
                 }
-                for (int i = el.NodeUI.OutPort.Connectors.Count - 1; i >= 0; i--)
-                    el.NodeUI.OutPort.Connectors[i].Kill();
+                foreach (var port in el.NodeUI.OutPorts)
+                {
+                    for (int i = port.Connectors.Count - 1; i >= 0; i--)
+                        port.Connectors[i].Kill();
+                }
 
                 dynSettings.Workbench.Children.Remove(el.NodeUI);
             }
@@ -1652,9 +1659,7 @@ namespace Dynamo
             /* Execution Thread */
 
             //Get our entry points (elements with nothing connected to output)
-            var topElements = this.homeSpace.Nodes.Where(
-               x => !x.NodeUI.OutPort.Connectors.Any()
-            );
+            var topElements = homeSpace.GetTopMostElements();
 
             //Mark the topmost as dirty/clean
             foreach (var topMost in topElements)
@@ -1663,13 +1668,14 @@ namespace Dynamo
             //TODO: Flesh out error handling
             try
             {
-                var topNode = new FSchemeInterop.Node.BeginNode(new List<string>());
+                var topNode = new BeginNode(new List<string>());
                 var i = 0;
+                var buildDict = new Dictionary<dynNode, Dictionary<PortData, INode>>();
                 foreach (var topMost in topElements)
                 {
                     var inputName = i.ToString();
                     topNode.AddInput(inputName);
-                    topNode.ConnectInput(inputName, topMost.BuildExpression());
+                    topNode.ConnectInput(inputName, topMost.BuildExpression(buildDict));
                     i++;
                 }
 

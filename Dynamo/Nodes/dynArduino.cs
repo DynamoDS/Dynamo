@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
     [NodeName("Arduino")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Manages connection to an Arduino microcontroller.")]
-    public class dynArduino : dynNode
+    public class dynArduino : dynNodeWithOneOutput
     {
         SerialPort port;
         System.Windows.Controls.MenuItem comItem;
@@ -41,9 +41,9 @@ namespace Dynamo.Nodes
         public dynArduino()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
-            outPortData = new PortData("arduino", "Serial port for later read/write", typeof(object));
+            OutPortData.Add(new PortData("arduino", "Serial port for later read/write", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
 
             string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
             if (port == null)
@@ -71,20 +71,11 @@ namespace Dynamo.Nodes
 
                 port.PortName = portName;
                 lastComItem = comItem;
-                
-
             }
-
 
             this.dynElementDestroyed += new dynElementDestroyedHandler(OnDynArduinoDestroyed);
             this.dynElementReadyToDestroy += new dynElementReadyToDestroyHandler(OnDynArduinoReadyToDestroy);
 
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         public new event dynElementDestroyedHandler dynElementDestroyed;
@@ -164,7 +155,6 @@ namespace Dynamo.Nodes
             }
         }
 
-
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (((Value.Number)args[0]).Item == 1)
@@ -199,7 +189,7 @@ namespace Dynamo.Nodes
     [NodeName("Read Arduino")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Reads values from an Arduino microcontroller.")]
-    public class dynArduinoRead : dynNode
+    public class dynArduinoRead : dynNodeWithOneOutput
     {
         SerialPort port;
         int range;
@@ -210,19 +200,10 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
             InPortData.Add(new PortData("range", "Number of lines to read", typeof(double)));
-            outPortData = new PortData("output", "Serial output line", typeof(string));
+            OutPortData.Add(new PortData("output", "Serial output line", typeof(string)));
 
-            NodeUI.RegisterInputsAndOutput();
-
+            NodeUI.RegisterAllPorts();
         }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
-        }
-
-      
 
         private List<string> GetArduinoData()
         {
@@ -296,7 +277,7 @@ namespace Dynamo.Nodes
     [NodeName("Write Arduino")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Writes values to an Arduino microcontroller.")]
-    public class dynArduinoWrite : dynNode
+    public class dynArduinoWrite : dynNodeWithOneOutput
     {
         SerialPort port;
 
@@ -304,17 +285,10 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
             InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
-            outPortData = new PortData("success?", "Whether or not the operation was successful.", typeof(bool));
+            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(bool)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
-        }
-
 
         private void WriteDataToArduino(string dataLine)
         {

@@ -223,7 +223,7 @@ namespace Dynamo.Connectors
             //if (start != null && end != null && start != end)
             //{
             //in the start element, find the out port at the startIndex
-            pStart = start.OutPort;
+            pStart = start.OutPorts[startIndex];
 
             dynPort endPort = null;
 
@@ -579,11 +579,6 @@ namespace Dynamo.Connectors
                 {
                     connectorCurve.Point2 = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
                     pline.Points[1] = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
-                }
-                else if (pEnd.PortType == PortType.STATE)
-                {
-                    connectorCurve.Point2 = new Point(pEnd.Center.X, pEnd.Center.Y + bezOffset);
-                    pline.Points[1] = new Point(pEnd.Center.X, pEnd.Center.Y + bezOffset);
                 }
                 connectorCurve.Point3 = pEnd.Center;
                 pline.Points[2] = pEnd.Center;

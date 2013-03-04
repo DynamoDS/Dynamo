@@ -22,20 +22,14 @@ namespace Dynamo.Nodes
     [NodeName("Color Brightness")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
     [NodeDescription("Calculates a color's brightness.")]
-    class dynColorBrightness : dynNode
+    class dynColorBrightness : dynNodeWithOneOutput
     {
         public dynColorBrightness()
         {
             InPortData.Add(new PortData("c", "The color", typeof(object)));
-            outPortData = new PortData("mag", "The magnitude of the color's vector", typeof(double));
+            OutPortData.Add(new PortData("mag", "The magnitude of the color's vector", typeof(double)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

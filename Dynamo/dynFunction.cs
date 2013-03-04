@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
         {
             //Set inputs and output
             SetInputs(inputs);
-            outPortData = new PortData(output, "function output", typeof(object));
+            OutPortData.Add(new PortData(output, "function output", typeof(object)));
 
             //Set the nickname
             NodeUI.NickName = symbol;
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
                 Controller.DisplayFunction(symbol);
             };
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
 
         public dynFunction()
@@ -66,12 +66,6 @@ namespace Dynamo.Nodes
 
             //Add a drop-shadow
             ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         public override bool RequiresRecalc
@@ -204,7 +198,7 @@ namespace Dynamo.Nodes
             dynEl.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Output");
-            outEl.SetAttribute("value", OutPortData.NickName);
+            outEl.SetAttribute("value", OutPortData[0].NickName);
             dynEl.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Inputs");
@@ -229,7 +223,10 @@ namespace Dynamo.Nodes
                 {
                     var data = new PortData(subNode.Attributes[0].Value, "function output", typeof(object));
 
-                    outPortData = data;
+                    if (OutPortData.Any())
+                        OutPortData[0] = data;
+                    else
+                        OutPortData.Add(data);
                 }
                 else if (subNode.Name.Equals("Inputs"))
                 {
@@ -252,7 +249,7 @@ namespace Dynamo.Nodes
                 }
             }
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -327,13 +324,9 @@ namespace Dynamo.Nodes
             tb.Background = backgroundBrush;
             tb.BorderThickness = new Thickness(0);
 
-            NodeUI.RegisterInputsAndOutput();
-        }
+            OutPortData.Add(new PortData("", "Symbol", typeof(object)));
 
-        private PortData outPortData = new PortData("", "Symbol", typeof(object));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override bool RequiresRecalc
@@ -351,17 +344,19 @@ namespace Dynamo.Nodes
             set { tb.Text = value; }
         }
 
-        protected internal override INode Build(Dictionary<dynNode, INode> preBuilt)
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt, PortData outPort)
         {
-            INode result;
+            Dictionary<PortData, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                result = new SymbolNode(
-                   (string)NodeUI.Dispatcher.Invoke(new Func<string>(
-                      () => Symbol)));
+                result = new Dictionary<PortData, INode>();
+                result[outPort] =
+                    new SymbolNode(
+                       (string)NodeUI.Dispatcher.Invoke(new Func<string>(
+                          () => Symbol)));
                 preBuilt[this] = result;
             }
-            return result;
+            return result[outPort];
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)

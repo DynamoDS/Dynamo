@@ -279,7 +279,7 @@ namespace Dynamo.Controls
             {
                 p.Update();
             }
-            el.OutPort.Update();
+            el.OutPorts.ForEach(x => x.Update());
         }
 
         /// <summary>
@@ -641,7 +641,7 @@ namespace Dynamo.Controls
                                     }
                                 }
                             }
-                            foreach (dynConnector c in el.OutPort.Connectors)
+                            foreach (dynConnector c in el.OutPorts.SelectMany(x => x.Connectors))
                             {
                                 if (!connectorsToUpdate.Contains(c))
                                 {
@@ -684,7 +684,7 @@ namespace Dynamo.Controls
                                         connectorsToUpdate.Add(c);
                                     }
                                 }
-                                foreach (dynConnector c in element.OutPort.Connectors)
+                                foreach (dynConnector c in element.OutPorts.SelectMany(x => x.Connectors))
                                 {
                                     connectorsToUpdate.Add(c);
                                 }
@@ -1096,9 +1096,12 @@ namespace Dynamo.Controls
 
             if (node != null)
             {
-                for (int i = node.OutPort.Connectors.Count - 1; i >= 0; i--)
+                foreach (var port in node.OutPorts)
                 {
-                    node.OutPort.Connectors[i].Kill();
+                    for (int i = port.Connectors.Count - 1; i >= 0; i--)
+                    {
+                        port.Connectors[i].Kill();
+                    }
                 }
 
                 foreach (dynPort p in node.InPorts)

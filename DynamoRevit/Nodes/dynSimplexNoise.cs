@@ -79,21 +79,15 @@ namespace Dynamo.Nodes
     [NodeName("1DSimplex")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
     [NodeDescription("Creates a 1D Field.")]
-    public class dynSimplex1D : dynNode
+    public class dynSimplex1D: dynNodeWithOneOutput
     {
         public dynSimplex1D()
         {
             InPortData.Add(new PortData("x", "X", typeof(double)));
 
-            outPortData = new PortData("o", "Out", typeof(double));
+            OutPortData.Add(new PortData("o", "Out", typeof(double)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -139,22 +133,16 @@ namespace Dynamo.Nodes
     [NodeName("2DSimplex")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
     [NodeDescription("Creates a 2D Field.")]
-    public class dynSimplex2D : dynNode
+    public class dynSimplex2D: dynNodeWithOneOutput
     {
         public dynSimplex2D()
         {
             InPortData.Add(new PortData("x", "X", typeof(double)));
             InPortData.Add(new PortData("y", "Y", typeof(double)));
 
-            outPortData = new PortData("o", "Out", typeof(double));
+            OutPortData.Add(new PortData("o", "Out", typeof(double)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -252,7 +240,7 @@ namespace Dynamo.Nodes
     [NodeName("3DSimplex")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
     [NodeDescription("Creates a 3D Field.")]
-    public class dynSimplex3D : dynNode
+    public class dynSimplex3D: dynNodeWithOneOutput
     {
         public dynSimplex3D()
         {
@@ -260,15 +248,9 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("y", "Y", typeof(double)));
             InPortData.Add(new PortData("z", "Z", typeof(double)));
 
-            outPortData = new PortData("o", "Out", typeof(double));
+            OutPortData.Add(new PortData("o", "Out", typeof(double)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)

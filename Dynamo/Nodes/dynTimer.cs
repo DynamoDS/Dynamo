@@ -28,20 +28,14 @@ namespace Dynamo.Nodes
     [NodeName("Pause")]
     [NodeDescription("Pauses execution for a given amount of time.")]
     [NodeCategory(BuiltinNodeCategories.EXECUTION)]
-    public class dynPause : dynNode
+    public class dynPause : dynNodeWithOneOutput
     {
         public dynPause()
         {
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
-            outPortData = new PortData("", "Success", typeof(bool));
+            OutPortData.Add(new PortData("", "Success", typeof(bool)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -57,20 +51,14 @@ namespace Dynamo.Nodes
     [NodeName("Execution Interval")]
     [NodeDescription("Forces an Execution after every interval")]
     [NodeCategory(BuiltinNodeCategories.EXECUTION)]
-    public class dynExecuteInterval : dynNode
+    public class dynExecuteInterval : dynNodeWithOneOutput
     {
         public dynExecuteInterval()
         {
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(double)));
-            outPortData = new PortData("", "Success?", typeof(bool));
+            OutPortData.Add(new PortData("", "Success?", typeof(bool)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         Thread delayThread;

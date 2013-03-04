@@ -15,7 +15,7 @@ namespace Dynamo.Nodes
     [NodeName("Loft Form")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
-    public class dynLoftForm : dynRevitTransactionNode
+    public class dynLoftForm : dynRevitTransactionNodeWithOneOutput
     {
         public dynLoftForm()
         {
@@ -23,15 +23,9 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("refListList", "ReferenceArrayArray", typeof(object)));
             InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(object)));
 
-            outPortData = new PortData("form", "Loft Form", typeof(object));
+            OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
     [NodeName("Divided Path")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Divides curves or edges and makes a DividedPath.")]
-    public class dynDividedPath : dynRevitTransactionNode
+    public class dynDividedPath : dynRevitTransactionNodeWithOneOutput
     {
         public dynDividedPath()
         {
@@ -39,15 +39,9 @@ namespace Dynamo.Nodes
             //InPortData.Add(new PortData("x0", "Starting Coordinate", typeof(double)));
             //InPortData.Add(new PortData("spacing", "The spacing.", typeof(double)));
 
-            outPortData = new PortData("dc ", "the divided path element", typeof(DividedPath));
+            OutPortData.Add(new PortData("dc ", "the divided path element", typeof(DividedPath)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -238,7 +232,7 @@ namespace Dynamo.Nodes
     [NodeName("Divided Surface")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("An element which divides surfaces into patterns and faces")]
-    public class dynDividedSurface : dynRevitTransactionNode
+    public class dynDividedSurface : dynRevitTransactionNodeWithOneOutput
     {
         public dynDividedSurface()
         {
@@ -246,15 +240,9 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("U", "Spacing on face in U direction.", typeof(double)));
             InPortData.Add(new PortData("V", "Spacing on face in U direction", typeof(double)));
 
-            outPortData = new PortData("ds ", "the divided surface element", typeof(DividedPath));
+            OutPortData.Add(new PortData("ds ", "the divided surface element", typeof(DividedPath)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

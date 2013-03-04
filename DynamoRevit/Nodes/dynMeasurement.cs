@@ -29,20 +29,14 @@ namespace Dynamo.Nodes
     [NodeName("Surface Area")]
     [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
     [NodeDescription("An element which measures the surface area of a face (f)")]
-    public class dynSurfaceArea : dynNode
+    public class dynSurfaceArea: dynNodeWithOneOutput
     {
         public dynSurfaceArea()
         {
             InPortData.Add(new PortData("f", "The face whose surface area you wish to calculate (Reference).", typeof(Reference)));//Ref to a face of a form
-            outPortData = new PortData("a", "The surface area of the face (Number).", typeof(object));
+            OutPortData.Add(new PortData("a", "The surface area of the face (Number).", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -72,20 +66,14 @@ namespace Dynamo.Nodes
     [NodeName("Surface Domain")]
     [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
     [NodeDescription("An element which measures the domain of a surface in U and V.")]
-    public class dynSurfaceDomain : dynRevitTransactionNode
+    public class dynSurfaceDomain : dynRevitTransactionNodeWithOneOutput
     {
         public dynSurfaceDomain()
         {
             InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(Reference)));//Ref to a face of a form
-            outPortData = new PortData("d", "The min, max, and dimensions of the surface domain. (List)", typeof(object));
+            OutPortData.Add(new PortData("d", "The min, max, and dimensions of the surface domain. (List)", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -129,21 +117,15 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Distance")]
     [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
     [NodeDescription("Returns the distance between a(XYZ) and b(XYZ).")]
-    public class dynXYZDistance : dynNode
+    public class dynXYZDistance: dynNodeWithOneOutput
     {
         public dynXYZDistance()
         {
             InPortData.Add(new PortData("a", "Start (XYZ).", typeof(object)));//Ref to a face of a form
             InPortData.Add(new PortData("b", "End (XYZ)", typeof(object)));//Ref to a face of a form
-            outPortData = new PortData("d", "The distance between the two XYZs (Number).", typeof(object));
+            OutPortData.Add(new PortData("d", "The distance between the two XYZs (Number).", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -159,20 +141,14 @@ namespace Dynamo.Nodes
     [NodeName("Height")]
     [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
     [NodeDescription("Returns the height in z of an element.")]
-    public class dynHeight : dynNode
+    public class dynHeight: dynNodeWithOneOutput
     {
         public dynHeight()
         {
             InPortData.Add(new PortData("elem", "Level, Family Instance, RefPoint, XYZ", typeof(object)));//add elements here when adding switch statements 
-            outPortData = new PortData("h", "The height of an element in z relative to project 0.", typeof(object));
+            OutPortData.Add(new PortData("h", "The height of an element in z relative to project 0.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private static double getHeight(object elem)

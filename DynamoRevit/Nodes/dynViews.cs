@@ -28,20 +28,14 @@ namespace Dynamo.Nodes
     [NodeName("Drafting View")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates a drafting view.")]
-    public class dynDraftingView : dynNode
+    public class dynDraftingView: dynNodeWithOneOutput
     {
         public dynDraftingView()
         {
             InPortData.Add(new PortData("name", "Name", typeof(string)));
-            outPortData = new PortData("v", "Drafting View", typeof(dynDraftingView));
+            OutPortData.Add(new PortData("v", "Drafting View", typeof(dynDraftingView)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

@@ -9,6 +9,7 @@ using Autodesk.Revit.DB;
 
 using Value = Dynamo.FScheme.Value;
 using Microsoft.FSharp.Collections;
+using Dynamo.Connectors;
 
 namespace Dynamo.Revit
 {
@@ -25,13 +26,13 @@ namespace Dynamo.Revit
         {
             get
             {
-                while (this.elements.Count <= this.runCount)
-                    this.elements.Add(new List<ElementId>());
-                return this.elements[this.runCount];
+                while (elements.Count <= runCount)
+                    elements.Add(new List<ElementId>());
+                return elements[runCount];
             }
             private set
             {
-                this.elements[this.runCount] = value;
+                elements[runCount] = value;
             }
         }
 
@@ -49,10 +50,10 @@ namespace Dynamo.Revit
 
         internal void ResetRuns()
         {
-            if (this.runCount > 0)
+            if (runCount > 0)
             {
-                PruneRuns(this.runCount);
-                this.runCount = 0;
+                PruneRuns(runCount);
+                runCount = 0;
             }
         }
 
@@ -60,34 +61,32 @@ namespace Dynamo.Revit
         {
             base.OnEvaluate();
 
-            this.runCount++;
+            runCount++;
         }
 
         internal void PruneRuns(int runCount)
         {
-            for (int i = this.elements.Count - 1; i >= runCount; i--)
+            for (int i = elements.Count - 1; i >= runCount; i--)
             {
-                var elems = this.elements[i];
+                var elems = elements[i];
                 foreach (var e in elems)
                 {
-                    this.UIDocument.Document.Delete(e);
+                    UIDocument.Document.Delete(e);
                 }
                 elems.Clear();
             }
 
-            if (this.elements.Count > runCount)
+            if (elements.Count > runCount)
             {
-                this.elements.RemoveRange(
+                elements.RemoveRange(
                    runCount,
-                   this.elements.Count - runCount
+                   elements.Count - runCount
                 );
             }
         }
 
-        protected override Value __eval_internal(FSharpList<Value> args)
+        protected override void __eval_internal(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            Value result = null;
-
             var controller = dynRevitSettings.Controller;
 
             bool debug = controller.RunInDebug;
@@ -103,16 +102,16 @@ namespace Dynamo.Revit
 
                 controller.InitTransaction();
 
-                result = this.Evaluate(args);
+                Evaluate(args, outPuts);
 
-                foreach (ElementId eid in this.deletedIds)
+                foreach (ElementId eid in deletedIds)
                 {
                     controller.RegisterSuccessfulDeleteHook(
                        eid,
                        onSuccessfulDelete
                     );
                 }
-                this.deletedIds.Clear();
+                deletedIds.Clear();
 
                 #endregion
             }
@@ -122,38 +121,36 @@ namespace Dynamo.Revit
 
                 Bench.Dispatcher.Invoke(new Action(
                    () =>
-                      Bench.Log("Starting a debug transaction for element: " + this.NodeUI.NickName)
+                      Bench.Log("Starting a debug transaction for element: " + NodeUI.NickName)
                 ));
 
-                result = IdlePromise<Value>.ExecuteOnIdle(
+                IdlePromise.ExecuteOnIdle(
                    delegate
                    {
                        controller.InitTransaction();
 
                        try
                        {
-                           var exp = this.Evaluate(args);
+                           Evaluate(args, outPuts);
 
-                           foreach (ElementId eid in this.deletedIds)
+                           foreach (ElementId eid in deletedIds)
                            {
                                controller.RegisterSuccessfulDeleteHook(
                                   eid,
                                   onSuccessfulDelete
                                );
                            }
-                           this.deletedIds.Clear();
+                           deletedIds.Clear();
 
                            controller.EndTransaction();
 
-                           this.NodeUI.Dispatcher.BeginInvoke(new Action(
+                           NodeUI.Dispatcher.BeginInvoke(new Action(
                                delegate
                                {
-                                   this.NodeUI.UpdateLayout();
-                                   this.NodeUI.ValidateConnections();
+                                   NodeUI.UpdateLayout();
+                                   NodeUI.ValidateConnections();
                                }
                            ));
-
-                           return exp;
                        }
                        catch (Exception ex)
                        {
@@ -168,21 +165,19 @@ namespace Dynamo.Revit
 
             #region Register Elements w/ DMU
 
-            var del = new DynElementUpdateDelegate(this.onDeleted);
+            var del = new DynElementUpdateDelegate(onDeleted);
 
-            foreach (ElementId id in this.Elements)
+            foreach (ElementId id in Elements)
                 controller.RegisterDeleteHook(id, del);
 
             #endregion
-
-            return result;
         }
 
         private List<ElementId> deletedIds = new List<ElementId>();
         protected void DeleteElement(ElementId id, bool hookOnly = false)
         {
             if (!hookOnly)
-                this.UIDocument.Document.Delete(id);
+                UIDocument.Document.Delete(id);
             deletedIds.Add(id);
         }
 
@@ -199,8 +194,8 @@ namespace Dynamo.Revit
                    controller.InitTransaction();
                    try
                    {
-                       this.runCount = 0;
-                       foreach (var els in this.elements)
+                       runCount = 0;
+                       foreach (var els in elements)
                        {
                            foreach (ElementId e in els)
                            {
@@ -231,7 +226,7 @@ namespace Dynamo.Revit
                        );
                    }
                    controller.EndTransaction();
-                   this.WorkSpace.Modified();
+                   WorkSpace.Modified();
                },
                true
             );
@@ -240,19 +235,32 @@ namespace Dynamo.Revit
         void onDeleted(List<ElementId> deleted)
         {
             int count = 0;
-            foreach (var els in this.elements)
+            foreach (var els in elements)
             {
                 count += els.RemoveAll(deleted.Contains);
             }
 
-            if (!this.isDirty)
-                this.isDirty = count > 0;
+            if (!isDirty)
+                isDirty = count > 0;
         }
 
         void onSuccessfulDelete(List<ElementId> deleted)
         {
-            foreach (var els in this.elements)
+            foreach (var els in elements)
                 els.RemoveAll(x => deleted.Contains(x));
+        }
+    }
+
+    public class dynRevitTransactionNodeWithOneOutput : dynRevitTransactionNode
+    {
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            outPuts[OutPortData[0]] = Evaluate(args);
+        }
+
+        public virtual Value Evaluate(FSharpList<Value> args)
+        {
+            throw new NotImplementedException();
         }
     }
 

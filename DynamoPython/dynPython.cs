@@ -240,7 +240,7 @@ namespace Dynamo.Nodes.PythonNode
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class dynPython : dynNode
+    public class dynPython : dynNodeWithOneOutput
     {
         private bool dirty = true;
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
@@ -259,20 +259,14 @@ namespace Dynamo.Nodes.PythonNode
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
 
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            outPortData = new PortData("OUT", "Result of the python script", typeof(object));
+            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
 
             //topControl.Height = 200;
             //topControl.Width = 300;
 
             NodeUI.UpdateLayout();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         //TODO: Make this smarter
@@ -344,7 +338,7 @@ namespace Dynamo.Nodes.PythonNode
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs a IronPython script from a string")]
-    public class dynPythonString : dynNode
+    public class dynPythonString : dynNodeWithOneOutput
     {
         private DynPythonEngine engine = new DynPythonEngine();
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
@@ -353,15 +347,9 @@ namespace Dynamo.Nodes.PythonNode
         {
             InPortData.Add(new PortData("script", "Script to run", typeof(string)));
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            outPortData = new PortData("OUT", "Result of the python script", typeof(object));
+            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private List<Binding> makeBindings(IEnumerable<Value> args)

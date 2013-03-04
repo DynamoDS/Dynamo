@@ -29,20 +29,14 @@ namespace Dynamo.Nodes
     [NodeName("Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a level datum.")]
-    public class dynLevel : dynRevitTransactionNode
+    public class dynLevel : dynRevitTransactionNodeWithOneOutput
     {
         public dynLevel()
         {
             InPortData.Add(new PortData("h", "Height.", typeof(double)));
-            outPortData = new PortData("l", "Level", typeof(Level));
+            OutPortData.Add(new PortData("l", "Level", typeof(Level)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -175,25 +169,18 @@ namespace Dynamo.Nodes
     [NodeName("Ref Plane")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a reference plane.")]
-    public class dynReferencePlane : dynRevitTransactionNode
+    public class dynReferencePlane : dynRevitTransactionNodeWithOneOutput
     {
         public dynReferencePlane()
         {
             InPortData.Add(new PortData("l", "Geometry Line.", typeof(Line)));
-            outPortData = new PortData("ref", "Reference Plane", typeof(ReferencePlane));
+            OutPortData.Add(new PortData("ref", "Reference Plane", typeof(ReferencePlane)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-
             var input = args[0];
 
             //If we are receiving a list, we must create reg planes for each curve in the list.
@@ -431,21 +418,16 @@ namespace Dynamo.Nodes
     [NodeName("Column Grid")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a column grid datum.")]
-    public class dynColumnGrid : dynRevitTransactionNode
+    public class dynColumnGrid : dynRevitTransactionNodeWithOneOutput
     {
         public dynColumnGrid()
         {
             InPortData.Add(new PortData("line", "Geometry Line.", typeof(Line))); // MDJ TODO - expand this to work with curved grids.
-            outPortData = new PortData("grid", "Grid", typeof(Grid));
+            OutPortData.Add(new PortData("grid", "Grid", typeof(Grid)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
 
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
-        }
 
         public override Value Evaluate(FSharpList<Value> args)
         {

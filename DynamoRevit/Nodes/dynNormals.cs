@@ -25,20 +25,15 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate Normal")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
-    class dynNormalEvaluate : dynNode
+    class dynNormalEvaluate: dynNodeWithOneOutput
     {
         public dynNormalEvaluate()
         {
             InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
+            OutPortData.Add(new PortData("XYZ", "The normal.", typeof(string)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("XYZ", "The normal.", typeof(string));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -62,20 +57,14 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate UV")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
-    class dynXYZEvaluate : dynNode
+    class dynXYZEvaluate: dynNodeWithOneOutput
     {
         public dynXYZEvaluate()
         {
             InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
-
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("XYZ", "The location.", typeof(string));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            OutPortData.Add(new PortData("XYZ", "The location.", typeof(string)));
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

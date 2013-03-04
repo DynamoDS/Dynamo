@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
         public IEnumerable<dynNode> GetTopMostElements()
         {
             return this.Nodes.Where(
-               x => !x.NodeUI.OutPort.Connectors.Any()
+               x => !x.NodeUI.OutPorts.Any(y => y.Connectors.Any())
             );
         }
     }

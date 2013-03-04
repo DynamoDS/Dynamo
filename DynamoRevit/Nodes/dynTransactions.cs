@@ -35,19 +35,14 @@ namespace Dynamo.Nodes
     [NodeName("Transaction")]
     [NodeCategory(BuiltinNodeCategories.EXECUTION)]
     [NodeDescription("Executes Expression inside of a Revit API transaction")]
-    public class dynTransaction : dynNode
+    public class dynTransaction: dynNodeWithOneOutput
     {
         public dynTransaction()
         {
             InPortData.Add(new PortData("expr", "Expression to run in a transaction.", typeof(object)));
+            OutPortData.Add(new PortData("result", "Result of the expression.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("result", "Result of the expression.", typeof(object));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         void setDirty(bool val)

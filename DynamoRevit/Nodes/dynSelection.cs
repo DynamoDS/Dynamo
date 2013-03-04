@@ -34,14 +34,14 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynElementSelection : dynNode
+    public abstract class dynElementSelection: dynNodeWithOneOutput
     {
         TextBox tb;
         System.Windows.Controls.Button selectButton;
 
         protected dynElementSelection(PortData outPortData)
         {
-            this.outPortData = outPortData;
+            OutPortData.Add(outPortData);
 
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
@@ -71,17 +71,11 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
 
             NodeUI.topControl.Height = 60;
             NodeUI.topControl.Width = 200;
             NodeUI.UpdateLayout();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -197,14 +191,14 @@ namespace Dynamo.Nodes
     }
 
     [IsInteractive(true)]
-    public abstract class dynMultipleElementSelection : dynNode
+    public abstract class dynMultipleElementSelection: dynNodeWithOneOutput
     {
         TextBox tb;
         System.Windows.Controls.Button selectButton;
 
         protected dynMultipleElementSelection(PortData outData)
         {
-            outPortData = outData;
+            OutPortData.Add(outData);
 
             //add a button to the inputGrid on the dynElement
             selectButton = new System.Windows.Controls.Button();
@@ -234,16 +228,10 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
 
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         private void selectButton_Click(object sender, System.Windows.RoutedEventArgs e)

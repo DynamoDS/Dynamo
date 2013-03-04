@@ -66,8 +66,8 @@ namespace Dynamo.Controls
 
         //System.Windows.Shapes.Ellipse dirtyEllipse;
         List<dynPort> inPorts;
-        dynPort outPort;
-        Dictionary<dynPort, TextBlock> inPortTextBlocks;
+        List<dynPort> outPorts;
+        Dictionary<dynPort, TextBlock> portTextBlocks;
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
         string nickName;
         Guid guid;
@@ -92,21 +92,15 @@ namespace Dynamo.Controls
 
         public dynNodeUI TopControl
         {
-            get { return this.topControl; }
+            get { return topControl; }
         }
 
         public string ToolTipText
         {
             get
             {
-                try
-                {
-                    return portDataDict[OutPort].ToolTipString;
-                }
-                catch
-                {
-                    return "";
-                }
+                //TODO: FIXME
+                return "";
             }
         }
 
@@ -116,10 +110,10 @@ namespace Dynamo.Controls
             set { inPorts = value; }
         }
 
-        public dynPort OutPort
+        public List<dynPort> OutPorts
         {
-            get { return outPort; }
-            set { outPort = value; }
+            get { return outPorts; }
+            set { outPorts = value; }
         }
 
         public string NickName
@@ -147,48 +141,22 @@ namespace Dynamo.Controls
                 {
                     case ElementState.ACTIVE:
                         elementRectangle.Fill = dynSettings.ActiveBrush;
-                        foreach (dynPort p in inPorts)
-                        {
-                            p.ellipse1.Fill = dynSettings.ActiveBrush;
-                        }
-
-                        if (outPort != null)
-                            outPort.ellipse1.Fill = dynSettings.ActiveBrush;
-
                         break;
                     case ElementState.DEAD:
                         elementRectangle.Fill = dynSettings.DeadBrush;
-                        foreach (dynPort p in inPorts)
-                        {
-                            p.ellipse1.Fill = dynSettings.DeadBrush;
-                        }
-
-                        if (outPort != null)
-                            outPort.ellipse1.Fill = dynSettings.DeadBrush;
-
                         break;
                     case ElementState.ERROR:
                         elementRectangle.Fill = dynSettings.ErrorBrush;
-                        foreach (dynPort p in inPorts)
-                        {
-                            p.ellipse1.Fill = dynSettings.ErrorBrush;
-                        }
-
-                        if (outPort != null)
-                            outPort.ellipse1.Fill = dynSettings.ErrorBrush;
-
                         break;
                     case ElementState.SELECTED:
                     default:
                         elementRectangle.Fill = dynSettings.SelectedBrush;
-                        foreach (dynPort p in inPorts)
-                        {
-                            p.ellipse1.Fill = dynSettings.SelectedBrush;
-                        }
-
-                        if (outPort != null)
-                            outPort.ellipse1.Fill = dynSettings.SelectedBrush;
                         break;
+                }
+
+                foreach (dynPort p in inPorts.Concat(outPorts))
+                {
+                    p.ellipse1.Fill = elementRectangle.Fill;
                 }
 
                 if (value != ElementState.ERROR)
@@ -208,7 +176,7 @@ namespace Dynamo.Controls
 
         public Grid ContentGrid
         {
-            get { return this.inputGrid; }
+            get { return inputGrid; }
         }
         #endregion
 
@@ -231,18 +199,19 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
-            this.nodeLogic = logic;
+            nodeLogic = logic;
 
             //set the main grid's data context to 
             //this element
             nickNameBlock.DataContext = this;
 
             inPorts = new List<dynPort>();
+            outPorts = new List<dynPort>();
             //inPortData = new List<PortData>();
-            inPortTextBlocks = new Dictionary<dynPort, TextBlock>();
+            portTextBlocks = new Dictionary<dynPort, TextBlock>();
 
             stateSetter = new SetStateDelegate(SetState);
-            this.State = ElementState.DEAD;
+            State = ElementState.DEAD;
 
             //Fetch the element name from the custom attribute.
             var nameArray = nodeLogic.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
@@ -265,7 +234,7 @@ namespace Dynamo.Controls
             //dirtyEllipse.Height = 20;
             //dirtyEllipse.Width = 20;
             //dirtyEllipse.Fill = Brushes.Red;
-            //this.elementCanvas.Children.Add(dirtyEllipse);
+            //elementCanvas.Children.Add(dirtyEllipse);
             //Canvas.SetBottom(dirtyEllipse, 10);
             //Canvas.SetRight(dirtyEllipse, 10);
             //Canvas.SetZIndex(dirtyEllipse, 100);
@@ -314,37 +283,23 @@ namespace Dynamo.Controls
             }
         }
 
-        public void RegisterInputsAndOutput()
+        public void RegisterAllPorts()
         {
-            ResizeElementForInputs();
+            ResizeElementForPorts();
             SetupPortGrids();
             RegisterInputs();
-            RegisterOutput();
+            RegisterOutputs();
 
             UpdateLayout();
 
             SetToolTips();
             ValidateConnections();
-        }
-
-        public void ReregisterInputs()
-        {
-            ResizeElementForInputs();
-            SetupPortGrids();
-            RegisterInputs();
-
-            UpdateLayout();
-
-            SetToolTips();
-            ValidateConnections();
-            UpdateConnections();
         }
 
         void UpdateConnections()
         {
-            foreach (var p in this.InPorts)
+            foreach (var p in InPorts.Concat(OutPorts))
                 p.Update();
-            this.OutPort.Update();
         }
 
         private Dictionary<UIElement, bool> enabledDict 
@@ -354,23 +309,23 @@ namespace Dynamo.Controls
         {
             enabledDict.Clear();
 
-            foreach (UIElement e in this.inputGrid.Children)
+            foreach (UIElement e in inputGrid.Children)
             {
                 enabledDict[e] = e.IsEnabled;
 
                 e.IsEnabled = false;
             }
-            this.State = ElementState.DEAD;
+            State = ElementState.DEAD;
         }
 
         internal void EnableInteraction()
         {
-            foreach (UIElement e in this.inputGrid.Children)
+            foreach (UIElement e in inputGrid.Children)
             {
                 if (enabledDict.ContainsKey(e))
                     e.IsEnabled = enabledDict[e];
             }
-            this.ValidateConnections();
+            ValidateConnections();
         }
 
         /// <summary>
@@ -380,7 +335,8 @@ namespace Dynamo.Controls
         {
             get
             {
-                return this.OutPort == null || !this.OutPort.Connectors.Any();
+                return OutPorts == null 
+                    || OutPorts.All(x => !x.Connectors.Any());
             }
         }
 
@@ -388,27 +344,30 @@ namespace Dynamo.Controls
         /// <summary>
         /// Resize the control based on the number of inputs.
         /// </summary>
-        public void ResizeElementForInputs()
+        public void ResizeElementForPorts()
         {
             //size the height of the controller based on the 
             //whichever is larger the inport or the outport list
-            this.topControl.Height = Math.Max(this.nodeLogic.InPortData.Count, 1) * 20 + 10; //spacing for inputs + title space + bottom space
+            topControl.Height = Math.Max(nodeLogic.InPortData.Count, nodeLogic.OutPortData.Count) * 20 + 10; //spacing for inputs + title space + bottom space
 
             Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
             gridLeft.Margin = leftGridThick;
+
+            Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
+            gridRight.Margin = rightGridThick;
 
             Thickness inputGridThick = new Thickness(inputGrid.Margin.Left, inputGrid.Margin.Top, inputGrid.Margin.Right, 5);
             inputGrid.Margin = inputGridThick;
 
             grid.UpdateLayout();
 
-            //this.elementShine.Height = this.topControl.Height / 2;
+            //elementShine.Height = topControl.Height / 2;
 
             if (inputGrid.Children.Count == 0)
             {
                 //decrease the width of the node because
                 //there's nothing in the middle grid
-                this.topControl.Width = 100;
+                topControl.Width = 100;
             }
         }
 
@@ -419,7 +378,7 @@ namespace Dynamo.Controls
         {
             int count = 0;
             int numRows = gridLeft.RowDefinitions.Count;
-            foreach (object input in this.nodeLogic.InPortData)
+            foreach (var input in nodeLogic.InPortData)
             {
                 if (count++ < numRows)
                     continue;
@@ -435,14 +394,18 @@ namespace Dynamo.Controls
 
             count = 0;
             numRows = gridRight.RowDefinitions.Count;
-            if (numRows == 0)
+            foreach (var input in nodeLogic.OutPortData)
             {
-                gridRight.RowDefinitions.Add(new RowDefinition());
+                if (count++ < numRows)
+                    continue;
+
+                RowDefinition rd = new RowDefinition();
+                gridRight.RowDefinitions.Add(rd);
             }
 
-            if (numRows > 1)
+            if (count < numRows)
             {
-                gridRight.RowDefinitions.RemoveRange(count, numRows - 1);
+                gridRight.RowDefinitions.RemoveRange(count, numRows - count);
             }
         }
 
@@ -454,24 +417,24 @@ namespace Dynamo.Controls
             //read the inputs list and create a number of
             //input ports
             int count = 0;
-            foreach (PortData pd in this.nodeLogic.InPortData)
+            foreach (PortData pd in nodeLogic.InPortData)
             {
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                var port = AddPort(PortType.INPUT, this.nodeLogic.InPortData[count].NickName, count);
-                this.portDataDict[port] = pd;
+                var port = AddPort(PortType.INPUT, nodeLogic.InPortData[count].NickName, count);
+                portDataDict[port] = pd;
                 count++;
             }
 
-            if (this.inPorts.Count > count)
+            if (inPorts.Count > count)
             {
-                foreach (var inport in this.inPorts.Skip(count))
+                foreach (var inport in inPorts.Skip(count))
                 {
                     RemovePort(inport);
                 }
 
-                this.inPorts.RemoveRange(count, this.inPorts.Count - count);
+                inPorts.RemoveRange(count, inPorts.Count - count);
             }
         }
 
@@ -479,10 +442,10 @@ namespace Dynamo.Controls
         {
             if (inport.PortType == PortType.INPUT)
             {
-                int index = this.inPorts.FindIndex(x => x == inport);
+                int index = inPorts.FindIndex(x => x == inport);
 
                 gridLeft.Children.Remove(inport);
-                gridLeft.Children.Remove(this.inPortTextBlocks[inport]);
+                gridLeft.Children.Remove(portTextBlocks[inport]);
 
                 while (inport.Connectors.Any())
                 {
@@ -494,54 +457,49 @@ namespace Dynamo.Controls
         /// <summary>
         /// Reads outputs list and adds ports for each output
         /// </summary>
-        public void RegisterOutput()
+        public void RegisterOutputs()
         {
-            dynPort p = new dynPort(0);
+            //read the inputs list and create a number of
+            //input ports
+            int count = 0;
+            foreach (PortData pd in nodeLogic.OutPortData)
+            {
+                //add a port for each input
+                //distribute the ports along the 
+                //edges of the icon
+                var port = AddPort(PortType.OUTPUT, pd.NickName, count);
+                portDataDict[port] = pd;
+                count++;
+            }
 
-            //create a text block for the name of the port
-            TextBlock tb = new TextBlock();
+            if (outPorts.Count > count)
+            {
+                foreach (var outport in outPorts.Skip(count))
+                {
+                    RemovePort(outport);
+                }
 
-            tb.VerticalAlignment = VerticalAlignment.Center;
-            tb.FontSize = 12;
-            tb.FontWeight = FontWeights.Normal;
-            tb.Foreground = new SolidColorBrush(Colors.Black);
-            tb.Text = this.nodeLogic.OutPortData.NickName;
-
-            tb.HorizontalAlignment = HorizontalAlignment.Right;
-
-            ScaleTransform trans = new ScaleTransform(-1, 1, p.Width / 2, p.Height / 2);
-            p.RenderTransform = trans;
-
-            p.PortType = PortType.OUTPUT;
-            outPort = p;
-            gridRight.Children.Add(p);
-            Grid.SetColumn(p, 1);
-            Grid.SetRow(p, 0);
-
-            //portNamesRight.Children.Add(tb);
-            gridRight.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-
-            p.Owner = this;
-
-            //register listeners on the port
-            p.PortConnected += new PortConnectedHandler(p_PortConnected);
-            p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+                outPorts.RemoveRange(count, outPorts.Count - count);
+            }
         }
 
         public void SetToolTips()
         {
             //set all the tooltips
             int count = 0;
-            foreach (dynPort p in this.InPorts)
+            foreach (dynPort p in InPorts)
             {
                 //get the types from the types list
-                p.toolTipText.Text = this.nodeLogic.InPortData[count].ToolTipString;
+                p.toolTipText.Text = nodeLogic.InPortData[count].ToolTipString;
                 count++;
             }
 
-            outPort.toolTipText.Text = this.nodeLogic.OutPortData.ToolTipString;
+            count = 0;
+            foreach (dynPort p in OutPorts)
+            {
+                p.toolTipText.Text = nodeLogic.OutPortData[count].ToolTipString;
+                count++;
+            }
         }
 
         /// <summary>
@@ -551,51 +509,95 @@ namespace Dynamo.Controls
         /// <param name="index">The index of the port in the port list.</param>
         public dynPort AddPort(PortType portType, string name, int index)
         {
-            if (portType != PortType.INPUT)
-                return null;
-
-            if (inPorts.Count > index)
+            if (portType == PortType.INPUT)
             {
-                this.inPortTextBlocks[this.inPorts[index]].Text = name;
-                return this.inPorts[index];
+                if (inPorts.Count > index)
+                {
+                    portTextBlocks[inPorts[index]].Text = name;
+                    return inPorts[index];
+                }
+                else
+                {
+                    dynPort p = new dynPort(index);
+
+                    //create a text block for the name of the port
+                    TextBlock tb = new TextBlock();
+
+                    tb.VerticalAlignment = VerticalAlignment.Center;
+                    tb.FontSize = 12;
+                    tb.FontWeight = FontWeights.Normal;
+                    tb.Foreground = new SolidColorBrush(Colors.Black);
+                    tb.Text = name;
+
+                    tb.HorizontalAlignment = HorizontalAlignment.Left;
+
+                    Canvas.SetZIndex(tb, 200);
+
+                    p.PortType = PortType.INPUT;
+                    inPorts.Add(p);
+                    portTextBlocks[p] = tb;
+                    gridLeft.Children.Add(p);
+                    Grid.SetColumn(p, 0);
+                    Grid.SetRow(p, index);
+
+                    //portNamesLeft.Children.Add(tb);
+                    gridLeft.Children.Add(tb);
+                    Grid.SetColumn(tb, 1);
+                    Grid.SetRow(tb, index);
+
+                    p.Owner = this;
+
+                    //register listeners on the port
+                    p.PortConnected += new PortConnectedHandler(p_PortConnected);
+                    p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+
+                    return p;
+                }
             }
-            else
+            else if (portType == PortType.OUTPUT)
             {
-                dynPort p = new dynPort(index);
+                if (outPorts.Count > index)
+                {
+                    portTextBlocks[outPorts[index]].Text = name;
+                    return outPorts[index];
+                }
+                else
+                {
+                    dynPort p = new dynPort(index);
 
-                //create a text block for the name of the port
-                TextBlock tb = new TextBlock();
+                    //create a text block for the name of the port
+                    TextBlock tb = new TextBlock();
 
-                tb.VerticalAlignment = VerticalAlignment.Center;
-                tb.FontSize = 12;
-                tb.FontWeight = FontWeights.Normal;
-                tb.Foreground = new SolidColorBrush(Colors.Black);
-                tb.Text = name;
+                    tb.VerticalAlignment = VerticalAlignment.Center;
+                    tb.FontSize = 12;
+                    tb.FontWeight = FontWeights.Normal;
+                    tb.Foreground = new SolidColorBrush(Colors.Black);
+                    tb.Text = name;
 
-                tb.HorizontalAlignment = HorizontalAlignment.Left;
+                    tb.HorizontalAlignment = HorizontalAlignment.Right;
 
-                Canvas.SetZIndex(tb, 200);
+                    p.PortType = PortType.OUTPUT;
+                    outPorts.Add(p);
+                    portTextBlocks[p] = tb;
+                    gridRight.Children.Add(p);
+                    Grid.SetColumn(p, 1);
+                    Grid.SetRow(p, index);
 
-                p.PortType = PortType.INPUT;
-                inPorts.Add(p);
-                inPortTextBlocks[p] = tb;
-                gridLeft.Children.Add(p);
-                Grid.SetColumn(p, 0);
-                Grid.SetRow(p, index);
+                    //portNamesLeft.Children.Add(tb);
+                    gridRight.Children.Add(tb);
+                    Grid.SetColumn(tb, 0);
+                    Grid.SetRow(tb, index);
 
-                //portNamesLeft.Children.Add(tb);
-                gridLeft.Children.Add(tb);
-                Grid.SetColumn(tb, 1);
-                Grid.SetRow(tb, index);
+                    p.Owner = this;
 
-                p.Owner = this;
+                    //register listeners on the port
+                    p.PortConnected += new PortConnectedHandler(p_PortConnected);
+                    p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
 
-                //register listeners on the port
-                p.PortConnected += new PortConnectedHandler(p_PortConnected);
-                p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
-
-                return p;
+                    return p;
+                }
             }
+            return null;
         }
 
         //TODO: call connect and disconnect for dynNode
@@ -611,10 +613,19 @@ namespace Dynamo.Controls
             ValidateConnections();
 
             var port = (dynPort)sender;
+            var data = portDataDict[port];
             if (port.PortType == PortType.INPUT)
             {
-                var data = this.portDataDict[port];
-                this.nodeLogic.Connect(data, port.Connectors[0].Start.Owner.nodeLogic);
+                var startPort = port.Connectors[0].Start;
+                var outData = startPort.Owner.portDataDict[startPort];
+                nodeLogic.ConnectInput(
+                    data,
+                    outData,
+                    startPort.Owner.nodeLogic);
+                startPort.Owner.nodeLogic.ConnectOutput(
+                    outData,
+                    nodeLogic
+                );
             }
         }
 
@@ -625,8 +636,12 @@ namespace Dynamo.Controls
             var port = (dynPort)sender;
             if (port.PortType == PortType.INPUT)
             {
-                var data = this.portDataDict[port];
-                this.nodeLogic.Disconnect(data);
+                var data = portDataDict[port];
+                var startPort = port.Connectors[0].Start;
+                nodeLogic.DisconnectInput(data);
+                startPort.Owner.nodeLogic.DisconnectOutput(
+                    startPort.Owner.portDataDict[startPort],
+                    nodeLogic);
             }
         }
 
@@ -648,12 +663,12 @@ namespace Dynamo.Controls
 
             if (flag)
             {
-                this.State = ElementState.DEAD;
+                State = ElementState.DEAD;
                 //Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.DEAD });
             }
             else
             {
-                this.State = ElementState.ACTIVE;
+                State = ElementState.ACTIVE;
                 //Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ACTIVE });
             }
         }
@@ -676,37 +691,37 @@ namespace Dynamo.Controls
 
         protected internal void SetColumnAmount(int amt)
         {
-            int count = this.inputGrid.ColumnDefinitions.Count;
+            int count = inputGrid.ColumnDefinitions.Count;
             if (count == amt)
                 return;
             else if (count < amt)
             {
                 int diff = amt - count;
                 for (int i = 0; i < diff; i++)
-                    this.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                    inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
             else
             {
                 int diff = count - amt;
-                this.inputGrid.ColumnDefinitions.RemoveRange(amt, diff);
+                inputGrid.ColumnDefinitions.RemoveRange(amt, diff);
             }
         }
 
         public void SetRowAmount(int amt)
         {
-            int count = this.inputGrid.RowDefinitions.Count;
+            int count = inputGrid.RowDefinitions.Count;
             if (count == amt)
                 return;
             else if (count < amt)
             {
                 int diff = amt - count;
                 for (int i = 0; i < diff; i++)
-                    this.inputGrid.RowDefinitions.Add(new RowDefinition());
+                    inputGrid.RowDefinitions.Add(new RowDefinition());
             }
             else
             {
                 int diff = count - amt;
-                this.inputGrid.RowDefinitions.RemoveRange(amt, diff);
+                inputGrid.RowDefinitions.RemoveRange(amt, diff);
             }
         }
 
@@ -717,16 +732,16 @@ namespace Dynamo.Controls
 
         public void SetTooltip(string message)
         {
-            this.ToolTip = message;
+            ToolTip = message;
         }
 
         void SetTooltip()
         {
-            object[] rtAttribs = this.GetType().GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
+            object[] rtAttribs = GetType().GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
             if (rtAttribs.Length > 0)
             {
                 string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-                this.ToolTip = description;
+                ToolTip = description;
             }
         }
 
@@ -741,7 +756,7 @@ namespace Dynamo.Controls
 
         public void Deselect()
         {
-            this.ValidateConnections();
+            ValidateConnections();
         }
 
         void SetState(dynNodeUI el, ElementState state)
@@ -810,8 +825,8 @@ namespace Dynamo.Controls
         private void deleteElem_cm_Click(object sender, RoutedEventArgs e)
         {
             var bench = dynSettings.Bench;
-            this.nodeLogic.DisableReporting();
-            this.nodeLogic.Destroy();
+            nodeLogic.DisableReporting();
+            nodeLogic.Destroy();
             bench.DeleteElement(this);
         }
 

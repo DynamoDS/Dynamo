@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
-    public class dynFamilyTypeSelector : dynNode
+    public class dynFamilyTypeSelector: dynNodeWithOneOutput
     {
         ComboBox combo;
         Dictionary<string, FamilySymbol> comboHash = new Dictionary<string, FamilySymbol>();
@@ -62,14 +62,10 @@ namespace Dynamo.Nodes
             };
 
             PopulateComboBox();
+            
+            OutPortData.Add(new PortData("", "Family type", typeof(FamilySymbol)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("", "Family type", typeof(FamilySymbol));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         void combo_DropDownOpened(object sender, EventArgs e)
@@ -130,7 +126,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [IsInteractive(true)]
-    public class dynFamilyInstanceParameterSelector : dynNode
+    public class dynFamilyInstanceParameterSelector: dynNodeWithOneOutput
     {
         ComboBox paramBox = new ComboBox();
         ElementId storedId = null;
@@ -161,14 +157,9 @@ namespace Dynamo.Nodes
             paramBox.IsEnabled = false;
 
             InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Element)));
+            OutPortData.Add(new PortData("", "Parameter Name", typeof(string)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("", "Parameter Name", typeof(string));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private static string getStorageTypeString(StorageType st)
@@ -349,7 +340,7 @@ namespace Dynamo.Nodes
     //      this.topControl.Width = 300;
 
     //      InPortData.Add(new PortData(null, "fi", "The family instance(s) to map.", typeof(dynElement)));
-    //      OutPortData = new PortData(null, "", "A map of parameter values on the instance.", typeof(dynInstanceParameterMapper)));
+    //      OutPortData.Add(new PortData(null, "", "A map of parameter values on the instance.", typeof(dynInstanceParameterMapper)));
     //      OutPortData[0].Object = parameterMap;
 
     //      //add a button to the inputGrid on the dynElement
@@ -703,20 +694,15 @@ namespace Dynamo.Nodes
     [NodeName("Family Instance Creator")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates family instances at a given XYZ location.")]
-    public class dynFamilyInstanceCreatorXYZ : dynRevitTransactionNode
+    public class dynFamilyInstanceCreatorXYZ : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyInstanceCreatorXYZ()
         {
             InPortData.Add(new PortData("xyz", "xyz", typeof(object)));
             InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
+            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private Value makeFamilyInstance(object location, FamilySymbol fs, int count)
@@ -818,7 +804,7 @@ namespace Dynamo.Nodes
     [NodeName("Family Instance By Level Creator")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Creates family instances in the given level.")]
-    public class dynFamilyInstanceCreatorLevel : dynRevitTransactionNode
+    public class dynFamilyInstanceCreatorLevel : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyInstanceCreatorLevel()
         {
@@ -826,15 +812,9 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("typ", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
             InPortData.Add(new PortData("lev", "The Level to use for instantiation.", typeof(FamilySymbol)));
 
-            outPortData = new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance));
+            OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private Value makeFamilyInstance(object location, FamilySymbol fs, int count, Level level)
@@ -942,21 +922,15 @@ namespace Dynamo.Nodes
     [NodeName("Curves from Family")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Extracts curves from family instances.")]
-    public class dynCurvesFromFamilyInstance : dynRevitTransactionNode
+    public class dynCurvesFromFamilyInstance : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurvesFromFamilyInstance()
         {
             InPortData.Add(new PortData("fi", "family instance", typeof(object)));
 
-            outPortData = new PortData("curves", "Curves extracted by this operation.", typeof(Curve));
+            OutPortData.Add(new PortData("curves", "Curves extracted by this operation.", typeof(Curve)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private Value GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, int count,
@@ -1144,21 +1118,16 @@ namespace Dynamo.Nodes
     [NodeName("Set Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Modifies a parameter on a family instance.")]
-    public class dynFamilyInstanceParameterSetter : dynRevitTransactionNode
+    public class dynFamilyInstanceParameterSetter : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyInstanceParameterSetter()
         {
             InPortData.Add(new PortData("fi", "Family instance.", typeof(object)));
             InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof(object)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
+            OutPortData.Add(new PortData("fi", "Modified family instance.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("fi", "Modified family instance.", typeof(object));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private static Value setParam(FamilyInstance fi, string paramName, Value valueExpr)
@@ -1273,22 +1242,16 @@ namespace Dynamo.Nodes
     [NodeName("Get Instance Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
-    public class dynFamilyInstanceParameterGetter : dynRevitTransactionNode
+    public class dynFamilyInstanceParameterGetter : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyInstanceParameterGetter()
         {
             InPortData.Add(new PortData("fi", "Family instance.", typeof(FamilyInstance)));
             InPortData.Add(new PortData("param", "Parameter to fetch.", typeof(string)));
 
-            outPortData = new PortData("val", "Parameter value.", typeof(object));
+            OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private static Value getParam(FamilyInstance fi, string paramName)
@@ -1394,21 +1357,16 @@ namespace Dynamo.Nodes
     [NodeName("Set Type Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Modifies a parameter on a family type.")]
-    public class dynFamilyTypeParameterSetter : dynRevitTransactionNode
+    public class dynFamilyTypeParameterSetter : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyTypeParameterSetter()
         {
             InPortData.Add(new PortData("ft", "Family type.", typeof(object)));
             InPortData.Add(new PortData("param", "Parameter to modify.", typeof(object)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
+            OutPortData.Add(new PortData("ft", "Modified family type.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("ft", "Modified family type.", typeof(object));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private static Value setParam(FamilySymbol fi, string paramName, Value valueExpr)
@@ -1523,22 +1481,16 @@ namespace Dynamo.Nodes
     [NodeName("Get Type Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
     [NodeDescription("Fetches the value of a parameter of a Family Type.")]
-    public class dynFamilyTypeParameterGetter : dynRevitTransactionNode
+    public class dynFamilyTypeParameterGetter : dynRevitTransactionNodeWithOneOutput
     {
         public dynFamilyTypeParameterGetter()
         {
             InPortData.Add(new PortData("ft", "Family type.", typeof(FamilySymbol)));
             InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof(string)));
 
-            outPortData = new PortData("val", "Parameter value.", typeof(object));
+            OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private static Value getParam(FamilySymbol fi, string paramName)

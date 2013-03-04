@@ -13,19 +13,13 @@ namespace Dynamo.Nodes
     [NodeName("Transform Identity")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns the identity transformation.")]
-    public class dynTransformIdentity : dynNode
+    public class dynTransformIdentity: dynNodeWithOneOutput
     {
         public dynTransformIdentity()
         {
-            outPortData = new PortData("t", "Transform", typeof(object));
+            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -39,22 +33,16 @@ namespace Dynamo.Nodes
     [NodeName("Transform From Origin and Vectors")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
-    public class dynTransformOriginAndVectors : dynNode
+    public class dynTransformOriginAndVectors: dynNodeWithOneOutput
     {
         public dynTransformOriginAndVectors()
         {
             InPortData.Add(new PortData("o", "Origin(XYZ)", typeof(object)));
             InPortData.Add(new PortData("u", "Up(XYZ)", typeof(object)));
             InPortData.Add(new PortData("forward", "Up(XYZ)", typeof(object)));
-            outPortData = new PortData("t", "Transform", typeof(object));
+            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -78,21 +66,15 @@ namespace Dynamo.Nodes
     [NodeName("Transform Scale Basis")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns the identity transformation.")]
-    public class dynTransformScaleBasis : dynNode
+    public class dynTransformScaleBasis: dynNodeWithOneOutput
     {
         public dynTransformScaleBasis()
         {
             InPortData.Add(new PortData("t", "TransformToScale(Transform)", typeof(object)));
             InPortData.Add(new PortData("d", "Scale(Number)", typeof(object)));
-            outPortData = new PortData("ts", "Transform scaled.(Transform)", typeof(object));
+            OutPortData.Add(new PortData("ts", "Transform scaled.(Transform)", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -109,22 +91,16 @@ namespace Dynamo.Nodes
     [NodeName("Transform Rotation")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns a transform that rotates by the specified angle about the specified axis and point.")]
-    public class dynTransformRotation : dynNode
+    public class dynTransformRotation: dynNodeWithOneOutput
     {
         public dynTransformRotation()
         {
             InPortData.Add(new PortData("or", "Origin(XYZ)", typeof(object)));
             InPortData.Add(new PortData("ax", "Axis(XYZ)", typeof(object)));
             InPortData.Add(new PortData("dn", "Angle(Number)", typeof(object)));
-            outPortData = new PortData("t", "Transform", typeof(object));
+            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -142,20 +118,14 @@ namespace Dynamo.Nodes
     [NodeName("Transform Translation")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns he transformation that translates by the specified vector.")]
-    public class dynTransformTranslation : dynNode
+    public class dynTransformTranslation: dynNodeWithOneOutput
     {
         public dynTransformTranslation()
         {
             InPortData.Add(new PortData("v", "Vector(XYZ)", typeof(object)));
-            outPortData = new PortData("t", "Transform", typeof(object));
+            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -171,20 +141,14 @@ namespace Dynamo.Nodes
     [NodeName("Transform Reflection")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns the transformation that reflects about the specified plane.")]
-    public class dynTransformReflection : dynNode
+    public class dynTransformReflection: dynNodeWithOneOutput
     {
         public dynTransformReflection()
         {
             InPortData.Add(new PortData("pl", "Plane(Plane)", typeof(object)));
-            outPortData = new PortData("t", "Transform", typeof(object));
+            OutPortData.Add(new PortData("t", "Transform", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -200,21 +164,15 @@ namespace Dynamo.Nodes
     [NodeName("Transform Point")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Transform a point with a transform.")]
-    public class dynTransformPoint : dynNode
+    public class dynTransformPoint: dynNodeWithOneOutput
     {
         public dynTransformPoint()
         {
             InPortData.Add(new PortData("t", "Transform(Plane)", typeof(object)));
             InPortData.Add(new PortData("p1", "The point(XYZ)", typeof(object)));
-            outPortData = new PortData("p2", "The transformed point.(XYZ)", typeof(object));
+            OutPortData.Add(new PortData("p2", "The transformed point.(XYZ)", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -253,20 +211,15 @@ namespace Dynamo.Nodes
     [NodeName("Face Compute Derivatives")]
     [NodeCategory(BuiltinNodeCategories.REVIT_TRANSFORMS)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
-    public class dynFaceComputerDerivative : dynNode
+    public class dynFaceComputerDerivative: dynNodeWithOneOutput
     {
         public dynFaceComputerDerivative()
         {
             InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(object)));
             InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(object)));
-
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData = new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(object));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            OutPortData.Add(new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(object)));
+        
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

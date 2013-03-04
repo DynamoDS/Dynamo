@@ -16,21 +16,15 @@ namespace Dynamo.Nodes
     [NodeName("Delaunay Tessellation")]
     [NodeCategory(BuiltinNodeCategories.TESSELLATION)]
     [NodeDescription("Create a delaunay tesselation from a number of reference points.")]
-    public class dynDelaunayTessellation : dynRevitTransactionNode
+    public class dynDelaunayTessellation : dynRevitTransactionNodeWithOneOutput
     {
         public dynDelaunayTessellation()
         {
             InPortData.Add(new PortData("pts", "List of reference points.", typeof(object)));
             InPortData.Add(new PortData("face", "The face on which to tessellate.", typeof(object)));
-            outPortData = new PortData("out", "Tessellation data.", typeof(object));
+            OutPortData.Add(new PortData("out", "Tessellation data.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

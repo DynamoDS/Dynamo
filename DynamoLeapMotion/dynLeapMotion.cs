@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
     [NodeName("Leap")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Manages connection to a Leap Motion controller.")]
-    public class dynLeapController : dynNode
+    public class dynLeapController : dynNodeWithOneOutput
     {
         System.Windows.Controls.MenuItem menuItemLeapEnabled = null;
 
@@ -57,9 +57,9 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Read", "Read a frame of data from the Leap", typeof(object)));
 
             // Output from this node is the data from a single frame
-            outPortData = new PortData("Leap", "The Leap controller", typeof(object));
+            OutPortData.Add(new PortData("Leap", "The Leap controller", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
 
             NodeUI.dynNodeDestroyed += new dynNodeUI.dynElementDestroyedHandler(OnDynLeapMotionDestroyed);
             NodeUI.dynNodeReadyToDestroy += new dynNodeUI.dynElementReadyToDestroyHandler(OnDynLeapMotionReadyToDestroy);
@@ -73,12 +73,6 @@ namespace Dynamo.Nodes
             NodeUI.MainContextMenu.Items.Add(menuItemLeapEnabled);
 
             LeapEnable(true);
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         void menuItemLeapEnabled_Checked(object sender, System.Windows.RoutedEventArgs e)
@@ -137,22 +131,16 @@ namespace Dynamo.Nodes
     [NodeName("Leap Frame N")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Frame from the Leap Motion controller.")]
-    public class dynLeapFrameN : dynNode
+    public class dynLeapFrameN : dynNodeWithOneOutput
     {
         public dynLeapFrameN()
         {
             InPortData.Add(new PortData("Leap", "The Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the frame to retrieve (0 == current, 1..N previous).", typeof(int)));
 
-            outPortData = new PortData("Frame", "The frame of data", typeof(object));
+            OutPortData.Add(new PortData("Frame", "The frame of data", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -174,21 +162,15 @@ namespace Dynamo.Nodes
     [NodeName("Leap Frame")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Current Frame from the Leap Motion controller.")]
-    public class dynLeapFrame : dynNode
+    public class dynLeapFrame : dynNodeWithOneOutput
     {
         public dynLeapFrame()
         {
             InPortData.Add(new PortData("Leap", "The Leap controller", typeof(object)));
 
-            outPortData = new PortData("Frame", "The frame of data", typeof(object));
+            OutPortData.Add(new PortData("Frame", "The frame of data", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -216,22 +198,16 @@ namespace Dynamo.Nodes
     [NodeName("Leap Frame Scale Factor")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("The scale factor derived from the overall motion between the current frame and the specified frame.")]
-    public class dynLeapFrameScaleFactor : dynNode
+    public class dynLeapFrameScaleFactor : dynNodeWithOneOutput
     {
         public dynLeapFrameScaleFactor()
         {
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame (1..N).", typeof(int)));
 
-            outPortData = new PortData("ScaleFactor", "The scale factor", typeof(double));
+            OutPortData.Add(new PortData("ScaleFactor", "The scale factor", typeof(double)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -261,22 +237,16 @@ namespace Dynamo.Nodes
     [NodeName("Leap Frame Translation")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("The change of position derived from the overall linear motion between the current frame and the specified frame.")]
-    public class dynLeapFrameTranslation : dynNode
+    public class dynLeapFrameTranslation : dynNodeWithOneOutput
     {
         public dynLeapFrameTranslation()
         {
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
-            outPortData = new PortData("Translation", "The translation vector", typeof(XYZ));
+            OutPortData.Add(new PortData("Translation", "The translation vector", typeof(XYZ)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -312,22 +282,16 @@ namespace Dynamo.Nodes
     [NodeName("Leap Frame Rotation")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("The angle of rotation around the XYZ axis' derived from the overall rotational motion between the current frame and the specified frame.")]
-    public class dynLeapFrameRotation : dynNode
+    public class dynLeapFrameRotation : dynNodeWithOneOutput
     {
         public dynLeapFrameRotation()
         {
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
-            outPortData = new PortData("Rotation", "The XYZ rotation in radians", typeof(XYZ));
+            OutPortData.Add(new PortData("Rotation", "The XYZ rotation in radians", typeof(XYZ)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -362,22 +326,16 @@ namespace Dynamo.Nodes
     [NodeName("Leap Hand")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Reads a hand from a Leap Motion frame.")]
-    public class dynLeapHand : dynNode
+    public class dynLeapHand : dynNodeWithOneOutput
     {
         public dynLeapHand()
         {
             InPortData.Add(new PortData("Frame", "The frame of data from the Leap device", typeof(object)));
             InPortData.Add(new PortData("Index", "The index of the hand to read (1..N).", typeof(int)));
 
-            outPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
+            OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -404,21 +362,15 @@ namespace Dynamo.Nodes
     [NodeName("Leap Hand 1")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Reads a hand #1 from a Leap Motion frame.")]
-    public class dynLeapHand1 : dynNode
+    public class dynLeapHand1 : dynNodeWithOneOutput
     {
         public dynLeapHand1()
         {
             InPortData.Add(new PortData("Frame", "The frame of data from the Leap device", typeof(object)));
 
-            outPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
+            OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -440,21 +392,15 @@ namespace Dynamo.Nodes
     [NodeName("Leap Hand 2")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Reads a hand #1 from a Leap Motion frame.")]
-    public class dynLeapHand2 : dynNode
+    public class dynLeapHand2 : dynNodeWithOneOutput
     {
         public dynLeapHand2()
         {
             InPortData.Add(new PortData("Frame", "The frame of data from the Leap device", typeof(object)));
 
-            outPortData = new PortData("Hand", "The hand read from the frame", typeof(object));
+            OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -476,21 +422,15 @@ namespace Dynamo.Nodes
     [NodeName("Leap Fingers")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Reads the list of fingers from a Leap Motion hand.")]
-    public class dynLeapFingers : dynNode
+    public class dynLeapFingers : dynNodeWithOneOutput
     {
         public dynLeapFingers()
         {
             InPortData.Add(new PortData("Hand", "The hand containing the fingers.", typeof(object)));
 
-            outPortData = new PortData("Fingers", "The list of fingers.", typeof(object));
+            OutPortData.Add(new PortData("Fingers", "The list of fingers.", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -509,7 +449,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class dynLeapFinger : dynNode
+    public abstract class dynLeapFinger : dynNodeWithOneOutput
     {
         public dynLeapFinger()
         {
@@ -517,13 +457,7 @@ namespace Dynamo.Nodes
 
             InPortData.Add(new PortData("Hand", "The hand containing the finger.", typeof(object)));
 
-            outPortData = new PortData("Finger", "The finger data.", typeof(object));
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            OutPortData.Add(new PortData("Finger", "The finger data.", typeof(object)));
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -559,7 +493,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Index", "The index of the finger to read (1..N).", typeof(int)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -583,7 +517,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 0;    // 1st finger
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
     }
 
@@ -596,7 +530,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 1;    // 2nd finger
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
     }
 
@@ -609,7 +543,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 2;    // 3rd finger
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
     }
 
@@ -622,7 +556,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 3;    // 4th finger
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
     }
 
@@ -635,11 +569,11 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 4;    // 5th finger
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
     }
 
-    public class dynLeapTool : dynNode
+    public class dynLeapTool : dynNodeWithOneOutput
     {
         public dynLeapTool()
         {
@@ -647,13 +581,7 @@ namespace Dynamo.Nodes
 
             InPortData.Add(new PortData("Frame", "The frame of data from the Leap Motion controller", typeof(object)));
 
-            outPortData = new PortData("Tool", "The tool data.", typeof(object));
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            OutPortData.Add(new PortData("Tool", "The tool data.", typeof(object)));
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -689,7 +617,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Index", "The index of the tool to read (1..N).", typeof(int)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -713,28 +641,22 @@ namespace Dynamo.Nodes
         {
             ToolIndex = 0;
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
         }
     }
 
     [NodeName("Leap Position")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Reads the position of a Leap Hand, Finger, or Tool.")]
-    public class dynLeapPosition : dynNode
+    public class dynLeapPosition : dynNodeWithOneOutput
     {
         public dynLeapPosition()
         {
             InPortData.Add(new PortData("Object", "The Hand, Finger, or Tool from the Leap controller", typeof(object)));
 
-            outPortData = new PortData("XYZ", "The XYZ position in mms", typeof(XYZ));
+            OutPortData.Add(new PortData("XYZ", "The XYZ position in mms", typeof(XYZ)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

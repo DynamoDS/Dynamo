@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
     [NodeName("Kinect")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
     [NodeDescription("Read  from a Kinect.")]
-    public class dynKinect : dynNode
+    public class dynKinect : dynNodeWithOneOutput
     {
         //Kinect Runtime
         KinectSensor nui;
@@ -32,19 +32,13 @@ namespace Dynamo.Nodes
         ReferencePoint rightHandPt;
         System.Windows.Shapes.Ellipse rightHandEllipse;
 
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
-        }
-
         public dynKinect()
         {
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
             InPortData.Add(new PortData("X scale", "The amount to scale the skeletal measurements in the X direction.", typeof(double)));
             InPortData.Add(new PortData("Y scale", "The amount to scale the skeletal measurements in the Y direction.", typeof(double)));
             InPortData.Add(new PortData("Z scale", "The amount to scale the skeletal measurements in the Z direction.", typeof(double)));
-            outPortData = new PortData("kinect data", "position data from the kinect", typeof(object));
+            OutPortData.Add(new PortData("kinect data", "position data from the kinect", typeof(object)));
 
 
             int width = 320;
@@ -106,7 +100,7 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(trackingCanvas);
             trackingCanvas.Children.Add(rightHandEllipse);
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
 
             NodeUI.Width = width + 120;// 450;
             NodeUI.Height = height + 5;

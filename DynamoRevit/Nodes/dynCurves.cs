@@ -29,21 +29,15 @@ namespace Dynamo.Nodes
     [NodeName("Model Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
     [NodeDescription("Creates a model curve.")]
-    public class dynModelCurve : dynRevitTransactionNode
+    public class dynModelCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynModelCurve()
         {
             InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Curve)));
             InPortData.Add(new PortData("sp", "The Sketch Plane.", typeof(SketchPlane)));
-            outPortData = new PortData("mc", "Model Curve", typeof(ModelCurve));
+            OutPortData.Add(new PortData("mc", "Model Curve", typeof(ModelCurve)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -104,20 +98,14 @@ namespace Dynamo.Nodes
     [NodeName("Curve By Points")]
     [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
-    public class dynCurveByPoints : dynRevitTransactionNode
+    public class dynCurveByPoints : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveByPoints()
         {
             InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
-            outPortData = new PortData("curve", "Curve from ref points", typeof(object));
+            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -168,20 +156,14 @@ namespace Dynamo.Nodes
     [NodeName("Curve By Points By Line")]
     [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
     [NodeDescription("Create a new Curve by Points by passing in a geometry line in 3d space")]
-    public class dynCurveByPointsByLine : dynRevitTransactionNode
+    public class dynCurveByPointsByLine : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveByPointsByLine()
         {
             InPortData.Add(new PortData("curve", "geometry curve", typeof(object)));
-            outPortData = new PortData("curve", "Curve from ref points", typeof(object));
+            OutPortData.Add(new PortData("curve", "Curve from ref points", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -320,20 +302,14 @@ namespace Dynamo.Nodes
     [NodeName("Curve Element Reference")]
     [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
     [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
-    public class dynCurveRef : dynRevitTransactionNode
+    public class dynCurveRef : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveRef()
         {
             InPortData.Add(new PortData("curve", "Model Curve Element or Geometry Curve", typeof(object)));
-            outPortData = new PortData("curveRef", "Curve Reference", typeof(object));
+            OutPortData.Add(new PortData("curveRef", "Curve Reference", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private Value makeCurveRef(object c, int count)
@@ -393,20 +369,14 @@ namespace Dynamo.Nodes
     [NodeName("Curve From Curve Element")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Takes in a Model Curve and Extracts Geometry Curve")]
-    public class dynCurveFromModelCurve : dynRevitTransactionNode
+    public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput
     {
         public dynCurveFromModelCurve()
         {
             InPortData.Add(new PortData("mc", "Model Curve Element", typeof(object)));
-            outPortData = new PortData("curve", "Curve", typeof(object));
+            OutPortData.Add(new PortData("curve", "Curve", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         private Value extractCurve(object c, int count)
@@ -464,20 +434,14 @@ namespace Dynamo.Nodes
     [NodeName("Planar Nurb Spline")]
     [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
     [NodeDescription("Node to create a planar model curve.")]
-    public class dynModelCurveNurbSpline : dynRevitTransactionNode
+    public class dynModelCurveNurbSpline : dynRevitTransactionNodeWithOneOutput
     {
         public dynModelCurveNurbSpline()
         {
             InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(object)));
-            outPortData = new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline));
+            OutPortData.Add(new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(ModelNurbSpline)));
 
-            NodeUI.RegisterInputsAndOutput();
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
+            NodeUI.RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

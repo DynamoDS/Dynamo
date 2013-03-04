@@ -29,7 +29,7 @@ namespace Dynamo.Connectors
    /// </summary>
    public delegate void PortConnectedHandler(object sender, EventArgs e);
    public delegate void PortDisconnectedHandler(object sender, EventArgs e);
-   public enum PortType { INPUT, OUTPUT, STATE };
+   public enum PortType { INPUT, OUTPUT };
 
    public partial class dynPort : UserControl
    {
@@ -128,6 +128,9 @@ namespace Dynamo.Connectors
 
       public void Disconnect(dynConnector connector)
       {
+         //throw the event for a connection
+         OnPortDisconnected(EventArgs.Empty);
+
          if (connectors.Contains(connector))
          {
             connectors.Remove(connector);
@@ -137,9 +140,6 @@ namespace Dynamo.Connectors
          //there are still connectors on this port
          if (connectors.Count == 0)
             ellipse1Dot.Fill = System.Windows.Media.Brushes.White;
-
-         //throw the event for a connection
-         OnPortDisconnected(EventArgs.Empty);
       }
 
       public void Update()

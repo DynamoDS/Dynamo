@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.DEBUG)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
-    public class dyn3DPreview : dynNode, INotifyPropertyChanged
+    public class dyn3DPreview: dynNodeWithOneOutput, INotifyPropertyChanged
     {
         HelixViewport3D view;
         PointsVisual3D points;
@@ -69,9 +69,9 @@ namespace Dynamo.Nodes
         public dyn3DPreview()
         {
             InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
-            outPortData = new PortData("OUT", "Watch contents, passed through", typeof(object));
+            OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
 
             //get rid of right click delete
             //this.MainContextMenu.Items.Clear();
@@ -171,12 +171,6 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(view);
 
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
-        }
-
-        private PortData outPortData;
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

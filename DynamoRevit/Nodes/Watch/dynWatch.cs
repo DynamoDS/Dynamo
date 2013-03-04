@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.DEBUG)]
     [NodeDescription("Visualize the output of node.")]
     [NodeSearchTags("print", "output", "display")]
-    class dynWatch : dynNode
+    class dynWatch: dynNodeWithOneOutput
     {
         //System.Windows.Controls.TextBlock watchBlock;
         WatchTree wt;
@@ -34,8 +34,9 @@ namespace Dynamo.Nodes
         public dynWatch()
         {
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
+            OutPortData.Add(new PortData("", "Watch contents.", typeof(string)));
 
-            NodeUI.RegisterInputsAndOutput();
+            NodeUI.RegisterAllPorts();
 
             //take out the left and right margins
             //and make this so it's not so wide
@@ -51,12 +52,6 @@ namespace Dynamo.Nodes
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
-        }
-
-        private PortData outPortData = new PortData("", "Watch contents.", typeof(string));
-        public override PortData OutPortData
-        {
-            get { return outPortData; }
         }
 
         void p_PortDisconnected(object sender, EventArgs e)
