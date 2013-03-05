@@ -66,7 +66,7 @@ limitations under the License.
     </Reference>
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
     </Reference>
     <Reference Include="LeapCSharp.NET4.0">
       <HintPath>..\packages\Leap SDK 0.7.3_2234 Binaries\LeapCSharp.NET4.0.dll</HintPath>
@@ -87,17 +87,17 @@ limitations under the License.
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\IronPython 2.7.1\Microsoft.Scripting.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\IronPython 2.7.1\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
