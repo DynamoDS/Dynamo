@@ -36,11 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DragCanvas">
-      <HintPath>..\DragCanvas\bin\Debug\DragCanvas.dll</HintPath>
+      <HintPath>..\bin\Debug\DragCanvas.dll</HintPath>
     </Reference>
     <Reference Include="DynamoElements">
-      <HintPath>..\Dynamo\bin\Debug\DynamoElements.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\bin\Debug\DynamoElements.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

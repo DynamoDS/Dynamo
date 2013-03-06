@@ -12,7 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Reflection;
-using Dynamo.Elements;
+using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.Controls;
 using Dynamo;
 
@@ -28,7 +29,7 @@ namespace DynamoSandbox
         public dynSandbox()
         {
             InitializeComponent();
-            LoadBuiltInTypes();
+            //LoadBuiltInTypes();
         }
 
         public void LoadBuiltInTypes()
@@ -43,14 +44,14 @@ namespace DynamoSandbox
             {
                 //only load types that are in the right namespace, are not abstract
                 //and have the elementname attribute
-                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+                object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
                 if (t.Namespace == "Dynamo.Nodes" &&
                     !t.IsAbstract &&
                     attribs.Length > 0 &&
                     t.IsSubclassOf(typeof(dynNode)))
                 {
-                    string typeName = (attribs[0] as ElementNameAttribute).ElementName;
+                    string typeName = (attribs[0] as NodeNameAttribute).Name;
                     builtinTypes.Add(typeName, new TypeLoadData(elementsAssembly, t));
                 }
             }

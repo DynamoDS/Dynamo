@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Dynamo.Elements;
 using Dynamo.Controls;
 using System.Windows;
 using System.Windows.Forms;
@@ -10,45 +9,38 @@ using System.Reflection;
 using System.Diagnostics;
 using System.IO;
 
+using Dynamo;
+using Dynamo.Utilities;
+
 namespace DynamoSandbox
 {
     class Program
     {
-        static dynSandbox sandbox;
-
+        static DynamoController dynamoController;
+        static TextWriter tw;
         [STAThread]
         static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-            //SplashScreen splashScreen = null;
-            //splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
-            //splashScreen.Show(false, true);
-
             try
             {
-                //show the window
-                sandbox = new dynSandbox();
-                sandbox.ShowDialog();
+                string tempPath = System.IO.Path.GetTempPath();
+                string logPath = Path.Combine(tempPath, "dynamoLog.txt");
+
+                tw = new StreamWriter(logPath);
+                tw.WriteLine("Dynamo log started " + System.DateTime.Now.ToString());
+                dynSettings.Writer = tw;
+
+                SplashScreen splashScreen = null;
+                splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
+                dynamoController = new DynamoController(splashScreen);
+                var bench = dynamoController.Bench;
+                bench.ShowDialog();
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
-
-            //dynamoForm.Closed += new EventHandler(dynamoForm_Closed);
-        }
-
-        static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            Debug.WriteLine(args.Name);
-            
-            if (args.Name == "RevitAPI, Version=2013.0.0.0, Culture=neutral, PublicKeyToken=null")
-            {
-                return Assembly.LoadFrom(@"C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll");
-            }
-
-            return null;
         }
     }
 }
