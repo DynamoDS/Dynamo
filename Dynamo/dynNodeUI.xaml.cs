@@ -430,6 +430,12 @@ namespace Dynamo.Controls
                 //distribute the ports along the 
                 //edges of the icon
                 var port = AddPort(PortType.INPUT, nodeLogic.InPortData[count].NickName, count);
+
+                port.DataContext = this;
+                Binding selectionBinding = new Binding("IsSelected");
+                selectionBinding.Converter = new BooleanToBrushConverter();
+                port.ellipse1.SetBinding(Ellipse.StrokeProperty, selectionBinding);
+
                 portDataDict[port] = pd;
                 count++;
             }
@@ -475,6 +481,12 @@ namespace Dynamo.Controls
                 //distribute the ports along the 
                 //edges of the icon
                 var port = AddPort(PortType.OUTPUT, pd.NickName, count);
+
+                port.DataContext = this;
+                Binding selectionBinding = new Binding("IsSelected");
+                selectionBinding.Converter = new BooleanToBrushConverter();
+                port.ellipse1.SetBinding(Ellipse.StrokeProperty, selectionBinding);
+
                 portDataDict[port] = pd;
                 count++;
             }
@@ -887,6 +899,7 @@ namespace Dynamo.Controls
     }
 
     public class BooleanToBrushConverter : IValueConverter
+
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
