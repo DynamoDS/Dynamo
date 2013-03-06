@@ -758,11 +758,11 @@ namespace Dynamo.Controls
 
         public void Select()
         {
-            Dispatcher.Invoke(
-               stateSetter,
-               System.Windows.Threading.DispatcherPriority.Background,
-               new object[] { this, ElementState.SELECTED }
-            );
+            //Dispatcher.Invoke(
+            //   stateSetter,
+            //   System.Windows.Threading.DispatcherPriority.Background,
+            //   new object[] { this, ElementState.SELECTED }
+            //);
 
             this.IsSelected = true;
         }
@@ -893,7 +893,7 @@ namespace Dynamo.Controls
             bool condition = (bool)value;
             if (condition)
             {
-                return new SolidColorBrush(Colors.Green);
+                return new SolidColorBrush(Colors.Cyan);
             }
             else
             {
