@@ -181,10 +181,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="DynamoForVasari.addin" />
-    <Resource Include="Nodes\Watch\WatchTree.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
