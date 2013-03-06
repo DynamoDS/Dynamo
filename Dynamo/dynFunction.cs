@@ -219,16 +219,21 @@ namespace Dynamo.Nodes
             outEl.SetAttribute("value", Symbol);
             dynEl.AppendChild(outEl);
 
-            outEl = xmlDoc.CreateElement("Output");
-            outEl.SetAttribute("value", OutPortData[0].NickName);
-            dynEl.AppendChild(outEl);
-
             outEl = xmlDoc.CreateElement("Inputs");
             foreach (var input in InPortData.Select(x => x.NickName))
             {
                 var inputEl = xmlDoc.CreateElement("Input");
                 inputEl.SetAttribute("value", input);
                 outEl.AppendChild(inputEl);
+            }
+            dynEl.AppendChild(outEl);
+
+            outEl = xmlDoc.CreateElement("Outputs");
+            foreach (var output in OutPortData.Select(x => x.NickName))
+            {
+                var outputEl = xmlDoc.CreateElement("Output");
+                outputEl.SetAttribute("value", output);
+                outEl.AppendChild(outputEl);
             }
             dynEl.AppendChild(outEl);
         }
@@ -241,14 +246,24 @@ namespace Dynamo.Nodes
                 {
                     Symbol = subNode.Attributes[0].Value;
                 }
-                else if (subNode.Name.Equals("Output"))
+                else if (subNode.Name.Equals("Outputs"))
                 {
-                    var data = new PortData(subNode.Attributes[0].Value, "function output", typeof(object));
+                    int i = 0;
+                    foreach (XmlNode outputNode in subNode.ChildNodes)
+                    {
+                        var data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1), typeof(object));
 
-                    if (OutPortData.Any())
-                        OutPortData[0] = data;
-                    else
-                        OutPortData.Add(data);
+                        if (OutPortData.Count > i)
+                        {
+                            OutPortData[i] = data;
+                        }
+                        else
+                        {
+                            OutPortData.Add(data);
+                        }
+
+                        i++;
+                    }
                 }
                 else if (subNode.Name.Equals("Inputs"))
                 {
@@ -269,6 +284,17 @@ namespace Dynamo.Nodes
                         i++;
                     }
                 }
+                #region Legacy output support
+                else if (subNode.Name.Equals("Output"))
+                {
+                    var data = new PortData(subNode.Attributes[0].Value, "function output", typeof(object));
+
+                    if (OutPortData.Any())
+                        OutPortData[0] = data;
+                    else
+                        OutPortData.Add(data);
+                }
+                #endregion
             }
 
             NodeUI.RegisterAllPorts();
