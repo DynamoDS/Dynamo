@@ -185,6 +185,9 @@ namespace Dynamo
 
             //var tempDomain = AppDomain.CreateDomain("TemporaryAppDomain");
 
+            if (!Directory.Exists(Path.Combine(location, "Packages")))
+                Directory.CreateDirectory(Path.Combine(location, "Packages"));
+
             var allDynamoAssemblyPaths =
                 Directory.GetFiles(location, "*.dll")
                 .Concat(Directory.GetFiles(
