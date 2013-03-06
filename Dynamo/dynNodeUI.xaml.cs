@@ -627,6 +627,7 @@ namespace Dynamo.Controls
                     startPort.Owner.nodeLogic);
                 startPort.Owner.nodeLogic.ConnectOutput(
                     outData,
+                    data,
                     nodeLogic
                 );
             }
@@ -644,7 +645,7 @@ namespace Dynamo.Controls
                 nodeLogic.DisconnectInput(data);
                 startPort.Owner.nodeLogic.DisconnectOutput(
                     startPort.Owner.portDataDict[startPort],
-                    nodeLogic);
+                    data);
             }
         }
 

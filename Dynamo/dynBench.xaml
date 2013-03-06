@@ -54,6 +54,8 @@
             <MenuItem Header="_Run" Click="Run_Click" />
             <MenuItem Header="_Run Debug" Click="RunDebug_Click" />
             <MenuItem Header="_Print Expression" Click="Print_Click" />-->
+            <Separator />
+            <MenuItem Header="_New Node From Selection" Name="nodeFromSelection" Click="nodeFromSelection_Click"/>
          </MenuItem>
          <MenuItem Header="_View" Name="viewMenu">
             <MenuItem Header="_Home" Click="Home_Click" Name="homeButton" IsEnabled="False">

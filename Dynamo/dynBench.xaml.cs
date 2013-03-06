@@ -1596,6 +1596,13 @@ namespace Dynamo.Controls
         }
 
         public bool UILocked { get; private set; }
+
+        private void nodeFromSelection_Click(object sender, RoutedEventArgs e)
+        {
+            Controller.NodeFromSelection(
+                SelectedElements.Where(x => x is dynNodeUI)
+                    .Select(x => (x as dynNodeUI).NodeLogic));
+        }
     }
 
     public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>

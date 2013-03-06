@@ -171,15 +171,13 @@ namespace Dynamo.Nodes
             int i = 0;
             foreach (string input in inputs)
             {
-                PortData data = new PortData(input, "Input #" + (i + 1), typeof(object));
-
                 if (InPortData.Count > i)
                 {
-                    InPortData[i] = data;
+                    InPortData[i].NickName = input;
                 }
                 else
                 {
-                    InPortData.Add(data);
+                    InPortData.Add(new PortData(input, "Input #" + (i + 1), typeof(object)));
                 }
 
                 i++;
@@ -196,15 +194,13 @@ namespace Dynamo.Nodes
             int i = 0;
             foreach (string output in outputs)
             {
-                PortData data = new PortData(output, "Output #" + (i + 1), typeof(object));
-
                 if (OutPortData.Count > i)
                 {
-                    OutPortData[i] = data;
+                    OutPortData[i].NickName = output;
                 }
                 else
                 {
-                    OutPortData.Add(data);
+                    OutPortData.Add(new PortData(output, "Output #" + (i + 1), typeof(object)));
                 }
 
                 i++;

@@ -42,13 +42,13 @@ namespace Dynamo.Nodes
         public dynNodeUI NodeUI;
         public Dictionary<PortData, Tuple<PortData, dynNode>> Inputs = 
             new Dictionary<PortData, Tuple<PortData, dynNode>>();
-        public Dictionary<PortData, HashSet<dynNode>> Outputs = 
-            new Dictionary<PortData, HashSet<dynNode>>();
+        public Dictionary<PortData, HashSet<Tuple<PortData, dynNode>>> Outputs =
+            new Dictionary<PortData, HashSet<Tuple<PortData, dynNode>>>();
 
         private Dictionary<PortData, Tuple<PortData, dynNode>> previousInputPortMappings = 
             new Dictionary<PortData, Tuple<PortData, dynNode>>();
-        private Dictionary<PortData, HashSet<dynNode>> previousOutputPortMappings = 
-            new Dictionary<PortData, HashSet<dynNode>>();
+        private Dictionary<PortData, HashSet<Tuple<PortData, dynNode>>> previousOutputPortMappings =
+            new Dictionary<PortData, HashSet<Tuple<PortData, dynNode>>>();
         
         /// <summary>
         /// Should changes be reported to the containing workspace?
@@ -175,8 +175,8 @@ namespace Dynamo.Nodes
             || OutPortData.Any(
                delegate(PortData output)
                {
-                   HashSet<dynNode> oldOutputs;
-                   HashSet<dynNode> newOutputs;
+                   HashSet<Tuple<PortData, dynNode>> oldOutputs;
+                   HashSet<Tuple<PortData, dynNode>> newOutputs;
 
                    return !previousOutputPortMappings.TryGetValue(output, out oldOutputs)
                        || !TryGetOutput(output, out newOutputs)
@@ -329,7 +329,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                nodes[OutPortData[0]] = node;
+                nodes[outPort] = node;
             }
 
             //If this is a partial application, then remember not to re-eval.
@@ -386,11 +386,11 @@ namespace Dynamo.Nodes
 
             foreach (var data in OutPortData)
             {
-                HashSet<dynNode> outputs;
+                HashSet<Tuple<PortData, dynNode>> outputs;
 
                 previousOutputPortMappings[data] = TryGetOutput(data, out outputs)
                     ? outputs
-                    : new HashSet<dynNode>();
+                    : new HashSet<Tuple<PortData, dynNode>>();
             }
         }
 
@@ -571,11 +571,11 @@ namespace Dynamo.Nodes
             CheckPortsForRecalc();
         }
         
-        internal void ConnectOutput(PortData portData, dynNode nodeLogic)
+        internal void ConnectOutput(PortData portData, PortData inputData, dynNode nodeLogic)
         {
             if (!Outputs.ContainsKey(portData))
-                Outputs[portData] = new HashSet<dynNode>();
-            Outputs[portData].Add(nodeLogic);
+                Outputs[portData] = new HashSet<Tuple<PortData, dynNode>>();
+            Outputs[portData].Add(Tuple.Create(inputData, nodeLogic));
         }
 
         internal void DisconnectInput(PortData data)
@@ -595,7 +595,7 @@ namespace Dynamo.Nodes
             return Inputs.TryGetValue(data, out input) && input != null;
         }
 
-        public bool TryGetOutput(PortData output, out HashSet<dynNode> newOutputs)
+        public bool TryGetOutput(PortData output, out HashSet<Tuple<PortData, dynNode>> newOutputs)
         {
             return Outputs.TryGetValue(output, out newOutputs);
         }
@@ -615,9 +615,10 @@ namespace Dynamo.Nodes
             return Outputs.ContainsKey(portData) && Outputs[portData].Any();
         }
 
-        internal void DisconnectOutput(PortData portData, dynNode nodeLogic)
+        internal void DisconnectOutput(PortData portData, PortData inPortData)
         {
-            Outputs[portData].Remove(nodeLogic);
+            Outputs[portData].RemoveWhere(x => x.Item1 == inPortData);
+            CheckPortsForRecalc();
         }
     }
 
