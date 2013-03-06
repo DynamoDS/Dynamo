@@ -28,7 +28,7 @@ using System.Windows.Shapes;
 using Dynamo.Utilities;
 using Dynamo.Controls;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     /// <summary>
     /// Interaction logic for dynNote.xaml
@@ -44,13 +44,9 @@ namespace Dynamo.Elements
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            //if (!dynElementSettings.SharedInstance.Bench.SelectedElements.Contains(this))
-            //{
-            //    dynElementSettings.SharedInstance.Bench.SelectedElements.Add(this);
-            //}
-            if (!dynElementSettings.SharedInstance.Bench.workBench.Selection.Contains(this))
+            if (!dynSettings.Bench.WorkBench.Selection.Contains(this))
             {
-                dynElementSettings.SharedInstance.Bench.workBench.Selection.Add(this);
+                dynSettings.Bench.WorkBench.Selection.Add(this);
             }
         }
 
@@ -72,15 +68,8 @@ namespace Dynamo.Elements
 
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
-            var bench = dynElementSettings.SharedInstance.Bench;
-
-            IdlePromise.ExecuteOnIdle(
-               delegate
-               {
-                   bench.DeleteElement(this);
-               },
-               true
-            );
+            var bench = dynSettings.Bench;
+            bench.DeleteElement(this);
         }
     }
 }

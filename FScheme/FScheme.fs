@@ -996,6 +996,7 @@ let REPL debug : unit =
 
 type ErrorLog = delegate of string -> unit
 
+
 ///Tests
 let RunTests (log : ErrorLog) =
     let success = ref true

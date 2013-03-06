@@ -25,7 +25,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
    /// <summary>
    /// Interaction logic for FunctionNamePrompt.xaml

@@ -45,7 +45,7 @@ namespace DynamoSandbox
                 //and have the elementname attribute
                 object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
 
-                if (t.Namespace == "Dynamo.Elements" &&
+                if (t.Namespace == "Dynamo.Nodes" &&
                     !t.IsAbstract &&
                     attribs.Length > 0 &&
                     t.IsSubclassOf(typeof(dynNode)))

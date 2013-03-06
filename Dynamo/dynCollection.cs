@@ -16,14 +16,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Controls;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     public class dynCollection
     {
-        List<List<dynNode>> elements = new List<List<dynNode>>();
+        List<List<dynNodeUI>> elements = new List<List<dynNodeUI>>();
 
-        public List<List<dynNode>> Elements
+        public List<List<dynNodeUI>> Elements
         {
             get { return elements; }
         }

@@ -23,7 +23,7 @@ limitations under the License.
     <ProjectGuid>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.Elements</RootNamespace>
+    <RootNamespace>Dynamo.Nodes</RootNamespace>
     <AssemblyName>DynamoElements</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -130,65 +130,40 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dyn3D.cs" />
-    <Compile Include="dynAnalysis.cs" />
-    <Compile Include="dynColors.cs" />
-    <Compile Include="dynDivide.cs" />
+    <Compile Include="DynamoController.cs" />
+    <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynGeometricForms.cs" />
-    <Compile Include="dynKinect.cs" />
-    <Compile Include="dynLeapMotion.cs" />
-    <Compile Include="dynMeasurement.cs" />
-    <Compile Include="dynSimplexNoise.cs" />
-    <Compile Include="dynTessellation.cs" />
-    <Compile Include="dynTimer.cs" />
-    <Compile Include="dynViews.cs" />
-    <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
-    <Compile Include="ParticleSystem\dynParticleSpring.cs" />
-    <Compile Include="ParticleSystem\dynParticle.cs" />
-    <Compile Include="dynArduino.cs" />
-    <Compile Include="dynBaseTypes.cs" />
+    <Compile Include="Nodes\dynTimer.cs" />
+    <Compile Include="Nodes\dynArduino.cs" />
+    <Compile Include="Nodes\dynBaseTypes.cs" />
     <Compile Include="dynBench.xaml.cs">
       <DependentUpon>dynBench.xaml</DependentUpon>
     </Compile>
     <Compile Include="dynCollection.cs" />
-    <Compile Include="dynCommunication.cs" />
+    <Compile Include="Nodes\dynCommunication.cs" />
     <Compile Include="dynConnector.cs" />
-    <Compile Include="dynCurves.cs" />
-    <Compile Include="dynDatums.cs" />
-    <Compile Include="dynFamilies.cs" />
-    <Compile Include="dynFiles.cs" />
+    <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="dynFunction.cs" />
-    <Compile Include="dynGeometry.cs" />
-    <Compile Include="dynModelUpdater.cs" />
-    <Compile Include="dynNode.xaml.cs">
-      <DependentUpon>dynNode.xaml</DependentUpon>
+    <Compile Include="dynNode.cs" />
+    <Compile Include="dynNodeUI.xaml.cs">
+      <DependentUpon>dynNodeUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynNormals.cs" />
     <Compile Include="dynNote.xaml.cs">
       <DependentUpon>dynNote.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ParticleSystem\dynParticleSystem.cs" />
-    <Compile Include="dynPoints.cs" />
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynPython.cs" />
-    <Compile Include="dynSelection.cs" />
-    <Compile Include="dynSolarRadiation.cs" />
     <Compile Include="dynToolFinder.xaml.cs">
       <DependentUpon>dynToolFinder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynTransactions.cs" />
     <Compile Include="dynUtils.cs" />
-    <Compile Include="dynWatch.cs" />
     <Compile Include="dynWorkspace.cs" />
     <Compile Include="FunctionNamePrompt.xaml.cs">
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IdlePromise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -203,11 +178,6 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SearchDictionary.cs" />
-    <Compile Include="ParticleSystem\VerletIntegrator.cs" />
-    <Compile Include="dynTransforms.cs" />
-    <Compile Include="WatchTree.xaml.cs">
-      <DependentUpon>WatchTree.xaml</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -225,13 +195,13 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="dynEditWindow.xaml">
+    <Page Include="dynNodeUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="dynNode.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="dynEditWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="dynNote.xaml">
       <SubType>Designer</SubType>
@@ -249,10 +219,6 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="WatchTree.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
@@ -263,12 +229,12 @@ limitations under the License.
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
       <Name>FSchemeInterop</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\FScheme\FScheme.fsproj">
       <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
       <Name>FScheme</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

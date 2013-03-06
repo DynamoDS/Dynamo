@@ -28,7 +28,7 @@ using System.Windows.Shapes;
 using System.Reflection;
 using Dynamo.Utilities;
 
-namespace Dynamo.Elements
+namespace Dynamo.Nodes
 {
     public delegate void ToolFinderFinishedHandler(object sender, EventArgs e);
 
@@ -91,21 +91,21 @@ namespace Dynamo.Elements
                         //create an element with the type name selected
                         foreach (Type t in elementsAssembly.GetTypes())
                         {
-                            object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
+                            object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
                             if (attribs.Length > 0)
                             {
-                                if (((ElementNameAttribute)attribs[0]).ElementName == ((ListBoxItem)toolSelectListBox.Items[toolSelectListBox.SelectedIndex]).Content.ToString())
+                                if (((NodeNameAttribute)attribs[0]).Name == ((ListBoxItem)toolSelectListBox.Items[toolSelectListBox.SelectedIndex]).Content.ToString())
                                 {
-                                   // dynNode newEl = dynElementSettings.SharedInstance.Bench.AddDynElement(t, (attribs[0] as ElementNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0, dynElementSettings.SharedInstance.Workbench.work);
+                                   // dynNode newEl = dynSettings.Bench.AddDynElement(t, (attribs[0] as NodeNameAttribute).ElementName, Guid.NewGuid(), 0.0, 0.0, dynSettings.Workbench.work);
 
-                                    Point p = Mouse.GetPosition(dynElementSettings.SharedInstance.Bench.outerCanvas);
-                                    dynNode newEl = dynElementSettings.SharedInstance.Bench.AddDynElement(
-                                                    t, (attribs[0] as ElementNameAttribute).ElementName, Guid.NewGuid(), p.X,p.Y, dynElementSettings.SharedInstance.Bench.CurrentSpace);
-                                    newEl.CheckInputs();
+                                    Point p = Mouse.GetPosition(dynSettings.Bench.outerCanvas);
+                                    dynNode newEl = dynSettings.Controller.AddDynElement(
+                                                    t, (attribs[0] as NodeNameAttribute).Name, Guid.NewGuid(), p.X, p.Y, dynSettings.Controller.CurrentSpace);
+                                    //newEl.NodeUI.CheckInputs();
 
                                     //turn off the tool list box by sending an event
                                     //that is picked up by the bench
-                                    dynElementSettings.SharedInstance.Workbench.Children.Remove(this);
+                                    dynSettings.Workbench.Children.Remove(this);
 
                                     break;
                                 }
@@ -133,7 +133,7 @@ namespace Dynamo.Elements
             //}
             else if (e.Key == Key.Escape)
             {
-                dynElementSettings.SharedInstance.Workbench.Children.Remove(this);
+                dynSettings.Workbench.Children.Remove(this);
             }
 
             //clear the list of list box items
@@ -154,23 +154,23 @@ namespace Dynamo.Elements
             {
                 //only load types that are in the right namespace, are not abstract
                 //and have the elementname attribute
-                object[] attribs = t.GetCustomAttributes(typeof(ElementNameAttribute), false);
-                object[] descrips = t.GetCustomAttributes(typeof(ElementDescriptionAttribute), false);
+                object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+                object[] descrips = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
 
-                if (t.Namespace == "Dynamo.Elements" && !t.IsAbstract && attribs.Length > 0)
+                if (t.Namespace == "Dynamo.Nodes" && !t.IsAbstract && attribs.Length > 0)
                 {
-                    if ((attribs[0] as ElementNameAttribute).ElementName.ToLower().Contains(toolNameBox.Text.ToLower()) && toolNameBox.Text != "")
+                    if ((attribs[0] as NodeNameAttribute).Name.ToLower().Contains(toolNameBox.Text.ToLower()) && toolNameBox.Text != "")
                     {
                         if (!toolNames.Contains(t.Name))
                         {
                             ListBoxItem lbi = new ListBoxItem();
 
                             //lbi.Content = t.Name;
-                            lbi.Content = ((ElementNameAttribute)attribs[0]).ElementName;
+                            lbi.Content = ((NodeNameAttribute)attribs[0]).Name;
 
                             if (descrips.Length > 0)
                             {
-                                lbi.ToolTip = ((ElementDescriptionAttribute)descrips[0]).ElementDescription;
+                                lbi.ToolTip = ((NodeDescriptionAttribute)descrips[0]).ElementDescription;
                             }
                             lbi.PreviewMouseUp += new MouseButtonEventHandler(lbi_PreviewMouseUp);
                             toolSelectListBox.Items.Add(lbi);
@@ -194,14 +194,14 @@ namespace Dynamo.Elements
             if (lbi != null)
             {   
                 //we've clicked a list item
-                Point p = Mouse.GetPosition(dynElementSettings.SharedInstance.Workbench);
-                dynNode newEl = dynElementSettings.SharedInstance.Bench.AddDynElement(
-                                Type.GetType("Dynamo.Elements." + toolNames[toolSelectListBox.SelectedIndex]), lbi.Content.ToString(), Guid.NewGuid(), p.X, p.Y, dynElementSettings.SharedInstance.Bench.CurrentSpace);
-                newEl.CheckInputs();
+                Point p = Mouse.GetPosition(dynSettings.Workbench);
+                dynNode newEl = dynSettings.Controller.AddDynElement(
+                                Type.GetType("Dynamo.Nodes." + toolNames[toolSelectListBox.SelectedIndex]), lbi.Content.ToString(), Guid.NewGuid(), p.X, p.Y, dynSettings.Controller.CurrentSpace);
+                //newEl.CheckInputs();
 
                 //turn off the tool list box by sending an event
                 //that is picked up by the bench
-                dynElementSettings.SharedInstance.Workbench.Children.Remove(this);
+                dynSettings.Workbench.Children.Remove(this);
             }
         }
 
