@@ -21,6 +21,10 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Windows.Interop;
+using System.Reflection;
+using System.Windows;
+using System.Xml.Serialization;
 
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit;
@@ -33,11 +37,7 @@ using Autodesk.Revit.DB.Analysis;//MDJ needed for spatialfeildmanager
 using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Controls;
-using System.Xml.Serialization;
 using Dynamo.Utilities;
-using System.Windows.Interop;
-using System.Reflection;
-using System.Windows;
 
 //TAF added to get strings from resource files
 using System.Resources;
