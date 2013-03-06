@@ -27,7 +27,7 @@ namespace Dynamo
     public class DynamoController
     {
         //TODO: Remove this?
-        public Dictionary<string, dynWorkspace> dynFunctionDict = new Dictionary<string, dynWorkspace>();
+        public Dictionary<string, dynWorkspace> FunctionDict = new Dictionary<string, dynWorkspace>();
 
         public dynBench Bench { get; private set; }
 
@@ -36,7 +36,7 @@ namespace Dynamo
             get
             {
                 return this.homeSpace.Nodes.Concat(
-                   this.dynFunctionDict.Values.Aggregate(
+                   this.FunctionDict.Values.Aggregate(
                       (IEnumerable<dynNode>)new List<dynNode>(),
                       (a, x) => a.Concat(x.Nodes)
                    )
@@ -601,7 +601,7 @@ namespace Dynamo
             }
         }
 
-        internal dynWorkspace newFunction(string name, string category, bool display)
+        internal dynWorkspace NewFunction(string name, string category, bool display)
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(name, category, dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
@@ -609,7 +609,7 @@ namespace Dynamo
             var newElements = workSpace.Nodes;
             var newConnectors = workSpace.Connectors;
 
-            this.dynFunctionDict[name] = workSpace;
+            this.FunctionDict[name] = workSpace;
 
             //Add an entry to the View menu
             System.Windows.Controls.MenuItem i = new System.Windows.Controls.MenuItem();
@@ -710,7 +710,7 @@ namespace Dynamo
                 if (!this.ViewingHomespace)
                 {
                     //Step 2: Store function workspace in the function dictionary
-                    this.dynFunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
+                    this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
                     //Step 3: Save function
                     this.SaveFunction(this.CurrentSpace);
@@ -755,9 +755,9 @@ namespace Dynamo
         internal dynNode CreateDragNode(string name)
         {
             dynNode result;
-            if (dynFunctionDict.ContainsKey(name))
+            if (FunctionDict.ContainsKey(name))
             {
-                dynWorkspace ws = dynFunctionDict[name];
+                dynWorkspace ws = FunctionDict[name];
 
                 var inputs = 
                     ws.Nodes.Where(e => e is dynSymbol)
@@ -1175,7 +1175,7 @@ namespace Dynamo
                         ViewHomeWorkspace(); //TODO: Refactor
                     return this.OpenWorkbench(xmlPath);
                 }
-                else if (this.dynFunctionDict.ContainsKey(funName))
+                else if (this.FunctionDict.ContainsKey(funName))
                 {
                     Bench.Log("ERROR: Could not load definition for \"" + funName + "\", a node with this name already exists.");
                     return false;
@@ -1184,7 +1184,7 @@ namespace Dynamo
                 Bench.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 //TODO: refactor to include x,y
-                var ws = this.newFunction(
+                var ws = this.NewFunction(
                    funName,
                    category.Length > 0
                       ? category
@@ -1353,7 +1353,7 @@ namespace Dynamo
                 foreach (var dep in dependencies)
                 {
                     //If the node hasn't been loaded...
-                    if (!dynFunctionDict.ContainsKey(dep))
+                    if (!FunctionDict.ContainsKey(dep))
                     {
                         canLoad = false;
                         //Dep -> Ws
@@ -1907,7 +1907,7 @@ namespace Dynamo
                 }
                 else
                 {
-                    foreach (var funcPair in this.dynFunctionDict)
+                    foreach (var funcPair in this.FunctionDict)
                     {
                         if (funcPair.Value.Nodes.Contains(e))
                         {
@@ -1942,7 +1942,7 @@ namespace Dynamo
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             //Step 2: Store function workspace in the function dictionary
-            this.dynFunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
+            this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
             //Step 3: Save function
             this.SaveFunction(this.CurrentSpace);
@@ -1980,10 +1980,10 @@ namespace Dynamo
 
         internal void DisplayFunction(string symbol)
         {
-            if (!this.dynFunctionDict.ContainsKey(symbol) || this.CurrentSpace.Name.Equals(symbol))
+            if (!this.FunctionDict.ContainsKey(symbol) || this.CurrentSpace.Name.Equals(symbol))
                 return;
 
-            var newWs = this.dynFunctionDict[symbol];
+            var newWs = this.FunctionDict[symbol];
 
             //Make sure we aren't dragging
             Bench.WorkBench.isDragInProgress = false;
@@ -2007,7 +2007,7 @@ namespace Dynamo
             if (!this.ViewingHomespace)
             {
                 //Step 2: Store function workspace in the function dictionary
-                this.dynFunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
+                this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
                 //Step 3: Save function
                 this.SaveFunction(this.CurrentSpace);
@@ -2052,7 +2052,7 @@ namespace Dynamo
         {
             var newName = Bench.editNameBox.Text;
 
-            if (dynFunctionDict.ContainsKey(newName))
+            if (FunctionDict.ContainsKey(newName))
             {
                 Bench.Log("ERROR: Cannot rename to \"" + newName + "\", node with same name already exists.");
                 return;
@@ -2148,9 +2148,9 @@ namespace Dynamo
             }
 
             //Update function dictionary
-            var tmp = this.dynFunctionDict[this.CurrentSpace.Name];
-            this.dynFunctionDict.Remove(this.CurrentSpace.Name);
-            this.dynFunctionDict[newName] = tmp;
+            var tmp = this.FunctionDict[this.CurrentSpace.Name];
+            this.FunctionDict.Remove(this.CurrentSpace.Name);
+            this.FunctionDict[newName] = tmp;
 
             ((FuncWorkspace)this.CurrentSpace).Name = newName;
 
@@ -2250,14 +2250,13 @@ namespace Dynamo
         #endregion
 
         #region Refactor
-
         internal void NodeFromSelection(IEnumerable<dynNode> selectedNodes)
         {
-            var nodeSet = new HashSet<dynNode>(selectedNodes);
+            var selectedNodeSet = new HashSet<dynNode>(selectedNodes);
 
             #region Prompt
             //First, prompt the user to enter a name
-            string name, category;
+            string newNodeName, newNodeCategory;
             string error = "";
 
             do
@@ -2268,14 +2267,14 @@ namespace Dynamo
                     return;
                 }
 
-                name = dialog.Text;
-                category = dialog.Category;
+                newNodeName = dialog.Text;
+                newNodeCategory = dialog.Category;
 
-                if (dynFunctionDict.ContainsKey(name))
+                if (FunctionDict.ContainsKey(newNodeName))
                 {
                     error = "A function with this name already exists.";
                 }
-                else if (category.Equals(""))
+                else if (newNodeCategory.Equals(""))
                 {
                     error = "Please enter a valid category.";
                 }
@@ -2286,36 +2285,36 @@ namespace Dynamo
             }
             while (!error.Equals(""));
 
-            var ws = newFunction(name, category, false);
+            var newNodeWorkspace = NewFunction(newNodeName, newNodeCategory, false);
             #endregion
             
             #region UI Positioning Calculations
-            var avgX = nodeSet.Average(x => Canvas.GetLeft(x.NodeUI));
-            var avgY = nodeSet.Average(x => Canvas.GetTop(x.NodeUI));
+            var avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
+            var avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
 
-            var leftMost = nodeSet.Min(x => Canvas.GetLeft(x.NodeUI));
-            var topMost = nodeSet.Min(x => Canvas.GetTop(x.NodeUI));
+            var leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI));
+            var topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
             #endregion
 
             #region Determine Inputs and Outputs
             //Step 1: determine which nodes will be inputs to the new node
             var inputs = new HashSet<Tuple<dynNode, PortData, Tuple<PortData, dynNode>>>(
-                nodeSet.SelectMany(
+                selectedNodeSet.SelectMany(
                     node => node.InPortData.Where(node.HasInput).Select(
                         data => Tuple.Create(node, data, node.Inputs[data])).Where(
-                            input => !nodeSet.Contains(input.Item3.Item2))));
+                            input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
             var outputs = new HashSet<Tuple<dynNode, PortData, Tuple<PortData, dynNode>>>(
-                nodeSet.SelectMany(
+                selectedNodeSet.SelectMany(
                     node => node.OutPortData.Where(node.HasOutput).SelectMany(
                         data => node.Outputs[data]
-                            .Where(output => !nodeSet.Contains(output.Item2))
+                            .Where(output => !selectedNodeSet.Contains(output.Item2))
                             .Select(output => Tuple.Create(node, data, output)))));
             #endregion
 
             #region Detect 1-node holes (higher-order function extraction)
             var comp = new InputOutputEqualityComparer();
-            var nodeArgs = inputs.Intersect(outputs, comp).Select(
+            var curriedNodeArgs = inputs.Intersect(outputs, comp).Select(
                 x => 
                 {
                     var node = new dynApply1();
@@ -2331,8 +2330,8 @@ namespace Dynamo
                     nodeUI.GUID = Guid.NewGuid();
 
                     //store the element in the elements list
-                    ws.Nodes.Add(node);
-                    node.WorkSpace = ws;
+                    newNodeWorkspace.Nodes.Add(node);
+                    node.WorkSpace = newNodeWorkspace;
 
                     Bench.WorkBench.Children.Add(nodeUI);
 
@@ -2349,7 +2348,7 @@ namespace Dynamo
                     var inPortsConnected = x.Item3.Item2.InPortData
                         .Where(x.Item3.Item2.HasInput)
                         .Select(inputPort => x.Item3.Item2.Inputs[inputPort])
-                        .Where(input => nodeSet.Contains(input.Item2))
+                        .Where(input => selectedNodeSet.Contains(input.Item2))
                         .Select(input => input.Item1)
                         .ToList();
 
@@ -2378,19 +2377,19 @@ namespace Dynamo
             #region Move selection to new workspace
             var connectors = new HashSet<dynConnector>(
                 CurrentSpace.Connectors.Where(
-                    conn => nodeSet.Contains(conn.Start.Owner.NodeLogic)
-                        && nodeSet.Contains(conn.End.Owner.NodeLogic)));
+                    conn => selectedNodeSet.Contains(conn.Start.Owner.NodeLogic)
+                        && selectedNodeSet.Contains(conn.End.Owner.NodeLogic)));
 
             //Step 2: move all nodes to new workspace
             //  remove from old
-            CurrentSpace.Nodes.RemoveAll(nodeSet.Contains);
+            CurrentSpace.Nodes.RemoveAll(selectedNodeSet.Contains);
             CurrentSpace.Connectors.RemoveAll(connectors.Contains);
             //  add to new
-            ws.Nodes.AddRange(nodeSet);
-            ws.Connectors.AddRange(connectors);
+            newNodeWorkspace.Nodes.AddRange(selectedNodeSet);
+            newNodeWorkspace.Connectors.AddRange(connectors);
 
             var leftShift = leftMost - 250;
-            foreach (var node in ws.Nodes.Select(x => x.NodeUI))
+            foreach (var node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
             {
                 Canvas.SetLeft(node, Canvas.GetLeft(node) - leftShift);
                 Canvas.SetTop(node, Canvas.GetTop(node) - topMost);
@@ -2399,63 +2398,59 @@ namespace Dynamo
 
             #region Insert new node replacement into the current workspace
             //Step 5: insert new node into original workspace
-            var funcNode = new dynFunction(
+            var collapsedNode = new dynFunction(
                 inputs.Select(x => x.Item2.NickName),
                 outputs.Select(x => x.Item2.NickName),
-                name);
+                newNodeName);
 
-            funcNode.NodeUI.GUID = Guid.NewGuid();
+            collapsedNode.NodeUI.GUID = Guid.NewGuid();
 
-            CurrentSpace.Nodes.Add(funcNode);
-            funcNode.WorkSpace = CurrentSpace;
+            CurrentSpace.Nodes.Add(collapsedNode);
+            collapsedNode.WorkSpace = CurrentSpace;
 
-            Bench.WorkBench.Children.Add(funcNode.NodeUI);
+            Bench.WorkBench.Children.Add(collapsedNode.NodeUI);
 
-            Canvas.SetLeft(funcNode.NodeUI, avgX);
-            Canvas.SetTop(funcNode.NodeUI, avgY);
+            Canvas.SetLeft(collapsedNode.NodeUI, avgX);
+            Canvas.SetTop(collapsedNode.NodeUI, avgY);
 
             Bench.WorkBench.UpdateLayout();
             #endregion
 
             #region Destroy all hanging connectors
             //Step 6: connect inputs and outputs
-            foreach (var conn in CurrentSpace.Connectors
-                .Where(c => nodeSet.Contains(c.Start.Owner.NodeLogic) && !nodeSet.Contains(c.End.Owner.NodeLogic)).ToList())
+            foreach (var connector in CurrentSpace.Connectors
+                .Where(c => selectedNodeSet.Contains(c.Start.Owner.NodeLogic) && !selectedNodeSet.Contains(c.End.Owner.NodeLogic)).ToList())
             {
-                conn.Kill();
+                connector.Kill();
             }
 
-            foreach (var conn in CurrentSpace.Connectors
-                .Where(c => !nodeSet.Contains(c.Start.Owner.NodeLogic) && nodeSet.Contains(c.End.Owner.NodeLogic)).ToList())
+            foreach (var connector in CurrentSpace.Connectors
+                .Where(c => !selectedNodeSet.Contains(c.Start.Owner.NodeLogic) && selectedNodeSet.Contains(c.End.Owner.NodeLogic)).ToList())
             {
-                conn.Kill();
+                connector.Kill();
             }
-
-            //foreach (var node in nodeArgs)
-            //{
-            //    outputs.RemoveWhere(
-            //        x => x.Item3.Item2 == node.Node);
-            //}
             #endregion
 
-            ws.Nodes.ForEach(x => x.DisableReporting());
+            newNodeWorkspace.Nodes.ForEach(x => x.DisableReporting());
 
             #region Process inputs
             //Step 3: insert variables (reference step 1)
             foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
             {
                 var inputIndex = input.Item1;
-                var inputNode_inner = input.Item2.Item1;
-                var inputNodeData_inner = input.Item2.Item2;
-                var inputNodeData_outer = input.Item2.Item3.Item1;
-                var inputNode_outer = input.Item2.Item3.Item2;
+                
+                var inputReceiverNode = input.Item2.Item1;
+                var inputReceiverData = input.Item2.Item2;
 
+                var inputNode = input.Item2.Item3.Item2;
+                var inputData = input.Item2.Item3.Item1;
+                
                 //Connect outside input to the node
                 CurrentSpace.Connectors.Add(
                     new dynConnector(
-                        inputNode_outer.NodeUI,
-                        funcNode.NodeUI,
-                        inputNode_outer.OutPortData.IndexOf(inputNodeData_outer),
+                        inputNode.NodeUI,
+                        collapsedNode.NodeUI,
+                        inputNode.OutPortData.IndexOf(inputData),
                         inputIndex,
                         0,
                         true));
@@ -2463,7 +2458,7 @@ namespace Dynamo
                 //Create Symbol Node
                 dynSymbol node = new dynSymbol()
                 {
-                    Symbol = inputNodeData_inner.NickName
+                    Symbol = inputReceiverData.NickName
                 };
 
                 var nodeUI = node.NodeUI;
@@ -2477,8 +2472,8 @@ namespace Dynamo
                 nodeUI.GUID = Guid.NewGuid();
 
                 //store the element in the elements list
-                ws.Nodes.Add(node);
-                node.WorkSpace = ws;
+                newNodeWorkspace.Nodes.Add(node);
+                node.WorkSpace = newNodeWorkspace;
 
                 node.DisableReporting();
 
@@ -2490,37 +2485,37 @@ namespace Dynamo
 
                 Bench.WorkBench.UpdateLayout();
 
-                var nodeArg = nodeArgs.FirstOrDefault(
-                    x => x.OuterNode == inputNode_outer);
+                var curriedNode = curriedNodeArgs.FirstOrDefault(
+                    x => x.OuterNode == inputNode);
 
-                if (nodeArg == null)
+                if (curriedNode == null)
                 {
                     //Connect it (new dynConnector)
-                    ws.Connectors.Add(new dynConnector(
+                    newNodeWorkspace.Connectors.Add(new dynConnector(
                         nodeUI,
-                        inputNode_inner.NodeUI,
+                        inputReceiverNode.NodeUI,
                         0,
-                        inputNode_inner.InPortData.IndexOf(inputNodeData_inner),
+                        inputReceiverNode.InPortData.IndexOf(inputReceiverData),
                         0,
                         false));
                 }
                 else
                 {
                     //Connect it to the applier
-                    ws.Connectors.Add(new dynConnector(
+                    newNodeWorkspace.Connectors.Add(new dynConnector(
                         nodeUI,
-                        nodeArg.InnerNode.NodeUI,
+                        curriedNode.InnerNode.NodeUI,
                         0,
                         0,
                         0,
                         false));
 
                     //Connect applier to the inner input receiver
-                    ws.Connectors.Add(new dynConnector(
-                        nodeArg.InnerNode.NodeUI,
-                        inputNode_inner.NodeUI,
+                    newNodeWorkspace.Connectors.Add(new dynConnector(
+                        curriedNode.InnerNode.NodeUI,
+                        inputReceiverNode.NodeUI,
                         0,
-                        inputNode_inner.InPortData.IndexOf(inputNodeData_inner),
+                        inputReceiverNode.InPortData.IndexOf(inputReceiverData),
                         0,
                         false));
                 }
@@ -2534,38 +2529,38 @@ namespace Dynamo
                 var outputIndex = output.Item1; 
 
                 //Node to be connected to in CurrentSpace
-                var outputNode_inner = output.Item2.Item1;
+                var outputSenderNode = output.Item2.Item1;
 
                 //Port to be connected to on outPutNode_outer
-                var outputNodeData_inner = output.Item2.Item2;
+                var outputSenderData = output.Item2.Item2;
 
-                var outputNodeData_outer = output.Item2.Item3.Item1;
-                var outputNode_outer = output.Item2.Item3.Item2;
+                var outputReceiverData = output.Item2.Item3.Item1;
+                var outputReceiverNode = output.Item2.Item3.Item2;
 
-                var nodeArg = nodeArgs.FirstOrDefault(
-                    x => x.OuterNode == outputNode_outer);
+                var curriedNode = curriedNodeArgs.FirstOrDefault(
+                    x => x.OuterNode == outputReceiverNode);
 
-                if (nodeArg == null)
+                if (curriedNode == null)
                 {
                     CurrentSpace.Connectors.Add(
                         new dynConnector(
-                            funcNode.NodeUI,
-                            outputNode_outer.NodeUI,
+                            collapsedNode.NodeUI,
+                            outputReceiverNode.NodeUI,
                             outputIndex,
-                            outputNode_outer.InPortData.IndexOf(outputNodeData_outer),
+                            outputReceiverNode.InPortData.IndexOf(outputReceiverData),
                             0,
                             true));
                 }
                 else
                 {
                     //Connect it (new dynConnector)
-                    ws.Connectors.Add(new dynConnector(
-                        outputNode_inner.NodeUI,
-                        nodeArg.InnerNode.NodeUI,
-                        outputNode_inner.OutPortData.IndexOf(outputNodeData_inner),
-                        nodeArg.OuterNodePortDataList.IndexOf(
-                            nodeArg.Inputs.First(
-                                x => x.InnerNodeOutput == outputNode_inner)
+                    newNodeWorkspace.Connectors.Add(new dynConnector(
+                        outputSenderNode.NodeUI,
+                        curriedNode.InnerNode.NodeUI,
+                        outputSenderNode.OutPortData.IndexOf(outputSenderData),
+                        curriedNode.OuterNodePortDataList.IndexOf(
+                            curriedNode.Inputs.First(
+                                x => x.InnerNodeOutput == outputSenderNode)
                             .OuterNodeInPortData) + 1,
                         0));
                 }
@@ -2575,16 +2570,16 @@ namespace Dynamo
             #region Make new workspace invisible
             //Step 4: make nodes invisible
             // and update positions
-            foreach (var node in ws.Nodes.Select(x => x.NodeUI))
+            foreach (var node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
                 node.Visibility = Visibility.Hidden;
 
-            foreach (var conn in ws.Connectors)
-                conn.Visible = false;
+            foreach (var connector in newNodeWorkspace.Connectors)
+                connector.Visible = false;
             #endregion
 
-            ws.Nodes.ForEach(x => x.EnableReporting());
+            newNodeWorkspace.Nodes.ForEach(x => x.EnableReporting());
 
-            SaveFunction(ws, true);
+            SaveFunction(newNodeWorkspace, true);
         }
 
         private class InputOutputEqualityComparer
@@ -2605,7 +2600,6 @@ namespace Dynamo
 
             #endregion
         }
-        
         #endregion
     }
 }

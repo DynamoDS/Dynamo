@@ -88,7 +88,7 @@ namespace Dynamo.Nodes
                 //Remember we've been here.
                 _taggedSymbols.Add(Symbol);
 
-                if (!Controller.dynFunctionDict.ContainsKey(Symbol))
+                if (!Controller.FunctionDict.ContainsKey(Symbol))
                 {
                     Bench.Log("WARNING -- No implementation found for node: " + Symbol);
                     NodeUI.Error("Could not find .dyf definition file for this node.");
@@ -104,7 +104,7 @@ namespace Dynamo.Nodes
 
                 //TODO: bugged? 
                 //Solution: pass func workspace to dynFunction, hook the Modified event, set IsDirty to true when modified.
-                var ws = Controller.dynFunctionDict[Symbol]; //TODO: Refactor
+                var ws = Controller.FunctionDict[Symbol]; //TODO: Refactor
                 bool dirtyInternals = ws.Nodes.Any(e => e.RequiresRecalc);
 
                 //If we started the traversal here, clean up.
@@ -133,7 +133,7 @@ namespace Dynamo.Nodes
                     //Remember
                     _taggedSymbols.Add(Symbol);
 
-                    if (!Controller.dynFunctionDict.ContainsKey(Symbol))
+                    if (!Controller.FunctionDict.ContainsKey(Symbol))
                     {
                         Bench.Log("WARNING -- No implementation found for node: " + Symbol);
                         NodeUI.Error("Could not find .dyf definition file for this node.");
@@ -148,7 +148,7 @@ namespace Dynamo.Nodes
                     }
 
                     //Notifiy all internals that we're clean.
-                    var ws = Controller.dynFunctionDict[Symbol]; //TODO: Refactor
+                    var ws = Controller.FunctionDict[Symbol]; //TODO: Refactor
                     foreach (var e in ws.Nodes)
                         e.RequiresRecalc = false;
 
@@ -320,7 +320,7 @@ namespace Dynamo.Nodes
                 return;
             _taggedSymbols.Add(Symbol);
 
-            if (!Controller.dynFunctionDict.ContainsKey(Symbol))
+            if (!Controller.FunctionDict.ContainsKey(Symbol))
             {
                 Bench.Log("WARNING -- No implementation found for node: " + Symbol);
                 NodeUI.Error("Could not find .dyf definition file for this node.");
@@ -334,7 +334,7 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            var ws = Controller.dynFunctionDict[Symbol]; //TODO: Refactor
+            var ws = Controller.FunctionDict[Symbol]; //TODO: Refactor
             foreach (var el in ws.Nodes)
                 el.Destroy();
 

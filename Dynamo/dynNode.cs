@@ -741,14 +741,14 @@ namespace Dynamo.Nodes
             if (entry is dynFunction)
             {
                 var symbol = (entry as dynFunction).Symbol;
-                if (!dynSettings.Controller.dynFunctionDict.ContainsKey(symbol))
+                if (!dynSettings.Controller.FunctionDict.ContainsKey(symbol))
                 {
                     dynSettings.Bench.Log("WARNING -- No implementation found for node: " + symbol);
                     entry.NodeUI.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }
 
-                result = dynSettings.Controller.dynFunctionDict[symbol]
+                result = dynSettings.Controller.FunctionDict[symbol]
                     .GetTopMostElements()
                     .Any(ContinueTraversalUntilAny);
             }
