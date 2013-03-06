@@ -406,23 +406,22 @@ namespace Dynamo.Controls
 
             //If we are currently dragging an element, redraw the element to
             //match the new mouse coordinates.
-            //if (workBench.isDragInProgress)
-            //{
-            //    dynNodeUI el = workBench.elementBeingDragged as dynNodeUI;
-            //    if (el != null)
-            //    {
-            //        this.Dispatcher.Invoke(new Action(
-            //            delegate
-            //            {
-            //                foreach (dynConnector c in connectorsToUpdate)
-            //                {
-            //                    c.Redraw();
-            //                }
+            if (WorkBench.isDragInProgress)
+            {
+                var allConnectors = WorkBench.elementsBeingDragged
+                    .Where(x => x is dynNodeUI)
+                    .Select(x => x as dynNodeUI)
+                    .SelectMany(
+                        el => el.OutPorts
+                            .SelectMany(x => x.Connectors)
+                            .Concat(el.InPorts.SelectMany(x => x.Connectors)));
 
-            //            }), 
-            //            DispatcherPriority.Render, null);
-            //    }
-            //}
+                foreach (var connector in allConnectors)
+                {
+                    connector.Redraw();
+                }
+                
+            }
 
             //If we are panning the workspace, update the coordinate offset for the
             //next time we are redrawn.
@@ -1208,7 +1207,7 @@ namespace Dynamo.Controls
             Controller.ViewHomeWorkspace();
         }
 
-        
+
         internal void setFunctionBackground()
         {
             var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
