@@ -164,6 +164,10 @@ limitations under the License.
     <Compile Include="FunctionNamePrompt.xaml.cs">
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Nodes\Watch\dynWatch.cs" />
+    <Compile Include="Nodes\Watch\WatchTree.xaml.cs">
+      <DependentUpon>WatchTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -216,6 +220,10 @@ limitations under the License.
       <SubType>Designer</SubType>
     </Page>
     <Page Include="FunctionNamePrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Nodes\Watch\WatchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

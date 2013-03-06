@@ -29,9 +29,9 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Dynamo.Utilities;
-using Autodesk.Revit.DB;
+//using Autodesk.Revit.DB;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Controls
 {
     //http://blogs.msdn.com/b/chkoenig/archive/2008/05/24/hierarchical-databinding-in-wpf.aspx
 
@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
     {
         public WatchTree()
         {
-            //InitializeComponent();
+            InitializeComponent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -50,13 +50,18 @@ namespace Dynamo.Nodes
             //find the element which was clicked
             //and implement it's method for jumping to stuff
             FrameworkElement fe = sender as FrameworkElement;
-            int elId = Convert.ToInt32(((WatchNode)fe.DataContext).Link);  
+
+            WatchNode node = (WatchNode)fe.DataContext;
+
+            node.Click();
+
+            //var elId = (ElementId)((WatchNode)fe.DataContext).Data;  
             
-            Element el = dynRevitSettings.Doc.Document.GetElement(new ElementId(elId));
-            if (el != null)
-            {
-                dynRevitSettings.Doc.ShowElements(el);
-            }
+            //Element el = dynRevitSettings.Doc.Document.GetElement(elId);
+            //if (el != null)
+            //{
+            //    dynRevitSettings.Doc.ShowElements(el);
+            //}
         }
     }
 
@@ -71,9 +76,19 @@ namespace Dynamo.Nodes
             }
         }
 
+        public event Action Clicked;
+
+        internal void Click()
+        {
+            if (Clicked != null)
+                Clicked();
+        }
+
         WatchTreeBranch _children = new WatchTreeBranch();
         string _label;
         string _link;
+
+        //public object Data { get; set; }
 
         public WatchTreeBranch Children
         {
