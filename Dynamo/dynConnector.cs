@@ -169,6 +169,8 @@ namespace Dynamo.Connectors
                 endDot.Fill = Brushes.Black;
                 endDot.StrokeThickness = 2;
                 endDot.Stroke = Brushes.Black;
+                endDot.IsHitTestVisible = false;
+                endDot.MouseDown += new System.Windows.Input.MouseButtonEventHandler(endDot_MouseDown);
                 Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
                 Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
                 dynSettings.Workbench.Children.Add(endDot);
@@ -291,6 +293,8 @@ namespace Dynamo.Connectors
             endDot.Fill = Brushes.Black;
             endDot.StrokeThickness = 2;
             endDot.Stroke = Brushes.Black;
+            endDot.IsHitTestVisible = false;
+            endDot.MouseDown +=new System.Windows.Input.MouseButtonEventHandler(endDot_MouseDown);
             Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
             Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
             dynSettings.Workbench.Children.Add(endDot);

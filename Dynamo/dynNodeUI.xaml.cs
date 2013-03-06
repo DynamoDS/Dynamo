@@ -75,6 +75,7 @@ namespace Dynamo.Controls
         SetStateDelegate stateSetter;
         LacingType lacingType = LacingType.SHORTEST;
         dynNode nodeLogic;
+        bool isSelected = false;
 
         #endregion
 
@@ -178,6 +179,19 @@ namespace Dynamo.Controls
         {
             get { return inputGrid; }
         }
+
+        public bool IsSelected
+        {
+            get 
+            { 
+                return isSelected; 
+            }
+            set 
+            { 
+                isSelected = value;
+                NotifyPropertyChanged("IsSelected");
+            }
+        }
         #endregion
 
         #region events
@@ -204,6 +218,8 @@ namespace Dynamo.Controls
             //set the main grid's data context to 
             //this element
             nickNameBlock.DataContext = this;
+            elementRectangle.DataContext = this;
+            this.IsSelected = false;
 
             inPorts = new List<dynPort>();
             outPorts = new List<dynPort>();
@@ -230,16 +246,7 @@ namespace Dynamo.Controls
             //set the z index to 2
             Canvas.SetZIndex(this, 1);
 
-            //dirtyEllipse = new System.Windows.Shapes.Ellipse();
-            //dirtyEllipse.Height = 20;
-            //dirtyEllipse.Width = 20;
-            //dirtyEllipse.Fill = Brushes.Red;
-            //elementCanvas.Children.Add(dirtyEllipse);
-            //Canvas.SetBottom(dirtyEllipse, 10);
-            //Canvas.SetRight(dirtyEllipse, 10);
-            //Canvas.SetZIndex(dirtyEllipse, 100);
-
-            //dynElementReadyToBuild += new dynElementReadyToBuildHandler(Build);
+            
         }
         #endregion
 
@@ -756,11 +763,14 @@ namespace Dynamo.Controls
                System.Windows.Threading.DispatcherPriority.Background,
                new object[] { this, ElementState.SELECTED }
             );
+
+            this.IsSelected = true;
         }
 
         public void Deselect()
         {
             ValidateConnections();
+            this.IsSelected = false;
         }
 
         void SetState(dynNodeUI el, ElementState state)
@@ -845,10 +855,13 @@ namespace Dynamo.Controls
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine("Node left selected.");
-
-            dynSettings.Bench.ClearSelection();
-            dynSettings.Bench.SelectElement(this);
+            //don't try to select if already selected
+            if (!isSelected)
+            {
+                Debug.WriteLine("Node left selected.");
+                dynSettings.Bench.ClearSelection();
+                dynSettings.Bench.SelectElement(this);
+            }
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -865,6 +878,27 @@ namespace Dynamo.Controls
         {
             double height = (double)value;
             return new Thickness(0, -1 * height - 3, 0, 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class BooleanToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            bool condition = (bool)value;
+            if (condition)
+            {
+                return new SolidColorBrush(Colors.Green);
+            }
+            else
+            {
+                return new SolidColorBrush(Colors.Black);
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

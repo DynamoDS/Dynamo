@@ -15,7 +15,8 @@
     MouseRightButtonDown="topControl_MouseRightButtonDown">
    <UserControl.Resources>
       <local:MarginConverter x:Key="MarginConverter" />
-   </UserControl.Resources>
+        <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
+    </UserControl.Resources>
    <Grid Name="grid">
       <Grid.ContextMenu>
          <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
@@ -60,7 +61,8 @@
                        RadiusX="10" 
                        RadiusY="10"
                        Canvas.ZIndex="90"
-                       Stroke="Black" StrokeThickness="2">
+                       Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
+                       StrokeThickness="2">
             <Rectangle.Effect>
                <DropShadowEffect Opacity="0" />
             </Rectangle.Effect>
