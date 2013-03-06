@@ -14,22 +14,67 @@
 
 using System;
 using System.Windows;
-using Autodesk.Revit.DB;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+//using Autodesk.Revit.DB;
 using Dynamo.Connectors;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+using Dynamo.Controls;
 
 namespace Dynamo.Nodes
 {
+    public interface WatchHandler
+    {
+        bool AcceptsValue(object o);
+
+        void ProcessNode(object value, WatchNode node);
+    }
+
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.DEBUG)]
     [NodeDescription("Visualize the output of node.")]
     [NodeSearchTags("print", "output", "display")]
-    class dynWatch: dynNodeWithOneOutput
+    public class dynWatch: dynNodeWithOneOutput
     {
         //System.Windows.Controls.TextBlock watchBlock;
         WatchTree wt;
         WatchTreeBranch wtb;
+
+        private class WatchHandlers
+        {
+            public HashSet<WatchHandler> handlers
+            {
+                get;
+                private set;
+            }
+
+            public WatchHandlers()
+            {
+                handlers = new HashSet<WatchHandler>();
+            }
+
+            public void ProcessNode(object value, WatchNode node)
+            {
+                foreach (var handler in handlers.Where(x => x.AcceptsValue(value)))
+                {
+                    handler.ProcessNode(value, node);
+                }
+            }
+        }
+
+        static WatchHandlers handlerManager = new WatchHandlers();
+
+        public static void AddWatchHandler(WatchHandler h)
+        {
+            handlerManager.handlers.Add(h);
+        }
+
+        public static void RemoveWatchHandler(WatchHandler h)
+        {
+            handlerManager.handlers.Remove(h);
+        }
 
         public dynWatch()
         {
@@ -101,17 +146,20 @@ namespace Dynamo.Nodes
                     //TODO: make clickable hyperlinks to show the element in Revit
                     //http://stackoverflow.com/questions/7890159/programmatically-make-textblock-with-hyperlink-in-between-text
 
-                    string id = "";
-                    Element revitEl = (eIn as Value.Container).Item as Autodesk.Revit.DB.Element;
-                    if (revitEl != null)
-                    {
-                        id = revitEl.Id.ToString();
-                    }
+                    //string id = "";
+                    //Element revitEl = (eIn as Value.Container).Item as Autodesk.Revit.DB.Element;
+                    //if (revitEl != null)
+                    //{
+                    //    id = revitEl.Id.ToString();
+                    //}
 
-                    content += (eIn as Value.Container).Item.ToString() + ":" + id + "\n";
+                    content += (eIn as Value.Container).Item.ToString();
 
                     node = new WatchNode((eIn as Value.Container).Item.ToString());
-                    node.Link = id;
+
+                    handlerManager.ProcessNode((eIn as Value.Container).Item, node);
+                    
+                    //node.Link = id;
                 }
             }
             else if (eIn.IsFunction)

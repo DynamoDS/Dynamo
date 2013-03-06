@@ -41,9 +41,10 @@ namespace Dynamo
             checkRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
 
             AddPythonBindings();
+            AddWatchNodeHandler();
         }
 
-
+        #region Python Nodes Revit Hooks
         private delegate void LogDelegate(string msg);
         private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
 
@@ -114,6 +115,38 @@ namespace Dynamo
             //TODO: ADD BACK IN
             //bindings.Add(new Binding("DynStoredElements", this.Elements));
         }
+        #endregion
+        #region Watch Node Revit Hooks
+        void AddWatchNodeHandler()
+        {
+            dynWatch.AddWatchHandler(new RevitElementWatchHandler());
+        }
+
+        private class RevitElementWatchHandler : WatchHandler
+        {
+            #region WatchHandler Members
+
+            public bool AcceptsValue(object o)
+            {
+                return o is Element;
+            }
+
+            public void ProcessNode(object value, WatchNode node)
+            {
+                var element = value as Element;
+                var id = element.Id;
+
+                node.Clicked += delegate
+                {
+                    dynRevitSettings.Doc.ShowElements(element);
+                };
+
+                node.Link = id.ToString();
+            }
+
+            #endregion
+        }
+        #endregion
 
         public override bool RunInDebug
         {

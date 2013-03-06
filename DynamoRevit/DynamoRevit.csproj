@@ -110,10 +110,6 @@
     <Compile Include="Nodes\dynTransforms.cs" />
     <Compile Include="Nodes\dynViews.cs" />
     <Compile Include="IdlePromise.cs" />
-    <Compile Include="Nodes\Watch\dynWatch.cs" />
-    <Compile Include="Nodes\Watch\WatchTree.xaml.cs">
-      <DependentUpon>WatchTree.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
     <Compile Include="ParticleSystem\dynParticleSpring.cs" />
@@ -177,12 +173,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="splash.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Nodes\Watch\WatchTree.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
