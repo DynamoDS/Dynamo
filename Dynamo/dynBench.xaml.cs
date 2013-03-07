@@ -60,7 +60,6 @@ namespace Dynamo.Controls
         private bool isWindowSelecting = false;
         private Point mouseDownPos;
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
-        dynNode draggedElement;
         Point dragOffset;
 
         private dynConnector activeConnector;
@@ -183,20 +182,6 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Adds the given element to the selection.
-        /// </summary>
-        /// <param name="sel">The element to select.</param>
-        public void SelectElement(System.Windows.Controls.UserControl sel)
-        {
-            dynNodeUI n = sel as dynNodeUI;
-
-            if(!WorkBench.Selection.Contains(n))
-            {
-                WorkBench.Selection.Add(n);
-            }
-        }
-
-        /// <summary>
         /// Called when the MouseWheel has been scrolled.
         /// </summary>
         /// <param name="sender"></param>
@@ -210,11 +195,6 @@ namespace Dynamo.Controls
             {
                 Zoom += newValue;
             }
-
-            //if(this.zoomSlider.Value + newValue <= zoomSlider.Maximum &&
-            //    this.zoomSlider.Value + newValue >= zoomSlider.Minimum)
-
-            //this.zoomSlider.Value += newValue;
         }
 
         static bool HasParentType(Type t, Type testType)
@@ -563,9 +543,6 @@ namespace Dynamo.Controls
                         {
                             if (!WorkBench.Selection.Contains(n))
                                 WorkBench.Selection.Add(n);
-
-                            if (n is dynNodeUI)
-                                (n as dynNodeUI).Select();
                         }
                     }
                     #endregion
