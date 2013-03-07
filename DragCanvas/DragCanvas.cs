@@ -357,7 +357,7 @@ namespace Dynamo.Controls
              else
                  od.NewVerticalOffset = od.OriginalVerticalOffset - (cursorLocation.Y - this.origCursorLocation.Y);
 
-             Debug.WriteLine(string.Format("New h:{0} v:{1}", od.NewHorizontalOffset, od.NewVerticalOffset));
+             //Debug.WriteLine(string.Format("New h:{0} v:{1}", od.NewHorizontalOffset, od.NewVerticalOffset));
              count++;
          }
 

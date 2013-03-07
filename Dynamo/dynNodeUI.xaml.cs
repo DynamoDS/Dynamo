@@ -811,6 +811,24 @@ namespace Dynamo.Controls
             this.IsSelected = true;
         }
 
+        public void SelectNeighbors()
+        {
+            var outConnectors = this.outPorts.SelectMany(x => x.Connectors);
+            var inConnectors = this.inPorts.SelectMany(x => x.Connectors);
+
+            foreach(dynConnector c in outConnectors)
+            {
+                if(!dynSettings.Workbench.Selection.Contains(c.End.Owner))
+                    dynSettings.Workbench.Selection.Add(c.End.Owner);
+            }
+
+            foreach(dynConnector c in inConnectors)
+            {
+                if(!dynSettings.Workbench.Selection.Contains(c.Start.Owner))
+                    dynSettings.Workbench.Selection.Add(c.Start.Owner);
+            }
+        }
+
         public void Deselect()
         {
             ValidateConnections();
@@ -902,7 +920,7 @@ namespace Dynamo.Controls
             //don't try to select if already selected
             if (!isSelected)
             {
-                Debug.WriteLine("Node left selected.");
+               // Debug.WriteLine("Node left selected.");
                 if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
                 {
                     dynSettings.Bench.WorkBench.ClearSelection();
@@ -915,7 +933,7 @@ namespace Dynamo.Controls
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine("Node right selected.");
+            //Debug.WriteLine("Node right selected.");
             e.Handled = true;
         }
     }

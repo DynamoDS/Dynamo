@@ -447,7 +447,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine("Starting mouse down.");
+            //Debug.WriteLine("Starting mouse down.");
 
             //Pan with middle-click
             if (e.ChangedButton == MouseButton.Middle)
@@ -951,6 +951,17 @@ namespace Dynamo.Controls
             if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.F))
             {
                 this.searchBox.Focus();
+            }
+
+            // select all the nodes directly around the selected nodes
+            if((Keyboard.IsKeyDown(Key.Tab)))
+            {
+                List<ISelectable> sels = dynSettings.Workbench.Selection.ToList<ISelectable>();
+
+                foreach (ISelectable sel in sels)
+                {
+                    ((dynNodeUI)sel).SelectNeighbors();
+                }
             }
         }
 
