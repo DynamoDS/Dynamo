@@ -285,5 +285,22 @@ namespace Dynamo.Connectors
             this.toolTip = tip;
             this.portType = portType;
         }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as PortData;
+
+            return other != null
+                && other.nickName == nickName
+                && other.portType.Equals(portType)
+                && other.toolTip == toolTip;
+        }
+
+        public override int GetHashCode()
+        {
+            return nickName.GetHashCode() * 7 
+                + portType.GetHashCode() * 11 
+                + toolTip.GetHashCode() * 3;
+        }
     }
 }
