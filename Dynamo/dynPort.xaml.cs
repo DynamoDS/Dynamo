@@ -137,11 +137,15 @@ namespace Dynamo.Connectors
             {
                 connectors.Remove(connector);
             }
-
+            
             //don't set back to white if
             //there are still connectors on this port
             if (connectors.Count == 0)
                 ellipse1Dot.Fill = System.Windows.Media.Brushes.White;
+
+            if (connectors.Count == 0)
+                Owner.State = ElementState.DEAD;
+
         }
 
         public void Update()

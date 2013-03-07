@@ -695,8 +695,6 @@ namespace Dynamo.Controls
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
-            ValidateConnections();
-
             var port = (dynPort)sender;
             if (port.PortType == PortType.INPUT)
             {

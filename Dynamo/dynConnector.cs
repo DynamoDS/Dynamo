@@ -487,21 +487,11 @@ namespace Dynamo.Connectors
         {
             if (p.Equals(pStart))
             {
-                //pStart.Owner.Outputs[pStart.Index] = null;
                 pStart = null;
             }
 
             if (p.Equals(pEnd))
             {
-                //if (pEnd.PortType == PortType.INPUT)
-                //{
-                //   if (pEnd.Index < pEnd.Owner.InPortData.Count)
-                //   {
-                //      pEnd.Owner.InPortData[pEnd.Index].Object = null;
-                //   }
-                //}
-                //else if (pEnd.PortType == PortType.STATE)
-                //   pEnd.Owner.StatePortData[pEnd.Index].Object = null;
                 pEnd = null;
             }
 
@@ -513,6 +503,7 @@ namespace Dynamo.Connectors
 
             plineConnector.StrokeDashArray.Add(5);
             plineConnector.StrokeDashArray.Add(2);
+
         }
 
         public void Kill()
