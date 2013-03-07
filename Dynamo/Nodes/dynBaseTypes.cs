@@ -148,8 +148,8 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(subButton);
             System.Windows.Controls.Grid.SetColumn(subButton, 1);
 
-            addButton.Click += new RoutedEventHandler(AddInput);
-            subButton.Click += new RoutedEventHandler(RemoveInput);
+            addButton.Click += delegate { AddInput(); NodeUI.RegisterAllPorts(); };
+            subButton.Click += delegate { RemoveInput(); NodeUI.RegisterAllPorts(); };
         }
 
         protected abstract string getInputRootName();
@@ -171,20 +171,18 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected virtual void RemoveInput(object sender, RoutedEventArgs args)
+        protected internal virtual void RemoveInput()
         {
             var count = InPortData.Count;
             if (count > 0)
             {
                 InPortData.RemoveAt(count - 1);
-                NodeUI.RegisterAllPorts();
             }
         }
 
-        protected virtual void AddInput(object sender, RoutedEventArgs args)
+        protected internal virtual void AddInput()
         {
             InPortData.Add(new PortData(getInputRootName() + getNewInputIndex(), "", typeof(object)));
-            NodeUI.RegisterAllPorts();
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -278,19 +276,19 @@ namespace Dynamo.Nodes
             return "index";
         }
 
-        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        protected internal override void RemoveInput()
         {
             if (InPortData.Count == 2)
                 InPortData[0] = new PortData("item(s)", "Item(s) to build a list out of", typeof(object));
             if (InPortData.Count > 1)
-                base.RemoveInput(sender, args);
+                base.RemoveInput();
         }
 
-        protected override void AddInput(object sender, RoutedEventArgs args)
+        protected internal override void AddInput()
         {
             if (InPortData.Count == 1)
                 InPortData[0] = new PortData("index0", "First item", typeof(object));
-            base.AddInput(sender, args);
+            base.AddInput();
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
@@ -428,19 +426,19 @@ namespace Dynamo.Nodes
             return "list";
         }
 
-        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        protected internal override void RemoveInput()
         {
             if (InPortData.Count == 3)
                 InPortData[1] = new PortData("lists", "List of lists to combine", typeof(object));
             if (InPortData.Count > 2)
-                base.RemoveInput(sender, args);
+                base.RemoveInput();
         }
 
-        protected override void AddInput(object sender, RoutedEventArgs args)
+        protected internal override void AddInput()
         {
             if (InPortData.Count == 2)
                 InPortData[1] = new PortData("list1", "First list", typeof(object));
-            base.AddInput(sender, args);
+            base.AddInput();
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -453,7 +451,7 @@ namespace Dynamo.Nodes
             var inputAttr = elNode.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
             if (inputs == 1)
-                RemoveInput(this, null);
+                RemoveInput();
             else
             {
                 for (; inputs > 2; inputs--)
@@ -503,19 +501,19 @@ namespace Dynamo.Nodes
             return "list";
         }
 
-        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        protected internal override void RemoveInput()
         {
             if (InPortData.Count == 3)
                 InPortData[1] = new PortData("lists", "List of lists to combine", typeof(object));
             if (InPortData.Count > 2)
-                base.RemoveInput(sender, args);
+                base.RemoveInput();
         }
 
-        protected override void AddInput(object sender, RoutedEventArgs args)
+        protected internal override void AddInput()
         {
             if (InPortData.Count == 2)
                 InPortData[1] = new PortData("list1", "First list", typeof(object));
-            base.AddInput(sender, args);
+            base.AddInput();
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -528,7 +526,7 @@ namespace Dynamo.Nodes
             var inputAttr = elNode.Attributes["inputs"];
             int inputs = inputAttr == null ? 2 : Convert.ToInt32(inputAttr.Value);
             if (inputs == 1)
-                RemoveInput(this, null);
+                RemoveInput();
             else
             {
                 for (; inputs > 2; inputs--)
@@ -1397,10 +1395,10 @@ namespace Dynamo.Nodes
             NodeUI.RegisterAllPorts();
         }
 
-        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        protected internal override void RemoveInput()
         {
             if (InPortData.Count > 2)
-                base.RemoveInput(sender, args);
+                base.RemoveInput();
         }
 
         protected override string getInputRootName()
@@ -1467,13 +1465,13 @@ namespace Dynamo.Nodes
 
         protected override InputNode Compile(IEnumerable<string> portNames)
         {
-            return new ApplierNode(portNames.Skip(1));
+            return new ApplierNode(portNames);
         }
 
-        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        protected internal override void RemoveInput()
         {
             if (InPortData.Count > 1)
-                base.RemoveInput(sender, args);
+                base.RemoveInput();
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -2483,10 +2481,10 @@ namespace Dynamo.Nodes
             return InPortData.Count + 1;
         }
 
-        protected override void RemoveInput(object sender, RoutedEventArgs args)
+        protected internal override void RemoveInput()
         {
             if (InPortData.Count > 2)
-                base.RemoveInput(sender, args);
+                base.RemoveInput();
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
