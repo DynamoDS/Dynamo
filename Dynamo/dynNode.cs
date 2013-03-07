@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
                     bool start = _startTag;
                     _startTag = true;
 
-                    bool dirty = Inputs.Values.Any(x => x.Item2.RequiresRecalc);
+                    bool dirty = Inputs.Values.Where(x => x != null).Any(x => x.Item2.RequiresRecalc);
                     _isDirty = dirty;
 
                     if (!start)
@@ -211,7 +211,7 @@ namespace Dynamo.Nodes
         public void MarkDirty()
         {
             bool dirty = false;
-            foreach (var input in Inputs.Values)
+            foreach (var input in Inputs.Values.Where(x => x != null))
             {
                 input.Item2.MarkDirty();
                 if (input.Item2.RequiresRecalc)
@@ -251,7 +251,7 @@ namespace Dynamo.Nodes
                 return result[outPort];
 
             //Fetch the names of input ports.
-            var portNames = InPortData.Select(x => x.NickName);
+            var portNames = InPortData.Zip(Enumerable.Range(0, InPortData.Count), (x, i) => x.NickName + i);
 
             //Compile the procedure for this node.
             InputNode node = Compile(portNames);
@@ -259,11 +259,11 @@ namespace Dynamo.Nodes
             //Is this a partial application?
             var partial = false;
 
-            var partialSymList = new List<PortData>();
+            var partialSymList = new List<string>();
 
             //For each index in InPortData
             //for (int i = 0; i < InPortData.Count; i++)
-            foreach (PortData data in InPortData)
+            foreach (var data in InPortData.Zip(portNames, (data, name) => new { PortData=data, Name=name }))
             {
                 //Fetch the corresponding port
                 //var port = InPorts[i];
@@ -272,15 +272,15 @@ namespace Dynamo.Nodes
 
                 //If this port has connectors...
                 //if (port.Connectors.Any())
-                if (TryGetInput(data, out input))
+                if (TryGetInput(data.PortData, out input))
                 {
                     //Compile input and connect it
-                    node.ConnectInput(data.NickName, input.Item2.Build(preBuilt, input.Item1));
+                    node.ConnectInput(data.Name, input.Item2.Build(preBuilt, input.Item1));
                 }
                 else //othwise, remember that this is a partial application
                 {
                     partial = true;
-                    partialSymList.Add(data);
+                    partialSymList.Add(data.Name);
                 }
             }
 
@@ -289,7 +289,7 @@ namespace Dynamo.Nodes
             if (OutPortData.Count > 1)
             {
                 foreach (var data in partialSymList)
-                    node.ConnectInput(data.NickName, new SymbolNode(data.NickName));
+                    node.ConnectInput(data, new SymbolNode(data));
 
                 InputNode prev = node;
                 int prevIndex = 0;
@@ -321,7 +321,7 @@ namespace Dynamo.Nodes
                         firstNode.ConnectInput("list", prev);
 
                         if (partial)
-                            nodes[data.Data] = new AnonymousFunctionNode(partialSymList.Select(x => x.NickName), firstNode);
+                            nodes[data.Data] = new AnonymousFunctionNode(partialSymList, firstNode);
                         else
                             nodes[data.Data] = firstNode;
                     }

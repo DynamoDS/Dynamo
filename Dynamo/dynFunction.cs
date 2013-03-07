@@ -464,10 +464,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<PortData, INode>();
-                result[outPort] =
-                    new SymbolNode(
-                       (string)NodeUI.Dispatcher.Invoke(new Func<string>(
-                          () => Symbol)));
+                result[outPort] = new SymbolNode(NodeUI.GUID.ToString());
                 preBuilt[this] = result;
             }
             return result[outPort];
