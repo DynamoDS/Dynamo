@@ -8,8 +8,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using Dynamo.Controls;
+using System.Collections.ObjectModel;
 using System.Windows.Threading;
+
+using Dynamo.Controls;
 
 namespace Dynamo.Controls
 {
@@ -21,8 +23,8 @@ namespace Dynamo.Controls
       #region Data
 
       // Stores a reference to the UIElement currently being dragged by the user.
-      private List<UIElement> selection = new List<UIElement>();
-      private List<OffsetData> offsets = new List<OffsetData>();
+       private ObservableCollection<UIElement> selection = new ObservableCollection<UIElement>();
+       private ObservableCollection<OffsetData> offsets = new ObservableCollection<OffsetData>();
 
       // Keeps track of where the mouse cursor was when a drag operation began.		
       private Point origCursorLocation;
@@ -213,7 +215,7 @@ namespace Dynamo.Controls
       //   }
       //}
 
-      public List<UIElement> Selection
+      public ObservableCollection<UIElement> Selection
       {
           get { return selection; }
           set
