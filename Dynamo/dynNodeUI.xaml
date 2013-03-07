@@ -16,6 +16,7 @@
    <UserControl.Resources>
       <local:MarginConverter x:Key="MarginConverter" />
         <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
+       <local:StateToColorConverter x:Key="StateToColorConverter"/>
     </UserControl.Resources>
    <Grid Name="grid">
       <Grid.ContextMenu>
@@ -62,16 +63,17 @@
                        RadiusY="10"
                        Canvas.ZIndex="90"
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
-                       StrokeThickness="2">
+                       StrokeThickness="2"
+                       Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}, Mode=OneWay}">
             <Rectangle.Effect>
                <DropShadowEffect Opacity="0" />
             </Rectangle.Effect>
-            <Rectangle.Fill>
+            <!--<Rectangle.Fill>
                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
                   <GradientStop Color="Yellow" Offset="0.0" />
                   <GradientStop Color="Orange" Offset="1" />
                </LinearGradientBrush>
-            </Rectangle.Fill>
+            </Rectangle.Fill>-->
          </Rectangle>
          <!--<Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"

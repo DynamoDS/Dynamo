@@ -38,7 +38,7 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for dynControl.xaml
     /// </summary
-    public enum ElementState { DEAD, ACTIVE, SELECTED, ERROR };
+    public enum ElementState { DEAD, ACTIVE, ERROR };
     public enum LacingType { SHORTEST, LONGEST, FULL };
 
     public partial class dynNodeUI : UserControl, INotifyPropertyChanged
@@ -138,34 +138,13 @@ namespace Dynamo.Controls
             get { return state; }
             set
             {
-                switch (value)
-                {
-                    case ElementState.ACTIVE:
-                        elementRectangle.Fill = dynSettings.ActiveBrush;
-                        break;
-                    case ElementState.DEAD:
-                        elementRectangle.Fill = dynSettings.DeadBrush;
-                        break;
-                    case ElementState.ERROR:
-                        elementRectangle.Fill = dynSettings.ErrorBrush;
-                        break;
-                    case ElementState.SELECTED:
-                    default:
-                        elementRectangle.Fill = dynSettings.SelectedBrush;
-                        break;
-                }
-
-                foreach (dynPort p in inPorts.Concat(outPorts))
-                {
-                    p.ellipse1.Fill = elementRectangle.Fill;
-                }
-
                 if (value != ElementState.ERROR)
                 {
                     SetTooltip();
                 }
 
                 state = value;
+                NotifyPropertyChanged("State");
             }
         }
 
@@ -252,6 +231,7 @@ namespace Dynamo.Controls
             //inPortData = new List<PortData>();
             portTextBlocks = new Dictionary<dynPort, TextBlock>();
 
+            elementRectangle.DataContext = this;
             stateSetter = new SetStateDelegate(SetState);
             State = ElementState.DEAD;
 
@@ -462,6 +442,10 @@ namespace Dynamo.Controls
                 selectionBinding.Converter = new BooleanToBrushConverter();
                 port.ellipse1.SetBinding(Ellipse.StrokeProperty, selectionBinding);
 
+                Binding fillBinding = new Binding("State");
+                fillBinding.Converter = new StateToColorConverter();
+                port.ellipse1.SetBinding(Ellipse.FillProperty, fillBinding);
+
                 portDataDict[port] = pd;
                 count++;
             }
@@ -512,6 +496,10 @@ namespace Dynamo.Controls
                 Binding selectionBinding = new Binding("IsSelected");
                 selectionBinding.Converter = new BooleanToBrushConverter();
                 port.ellipse1.SetBinding(Ellipse.StrokeProperty, selectionBinding);
+
+                Binding fillBinding = new Binding("State");
+                fillBinding.Converter = new StateToColorConverter();
+                port.ellipse1.SetBinding(Ellipse.FillProperty, fillBinding);
 
                 portDataDict[port] = pd;
                 count++;
@@ -713,29 +701,22 @@ namespace Dynamo.Controls
             if (flag)
             {
                 State = ElementState.DEAD;
-                //Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.DEAD });
             }
             else
             {
                 State = ElementState.ACTIVE;
-                //Dispatcher.Invoke(stateSetter, System.Windows.Threading.DispatcherPriority.Background, new object[] { this, ElementState.ACTIVE });
             }
         }
 
         protected void MarkConnectionState(bool bad)
         {
-            //don't change the color of the object
-            //if it's selected
-            if (state != ElementState.SELECTED)
-            {
-                Dispatcher.Invoke(
-                    stateSetter,
-                    DispatcherPriority.Background,
-                    new object[] {
-                        this,
-                        bad ? ElementState.ERROR : ElementState.ACTIVE
-                    });
-            }
+            Dispatcher.Invoke(
+                stateSetter,
+                DispatcherPriority.Background,
+                new object[] {
+                    this,
+                    bad ? ElementState.ERROR : ElementState.ACTIVE
+                });
         }
 
         protected internal void SetColumnAmount(int amt)
@@ -925,7 +906,6 @@ namespace Dynamo.Controls
     }
 
     public class BooleanToBrushConverter : IValueConverter
-
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -938,6 +918,30 @@ namespace Dynamo.Controls
             {
                 return new SolidColorBrush(Colors.Black);
             }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class StateToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            ElementState state = (ElementState)value;
+            switch (state)
+            {
+                case ElementState.ACTIVE:
+                    return dynSettings.ActiveBrush;
+                case ElementState.DEAD:
+                    return dynSettings.DeadBrush;
+                case ElementState.ERROR:
+                    return dynSettings.ErrorBrush;
+            }
+
+            return dynSettings.DeadBrush;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
