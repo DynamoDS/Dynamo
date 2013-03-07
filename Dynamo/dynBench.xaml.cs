@@ -263,7 +263,11 @@ namespace Dynamo.Controls
             {
                 p.Update();
             }
-            el.OutPorts.ForEach(x => x.Update());
+            //el.OutPorts.ForEach(x => x.Update());
+            foreach (dynPort p in el.OutPorts)
+            {
+                p.Update();
+            }
         }
 
         /// <summary>

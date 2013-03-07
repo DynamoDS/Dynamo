@@ -23,6 +23,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Collections.ObjectModel;
+
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.FSchemeInterop;
@@ -65,8 +67,8 @@ namespace Dynamo.Controls
         #region private members
 
         //System.Windows.Shapes.Ellipse dirtyEllipse;
-        List<dynPort> inPorts;
-        List<dynPort> outPorts;
+        ObservableCollection<dynPort> inPorts;
+        ObservableCollection<dynPort> outPorts;
         Dictionary<dynPort, TextBlock> portTextBlocks;
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
         string nickName;
@@ -76,7 +78,6 @@ namespace Dynamo.Controls
         LacingType lacingType = LacingType.SHORTEST;
         dynNode nodeLogic;
         bool isSelected = false;
-
         #endregion
 
         public delegate void SetToolTipDelegate(string message);
@@ -105,16 +106,22 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<dynPort> InPorts
+        public ObservableCollection<dynPort> InPorts
         {
             get { return inPorts; }
-            set { inPorts = value; }
+            set 
+            { 
+                inPorts = value;
+            }
         }
 
-        public List<dynPort> OutPorts
+        public ObservableCollection<dynPort> OutPorts
         {
             get { return outPorts; }
-            set { outPorts = value; }
+            set 
+            {
+                outPorts = value;
+            }
         }
 
         public string NickName
@@ -222,16 +229,21 @@ namespace Dynamo.Controls
             //this element
             nickNameBlock.DataContext = this;
             elementRectangle.DataContext = this;
-            
-            inPorts = new List<dynPort>();
-            outPorts = new List<dynPort>();
-            
+            topControl.DataContext = this;
+            elementRectangle.DataContext = this;
+
+            inPorts = new ObservableCollection<dynPort>();
+            outPorts = new ObservableCollection<dynPort>();
+            inPorts.CollectionChanged +=new System.Collections.Specialized.NotifyCollectionChangedEventHandler(inPorts_CollectionChanged);
+            outPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(outPorts_CollectionChanged);
             this.IsSelected = false;
 
-            //inPortData = new List<PortData>();
+            Binding heightBinding = new Binding("InPorts");
+            heightBinding.Converter = new PortCountToHeightConverter();
+            topControl.SetBinding(UserControl.HeightProperty, heightBinding);
+            
             portTextBlocks = new Dictionary<dynPort, TextBlock>();
 
-            elementRectangle.DataContext = this;
             stateSetter = new SetStateDelegate(SetState);
             State = ElementState.DEAD;
 
@@ -250,10 +262,18 @@ namespace Dynamo.Controls
                 NickName = "";
 
             //set the z index to 2
-            Canvas.SetZIndex(this, 1);
-
-            
+            Canvas.SetZIndex(this, 1); 
         }
+
+        void inPorts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            NotifyPropertyChanged("InPorts");
+        }
+        void outPorts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            NotifyPropertyChanged("OutPorts");
+        }
+
         #endregion
 
         protected virtual void OnDynElementDestroyed(EventArgs e)
@@ -361,7 +381,7 @@ namespace Dynamo.Controls
         {
             //size the height of the controller based on the 
             //whichever is larger the inport or the outport list
-            topControl.Height = Math.Max(nodeLogic.InPortData.Count, nodeLogic.OutPortData.Count) * 20 + 10; //spacing for inputs + title space + bottom space
+            //topControl.Height = Math.Max(nodeLogic.InPortData.Count, nodeLogic.OutPortData.Count) * 20 + 10; //spacing for inputs + title space + bottom space
 
             Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
             gridLeft.Margin = leftGridThick;
@@ -457,7 +477,11 @@ namespace Dynamo.Controls
                     RemovePort(inport);
                 }
 
-                inPorts.RemoveRange(count, inPorts.Count - count);
+                for (int i = inPorts.Count - 1; i >= count; i--)
+                {
+                    inPorts.RemoveAt(i);
+                }
+                //InPorts.RemoveRange(count, inPorts.Count - count);
             }
         }
 
@@ -465,8 +489,8 @@ namespace Dynamo.Controls
         {
             if (inport.PortType == PortType.INPUT)
             {
-                int index = inPorts.FindIndex(x => x == inport);
-
+                //int index = inPorts.FindIndex(x => x == inport);
+                int index = inPorts.IndexOf(inport);
                 gridLeft.Children.Remove(inport);
                 gridLeft.Children.Remove(portTextBlocks[inport]);
 
@@ -512,7 +536,12 @@ namespace Dynamo.Controls
                     RemovePort(outport);
                 }
 
-                outPorts.RemoveRange(count, outPorts.Count - count);
+                for (int i = outPorts.Count - 1; i >= count; i--)
+                {
+                    outPorts.RemoveAt(i);
+                }
+
+                //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
         }
 
@@ -567,7 +596,7 @@ namespace Dynamo.Controls
                     Canvas.SetZIndex(tb, 200);
 
                     p.PortType = PortType.INPUT;
-                    inPorts.Add(p);
+                    InPorts.Add(p);
                     portTextBlocks[p] = tb;
                     gridLeft.Children.Add(p);
                     Grid.SetColumn(p, 0);
@@ -610,7 +639,7 @@ namespace Dynamo.Controls
                     tb.HorizontalAlignment = HorizontalAlignment.Right;
 
                     p.PortType = PortType.OUTPUT;
-                    outPorts.Add(p);
+                    OutPorts.Add(p);
                     portTextBlocks[p] = tb;
                     gridRight.Children.Add(p);
                     Grid.SetColumn(p, 1);
@@ -942,6 +971,20 @@ namespace Dynamo.Controls
             }
 
             return dynSettings.DeadBrush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class PortCountToHeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            ObservableCollection<dynPort> ports = (ObservableCollection<dynPort>)value;
+            return ports.Count * 20 + 10; //spacing for inputs + title space + bottom space
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
