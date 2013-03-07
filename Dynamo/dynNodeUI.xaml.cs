@@ -74,7 +74,6 @@ namespace Dynamo.Controls
         string nickName;
         Guid guid;
         ElementState state;
-        SetStateDelegate stateSetter;
         LacingType lacingType = LacingType.SHORTEST;
         dynNode nodeLogic;
         bool isSelected = false;
@@ -82,9 +81,7 @@ namespace Dynamo.Controls
         #endregion
 
         public delegate void SetToolTipDelegate(string message);
-        public delegate void MarkConnectionStateDelegate(bool bad);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
-        public delegate void SetStateDelegate(dynNodeUI el, ElementState state);
 
         #region public members
 
@@ -257,7 +254,6 @@ namespace Dynamo.Controls
             
             portTextBlocks = new Dictionary<dynPort, TextBlock>();
 
-            stateSetter = new SetStateDelegate(SetState);
             State = ElementState.DEAD;
 
             //Fetch the element name from the custom attribute.
@@ -741,13 +737,7 @@ namespace Dynamo.Controls
 
         protected void MarkConnectionState(bool bad)
         {
-            Dispatcher.Invoke(
-                stateSetter,
-                DispatcherPriority.Background,
-                new object[] {
-                    this,
-                    bad ? ElementState.ERROR : ElementState.ACTIVE
-                });
+            State = bad ? ElementState.ERROR : ElementState.ACTIVE;
         }
 
         protected internal void SetColumnAmount(int amt)
