@@ -17,10 +17,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Data;
+
+using Dynamo.Nodes;
 using Dynamo.Controls;
+using Dynamo.Utilities;
 
 namespace Dynamo.Connectors
 {
@@ -28,7 +31,7 @@ namespace Dynamo.Connectors
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
 
-    public class dynConnector : UIElement
+    public class dynConnector : UIElement, INotifyPropertyChanged
     {
         public event ConnectorConnectedHandler Connected;
 
@@ -36,6 +39,16 @@ namespace Dynamo.Connectors
         {
             if (Connected != null)
                 Connected(this, e);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
         }
 
         const int STROKE_THICKNESS = 2;
@@ -55,6 +68,7 @@ namespace Dynamo.Connectors
         const int END_DOT_SIZE = 6;
         Path connector;
         Path plineConnector;
+        Brush strokeBrush;
 
         double bezOffset = 20;
 
@@ -101,6 +115,16 @@ namespace Dynamo.Connectors
             }
         }
 
+        public Brush StrokeBrush
+        {
+            get { return strokeBrush; }
+            set 
+            { 
+                strokeBrush = value;
+                NotifyPropertyChanged("StrokeBrush");
+            }
+        }
+
         public dynConnector(dynPort port, Canvas workBench, Point mousePt)
         {
             //don't allow connections to start at an input port
@@ -113,14 +137,17 @@ namespace Dynamo.Connectors
                 pStart.Connect(this);
 
                 BrushConverter bc = new BrushConverter();
-                Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
+                strokeBrush = (Brush)bc.ConvertFrom("#313131");
 
                 #region bezier creation
                 connector = new Path();
-
                 connector.Stroke = strokeBrush;
                 connector.StrokeThickness = STROKE_THICKNESS;
                 connector.Opacity = STROKE_OPACITY;
+
+                connector.DataContext = this;
+                Binding strokeBinding = new Binding("StrokeBrush");
+                connector.SetBinding(Path.StrokeProperty, strokeBinding);
 
                 DoubleCollection dashArray = new DoubleCollection();
                 dashArray.Add(5); dashArray.Add(2);

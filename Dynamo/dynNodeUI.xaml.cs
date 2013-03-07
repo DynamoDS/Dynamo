@@ -190,6 +190,30 @@ namespace Dynamo.Controls
             { 
                 isSelected = value;
                 NotifyPropertyChanged("IsSelected");
+
+                if (isSelected)
+                {
+                    var inConnectors = inPorts.SelectMany(x => x.Connectors);
+                    var outConnectors = outPorts.SelectMany(x => x.Connectors);
+                    
+                    foreach (dynConnector c in inConnectors)
+                    {
+                        c.StrokeBrush = new LinearGradientBrush(Color.FromRgb(31, 31, 31), Colors.Cyan, 0);
+                    }
+                    foreach (dynConnector c in outConnectors)
+                    {
+                        c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Color.FromRgb(31, 31, 31), 0);
+                    }
+                }
+                else
+                {
+                    foreach (dynConnector c in inPorts.SelectMany(x=>x.Connectors)
+                        .Concat(outPorts.SelectMany(x=>x.Connectors)))
+                    {
+                        c.StrokeBrush = new SolidColorBrush(Color.FromRgb(31, 31, 31));
+                    }
+                    
+                }
             }
         }
         #endregion
@@ -219,10 +243,12 @@ namespace Dynamo.Controls
             //this element
             nickNameBlock.DataContext = this;
             elementRectangle.DataContext = this;
-            this.IsSelected = false;
-
+            
             inPorts = new List<dynPort>();
             outPorts = new List<dynPort>();
+            
+            this.IsSelected = false;
+
             //inPortData = new List<PortData>();
             portTextBlocks = new Dictionary<dynPort, TextBlock>();
 
