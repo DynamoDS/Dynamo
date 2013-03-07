@@ -338,7 +338,7 @@ namespace Dynamo.Controls
             ValidateConnections();
         }
 
-        void UpdateConnections()
+        public void UpdateConnections()
         {
             foreach (var p in InPorts.Concat(OutPorts))
                 p.Update();

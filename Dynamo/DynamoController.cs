@@ -1053,7 +1053,7 @@ namespace Dynamo
                 //dynNode top = topMost.FirstOrDefault();
 
                 var variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
-                var inputNames = variables.Select(x => ((dynSymbol)x).Symbol);
+                var inputNames = variables.Select(x => (x as dynSymbol).Symbol);
                 var outputNames = topMost.Select(x => x.Item2 is dynOutput ? (x.Item2 as dynOutput).Symbol : x.Item1.NickName);
 
                 INode top;
@@ -1078,7 +1078,7 @@ namespace Dynamo
                 else
                     top = topMost[0].Item2.BuildExpression(buildDict);
 
-                Expression expression = Utils.MakeAnon(inputNames, top.Compile());
+                Expression expression = Utils.MakeAnon(variables.Select(x => x.NodeUI.GUID.ToString()), top.Compile());
 
                 FSchemeEnvironment.DefineSymbol(functionWorkspace.Name, expression);
 
@@ -2297,6 +2297,7 @@ namespace Dynamo
 
             var leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI));
             var topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
+            var rightMost = selectedNodeSet.Max(node => Canvas.GetLeft(node.NodeUI) + node.NodeUI.Width);
             #endregion
 
             #region Determine Inputs and Outputs
@@ -2316,65 +2317,72 @@ namespace Dynamo
             #endregion
 
             #region Detect 1-node holes (higher-order function extraction)
-            var comp = new InputOutputEqualityComparer();
-            var curriedNodeArgs = inputs.Intersect(outputs, comp).Select(
-                x => 
-                {
-                    var node = new dynApply1();
-
-                    var nodeUI = node.NodeUI;
-
-                    NodeNameAttribute elNameAttrib = node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
-                    if (elNameAttrib != null)
+            var curriedNodeArgs = 
+                new HashSet<dynNode>(
+                    inputs
+                        .Select(x => x.Item3.Item2)
+                        .Intersect(outputs.Select(x => x.Item3.Item2)))
+                .Select(
+                    outerNode => 
                     {
-                        nodeUI.NickName = elNameAttrib.Name;
-                    }
+                        var node = new dynApply1();
 
-                    nodeUI.GUID = Guid.NewGuid();
+                        var nodeUI = node.NodeUI;
 
-                    //store the element in the elements list
-                    newNodeWorkspace.Nodes.Add(node);
-                    node.WorkSpace = newNodeWorkspace;
+                        NodeNameAttribute elNameAttrib = node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
+                        if (elNameAttrib != null)
+                        {
+                            nodeUI.NickName = elNameAttrib.Name;
+                        }
 
-                    Bench.WorkBench.Children.Add(nodeUI);
+                        nodeUI.GUID = Guid.NewGuid();
 
-                    //Place it in an appropriate spot
-                    Canvas.SetLeft(nodeUI, Canvas.GetLeft(x.Item3.Item2.NodeUI));
-                    Canvas.SetTop(nodeUI, Canvas.GetTop(x.Item3.Item2.NodeUI));
+                        //store the element in the elements list
+                        newNodeWorkspace.Nodes.Add(node);
+                        node.WorkSpace = newNodeWorkspace;
 
-                    Bench.WorkBench.UpdateLayout();
+                        node.DisableReporting();
 
-                    //Fetch all input ports
-                    // in order
-                    // that have inputs
-                    // and whose input comes from an inner node
-                    var inPortsConnected = x.Item3.Item2.InPortData
-                        .Where(x.Item3.Item2.HasInput)
-                        .Select(inputPort => x.Item3.Item2.Inputs[inputPort])
-                        .Where(input => selectedNodeSet.Contains(input.Item2))
-                        .Select(input => input.Item1)
-                        .ToList();
+                        Bench.WorkBench.Children.Add(nodeUI);
 
-                    var nodeInputs = outputs
-                        .Where(output => output.Item3.Item2 == x.Item3.Item2)
-                        .Select(
-                            output => 
-                                new 
-                                { 
-                                    InnerNodeOutput = output.Item1, 
-                                    OuterNodeInPortData = output.Item3.Item1
-                                });
+                        //Place it in an appropriate spot
+                        Canvas.SetLeft(nodeUI, Canvas.GetLeft(outerNode.NodeUI));
+                        Canvas.SetTop(nodeUI, Canvas.GetTop(outerNode.NodeUI));
 
-                    return new
-                    {
-                        OuterNode = x.Item3.Item2,
-                        InnerNode = node,
-                        Outputs = inputs.Where(input => input.Item3.Item2 == x.Item3.Item2)
-                            .Select(input => input.Item3.Item1),
-                        Inputs = nodeInputs,
-                        OuterNodePortDataList = inPortsConnected
-                    };
-                });
+                        //Fetch all input ports
+                        // in order
+                        // that have inputs
+                        // and whose input comes from an inner node
+                        var inPortsConnected = outerNode.InPortData
+                            .Where(x => outerNode.HasInput(x) && selectedNodeSet.Contains(outerNode.Inputs[x].Item2))
+                            .ToList();
+
+                        var nodeInputs = outputs
+                            .Where(output => output.Item3.Item2 == outerNode)
+                            .Select(
+                                output => 
+                                    new 
+                                    { 
+                                        InnerNodeInputSender = output.Item1, 
+                                        OuterNodeInPortData = output.Item3.Item1
+                                    }).ToList();
+
+                        nodeInputs.ForEach(_ => node.AddInput());
+
+                        node.NodeUI.RegisterAllPorts();
+
+                        Bench.WorkBench.UpdateLayout();
+
+                        return new
+                        {
+                            OuterNode = outerNode,
+                            InnerNode = node,
+                            Outputs = inputs.Where(input => input.Item3.Item2 == outerNode)
+                                .Select(input => input.Item3.Item1),
+                            Inputs = nodeInputs,
+                            OuterNodePortDataList = inPortsConnected
+                        };
+                    }).ToList();
             #endregion
 
             #region Move selection to new workspace
@@ -2403,7 +2411,7 @@ namespace Dynamo
             //Step 5: insert new node into original workspace
             var collapsedNode = new dynFunction(
                 inputs.Select(x => x.Item2.NickName),
-                outputs.Select(x => x.Item2.NickName),
+                outputs.Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2)).Select(x => x.Item2.NickName),
                 newNodeName);
 
             collapsedNode.NodeUI.GUID = Guid.NewGuid();
@@ -2526,19 +2534,76 @@ namespace Dynamo
             #endregion
 
             #region Process outputs
-            //Connect outputs to new node
-            foreach (var output in Enumerable.Range(0, outputs.Count).Zip(outputs, Tuple.Create))
-            {
-                var outputIndex = output.Item1; 
+            //List of all inner nodes to connect an output. Unique.
+            var outportList = new List<Tuple<dynNode, PortData>>();
 
+            int i = 0;
+            foreach (var output in outputs)
+            {
+                if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
+                {
+                    var outputSenderNode = output.Item1;
+                    var outputSenderData = output.Item2;
+                    var outputReceiverNode = output.Item3.Item2;
+
+                    if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
+                        continue;
+
+                    outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
+
+                    //Create Symbol Node
+                    var node = new dynOutput()
+                    {
+                        Symbol = outputSenderData.NickName
+                    };
+
+                    var nodeUI = node.NodeUI;
+
+                    NodeNameAttribute elNameAttrib = node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), false)[0] as NodeNameAttribute;
+                    if (elNameAttrib != null)
+                    {
+                        nodeUI.NickName = elNameAttrib.Name;
+                    }
+
+                    nodeUI.GUID = Guid.NewGuid();
+
+                    //store the element in the elements list
+                    newNodeWorkspace.Nodes.Add(node);
+                    node.WorkSpace = newNodeWorkspace;
+
+                    node.DisableReporting();
+
+                    Bench.WorkBench.Children.Add(nodeUI);
+
+                    //Place it in an appropriate spot
+                    Canvas.SetLeft(nodeUI, rightMost + 100 + leftShift);
+                    Canvas.SetTop(nodeUI, i * (50 + node.NodeUI.Height));
+
+                    Bench.WorkBench.UpdateLayout();
+
+                    newNodeWorkspace.Connectors.Add(new dynConnector(
+                        outputSenderNode.NodeUI,
+                        nodeUI,
+                        outputSenderNode.OutPortData.IndexOf(outputSenderData),
+                        0,
+                        0,
+                        false));
+
+                    i++;
+                }
+            }
+
+            //Connect outputs to new node
+            foreach (var output in outputs)
+            {
                 //Node to be connected to in CurrentSpace
-                var outputSenderNode = output.Item2.Item1;
+                var outputSenderNode = output.Item1;
 
                 //Port to be connected to on outPutNode_outer
-                var outputSenderData = output.Item2.Item2;
+                var outputSenderData = output.Item2;
 
-                var outputReceiverData = output.Item2.Item3.Item1;
-                var outputReceiverNode = output.Item2.Item3.Item2;
+                var outputReceiverData = output.Item3.Item1;
+                var outputReceiverNode = output.Item3.Item2;
 
                 var curriedNode = curriedNodeArgs.FirstOrDefault(
                     x => x.OuterNode == outputReceiverNode);
@@ -2549,22 +2614,26 @@ namespace Dynamo
                         new dynConnector(
                             collapsedNode.NodeUI,
                             outputReceiverNode.NodeUI,
-                            outputIndex,
+                            outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
                             outputReceiverNode.InPortData.IndexOf(outputReceiverData),
                             0,
                             true));
                 }
                 else
                 {
+                    var targetPort = curriedNode.Inputs
+                        .First(
+                            x => x.InnerNodeInputSender == outputSenderNode)
+                        .OuterNodeInPortData;
+
+                    var targetPortIndex = curriedNode.OuterNodePortDataList.IndexOf(targetPort);
+
                     //Connect it (new dynConnector)
                     newNodeWorkspace.Connectors.Add(new dynConnector(
                         outputSenderNode.NodeUI,
                         curriedNode.InnerNode.NodeUI,
                         outputSenderNode.OutPortData.IndexOf(outputSenderData),
-                        curriedNode.OuterNodePortDataList.IndexOf(
-                            curriedNode.Inputs.First(
-                                x => x.InnerNodeOutput == outputSenderNode)
-                            .OuterNodeInPortData) + 1,
+                        targetPortIndex + 1,
                         0));
                 }
             }
@@ -2580,28 +2649,12 @@ namespace Dynamo
                 connector.Visible = false;
             #endregion
 
-            newNodeWorkspace.Nodes.ForEach(x => x.EnableReporting());
+            newNodeWorkspace.Nodes.ForEach(x => { x.EnableReporting(); x.NodeUI.UpdateConnections(); });
+
+            collapsedNode.EnableReporting();
+            collapsedNode.NodeUI.UpdateConnections();
 
             SaveFunction(newNodeWorkspace, true);
-        }
-
-        private class InputOutputEqualityComparer
-            : IEqualityComparer<Tuple<dynNode, PortData, Tuple<PortData, dynNode>>>
-        {
-
-            #region IEqualityComparer<Tuple<PortData,dynNode>> Members
-
-            public bool Equals(Tuple<dynNode, PortData, Tuple<PortData, dynNode>> x, Tuple<dynNode, PortData, Tuple<PortData, dynNode>> y)
-            {
-                return x.Item3.Item2 == y.Item3.Item2;
-            }
-
-            public int GetHashCode(Tuple<dynNode, PortData, Tuple<PortData, dynNode>> obj)
-            {
-                return obj.Item3.Item2.GetHashCode();
-            }
-
-            #endregion
         }
         #endregion
     }
