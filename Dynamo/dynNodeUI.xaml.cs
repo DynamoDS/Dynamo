@@ -78,6 +78,7 @@ namespace Dynamo.Controls
         LacingType lacingType = LacingType.SHORTEST;
         dynNode nodeLogic;
         bool isSelected = false;
+        int preferredHeight = 30;
         #endregion
 
         public delegate void SetToolTipDelegate(string message);
@@ -202,6 +203,19 @@ namespace Dynamo.Controls
                 }
             }
         }
+
+        public int PreferredHeight
+        {
+            get
+            {
+                return preferredHeight;
+            }
+            set
+            {
+                preferredHeight = value;
+                NotifyPropertyChanged("PreferredHeight");
+            }
+        }
         #endregion
 
         #region events
@@ -234,12 +248,11 @@ namespace Dynamo.Controls
 
             inPorts = new ObservableCollection<dynPort>();
             outPorts = new ObservableCollection<dynPort>();
-            inPorts.CollectionChanged +=new System.Collections.Specialized.NotifyCollectionChangedEventHandler(inPorts_CollectionChanged);
-            outPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(outPorts_CollectionChanged);
+            inPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ports_collectionChanged);
+            outPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ports_collectionChanged);
             this.IsSelected = false;
 
-            Binding heightBinding = new Binding("InPorts");
-            heightBinding.Converter = new PortCountToHeightConverter();
+            Binding heightBinding = new Binding("PreferredHeight");
             topControl.SetBinding(UserControl.HeightProperty, heightBinding);
             
             portTextBlocks = new Dictionary<dynPort, TextBlock>();
@@ -265,13 +278,9 @@ namespace Dynamo.Controls
             Canvas.SetZIndex(this, 1); 
         }
 
-        void inPorts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            NotifyPropertyChanged("InPorts");
-        }
-        void outPorts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            NotifyPropertyChanged("OutPorts");
+            PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
         }
 
         #endregion
@@ -373,16 +382,11 @@ namespace Dynamo.Controls
             }
         }
 
-
         /// <summary>
         /// Resize the control based on the number of inputs.
         /// </summary>
         public void ResizeElementForPorts()
         {
-            //size the height of the controller based on the 
-            //whichever is larger the inport or the outport list
-            //topControl.Height = Math.Max(nodeLogic.InPortData.Count, nodeLogic.OutPortData.Count) * 20 + 10; //spacing for inputs + title space + bottom space
-
             Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
             gridLeft.Margin = leftGridThick;
 
@@ -393,8 +397,6 @@ namespace Dynamo.Controls
             inputGrid.Margin = inputGridThick;
 
             grid.UpdateLayout();
-
-            //elementShine.Height = topControl.Height / 2;
 
             if (inputGrid.Children.Count == 0)
             {
