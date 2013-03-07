@@ -188,35 +188,12 @@ namespace Dynamo.Controls
         /// <param name="sel">The element to select.</param>
         public void SelectElement(System.Windows.Controls.UserControl sel)
         {
-            //if (!selectedElements.Contains(sel))
-            if(!WorkBench.Selection.Contains(sel))
+            dynNodeUI n = sel as dynNodeUI;
+
+            if(!WorkBench.Selection.Contains(n))
             {
-                //selectedElements.Add(sel);
-                WorkBench.Selection.Add(sel);
-
-                if (sel is dynNodeUI)
-                    (sel as dynNodeUI).Select();
+                WorkBench.Selection.Add(n);
             }
-
-            if (!WorkBench.Selection.Contains(sel))
-            {
-                WorkBench.Selection.Add(sel);
-            }
-        }
-
-        /// <summary>
-        /// Deselects all selected elements.
-        /// </summary>
-        public void ClearSelection()
-        {
-            //set all other items to the unselected state
-            foreach (System.Windows.Controls.UserControl el in WorkBench.Selection)
-            {
-                if (el is dynNodeUI)
-                    (el as dynNodeUI).Deselect();
-            }
-
-            WorkBench.ClearSelection();
         }
 
         /// <summary>
@@ -509,7 +486,7 @@ namespace Dynamo.Controls
             {
                 #region window selection
 
-                ClearSelection();
+                WorkBench.ClearSelection();
 
                 //DEBUG WINDOW SELECTION
                 // Capture and track the mouse.
@@ -567,7 +544,7 @@ namespace Dynamo.Controls
                     Point mouseUpPos = e.GetPosition(WorkBench);
 
                     //clear the selected elements
-                    ClearSelection();
+                    WorkBench.ClearSelection();
 
                     foreach (dynNodeUI n in Controller.Nodes.Select(node => node.NodeUI))
                     {
@@ -584,8 +561,6 @@ namespace Dynamo.Controls
                         bool contains = rect.Contains(x, y);
                         if (contains)
                         {
-                            //if (!selectedElements.Contains(n))
-                            //    selectedElements.Add(n);
                             if (!WorkBench.Selection.Contains(n))
                                 WorkBench.Selection.Add(n);
 
@@ -928,14 +903,10 @@ namespace Dynamo.Controls
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Back) ||
                 Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Delete))
             {
-
-                //for (int i = selectedElements.Count - 1; i >= 0; i--)
-                //{
-                //    DeleteElement(selectedElements[i]);
-                //}
                 for (int i = WorkBench.Selection.Count - 1; i >= 0; i--)
                 {
-                    DeleteElement(WorkBench.Selection[i]);
+                    dynNodeUI n = (dynNodeUI)WorkBench.Selection[i];
+                    DeleteElement(n);
                 }
 
                 e.Handled = true;

@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Interaction logic for dynNote.xaml
     /// </summary>
-    public partial class dynNote : UserControl
+    public partial class dynNote : UserControl, ISelectable
     {
         public dynNote()
         {
@@ -71,5 +71,8 @@ namespace Dynamo.Nodes
             var bench = dynSettings.Bench;
             bench.DeleteElement(this);
         }
+
+        public void Select() { }
+        public void Deselect() { }
     }
 }

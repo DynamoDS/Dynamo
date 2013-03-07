@@ -23,7 +23,7 @@ namespace Dynamo.Controls
       #region Data
 
       // Stores a reference to the UIElement currently being dragged by the user.
-       private ObservableCollection<UIElement> selection = new ObservableCollection<UIElement>();
+       private ObservableCollection<ISelectable> selection = new ObservableCollection<ISelectable>();
        private ObservableCollection<OffsetData> offsets = new ObservableCollection<OffsetData>();
 
       // Keeps track of where the mouse cursor was when a drag operation began.		
@@ -109,6 +109,33 @@ namespace Dynamo.Controls
       /// </summary>
       public DragCanvas()
       {
+          selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(selection_CollectionChanged);
+      }
+
+      void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+      {
+          if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+          {
+              throw new Exception("To properly clean the selection, please use RemoveAll() instead.");
+          }
+
+          // call the select method on elements added to the collection
+          if (e.NewItems != null)
+          {
+              foreach (var n in e.NewItems)
+              {
+                  (n as ISelectable).Select();
+              }
+          }
+
+          if (e.OldItems != null)
+          {
+              // call the deselect method on elements removed from the collection
+              foreach (var n in e.OldItems)
+              {
+                  (n as ISelectable).Deselect();
+              }
+          }
       }
 
       #endregion // Constructor
@@ -180,42 +207,13 @@ namespace Dynamo.Controls
       #region ElementBeingDragged
 
       /// <summary>
-      /// Returns the UIElement currently being dragged, or null.
+      /// Returns the selection.
       /// </summary>
       /// <remarks>
       /// Note to inheritors: This property exposes a protected 
       /// setter which should be used to modify the drag element.
       /// </remarks>
-      //public UIElement ElementBeingDragged
-      //{
-      //   get
-      //   {
-      //      if (!this.AllowDragging)
-      //         return null;
-      //      else
-      //         return this.elementBeingDragged;
-      //   }
-      //   protected set
-      //   {
-      //      if (this.elementBeingDragged != null)
-      //         this.elementBeingDragged.ReleaseMouseCapture();
-
-      //      if (!this.AllowDragging)
-      //         this.elementBeingDragged = null;
-      //      else
-      //      {
-      //         if (DragCanvas.GetCanBeDragged(value))
-      //         {
-      //            this.elementBeingDragged = value;
-      //            this.elementBeingDragged.CaptureMouse();
-      //         }
-      //         else
-      //            this.elementBeingDragged = null;
-      //      }
-      //   }
-      //}
-
-      public ObservableCollection<UIElement> Selection
+      public ObservableCollection<ISelectable> Selection
       {
           get { return selection; }
           set
@@ -432,8 +430,8 @@ namespace Dynamo.Controls
 
       public void ClearSelection()
       {
-          this.selection.Clear();
-          this.offsets.Clear();
+          selection.RemoveAll();
+          offsets.Clear();
       }
       #endregion // OnHostPreviewMouseUp
 
@@ -620,6 +618,7 @@ namespace Dynamo.Controls
       #endregion // UpdateZOrder
 
       #endregion // Private Helpers
+
    }
 
    public class OffsetData
@@ -663,4 +662,22 @@ namespace Dynamo.Controls
            this.ModifyTopOffset = modifyTopOffset;
        }
    }
+
+   public interface ISelectable
+   {
+       void Select();
+       void Deselect();
+   }
+
+    public static class Extensions
+    {
+        public static void RemoveAll(this ObservableCollection<ISelectable> list)
+        {
+            while (list.Count > 0)
+            {
+                list.RemoveAt(list.Count - 1);
+            }
+        }
+    }
+    
 }

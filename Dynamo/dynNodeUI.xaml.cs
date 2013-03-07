@@ -43,7 +43,7 @@ namespace Dynamo.Controls
     public enum ElementState { DEAD, ACTIVE, ERROR };
     public enum LacingType { SHORTEST, LONGEST, FULL };
 
-    public partial class dynNodeUI : UserControl, INotifyPropertyChanged
+    public partial class dynNodeUI : UserControl, INotifyPropertyChanged, ISelectable
     {
         #region delegates
         public delegate void dynElementUpdatedHandler(object sender, EventArgs e);
@@ -808,12 +808,6 @@ namespace Dynamo.Controls
 
         public void Select()
         {
-            //Dispatcher.Invoke(
-            //   stateSetter,
-            //   System.Windows.Threading.DispatcherPriority.Background,
-            //   new object[] { this, ElementState.SELECTED }
-            //);
-
             this.IsSelected = true;
         }
 
@@ -909,8 +903,9 @@ namespace Dynamo.Controls
             if (!isSelected)
             {
                 Debug.WriteLine("Node left selected.");
-                dynSettings.Bench.ClearSelection();
-                dynSettings.Bench.SelectElement(this);
+                dynSettings.Bench.WorkBench.ClearSelection();
+                if(!dynSettings.Bench.WorkBench.Selection.Contains(this))
+                    dynSettings.Bench.WorkBench.Selection.Add(this);
             }
         }
 
