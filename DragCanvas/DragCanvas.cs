@@ -112,6 +112,11 @@ namespace Dynamo.Controls
           selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(selection_CollectionChanged);
       }
 
+       /// <summary>
+       /// Manages addition and removal of objects from the selection
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="e"></param>
       void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
       {
           if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
@@ -122,18 +127,48 @@ namespace Dynamo.Controls
           // call the select method on elements added to the collection
           if (e.NewItems != null)
           {
-              foreach (var n in e.NewItems)
+              foreach (ISelectable n in e.NewItems)
               {
-                  (n as ISelectable).Select();
+                  n.Select();
+
+                  UIElement el = (UIElement)n;
+
+                  double left = Canvas.GetLeft(el);
+                  double right = Canvas.GetRight(el);
+                  double top = Canvas.GetTop(el);
+                  double bottom = Canvas.GetBottom(el);
+
+                  // Calculate the offset deltas and determine for which sides
+                  // of the Canvas to adjust the offsets.
+                  bool modLeft = false;
+                  bool modTop = false;
+                  double hOffset = ResolveOffset(left, right, out modLeft);
+                  double vOffset = ResolveOffset(top, bottom, out modTop);
+                  OffsetData os = new OffsetData(hOffset, vOffset, modLeft, modTop,n);
+                  offsets.Add(os);
               }
           }
 
           if (e.OldItems != null)
           {
               // call the deselect method on elements removed from the collection
-              foreach (var n in e.OldItems)
+              foreach (ISelectable n in e.OldItems)
               {
                   (n as ISelectable).Deselect();
+
+                  // remove the corresponding offsetdata object
+                  // for the element being removed
+                  List<OffsetData> toRemove = new List<OffsetData>();
+                  foreach (OffsetData od in offsets)
+                  {
+                      if (od.Node == n)
+                          toRemove.Add(od);
+                  }
+
+                  foreach (OffsetData od in toRemove)
+                  {
+                      offsets.Remove(od);
+                  }
               }
           }
       }
@@ -283,27 +318,6 @@ namespace Dynamo.Controls
             if (this.selection.Count == 0)
                 return;
 
-            foreach (UIElement el in selection)
-            {
-
-                // Get the element's offsets from the four sides of the Canvas.
-                double left = Canvas.GetLeft(el);
-                double right = Canvas.GetRight(el);
-                double top = Canvas.GetTop(el);
-                double bottom = Canvas.GetBottom(el);
-
-                // Calculate the offset deltas and determine for which sides
-                // of the Canvas to adjust the offsets.
-                bool modLeft = false;
-                bool modTop = false;
-                double hOffset = ResolveOffset(left, right, out modLeft);
-                double vOffset = ResolveOffset(top, bottom, out modTop);
-                OffsetData os = new OffsetData(hOffset, vOffset, modLeft, modTop);
-
-                offsets.Add(os);
-
-            }
-
             e.Handled = true;
 
             this.isDragInProgress = true;
@@ -431,7 +445,6 @@ namespace Dynamo.Controls
       public void ClearSelection()
       {
           selection.RemoveAll();
-          offsets.Clear();
       }
       #endregion // OnHostPreviewMouseUp
 
@@ -653,13 +666,19 @@ namespace Dynamo.Controls
            get;
            set;
        }
+       public object Node
+       {
+           get;
+           set;
+       }
 
-       public OffsetData(double hOffset, double vOffset, bool modifyLeftOffset, bool modifyTopOffset)
+       public OffsetData(double hOffset, double vOffset, bool modifyLeftOffset, bool modifyTopOffset, object node)
        {
            this.OriginalHorizontalOffset = hOffset;
            this.OriginalVerticalOffset = vOffset;
            this.ModifyLeftOffset = modifyLeftOffset;
            this.ModifyTopOffset = modifyTopOffset;
+           this.Node = node;
        }
    }
 
