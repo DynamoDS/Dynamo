@@ -265,13 +265,17 @@ namespace Dynamo.Connectors
             pStart.Connect(this);
 
             BrushConverter bc = new BrushConverter();
-            Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
+            strokeBrush = (Brush)bc.ConvertFrom("#313131");
 
             #region bezier creation
             connector = new Path();
             connector.Stroke = strokeBrush;
             connector.StrokeThickness = STROKE_THICKNESS;
             connector.Opacity = STROKE_OPACITY;
+
+            connector.DataContext = this;
+            Binding strokeBinding = new Binding("StrokeBrush");
+            connector.SetBinding(Path.StrokeProperty, strokeBinding);
 
             DoubleCollection dashArray = new DoubleCollection();
             dashArray.Add(5); dashArray.Add(2);
