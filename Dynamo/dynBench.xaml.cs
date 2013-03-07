@@ -950,7 +950,7 @@ namespace Dynamo.Controls
 
             if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.F))
             {
-                this.searchBox.Focus();
+                this.SearchBox.Focus();
             }
 
             // select all the nodes directly around the selected nodes
@@ -1268,7 +1268,7 @@ namespace Dynamo.Controls
 
         private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            Controller.UpdateSearch(this.searchBox.Text.Trim());
+            Controller.UpdateSearch(this.SearchBox.Text.Trim());
         }
 
         private void searchBox_LostFocus(object sender, RoutedEventArgs e)

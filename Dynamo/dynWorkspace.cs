@@ -20,10 +20,11 @@ using System.Text;
 using Dynamo.Connectors;
 using System.Windows;
 using Dynamo.Utilities;
+using Dynamo.Controls;
 
 namespace Dynamo.Nodes
 {
-    public class dynWorkspace
+    public abstract class dynWorkspace
     {
         public List<dynNode> Nodes { get; private set; }
         public List<dynConnector> Connectors { get; private set; }
@@ -36,6 +37,8 @@ namespace Dynamo.Nodes
         public String Name { get; set; }
 
         public event Action OnModified;
+
+        public abstract void OnDisplayed();
 
         //Hide default constructor.
         private dynWorkspace() { }
@@ -59,9 +62,15 @@ namespace Dynamo.Nodes
         public IEnumerable<dynNode> GetTopMostElements()
         {
             return this.Nodes.Where(
-               x => !x.NodeUI.OutPorts.Any(y => y.Connectors.Any())
+               x => x.NodeUI.OutPorts.All(y => !y.Connectors.Any())
             );
         }
+    }
+
+    internal static class WorkspaceHelpers
+    {
+        public static Dictionary<string, dynNodeUI> hiddenNodes =
+            new Dictionary<string, dynNodeUI>();
     }
 
     public class FuncWorkspace : dynWorkspace
@@ -94,6 +103,25 @@ namespace Dynamo.Nodes
             base.Modified();
 
             dynSettings.Controller.SaveFunction(this);
+        }
+
+        public override void OnDisplayed()
+        {
+            var bench = dynSettings.Bench;
+
+            if (!bench.addMenuItemsDictNew.ContainsKey("Variable"))
+                return;
+
+            var variable = bench.addMenuItemsDictNew["Variable"];
+            var output = bench.addMenuItemsDictNew["Output"];
+            bench.addMenuItemsDictNew.Remove("Variable");
+            bench.addMenuItemsDictNew.Remove("Output");
+            variable.Visibility = Visibility.Collapsed;
+            variable.Visibility = Visibility.Collapsed;
+            WorkspaceHelpers.hiddenNodes["Variable"] = variable;
+            WorkspaceHelpers.hiddenNodes["Output"] = output;
+
+            dynSettings.Controller.UpdateSearch(bench.SearchBox.Text.Trim());
         }
     }
 
@@ -131,6 +159,25 @@ namespace Dynamo.Nodes
                             controller.QueueRun();
                     }
                 }));
+        }
+
+        public override void OnDisplayed()
+        {
+            var bench = dynSettings.Bench;
+            
+            if (bench.addMenuItemsDictNew.ContainsKey("Variable"))
+                return;
+
+            var variable = WorkspaceHelpers.hiddenNodes["Variable"];
+            var output = WorkspaceHelpers.hiddenNodes["Output"];
+            WorkspaceHelpers.hiddenNodes.Remove("Variable");
+            WorkspaceHelpers.hiddenNodes.Remove("Output");
+            variable.Visibility = Visibility.Visible;
+            variable.Visibility = Visibility.Visible;
+            bench.addMenuItemsDictNew["Variable"] = variable;
+            bench.addMenuItemsDictNew["Output"] = output;
+
+            dynSettings.Controller.UpdateSearch(bench.SearchBox.Text.Trim());
         }
     }
 }

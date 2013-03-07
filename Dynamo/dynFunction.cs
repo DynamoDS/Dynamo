@@ -185,6 +185,9 @@ namespace Dynamo.Nodes
 
             if (i < InPortData.Count)
             {
+                for (var k = i; k < InPortData.Count; k++)
+                    NodeUI.InPorts[k].KillAllConnectors();
+
                 InPortData.RemoveRange(i, InPortData.Count - i);
             }
         }
@@ -208,6 +211,9 @@ namespace Dynamo.Nodes
 
             if (i < OutPortData.Count)
             {
+                for (var k = i; k < OutPortData.Count; k++)
+                    NodeUI.OutPorts[k].KillAllConnectors();
+
                 OutPortData.RemoveRange(i, OutPortData.Count - i);
             }
         }
@@ -458,12 +464,12 @@ namespace Dynamo.Nodes
             set { tb.Text = value; }
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt, PortData outPort)
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            Dictionary<PortData, INode> result;
+            Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                result = new Dictionary<PortData, INode>();
+                result = new Dictionary<int, INode>();
                 result[outPort] = new SymbolNode(NodeUI.GUID.ToString());
                 preBuilt[this] = result;
             }

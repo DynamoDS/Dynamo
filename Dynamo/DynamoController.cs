@@ -772,20 +772,20 @@ namespace Dynamo
 
                 if (!outputs.Any())
                 {
-                    var topMost = new List<Tuple<PortData, dynNode>>();
+                    var topMost = new List<Tuple<int, dynNode>>();
 
                     var topMostNodes = ws.GetTopMostElements();
 
                     foreach (var topNode in topMostNodes)
                     {
-                        foreach (var output in topNode.OutPortData)
+                        foreach (var output in Enumerable.Range(0, topNode.OutPortData.Count))
                         {
                             if (!topNode.HasOutput(output))
                                 topMost.Add(Tuple.Create(output, topNode));
                         }
                     }
 
-                    outputs = topMost.Select(x => x.Item1.NickName);
+                    outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
                 }
                 
                 result = new dynFunction(inputs, outputs, name);
@@ -934,7 +934,7 @@ namespace Dynamo
                 {
                     foreach (var port in el.NodeUI.OutPorts)
                     {
-                        foreach (dynConnector c in port.Connectors)
+                        foreach (dynConnector c in port.Connectors.Where(c => c.Start != null && c.End != null))
                         {
                             XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
                             connectorList.AppendChild(connector);
@@ -1008,30 +1008,41 @@ namespace Dynamo
                     .Where(x => x is dynOutput);
 
 
-                var topMost = new List<Tuple<PortData, dynNode>>();
+                var topMost = new List<Tuple<int, dynNode>>();
+
+                IEnumerable<string> outputNames;
 
                 if (outputs.Any())
                 {
                     topMost.AddRange(outputs.Select(
                         x =>
                         {
-                            Tuple<PortData, dynNode> input;
-                            x.TryGetInput(x.InPortData[0], out input);
+                            Tuple<int, dynNode> input;
+                            x.TryGetInput(0, out input);
                             return input;
                         }));
+
+                    outputNames = outputs.Select(x => (x as dynOutput).Symbol);
                 }
                 else
                 {
                     var topMostNodes = functionWorkspace.GetTopMostElements();
 
+                    var outNames = new List<string>();
+
                     foreach (var topNode in topMostNodes)
                     {
-                        foreach (var output in topNode.OutPortData)
+                        foreach (var output in Enumerable.Range(0, topNode.OutPortData.Count))
                         {
                             if (!topNode.HasOutput(output))
+                            {
                                 topMost.Add(Tuple.Create(output, topNode));
+                                outNames.Add(topNode.OutPortData[output].NickName);
+                            }
                         }
                     }
+
+                    outputNames = outNames;
                 }
                     
                 //if (topMost.Count > 1)
@@ -1054,10 +1065,9 @@ namespace Dynamo
 
                 var variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
                 var inputNames = variables.Select(x => (x as dynSymbol).Symbol);
-                var outputNames = topMost.Select(x => x.Item2 is dynOutput ? (x.Item2 as dynOutput).Symbol : x.Item1.NickName);
 
                 INode top;
-                var buildDict = new Dictionary<dynNode, Dictionary<PortData, INode>>();
+                var buildDict = new Dictionary<dynNode, Dictionary<int, INode>>();
 
                 if (topMost.Count > 1)
                 {
@@ -1746,7 +1756,7 @@ namespace Dynamo
             {
                 var topNode = new BeginNode(new List<string>());
                 var i = 0;
-                var buildDict = new Dictionary<dynNode, Dictionary<PortData, INode>>();
+                var buildDict = new Dictionary<dynNode, Dictionary<int, INode>>();
                 foreach (var topMost in topElements)
                 {
                     var inputName = i.ToString();
@@ -1979,6 +1989,8 @@ namespace Dynamo
             Bench.editNameButton.IsHitTestVisible = false;
 
             Bench.setHomeBackground();
+
+            CurrentSpace.OnDisplayed();
         }
 
         internal void DisplayFunction(string symbol)
@@ -2046,6 +2058,8 @@ namespace Dynamo
             Bench.editNameButton.IsHitTestVisible = true;
 
             Bench.setFunctionBackground();
+
+            CurrentSpace.OnDisplayed();
         }
 
         #endregion
@@ -2302,15 +2316,15 @@ namespace Dynamo
 
             #region Determine Inputs and Outputs
             //Step 1: determine which nodes will be inputs to the new node
-            var inputs = new HashSet<Tuple<dynNode, PortData, Tuple<PortData, dynNode>>>(
+            var inputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
                 selectedNodeSet.SelectMany(
-                    node => node.InPortData.Where(node.HasInput).Select(
+                    node => Enumerable.Range(0, node.InPortData.Count).Where(node.HasInput).Select(
                         data => Tuple.Create(node, data, node.Inputs[data])).Where(
                             input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
-            var outputs = new HashSet<Tuple<dynNode, PortData, Tuple<PortData, dynNode>>>(
+            var outputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
                 selectedNodeSet.SelectMany(
-                    node => node.OutPortData.Where(node.HasOutput).SelectMany(
+                    node => Enumerable.Range(0, node.OutPortData.Count).Where(node.HasOutput).SelectMany(
                         data => node.Outputs[data]
                             .Where(output => !selectedNodeSet.Contains(output.Item2))
                             .Select(output => Tuple.Create(node, data, output)))));
@@ -2353,7 +2367,7 @@ namespace Dynamo
                         // in order
                         // that have inputs
                         // and whose input comes from an inner node
-                        var inPortsConnected = outerNode.InPortData
+                        var inPortsConnected = Enumerable.Range(0, outerNode.InPortData.Count)
                             .Where(x => outerNode.HasInput(x) && selectedNodeSet.Contains(outerNode.Inputs[x].Item2))
                             .ToList();
 
@@ -2410,8 +2424,10 @@ namespace Dynamo
             #region Insert new node replacement into the current workspace
             //Step 5: insert new node into original workspace
             var collapsedNode = new dynFunction(
-                inputs.Select(x => x.Item2.NickName),
-                outputs.Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2)).Select(x => x.Item2.NickName),
+                inputs.Select(x => x.Item1.InPortData[x.Item2].NickName),
+                outputs
+                    .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))
+                    .Select(x => x.Item1.OutPortData[x.Item2].NickName),
                 newNodeName);
 
             collapsedNode.NodeUI.GUID = Guid.NewGuid();
@@ -2461,7 +2477,7 @@ namespace Dynamo
                     new dynConnector(
                         inputNode.NodeUI,
                         collapsedNode.NodeUI,
-                        inputNode.OutPortData.IndexOf(inputData),
+                        inputData,
                         inputIndex,
                         0,
                         true));
@@ -2469,7 +2485,7 @@ namespace Dynamo
                 //Create Symbol Node
                 dynSymbol node = new dynSymbol()
                 {
-                    Symbol = inputReceiverData.NickName
+                    Symbol = inputReceiverNode.InPortData[inputReceiverData].NickName
                 };
 
                 var nodeUI = node.NodeUI;
@@ -2506,7 +2522,7 @@ namespace Dynamo
                         nodeUI,
                         inputReceiverNode.NodeUI,
                         0,
-                        inputReceiverNode.InPortData.IndexOf(inputReceiverData),
+                        inputReceiverData,
                         0,
                         false));
                 }
@@ -2526,7 +2542,7 @@ namespace Dynamo
                         curriedNode.InnerNode.NodeUI,
                         inputReceiverNode.NodeUI,
                         0,
-                        inputReceiverNode.InPortData.IndexOf(inputReceiverData),
+                        inputReceiverData,
                         0,
                         false));
                 }
@@ -2535,7 +2551,7 @@ namespace Dynamo
 
             #region Process outputs
             //List of all inner nodes to connect an output. Unique.
-            var outportList = new List<Tuple<dynNode, PortData>>();
+            var outportList = new List<Tuple<dynNode, int>>();
 
             int i = 0;
             foreach (var output in outputs)
@@ -2554,7 +2570,7 @@ namespace Dynamo
                     //Create Symbol Node
                     var node = new dynOutput()
                     {
-                        Symbol = outputSenderData.NickName
+                        Symbol = outputSenderNode.OutPortData[outputSenderData].NickName
                     };
 
                     var nodeUI = node.NodeUI;
@@ -2584,7 +2600,7 @@ namespace Dynamo
                     newNodeWorkspace.Connectors.Add(new dynConnector(
                         outputSenderNode.NodeUI,
                         nodeUI,
-                        outputSenderNode.OutPortData.IndexOf(outputSenderData),
+                        outputSenderData,
                         0,
                         0,
                         false));
@@ -2615,7 +2631,7 @@ namespace Dynamo
                             collapsedNode.NodeUI,
                             outputReceiverNode.NodeUI,
                             outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
-                            outputReceiverNode.InPortData.IndexOf(outputReceiverData),
+                            outputReceiverData,
                             0,
                             true));
                 }
@@ -2632,7 +2648,7 @@ namespace Dynamo
                     newNodeWorkspace.Connectors.Add(new dynConnector(
                         outputSenderNode.NodeUI,
                         curriedNode.InnerNode.NodeUI,
-                        outputSenderNode.OutPortData.IndexOf(outputSenderData),
+                        outputSenderData,
                         targetPortIndex + 1,
                         0));
                 }

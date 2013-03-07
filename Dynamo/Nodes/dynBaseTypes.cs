@@ -685,12 +685,12 @@ namespace Dynamo.Nodes
             return Value.NewList(FSharpList<Value>.Empty);
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt, PortData outPort)
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            Dictionary<PortData, INode> result;
+            Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                result = new Dictionary<PortData, INode>();
+                result = new Dictionary<int, INode>();
                 result[outPort] = new SymbolNode("empty");
                 preBuilt[this] = result;
             }
@@ -857,18 +857,18 @@ namespace Dynamo.Nodes
             NodeUI.RegisterAllPorts();
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt, PortData outPort)
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            Dictionary<PortData, INode> result;
+            Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                if (InPortData.All(HasInput))
+                if (Enumerable.Range(0, InPortData.Count).All(HasInput))
                 {
                     var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", Inputs[InPortData[0]].Item2.Build(preBuilt, Inputs[InPortData[0]].Item1));
-                    ifNode.ConnectInput("true", Inputs[InPortData[1]].Item2.Build(preBuilt, Inputs[InPortData[1]].Item1));
+                    ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
+                    ifNode.ConnectInput("true", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
                     ifNode.ConnectInput("false", new NumberNode(0));
-                    result = new Dictionary<PortData, INode>();
+                    result = new Dictionary<int, INode>();
                     result[outPort] = ifNode;
                 }
                 else
@@ -884,7 +884,7 @@ namespace Dynamo.Nodes
 
                     //For each index in InPortData
                     //for (int i = 0; i < InPortData.Count; i++)
-                    foreach (var data in InPortData)
+                    foreach (var data in Enumerable.Range(0, InPortData.Count))
                     {
                         //Fetch the corresponding port
                         //var port = InPorts[i];
@@ -895,7 +895,7 @@ namespace Dynamo.Nodes
                         {
                             //Compile input and connect it
                             node.ConnectInput(
-                               data.NickName,
+                               InPortData[data].NickName,
                                Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
                             );
                         }
@@ -904,7 +904,7 @@ namespace Dynamo.Nodes
                     RequiresRecalc = false;
                     OnEvaluate();
 
-                    result = new Dictionary<PortData, INode>();
+                    result = new Dictionary<int, INode>();
                     result[outPort] = node;
                 }
                 preBuilt[this] = result;
@@ -930,19 +930,19 @@ namespace Dynamo.Nodes
             NodeUI.RegisterAllPorts();
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt, PortData outPort)
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            Dictionary<PortData, INode> result;
+            Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                if (InPortData.All(HasInput))
+                if (Enumerable.Range(0, InPortData.Count).All(HasInput))
                 {
                     var ifNode = new ConditionalNode();
-                    ifNode.ConnectInput("test", Inputs[InPortData[0]].Item2.Build(preBuilt, Inputs[InPortData[0]].Item1));
+                    ifNode.ConnectInput("test", Inputs[0].Item2.Build(preBuilt, Inputs[0].Item1));
                     ifNode.ConnectInput("true", new NumberNode(1));
-                    ifNode.ConnectInput("false", Inputs[InPortData[1]].Item2.Build(preBuilt, Inputs[InPortData[1]].Item1));
+                    ifNode.ConnectInput("false", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
 
-                    result = new Dictionary<PortData, INode>();
+                    result = new Dictionary<int, INode>();
                     result[outPort] = ifNode;
                 }
                 else
@@ -958,7 +958,7 @@ namespace Dynamo.Nodes
 
                     //For each index in InPortData
                     //for (int i = 0; i < InPortData.Count; i++)
-                    foreach (var data in InPortData)
+                    foreach (var data in Enumerable.Range(0, InPortData.Count))
                     {
                         //Fetch the corresponding port
                         //var port = InPorts[i];
@@ -969,7 +969,7 @@ namespace Dynamo.Nodes
                         {
                             //Compile input and connect it
                             node.ConnectInput(
-                               data.NickName,
+                               InPortData[data].NickName,
                                Inputs[data].Item2.Build(preBuilt, Inputs[data].Item1)
                             );
                         }
@@ -978,7 +978,7 @@ namespace Dynamo.Nodes
                     RequiresRecalc = false;
                     OnEvaluate();
 
-                    result = new Dictionary<PortData, INode>();
+                    result = new Dictionary<int, INode>();
                     result[outPort] = node;
                 }
                 preBuilt[this] = result;
@@ -1254,12 +1254,12 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt, PortData outPort)
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            Dictionary<PortData, INode> result;
+            Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                result = new Dictionary<PortData, INode>();
+                result = new Dictionary<int, INode>();
                 result[outPort] = new NumberNode(Math.PI);
                 preBuilt[this] = result;
             }
@@ -1411,7 +1411,7 @@ namespace Dynamo.Nodes
             return InPortData.Count + 1;
         }
 
-        private INode nestedBegins(Stack<Tuple<PortData, dynNode>> inputs, Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt)
+        private INode nestedBegins(Stack<Tuple<int, dynNode>> inputs, Dictionary<dynNode, Dictionary<int, INode>> preBuilt)
         {
             var popped = inputs.Pop();
             var firstVal = popped.Item2.Build(preBuilt, popped.Item1);
@@ -1427,16 +1427,16 @@ namespace Dynamo.Nodes
                 return firstVal;
         }
 
-        protected internal override INode Build(Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt, PortData outPort)
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            Dictionary<PortData, INode> result;
+            Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                result = new Dictionary<PortData, INode>(); 
+                result = new Dictionary<int, INode>(); 
                 result[outPort] = 
                     nestedBegins(
-                        new Stack<Tuple<PortData, dynNode>>(
-                            InPortData.Select(x => Inputs[x])),
+                        new Stack<Tuple<int, dynNode>>(
+                            Enumerable.Range(0, InPortData.Count).Select(x => Inputs[x])),
                     preBuilt);
                 preBuilt[this] = result;
             }

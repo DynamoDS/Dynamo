@@ -676,11 +676,11 @@ namespace Dynamo.Controls
             ValidateConnections();
 
             var port = (dynPort)sender;
-            var data = portDataDict[port];
             if (port.PortType == PortType.INPUT)
             {
+                var data = InPorts.IndexOf(port);
                 var startPort = port.Connectors[0].Start;
-                var outData = startPort.Owner.portDataDict[startPort];
+                var outData = startPort.Owner.OutPorts.IndexOf(startPort);
                 nodeLogic.ConnectInput(
                     data,
                     outData,
@@ -698,11 +698,11 @@ namespace Dynamo.Controls
             var port = (dynPort)sender;
             if (port.PortType == PortType.INPUT)
             {
-                var data = portDataDict[port];
+                var data = InPorts.IndexOf(port);
                 var startPort = port.Connectors[0].Start;
                 nodeLogic.DisconnectInput(data);
                 startPort.Owner.nodeLogic.DisconnectOutput(
-                    startPort.Owner.portDataDict[startPort],
+                    startPort.Owner.OutPorts.IndexOf(startPort),
                     data);
             }
         }

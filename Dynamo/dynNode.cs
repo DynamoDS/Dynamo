@@ -40,15 +40,15 @@ namespace Dynamo.Nodes
         public List<PortData> InPortData { get; private set; }
         public List<PortData> OutPortData { get; private set; }
         public dynNodeUI NodeUI;
-        public Dictionary<PortData, Tuple<PortData, dynNode>> Inputs = 
-            new Dictionary<PortData, Tuple<PortData, dynNode>>();
-        public Dictionary<PortData, HashSet<Tuple<PortData, dynNode>>> Outputs =
-            new Dictionary<PortData, HashSet<Tuple<PortData, dynNode>>>();
+        public Dictionary<int, Tuple<int, dynNode>> Inputs = 
+            new Dictionary<int, Tuple<int, dynNode>>();
+        public Dictionary<int, HashSet<Tuple<int, dynNode>>> Outputs =
+            new Dictionary<int, HashSet<Tuple<int, dynNode>>>();
 
-        private Dictionary<PortData, Tuple<PortData, dynNode>> previousInputPortMappings = 
-            new Dictionary<PortData, Tuple<PortData, dynNode>>();
-        private Dictionary<PortData, HashSet<Tuple<PortData, dynNode>>> previousOutputPortMappings =
-            new Dictionary<PortData, HashSet<Tuple<PortData, dynNode>>>();
+        private Dictionary<int, Tuple<int, dynNode>> previousInputPortMappings = 
+            new Dictionary<int, Tuple<int, dynNode>>();
+        private Dictionary<int, HashSet<Tuple<int, dynNode>>> previousOutputPortMappings =
+            new Dictionary<int, HashSet<Tuple<int, dynNode>>>();
         
         /// <summary>
         /// Should changes be reported to the containing workspace?
@@ -139,7 +139,7 @@ namespace Dynamo.Nodes
             get
             {
                 return _saveResult
-                   && InPortData.All(HasInput);
+                   && Enumerable.Range(0, InPortData.Count).All(HasInput);
             }
             set
             {
@@ -159,11 +159,11 @@ namespace Dynamo.Nodes
         /// </summary>
         void CheckPortsForRecalc()
         {
-            RequiresRecalc = InPortData.Any(
-               delegate(PortData input)
+            RequiresRecalc = Enumerable.Range(0, InPortData.Count).Any(
+               delegate(int input)
                {
-                   Tuple<PortData, dynNode> oldInput;
-                   Tuple<PortData, dynNode> currentInput;
+                   Tuple<int, dynNode> oldInput;
+                   Tuple<int, dynNode> currentInput;
 
                    //this is dirty if there wasn't anything set last time (implying it was never run)...
                    return !previousInputPortMappings.TryGetValue(input, out oldInput)
@@ -172,11 +172,11 @@ namespace Dynamo.Nodes
                        //or If what's set doesn't match
                        || (oldInput.Item2 != currentInput.Item2 && oldInput.Item1 != currentInput.Item1);
                })
-            || OutPortData.Any(
-               delegate(PortData output)
+            || Enumerable.Range(0, OutPortData.Count).Any(
+               delegate(int output)
                {
-                   HashSet<Tuple<PortData, dynNode>> oldOutputs;
-                   HashSet<Tuple<PortData, dynNode>> newOutputs;
+                   HashSet<Tuple<int, dynNode>> oldOutputs;
+                   HashSet<Tuple<int, dynNode>> newOutputs;
 
                    return !previousOutputPortMappings.TryGetValue(output, out oldOutputs)
                        || !TryGetOutput(output, out newOutputs)
@@ -222,20 +222,20 @@ namespace Dynamo.Nodes
             return;
         }
 
-        internal virtual INode BuildExpression(Dictionary<dynNode, Dictionary<PortData, INode>> buildDict)
+        internal virtual INode BuildExpression(Dictionary<dynNode, Dictionary<int, INode>> buildDict)
         {
             if (OutPortData.Count > 1)
             {
-                var names = OutPortData.Select(x => x.NickName);
+                var names = OutPortData.Select(x => x.NickName).Zip(Enumerable.Range(0, OutPortData.Count), (x, i) => x+i);
                 var listNode = new FunctionNode("list", names);
-                foreach (var data in OutPortData)
+                foreach (var data in names.Zip(Enumerable.Range(0, OutPortData.Count), (name, index) => new { Name=name, Index=index }))
                 {
-                    listNode.ConnectInput(data.NickName, Build(buildDict, data));
+                    listNode.ConnectInput(data.Name, Build(buildDict, data.Index));
                 }
                 return listNode;
             }
             else
-                return Build(buildDict, OutPortData[0]);
+                return Build(buildDict, 0);
         }
 
         //TODO: do all of this as the Ui is modified, simply return this?
@@ -244,9 +244,9 @@ namespace Dynamo.Nodes
         /// execution.
         /// </summary>
         /// <returns>The INode representation of this Element.</returns>
-        protected internal virtual INode Build(Dictionary<dynNode, Dictionary<PortData, INode>> preBuilt, PortData outPort)
+        protected internal virtual INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            Dictionary<PortData, INode> result;
+            Dictionary<int, INode> result;
             if (preBuilt.TryGetValue(this, out result))
                 return result[outPort];
 
@@ -263,16 +263,16 @@ namespace Dynamo.Nodes
 
             //For each index in InPortData
             //for (int i = 0; i < InPortData.Count; i++)
-            foreach (var data in InPortData.Zip(portNames, (data, name) => new { PortData=data, Name=name }))
+            foreach (var data in Enumerable.Range(0, InPortData.Count).Zip(portNames, (data, name) => new { Index=data, Name=name }))
             {
                 //Fetch the corresponding port
                 //var port = InPorts[i];
 
-                Tuple<PortData, dynNode> input;
+                Tuple<int, dynNode> input;
 
                 //If this port has connectors...
                 //if (port.Connectors.Any())
-                if (TryGetInput(data.PortData, out input))
+                if (TryGetInput(data.Index, out input))
                 {
                     //Compile input and connect it
                     node.ConnectInput(data.Name, input.Item2.Build(preBuilt, input.Item1));
@@ -284,7 +284,7 @@ namespace Dynamo.Nodes
                 }
             }
 
-            var nodes = new Dictionary<PortData, INode>();
+            var nodes = new Dictionary<int, INode>();
 
             if (OutPortData.Count > 1)
             {
@@ -296,7 +296,7 @@ namespace Dynamo.Nodes
 
                 foreach (var data in Enumerable.Range(0, OutPortData.Count).Zip(OutPortData, (i, d) => new { Index = i, Data = d }))
                 {
-                    if (HasOutput(data.Data))
+                    if (HasOutput(data.Index))
                     {
                         if (data.Index > 0)
                         {
@@ -321,9 +321,9 @@ namespace Dynamo.Nodes
                         firstNode.ConnectInput("list", prev);
 
                         if (partial)
-                            nodes[data.Data] = new AnonymousFunctionNode(partialSymList, firstNode);
+                            nodes[data.Index] = new AnonymousFunctionNode(partialSymList, firstNode);
                         else
-                            nodes[data.Data] = firstNode;
+                            nodes[data.Index] = firstNode;
                     }
                 }
             }
@@ -375,22 +375,22 @@ namespace Dynamo.Nodes
         private void savePortMappings()
         {
             //Save all of the connection states, so we can check if this is dirty
-            foreach (PortData data in InPortData)
+            foreach (var data in Enumerable.Range(0, InPortData.Count))
             {
-                Tuple<PortData, dynNode> input;
+                Tuple<int, dynNode> input;
 
                 previousInputPortMappings[data] = TryGetInput(data, out input)
                    ? input
                    : null;
             }
 
-            foreach (var data in OutPortData)
+            foreach (var data in Enumerable.Range(0, OutPortData.Count))
             {
-                HashSet<Tuple<PortData, dynNode>> outputs;
+                HashSet<Tuple<int, dynNode>> outputs;
 
                 previousOutputPortMappings[data] = TryGetOutput(data, out outputs)
                     ? outputs
-                    : new HashSet<Tuple<PortData, dynNode>>();
+                    : new HashSet<Tuple<int, dynNode>>();
             }
         }
 
@@ -527,18 +527,18 @@ namespace Dynamo.Nodes
         {
             var nick = NodeUI.NickName.Replace(' ', '_');
 
-            if (!InPortData.Any(HasInput))
+            if (!Enumerable.Range(0, InPortData.Count).Any(HasInput))
                 return nick;
 
             string s = "";
 
-            if (InPortData.All(HasInput))
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
                 s += "(" + nick;
                 //for (int i = 0; i < InPortData.Count; i++)
-                foreach (PortData data in InPortData)
+                foreach (int data in Enumerable.Range(0, InPortData.Count))
                 {
-                    Tuple<PortData, dynNode> input;
+                    Tuple<int, dynNode> input;
                     TryGetInput(data, out input);
                     s += " " + input.Item2.PrintExpression();
                 }
@@ -547,17 +547,17 @@ namespace Dynamo.Nodes
             else
             {
                 s += "(lambda ("
-                   + string.Join(" ", InPortData.Where(x => !HasInput(x)).Select(x => x.NickName))
+                   + string.Join(" ", InPortData.Where((_, i) => !HasInput(i)).Select(x => x.NickName))
                    + ") (" + nick;
                 //for (int i = 0; i < InPortData.Count; i++)
-                foreach (PortData data in InPortData)
+                foreach (int data in Enumerable.Range(0, InPortData.Count))
                 {
                     s += " ";
-                    Tuple<PortData, dynNode> input;
+                    Tuple<int, dynNode> input;
                     if (TryGetInput(data, out input))
                         s += input.Item2.PrintExpression();
                     else
-                        s += data.NickName;
+                        s += InPortData[data].NickName;
                 }
                 s += "))";
             }
@@ -565,20 +565,20 @@ namespace Dynamo.Nodes
             return s;
         }
 
-        internal void ConnectInput(PortData inputData, PortData outputData, dynNode node)
+        internal void ConnectInput(int inputData, int outputData, dynNode node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
             CheckPortsForRecalc();
         }
         
-        internal void ConnectOutput(PortData portData, PortData inputData, dynNode nodeLogic)
+        internal void ConnectOutput(int portData, int inputData, dynNode nodeLogic)
         {
             if (!Outputs.ContainsKey(portData))
-                Outputs[portData] = new HashSet<Tuple<PortData, dynNode>>();
+                Outputs[portData] = new HashSet<Tuple<int, dynNode>>();
             Outputs[portData].Add(Tuple.Create(inputData, nodeLogic));
         }
 
-        internal void DisconnectInput(PortData data)
+        internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
             CheckPortsForRecalc();
@@ -590,12 +590,12 @@ namespace Dynamo.Nodes
         /// <param name="data">PortData to look for an input for.</param>
         /// <param name="input">If an input is found, it will be assigned.</param>
         /// <returns>True if there is an input, false otherwise.</returns>
-        public bool TryGetInput(PortData data, out Tuple<PortData, dynNode> input)
+        public bool TryGetInput(int data, out Tuple<int, dynNode> input)
         {
             return Inputs.TryGetValue(data, out input) && input != null;
         }
 
-        public bool TryGetOutput(PortData output, out HashSet<Tuple<PortData, dynNode>> newOutputs)
+        public bool TryGetOutput(int output, out HashSet<Tuple<int, dynNode>> newOutputs)
         {
             return Outputs.TryGetValue(output, out newOutputs);
         }
@@ -605,19 +605,21 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="data">PortData to look for an input for.</param>
         /// <returns>True if there is an input, false otherwise.</returns>
-        public bool HasInput(PortData data)
+        public bool HasInput(int data)
         {
             return Inputs.ContainsKey(data) && Inputs[data] != null;
         }
 
-        public bool HasOutput(PortData portData)
+        public bool HasOutput(int portData)
         {
             return Outputs.ContainsKey(portData) && Outputs[portData].Any();
         }
 
-        internal void DisconnectOutput(PortData portData, PortData inPortData)
+        internal void DisconnectOutput(int portData, int inPortData)
         {
-            Outputs[portData].RemoveWhere(x => x.Item1 == inPortData);
+            HashSet<Tuple<int, dynNode>> output;
+            if (Outputs.TryGetValue(portData, out output))
+                output.RemoveWhere(x => x.Item1 == inPortData);
             CheckPortsForRecalc();
         }
     }

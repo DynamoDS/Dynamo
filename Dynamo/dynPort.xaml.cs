@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -257,6 +258,12 @@ namespace Dynamo.Connectors
 
             #endregion
         }
+
+        internal void KillAllConnectors()
+        {
+            foreach (var c in connectors.ToList())
+                c.Kill();
+        }
     }
 
     public class PortData
@@ -290,21 +297,21 @@ namespace Dynamo.Connectors
             this.portType = portType;
         }
 
-        public override bool Equals(object obj)
-        {
-            var other = obj as PortData;
+        //public override bool Equals(object obj)
+        //{
+        //    var other = obj as PortData;
 
-            return other != null
-                && other.nickName == nickName
-                && other.portType.Equals(portType)
-                && other.toolTip == toolTip;
-        }
+        //    return other != null
+        //        && other.nickName.Equals(nickName)
+        //        && other.portType.Equals(portType)
+        //        && other.toolTip == toolTip;
+        //}
 
-        public override int GetHashCode()
-        {
-            return nickName.GetHashCode() * 7 
-                + portType.GetHashCode() * 11 
-                + toolTip.GetHashCode() * 3;
-        }
+        //public override int GetHashCode()
+        //{
+        //    return nickName.GetHashCode() * 7 
+        //        + portType.GetHashCode() * 11 
+        //        + toolTip.GetHashCode() * 3;
+        //}
     }
 }
