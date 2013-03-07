@@ -903,7 +903,11 @@ namespace Dynamo.Controls
             if (!isSelected)
             {
                 Debug.WriteLine("Node left selected.");
-                dynSettings.Bench.WorkBench.ClearSelection();
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    dynSettings.Bench.WorkBench.ClearSelection();
+                }
+
                 if(!dynSettings.Bench.WorkBench.Selection.Contains(this))
                     dynSettings.Bench.WorkBench.Selection.Add(this);
             }
