@@ -421,6 +421,8 @@ namespace Dynamo.FSchemeInterop.Node
         //The procedure to be executed.
         protected INode procedure;
 
+        protected string procedureInput;
+
         protected override List<string> Inputs
         {
             get
@@ -442,18 +444,16 @@ namespace Dynamo.FSchemeInterop.Node
         }
 
         public ApplierNode(IEnumerable<string> inputs)
-            : base(new List<string>() { "func" }.Concat(inputs))
-        { }
-
-        public ApplierNode()
-            : base(new List<string>() { "func" })
-        { }
+            : base(inputs)
+        {
+            procedureInput = inputs.First();
+        }
 
         //ConnectInput(string, INode) overridden from FunctionNode
         public override void ConnectInput(string inputName, INode inputNode)
         {
             //Special case: if we are connecting to procedure, update our internal procedure reference.
-            if (inputName.Equals("func"))
+            if (inputName.Equals(procedureInput))
             {
                 procedure = inputNode;
             }
