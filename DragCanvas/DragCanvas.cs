@@ -320,6 +320,10 @@ namespace Dynamo.Controls
 
             this.isDragInProgress = true;
 
+             // toggle the background color so you can receive
+             // hit events. we don't want it to be the case that 
+             // when you drag off a node, the drag stops happening because
+             // you're not "hitting" the canvas
             this.Background = new SolidColorBrush(Colors.Transparent);
 
             e.Handled = true;
@@ -443,6 +447,8 @@ namespace Dynamo.Controls
 
          this.isDragInProgress = false;
 
+          // set the background brush to null so that hit events on the canvas (not on a node or connector)
+          // make it down to the bench.
          this.Background = null;
       }
 
