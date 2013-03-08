@@ -101,6 +101,9 @@
                     Stroke="Black"
                     StrokeThickness="1"
                 />
+                <Canvas.Background>
+                    <SolidColorBrush Color="Transparent"/>
+                </Canvas.Background>
                 </dynCtrl:DragCanvas>
             <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" HorizontalContentAlignment="Right" FontSize="24" FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
             <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" 

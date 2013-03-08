@@ -318,9 +318,11 @@ namespace Dynamo.Controls
             if (this.selection.Count == 0)
                 return;
 
-            e.Handled = true;
-
             this.isDragInProgress = true;
+
+            this.Background = new SolidColorBrush(Colors.Transparent);
+
+            e.Handled = true;
          }
       }
 
@@ -440,6 +442,8 @@ namespace Dynamo.Controls
          //this.ElementBeingDragged = null;
 
          this.isDragInProgress = false;
+
+         this.Background = null;
       }
 
       public void ClearSelection()
@@ -450,7 +454,6 @@ namespace Dynamo.Controls
 
       #endregion // Host Event Handlers
         
-
       #region Private Helpers
 
       #region CalculateDragElementRect
