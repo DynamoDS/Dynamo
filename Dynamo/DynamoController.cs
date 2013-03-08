@@ -145,6 +145,8 @@ namespace Dynamo
                 Bench.WorkBench.Visibility = System.Windows.Visibility.Visible;
 
                 splashScreen.Close(TimeSpan.FromMilliseconds(100));
+
+                homeSpace.OnDisplayed();
             }
         }
         #endregion

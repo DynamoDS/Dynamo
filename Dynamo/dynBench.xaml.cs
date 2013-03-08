@@ -950,7 +950,8 @@ namespace Dynamo.Controls
 
             if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.F))
             {
-                this.SearchBox.Focus();
+                SearchBox.Focus();
+                SearchBox.SelectAll();
             }
 
             // select all the nodes directly around the selected nodes
