@@ -50,10 +50,6 @@
             </MenuItem>
             <MenuItem Header="_Save Image..." Click="saveImage_Click" Name="saveImage"/>
             <MenuItem Header="_Layout All" Click="layoutAll_Click"  Name="layoutAll"/>
-                <!--<MenuItem Header="_Save Function" Click="SaveFunction_Click" Name="saveFuncItem" IsEnabled="False" />
-            <MenuItem Header="_Run" Click="Run_Click" />
-            <MenuItem Header="_Run Debug" Click="RunDebug_Click" />
-            <MenuItem Header="_Print Expression" Click="Print_Click" />-->
             <Separator />
             <MenuItem Header="_New Node From Selection" Name="nodeFromSelection" Click="nodeFromSelection_Click"/>
          </MenuItem>
@@ -122,7 +118,10 @@
                       VerticalScrollBarVisibility="Auto" 
                       VerticalAlignment="Bottom" 
                       HorizontalScrollBarVisibility="Auto"
-                      Background="DarkGray" Opacity=".5" Margin="291,0,0,0">
+                      Background="DarkGray" 
+                    Opacity=".5" 
+                    Margin="291,0,0,0"
+                    Visibility="Visible">
          <ScrollViewer.ContextMenu>
             <ContextMenu>
                <MenuItem Header="Clear" Click="ClearLog_Click" />
@@ -154,9 +153,15 @@
             </LinearGradientBrush>
          </Grid.Background>
       </Grid>
-      <Canvas HorizontalAlignment="Stretch" Margin="0,20,0,0" Name="overlayCanvas" 
-              VerticalAlignment="Stretch" Width="Auto" IsHitTestVisible="False" 
-              MouseUp="OverlayCanvas_OnMouseUp" PreviewMouseMove="OverlayCanvas_OnMouseMove">
+      <Canvas HorizontalAlignment="Stretch"
+              Margin="0,20,0,0" 
+              Name="overlayCanvas" 
+              VerticalAlignment="Stretch" 
+              Width="Auto" 
+              IsHitTestVisible="False" 
+              MouseUp="OverlayCanvas_OnMouseUp" 
+              PreviewMouseMove="OverlayCanvas_OnMouseMove"
+              Visibility="Visible">
          <Canvas.Background>
             <SolidColorBrush />
          </Canvas.Background>
