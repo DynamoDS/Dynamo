@@ -23,11 +23,11 @@ namespace DynamoSandbox
         {
             try
             {
-                string tempPath = System.IO.Path.GetTempPath();
+                string tempPath = Path.GetTempPath();
                 string logPath = Path.Combine(tempPath, "dynamoLog.txt");
 
                 tw = new StreamWriter(logPath);
-                tw.WriteLine("Dynamo log started " + System.DateTime.Now.ToString());
+                tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
                 dynSettings.Writer = tw;
 
                 SplashScreen splashScreen = null;
