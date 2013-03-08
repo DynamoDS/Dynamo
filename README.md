@@ -61,7 +61,7 @@ Dynamo For Vasari Beta 2 WIP: Integrating Dynamo into Project Vasari and extendi
 
 Those portions created by Ian are provided with the following copyright:
 
-Copyright 2012 Ian Keough
+Copyright 2013 Ian Keough
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
