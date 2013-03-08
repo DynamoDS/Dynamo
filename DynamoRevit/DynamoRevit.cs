@@ -129,14 +129,14 @@ namespace Dynamo.Applications
     {
         Autodesk.Revit.UI.UIApplication m_revit;
         Autodesk.Revit.UI.UIDocument m_doc;
-        static DynamoController_Revit dynamoController;
+        static dynBench dynamoBench;
         TextWriter tw;
 
         public Autodesk.Revit.UI.Result Execute(Autodesk.Revit.UI.ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            if (dynamoController != null)
+            if (dynamoBench != null)
             {
-                dynamoController.Bench.Focus();
+                dynamoBench.Focus();
                 return Result.Succeeded;
             }
 
@@ -181,32 +181,32 @@ namespace Dynamo.Applications
                         //splashScreen.Show(false, true);
 
                         //show the window
-                        dynamoController = new DynamoController_Revit(DynamoRevitApp.updater, splashScreen);
-                        var bench = dynamoController.Bench;
+                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.updater, splashScreen);
+                        dynamoBench = dynamoController.Bench;
 
                         //set window handle and show dynamo
-                        new System.Windows.Interop.WindowInteropHelper(bench).Owner = mwHandle;
+                        new System.Windows.Interop.WindowInteropHelper(dynamoBench).Owner = mwHandle;
 
                         if (System.Windows.Forms.SystemInformation.MonitorCount > 1)
                         {
-                            bench.WindowStartupLocation = WindowStartupLocation.Manual;
+                            dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
 
                             System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[1].Bounds;
-                            bench.Left = bounds.X;
-                            bench.Top = bounds.Y;
-                            bench.Loaded += new RoutedEventHandler(dynamoForm_Loaded);
+                            dynamoBench.Left = bounds.X;
+                            dynamoBench.Top = bounds.Y;
+                            dynamoBench.Loaded += new RoutedEventHandler(dynamoForm_Loaded);
                         }
                         else
                         {
                             //System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[0].Bounds;
                             //dynamoForm.Left = bounds.X;
                             //dynamoForm.Top = bounds.Y;
-                            bench.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            dynamoBench.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                         }
 
-                        bench.Show();
+                        dynamoBench.Show();
 
-                        bench.Closed += new EventHandler(dynamoForm_Closed);
+                        dynamoBench.Closed += new EventHandler(dynamoForm_Closed);
                     }
                 ));
             }
@@ -228,7 +228,7 @@ namespace Dynamo.Applications
 
         void dynamoForm_Closed(object sender, EventArgs e)
         {
-            dynamoController = null;
+            dynamoBench = null;
         }
 
         void dynamoForm_Loaded(object sender, RoutedEventArgs e)
