@@ -859,6 +859,12 @@ namespace Dynamo.Nodes
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
+            {
+                NodeUI.Error("All inputs must be connected.");
+                throw new Exception("And Node requires all inputs to be connected.");
+            }
+
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
@@ -932,6 +938,12 @@ namespace Dynamo.Nodes
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
+            {
+                NodeUI.Error("All inputs must be connected.");
+                throw new Exception("Or Node requires all inputs to be connected.");
+            }
+
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
@@ -1429,6 +1441,12 @@ namespace Dynamo.Nodes
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
+            {
+                NodeUI.Error("All inputs must be connected.");
+                throw new Exception("Begin Node requires all inputs to be connected.");
+            }
+            
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
@@ -1461,6 +1479,16 @@ namespace Dynamo.Nodes
         protected override string getInputRootName()
         {
             return "arg";
+        }
+
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        {
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
+            {
+                NodeUI.Error("All inputs must be connected.");
+                throw new Exception("Apply Node requires all inputs to be connected.");
+            }
+            return base.Build(preBuilt, outPort);
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
@@ -1519,6 +1547,16 @@ namespace Dynamo.Nodes
             NodeUI.nickNameBlock.FontSize = 20;
 
             NodeUI.RegisterAllPorts();
+        }
+
+        protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
+        {
+            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
+            {
+                NodeUI.Error("All inputs must be connected.");
+                throw new Exception("If Node requires all inputs to be connected.");
+            }
+            return base.Build(preBuilt, outPort);
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
