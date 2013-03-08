@@ -184,7 +184,7 @@ namespace Dynamo
 
         bool ExecutionRequiresManualTransaction()
         {
-            return homeSpace.GetTopMostElements().Any(
+            return homeSpace.GetTopMostNodes().Any(
                 checkManualTransaction.TraverseUntilAny
             );
         }

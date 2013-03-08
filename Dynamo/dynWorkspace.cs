@@ -53,16 +53,26 @@ namespace Dynamo.Nodes
             this.Notes = new List<dynNote>();
         }
 
+        public void DisableReporting()
+        {
+            Nodes.ForEach(x => x.DisableReporting());
+        }
+
+        public void EnableReporting()
+        {
+            Nodes.ForEach(x => x.EnableReporting());
+        }
+
         public virtual void Modified()
         {
             if (OnModified != null)
                 OnModified();
         }
 
-        public IEnumerable<dynNode> GetTopMostElements()
+        public IEnumerable<dynNode> GetTopMostNodes()
         {
             return this.Nodes.Where(
-               x => x.NodeUI.OutPorts.All(y => !y.Connectors.Any())
+               x => x.OutPortData.Any() && x.NodeUI.OutPorts.All(y => !y.Connectors.Any())
             );
         }
     }

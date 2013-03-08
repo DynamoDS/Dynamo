@@ -774,7 +774,7 @@ namespace Dynamo
                 {
                     var topMost = new List<Tuple<int, dynNode>>();
 
-                    var topMostNodes = ws.GetTopMostElements();
+                    var topMostNodes = ws.GetTopMostNodes();
 
                     foreach (var topNode in topMostNodes)
                     {
@@ -1001,12 +1001,7 @@ namespace Dynamo
 
             try
             {
-                //Find compile errors
-                //var topMost = functionWorkspace.GetTopMostElements().ToList();
-
-                var outputs = functionWorkspace.Nodes
-                    .Where(x => x is dynOutput);
-
+                var outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
 
                 var topMost = new List<Tuple<int, dynNode>>();
 
@@ -1014,19 +1009,14 @@ namespace Dynamo
 
                 if (outputs.Any())
                 {
-                    topMost.AddRange(outputs.Select(
-                        x =>
-                        {
-                            Tuple<int, dynNode> input;
-                            x.TryGetInput(0, out input);
-                            return input;
-                        }));
+                    topMost.AddRange(
+                        outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
 
                     outputNames = outputs.Select(x => (x as dynOutput).Symbol);
                 }
                 else
                 {
-                    var topMostNodes = functionWorkspace.GetTopMostElements();
+                    var topMostNodes = functionWorkspace.GetTopMostNodes();
 
                     var outNames = new List<string>();
 
@@ -1044,21 +1034,11 @@ namespace Dynamo
 
                     outputNames = outNames;
                 }
-                    
-                //if (topMost.Count > 1)
-                //{
-                //    foreach (var ele in topMost)
-                //    {
-                //        ele.NodeUI.Error("Nodes can have only one output.");
-                //    }
-                //}
-                //else
-                //{
+                
                 foreach (var ele in topMost)
                 {
                     ele.Item2.NodeUI.ValidateConnections();
                 }
-                //}
 
                 //Find function entry point, and then compile the function and add it to our environment
                 //dynNode top = topMost.FirstOrDefault();
@@ -1082,11 +1062,26 @@ namespace Dynamo
                         node.ConnectInput(inputName, topNode.Item2.Build(buildDict, topNode.Item1));
                         i++;
                     }
-
+                    
                     top = node;
                 }
                 else
                     top = topMost[0].Item2.BuildExpression(buildDict);
+
+                if (outputs.Any())
+                {
+                    var beginNode = new BeginNode();
+                    var hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+                    foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
+                    {
+                        beginNode.AddInput(tNode.Index.ToString());
+                        beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
+                    }
+                    beginNode.AddInput(hangingNodes.Count.ToString());
+                    beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
+
+                    top = beginNode;
+                }
 
                 Expression expression = Utils.MakeAnon(variables.Select(x => x.NodeUI.GUID.ToString()), top.Compile());
 
@@ -1745,7 +1740,7 @@ namespace Dynamo
             /* Execution Thread */
 
             //Get our entry points (elements with nothing connected to output)
-            var topElements = homeSpace.GetTopMostElements();
+            var topElements = homeSpace.GetTopMostNodes();
 
             //Mark the topmost as dirty/clean
             foreach (var topMost in topElements)
@@ -2304,7 +2299,9 @@ namespace Dynamo
 
             var newNodeWorkspace = NewFunction(newNodeName, newNodeCategory, false);
             #endregion
-            
+
+            CurrentSpace.DisableReporting();
+
             #region UI Positioning Calculations
             var avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
             var avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
@@ -2592,7 +2589,7 @@ namespace Dynamo
                     Bench.WorkBench.Children.Add(nodeUI);
 
                     //Place it in an appropriate spot
-                    Canvas.SetLeft(nodeUI, rightMost + 100 + leftShift);
+                    Canvas.SetLeft(nodeUI, rightMost + 75 - leftShift);
                     Canvas.SetTop(nodeUI, i * (50 + node.NodeUI.Height));
 
                     Bench.WorkBench.UpdateLayout();
@@ -2669,6 +2666,8 @@ namespace Dynamo
 
             collapsedNode.EnableReporting();
             collapsedNode.NodeUI.UpdateConnections();
+
+            CurrentSpace.EnableReporting();
 
             SaveFunction(newNodeWorkspace, true);
         }

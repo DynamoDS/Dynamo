@@ -751,7 +751,7 @@ namespace Dynamo.Nodes
                 }
 
                 result = dynSettings.Controller.FunctionDict[symbol]
-                    .GetTopMostElements()
+                    .GetTopMostNodes()
                     .Any(ContinueTraversalUntilAny);
             }
             resultDict[entry] = result;

@@ -237,7 +237,7 @@ namespace Dynamo.FSchemeInterop.Node
     public class BeginNode : FunctionNode
     {
         public BeginNode()
-            : base("begin", new List<string>() { "expr1", "expr2" })
+            : base("begin", new List<string>())
         { }
 
         public BeginNode(IEnumerable<string> inputs)
