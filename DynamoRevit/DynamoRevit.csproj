@@ -147,6 +147,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
+      <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
+      <Name>DragCanvas</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoKinect\DynamoKinect.csproj">
       <Project>{861DA6B9-9483-4F27-B47D-007BD9A428AA}</Project>
       <Name>DynamoKinect</Name>
