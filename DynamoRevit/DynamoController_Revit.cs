@@ -50,70 +50,74 @@ namespace Dynamo
 
         void AddPythonBindings()
         {
-            var pyBindings = PythonBindings.Bindings;
-
-            pyBindings.Add(new Binding("DynLog", new LogDelegate(Bench.Log))); //Logging
-
-            pyBindings.Add(new Binding(
-               "DynTransaction",
-               new Func<Autodesk.Revit.DB.SubTransaction>(
-                  delegate
-                  {
-                      if (!dynRevitSettings.Controller.IsTransactionActive())
-                      {
-                          dynRevitSettings.Controller.InitTransaction();
-                      }
-                      return new Autodesk.Revit.DB.SubTransaction(dynRevitSettings.Doc.Document);
-                  }
-               )
-            ));
-            pyBindings.Add(new Binding("__revit__", dynRevitSettings.Doc.Application));
-            pyBindings.Add(new Binding("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document));
-
-            var oldPyEval = PythonEngine.Evaluator;
-
-            PythonEngine.Evaluator = delegate(bool dirty, string script, IEnumerable<Binding> bindings)
+            try
             {
-                bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
+                var pyBindings = PythonBindings.Bindings;
 
-                Value result = null;
+                pyBindings.Add(new Binding("DynLog", new LogDelegate(Bench.Log))); //Logging
 
-                if (dynRevitSettings.Controller.InIdleThread)
-                    result = oldPyEval(dirty, script, bindings);
-                else
+                pyBindings.Add(new Binding(
+                   "DynTransaction",
+                   new Func<Autodesk.Revit.DB.SubTransaction>(
+                      delegate
+                      {
+                          if (!dynRevitSettings.Controller.IsTransactionActive())
+                          {
+                              dynRevitSettings.Controller.InitTransaction();
+                          }
+                          return new Autodesk.Revit.DB.SubTransaction(dynRevitSettings.Doc.Document);
+                      }
+                   )
+                ));
+                pyBindings.Add(new Binding("__revit__", dynRevitSettings.Doc.Application));
+                pyBindings.Add(new Binding("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document));
+
+                var oldPyEval = PythonEngine.Evaluator;
+
+                PythonEngine.Evaluator = delegate(bool dirty, string script, IEnumerable<Binding> bindings)
                 {
-                    result = IdlePromise<Value>.ExecuteOnIdle(
-                       () => oldPyEval(dirty, script, bindings));
-                }
+                    bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
 
-                if (transactionRunning)
-                {
-                    if (!IsTransactionActive())
-                    {
-                        InitTransaction();
-                    }
+                    Value result = null;
+
+                    if (dynRevitSettings.Controller.InIdleThread)
+                        result = oldPyEval(dirty, script, bindings);
                     else
                     {
-                        var ts = Transaction.GetStatus();
-                        if (ts != TransactionStatus.Started)
+                        result = IdlePromise<Value>.ExecuteOnIdle(
+                           () => oldPyEval(dirty, script, bindings));
+                    }
+
+                    if (transactionRunning)
+                    {
+                        if (!IsTransactionActive())
                         {
-                            if (ts != TransactionStatus.RolledBack)
-                                CancelTransaction();
                             InitTransaction();
                         }
+                        else
+                        {
+                            var ts = Transaction.GetStatus();
+                            if (ts != TransactionStatus.Started)
+                            {
+                                if (ts != TransactionStatus.RolledBack)
+                                    CancelTransaction();
+                                InitTransaction();
+                            }
+                        }
                     }
-                }
-                else if (RunInDebug)
-                {
-                    if (IsTransactionActive())
-                        EndTransaction();
-                }
+                    else if (RunInDebug)
+                    {
+                        if (IsTransactionActive())
+                            EndTransaction();
+                    }
 
-                return result;
-            };
-            // use this to pass into the python script a list of previously created elements from dynamo
-            //TODO: ADD BACK IN
-            //bindings.Add(new Binding("DynStoredElements", this.Elements));
+                    return result;
+                };
+                // use this to pass into the python script a list of previously created elements from dynamo
+                //TODO: ADD BACK IN
+                //bindings.Add(new Binding("DynStoredElements", this.Elements));
+            }
+            catch { }
         }
         #endregion
         #region Watch Node Revit Hooks
