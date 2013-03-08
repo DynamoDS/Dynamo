@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
 
         protected override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            if (Enumerable.Range(0, InPortData.Count).All(HasInput))
+            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
                 NodeUI.Error("Input must be connected.");
                 throw new Exception("Transaction Node requires all inputs to be connected.");
