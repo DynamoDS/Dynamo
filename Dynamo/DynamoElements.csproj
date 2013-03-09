@@ -64,10 +64,6 @@ limitations under the License.
       <HintPath>..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\IronPython 2.7\IronPython.dll</HintPath>
-    </Reference>
     <Reference Include="LeapCSharp.NET4.0">
       <HintPath>..\packages\Leap SDK 0.7.3_2234 Binaries\LeapCSharp.NET4.0.dll</HintPath>
     </Reference>
@@ -84,10 +80,6 @@ limitations under the License.
     <Reference Include="Microsoft.Kinect, Version=1.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\kinect\Microsoft.Kinect.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\IronPython 2.7.1\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>

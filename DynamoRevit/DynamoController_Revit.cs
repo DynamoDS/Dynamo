@@ -8,9 +8,9 @@ using Dynamo.Revit;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using Dynamo.Nodes.PythonNode;
-using Binding = Dynamo.Nodes.PythonNode.Binding;
 using Value = Dynamo.FScheme.Value;
+using System.Reflection;
+using System.IO;
 
 namespace Dynamo
 {
@@ -52,11 +52,44 @@ namespace Dynamo
         {
             try
             {
-                var pyBindings = PythonBindings.Bindings;
+                var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-                pyBindings.Add(new Binding("DynLog", new LogDelegate(Bench.Log))); //Logging
+                Assembly ironPythonAssembly = null;
 
-                pyBindings.Add(new Binding(
+                string path;
+
+                if (File.Exists(path = Path.Combine(assemblyPath, "DynamoPython.dll")))
+                {
+                    ironPythonAssembly = Assembly.LoadFrom(path);
+                }
+                else if (File.Exists(path = Path.Combine(assemblyPath, "Packages", "IronPython", "DynamoPython.dll")))
+                {
+                    ironPythonAssembly = Assembly.LoadFrom(path);
+                }
+
+                if (ironPythonAssembly == null)
+                    throw new Exception();
+
+                var PythonBindings = ironPythonAssembly.GetType("Dynamo.Nodes.PythonNode.PythonBindings");
+
+                var pyBindingsProperty = PythonBindings.GetProperty("Bindings");
+                var pyBindings = pyBindingsProperty.GetValue(null, null);
+
+                var Binding = ironPythonAssembly.GetType("Dynamo.Nodes.PythonNode.Binding");
+
+                Func<string, object, object> CreateBinding = delegate(string name, object boundObject)
+                {
+                    return Activator.CreateInstance(Binding, new object[] { name, boundObject });
+                };
+                
+                Action<string, object> AddToBindings = delegate(string name, object boundObject)
+                {
+                    pyBindings.GetType().InvokeMember("Add", BindingFlags.InvokeMethod, null, pyBindings, new object[] { CreateBinding(name, boundObject) });
+                };
+
+                AddToBindings("DynLog", new LogDelegate(Bench.Log)); //Logging
+
+                AddToBindings(
                    "DynTransaction",
                    new Func<Autodesk.Revit.DB.SubTransaction>(
                       delegate
@@ -66,15 +99,16 @@ namespace Dynamo
                               dynRevitSettings.Controller.InitTransaction();
                           }
                           return new Autodesk.Revit.DB.SubTransaction(dynRevitSettings.Doc.Document);
-                      }
-                   )
-                ));
-                pyBindings.Add(new Binding("__revit__", dynRevitSettings.Doc.Application));
-                pyBindings.Add(new Binding("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document));
+                      }));
 
-                var oldPyEval = PythonEngine.Evaluator;
+                AddToBindings("__revit__", dynRevitSettings.Doc.Application);
+                AddToBindings("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document);
 
-                PythonEngine.Evaluator = delegate(bool dirty, string script, IEnumerable<Binding> bindings)
+                var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonNode.PythonEngine");
+                var evaluatorField = PythonEngine.GetField("Evaluator");
+                var oldPyEval = evaluatorField.GetValue(null) as Func<bool, string, object, Value>;
+
+                Func<bool, string, object, Value> newEval = delegate(bool dirty, string script, object bindings)
                 {
                     bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
 
@@ -113,6 +147,9 @@ namespace Dynamo
 
                     return result;
                 };
+
+                evaluatorField.SetValue(null, newEval);
+
                 // use this to pass into the python script a list of previously created elements from dynamo
                 //TODO: ADD BACK IN
                 //bindings.Add(new Binding("DynStoredElements", this.Elements));
