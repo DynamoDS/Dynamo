@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using System.ComponentModel;
 
 using Dynamo.Controls;
 
@@ -18,8 +19,22 @@ namespace Dynamo.Controls
    /// <summary>
    /// A Canvas which manages dragging of the UIElements it contains.  
    /// </summary>
-   public class DragCanvas : Canvas
+   public class DragCanvas : Canvas, INotifyPropertyChanged
    {
+       public event PropertyChangedEventHandler PropertyChanged;
+
+       /// <summary>
+       /// Used by various properties to notify observers that a property has changed.
+       /// </summary>
+       /// <param name="info">What changed.</param>
+       private void NotifyPropertyChanged(String info)
+       {
+           if (PropertyChanged != null)
+           {
+               PropertyChanged(this, new PropertyChangedEventArgs(info));
+           }
+       }
+
       #region Data
 
       // Stores a reference to the UIElement currently being dragged by the user.
@@ -254,6 +269,7 @@ namespace Dynamo.Controls
           set
           {
               selection = value;
+              NotifyPropertyChanged("Selection");
           }
       }
       #endregion // ElementBeingDragged

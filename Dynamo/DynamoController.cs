@@ -21,6 +21,8 @@ using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.Controls;
+using Dynamo.Commands;
 
 namespace Dynamo
 {
@@ -149,6 +151,8 @@ namespace Dynamo
                 homeSpace.OnDisplayed();
             }
         }
+
+        
         #endregion
 
         #region Loading
@@ -2676,5 +2680,7 @@ namespace Dynamo
             SaveFunction(newNodeWorkspace, true);
         }
         #endregion
+        
     }
+
 }

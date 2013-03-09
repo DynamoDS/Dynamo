@@ -29,16 +29,20 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.RegularExpressions;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
+using Dynamo.Commands;
+
 using Path = System.IO.Path;
 using Expression = Dynamo.FScheme.Expression;
 using Value = Dynamo.FScheme.Value;
-using System.Text.RegularExpressions;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+
 
 namespace Dynamo.Controls
 {
@@ -62,6 +66,18 @@ namespace Dynamo.Controls
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
 
+        private NodeFromSelectionCommand nodeFromSelectionCmd;
+        public NodeFromSelectionCommand NodeFromSelectionCmd
+        {
+            get
+            {
+                if (nodeFromSelectionCmd == null)
+                    nodeFromSelectionCmd = new NodeFromSelectionCommand(dynSettings.Bench.WorkBench, dynSettings.Bench.Controller);
+
+                return nodeFromSelectionCmd;
+            }
+        }
+
         private dynConnector activeConnector;
         public dynConnector ActiveConnector
         {
@@ -76,7 +92,16 @@ namespace Dynamo.Controls
             get { return connectorType; }
         }
 
-        DynamoController Controller;
+        DynamoController controller;
+        public DynamoController Controller
+        {
+            get { return controller; }
+            set
+            {
+                controller = value;
+                NotifyPropertyChanged("Controller");
+            }
+        }
 
         internal dynBench(DynamoController controller)
         {
@@ -1476,9 +1501,20 @@ namespace Dynamo.Controls
 
         private void nodeFromSelection_Click(object sender, RoutedEventArgs e)
         {
-            Controller.NodeFromSelection(
-                WorkBench.Selection.Where(x => x is dynNodeUI)
-                    .Select(x => (x as dynNodeUI).NodeLogic));
+            //Controller.NodeFromSelection(
+            //    WorkBench.Selection.Where(x => x is dynNodeUI)
+            //        .Select(x => (x as dynNodeUI).NodeLogic));
+            this.NodeFromSelectionCmd.Execute(null);
+        }
+
+        private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+       
+        }
+
+        private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+
         }
 
     }
@@ -1510,4 +1546,5 @@ namespace Dynamo.Controls
             this.Force = force;
         }
     }
+
 }
