@@ -1549,7 +1549,7 @@ namespace Dynamo.Nodes
 
         protected override InputNode Compile(IEnumerable<string> portNames)
         {
-            return new ConditionalNode();
+            return new ConditionalNode(portNames);
         }
     }
     

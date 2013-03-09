@@ -219,8 +219,25 @@ namespace Dynamo.FSchemeInterop.Node
     //Node representing an FScheme If statement.
     public class ConditionalNode : FunctionNode
     {
+        public ConditionalNode(IEnumerable<string> inputs)
+            : base("if", inputs.Take(3))
+        {
+            var inputList = inputs.ToList();
+
+            if (inputList.Count != 3)
+                throw new Exception("Conditional Node takes exactly 3 inputs.");
+
+            _test = inputList[0];
+            _true = inputList[1];
+            _false = inputList[2];
+        }
+
         public ConditionalNode()
             : base("if", new List<string>() { "test", "true", "false" }) { }
+
+        string _test;
+        string _true;
+        string _false;
 
         protected override Expression compileBody(
             Dictionary<INode, string> symbols,
@@ -228,9 +245,9 @@ namespace Dynamo.FSchemeInterop.Node
             HashSet<string> initializedIds)
         {
             return Expression.NewIf(
-                arguments["test"].compile(symbols, letEntries, initializedIds),
-                arguments["true"].compile(symbols, letEntries, initializedIds),
-                arguments["false"].compile(symbols, letEntries, initializedIds));
+                arguments[_test].compile(symbols, letEntries, initializedIds),
+                arguments[_true].compile(symbols, letEntries, initializedIds),
+                arguments[_false].compile(symbols, letEntries, initializedIds));
         }
     }
 
