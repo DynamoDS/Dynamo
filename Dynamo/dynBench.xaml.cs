@@ -1501,10 +1501,10 @@ namespace Dynamo.Controls
 
         private void nodeFromSelection_Click(object sender, RoutedEventArgs e)
         {
-            //Controller.NodeFromSelection(
-            //    WorkBench.Selection.Where(x => x is dynNodeUI)
-            //        .Select(x => (x as dynNodeUI).NodeLogic));
-            this.NodeFromSelectionCmd.Execute(null);
+            if (this.NodeFromSelectionCmd.CanExecute(null))
+            {
+                this.NodeFromSelectionCmd.Execute(null);
+            }
         }
 
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
