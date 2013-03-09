@@ -9,37 +9,48 @@ using System.Windows.Input;
 
 namespace Dynamo.Commands
 {
+    public static class DynamoCommands
+    {
+        private static NodeFromSelectionCommand nodeFromSelectionCmd;
+        public static NodeFromSelectionCommand NodeFromSelectionCmd
+        {
+            get
+            {
+                if (nodeFromSelectionCmd == null)
+                    nodeFromSelectionCmd = new NodeFromSelectionCommand();
+
+                return nodeFromSelectionCmd;
+            }
+        }
+    }
+
     public class NodeFromSelectionCommand : ICommand
     {
-        private Dynamo.Controls.DragCanvas _canvas;
-        private DynamoController _controller;
-
-        public NodeFromSelectionCommand(Dynamo.Controls.DragCanvas canvas, DynamoController controller)
+        public NodeFromSelectionCommand()
         {
-            _canvas = canvas;
-            _controller = controller;
-            _canvas.PropertyChanged += new PropertyChangedEventHandler(_canvas_PropertyChanged);
+            //dynSettings.Bench.WorkBench.Selection.
         }
 
         public void Execute(object parameters)
         {
-            _controller.NodeFromSelection(
-                _canvas.Selection.Where(x => x is dynNodeUI)
+            dynSettings.Bench.Controller.NodeFromSelection(
+                dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
                     .Select(x => (x as dynNodeUI).NodeLogic));
         }
 
         public event EventHandler CanExecuteChanged;
-        private void _canvas_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (CanExecuteChanged != null)
-            {
-                CanExecuteChanged(this, EventArgs.Empty);
-            }
-        }
 
         public bool CanExecute(object parameters)
         {
-            return _canvas.Selection.Count > 0;
+            //if (dynSettings.Bench != null)
+            //{
+            //    return dynSettings.Bench.WorkBench.Selection.Count > 0;
+            //}
+            //else
+            //{
+            //    return false;
+            //}
+            return true;
         }
     }
 }

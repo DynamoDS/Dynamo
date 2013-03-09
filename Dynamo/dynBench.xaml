@@ -1,8 +1,10 @@
 ﻿<Window x:Class="Dynamo.Controls.dynBench"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:dynCtrl="clr-namespace:Dynamo.Controls;assembly=DragCanvas"
+        xmlns:dragCanvas="clr-namespace:Dynamo.Controls;assembly=DragCanvas"
         xmlns:dynamo="clr-namespace:Dynamo"
+        xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:commands="clr-namespace:Dynamo.Commands"
         x:Name="_this"
         Height="768" Width="1024"
         MouseMove="OnMouseMove" 
@@ -76,7 +78,7 @@
       <Border Margin="291,20,0,0" BorderBrush="Black" BorderThickness="1" Name="border">
          <!--outer canvas clips the inner canvas-->
          <Canvas Name="outerCanvas" Margin="0,0,0,0" ClipToBounds="True">
-            <dynCtrl:DragCanvas x:Name="WorkBench"
+                <dragCanvas:DragCanvas x:Name="WorkBench"
                                 x:FieldModifier="public"
                                 Width="100000" 
                                 Height="100000" 
@@ -101,7 +103,7 @@
                 <Canvas.Background>
                     <SolidColorBrush Color="Transparent"/>
                 </Canvas.Background>
-                </dynCtrl:DragCanvas>
+                </dragCanvas:DragCanvas>
                 <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" HorizontalContentAlignment="Right" FontSize="24" FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
                 <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" 
                        MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
@@ -117,8 +119,8 @@
                     <ContextMenu>
                         <MenuItem 
                             Header="_New Node From Selection" 
-                            Name="NodeFromSelection" 
-                            Click="nodeFromSelection_Click"/>
+                            Name="NodeFromSelection"
+                            Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
                     </ContextMenu>
                 </Canvas.ContextMenu>
             </Canvas>

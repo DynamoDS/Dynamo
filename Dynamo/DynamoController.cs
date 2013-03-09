@@ -100,13 +100,13 @@ namespace Dynamo
                 "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version.ToString()));
 
-            //WTF
-            Bench.settings_curves.IsChecked = true;
-            Bench.settings_curves.IsChecked = false;
-
             dynSettings.Bench = Bench;
             dynSettings.Controller = this;
             dynSettings.Workbench = Bench.WorkBench;
+
+            //WTF
+            Bench.settings_curves.IsChecked = true;
+            Bench.settings_curves.IsChecked = false;
 
             Bench.LockUI();
 

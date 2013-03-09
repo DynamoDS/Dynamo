@@ -66,18 +66,6 @@ namespace Dynamo.Controls
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
 
-        private NodeFromSelectionCommand nodeFromSelectionCmd;
-        public NodeFromSelectionCommand NodeFromSelectionCmd
-        {
-            get
-            {
-                if (nodeFromSelectionCmd == null)
-                    nodeFromSelectionCmd = new NodeFromSelectionCommand(dynSettings.Bench.WorkBench, dynSettings.Bench.Controller);
-
-                return nodeFromSelectionCmd;
-            }
-        }
-
         private dynConnector activeConnector;
         public dynConnector ActiveConnector
         {
@@ -1501,10 +1489,10 @@ namespace Dynamo.Controls
 
         private void nodeFromSelection_Click(object sender, RoutedEventArgs e)
         {
-            if (this.NodeFromSelectionCmd.CanExecute(null))
-            {
-                this.NodeFromSelectionCmd.Execute(null);
-            }
+            //if (this.NodeFromSelectionCmd.CanExecute(null))
+            //{
+            //    this.NodeFromSelectionCmd.Execute(null);
+            //}
         }
 
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -1514,7 +1502,7 @@ namespace Dynamo.Controls
 
         private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-
+            
         }
 
     }

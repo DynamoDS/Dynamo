@@ -999,4 +999,18 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    public class ListHasItemsToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            List<object> list = (List<object>)value;
+            return list.Count > 0; //spacing for inputs + title space + bottom space
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }
