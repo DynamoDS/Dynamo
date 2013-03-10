@@ -890,17 +890,13 @@ namespace Dynamo.Controls
                     e.Handled = true;
                 }
             }
+
             //changed the delete key combination so as not to interfere with
             //keyboard events
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Back) ||
                 Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Delete))
             {
-                for (int i = WorkBench.Selection.Count - 1; i >= 0; i--)
-                {
-                    UIElement thing = WorkBench.Selection[i] as UIElement;
-                    DeleteElement(thing);
-                }
-
+                DynamoCommands.DeleteCmd.Execute(null);
                 e.Handled = true;
             }
 

@@ -10,6 +10,7 @@ using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Connectors;
 
 //http://msdn.microsoft.com/en-us/library/ms752308.aspx
 
@@ -52,9 +53,19 @@ namespace Dynamo.Commands
                 return addNoteCmd;
             }
         }
+
+        private static DeleteCommand deleteCmd;
+        public static DeleteCommand DeleteCmd
+        {
+            get
+            {
+                if (deleteCmd == null)
+                    deleteCmd = new DeleteCommand();
+
+                return deleteCmd;
+            }
+        }
     }
-
-
 
     public class NodeFromSelectionCommand : ICommand
     {
@@ -145,6 +156,59 @@ namespace Dynamo.Commands
         public bool CanExecute(object parameters)
         {
             return true;
+        }
+    }
+
+    public class DeleteCommand : ICommand
+    {
+        public DeleteCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            for (int i = dynSettings.Workbench.Selection.Count - 1; i >= 0; i--)
+            {
+                dynNote note = dynSettings.Workbench.Selection[i] as dynNote;
+                dynNodeUI node = dynSettings.Workbench.Selection[i] as dynNodeUI;
+
+                if (node != null)
+                {
+                    foreach (var port in node.OutPorts)
+                    {
+                        for (int j = port.Connectors.Count - 1; j >= 0; j--)
+                        {
+                            port.Connectors[j].Kill();
+                        }
+                    }
+
+                    foreach (dynPort p in node.InPorts)
+                    {
+                        for (int j = p.Connectors.Count - 1; j >= 0; j--)
+                        {
+                            p.Connectors[j].Kill();
+                        }
+                    }
+
+                    dynSettings.Workbench.Selection.Remove(node);
+                    dynSettings.Controller.Nodes.Remove(node.NodeLogic);
+                    dynSettings.Workbench.Children.Remove(node);
+                }
+                else if (note != null)
+                {
+                    dynSettings.Workbench.Selection.Remove(note);
+                    dynSettings.Controller.CurrentSpace.Notes.Remove(note);
+                    dynSettings.Workbench.Children.Remove(note);
+                }
+            }
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            return dynSettings.Workbench.Selection.Count > 0;
         }
     }
 }
