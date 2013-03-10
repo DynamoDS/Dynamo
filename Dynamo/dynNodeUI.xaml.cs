@@ -24,16 +24,18 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
+using Microsoft.FSharp.Collections;
 
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
+using Dynamo.Commands;
+
 using Expression = Dynamo.FScheme.Expression;
 using Grid = System.Windows.Controls.Grid;
-using System.Windows.Threading;
 
 namespace Dynamo.Controls
 {
@@ -864,10 +866,10 @@ namespace Dynamo.Controls
 
         private void deleteElem_cm_Click(object sender, RoutedEventArgs e)
         {
-            var bench = dynSettings.Bench;
             nodeLogic.DisableReporting();
             nodeLogic.Destroy();
-            bench.DeleteElement(this);
+
+            DynamoCommands.DeleteCmd.Execute(this);
         }
 
         public void Error(string p)

@@ -168,40 +168,68 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            for (int i = dynSettings.Workbench.Selection.Count - 1; i >= 0; i--)
+            //if you get an object in the parameters, just delete that object
+            if (parameters != null)
             {
-                dynNote note = dynSettings.Workbench.Selection[i] as dynNote;
-                dynNodeUI node = dynSettings.Workbench.Selection[i] as dynNodeUI;
+                dynNote note = parameters as dynNote;
+                dynNodeUI node = parameters as dynNodeUI;
 
                 if (node != null)
                 {
-                    foreach (var port in node.OutPorts)
-                    {
-                        for (int j = port.Connectors.Count - 1; j >= 0; j--)
-                        {
-                            port.Connectors[j].Kill();
-                        }
-                    }
-
-                    foreach (dynPort p in node.InPorts)
-                    {
-                        for (int j = p.Connectors.Count - 1; j >= 0; j--)
-                        {
-                            p.Connectors[j].Kill();
-                        }
-                    }
-
-                    dynSettings.Workbench.Selection.Remove(node);
-                    dynSettings.Controller.Nodes.Remove(node.NodeLogic);
-                    dynSettings.Workbench.Children.Remove(node);
+                    DeleteNode(node);
                 }
                 else if (note != null)
                 {
-                    dynSettings.Workbench.Selection.Remove(note);
-                    dynSettings.Controller.CurrentSpace.Notes.Remove(note);
-                    dynSettings.Workbench.Children.Remove(note);
+                    DeleteNote(note);
                 }
             }
+            else
+            {
+                for (int i = dynSettings.Workbench.Selection.Count - 1; i >= 0; i--)
+                {
+                    dynNote note = dynSettings.Workbench.Selection[i] as dynNote;
+                    dynNodeUI node = dynSettings.Workbench.Selection[i] as dynNodeUI;
+
+                    if (node != null)
+                    {
+                        DeleteNode(node);
+                    }
+                    else if (note != null)
+                    {
+                        DeleteNote(note);
+                    }
+                }
+            }
+        }
+
+        private static void DeleteNote(dynNote note)
+        {
+            dynSettings.Workbench.Selection.Remove(note);
+            dynSettings.Controller.CurrentSpace.Notes.Remove(note);
+            dynSettings.Workbench.Children.Remove(note);
+        }
+
+        private static void DeleteNode(dynNodeUI node)
+        {
+            foreach (var port in node.OutPorts)
+            {
+                for (int j = port.Connectors.Count - 1; j >= 0; j--)
+                {
+                    port.Connectors[j].Kill();
+                }
+            }
+
+            foreach (dynPort p in node.InPorts)
+            {
+                for (int j = p.Connectors.Count - 1; j >= 0; j--)
+                {
+                    p.Connectors[j].Kill();
+                }
+            }
+
+            dynSettings.Workbench.Selection.Remove(node);
+            dynSettings.Controller.Nodes.Remove(node.NodeLogic);
+            dynSettings.Workbench.Children.Remove(node);
         }
 
         public event EventHandler CanExecuteChanged;

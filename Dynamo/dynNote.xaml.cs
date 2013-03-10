@@ -25,8 +25,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 using Dynamo.Utilities;
 using Dynamo.Controls;
+using Dynamo.Commands;
 
 namespace Dynamo.Nodes
 {
@@ -68,8 +70,7 @@ namespace Dynamo.Nodes
 
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
-            var bench = dynSettings.Bench;
-            bench.DeleteElement(this);
+            DynamoCommands.DeleteCmd.Execute(this);
         }
 
         public void Select() { }
