@@ -1349,7 +1349,14 @@ namespace Dynamo
                         double x = Convert.ToDouble(xAttrib.Value.ToString());
                         double y = Convert.ToDouble(yAttrib.Value.ToString());
 
-                        dynNote n = Bench.AddNote(text, x, y, ws);
+                        //dynNote n = Bench.AddNote(text, x, y, ws);
+                        //Bench.AddNote(text, x, y, ws);
+
+                        Dictionary<string, object> paramDict = new Dictionary<string, object>();
+                        paramDict.Add("x", x);
+                        paramDict.Add("y", y);
+                        paramDict.Add("text", text);
+                        DynamoCommands.AddNoteCmd.Execute(paramDict);
                     }
                 }
                 #endregion
@@ -1601,8 +1608,14 @@ namespace Dynamo
                         double x = Convert.ToDouble(xAttrib.Value.ToString());
                         double y = Convert.ToDouble(yAttrib.Value.ToString());
 
-                        dynNote n = Bench.AddNote(text, x, y, this.CurrentSpace);
+                        //dynNote n = Bench.AddNote(text, x, y, this.CurrentSpace);
+                        //Bench.AddNote(text, x, y, this.CurrentSpace);
 
+                        Dictionary<string, object> paramDict = new Dictionary<string, object>();
+                        paramDict.Add("x", x);
+                        paramDict.Add("y", y);
+                        paramDict.Add("text", text);
+                        DynamoCommands.AddNoteCmd.Execute(paramDict);
                     }
                 }
                 #endregion

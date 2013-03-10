@@ -180,19 +180,6 @@ namespace Dynamo.Controls
 
         dynNodeUI draggedNode;
 
-        public dynNote AddNote(string noteText, double x, double y, dynWorkspace workspace)
-        {
-            dynNote n = new dynNote();
-            Canvas.SetLeft(n, x);
-            Canvas.SetTop(n, y);
-            n.noteText.Text = noteText;
-
-            workspace.Notes.Add(n);
-            this.WorkBench.Children.Add(n);
-
-            return n;
-        }
-
         /// <summary>
         /// Called when the MouseWheel has been scrolled.
         /// </summary>
@@ -1446,7 +1433,12 @@ namespace Dynamo.Controls
                 List<Type> catTypes = de.Value as List<Type>;
 
                 //add the name of the category here
-                AddNote(de.Key.ToString(), x, y, Controller.CurrentSpace);
+                //AddNote(de.Key.ToString(), x, y, Controller.CurrentSpace);
+                Dictionary<string, object> paramDict = new Dictionary<string, object>();
+                paramDict.Add("x", x);
+                paramDict.Add("y", y);
+                paramDict.Add("text", de.Key.ToString());
+                DynamoCommands.AddNoteCmd.Execute(paramDict);
 
                 y += 60;
 

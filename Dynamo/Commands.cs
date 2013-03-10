@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Dynamo.Controls;
 using System.ComponentModel;
-using Dynamo.Utilities;
 using System.Windows.Input;
+using System.Windows.Controls;
+
+using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.Controls;
+using Dynamo.Nodes;
 
 //http://msdn.microsoft.com/en-us/library/ms752308.aspx
 
@@ -34,6 +38,18 @@ namespace Dynamo.Commands
                     selectNeighborsCmd = new SelectNeighborsCommand();
 
                 return selectNeighborsCmd;
+            }
+        }
+
+        private static AddNoteCommand addNoteCmd;
+        public static AddNoteCommand AddNoteCmd
+        {
+            get
+            {
+                if (addNoteCmd == null)
+                    addNoteCmd = new AddNoteCommand();
+
+                return addNoteCmd;
             }
         }
     }
@@ -88,6 +104,34 @@ namespace Dynamo.Commands
             {
                 ((dynNodeUI)sel).SelectNeighbors();
             }
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class AddNoteCommand : ICommand
+    {
+        public AddNoteCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            Dictionary<string,object> inputs = (Dictionary<string,object>) parameters;
+
+            dynNote n = new dynNote();
+            Canvas.SetLeft(n, (double)inputs["x"]);
+            Canvas.SetTop(n, (double)inputs["y"]);
+            n.noteText.Text = inputs["text"].ToString();
+
+            dynSettings.Bench.Controller.CurrentSpace.Notes.Add(n);
+            dynSettings.Bench.WorkBench.Children.Add(n);
         }
 
         public event EventHandler CanExecuteChanged;
