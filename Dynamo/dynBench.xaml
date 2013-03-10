@@ -117,7 +117,7 @@
             </Canvas.Background>
                 <Canvas.ContextMenu>
                     <ContextMenu>
-                        <MenuItem 
+                       <MenuItem 
                             Header="_New Node From Selection" 
                             Name="NodeFromSelection"
                             Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>

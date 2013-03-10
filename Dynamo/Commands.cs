@@ -7,6 +7,8 @@ using System.ComponentModel;
 using Dynamo.Utilities;
 using System.Windows.Input;
 
+//http://msdn.microsoft.com/en-us/library/ms752308.aspx
+
 namespace Dynamo.Commands
 {
     public static class DynamoCommands
@@ -28,28 +30,31 @@ namespace Dynamo.Commands
     {
         public NodeFromSelectionCommand()
         {
-            //dynSettings.Bench.WorkBench.Selection.
+            //TODO: figure out how to wire the selection changed event to 
+            //evaluate if this can be executed. we can't do this currently
+            //as dynSettings.Bench is null when the commands are instantiated
+            //dynSettings.Bench.WorkBench.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+        }
+
+        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            CanExecute(null);
         }
 
         public void Execute(object parameters)
         {
-            dynSettings.Bench.Controller.NodeFromSelection(
-                dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
-                    .Select(x => (x as dynNodeUI).NodeLogic));
+            if (dynSettings.Bench.WorkBench.Selection.Count > 0)
+            {
+                dynSettings.Bench.Controller.NodeFromSelection(
+                    dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
+                        .Select(x => (x as dynNodeUI).NodeLogic));
+            }
         }
 
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameters)
         {
-            //if (dynSettings.Bench != null)
-            //{
-            //    return dynSettings.Bench.WorkBench.Selection.Count > 0;
-            //}
-            //else
-            //{
-            //    return false;
-            //}
             return true;
         }
     }

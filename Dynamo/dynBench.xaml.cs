@@ -74,6 +74,17 @@ namespace Dynamo.Controls
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Used by various properties to notify observers that a property has changed.
+        /// </summary>
+        /// <param name="info">What changed.</param>
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
 
         public ConnectorType ConnectorType
         {
@@ -122,18 +133,6 @@ namespace Dynamo.Controls
             this.overlayCanvas.ForceCursor = false;
 
             //this.workBench.Visibility = System.Windows.Visibility.Visible;
-        }
-
-        /// <summary>
-        /// Used by various properties to notify observers that a property has changed.
-        /// </summary>
-        /// <param name="info">What changed.</param>
-        private void NotifyPropertyChanged(String info)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(info));
-            }
         }
 
         public string LogText
