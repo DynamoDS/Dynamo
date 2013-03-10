@@ -24,9 +24,15 @@
     <Window.InputBindings>
         <KeyBinding Key="Tab"
                     Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
-        <KeyBinding Key="N"
+        <!--<KeyBinding Key="N"
                     Modifiers="Control"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.AddNoteCmd}}"/>
+                    Command="{Binding Source={x:Static commands:DynamoCommands.AddNoteCmd}}"/>-->
+        <KeyBinding Key="Delete"
+                    Modifiers="Control"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
+        <KeyBinding Key="Back"
+                    Modifiers="Control"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
     </Window.InputBindings>
    <Grid>
       <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Name="menu1">
