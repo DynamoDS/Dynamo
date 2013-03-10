@@ -1356,6 +1356,7 @@ namespace Dynamo
                         paramDict.Add("x", x);
                         paramDict.Add("y", y);
                         paramDict.Add("text", text);
+                        paramDict.Add("workspace", ws);
                         DynamoCommands.AddNoteCmd.Execute(paramDict);
                     }
                 }
@@ -1615,6 +1616,7 @@ namespace Dynamo
                         paramDict.Add("x", x);
                         paramDict.Add("y", y);
                         paramDict.Add("text", text);
+                        paramDict.Add("workspace", this.CurrentSpace);
                         DynamoCommands.AddNoteCmd.Execute(paramDict);
                     }
                 }

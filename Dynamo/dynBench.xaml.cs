@@ -1438,6 +1438,7 @@ namespace Dynamo.Controls
                 paramDict.Add("x", x);
                 paramDict.Add("y", y);
                 paramDict.Add("text", de.Key.ToString());
+                paramDict.Add("workspace", Controller.CurrentSpace);
                 DynamoCommands.AddNoteCmd.Execute(paramDict);
 
                 y += 60;

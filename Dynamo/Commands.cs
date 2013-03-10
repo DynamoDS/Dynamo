@@ -129,8 +129,9 @@ namespace Dynamo.Commands
             Canvas.SetLeft(n, (double)inputs["x"]);
             Canvas.SetTop(n, (double)inputs["y"]);
             n.noteText.Text = inputs["text"].ToString();
+            dynWorkspace ws = (dynWorkspace)inputs["workspace"];
 
-            dynSettings.Bench.Controller.CurrentSpace.Notes.Add(n);
+            ws.Notes.Add(n);
             dynSettings.Bench.WorkBench.Children.Add(n);
         }
 
