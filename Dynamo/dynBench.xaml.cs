@@ -66,6 +66,22 @@ namespace Dynamo.Controls
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
 
+        Point mousePositionOnCanvas;
+        public Point MousePositionOnCanvas
+        {
+            get
+            {
+                if (dynSettings.Workbench == null)
+                {
+                    return new Point();
+                }
+                else
+                {
+                    return Mouse.GetPosition(dynSettings.Workbench);
+                }
+            }
+        }
+        
         private dynConnector activeConnector;
         public dynConnector ActiveConnector
         {
@@ -881,8 +897,8 @@ namespace Dynamo.Controls
             {
                 for (int i = WorkBench.Selection.Count - 1; i >= 0; i--)
                 {
-                    dynNodeUI n = (dynNodeUI)WorkBench.Selection[i];
-                    DeleteElement(n);
+                    UIElement thing = WorkBench.Selection[i] as UIElement;
+                    DeleteElement(thing);
                 }
 
                 e.Handled = true;
@@ -890,18 +906,12 @@ namespace Dynamo.Controls
 
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
             {
-                dynNote note = new dynNote();
-                dynSettings.Workbench.Children.Add(note);
-
-                //convert the current position of the mouse into canvas coordinates
-                Point p = Mouse.GetPosition(dynSettings.Workbench);
-
-                Canvas.SetLeft(note, p.X);
-                Canvas.SetTop(note, p.Y);
-
-                Controller.CurrentSpace.Notes.Add(note);
-                if (!Controller.ViewingHomespace)
-                    Controller.CurrentSpace.Modified(); //tell the workspace to save
+                Dictionary<string, object> paramDict = new Dictionary<string, object>();
+                paramDict.Add("x", MousePositionOnCanvas.X);
+                paramDict.Add("y", MousePositionOnCanvas.Y);
+                paramDict.Add("workspace", Controller.CurrentSpace);
+                paramDict.Add("text", "New Note");
+                DynamoCommands.AddNoteCmd.Execute(paramDict);
 
                 e.Handled = true;
             }
@@ -952,12 +962,6 @@ namespace Dynamo.Controls
                 SearchBox.Focus();
                 SearchBox.SelectAll();
             }
-
-            // select all the nodes directly around the selected nodes
-            if((Keyboard.IsKeyDown(Key.Tab)))
-            {
-                DynamoCommands.SelectNeighborsCmd.Execute(null);
-            }
         }
 
         internal void DeleteElement(UIElement el)
@@ -989,7 +993,9 @@ namespace Dynamo.Controls
             }
             else if (note != null)
             {
+                WorkBench.Selection.Remove(note);
                 Controller.CurrentSpace.Notes.Remove(note);
+                dynSettings.Workbench.Children.Remove(note);
             }
         }
 

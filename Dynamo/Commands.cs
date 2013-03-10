@@ -133,6 +133,11 @@ namespace Dynamo.Commands
 
             ws.Notes.Add(n);
             dynSettings.Bench.WorkBench.Children.Add(n);
+
+            if (!dynSettings.Bench.Controller.ViewingHomespace)
+            {
+                dynSettings.Bench.Controller.CurrentSpace.Modified();
+            }
         }
 
         public event EventHandler CanExecuteChanged;
