@@ -969,12 +969,7 @@ namespace Dynamo.Controls
             // select all the nodes directly around the selected nodes
             if((Keyboard.IsKeyDown(Key.Tab)))
             {
-                List<ISelectable> sels = dynSettings.Workbench.Selection.ToList<ISelectable>();
-
-                foreach (ISelectable sel in sels)
-                {
-                    ((dynNodeUI)sel).SelectNeighbors();
-                }
+                DynamoCommands.SelectNeighborsCmd.Execute(null);
             }
         }
 

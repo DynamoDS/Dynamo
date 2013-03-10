@@ -24,7 +24,21 @@ namespace Dynamo.Commands
                 return nodeFromSelectionCmd;
             }
         }
+
+        private static SelectNeighborsCommand selectNeighborsCmd;
+        public static SelectNeighborsCommand SelectNeighborsCmd
+        {
+            get
+            {
+                if (selectNeighborsCmd == null)
+                    selectNeighborsCmd = new SelectNeighborsCommand();
+
+                return selectNeighborsCmd;
+            }
+        }
     }
+
+
 
     public class NodeFromSelectionCommand : ICommand
     {
@@ -48,6 +62,31 @@ namespace Dynamo.Commands
                 dynSettings.Bench.Controller.NodeFromSelection(
                     dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
                         .Select(x => (x as dynNodeUI).NodeLogic));
+            }
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class SelectNeighborsCommand : ICommand
+    {
+        public SelectNeighborsCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            List<ISelectable> sels = dynSettings.Workbench.Selection.ToList<ISelectable>();
+
+            foreach (ISelectable sel in sels)
+            {
+                ((dynNodeUI)sel).SelectNeighbors();
             }
         }
 
