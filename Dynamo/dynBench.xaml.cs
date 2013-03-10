@@ -951,41 +951,6 @@ namespace Dynamo.Controls
             }
         }
 
-        internal void DeleteElement(UIElement el)
-        {
-            dynNote note = el as dynNote;
-            dynNodeUI node = el as dynNodeUI;
-
-            if (node != null)
-            {
-                foreach (var port in node.OutPorts)
-                {
-                    for (int i = port.Connectors.Count - 1; i >= 0; i--)
-                    {
-                        port.Connectors[i].Kill();
-                    }
-                }
-
-                foreach (dynPort p in node.InPorts)
-                {
-                    for (int i = p.Connectors.Count - 1; i >= 0; i--)
-                    {
-                        p.Connectors[i].Kill();
-                    }
-                }
-
-                WorkBench.Selection.Remove(node);
-                Controller.Nodes.Remove(node.NodeLogic);
-                dynSettings.Workbench.Children.Remove(node);
-            }
-            else if (note != null)
-            {
-                WorkBench.Selection.Remove(note);
-                Controller.CurrentSpace.Notes.Remove(note);
-                dynSettings.Workbench.Children.Remove(note);
-            }
-        }
-
         //void toolFinder_ToolFinderFinished(object sender, EventArgs e)
         //{
         //    dynSettings.Workbench.Children.Remove(toolFinder);
