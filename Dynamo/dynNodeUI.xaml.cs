@@ -857,30 +857,6 @@ namespace Dynamo.Controls
             //e.Handled = true;
         }
 
-        private void longestList_cm_Click(object sender, RoutedEventArgs e)
-        {
-            lacingType = LacingType.LONGEST;
-            //fullLace_cm.IsChecked = false;
-            //shortestList_cm.IsChecked = false;
-            //longestList_cm.IsChecked = true;
-        }
-
-        private void shortestList_cm_Click(object sender, RoutedEventArgs e)
-        {
-            lacingType = LacingType.SHORTEST;
-            //fullLace_cm.IsChecked = false;
-            //shortestList_cm.IsChecked = true;
-            //longestList_cm.IsChecked = false;
-        }
-
-        private void fullLace_cm_Click(object sender, RoutedEventArgs e)
-        {
-            lacingType = LacingType.FULL;
-            //fullLace_cm.IsChecked = true;
-            //shortestList_cm.IsChecked = false;
-            //longestList_cm.IsChecked = false;
-        }
-
         private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
 

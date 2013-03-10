@@ -891,15 +891,6 @@ namespace Dynamo.Controls
                 }
             }
 
-            //changed the delete key combination so as not to interfere with
-            //keyboard events
-            //if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Back) ||
-            //    Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Delete))
-            //{
-            //    DynamoCommands.DeleteCmd.Execute(null);
-            //    e.Handled = true;
-            //}
-
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
             {
                 Dictionary<string, object> paramDict = new Dictionary<string, object>();
