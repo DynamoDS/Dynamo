@@ -1,0 +1,7 @@
+# override specific installer exes#
+###################
+!Extra/fsharp_redist.exe
+/bin
+/definitions
+/sample
+/Installers
