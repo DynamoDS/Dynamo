@@ -184,11 +184,25 @@ namespace Dynamo.Controls
                     
                     foreach (dynConnector c in inConnectors)
                     {
-                        c.StrokeBrush = new LinearGradientBrush(Color.FromRgb(31, 31, 31), Colors.Cyan, 0);
+                        if (c.Start != null && c.Start.Owner.IsSelected)
+                        {
+                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
+                        }
+                        else
+                        {
+                            c.StrokeBrush = new LinearGradientBrush(Color.FromRgb(31, 31, 31), Colors.Cyan, 0);
+                        }
                     }
                     foreach (dynConnector c in outConnectors)
                     {
-                        c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Color.FromRgb(31, 31, 31), 0);
+                        if (c.End != null & c.End.Owner.IsSelected)
+                        {
+                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
+                        }
+                        else
+                        {
+                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Color.FromRgb(31, 31, 31), 0);
+                        }
                     }
                 }
                 else
