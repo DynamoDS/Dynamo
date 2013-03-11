@@ -17,6 +17,9 @@ def main():
 
 	# CONSTANTS
 
+	# when True, no installers are copied and no emails sent
+	DEBUG = False; 
+
 	# git 
 	remote_path = "https://github.com/ikeough/Dynamo.git"
 
@@ -30,10 +33,10 @@ def main():
 
 	repo_name = "Dynamo"
 	repo_root = form_path( [sandbox_path, repo_name ] )
-	solution_path = form_path( [repo_root, '/Dynamo.sln'] )
+	solution_path = form_path( [repo_root, 'src/Dynamo.sln'] )
 
 	# installer
-	installer_dir =  form_path( [repo_root, 'DynamoWIPInstall'] )
+	installer_dir =  form_path( [repo_root, 'scripts/install'] )
 	installer_bin_dir = 'Installers'
 	installer_bat = 'CreateInstallers-RELEASE.bat'
 
@@ -46,6 +49,7 @@ def main():
 	#log
 	log_prefix = form_path([sandbox_path, "dynamo_auto_build_log_"])
 	
+
 	# do auto-build!
 	setup(sandbox_path)
 
@@ -66,8 +70,9 @@ def main():
 		print 'making installers...'
 		installers_result = make_installers( installer_dir, installer_bat )
 
-		print 'copying installers and binaries to realtime-dev...'
-		update_realtimedev( installer_dir, installer_bin_dir, repo_root, realtimedev_root )
+		if not DEBUG:
+			print 'copying installers and binaries to realtime-dev...'
+			update_realtimedev( installer_dir, installer_bin_dir, repo_root, realtimedev_root )
 		
 	else:
 		print 'build failed'
@@ -78,8 +83,9 @@ def main():
 	print 'logging...'
 	log = log_results(log_prefix, pull_result, [build_result, build_result_debug], installers_result, commits)
 
-	print 'emailing results...'
-	email_result = email_all( email_list_path, email_sender, subject, message, log )
+	if not DEBUG:
+		print 'emailing results...'
+		email_result = email_all( email_list_path, email_sender, subject, message, log )
 
 
 def interpret_build(result):
