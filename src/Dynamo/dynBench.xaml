@@ -24,9 +24,6 @@
     <Window.InputBindings>
         <KeyBinding Key="Tab"
                     Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
-        <!--<KeyBinding Key="N"
-                    Modifiers="Control"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.AddNoteCmd}}"/>-->
         <KeyBinding Key="Delete"
                     Modifiers="Control"
                     Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>

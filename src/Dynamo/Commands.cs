@@ -306,7 +306,12 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            return dynSettings.Controller.SplashScreen != null;
+            if (dynSettings.Controller.SplashScreen != null)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
