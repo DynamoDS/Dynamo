@@ -123,11 +123,12 @@
                        MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" />
                 <TextBox Canvas.Right="30" Canvas.Top="13" Height="23" Name="editNameBox" Width="263" Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
                 <Canvas.Background>
-               <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                  <GradientStop Color="#FF4B4B4B" Offset="1" />
-                  <GradientStop Color="#FF7A7A7A" Offset="0" />
-               </LinearGradientBrush>
-            </Canvas.Background>
+                    <SolidColorBrush Color="#FF505050" />
+                    <!--<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF4B4B4B" Offset="1" />
+                        <GradientStop Color="#FF7A7A7A" Offset="0" />
+                    </LinearGradientBrush>-->
+                </Canvas.Background>
                 <Canvas.ContextMenu>
                     <ContextMenu>
                        <MenuItem 
