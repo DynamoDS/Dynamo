@@ -18,7 +18,7 @@ def main():
 	# CONSTANTS
 
 	# when True, no installers are copied and no emails sent
-	DEBUG = True; 
+	DEBUG = False; 
 
 	# git 
 	remote_path = "https://github.com/ikeough/Dynamo.git"
@@ -120,7 +120,7 @@ def mkdir(path):
 
 def make_docs( autodoc_root, autodoc_name ):
 
-	return run_cmd(['python','autodoc.py'], cwd = autodoc_root )	
+	return run_cmd(['python',autodoc_name], cwd = autodoc_root )	
 
 def update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, realtimedev_root ):
 
@@ -132,7 +132,7 @@ def update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_roo
 	release_dir = form_path( [realtimedev_root, "builds", date_string()] )
 	install_dir = form_path( [release_dir, "install"] ) 
 	bin_dir = form_path( [release_dir, "bin"] )
-	doc_dir = form_path( [release_dir, "bin"] )
+	doc_dir = form_path( [release_dir, "doc"] )
 	mkdir( install_dir )
 	mkdir( bin_dir )
 	mkdir( doc_dir )
