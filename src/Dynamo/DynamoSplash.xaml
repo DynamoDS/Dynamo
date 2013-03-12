@@ -30,7 +30,4 @@
         <Label Content="{Binding ElementName=_this, Path=LoadingStatus}" Foreground="#FFDED9D9" Height="28" 
                HorizontalAlignment="Right" Margin="5" Name="status_label" VerticalAlignment="Bottom" />
     </Grid>
-    <!--<Window.Background>
-        <SolidColorBrush Color="#FF8D8D8D" />
-    </Window.Background>-->
 </Window>
