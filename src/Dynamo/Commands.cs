@@ -5,6 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Windows;
 
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -99,6 +100,18 @@ namespace Dynamo.Commands
                     writeToLogCmd = new WriteToLogCommand();
 
                 return writeToLogCmd;
+            }
+        }
+
+        private static CreateNodeCommand createNodeCmd;
+        public static CreateNodeCommand CreateNodeCmd
+        {
+            get
+            {
+                if (createNodeCmd == null)
+                    createNodeCmd = new CreateNodeCommand();
+
+                return createNodeCmd;
             }
         }
     }
@@ -347,6 +360,55 @@ namespace Dynamo.Commands
         public bool CanExecute(object parameters)
         {
             if (dynSettings.Writer != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public class CreateNodeCommand : ICommand
+    {
+        public CreateNodeCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[parameters.ToString()];
+
+            var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+            var node = (dynNode)obj.Unwrap();
+            node.NodeUI.DisableInteraction();
+
+            var el = node.NodeUI;
+
+            dynSettings.Workbench.Children.Add(el);
+            dynSettings.Controller.Nodes.Add(el.NodeLogic);
+            el.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
+            el.Opacity = 1;
+
+            Point pt = new Point((int)(dynSettings.Bench.overlayCanvas.ActualWidth / 2), (int)(dynSettings.Bench.overlayCanvas.ActualHeight / 2));
+            Point dropPt = dynSettings.Bench.overlayCanvas.TransformToVisual(dynSettings.Workbench).Transform(pt);
+            Canvas.SetLeft(el, dropPt.X);
+            Canvas.SetTop(el, dropPt.Y);
+
+            el.EnableInteraction();
+
+            if (dynSettings.Controller.ViewingHomespace)
+            {
+                el.NodeLogic.SaveResult = true;
+            }
+            
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            if (parameters != null && dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(parameters.ToString()))
             {
                 return true;
             }

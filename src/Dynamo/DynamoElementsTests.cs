@@ -37,6 +37,7 @@ namespace Dynamo.Tests
         public void Cleanup()
         {
             //TODO: Anything to clean up here?
+            dynSettings.Controller.Bench.Close();
         }
 
         [STAThread]
@@ -58,6 +59,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(dynSettings.Controller.CurrentSpace.Notes.Count, 1);
         }
 
+        [STAThread]
+        [Test]
+        public void CanAddANodeByName()
+        {
+            if (DynamoCommands.CreateNodeCmd.CanExecute("+"))
+            {
+                DynamoCommands.CreateNodeCmd.Execute("+");
+            }
 
+            Assert.AreEqual(dynSettings.Controller.CurrentSpace.Nodes.Count, 1);
+        }
     }
 }

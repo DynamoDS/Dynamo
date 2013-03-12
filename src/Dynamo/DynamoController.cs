@@ -47,6 +47,11 @@ namespace Dynamo
         }
 
         SortedDictionary<string, TypeLoadData> builtinTypesByNickname = new SortedDictionary<string, TypeLoadData>();
+        public SortedDictionary<string, TypeLoadData> BuiltInTypesByNickname
+        {
+            get { return builtinTypesByNickname; }
+        }
+
         Dictionary<string, TypeLoadData> builtinTypesByTypeName = new Dictionary<string, TypeLoadData>();
 
         DynamoSplash splashScreen;
