@@ -65,6 +65,30 @@ namespace Dynamo.Commands
                 return deleteCmd;
             }
         }
+
+        private static ShowSplashScreenCommand showSplashScreenCmd;
+        public static ShowSplashScreenCommand ShowSplashScreenCmd
+        {
+            get
+            {
+                if (showSplashScreenCmd == null)
+                    showSplashScreenCmd = new ShowSplashScreenCommand();
+
+                return showSplashScreenCmd;
+            }
+        }
+
+        private static CloseSplashScreenCommand closeSplashScreenCmd;
+        public static CloseSplashScreenCommand CloseSplashScreenCmd
+        {
+            get
+            {
+                if (closeSplashScreenCmd == null)
+                    closeSplashScreenCmd = new CloseSplashScreenCommand();
+
+                return closeSplashScreenCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -237,6 +261,52 @@ namespace Dynamo.Commands
         public bool CanExecute(object parameters)
         {
             return dynSettings.Workbench.Selection.Count > 0;
+        }
+    }
+
+    public class ShowSplashScreenCommand : ICommand
+    {
+        public ShowSplashScreenCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.SplashScreen = new Controls.DynamoSplash();
+            dynSettings.Controller.SplashScreen.Show();
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            if (dynSettings.Controller != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public class CloseSplashScreenCommand : ICommand
+    {
+        public CloseSplashScreenCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.SplashScreen.Close();
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            return dynSettings.Controller.SplashScreen != null;
         }
     }
 }

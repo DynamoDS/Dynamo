@@ -50,6 +50,11 @@ namespace Dynamo
         Dictionary<string, TypeLoadData> builtinTypesByTypeName = new Dictionary<string, TypeLoadData>();
 
         DynamoSplash splashScreen;
+        public DynamoSplash SplashScreen
+        {
+            get { return splashScreen; }
+            set { splashScreen = value; }
+        }
 
         dynWorkspace _cspace;
         internal dynWorkspace CurrentSpace
@@ -90,9 +95,6 @@ namespace Dynamo
         {
             Bench = new dynBench(this);
 
-            splashScreen = new DynamoSplash();
-            splashScreen.Show();
-
             homeSpace = CurrentSpace = new HomeWorkspace();
 
             Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
@@ -106,6 +108,11 @@ namespace Dynamo
             dynSettings.Bench = Bench;
             dynSettings.Controller = this;
             dynSettings.Workbench = Bench.WorkBench;
+
+            if (DynamoCommands.ShowSplashScreenCmd.CanExecute(null))
+            {
+                DynamoCommands.ShowSplashScreenCmd.Execute(null);
+            }
 
             //WTF
             Bench.settings_curves.IsChecked = true;
@@ -149,7 +156,10 @@ namespace Dynamo
                 Bench.UnlockUI();
                 Bench.WorkBench.Visibility = System.Windows.Visibility.Visible;
 
-                splashScreen.Close();
+                if (DynamoCommands.CloseSplashScreenCmd.CanExecute(null))
+                {
+                    DynamoCommands.CloseSplashScreenCmd.Execute(null);
+                }
 
                 homeSpace.OnDisplayed();
             }
