@@ -169,9 +169,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="splash.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="DynamoForRevit.addin">
       <SubType>Designer</SubType>
     </Content>

@@ -30,9 +30,7 @@ namespace DynamoSandbox
                 tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
                 dynSettings.Writer = tw;
 
-                SplashScreen splashScreen = null;
-                splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
-                dynamoController = new DynamoController(splashScreen);
+                dynamoController = new DynamoController();
                 var bench = dynamoController.Bench;
                 bench.ShowDialog();
             }

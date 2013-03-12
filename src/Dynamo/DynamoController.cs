@@ -49,7 +49,7 @@ namespace Dynamo
         SortedDictionary<string, TypeLoadData> builtinTypesByNickname = new SortedDictionary<string, TypeLoadData>();
         Dictionary<string, TypeLoadData> builtinTypesByTypeName = new Dictionary<string, TypeLoadData>();
 
-        SplashScreen splashScreen;
+        DynamoSplash splashScreen;
 
         dynWorkspace _cspace;
         internal dynWorkspace CurrentSpace
@@ -85,11 +85,14 @@ namespace Dynamo
         }
 
         #region Constructor and Initialization
-        public DynamoController(SplashScreen splash)
+        //public DynamoController(SplashScreen splash)
+        public DynamoController()
         {
             Bench = new dynBench(this);
 
-            splashScreen = splash;
+            splashScreen = new DynamoSplash();
+            splashScreen.Show();
+
             homeSpace = CurrentSpace = new HomeWorkspace();
 
             Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
@@ -146,7 +149,7 @@ namespace Dynamo
                 Bench.UnlockUI();
                 Bench.WorkBench.Visibility = System.Windows.Visibility.Visible;
 
-                splashScreen.Close(TimeSpan.FromMilliseconds(100));
+                splashScreen.Close();
 
                 homeSpace.OnDisplayed();
             }
@@ -181,7 +184,7 @@ namespace Dynamo
 
             //var loadedAssemblies = new List<Assembly>();
             //var assembliesToLoad = new List<string>();
-
+            
             #region determine assemblies to load
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>(
                 AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.Location));

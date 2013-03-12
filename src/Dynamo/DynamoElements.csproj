@@ -116,6 +116,9 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Commands.cs" />
     <Compile Include="DynamoController.cs" />
+    <Compile Include="DynamoSplash.xaml.cs">
+      <DependentUpon>DynamoSplash.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
@@ -180,6 +183,10 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DynamoSplash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="dynBench.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

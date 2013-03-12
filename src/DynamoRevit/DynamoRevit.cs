@@ -140,7 +140,9 @@ namespace Dynamo.Applications
                 return Result.Succeeded;
             }
 
-            SplashScreen splashScreen = null;
+            //SplashScreen splashScreen = null
+            Window splashScreen = null;
+
             try
             {
                 //create a log file
@@ -177,11 +179,12 @@ namespace Dynamo.Applications
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
                         //prepare and show splash
-                        splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
+                        //splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
+                        splashScreen = new DynamoSplash();
                         //splashScreen.Show(false, true);
 
                         //show the window
-                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.updater, splashScreen);
+                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.updater);
                         dynamoBench = dynamoController.Bench;
 
                         //set window handle and show dynamo

@@ -64,9 +64,6 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="splash.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="dynSandbox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -21,8 +21,8 @@ namespace Dynamo
         PredicateTraverser checkManualTransaction;
         PredicateTraverser checkRequiresTransaction;
 
-        public DynamoController_Revit(DynamoUpdater updater, SplashScreen splash)
-            : base(splash)
+        public DynamoController_Revit(DynamoUpdater updater)
+            : base()
         {
             Updater = updater;
 
