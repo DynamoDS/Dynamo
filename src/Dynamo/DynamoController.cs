@@ -147,8 +147,14 @@ namespace Dynamo
                     //MessageBox.Show("Workbench could not be opened.");
                     Bench.Log("Workbench could not be opened.");
 
-                    dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    dynSettings.Writer.WriteLine(UnlockLoadPath);
+                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
+
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
+                    }
                 }
 
                 UnlockLoadPath = null;

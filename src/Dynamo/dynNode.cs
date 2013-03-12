@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using Microsoft.FSharp.Collections;
+
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
-using Microsoft.FSharp.Collections;
+using Dynamo.Commands;
+
 using Value = Dynamo.FScheme.Value;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+
 
 namespace Dynamo.Nodes
 {
@@ -464,8 +468,14 @@ namespace Dynamo.Nodes
                            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                            Bench.Log(ex);
 
-                           dynSettings.Writer.WriteLine(ex.Message);
-                           dynSettings.Writer.WriteLine(ex.StackTrace);
+                           //dynSettings.Writer.WriteLine(ex.Message);
+                           //dynSettings.Writer.WriteLine(ex.StackTrace);
+
+                           if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                           {
+                               DynamoCommands.WriteToLogCmd.Execute(ex.Message);
+                               DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
+                           }
 
                            Controller.ShowElement(this);
                        }

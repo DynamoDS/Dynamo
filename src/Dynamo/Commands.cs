@@ -89,6 +89,18 @@ namespace Dynamo.Commands
                 return closeSplashScreenCmd;
             }
         }
+
+        private static WriteToLogCommand writeToLogCmd;
+        public static WriteToLogCommand WriteToLogCmd
+        {
+            get
+            {
+                if (writeToLogCmd == null)
+                    writeToLogCmd = new WriteToLogCommand();
+
+                return writeToLogCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -307,6 +319,34 @@ namespace Dynamo.Commands
         public bool CanExecute(object parameters)
         {
             if (dynSettings.Controller.SplashScreen != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public class WriteToLogCommand : ICommand
+    {
+        public WriteToLogCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            if (parameters == null) return;
+
+            string logText = parameters.ToString();
+            dynSettings.Writer.WriteLine(logText);
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            if (dynSettings.Writer != null)
             {
                 return true;
             }

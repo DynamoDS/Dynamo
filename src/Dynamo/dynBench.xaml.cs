@@ -645,8 +645,14 @@ namespace Dynamo.Controls
                     //MessageBox.Show("Workbench could not be opened.");
                     Log("Workbench could not be opened.");
 
-                    dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    dynSettings.Writer.WriteLine(xmlPath);
+                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    //dynSettings.Writer.WriteLine(xmlPath);
+
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                        DynamoCommands.WriteToLogCmd.Execute(xmlPath);
+                    }
                 }
                 UnlockUI();
             }
@@ -657,7 +663,10 @@ namespace Dynamo.Controls
             if (sw != null)
             {
                 sw.Close();
-                dynSettings.Writer.WriteLine("Dynamo ended " + System.DateTime.Now.ToString());
+                if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                {
+                    DynamoCommands.WriteToLogCmd.Execute("Dynamo ended " + System.DateTime.Now.ToString());
+                }
                 dynSettings.Writer.Close();
             }
 
@@ -671,7 +680,11 @@ namespace Dynamo.Controls
             LogText = sw.ToString();
             //LogScroller.ScrollToEnd();
 
-            dynSettings.Writer.WriteLine(message);
+            //dynSettings.Writer.WriteLine(message);
+            if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+            {
+                DynamoCommands.WriteToLogCmd.Execute(message);
+            }
 
             LogScroller.ScrollToBottom();
         }
