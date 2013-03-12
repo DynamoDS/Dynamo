@@ -18,7 +18,7 @@ def main():
 	# CONSTANTS
 
 	# when True, no installers are copied and no emails sent
-	DEBUG = False; 
+	DEBUG = True; 
 
 	# git 
 	remote_path = "https://github.com/ikeough/Dynamo.git"
@@ -35,6 +35,10 @@ def main():
 	repo_root = form_path( [sandbox_path, repo_name ] )
 	solution_path = form_path( [repo_root, 'src/Dynamo.sln'] )
 
+	# autodoc
+	autodoc_root = form_path( [repo_root, 'scripts/autodoc'] )
+	autodoc_name = 'autodoc.py'
+
 	# installer
 	installer_dir =  form_path( [repo_root, 'scripts/install'] )
 	installer_bin_dir = 'Installers'
@@ -49,7 +53,6 @@ def main():
 	#log
 	log_prefix = form_path([sandbox_path, "dynamo_auto_build_log_"])
 	
-
 	# do auto-build!
 	setup(sandbox_path)
 
@@ -67,12 +70,16 @@ def main():
 	installers_result = "Installers not formed.\n"
 
 	if (build_result['success'] == True and build_result_debug['success'] == True):
+
+		print 'making docs...'
+		autodoc_result = make_docs( autodoc_root, autodoc_name )
+
 		print 'making installers...'
 		installers_result = make_installers( installer_dir, installer_bat )
 
 		if not DEBUG:
-			print 'copying installers and binaries to realtime-dev...'
-			update_realtimedev( installer_dir, installer_bin_dir, repo_root, realtimedev_root )
+			print 'copying installers, docs, and binaries to realtime-dev...'
+			update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, realtimedev_root )
 		
 	else:
 		print 'build failed'
@@ -106,11 +113,16 @@ def rm_dir(path):
 		run_cmd(['rmdir', path, '/S', '/Q'])
 
 def mkdir(path):
+
 	if os.path.exists(path):
 		return
 	os.makedirs(path)
 
-def update_realtimedev( installer_dir, installer_bin_dir, repo_root, realtimedev_root ):
+def make_docs( autodoc_root, autodoc_name ):
+
+	return run_cmd(['python','autodoc.py'], cwd = autodoc_root )	
+
+def update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, realtimedev_root ):
 
 	if not os.path.exists(realtimedev_root):
 		print 'realtimedev_root does not exist: ' + realtimedev_root
@@ -120,12 +132,14 @@ def update_realtimedev( installer_dir, installer_bin_dir, repo_root, realtimedev
 	release_dir = form_path( [realtimedev_root, "builds", date_string()] )
 	install_dir = form_path( [release_dir, "install"] ) 
 	bin_dir = form_path( [release_dir, "bin"] )
+	doc_dir = form_path( [release_dir, "bin"] )
 	mkdir( install_dir )
 	mkdir( bin_dir )
+	mkdir( doc_dir )
 
-	# copy contents of installer_bin_dir, contents of installer_dir
 	copy_folder_contents( form_path([installer_dir, installer_bin_dir]), install_dir )
 	copy_folder_contents( form_path([repo_root, 'bin']), bin_dir )
+	copy_folder_contents( form_path([autodoc_root, 'out']), doc_dir )
 
 def copy_folder_contents(path, endpath):
 	return run_cmd(['robocopy', path, endpath, '/E' ])
