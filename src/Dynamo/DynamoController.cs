@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Dynamo.Nodes;
-using Dynamo.Controls;
-using Dynamo.Utilities;
-using Dynamo.FSchemeInterop;
+
 using System.Windows.Controls;
 using System.Reflection;
 using System.IO;
@@ -14,16 +11,20 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Xml;
-using Dynamo.Connectors;
 using System.Windows.Threading;
-
-using Expression = Dynamo.FScheme.Expression;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using Dynamo.FSchemeInterop.Node;
+
+using Dynamo.Nodes;
 using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.FSchemeInterop;
+using Dynamo.Connectors;
+using Dynamo.FSchemeInterop.Node;
 using Dynamo.Commands;
+
+using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo
 {
