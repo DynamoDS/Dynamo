@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Connectors;
+using System.Windows.Threading;
 
 using Expression = Dynamo.FScheme.Expression;
 using System.ComponentModel;
@@ -28,6 +29,17 @@ namespace Dynamo
 {
     public class DynamoController
     {
+        bool isProcessingCommandQueue = false;
+        public bool IsProcessingCommandQueue
+        {
+            get { return isProcessingCommandQueue; }
+        }
+        List<Tuple<object, object>> commandQueue = new List<Tuple<object, object>>();
+        public List<Tuple<object, object>> CommandQueue
+        {
+            get { return commandQueue; }
+        }
+
         //TODO: Remove this?
         public Dictionary<string, dynWorkspace> FunctionDict = new Dictionary<string, dynWorkspace>();
 
@@ -62,7 +74,7 @@ namespace Dynamo
         }
 
         dynWorkspace _cspace;
-        internal dynWorkspace CurrentSpace
+        public dynWorkspace CurrentSpace
         {
             get { return _cspace; }
             set
@@ -135,6 +147,32 @@ namespace Dynamo
             PopulateSamplesMenu();
 
             Bench.Activated += Bench_Activated;
+
+            //Dispatcher.CurrentDispatcher.Hooks.DispatcherInactive += new EventHandler(Hooks_DispatcherInactive);
+        }
+
+        void Hooks_DispatcherInactive(object sender, EventArgs e)
+        {
+            ProcessCommandQueue();
+        }
+
+        public void ProcessCommandQueue()
+        {
+            foreach (Tuple<object, object> cmdData in commandQueue)
+            {
+                ICommand cmd = cmdData.Item1 as ICommand;
+                if (cmd != null)
+                {
+                    if (cmd.CanExecute(cmdData.Item2))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute(string.Format("Executing command : {0}", cmd.GetType()));
+                        cmd.Execute(cmdData.Item2);
+                    }
+                }
+            }
+            commandQueue.Clear();
+
+            dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}", Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
         }
 
         private bool _activated = false;
