@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows;
+using System.Collections;
 
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -112,6 +113,30 @@ namespace Dynamo.Commands
                     createNodeCmd = new CreateNodeCommand();
 
                 return createNodeCmd;
+            }
+        }
+
+        private static CreateConnectionCommand createConnectionCmd;
+        public static CreateConnectionCommand CreateConnectionCmd
+        {
+            get
+            {
+                if (createConnectionCmd == null)
+                    createConnectionCmd = new CreateConnectionCommand();
+
+                return createConnectionCmd;
+            }
+        }
+
+        private static RunExpressionCommand runExpressionCommand;
+        public static RunExpressionCommand RunExpressionCmd
+        {
+            get
+            {
+                if (runExpressionCommand == null)
+                    runExpressionCommand = new RunExpressionCommand();
+
+                return runExpressionCommand;
             }
         }
     }
@@ -377,6 +402,7 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
+            
             TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[parameters.ToString()];
 
             var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
@@ -414,6 +440,65 @@ namespace Dynamo.Commands
             }
 
             return false;
+        }
+    }
+
+    public class CreateConnectionCommand : ICommand
+    {
+        public CreateConnectionCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            ArrayList connectionData = parameters as ArrayList;
+            
+            dynNodeUI start = connectionData[0] as dynNodeUI;
+            dynNodeUI end = connectionData[1] as dynNodeUI;
+            int startIndex = (int)connectionData[2];
+            int endIndex = (int)connectionData[3];
+
+            dynConnector c = new dynConnector(start, end, startIndex, endIndex, 0);
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            //make sure you have valid connection data
+            ArrayList connectionData = parameters as ArrayList;
+            if (connectionData != null && connectionData.Count == 4)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public class RunExpressionCommand : ICommand
+    {
+        public RunExpressionCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.RunExpression(false);
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            //TODO: Any reason we wouldn't be able to run an expression?
+            if(dynSettings.Controller == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
