@@ -766,6 +766,13 @@ namespace Dynamo.Commands
                 if (!dynSettings.Bench.WorkBench.Selection.Contains(node))
                     dynSettings.Bench.WorkBench.Selection.Add(node);
             }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    dynSettings.Bench.WorkBench.Selection.Remove(node);
+                }
+            }
         }
 
         public event EventHandler CanExecuteChanged;
