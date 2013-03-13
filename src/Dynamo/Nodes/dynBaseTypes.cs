@@ -1741,11 +1741,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override void OnGotFocus(RoutedEventArgs e)
-        {
-            //debug
-        }
-
         protected override void OnLostFocus(RoutedEventArgs e)
         {
             commit();
