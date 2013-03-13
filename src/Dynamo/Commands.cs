@@ -174,6 +174,18 @@ namespace Dynamo.Commands
                 return selectCmd;
             }
         }
+
+        private static AddToSelectionCommand addToSelectionCmd;
+        public static AddToSelectionCommand AddToSelectionCmd
+        {
+            get
+            {
+                if (addToSelectionCmd == null)
+                    addToSelectionCmd = new AddToSelectionCommand();
+
+                return addToSelectionCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -628,6 +640,11 @@ namespace Dynamo.Commands
             //old nodes and the guids of their pasted versions
             Hashtable nodeLookup = new Hashtable();
 
+
+            //clear the selection so we can put the
+            //paste contents in
+            dynSettings.Bench.WorkBench.Selection.RemoveAll();
+
             var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x.GetType().IsAssignableFrom(typeof(dynNodeUI)));
             var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x.GetType() == typeof(dynConnector));
 
@@ -687,6 +704,16 @@ namespace Dynamo.Commands
             //process the queue again to create the connectors
             dynSettings.Controller.ProcessCommandQueue();
 
+            foreach (DictionaryEntry de in nodeLookup)
+            {
+                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd, 
+                    dynSettings.Controller.CurrentSpace.Nodes
+                    .Select(x => x.NodeUI)
+                    .Where(x => x.GUID == (Guid)de.Value).FirstOrDefault()));
+            }
+
+            dynSettings.Controller.ProcessCommandQueue();
+
             dynSettings.Controller.ClipBoard.Clear();
         }
 
@@ -721,6 +748,38 @@ namespace Dynamo.Commands
                     dynSettings.Bench.WorkBench.ClearSelection();
                 }
 
+                if (!dynSettings.Bench.WorkBench.Selection.Contains(node))
+                    dynSettings.Bench.WorkBench.Selection.Add(node);
+            }
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            dynNodeUI node = parameters as dynNodeUI;
+            if (node == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    public class AddToSelectionCommand : ICommand
+    {
+        public AddToSelectionCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynNodeUI node = parameters as dynNodeUI;
+
+            if (!node.IsSelected)
+            {
                 if (!dynSettings.Bench.WorkBench.Selection.Contains(node))
                     dynSettings.Bench.WorkBench.Selection.Add(node);
             }
