@@ -19,8 +19,8 @@
        <local:StateToColorConverter x:Key="StateToColorConverter"/>
     </UserControl.Resources>
     <UserControl.ToolTip>
-        <Grid Width="235" MaxHeight="90" Height="Auto">
-            <Canvas Canvas.Left="0" Canvas.Top="0" Width="50" Height="50">
+        <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+            <Canvas Canvas.Left="0" Canvas.Top="0" Width="Auto">
                 <Rectangle 
                     RadiusX="10" 
                     RadiusY="10" 

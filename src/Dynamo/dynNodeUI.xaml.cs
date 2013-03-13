@@ -106,7 +106,14 @@ namespace Dynamo.Controls
             }
             set
             {
-                toolTipText = value;
+                if (value == "")
+                {
+                    toolTipText = "OK";
+                }
+                else
+                {
+                    toolTipText = value;
+                }
                 NotifyPropertyChanged("ToolTipText");
             }
         }

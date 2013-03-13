@@ -1083,25 +1083,23 @@ namespace Dynamo.Controls
 
         internal void setFunctionBackground()
         {
-            var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
-            bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x6B, 0x6B, 0x6B); //Dark
-            bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
+            //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
+            //bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x6B, 0x6B, 0x6B); //Dark
+            //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
 
-            //var sbBrush = (LinearGradientBrush)this.sidebarGrid.Background;
-            //sbBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x6B, 0x6B, 0x6B); //Dark
-            //sbBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
+            var bgBrush = (SolidColorBrush)this.outerCanvas.Background;
+            bgBrush.Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
         }
 
 
         internal void setHomeBackground()
         {
-            var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
-            bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
-            bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0x7A, 0x7A, 0x7A); //Light
+            //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
+            //bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
+            //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0x7A, 0x7A, 0x7A); //Light
 
-            //var sbBrush = (LinearGradientBrush)this.sidebarGrid.Background;
-            //sbBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
-            //sbBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0x9A, 0x9A, 0x9A); //Light
+            var bgBrush = (SolidColorBrush)this.outerCanvas.Background;
+            bgBrush.Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
         }
 
         internal void RemoveConnector(dynConnector c)
