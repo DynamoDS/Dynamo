@@ -1738,6 +1738,7 @@ namespace Dynamo.Nodes
             if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
             {
                 commit();
+                dynSettings.Bench.mainGrid.Focus();
             }
         }
 
@@ -1992,7 +1993,6 @@ namespace Dynamo.Nodes
                 return 0;
             }
         }
-
 
     }
 
