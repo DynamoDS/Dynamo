@@ -32,7 +32,7 @@
                     Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
         <KeyBinding Key="C"
                     Modifiers="Control"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.CutCmd}}"/>
+                    Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"/>
         <KeyBinding Key="V"
                     Modifiers="Control"
                     Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>

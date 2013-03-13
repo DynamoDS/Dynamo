@@ -139,15 +139,15 @@ namespace Dynamo.Commands
             }
         }
 
-        private static CutCommand cutCmd;
-        public static CutCommand CutCmd
+        private static CopyCommand copyCmd;
+        public static CopyCommand CopyCmd
         {
             get
             {
-                if (cutCmd == null)
-                    cutCmd = new CutCommand();
+                if (copyCmd == null)
+                    copyCmd = new CopyCommand();
 
-                return cutCmd;
+                return copyCmd;
             }
         }
 
@@ -444,8 +444,24 @@ namespace Dynamo.Commands
             el.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
             el.Opacity = 1;
 
-            //Point pt = new Point((int)(dynSettings.Bench.overlayCanvas.ActualWidth / 2), (int)(dynSettings.Bench.overlayCanvas.ActualHeight / 2));
-            //Point dropPt = dynSettings.Bench.overlayCanvas.TransformToVisual(dynSettings.Workbench).Transform(pt);
+            //if we've received a value in the dictionary
+            //try to set the value on the node
+            if(data.ContainsKey("value"))
+            {
+                if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
+                {
+                    (node as dynBasicInteractive<double>).Value = (double)data["value"];
+                }
+                else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.GetType()))
+                {
+                    (node as dynBasicInteractive<string>).Value = data["value"].ToString();
+                }
+                else if(typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.GetType()))
+                {
+                    (node as dynBasicInteractive<bool>).Value = (bool)data["value"];
+                }
+            }
+
             Point dropPt = new Point((double)data["x"], (double)data["y"]);
             Canvas.SetLeft(el, dropPt.X);
             Canvas.SetTop(el, dropPt.Y);
@@ -466,7 +482,6 @@ namespace Dynamo.Commands
             Dictionary<string, object> data = parameters as Dictionary<string, object>;
 
             if (data != null && 
-                data.Count == 3 &&
                 dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()))
             {
                 return true;
@@ -535,17 +550,15 @@ namespace Dynamo.Commands
         }
     }
 
-    public class CutCommand : ICommand
+    public class CopyCommand : ICommand
     {
-        public CutCommand()
+        public CopyCommand()
         {
 
         }
 
         public void Execute(object parameters)
         {
-
-            Clipboard.Clear();
             foreach (ISelectable sel in dynSettings.Workbench.Selection)
             {
                 UIElement el = sel as UIElement;
@@ -625,6 +638,20 @@ namespace Dynamo.Commands
                     nodeData.Add("x", Canvas.GetLeft(node) + 100);
                     nodeData.Add("y", Canvas.GetTop(node) + 100);
                     nodeData.Add("name", node.NickName);
+
+                    if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.NodeLogic.GetType()))
+                    {
+                        nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<double>).Value);
+                    }
+                    else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.NodeLogic.GetType()))
+                    {
+                        nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<string>).Value);
+                    }
+                    else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.NodeLogic.GetType()))
+                    {
+                        nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<bool>).Value);
+                    }
+
                     dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeData));
                 }
             }
