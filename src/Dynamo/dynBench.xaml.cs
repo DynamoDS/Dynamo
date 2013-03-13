@@ -541,23 +541,51 @@ namespace Dynamo.Controls
                     //clear the selected elements
                     WorkBench.ClearSelection();
 
-                    foreach (dynNodeUI n in Controller.Nodes.Select(node => node.NodeUI))
-                    {
-                        //check if the node is within the boundary
-                        double x = Canvas.GetLeft(n);
-                        double y = Canvas.GetTop(n);
-                        System.Windows.Rect rect =
-                            new System.Windows.Rect(
-                                Canvas.GetLeft(selectionBox),
-                                Canvas.GetTop(selectionBox),
-                                selectionBox.Width,
-                                selectionBox.Height);
+                    
 
-                        bool contains = rect.Contains(x, y);
-                        if (contains)
+                    System.Windows.Rect rect =
+                                new System.Windows.Rect(
+                                    Canvas.GetLeft(selectionBox),
+                                    Canvas.GetTop(selectionBox),
+                                    selectionBox.Width,
+                                    selectionBox.Height);
+
+                    if (mouseUpPos.X > mouseDownPos.X)
+                    {
+                        //right window select
+                        //select all nodes within boundary
+                        foreach (dynNodeUI n in Controller.Nodes.Select(node => node.NodeUI))
                         {
-                            if (!WorkBench.Selection.Contains(n))
-                                WorkBench.Selection.Add(n);
+                            //check if the node is within the boundary
+                            double x0 = Canvas.GetLeft(n);
+                            double y0 = Canvas.GetTop(n);
+                            double x1 = x0 + n.Width;
+                            double y1 = y0 + n.Height;
+
+                            bool contains = rect.Contains(x0, y0) && rect.Contains(x1, y1);
+                            if (contains)
+                            {
+                                if (!WorkBench.Selection.Contains(n))
+                                    WorkBench.Selection.Add(n);
+                            }
+                        }
+                    }
+                    else if (mouseUpPos.X < mouseDownPos.X)
+                    {
+                        //left window select
+                        //select all nodes within and crossed by boundary
+                        foreach (dynNodeUI n in Controller.Nodes.Select(node => node.NodeUI))
+                        {
+                            //check if the node is within the boundary
+                            double x0 = Canvas.GetLeft(n);
+                            double y0 = Canvas.GetTop(n);
+
+                            bool intersects = rect.IntersectsWith(new Rect(x0, y0, n.Width, n.Height));
+                            if (intersects)
+                            {
+                                if (!WorkBench.Selection.Contains(n))
+                                    WorkBench.Selection.Add(n);
+                            }
                         }
                     }
                     #endregion
