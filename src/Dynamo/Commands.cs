@@ -605,7 +605,7 @@ namespace Dynamo.Commands
                         {
                             var connectors = n.InPorts.SelectMany(x => x.Connectors)
                                 .Concat(n.OutPorts.SelectMany(x => x.Connectors))
-                                .Where(x=>x.Start != null && x.End != null && !dynSettings.Controller.ClipBoard.Contains(x));
+                                .Where(x=>x.End != null && !dynSettings.Controller.ClipBoard.Contains(x));
 
                             dynSettings.Controller.ClipBoard.AddRange(connectors);
                         }
@@ -687,9 +687,21 @@ namespace Dynamo.Commands
             foreach (dynConnector c in connectors)
             {
                 Dictionary<string, object> connectionData = new Dictionary<string, object>();
-                connectionData.Add("start", dynSettings.Controller.CurrentSpace.Nodes
-                    .Select(x=>x.NodeUI)
-                    .Where(x=>x.GUID == (Guid)nodeLookup[c.Start.Owner.GUID]).FirstOrDefault());
+
+                dynNodeUI startNode = null;
+
+                try
+                {
+                    startNode = dynSettings.Controller.CurrentSpace.Nodes
+                        .Select(x => x.NodeUI)
+                        .Where(x => x.GUID == (Guid)nodeLookup[c.Start.Owner.GUID]).FirstOrDefault();
+                }
+                catch
+                {
+                    startNode = c.Start.Owner;
+                }
+
+                connectionData.Add("start", startNode);
 
                 connectionData.Add("end", dynSettings.Controller.CurrentSpace.Nodes
                     .Select(x=>x.NodeUI)
