@@ -2049,7 +2049,7 @@ namespace Dynamo.Nodes
             };
 
             mintb = new dynTextBox();
-            mintb.MaxLength = 3;
+            //mintb.MaxLength = 3;
             mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
@@ -2069,7 +2069,7 @@ namespace Dynamo.Nodes
             //mintb.Pending = false;
 
             maxtb = new dynTextBox();
-            maxtb.MaxLength = 3;
+            //maxtb.MaxLength = 3;
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
@@ -2101,7 +2101,7 @@ namespace Dynamo.Nodes
 
             NodeUI.RegisterAllPorts();
 
-            NodeUI.inputGrid.Margin = new Thickness(5, 5, 5, 5);
+            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
 
             displayBox = new TextBox()
             {
