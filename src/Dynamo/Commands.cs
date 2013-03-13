@@ -508,12 +508,12 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            ArrayList connectionData = parameters as ArrayList;
+            Dictionary<string,object> connectionData = parameters as Dictionary<string,object>;
             
-            dynNodeUI start = connectionData[0] as dynNodeUI;
-            dynNodeUI end = connectionData[1] as dynNodeUI;
-            int startIndex = (int)connectionData[2];
-            int endIndex = (int)connectionData[3];
+            dynNodeUI start = (dynNodeUI)connectionData["start"];
+            dynNodeUI end = (dynNodeUI)connectionData["end"];
+            int startIndex = (int)connectionData["port_start"];
+            int endIndex = (int)connectionData["port_end"];
 
             dynConnector c = new dynConnector(start, end, startIndex, endIndex, 0);
         }
@@ -523,7 +523,7 @@ namespace Dynamo.Commands
         public bool CanExecute(object parameters)
         {
             //make sure you have valid connection data
-            ArrayList connectionData = parameters as ArrayList;
+            Dictionary<string,object> connectionData = parameters as Dictionary<string,object>;
             if (connectionData != null && connectionData.Count == 4)
             {
                 return true;
@@ -612,35 +612,67 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            foreach (UIElement el in dynSettings.Controller.ClipBoard)
+            //make a lookup table to store the guids of the
+            //old nodes and the guids of their pasted versions
+            Hashtable nodeLookup = new Hashtable();
+
+            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x.GetType().IsAssignableFrom(typeof(dynNodeUI)));
+            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x.GetType() == typeof(dynConnector));
+
+            foreach (dynNodeUI node in nodes)
             {
-                dynNodeUI node = el as dynNodeUI;
-                dynConnector con = el as dynConnector;
+                //create a new guid for us to use
+                Guid newGuid = Guid.NewGuid();
+                nodeLookup.Add(node.GUID, newGuid);
 
-                if (node != null)
+                Dictionary<string, object> nodeData = new Dictionary<string, object>();
+                nodeData.Add("x", Canvas.GetLeft(node) + 100);
+                nodeData.Add("y", Canvas.GetTop(node) + 100);
+                nodeData.Add("name", node.NickName);
+                nodeData.Add("guid", newGuid);
+
+                if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.NodeLogic.GetType()))
                 {
-                    Dictionary<string, object> nodeData = new Dictionary<string, object>();
-                    nodeData.Add("x", Canvas.GetLeft(node) + 100);
-                    nodeData.Add("y", Canvas.GetTop(node) + 100);
-                    nodeData.Add("name", node.NickName);
-
-                    if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.NodeLogic.GetType()))
-                    {
-                        nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<double>).Value);
-                    }
-                    else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.NodeLogic.GetType()))
-                    {
-                        nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<string>).Value);
-                    }
-                    else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.NodeLogic.GetType()))
-                    {
-                        nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<bool>).Value);
-                    }
-
-                    dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeData));
+                    nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<double>).Value);
                 }
+                else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.NodeLogic.GetType()))
+                {
+                    nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<string>).Value);
+                }
+                else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.NodeLogic.GetType()))
+                {
+                    nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<bool>).Value);
+                }
+
+                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeData));
             }
 
+            //process the command queue so we have 
+            //nodes to connect to
+            dynSettings.Controller.ProcessCommandQueue();
+
+            //update the layout to ensure that the visuals
+            //are present in the tree to connect to
+            dynSettings.Bench.UpdateLayout();
+
+            foreach (dynConnector c in connectors)
+            {
+                Dictionary<string, object> connectionData = new Dictionary<string, object>();
+                connectionData.Add("start", dynSettings.Controller.CurrentSpace.Nodes
+                    .Select(x=>x.NodeUI)
+                    .Where(x=>x.GUID == (Guid)nodeLookup[c.Start.Owner.GUID]).FirstOrDefault());
+
+                connectionData.Add("end", dynSettings.Controller.CurrentSpace.Nodes
+                    .Select(x=>x.NodeUI)
+                    .Where(x=>x.GUID == (Guid)nodeLookup[c.End.Owner.GUID]).FirstOrDefault());
+
+                connectionData.Add("port_start", c.Start.Index);
+                connectionData.Add("port_end", c.End.Index);
+
+                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, connectionData));
+            }
+            
+            //process the queue again to create the connectors
             dynSettings.Controller.ProcessCommandQueue();
 
             dynSettings.Controller.ClipBoard.Clear();
