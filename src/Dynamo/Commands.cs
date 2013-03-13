@@ -10,7 +10,6 @@ using System.Collections;
 
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Connectors;
 
