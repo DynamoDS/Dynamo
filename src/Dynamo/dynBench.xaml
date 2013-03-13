@@ -30,6 +30,12 @@
         <KeyBinding Key="Back"
                     Modifiers="Control"
                     Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
+        <KeyBinding Key="C"
+                    Modifiers="Control"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.CutCmd}}"/>
+        <KeyBinding Key="V"
+                    Modifiers="Control"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
     </Window.InputBindings>
    <Grid>
       <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Name="menu1">

@@ -138,6 +138,30 @@ namespace Dynamo.Commands
                 return runExpressionCommand;
             }
         }
+
+        private static CutCommand cutCmd;
+        public static CutCommand CutCmd
+        {
+            get
+            {
+                if (cutCmd == null)
+                    cutCmd = new CutCommand();
+
+                return cutCmd;
+            }
+        }
+
+        private static PasteCommand pasteCmd;
+        public static PasteCommand PasteCmd
+        {
+            get
+            {
+                if (pasteCmd == null)
+                    pasteCmd = new PasteCommand();
+
+                return pasteCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -422,7 +446,7 @@ namespace Dynamo.Commands
 
             //Point pt = new Point((int)(dynSettings.Bench.overlayCanvas.ActualWidth / 2), (int)(dynSettings.Bench.overlayCanvas.ActualHeight / 2));
             //Point dropPt = dynSettings.Bench.overlayCanvas.TransformToVisual(dynSettings.Workbench).Transform(pt);
-            Point dropPt = new Point((int)data["x"], (int)data["y"]);
+            Point dropPt = new Point((double)data["x"], (double)data["y"]);
             Canvas.SetLeft(el, dropPt.X);
             Canvas.SetTop(el, dropPt.Y);
 
@@ -507,6 +531,118 @@ namespace Dynamo.Commands
             {
                 return false;
             }
+            return true;
+        }
+    }
+
+    public class CutCommand : ICommand
+    {
+        public CutCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+
+            Clipboard.Clear();
+            foreach (ISelectable sel in dynSettings.Workbench.Selection)
+            {
+                UIElement el = sel as UIElement;
+                if (el != null)
+                {
+                    if (!dynSettings.Controller.ClipBoard.Contains(el))
+                    {
+                        dynSettings.Controller.ClipBoard.Add(el);
+
+                        dynNodeUI n = el as dynNodeUI;
+                        if (n != null)
+                        {
+                            //only add connectors with valid
+                            //start AND end connections
+                            foreach (dynPort p in n.InPorts)
+                            {
+                                foreach (dynConnector c in p.Connectors)
+                                {
+                                    if (c.Start != null && c.End != null)
+                                    {
+                                        if (!dynSettings.Controller.ClipBoard.Contains(c))
+                                        {
+                                            dynSettings.Controller.ClipBoard.Add(c);
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (dynPort p in n.OutPorts)
+                            {
+                                foreach (dynConnector c in p.Connectors)
+                                {
+                                    if (c.Start != null && c.End != null)
+                                    {
+                                        if (!dynSettings.Controller.ClipBoard.Contains(c))
+                                        {
+                                            dynSettings.Controller.ClipBoard.Add(c);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            //TODO: Any reason we wouldn't be able to run an expression?
+            if (dynSettings.Workbench.Selection.Count == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public class PasteCommand : ICommand
+    {
+        public PasteCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            foreach (UIElement el in dynSettings.Controller.ClipBoard)
+            {
+                dynNodeUI node = el as dynNodeUI;
+                dynConnector con = el as dynConnector;
+
+                if (node != null)
+                {
+                    Dictionary<string, object> nodeData = new Dictionary<string, object>();
+                    nodeData.Add("x", Canvas.GetLeft(node) + 100);
+                    nodeData.Add("y", Canvas.GetTop(node) + 100);
+                    nodeData.Add("name", node.NickName);
+                    dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeData));
+                }
+            }
+
+            dynSettings.Controller.ProcessCommandQueue();
+
+            dynSettings.Controller.ClipBoard.Clear();
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            if (dynSettings.Controller.ClipBoard.Count == 0)
+            {
+                return false;
+            }
+
             return true;
         }
     }

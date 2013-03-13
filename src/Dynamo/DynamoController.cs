@@ -30,11 +30,19 @@ namespace Dynamo
 {
     public class DynamoController
     {
+        List<UIElement> clipBoard = new List<UIElement>();
+        public List<UIElement> ClipBoard
+        {
+            get { return clipBoard; }
+            set { clipBoard = value; }
+        }
+
         bool isProcessingCommandQueue = false;
         public bool IsProcessingCommandQueue
         {
             get { return isProcessingCommandQueue; }
         }
+        
         List<Tuple<object, object>> commandQueue = new List<Tuple<object, object>>();
         public List<Tuple<object, object>> CommandQueue
         {

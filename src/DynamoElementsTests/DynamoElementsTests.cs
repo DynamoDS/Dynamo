@@ -67,8 +67,8 @@ namespace Dynamo.Tests
         public void CanAddANodeByName()
         {
             Dictionary<string, object> sumData = new Dictionary<string, object>();
-            sumData.Add("x", 400);
-            sumData.Add("y", 100);
+            sumData.Add("x", 400.0);
+            sumData.Add("y", 100.0);
             sumData.Add("name", "+");
             dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
             dynSettings.Controller.ProcessCommandQueue();
@@ -84,16 +84,16 @@ namespace Dynamo.Tests
             Dictionary<string, object> numData1 = new Dictionary<string, object>();
             Dictionary<string, object> numData2 = new Dictionary<string, object>();
 
-            sumData.Add("x", 400);
-            sumData.Add("y", 100);
+            sumData.Add("x", 400.0);
+            sumData.Add("y", 100.0);
             sumData.Add("name", "+");
 
-            numData1.Add("x", 100);
-            numData1.Add("y", 100);
+            numData1.Add("x", 100.0);
+            numData1.Add("y", 100.0);
             numData1.Add("name", "Number");
 
-            numData2.Add("x", 100);
-            numData2.Add("y", 300);
+            numData2.Add("x", 100.0);
+            numData2.Add("y", 300.0);
             numData2.Add("name", "Number");
 
             dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
