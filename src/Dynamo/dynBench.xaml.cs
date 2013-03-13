@@ -552,8 +552,7 @@ namespace Dynamo.Controls
 
                     if (mouseUpPos.X > mouseDownPos.X)
                     {
-                        //right window select
-                        //select all nodes within boundary
+                        #region contain select
                         foreach (dynNodeUI n in Controller.Nodes.Select(node => node.NodeUI))
                         {
                             //check if the node is within the boundary
@@ -569,11 +568,11 @@ namespace Dynamo.Controls
                                     WorkBench.Selection.Add(n);
                             }
                         }
+                        #endregion
                     }
                     else if (mouseUpPos.X < mouseDownPos.X)
                     {
-                        //left window select
-                        //select all nodes within and crossed by boundary
+                        #region crossing select
                         foreach (dynNodeUI n in Controller.Nodes.Select(node => node.NodeUI))
                         {
                             //check if the node is within the boundary
@@ -587,6 +586,7 @@ namespace Dynamo.Controls
                                     WorkBench.Selection.Add(n);
                             }
                         }
+                        #endregion
                     }
                     #endregion
                 }
