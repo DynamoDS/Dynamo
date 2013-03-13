@@ -591,6 +591,8 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
+            dynSettings.Controller.ClipBoard.Clear();
+
             foreach (ISelectable sel in dynSettings.Workbench.Selection)
             {
                 UIElement el = sel as UIElement;
@@ -605,7 +607,9 @@ namespace Dynamo.Commands
                         {
                             var connectors = n.InPorts.SelectMany(x => x.Connectors)
                                 .Concat(n.OutPorts.SelectMany(x => x.Connectors))
-                                .Where(x=>x.End != null && !dynSettings.Controller.ClipBoard.Contains(x));
+                                .Where(x=>x.End != null && 
+                                    x.End.Owner.IsSelected &&
+                                    !dynSettings.Controller.ClipBoard.Contains(x));
 
                             dynSettings.Controller.ClipBoard.AddRange(connectors);
                         }
@@ -639,7 +643,6 @@ namespace Dynamo.Commands
             //make a lookup table to store the guids of the
             //old nodes and the guids of their pasted versions
             Hashtable nodeLookup = new Hashtable();
-
 
             //clear the selection so we can put the
             //paste contents in
@@ -726,7 +729,7 @@ namespace Dynamo.Commands
 
             dynSettings.Controller.ProcessCommandQueue();
 
-            dynSettings.Controller.ClipBoard.Clear();
+            //dynSettings.Controller.ClipBoard.Clear();
         }
 
         public event EventHandler CanExecuteChanged;
