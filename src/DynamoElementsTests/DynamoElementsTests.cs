@@ -117,23 +117,22 @@ namespace Dynamo.Tests
             dynDoubleInput num2 = dynSettings.Controller.Nodes[2] as dynDoubleInput;
             num2.Value = 2;
 
-            ArrayList connectionData1 = new ArrayList();
-            connectionData1.Add(dynSettings.Controller.Nodes[1].NodeUI);    //first number node
-            connectionData1.Add(dynSettings.Controller.Nodes[0].NodeUI);    //+ node
-            connectionData1.Add(0);  //first output
-            connectionData1.Add(0);  //first input
+            Dictionary<string, object> cd1 = new Dictionary<string, object>();
+            cd1.Add("start", dynSettings.Controller.Nodes[1].NodeUI);
+            cd1.Add("end", dynSettings.Controller.Nodes[0].NodeUI);
+            cd1.Add("port_start", 0);
+            cd1.Add("port_end", 0);
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, connectionData1));
-
-            ArrayList connectionData2 = new ArrayList();
-            connectionData2.Add(dynSettings.Controller.Nodes[2].NodeUI);    //first number node
-            connectionData2.Add(dynSettings.Controller.Nodes[0].NodeUI);    //+ node
-            connectionData2.Add(0);  //first output
-            connectionData2.Add(1);  //second input
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, cd1));
+            Dictionary<string,object> cd2 = new Dictionary<string,object>();
+            cd2.Add("start", dynSettings.Controller.Nodes[2].NodeUI);    //first number node
+            cd2.Add("end", dynSettings.Controller.Nodes[0].NodeUI);    //+ node
+            cd2.Add("port_start",0);  //first output
+            cd2.Add("port_end",1);  //second input
 
             dynSettings.Bench.LogText = "";
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, connectionData2));
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, cd2));
             dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.RunExpressionCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
 
