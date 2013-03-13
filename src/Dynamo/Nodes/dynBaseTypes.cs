@@ -2164,11 +2164,13 @@ namespace Dynamo.Nodes
                 if (value > tb_slider.Maximum)
                 {
                     maxtb.Text = value.ToString();
+                    tb_slider.Maximum = value;
                     //maxtb.Pending = false;
                 }
                 if (value < tb_slider.Minimum)
                 {
                     mintb.Text = value.ToString();
+                    tb_slider.Minimum = value;
                     //mintb.Pending = false;
                 }
 
