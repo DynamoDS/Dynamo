@@ -14,10 +14,29 @@
     MouseLeftButtonDown="topControl_MouseLeftButtonDown"
     MouseRightButtonDown="topControl_MouseRightButtonDown">
    <UserControl.Resources>
-      <local:MarginConverter x:Key="MarginConverter" />
+        <local:MarginConverter x:Key="MarginConverter" />
         <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
        <local:StateToColorConverter x:Key="StateToColorConverter"/>
     </UserControl.Resources>
+    <UserControl.ToolTip>
+        <Grid Width="235" MaxHeight="90" Height="Auto">
+            <Canvas Canvas.Left="0" Canvas.Top="0" Width="50" Height="50">
+                <Rectangle 
+                    RadiusX="10" 
+                    RadiusY="10" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" 
+                    Fill="Gray" 
+                    Stroke="#FF505050"/>
+            </Canvas>
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock Name="tt_elementName" HorizontalAlignment="Stretch" 
+                           VerticalAlignment="Top" Text="{Binding Path=NickName}" FontSize="14" FontFamily="Arial" FontWeight="Bold" Margin="2"/>
+                <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                           Text="{Binding Path=ToolTipText}" FontFamily="Courier New" FontSize="12" TextTrimming="WordEllipsis" Margin="2"/>
+            </StackPanel>
+        </Grid>
+   </UserControl.ToolTip>
    <Grid Name="grid">
       <Grid.ContextMenu>
          <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
@@ -34,7 +53,6 @@
             <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="Auto"/>
          </Grid.ColumnDefinitions>
-
       </Grid>
       <Grid Name="gridRight" 
               HorizontalAlignment="Right" 

@@ -75,6 +75,7 @@ namespace Dynamo.Controls
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
         string nickName;
         Guid guid;
+        string toolTipText = "";
         ElementState state;
         LacingType lacingType = LacingType.SHORTEST;
         dynNode nodeLogic;
@@ -101,8 +102,12 @@ namespace Dynamo.Controls
         {
             get
             {
-                //TODO: FIXME
-                return "";
+                return toolTipText;
+            }
+            set
+            {
+                toolTipText = value;
+                NotifyPropertyChanged("ToolTipText");
             }
         }
 
@@ -797,7 +802,8 @@ namespace Dynamo.Controls
 
         public void SetTooltip(string message)
         {
-            ToolTip = message;
+            //ToolTip = message;
+            this.ToolTipText = message;
         }
 
         void SetTooltip()
@@ -806,7 +812,8 @@ namespace Dynamo.Controls
             if (rtAttribs.Length > 0)
             {
                 string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-                ToolTip = description;
+                //ToolTip = description;
+                this.ToolTipText = description;
             }
         }
 
