@@ -1741,6 +1741,11 @@ namespace Dynamo.Nodes
             }
         }
 
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            //debug
+        }
+
         protected override void OnLostFocus(RoutedEventArgs e)
         {
             commit();
@@ -2009,6 +2014,8 @@ namespace Dynamo.Nodes
 
         public dynDoubleSliderInput()
         {
+            NodeUI.topControl.Width = 200;
+
             //add a slider control to the input grid of the control
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -2092,14 +2099,14 @@ namespace Dynamo.Nodes
 
             //make the middle column containing the slider
             //take up most of the width
-            NodeUI.inputGrid.ColumnDefinitions[1].Width = new GridLength(.75 * NodeUI.Width);
+            NodeUI.inputGrid.ColumnDefinitions[1].Width = new GridLength(.60 * NodeUI.Width);
 
             System.Windows.Controls.Grid.SetColumn(mintb, 0);
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
 
             NodeUI.RegisterAllPorts();
 
-            NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+            NodeUI.inputGrid.Margin = new Thickness(5, 5, 5, 5);
 
             displayBox = new TextBox()
             {

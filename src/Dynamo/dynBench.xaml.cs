@@ -918,7 +918,9 @@ namespace Dynamo.Controls
 
             IInputElement focusElement = FocusManager.GetFocusedElement(this);
 
-            if (focusElement != null && focusElement.GetType() != typeof(System.Windows.Controls.TextBox))
+            if (focusElement != null && 
+                focusElement.GetType() != typeof(System.Windows.Controls.TextBox) &&
+                focusElement.GetType() !=typeof(dynTextBox))
             {
                 if (Keyboard.IsKeyDown(Key.Left))
                 {
