@@ -897,18 +897,8 @@ namespace Dynamo.Controls
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //don't try to select if already selected
-            if (!isSelected)
-            {
-               // Debug.WriteLine("Node left selected.");
-                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    dynSettings.Bench.WorkBench.ClearSelection();
-                }
-
-                if(!dynSettings.Bench.WorkBench.Selection.Contains(this))
-                    dynSettings.Bench.WorkBench.Selection.Add(this);
-            }
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
+            dynSettings.Controller.ProcessCommandQueue();
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

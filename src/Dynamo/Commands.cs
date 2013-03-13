@@ -162,6 +162,18 @@ namespace Dynamo.Commands
                 return pasteCmd;
             }
         }
+
+        private static SelectCommand selectCmd;
+        public static SelectCommand SelectCmd
+        {
+            get
+            {
+                if (selectCmd == null)
+                    selectCmd = new SelectCommand();
+
+                return selectCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -683,6 +695,43 @@ namespace Dynamo.Commands
         public bool CanExecute(object parameters)
         {
             if (dynSettings.Controller.ClipBoard.Count == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    public class SelectCommand : ICommand
+    {
+        public SelectCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynNodeUI node = parameters as dynNodeUI;
+
+            if (!node.IsSelected)
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    dynSettings.Bench.WorkBench.ClearSelection();
+                }
+
+                if (!dynSettings.Bench.WorkBench.Selection.Contains(node))
+                    dynSettings.Bench.WorkBench.Selection.Add(node);
+            }
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameters)
+        {
+            dynNodeUI node = parameters as dynNodeUI;
+            if (node == null)
             {
                 return false;
             }
