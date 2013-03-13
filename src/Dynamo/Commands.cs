@@ -425,6 +425,7 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
+
             Dictionary<string, object> data = parameters as Dictionary<string, object>;
             if (data == null)
             {
@@ -460,6 +461,13 @@ namespace Dynamo.Commands
                 {
                     (node as dynBasicInteractive<bool>).Value = (bool)data["value"];
                 }
+            }
+
+            //override the guid so we can store
+            //for connection lookup
+            if (data.ContainsKey("guid"))
+            {
+                node.NodeUI.GUID = (Guid)data["guid"];
             }
 
             Point dropPt = new Point((double)data["x"], (double)data["y"]);
@@ -571,34 +579,11 @@ namespace Dynamo.Commands
                         dynNodeUI n = el as dynNodeUI;
                         if (n != null)
                         {
-                            //only add connectors with valid
-                            //start AND end connections
-                            foreach (dynPort p in n.InPorts)
-                            {
-                                foreach (dynConnector c in p.Connectors)
-                                {
-                                    if (c.Start != null && c.End != null)
-                                    {
-                                        if (!dynSettings.Controller.ClipBoard.Contains(c))
-                                        {
-                                            dynSettings.Controller.ClipBoard.Add(c);
-                                        }
-                                    }
-                                }
-                            }
-                            foreach (dynPort p in n.OutPorts)
-                            {
-                                foreach (dynConnector c in p.Connectors)
-                                {
-                                    if (c.Start != null && c.End != null)
-                                    {
-                                        if (!dynSettings.Controller.ClipBoard.Contains(c))
-                                        {
-                                            dynSettings.Controller.ClipBoard.Add(c);
-                                        }
-                                    }
-                                }
-                            }
+                            var connectors = n.InPorts.SelectMany(x => x.Connectors)
+                                .Concat(n.OutPorts.SelectMany(x => x.Connectors))
+                                .Where(x=>x.Start != null && x.End != null && !dynSettings.Controller.ClipBoard.Contains(x));
+
+                            dynSettings.Controller.ClipBoard.AddRange(connectors);
                         }
                     }
                 }
