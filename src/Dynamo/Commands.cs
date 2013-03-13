@@ -402,8 +402,13 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            
-            TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[parameters.ToString()];
+            Dictionary<string, object> data = parameters as Dictionary<string, object>;
+            if (data == null)
+            {
+                return;
+            }
+
+            TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[data["name"].ToString()];
 
             var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
             var node = (dynNode)obj.Unwrap();
@@ -416,8 +421,9 @@ namespace Dynamo.Commands
             el.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
             el.Opacity = 1;
 
-            Point pt = new Point((int)(dynSettings.Bench.overlayCanvas.ActualWidth / 2), (int)(dynSettings.Bench.overlayCanvas.ActualHeight / 2));
-            Point dropPt = dynSettings.Bench.overlayCanvas.TransformToVisual(dynSettings.Workbench).Transform(pt);
+            //Point pt = new Point((int)(dynSettings.Bench.overlayCanvas.ActualWidth / 2), (int)(dynSettings.Bench.overlayCanvas.ActualHeight / 2));
+            //Point dropPt = dynSettings.Bench.overlayCanvas.TransformToVisual(dynSettings.Workbench).Transform(pt);
+            Point dropPt = new Point((int)data["x"], (int)data["y"]);
             Canvas.SetLeft(el, dropPt.X);
             Canvas.SetTop(el, dropPt.Y);
 
@@ -434,7 +440,11 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            if (parameters != null && dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(parameters.ToString()))
+            Dictionary<string, object> data = parameters as Dictionary<string, object>;
+
+            if (data != null && 
+                data.Count == 3 &&
+                dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()))
             {
                 return true;
             }

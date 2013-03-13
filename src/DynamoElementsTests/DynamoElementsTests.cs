@@ -70,20 +70,39 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddANodeByName()
         {
-            if (DynamoCommands.CreateNodeCmd.CanExecute("+"))
-            {
-                DynamoCommands.CreateNodeCmd.Execute("+");
-            }
+            Dictionary<string, object> sumData = new Dictionary<string, object>();
+            sumData.Add("x", 400);
+            sumData.Add("y", 100);
+            sumData.Add("name", "+");
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
+            dynSettings.Controller.ProcessCommandQueue();
+
             Assert.AreEqual(dynSettings.Controller.CurrentSpace.Nodes.Count, 1);
         }
 
         [Test]
         public void CanSumTwoNumbers()
         {
-            
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, "+"));
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, "Number"));
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, "Number"));
+
+            Dictionary<string, object> sumData = new Dictionary<string, object>();
+            Dictionary<string, object> numData1 = new Dictionary<string, object>();
+            Dictionary<string, object> numData2 = new Dictionary<string, object>();
+
+            sumData.Add("x", 400);
+            sumData.Add("y", 100);
+            sumData.Add("name", "+");
+
+            numData1.Add("x", 100);
+            numData1.Add("y", 100);
+            numData1.Add("name", "Number");
+
+            numData2.Add("x", 100);
+            numData2.Add("y", 300);
+            numData2.Add("name", "Number");
+
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData1));
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData2));
             dynSettings.Controller.ProcessCommandQueue();
 
             //update the layout so the following
