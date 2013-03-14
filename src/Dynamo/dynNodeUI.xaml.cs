@@ -106,14 +106,7 @@ namespace Dynamo.Controls
             }
             set
             {
-                if (value == "")
-                {
-                    toolTipText = "OK";
-                }
-                else
-                {
-                    toolTipText = value;
-                }
+                toolTipText = value;
                 NotifyPropertyChanged("ToolTipText");
             }
         }
@@ -808,11 +801,11 @@ namespace Dynamo.Controls
 
         void SetTooltip()
         {
-            object[] rtAttribs = GetType().GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
+            Type t = NodeLogic.GetType();
+            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
             if (rtAttribs.Length > 0)
             {
                 string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-                //ToolTip = description;
                 this.ToolTipText = description;
             }
         }
