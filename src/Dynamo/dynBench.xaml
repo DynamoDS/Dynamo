@@ -183,7 +183,7 @@
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Background="#FF505050">
             <ScrollViewer HorizontalAlignment="Stretch" Margin="0,33,0,90" Name="scrollViewer1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
-                <StackPanel Height="Auto" Name="SideStackPanel" HorizontalAlignment="Stretch">
+                <StackPanel Height="Auto" Margin="10" Name="SideStackPanel" HorizontalAlignment="Stretch">
                 </StackPanel>
             </ScrollViewer>
             <Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>
