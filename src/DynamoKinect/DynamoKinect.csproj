@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Coding4Fun.Kinect.Wpf">
-      <HintPath>..\..\packages\Coding4Fun.Kinect.Wpf.1.1.0\lib\Coding4Fun.Kinect.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Kinect">
       <HintPath>..\..\packages\kinect\Microsoft.Kinect.dll</HintPath>

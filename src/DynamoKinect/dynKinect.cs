@@ -24,9 +24,8 @@ namespace Dynamo.Nodes
     public class dynKinect : dynNodeWithOneOutput
     {
         //Kinect Runtime
-        KinectSensor nui;
         Image image1;
-        ColorImageFrame planarImage;
+        //ColorImageFrame planarImage;
         XYZ rightHandLoc = new XYZ();
         ReferencePoint rightHandPt;
         System.Windows.Shapes.Ellipse rightHandEllipse;
