@@ -184,7 +184,9 @@
             <StackPanel Height="Auto" Name="SideStackPanel" Width="Auto"/>
             </ScrollViewer>
             <Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>
-            <TextBox Height="23" HorizontalAlignment="Stretch" Margin="48,5,74,0" Name="SearchBox" VerticalAlignment="Top" Text="" IsEnabled="True" TextChanged="SearchBox_OnTextChanged" LostFocus="searchBox_LostFocus" FontFamily="Arial"/>
+            <TextBox Name="SearchBox" Margin="48,5,74,0" Height="23"
+                        Text="" Padding="3" IsEnabled="True" VerticalAlignment="top" TextChanged="SearchBox_OnTextChanged" 
+                        LostFocus="searchBox_LostFocus" FontFamily="Arial" />
             <Button Margin="0,5,5,0" Height="25" Width="Auto" HorizontalAlignment="Right" Content="New Node" VerticalAlignment="Top" Click="NewFunction_Click" FontFamily="Arial"/>
             <Button Margin="35,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Run" Click="Run_Click" Name="RunButton" FontFamily="Arial" />
             <Button Margin="155,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Cancel" Click="Cancel_Click" Name="cancelButton" FontFamily="Arial" />
