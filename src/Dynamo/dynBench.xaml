@@ -99,7 +99,7 @@
             </MenuItem>
         </Menu>
         <Border Margin="0" BorderBrush="Black" BorderThickness="1" Name="border" 
-                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="3">
+                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
             <!--outer canvas clips the inner canvas-->
             <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
@@ -167,8 +167,8 @@
                     Opacity=".5" 
                     Visibility="Visible"
                     Grid.Row="3"
-                    Grid.Column="0" 
-                    Grid.ColumnSpan="3">
+                    Grid.Column="2" 
+                    Grid.ColumnSpan="1">
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Clear" Click="ClearLog_Click" />
@@ -181,7 +181,7 @@
                     IsTabStop="False" />
         </ScrollViewer>
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
-              Grid.Row="1" Grid.Column="0" Background="#32FFFFFF">
+              Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Background="#FF505050">
             <ScrollViewer HorizontalAlignment="Stretch" Margin="0,33,0,90" Name="scrollViewer1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
                 <StackPanel Height="Auto" Name="SideStackPanel" HorizontalAlignment="Stretch">
                 </StackPanel>
@@ -221,23 +221,23 @@
          </Canvas.Background>
       </Canvas>
         <GridSplitter ResizeDirection="Rows" 
-                        Grid.Column="0" 
-                        Grid.ColumnSpan="3"
+                        Grid.Column="2" 
+                        Grid.ColumnSpan="1"
                         Grid.Row="2" 
                         Grid.RowSpan="1"
                         Width="Auto" 
                         Height="2" 
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
-                        Margin="0" Background="Black"/>
+                        Margin="0" Background="#FF646464"/>
         <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
                           Grid.Row="1" 
-                          Grid.RowSpan="1"
+                          Grid.RowSpan="3"
                           Height="Auto"
                           Width="2"
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch" 
-                          Margin="0" Background="Black"/>
+                          Margin="0" Background="#FF646464"/>
    </Grid>
 </Window>
