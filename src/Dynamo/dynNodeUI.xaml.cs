@@ -741,29 +741,22 @@ namespace Dynamo.Controls
         /// </summary>
         public void ValidateConnections()
         {
-            bool flag = false;
+            var portsWithoutConnectors = inPorts.Select(x => x).Where(x => x.Connectors.Count == 0).Count();
 
-            foreach (dynPort port in inPorts)
-            {
-                if (port.Connectors.Count == 0)
-                {
-                    flag = true;
-                }
-            }
-
-            if (flag)
+            // if there are inputs without connections
+            // mark as dead
+            if(inPorts.Select(x => x).Where(x => x.Connectors.Count == 0).Count() > 0)
             {
                 State = ElementState.DEAD;
             }
             else
             {
-                State = ElementState.ACTIVE;
+                //don't override state if it's in error
+                if (State != ElementState.ERROR)
+                {
+                    State = ElementState.ACTIVE;
+                }
             }
-        }
-
-        protected void MarkConnectionState(bool bad)
-        {
-            State = bad ? ElementState.ERROR : ElementState.ACTIVE;
         }
 
         protected internal void SetColumnAmount(int amt)
@@ -902,11 +895,8 @@ namespace Dynamo.Controls
 
         public void Error(string p)
         {
-            MarkConnectionState(true);
-
-            SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-            Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                new object[] { p });
+            State = ElementState.ERROR;
+            ToolTipText = p;
         }
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
