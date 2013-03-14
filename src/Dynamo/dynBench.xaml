@@ -38,8 +38,20 @@
                     Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
     </Window.InputBindings>
    <Grid Focusable="True" Name="mainGrid">
-      <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Name="menu1" FontFamily="Arial">
-         <MenuItem Header="_File" Name="fileMenu">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MaxWidth="300"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
+              VerticalAlignment="Top" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+             <MenuItem Header="_File" Name="fileMenu">
             <MenuItem Header="_Clear" Click="Clear_Click" Name="clearButton">
                <MenuItem.Icon>
                   <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
@@ -71,29 +83,29 @@
             <MenuItem Header="_Layout All" Click="layoutAll_Click"  Name="layoutAll"/>
             <Separator />
          </MenuItem>
-         <MenuItem Header="_View" Name="viewMenu">
-            <MenuItem Header="_Home" Click="Home_Click" Name="homeButton" IsEnabled="False">
-               <MenuItem.Icon>
-                  <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
-               </MenuItem.Icon>
-            </MenuItem>
-            <Separator />
-         </MenuItem>
-        <MenuItem Header="Settings">
+             <MenuItem Header="_View" Name="viewMenu">
+                <MenuItem Header="_Home" Click="Home_Click" Name="homeButton" IsEnabled="False">
+                   <MenuItem.Icon>
+                      <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
+                   </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+             </MenuItem>
+            <MenuItem Header="Settings">
                 <MenuItem Header="_Connector Type" IsEnabled="True">
                     <MenuItem Name="settings_curves" IsCheckable="True" IsChecked="True" Checked="settings_curves_Checked" Header="Curves"/>
                     <MenuItem Name="settings_plines" IsCheckable="True" IsChecked="False" Checked="settings_plines_Checked" Header="Polylines"/>
                 </MenuItem>
             </MenuItem>
-                <!--<MenuItem Header="_Add" Name="AddMenu">
-            <MenuItem Header="_New Function" Click="NewFunction_Click"/>
-            <MenuItem Header="Variable" Click="AddElement_Click" Name="varItem" IsEnabled="False" />
-            <Separator />
-         </MenuItem>-->
-      </Menu>
-      <Border Margin="291,20,0,0" BorderBrush="Black" BorderThickness="1" Name="border">
-         <!--outer canvas clips the inner canvas-->
-         <Canvas Name="outerCanvas" Margin="0,0,0,0" ClipToBounds="True">
+        </Menu>
+        <Border Margin="0" BorderBrush="Black" BorderThickness="1" Name="border" 
+                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="3">
+            <!--outer canvas clips the inner canvas-->
+            <Canvas Name="outerCanvas" 
+                 Margin="0,0,0,0" 
+                 ClipToBounds="True" 
+                 Grid.Row="0"
+                 Grid.Column="2">
                 <dragCanvas:DragCanvas x:Name="WorkBench"
                                 x:FieldModifier="public"
                                 Width="100000" 
@@ -120,11 +132,15 @@
                     <SolidColorBrush Color="Transparent"/>
                 </Canvas.Background>
                 </dragCanvas:DragCanvas>
-                <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" HorizontalContentAlignment="Right" FontSize="24" FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
+                <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" 
+                       HorizontalContentAlignment="Right" FontSize="24" 
+                       FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
                 <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" 
                        MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
                        MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" />
-                <TextBox Canvas.Right="30" Canvas.Top="13" Height="23" Name="editNameBox" Width="263" Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
+                <TextBox Canvas.Right="30" Canvas.Top="13" Height="23" Name="editNameBox" Width="263" 
+                         Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
+                         IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
                 <Canvas.Background>
                     <SolidColorBrush Color="#FF505050" />
                     <!--<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -141,69 +157,58 @@
                     </ContextMenu>
                 </Canvas.ContextMenu>
             </Canvas>
-      </Border>
-        <Grid Name="logGrid" 
-              VerticalAlignment="Stretch" 
-              Margin="291,0,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="100"/>
-            </Grid.RowDefinitions>
-            <GridSplitter ResizeDirection="Rows" 
-                          Grid.Column="0" 
-                          Grid.Row="1" 
-                          Width="Auto" 
-                          Height="2" 
-                          HorizontalAlignment="Stretch" 
-                          VerticalAlignment="Stretch" 
-                          Margin="0"/>
-            <ScrollViewer Name="LogScroller" 
-                          VerticalAlignment="Stretch"
-                      VerticalScrollBarVisibility="Auto" 
-                      HorizontalAlignment="Stretch"
-                      HorizontalScrollBarVisibility="Auto"
-                      Background="DarkGray" 
+        </Border>
+        <ScrollViewer Name="LogScroller" 
+                    VerticalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto" 
+                    HorizontalAlignment="Stretch"
+                    HorizontalScrollBarVisibility="Auto"
+                    Background="DarkGray" 
                     Opacity=".5" 
                     Visibility="Visible"
-                          Grid.Row="2">
-             <ScrollViewer.ContextMenu>
+                    Grid.Row="3"
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="3">
+            <ScrollViewer.ContextMenu>
                 <ContextMenu>
-                   <MenuItem Header="Clear" Click="ClearLog_Click" />
+                    <MenuItem Header="Clear" Click="ClearLog_Click" />
                 </ContextMenu>
-             </ScrollViewer.ContextMenu>
-             <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
-                      Background="#00000000" BorderThickness="0" BorderBrush="#00000000" 
-                      Margin="5" Foreground="White" TextWrapping="Wrap" Focusable="True"
-                      IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
-                      IsTabStop="False" />
-          </ScrollViewer>
-        </Grid>
-        <Grid Height="Auto" HorizontalAlignment="Left" Margin="0,20,0,0" Name="sidebarGrid" VerticalAlignment="Stretch" Width="290" Visibility="Visible">
+            </ScrollViewer.ContextMenu>
+            <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
+                    Background="#00000000" BorderThickness="0" BorderBrush="#00000000" 
+                    Margin="5" Foreground="White" TextWrapping="Wrap" Focusable="True"
+                    IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
+                    IsTabStop="False" />
+        </ScrollViewer>
+        <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
+              Grid.Row="1" Grid.Column="0" Background="#32FFFFFF">
             <ScrollViewer HorizontalAlignment="Stretch" Margin="0,33,0,90" Name="scrollViewer1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
-            <StackPanel Height="Auto" Name="SideStackPanel" Width="Auto"/>
+                <StackPanel Height="Auto" Name="SideStackPanel" HorizontalAlignment="Stretch">
+                </StackPanel>
             </ScrollViewer>
             <Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>
             <TextBox Name="SearchBox" Margin="48,5,74,0" Height="23"
                         Text="" Padding="3" IsEnabled="True" VerticalAlignment="top" TextChanged="SearchBox_OnTextChanged" 
                         LostFocus="searchBox_LostFocus" FontFamily="Arial" />
-            <Button Margin="0,5,5,0" Height="25" Width="Auto" HorizontalAlignment="Right" Content="New Node" VerticalAlignment="Top" Click="NewFunction_Click" FontFamily="Arial"/>
-            <Button Margin="35,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Run" Click="Run_Click" Name="RunButton" FontFamily="Arial" />
-            <Button Margin="155,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Cancel" Click="Cancel_Click" Name="cancelButton" FontFamily="Arial" />
+            <Button Margin="0,5,5,0" Height="25" Width="Auto" HorizontalAlignment="Right" Content="New Node" 
+                    VerticalAlignment="Top" Click="NewFunction_Click" FontFamily="Arial"/>
+            <Button Margin="35,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Run" 
+                    Click="Run_Click" Name="RunButton" FontFamily="Arial" />
+            <Button Margin="155,0,0,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Cancel" 
+                    Click="Cancel_Click" Name="cancelButton" FontFamily="Arial" />
             <CheckBox Margin="35,0,0,35" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" />
-            <Label Margin="50,0,0,29" Content="Run Automatically" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontFamily="Arial" Foreground="#FFC8C8C8" />
-            <CheckBox Margin="35,0,0,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:FieldModifier="public" Name="debugCheckBox" Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" FontFamily="Arial" />
+            <Label Margin="50,0,0,29" Content="Run Automatically" HorizontalAlignment="Left" 
+                   VerticalAlignment="Bottom" FontFamily="Arial" Foreground="#FFC8C8C8" />
+            <CheckBox Margin="35,0,0,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:FieldModifier="public" Name="debugCheckBox" 
+                      Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" FontFamily="Arial" />
             <Label Margin="50,0,0,7" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontFamily="Arial" Foreground="#FFC8C8C8" />
-            <Grid.Background>
-            <!--<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#FF5B5B5B" Offset="1" />
-                <GradientStop Color="#FF9A9A9A" Offset="0" />
-            </LinearGradientBrush>-->
-            <SolidColorBrush Color="#FF505050" />
-            </Grid.Background>
         </Grid>
-      <Canvas HorizontalAlignment="Stretch"
-              Margin="0,20,0,0" 
+        <Canvas HorizontalAlignment="Stretch"
+              Margin="0,20,0,0"
+              Grid.Row="1"
+              Grid.Column="0"
+              Grid.RowSpan="3"
+              Grid.ColumnSpan="3"
               Name="overlayCanvas" 
               VerticalAlignment="Stretch" 
               Width="Auto" 
@@ -215,5 +220,24 @@
             <SolidColorBrush />
          </Canvas.Background>
       </Canvas>
+        <GridSplitter ResizeDirection="Rows" 
+                        Grid.Column="0" 
+                        Grid.ColumnSpan="3"
+                        Grid.Row="2" 
+                        Grid.RowSpan="1"
+                        Width="Auto" 
+                        Height="2" 
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch" 
+                        Margin="0" Background="Black"/>
+        <GridSplitter ResizeDirection="Auto" 
+                          Grid.Column="1" 
+                          Grid.Row="1" 
+                          Grid.RowSpan="1"
+                          Height="Auto"
+                          Width="2"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch" 
+                          Margin="0" Background="Black"/>
    </Grid>
 </Window>

@@ -384,7 +384,7 @@ namespace Dynamo
                     var scale = Math.Min(target / width, .8);
 
                     nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
-                    nodeUI.nickNameBlock.FontSize *= .8 / scale;
+                    //nodeUI.nickNameBlock.FontSize *= .8 / scale;
 
                     Tuple<Expander, SortedList<string, dynNodeUI>> expander;
 
