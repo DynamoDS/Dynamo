@@ -50,7 +50,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
-              VerticalAlignment="Top" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+              VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
              <MenuItem Header="_File" Name="fileMenu">
             <MenuItem Header="_Clear" Click="Clear_Click" Name="clearButton">
                <MenuItem.Icon>
@@ -82,7 +82,7 @@
             <MenuItem Header="_Save Image..." Click="saveImage_Click" Name="saveImage"/>
             <MenuItem Header="_Layout All" Click="layoutAll_Click"  Name="layoutAll"/>
             <Separator />
-         </MenuItem>
+             </MenuItem>
              <MenuItem Header="_View" Name="viewMenu">
                 <MenuItem Header="_Home" Click="Home_Click" Name="homeButton" IsEnabled="False">
                    <MenuItem.Icon>
@@ -182,15 +182,59 @@
         </ScrollViewer>
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Background="#FF505050">
-            <ScrollViewer HorizontalAlignment="Stretch" Margin="0,33,0,90" Name="scrollViewer1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
-                <StackPanel Height="Auto" Margin="10" Name="SideStackPanel" HorizontalAlignment="Stretch">
+            <ScrollViewer HorizontalAlignment="Stretch" Margin="10,50,10,10" Name="scrollViewer1" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+                <StackPanel Name="SideStackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 </StackPanel>
             </ScrollViewer>
-            <Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>
-            <TextBox Name="SearchBox" Margin="48,5,74,0" Height="23"
+            <!--<Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>-->
+            <TextBox Name="SearchBox" Margin="10,10,74,0" Height="25"
                         Text="" Padding="3" IsEnabled="True" VerticalAlignment="top" TextChanged="SearchBox_OnTextChanged" 
-                        LostFocus="searchBox_LostFocus" FontFamily="Arial" />
-            <Button Margin="0,5,5,0" Height="25" Width="Auto" HorizontalAlignment="Right" Content="New Node" 
+                        LostFocus="searchBox_LostFocus" FontFamily="Arial">
+                <!--<TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <VisualBrush Stretch="None">
+                                            <VisualBrush.Visual>
+                                                <Grid>
+                                                    <TextBlock Text="Search..."  HorizontalAlignment="Left" Foreground="Gray"/>
+                                                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                        <Rectangle Fill="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                                    </Canvas>
+                                                </Grid>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="{x:Null}">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <VisualBrush Stretch="None">
+                                            <VisualBrush.Visual>
+                                                <Border>
+                                                    <TextBlock Text="Search..."  HorizontalAlignment="Left" Foreground="Gray"/>
+                                                </Border>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <VisualBrush Stretch="None">
+                                        </VisualBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>-->
+            </TextBox>
+            <Button Margin="0,10,10,0" Height="25" Width="50" HorizontalAlignment="Right" Content="New" 
                     VerticalAlignment="Top" Click="NewFunction_Click" FontFamily="Arial"/>
         </Grid>
         <Button Margin="10,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Run" 
@@ -203,7 +247,7 @@
                    VerticalAlignment="Bottom" FontFamily="Arial" Foreground="#FFC8C8C8" Grid.Row="1" Grid.Column="2"/>
         <CheckBox Margin="10,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:FieldModifier="public" Name="debugCheckBox" 
                       Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" FontFamily="Arial" Grid.Row="1" Grid.Column="2"/>
-        <Label Margin="30,7" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
+        <Label Margin="25,7" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                FontFamily="Arial" Foreground="#FFC8C8C8" Grid.Row="1" Grid.Column="2"/>
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
