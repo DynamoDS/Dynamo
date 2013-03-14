@@ -175,11 +175,12 @@
          <CheckBox Margin="60,0,0,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:FieldModifier="public" Name="debugCheckBox" Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" />
          <Label Margin="72,0,0,7" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
          <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <!--<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                <GradientStop Color="#FF5B5B5B" Offset="1" />
                <GradientStop Color="#FF9A9A9A" Offset="0" />
-            </LinearGradientBrush>
-         </Grid.Background>
+            </LinearGradientBrush>-->
+            <SolidColorBrush Color="#FF505050" />
+            </Grid.Background>
       </Grid>
       <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0" 
