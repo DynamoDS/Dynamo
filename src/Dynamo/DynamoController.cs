@@ -405,7 +405,6 @@ namespace Dynamo
                                 Width = double.NaN
                             },
                             HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                            //FontWeight = FontWeights.Bold
                             Foreground = new SolidColorBrush(Color.FromRgb(200,200,200))
                         };
 
@@ -747,6 +746,7 @@ namespace Dynamo
                     },
                     HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                     //FontWeight = FontWeights.Bold
+                    Foreground = new SolidColorBrush(Color.FromRgb(200,200,200))
                 };
 
                 Bench.addMenuCategoryDict[category] = expander;
