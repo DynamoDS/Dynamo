@@ -125,8 +125,8 @@
                      HorizontalAlignment="Left"
                      Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Margin="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Converter={StaticResource MarginConverter}, Mode=OneWay}"
-                     FontFamily="Calibri"
-                     FontSize="15" 
+                     FontFamily="Arial"
+                     FontSize="12" 
                      FontWeight="Normal" 
                      TextAlignment="Center" 
                      IsHitTestVisible="False" 
@@ -134,7 +134,7 @@
                      Width="{Binding ElementName=grid, Path=ActualWidth}"
                      MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
                      TextWrapping="Wrap"
-                     Background="Transparent" FontStyle="Normal">
+                     Background="Transparent" FontStyle="Normal" Foreground="#FF141414">
             <!--<TextBox.Background>
                <SolidColorBrush />
             </TextBox.Background>-->
