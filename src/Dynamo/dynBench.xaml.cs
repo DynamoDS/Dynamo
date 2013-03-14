@@ -464,6 +464,8 @@ namespace Dynamo.Controls
         {
             //Debug.WriteLine("Starting mouse down.");
 
+            mainGrid.Focus();
+
             //Pan with middle-click
             if (e.ChangedButton == MouseButton.Middle)
             {
