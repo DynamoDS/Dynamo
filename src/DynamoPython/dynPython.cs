@@ -37,7 +37,7 @@ using System.Windows;
 using System.Xml;
 using Microsoft.FSharp.Core;
 
-namespace Dynamo.Nodes.PythonNode
+namespace Dynamo.Nodes
 {
     internal static class Converters
     {
