@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Dynamo.Nodes;
-using Dynamo.Revit;
-using Autodesk.Revit.DB;
-using Dynamo.Controls;
-using Dynamo.Utilities;
-using Value = Dynamo.FScheme.Value;
 using System.Reflection;
 using System.IO;
+
+using Dynamo.Nodes;
+using Dynamo.Revit;
+using Dynamo.Controls;
+using Dynamo.Utilities;
+
+using Autodesk.Revit.DB;
+
+using Value = Dynamo.FScheme.Value;
+
 
 namespace Dynamo
 {
@@ -438,7 +442,6 @@ namespace Dynamo
             }
         }
     }
-
 
     public class DynamoWarningPrinter : Autodesk.Revit.DB.IFailuresPreprocessor
     {
