@@ -136,7 +136,7 @@ namespace Dynamo.Nodes
         public dynFamilyInstanceParameterSelector()
         {
             //widen the control
-            NodeUI.topControl.Height = 175;
+            NodeUI.topControl.Width = 175;
 
             //add a drop down list to the window
             paramBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
