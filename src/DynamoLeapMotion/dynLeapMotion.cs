@@ -27,14 +27,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-
+using System.Windows.Media.Media3D;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
-using Autodesk.Revit.DB;
 using Dynamo.Controls;
 
 namespace Dynamo.Nodes
@@ -244,7 +243,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
-            OutPortData.Add(new PortData("Translation", "The translation vector", typeof(XYZ)));
+            OutPortData.Add(new PortData("Translation", "The translation vector", typeof(Point3D)));
 
             NodeUI.RegisterAllPorts();
         }
@@ -275,7 +274,7 @@ namespace Dynamo.Nodes
             else
                 v = new Leap.Vector();
 
-            return Value.NewContainer(new XYZ(v.x, v.y, v.z));
+            return Value.NewContainer(new Point3D(v.x, v.y, v.z));
         }
     }
 
@@ -289,7 +288,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
-            OutPortData.Add(new PortData("Rotation", "The XYZ rotation in radians", typeof(XYZ)));
+            OutPortData.Add(new PortData("Rotation", "The XYZ rotation in radians", typeof(Point3D)));
 
             NodeUI.RegisterAllPorts();
         }
@@ -319,7 +318,7 @@ namespace Dynamo.Nodes
             float angleY = frame.RotationAngle(sinceFrame, new Leap.Vector((float)0.0, (float)1.0, (float)0.0));
             float angleZ = frame.RotationAngle(sinceFrame, new Leap.Vector((float)0.0, (float)0.0, (float)1.0));
 
-            return Value.NewContainer(new XYZ(angleX, angleY, angleZ));
+            return Value.NewContainer(new Point3D(angleX, angleY, angleZ));
         }
     }
 
@@ -654,7 +653,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Object", "The Hand, Finger, or Tool from the Leap controller", typeof(object)));
 
-            OutPortData.Add(new PortData("XYZ", "The XYZ position in mms", typeof(XYZ)));
+            OutPortData.Add(new PortData("XYZ", "The XYZ position in mms", typeof(Point3D)));
 
             NodeUI.RegisterAllPorts();
         }
@@ -684,7 +683,7 @@ namespace Dynamo.Nodes
                 y = pointable.TipPosition.z;
             }
 
-            return Value.NewContainer(new XYZ(x, y, z));
+            return Value.NewContainer(new Point3D(x, y, z));
         }
     }
 
