@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="LeapCSharp.NET4.0">
-      <HintPath>..\..\packages\Leap SDK 0.7.3_2234 Binaries\LeapCSharp.NET4.0.dll</HintPath>
+      <HintPath>..\..\extern\Leap SDK 0.7.3_2234 Binaries\LeapCSharp.NET4.0.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
