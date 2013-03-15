@@ -261,11 +261,11 @@
         <CheckBox Margin="10,35" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                   Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" Grid.Row="1" Grid.Column="2"/>
         <Label Margin="25,30" Content="Run Automatically" HorizontalAlignment="Left" 
-                   VerticalAlignment="Bottom" FontFamily="Arial" FontSize="11"  Foreground="#FFC8C8C8" Grid.Row="1" Grid.Column="2"/>
+                   VerticalAlignment="Bottom" FontFamily="Arial" FontSize="11"  Foreground="#FF141414" Grid.Row="1" Grid.Column="2"/>
         <CheckBox Margin="10,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:FieldModifier="public" Name="debugCheckBox" 
                       Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" FontFamily="Arial" Grid.Row="1" Grid.Column="2"/>
         <Label Margin="25,9" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-               FontFamily="Arial" Foreground="#FFC8C8C8" FontSize="11" Grid.Row="1" Grid.Column="2"/>
+               FontFamily="Arial" Foreground="#FF141414" FontSize="11" Grid.Row="1" Grid.Column="2"/>
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
               Grid.Row="1"

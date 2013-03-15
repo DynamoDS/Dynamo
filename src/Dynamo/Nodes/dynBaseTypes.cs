@@ -1958,7 +1958,7 @@ namespace Dynamo.Nodes
             //and make this so it's not so wide
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             NodeUI.topControl.Width = 100;
-            NodeUI.topControl.Height = 50;
+            //NodeUI.topControl.Height = 50;
 
             NodeUI.UpdateLayout();
         }

@@ -26,7 +26,7 @@
                VerticalAlignment="Bottom" Foreground="#FFDED9D9" />
         <Label Content="dynamo" Height="51" HorizontalAlignment="Left" Margin="5,25" Name="title_label" 
                VerticalAlignment="Bottom" 
-               FontFamily="Arial" FontWeight="Bold" FontSize="36" Foreground="#FFDED9D9" />
+               FontFamily="Arial" FontWeight="Bold" FontSize="36" Foreground="#FFFFE05F" />
         <Label Content="{Binding ElementName=_this, Path=LoadingStatus}" Foreground="#FFDED9D9" Height="28" 
                HorizontalAlignment="Right" Margin="5" Name="status_label" VerticalAlignment="Bottom" />
     </Grid>
