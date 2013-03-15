@@ -36,6 +36,8 @@ using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Controls;
 
+using Leap;
+
 namespace Dynamo.Nodes
 {
     [NodeName("Leap")]
@@ -60,9 +62,6 @@ namespace Dynamo.Nodes
 
             NodeUI.RegisterAllPorts();
 
-            NodeUI.dynNodeDestroyed += new dynNodeUI.dynElementDestroyedHandler(OnDynLeapMotionDestroyed);
-            NodeUI.dynNodeReadyToDestroy += new dynNodeUI.dynElementReadyToDestroyHandler(OnDynLeapMotionReadyToDestroy);
-
             // Create a menuitem to enable/disable the Leap device
             menuItemLeapEnabled = new System.Windows.Controls.MenuItem();
             menuItemLeapEnabled.Header = "Enable Leap";
@@ -86,22 +85,17 @@ namespace Dynamo.Nodes
             LeapEnable(menuItemLeapEnabled.IsChecked);
         }
 
-        void OnDynLeapMotionDestroyed(object sender, EventArgs e)
+        protected override void Cleanup()
         {
-        }
-
-        void OnDynLeapMotionReadyToDestroy(object sender, EventArgs e)
-        {
-            // Disconnect Leap controller
             LeapEnable(false);
+            base.Cleanup();
         }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
             return Value.NewContainer(leapController);
         }
 
-        public static Leap.Controller Controller
+        public static Leap.Controller CurrentLeapController
         {
             get { return leapController; }
         }
@@ -223,7 +217,7 @@ namespace Dynamo.Nodes
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
@@ -263,7 +257,7 @@ namespace Dynamo.Nodes
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
@@ -308,7 +302,7 @@ namespace Dynamo.Nodes
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
