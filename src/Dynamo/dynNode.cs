@@ -632,6 +632,13 @@ namespace Dynamo.Nodes
                 output.RemoveWhere(x => x.Item1 == inPortData);
             CheckPortsForRecalc();
         }
+
+        /// <summary>
+        /// Implement on derived classes to cleanup resources when 
+        /// </summary>
+        protected virtual void Cleanup()
+        {
+        }
     }
 
     public abstract class dynNodeWithOneOutput : dynNode

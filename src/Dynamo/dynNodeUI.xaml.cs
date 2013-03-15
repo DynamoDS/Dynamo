@@ -47,15 +47,6 @@ namespace Dynamo.Controls
 
     public partial class dynNodeUI : UserControl, INotifyPropertyChanged, ISelectable
     {
-        #region delegates
-        public delegate void dynElementUpdatedHandler(object sender, EventArgs e);
-        public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
-        public delegate void dynElementReadyToBuildHandler(object sender, EventArgs e);
-        public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
-        public delegate void dynElementSelectedHandler(object sender, EventArgs e);
-        public delegate void dynElementDeselectedHandler(object sender, EventArgs e);
-        #endregion
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void NotifyPropertyChanged(String info)
@@ -236,15 +227,6 @@ namespace Dynamo.Controls
         }
         #endregion
 
-        #region events
-        //public event dynElementUpdatedHandler dynElementUpdated;
-        public event dynElementDestroyedHandler dynNodeDestroyed;
-        public event dynElementReadyToBuildHandler dynElementReadyToBuild;
-        public event dynElementReadyToDestroyHandler dynNodeReadyToDestroy;
-        public event dynElementSelectedHandler dynElementSelected;
-        public event dynElementDeselectedHandler dynElementDeselected;
-        #endregion
-
         #region constructors
         /// <summary>
         /// dynElement constructor for use by workbench in creating dynElements
@@ -301,46 +283,6 @@ namespace Dynamo.Controls
         }
 
         #endregion
-
-        protected virtual void OnDynElementDestroyed(EventArgs e)
-        {
-            if (dynNodeDestroyed != null)
-            {
-                dynNodeDestroyed(this, e);
-            }
-        }
-
-        protected virtual void OnDynElementReadyToBuild(EventArgs e)
-        {
-            if (dynElementReadyToBuild != null)
-            {
-                dynElementReadyToBuild(this, e);
-            }
-        }
-
-        protected virtual void OnDynElementReadyToDestroy(EventArgs e)
-        {
-            if (dynNodeReadyToDestroy != null)
-            {
-                dynNodeReadyToDestroy(this, e);
-            }
-        }
-
-        protected virtual void OnDynElementSelected(EventArgs e)
-        {
-            if (dynElementSelected != null)
-            {
-                dynElementSelected(this, e);
-            }
-        }
-
-        protected virtual void OnDynElementDeselected(EventArgs e)
-        {
-            if (dynElementDeselected != null)
-            {
-                dynElementDeselected(this, e);
-            }
-        }
 
         public void RegisterAllPorts()
         {
