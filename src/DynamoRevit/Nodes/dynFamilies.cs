@@ -122,7 +122,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Parameter Selector")]
+    [NodeName("Family Instance Parameter Selector")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [IsInteractive(true)]
@@ -214,6 +214,11 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = (Element)((Value.Container)args[0]).Item;
+
+            if (input.GetType() != typeof(FamilyInstance))
+            {
+                throw new Exception("The input is not a Family Instance.");
+            }
 
             if (!input.Id.Equals(this.storedId))
             {
