@@ -360,6 +360,7 @@ namespace Dynamo.Commands
                 }
             }
 
+            node.NodeLogic.Cleanup();
             dynSettings.Workbench.Selection.Remove(node);
             dynSettings.Controller.Nodes.Remove(node.NodeLogic);
             dynSettings.Workbench.Children.Remove(node);
