@@ -497,8 +497,11 @@ namespace Dynamo
                     var loaderExceptions = typeLoadException.LoaderExceptions;
                     Bench.Log("Dll Load Exception: " + loaderExceptions[0].ToString());
                     Bench.Log(loaderExceptions[0].ToString());
-                    Bench.Log("Dll Load Exception: " + loaderExceptions[1].ToString());
-                    Bench.Log(loaderExceptions[1].ToString());
+                    if (loaderExceptions.Count() > 1)
+                    {
+                        Bench.Log("Dll Load Exception: " + loaderExceptions[1].ToString());
+                        Bench.Log(loaderExceptions[1].ToString());
+                    }
                 }
             }
         }
