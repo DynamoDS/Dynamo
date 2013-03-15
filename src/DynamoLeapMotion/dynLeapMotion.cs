@@ -85,11 +85,12 @@ namespace Dynamo.Nodes
             LeapEnable(menuItemLeapEnabled.IsChecked);
         }
 
-        protected override void Cleanup()
+        public override void Cleanup()
         {
             LeapEnable(false);
             base.Cleanup();
         }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             return Value.NewContainer(leapController);

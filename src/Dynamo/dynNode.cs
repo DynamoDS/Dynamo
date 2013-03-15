@@ -636,7 +636,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Implement on derived classes to cleanup resources when 
         /// </summary>
-        protected virtual void Cleanup()
+        public virtual void Cleanup()
         {
         }
     }

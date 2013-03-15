@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
             
         }
 
-        protected override void Cleanup()
+        public override void Cleanup()
         {
             if (port != null)
             {
