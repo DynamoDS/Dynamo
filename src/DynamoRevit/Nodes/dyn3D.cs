@@ -111,7 +111,7 @@ namespace Dynamo.Nodes
             view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             //RenderOptions.SetEdgeMode(view,EdgeMode.Aliased);
             RenderOptions.SetEdgeMode(view, EdgeMode.Unspecified);
-            
+            view.ShowViewCube = false;
             
             //view.IsHitTestVisible = true;
             view.ShowFrameRate = true;
