@@ -70,7 +70,7 @@ namespace Dynamo
                 if (ironPythonAssembly == null)
                     throw new Exception();
 
-                var PythonBindings = ironPythonAssembly.GetType("Dynamo.Nodes.PythonNode.PythonBindings");
+                var PythonBindings = ironPythonAssembly.GetType("Dynamo.Nodes.PythonBindings");
 
                 var pyBindingsProperty = PythonBindings.GetProperty("Bindings");
                 var pyBindings = pyBindingsProperty.GetValue(null, null);
