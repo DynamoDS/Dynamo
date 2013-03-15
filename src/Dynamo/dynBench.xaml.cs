@@ -960,6 +960,8 @@ namespace Dynamo.Controls
 
             this.CurrentX = -x;
             this.CurrentY = -y;
+
+            this.Zoom = 1;
         }
 
         private bool beginNameEditClick;
