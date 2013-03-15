@@ -179,9 +179,7 @@ namespace Dynamo.Applications
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
                         //prepare and show splash
-                        //splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
                         splashScreen = new DynamoSplash();
-                        //splashScreen.Show(false, true);
 
                         //show the window
                         var dynamoController = new DynamoController_Revit(DynamoRevitApp.updater);
@@ -190,22 +188,12 @@ namespace Dynamo.Applications
                         //set window handle and show dynamo
                         new System.Windows.Interop.WindowInteropHelper(dynamoBench).Owner = mwHandle;
 
-                        if (System.Windows.Forms.SystemInformation.MonitorCount > 1)
-                        {
-                            dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
+                        dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
 
-                            System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[1].Bounds;
-                            dynamoBench.Left = bounds.X;
-                            dynamoBench.Top = bounds.Y;
-                            dynamoBench.Loaded += new RoutedEventHandler(dynamoForm_Loaded);
-                        }
-                        else
-                        {
-                            //System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[0].Bounds;
-                            //dynamoForm.Left = bounds.X;
-                            //dynamoForm.Top = bounds.Y;
-                            dynamoBench.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                        }
+                        System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+                        dynamoBench.Left = bounds.X;
+                        dynamoBench.Top = bounds.Y;
+                        dynamoBench.Loaded += new RoutedEventHandler(dynamoForm_Loaded);
 
                         dynamoBench.Show();
 
