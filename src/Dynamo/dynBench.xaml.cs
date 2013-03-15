@@ -66,22 +66,6 @@ namespace Dynamo.Controls
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
 
-        Point mousePositionOnCanvas;
-        public Point MousePositionOnCanvas
-        {
-            get
-            {
-                if (dynSettings.Workbench == null)
-                {
-                    return new Point();
-                }
-                else
-                {
-                    return Mouse.GetPosition(dynSettings.Workbench);
-                }
-            }
-        }
-        
         private dynConnector activeConnector;
         public dynConnector ActiveConnector
         {
@@ -778,8 +762,8 @@ namespace Dynamo.Controls
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
             {
                 Dictionary<string, object> paramDict = new Dictionary<string, object>();
-                paramDict.Add("x", MousePositionOnCanvas.X);
-                paramDict.Add("y", MousePositionOnCanvas.Y);
+                paramDict.Add("x", Mouse.GetPosition(dynSettings.Workbench).X);
+                paramDict.Add("y", Mouse.GetPosition(dynSettings.Workbench).Y);
                 paramDict.Add("workspace", Controller.CurrentSpace);
                 paramDict.Add("text", "New Note");
                 DynamoCommands.AddNoteCmd.Execute(paramDict);
