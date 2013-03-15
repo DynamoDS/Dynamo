@@ -39,8 +39,8 @@ namespace Dynamo.Nodes
     class dynDynamicRelaxation : dynRevitTransactionNodeWithOneOutput
     {
         ParticleSystem particleSystem;
-        private int extraParticlesCounter = 0;
-        private int extraSpringCounter = 0;
+        //private int extraParticlesCounter = 0;
+        //private int extraSpringCounter = 0;
 
         public dynDynamicRelaxation()
         {
@@ -232,13 +232,13 @@ namespace Dynamo.Nodes
 
             ReferencePoint pt1;
             ReferencePoint pt2;
-            Particle fixedPart1;
-            XYZ partXYZ1;
-            XYZ partXYZ2;
-            ParticleSpring sp;
-            Line tempLine;
-            Particle p;
-            Particle p2;
+            //Particle fixedPart1;
+            //XYZ partXYZ1;
+            //XYZ partXYZ2;
+            //ParticleSpring sp;
+            //Line tempLine;
+            //Particle p;
+            //Particle p2;
 
 
             //If we are receiving a list, we must create fixed particles for each reference point in the list.

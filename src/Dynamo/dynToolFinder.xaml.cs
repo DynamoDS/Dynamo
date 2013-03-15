@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class dynToolFinder : UserControl
     {
-        public event ToolFinderFinishedHandler ToolFinderFinished;
+        //public event ToolFinderFinishedHandler ToolFinderFinished;
 
         bool _listShowing = false;
         List<string> toolNames = new List<string>();

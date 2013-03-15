@@ -529,7 +529,8 @@ namespace Dynamo.Nodes
                     this.UIDocument.Document.Delete(el);
                 }
             }
-            Plane p = null;
+            
+            //Plane p = null;
             Reference r = null;
             ReferencePoint pt = ((Value.Container)args[0]).Item as ReferencePoint;
 

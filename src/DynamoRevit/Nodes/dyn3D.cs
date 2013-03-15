@@ -336,7 +336,7 @@ namespace Dynamo.Nodes
         private void DrawSurface(Face f)
         {
             Mesh mesh;
-            Mesh3D helixMesh;
+            //Mesh3D helixMesh;
 
             mesh = f.Triangulate() as Mesh;
             XYZ vertex0;

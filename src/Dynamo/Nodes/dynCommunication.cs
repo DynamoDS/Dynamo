@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
 
         public string UDPResponse = "";
         int listenPort;
-        bool UDPInitialized = false;
+        //bool UDPInitialized = false;
 
         public class UdpState
         {

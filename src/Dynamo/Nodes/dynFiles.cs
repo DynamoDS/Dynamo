@@ -154,8 +154,8 @@ namespace Dynamo.Nodes
     {
 
         System.Windows.Controls.Image image1;
-        int width = 320;
-        int height = 240;
+        //int width = 320;
+        //int height = 240;
 
         public dynImageFileReader()
         {
