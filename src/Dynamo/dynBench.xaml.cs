@@ -65,6 +65,17 @@ namespace Dynamo.Controls
         private Point mouseDownPos;
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
+        
+        private bool debug = false;
+        public bool Debug
+        {
+            get { return debug; }
+            set
+            {
+                debug = value;
+                NotifyPropertyChanged("Debug");
+            }
+        }
 
         private dynConnector activeConnector;
         public dynConnector ActiveConnector
@@ -840,11 +851,10 @@ namespace Dynamo.Controls
 
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            //Controller.RunExpression(this.debugCheckBox.IsChecked == true);
-            if (DynamoCommands.RunExpressionCmd.CanExecute(this.debugCheckBox.IsChecked))
-            {
-                DynamoCommands.RunExpressionCmd.Execute(this.debugCheckBox.IsChecked);
-            }
+            //if (DynamoCommands.RunExpressionCmd.CanExecute(this.debugCheckBox.IsChecked))
+            //{
+            //    DynamoCommands.RunExpressionCmd.Execute(this.debugCheckBox.IsChecked);
+            //}
         }
 
         //private void SaveFunction_Click(object sender, RoutedEventArgs e)
@@ -1115,17 +1125,6 @@ namespace Dynamo.Controls
             this.sw.Close();
             this.sw = new StringWriter();
             this.LogText = sw.ToString();
-        }
-
-        private void debugCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            this.dynamicCheckBox.IsChecked = false;
-            this.dynamicCheckBox.IsEnabled = false;
-        }
-
-        private void debugCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.dynamicCheckBox.IsEnabled = true;
         }
 
         private void settings_curves_Checked(object sender, RoutedEventArgs e)
