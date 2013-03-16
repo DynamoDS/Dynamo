@@ -840,7 +840,11 @@ namespace Dynamo.Controls
 
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            Controller.RunExpression(this.debugCheckBox.IsChecked == true);
+            //Controller.RunExpression(this.debugCheckBox.IsChecked == true);
+            if (DynamoCommands.RunExpressionCmd.CanExecute(this.debugCheckBox.IsChecked))
+            {
+                DynamoCommands.RunExpressionCmd.Execute(this.debugCheckBox.IsChecked);
+            }
         }
 
         //private void SaveFunction_Click(object sender, RoutedEventArgs e)

@@ -603,7 +603,7 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            dynSettings.Controller.RunExpression(false);
+            dynSettings.Controller.RunExpression(Convert.ToBoolean(parameters));
         }
 
         public event EventHandler CanExecuteChanged
