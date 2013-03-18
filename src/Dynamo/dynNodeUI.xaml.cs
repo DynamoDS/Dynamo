@@ -687,10 +687,10 @@ namespace Dynamo.Controls
             else
             {
                 //don't override state if it's in error
-                if (State != ElementState.ERROR)
-                {
+                //if (State != ElementState.ERROR)
+                //{
                     State = ElementState.ACTIVE;
-                }
+                //}
             }
         }
 
