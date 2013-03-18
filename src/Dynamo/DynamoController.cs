@@ -422,8 +422,13 @@ namespace Dynamo
 
                     //--------------//
 
+                    // Add to search
+
+
                     var tagAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
+
                     List<string> tags = null;
+
                     if (tagAtts.Length > 0)
                     {
                         tags = ((NodeSearchTagsAttribute)tagAtts[0]).Tags;
@@ -436,6 +441,7 @@ namespace Dynamo
 
                     searchDict.Add(nodeUI, kvp.Key.Split(' ').Where(x => x.Length > 0));
                     searchDict.Add(nodeUI, kvp.Key);
+
                 }
                 catch (Exception e)
                 {
@@ -786,7 +792,9 @@ namespace Dynamo
             }
 
             Bench.addMenuItemsDictNew[name] = newEl.NodeUI;
+
             searchDict.Add(newEl.NodeUI, name.Split(' ').Where(x => x.Length > 0));
+            searchDict.Add( newEl.NodeUI, name );
 
             if (display)
             {
@@ -883,12 +891,12 @@ namespace Dynamo
                 result = newEl;
             }
 
-            if (result is dynDouble)
-                (result as dynDouble).Value = this.storedSearchNum;
-            else if (result is dynStringInput)
-                (result as dynStringInput).Value = this.storedSearchStr;
-            else if (result is dynBool)
-                (result as dynBool).Value = this.storedSearchBool;
+            //if (result is dynDouble)
+            //    (result as dynDouble).Value = this.storedSearchNum;
+            //else if (result is dynStringInput)
+            //    (result as dynStringInput).Value = this.storedSearchStr;
+            //else if (result is dynBool)
+            //    (result as dynBool).Value = this.storedSearchBool;
 
             return result;
         }
@@ -2211,12 +2219,15 @@ namespace Dynamo
                 wp.Children.Add(child);
             }
 
+
             //Update search dictionary after a rename
             var oldTags = this.CurrentSpace.Name.Split(' ').Where(x => x.Length > 0);
             this.searchDict.Remove(newAddItem.NodeUI, oldTags);
+            this.searchDict.Add(newAddItem.NodeUI, this.CurrentSpace.Name);
 
             var newTags = newName.Split(' ').Where(x => x.Length > 0);
             this.searchDict.Add(newAddItem.NodeUI, newTags);
+            this.searchDict.Add(newAddItem.NodeUI, newName);
 
             //------------------//
 
@@ -2271,6 +2282,38 @@ namespace Dynamo
         #region Searching
         SearchDictionary<dynNodeUI> searchDict = new SearchDictionary<dynNodeUI>();
 
+        //internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)
+        //{
+        //    var content = (WrapPanel)ex.Content;
+
+        //    bool filterWholeCategory = true;
+
+        //    foreach (dynNodeUI ele in content.Children)
+        //    {
+        //        if (!elements.Contains(ele))
+        //        {
+        //            ele.Visibility = System.Windows.Visibility.Collapsed;
+        //        }
+        //        else
+        //        {
+        //            ele.Visibility = System.Windows.Visibility.Visible;
+        //            filterWholeCategory = false;
+        //        }
+        //    }
+
+        //    if (filterWholeCategory)
+        //    {
+        //        ex.Visibility = System.Windows.Visibility.Collapsed;
+        //    }
+        //    else
+        //    {
+        //        ex.Visibility = System.Windows.Visibility.Visible;
+
+        //        //if (filter.Length > 0)
+        //        //   ex.IsExpanded = true;
+        //    }
+        //}
+
         internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)
         {
             var content = (WrapPanel)ex.Content;
@@ -2303,59 +2346,88 @@ namespace Dynamo
             }
         }
 
-        private static Regex searchBarNumRegex = new Regex(@"^-?\d+(\.\d*)?$");
-        private static Regex searchBarStrRegex = new Regex("^\"([^\"]*)\"?$");
-        private double storedSearchNum = 0;
-        private string storedSearchStr = "";
-        private bool storedSearchBool = false;
+        internal Dictionary<dynNodeUI, WrapPanel> nodeParents = new Dictionary<dynNodeUI, WrapPanel>();
+
+        internal void UpdateSearchView(List<dynNodeUI> searchResults, StackPanel sideStackPanel, StackPanel searchResultsView)
+        {
+
+            foreach (FrameworkElement ex in sideStackPanel.Children)
+            {
+                if (ex.GetType() == typeof(Expander))
+                {
+                    ex.Visibility = Visibility.Collapsed;
+                }
+            }
+
+            if (!sideStackPanel.Children.Contains(searchResultsView))
+                sideStackPanel.Children.Add(searchResultsView);
+            else
+            {
+                searchResultsView.Children.Clear();
+                searchResultsView.Visibility = Visibility.Visible;
+            }
+
+            double currentOpacity = 1;
+            double minOpacity = 0.2;
+            double dist = searchResults.Count == 0 ? 0 : (currentOpacity - minOpacity) / searchResults.Count;
+
+            foreach (var nodeUI in searchResults)
+            {
+                var p = (System.Windows.Controls.Panel)nodeUI.Parent;
+
+                if (p != null)
+                {
+                    p.Children.Remove(nodeUI);
+
+                    // we'll need to put this node back into the WrapPanel
+                    if (p.GetType() == typeof(WrapPanel))
+                    {
+                        nodeParents.Add(nodeUI, (WrapPanel)p);
+                    }
+                }
+
+                nodeUI.Opacity = currentOpacity;
+                currentOpacity -= dist;
+
+                searchResultsView.Children.Add(nodeUI);
+            }
+
+        }
+
+        internal void ResetAddMenu()
+        {
+
+            foreach (var a in nodeParents)
+            {
+
+                var node = a.Key;
+                var parent = a.Value;
+                var p = (System.Windows.Controls.Panel)node.Parent;
+
+                if (p != null)
+                {
+                    p.Children.Remove(node);
+                }
+                node.Opacity = 1;
+                parent.Children.Add(node);
+            }
+
+            nodeParents.Clear();
+
+        }
 
         internal void UpdateSearch(string search)
         {
-            Match m;
 
-            if (searchBarNumRegex.IsMatch(search))
+            if (search.Length == 0)
             {
-                storedSearchNum = Convert.ToDouble(search);
-                Bench.FilterAddMenu(
-                   new HashSet<dynNodeUI>() 
-                   { 
-                      Bench.addMenuItemsDictNew["Number"], 
-                      Bench.addMenuItemsDictNew["Number Slider"] 
-                   }
-                );
-            }
-            else if ((m = searchBarStrRegex.Match(search)).Success)  //(search.StartsWith("\""))
-            {
-                storedSearchStr = m.Groups[1].Captures[0].Value;
-                Bench.FilterAddMenu(
-                   new HashSet<dynNodeUI>()
-                   {
-                      Bench.addMenuItemsDictNew["String"]
-                   }
-                );
-            }
-            else if (search.Equals("true") || search.Equals("false"))
-            {
-                storedSearchBool = Convert.ToBoolean(search);
-                Bench.FilterAddMenu(
-                   new HashSet<dynNodeUI>()
-                   {
-                      Bench.addMenuItemsDictNew["Boolean"]
-                   }
-                );
+                Bench.FilterAddMenu( new HashSet<dynNodeUI>(Bench.addMenuItemsDictNew.Values) ); 
             }
             else
             {
-                this.storedSearchNum = 0;
-                this.storedSearchStr = "";
-                this.storedSearchBool = false;
-
-                var filter = search.Length == 0
-                   ? new HashSet<dynNodeUI>(Bench.addMenuItemsDictNew.Values)
-                   : searchDict.Search(search.ToLower());
-
-                Bench.FilterAddMenu(filter);
+                Bench.SearchMenu( searchDict.LevenshteinSearchSymbols(search.ToLower()) );
             }
+
         }
         #endregion
 

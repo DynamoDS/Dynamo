@@ -1081,11 +1081,28 @@ namespace Dynamo.Controls
             dragOffset = new Point();
         }
 
+        StackPanel searchResultsView = new StackPanel();
+
+        internal void SearchMenu(List<dynNodeUI> searchResults)
+        {
+            Controller.UpdateSearchView(searchResults, this.SideStackPanel, this.searchResultsView);
+        }
+
         internal void FilterAddMenu(HashSet<dynNodeUI> elements)
         {
-            foreach (Expander ex in this.SideStackPanel.Children)
+            Controller.ResetAddMenu();
+
+            foreach (FrameworkElement ex in this.SideStackPanel.Children)
             {
-                Controller.filterCategory(elements, ex);
+                if (ex.GetType() == typeof (StackPanel)) // if search results
+                {
+                    ex.Visibility = Visibility.Collapsed;
+                }
+                else if (ex.GetType() == typeof(Expander))
+                {
+                    ex.Visibility = Visibility.Visible;
+                    Controller.filterCategory(elements, (Expander) ex);
+                }
             }
         }
 
