@@ -1132,11 +1132,6 @@ namespace Dynamo.Controls
             //   this.searchBox.Text = "Search";
         }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            Controller.RunCancelled = true;
-        }
-
         private void ClearLog_Click(object sender, RoutedEventArgs e)
         {
             this.sw.Flush();

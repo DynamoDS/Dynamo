@@ -198,6 +198,18 @@ namespace Dynamo.Commands
                 return showConsoleCmd;
             }
         }
+
+        private static CancelRunCommand cancelRunCmd;
+        public static CancelRunCommand CancelRunCmd
+        {
+            get
+            {
+                if (cancelRunCmd == null)
+                    cancelRunCmd = new CancelRunCommand();
+
+                return cancelRunCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -909,6 +921,30 @@ namespace Dynamo.Commands
                 dynSettings.Bench.consoleRow.Height = new GridLength(100.0);
                 dynSettings.Bench.ConsoleShowing = true;
             }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class CancelRunCommand : ICommand
+    {
+        public CancelRunCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.RunCancelled = true;
         }
 
         public event EventHandler CanExecuteChanged

@@ -268,7 +268,7 @@
                     Command="{Binding Source={x:Static commands:DynamoCommands.RunExpressionCmd}}"
                     CommandParameter="{Binding ElementName=_this, Path=Debug}"/>
             <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
-                        Click="Cancel_Click"  FontFamily="Arial" Margin="5"/>
+                      Command="{Binding Source={x:Static commands:DynamoCommands.CancelRunCmd}}" FontFamily="Arial" Margin="5"/>
             <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 
                       Content="Run Automatically" FontSize="11" IsChecked="{Binding ElementName=_this, Path=Controller.DynamicRunEnabled, Mode=TwoWay}"
