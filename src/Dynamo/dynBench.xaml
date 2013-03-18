@@ -163,25 +163,25 @@
                     VerticalScrollBarVisibility="Auto" 
                     HorizontalAlignment="Stretch"
                     HorizontalScrollBarVisibility="Auto"
-                    Background="DarkGray" 
-                    Opacity=".5" 
+                    Background="Gainsboro" 
+                    Opacity="1" 
                     Visibility="Visible"
                     Grid.Row="3"
-                    Grid.Column="2" 
-                    Grid.ColumnSpan="1">
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="3">
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Clear" Click="ClearLog_Click" />
                 </ContextMenu>
             </ScrollViewer.ContextMenu>
             <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
-                    Background="#00000000" BorderThickness="0" BorderBrush="#00000000" 
-                    Margin="5" Foreground="White" TextWrapping="Wrap" Focusable="True"
+                    Foreground="#FF505050" BorderThickness="0" BorderBrush="#00000000" 
+                    Margin="0" TextWrapping="Wrap" Focusable="True"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
-                    IsTabStop="False" />
+                    IsTabStop="False" FontFamily="Consolas" />
         </ScrollViewer>
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
-              Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Background="#FF505050">
+              Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="#FF505050">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
@@ -299,7 +299,7 @@
         <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
                           Grid.Row="1" 
-                          Grid.RowSpan="3"
+                          Grid.RowSpan="2"
                           Height="Auto"
                           Width="2"
                           HorizontalAlignment="Stretch" 
