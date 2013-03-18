@@ -33,7 +33,7 @@
                 <TextBlock Name="tt_elementName" HorizontalAlignment="Stretch" 
                            VerticalAlignment="Top" Text="{Binding Path=NickName}" FontSize="12" FontFamily="Arial" FontWeight="Bold" Margin="2"/>
                 <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                           Text="{Binding Path=ToolTipText}" FontFamily="Courier New" FontSize="11" TextTrimming="WordEllipsis" Margin="2"/>
+                           Text="{Binding Path=ToolTipText}" FontFamily="Consolas" FontSize="11" TextTrimming="WordEllipsis" Margin="2"/>
             </StackPanel>
         </Grid>
    </UserControl.ToolTip>
