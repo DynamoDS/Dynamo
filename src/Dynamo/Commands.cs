@@ -186,6 +186,18 @@ namespace Dynamo.Commands
                 return addToSelectionCmd;
             }
         }
+
+        private static ShowConsoleCommand showConsoleCmd;
+        public static ShowConsoleCommand ShowConsoleCmd
+        {
+            get
+            {
+                if (showConsoleCmd == null)
+                    showConsoleCmd = new ShowConsoleCommand();
+
+                return showConsoleCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -874,6 +886,39 @@ namespace Dynamo.Commands
                 return false;
             }
 
+            return true;
+        }
+    }
+
+    public class ShowConsoleCommand : ICommand
+    {
+        public ShowConsoleCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            if (dynSettings.Bench.ConsoleShowing)
+            {
+                dynSettings.Bench.consoleRow.Height = new GridLength(0.0);
+                dynSettings.Bench.ConsoleShowing = false;
+            }
+            else
+            {
+                dynSettings.Bench.consoleRow.Height = new GridLength(100.0);
+                dynSettings.Bench.ConsoleShowing = true;
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
             return true;
         }
     }
