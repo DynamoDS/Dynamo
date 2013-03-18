@@ -118,12 +118,12 @@
                                 Width="100000" 
                                 Height="100000" 
                                 Visibility="Hidden" 
-                                ContextMenuOpening="WorkBench_ContextMenuOpening">
+                                ContextMenuOpening="WorkBench_ContextMenuOpening"
+                                RenderTransformOrigin="{Binding ElementName=_this, Path=ZoomCenter}">
                 <Canvas.RenderTransform>
-                  <TransformGroup>
-                     <ScaleTransform CenterX="-10"
-                                     CenterY="-55"
-                                     ScaleX="{Binding ElementName=_this,Path=Zoom}" 
+                    
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="{Binding ElementName=_this,Path=Zoom}" 
                                      ScaleY="{Binding ElementName=_this,Path=Zoom}" />
                      <TranslateTransform X="{Binding ElementName=_this, Path=CurrentX}" 
                                          Y="{Binding ElementName=_this, Path=CurrentY}" />
@@ -266,7 +266,7 @@
             <Button Name="RunButton" Height="25" Width="100" Content="Run" 
                     FontFamily="Arial" Margin="5"
                     Command="{Binding Source={x:Static commands:DynamoCommands.RunExpressionCmd}}"
-                    CommandParameter="{Binding ElementName=_this, Path=Debug}"/>
+                    CommandParameter="{Binding ElementName=_this, Path=Controller.RunInDebug}"/>
             <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
                       Command="{Binding Source={x:Static commands:DynamoCommands.CancelRunCmd}}" FontFamily="Arial" Margin="5"/>
             <CheckBox Margin="10"

@@ -66,6 +66,17 @@ namespace Dynamo.Controls
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
 
+        Point zoomCenter;
+        public Point ZoomCenter
+        {
+            get { return zoomCenter; }
+            set 
+            { 
+                zoomCenter = value;
+                NotifyPropertyChanged("ZoomCenter");
+            }
+        }
+
         private bool consoleShowing = false;
         public bool ConsoleShowing
         {
@@ -198,6 +209,8 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            //this.ZoomCenter = new Point(e.GetPosition(WorkBench).X/ WorkBench.Width, e.GetPosition(WorkBench).Y / WorkBench.Height);
+
             double scale = .001;
             double newValue = Convert.ToDouble(e.Delta) * scale;
 
@@ -349,7 +362,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         public void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            //Debug.WriteLine("Mouse move.");
 
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
@@ -397,6 +409,8 @@ namespace Dynamo.Controls
                 {
                     oldX = e.GetPosition(border).X;
                     oldY = e.GetPosition(border).Y;
+
+                    //this.ZoomCenter = new Point(0,0);
                 }
                 else
                 {
@@ -406,6 +420,8 @@ namespace Dynamo.Controls
                     this.CurrentY += newY - oldY;
                     oldX = newX;
                     oldY = newY;
+
+                    //this.ZoomCenter = new Point(e.GetPosition(WorkBench).X / WorkBench.Width, e.GetPosition(WorkBench).Y / WorkBench.Height);
                 }
             }
 
