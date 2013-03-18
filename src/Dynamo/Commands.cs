@@ -627,7 +627,7 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            dynSettings.Controller.RunExpression(Convert.ToBoolean(parameters));
+            dynSettings.Controller.RunExpression();
         }
 
         public event EventHandler CanExecuteChanged

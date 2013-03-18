@@ -1858,7 +1858,7 @@ namespace Dynamo
             Running = true;
 
             //Set run auto flag
-            dynamicRun = !showErrors;
+            this.DynamicRunEnabled = !showErrors;
 
             //Setup background worker
             BackgroundWorker worker = new BackgroundWorker();
