@@ -193,14 +193,6 @@ namespace Dynamo
         }
         #endregion
 
-        public override bool RunInDebug
-        {
-            get
-            {
-                return this.TransMode == TransactionMode.Debug;
-            }
-        }
-
         public bool InIdleThread;
 
         public enum TransactionMode
@@ -209,26 +201,66 @@ namespace Dynamo
             Manual,
             Debug
         }
-        public TransactionMode TransMode;
+
+        private TransactionMode transMode;
+        public TransactionMode TransMode
+        {
+            get { return transMode; }
+            set
+            {
+                transMode = value;
+                if (transMode == TransactionMode.Debug)
+                {
+                    this.RunInDebug = true;
+                }
+
+                NotifyPropertyChanged("TransMode");
+            }
+        }
+
+        public override bool CanRunDynamically
+        {
+            get
+            {
+                //we don't want to be able to run
+                //dynamically if we're in debug mode
+                bool manTran = ExecutionRequiresManualTransaction();
+                return !manTran && !debug;
+            }
+            set
+            {
+                canRunDynamically = value;
+                NotifyPropertyChanged("CanRunDynamically");
+            }
+        }
 
         public override bool DynamicRunEnabled
         {
             get
             {
-                var result = base.DynamicRunEnabled;
+                return dynamicRun;
+            }
+            set
+            {
+                dynamicRun = value;
+                NotifyPropertyChanged("DynamicRunEnabled");
+            }
+        }
 
-                bool manTran = ExecutionRequiresManualTransaction();
+        public override bool RunInDebug
+        {
+            get { return debug; }
+            set
+            {
+                debug = value;
 
-                //Bench.dynamicCheckBox.IsEnabled = !manTran && Bench.debugCheckBox.IsChecked == false;
-                Bench.dynamicCheckBox.IsEnabled = !manTran;
+                //toggle off dynamic run
+                CanRunDynamically = !debug;
 
-                if (manTran)
-                {
-                    //Bench.dynamicCheckBox.IsChecked = false;
-                    base.DynamicRunEnabled = false; //member now bound to view
-                }
+                if(debug == true)
+                    DynamicRunEnabled = false;
 
-                return !manTran && result;
+                NotifyPropertyChanged("RunInDebug");
             }
         }
 
@@ -409,7 +441,7 @@ namespace Dynamo
         protected override void Run(IEnumerable<dynNode> topElements, FScheme.Expression runningExpression)
         {
             //If we are not running in debug...
-            if (!_debug)
+            if (!this.RunInDebug)
             {
                 //Do we need manual transaction control?
                 bool manualTrans = topElements.Any(checkManualTransaction.TraverseUntilAny);

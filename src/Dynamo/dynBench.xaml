@@ -272,11 +272,11 @@
             <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 
                       Content="Run Automatically" FontSize="11" IsChecked="{Binding ElementName=_this, Path=Controller.DynamicRunEnabled, Mode=TwoWay}"
-                      IsEnabled="{Binding ElementName=_this, Path=Debug, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
+                      IsEnabled="{Binding ElementName=_this, Path=Controller.CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
-                      IsChecked="{Binding ElementName=_this, Path=Debug, Mode=TwoWay}"
+                      IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}"
                       Content="Debug" VerticalContentAlignment="Center"/>
         </WrapPanel>
         <Canvas HorizontalAlignment="Stretch"

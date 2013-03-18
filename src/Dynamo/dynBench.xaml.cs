@@ -65,24 +65,6 @@ namespace Dynamo.Controls
         private Point mouseDownPos;
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
-        
-        private bool debug = false;
-        public bool Debug
-        {
-            get { return debug; }
-            set
-            {
-                debug = value;
-
-                //toggle off dynamic run
-                if (debug == true)
-                {
-                    Controller.DynamicRunEnabled = false;
-                }
-
-                NotifyPropertyChanged("Debug");
-            }
-        }
 
         private bool consoleShowing = false;
         public bool ConsoleShowing

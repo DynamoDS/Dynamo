@@ -35,7 +35,7 @@ namespace Dynamo
         /// Used by various properties to notify observers that a property has changed.
         /// </summary>
         /// <param name="info">What changed.</param>
-        private void NotifyPropertyChanged(String info)
+        protected void NotifyPropertyChanged(String info)
         {
             if (PropertyChanged != null)
             {
@@ -1784,19 +1784,28 @@ namespace Dynamo
 
         private bool runAgain = false;
 
-        protected bool _debug;
+        //protected bool _debug;
         private bool _showErrors;
 
-        private bool dynamicRun = false;
+        protected bool canRunDynamically = true;
+        public virtual bool CanRunDynamically
+        {
+            get
+            {
+                //we don't want to be able to run
+                //dynamically if we're in debug mode
+                return !debug;
+            }
+            set
+            {
+                canRunDynamically = value;
+                NotifyPropertyChanged("CanRunDynamically");
+            }
+        }
+
+        protected bool dynamicRun = false;
         public virtual bool DynamicRunEnabled
         {
-            //get
-            //{
-            //    return Bench.dynamicCheckBox.IsEnabled
-            //       && Bench.debugCheckBox.IsChecked == false
-            //       && Bench.dynamicCheckBox.IsChecked == true;
-            //}
-
             get
             {
                 return dynamicRun; //selecting debug now toggles this on/off
@@ -1808,11 +1817,21 @@ namespace Dynamo
             }
         }
 
+        protected bool debug = false;
         public virtual bool RunInDebug
         {
-            get
+            get { return debug; }
+            set
             {
-                return _debug;
+                debug = value;
+
+                //toggle off dynamic run
+                CanRunDynamically = !debug;
+
+                if(debug==true)
+                    DynamicRunEnabled = false;
+
+                NotifyPropertyChanged("RunInDebug");
             }
         }
 
@@ -1822,13 +1841,12 @@ namespace Dynamo
             this.runAgain = true;
         }
 
-        public void RunExpression(bool debug, bool showErrors = true)
+        public void RunExpression(bool showErrors = true)
         {
             //If we're already running, do nothing.
             if (Running)
                 return;
 
-            _debug = debug;
             _showErrors = showErrors;
 
             //TODO: Hack. Might cause things to break later on...
@@ -1942,7 +1960,7 @@ namespace Dynamo
                     Bench.Dispatcher.BeginInvoke(new Action(
                        delegate
                        {
-                           RunExpression(_debug, _showErrors);
+                           RunExpression(_showErrors);
                        }
                     ));
                 }
@@ -1952,7 +1970,7 @@ namespace Dynamo
         protected internal virtual void Run(IEnumerable<dynNode> topElements, Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
-            if (_debug)
+            if (debug)
             {
                 //string exp = FScheme.print(runningExpression);
                 Bench.Dispatcher.Invoke(new Action(
@@ -1973,7 +1991,7 @@ namespace Dynamo
                 var expr = FSchemeEnvironment.Evaluate(runningExpression);
 
                 //Print some more stuff if we're in debug mode
-                if (_debug && expr != null)
+                if (debug && expr != null)
                 {
                     Bench.Dispatcher.Invoke(new Action(
                        () => Bench.Log(FScheme.print(expr))
