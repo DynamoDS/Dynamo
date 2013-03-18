@@ -219,9 +219,14 @@ namespace Dynamo
 
                 bool manTran = ExecutionRequiresManualTransaction();
 
-                Bench.dynamicCheckBox.IsEnabled = !manTran && Bench.debugCheckBox.IsChecked == false;
+                //Bench.dynamicCheckBox.IsEnabled = !manTran && Bench.debugCheckBox.IsChecked == false;
+                Bench.dynamicCheckBox.IsEnabled = !manTran;
+
                 if (manTran)
-                    Bench.dynamicCheckBox.IsChecked = false;
+                {
+                    //Bench.dynamicCheckBox.IsChecked = false;
+                    base.DynamicRunEnabled = false; //member now bound to view
+                }
 
                 return !manTran && result;
             }

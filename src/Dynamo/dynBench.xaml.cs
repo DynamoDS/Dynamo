@@ -73,7 +73,25 @@ namespace Dynamo.Controls
             set
             {
                 debug = value;
+
+                //toggle off dynamic run
+                if (debug == true)
+                {
+                    Controller.DynamicRunEnabled = false;
+                }
+
                 NotifyPropertyChanged("Debug");
+            }
+        }
+
+        private bool consoleShowing = false;
+        public bool ConsoleShowing
+        {
+            get { return consoleShowing; }
+            set
+            {
+                consoleShowing = value;
+                NotifyPropertyChanged("ConsoleShowing");
             }
         }
 
@@ -1352,5 +1370,4 @@ namespace Dynamo.Controls
             this.Force = force;
         }
     }
-
 }
