@@ -37,12 +37,15 @@
                     Modifiers="Control"
                     Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
     </Window.InputBindings>
-   <Grid Focusable="True" Name="mainGrid">
+    <Window.Resources>
+        <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </Window.Resources>
+    <Grid Focusable="True" Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Name="consoleRow" Height="0"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -90,6 +93,10 @@
                       <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
                    </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="_Show Console" Visibility="{Binding ElementName=_this, Path=ConsoleShowing, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}" 
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}" Name="showConsoleItem"/>
+                <MenuItem Header="_Hide Console" Visibility="{Binding ElementName=_this, Path=ConsoleShowing, Mode=OneWay}" 
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}" Name="hideConsoleItem"/>
                 <Separator />
              </MenuItem>
             <MenuItem Header="Settings">
@@ -265,12 +272,13 @@
                         Click="Cancel_Click"  FontFamily="Arial" Margin="5"/>
             <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 
-                      Content="Run Automatically" IsChecked="{Binding ElementName=_this, Path=Something}"
-                      VerticalAlignment="Center"/>
+                      Content="Run Automatically" FontSize="11" IsChecked="{Binding ElementName=_this, Path=Controller.DynamicRunEnabled, Mode=TwoWay}"
+                      IsEnabled="{Binding ElementName=_this, Path=Debug, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
+                      VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
-                      FontFamily="Arial" VerticalAlignment="Center"
+                      FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
                       IsChecked="{Binding ElementName=_this, Path=Debug, Mode=TwoWay}"
-                      Content="Debug"/>
+                      Content="Debug" VerticalContentAlignment="Center"/>
         </WrapPanel>
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
