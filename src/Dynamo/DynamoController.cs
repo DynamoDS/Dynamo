@@ -28,8 +28,21 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo
 {
-    public class DynamoController
+    public class DynamoController:INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Used by various properties to notify observers that a property has changed.
+        /// </summary>
+        /// <param name="info">What changed.</param>
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
         List<UIElement> clipBoard = new List<UIElement>();
         public List<UIElement> ClipBoard
         {
@@ -1771,18 +1784,27 @@ namespace Dynamo
 
         private bool runAgain = false;
 
-        private bool dynamicRun = false;
-
         protected bool _debug;
         private bool _showErrors;
 
+        private bool dynamicRun = false;
         public virtual bool DynamicRunEnabled
         {
+            //get
+            //{
+            //    return Bench.dynamicCheckBox.IsEnabled
+            //       && Bench.debugCheckBox.IsChecked == false
+            //       && Bench.dynamicCheckBox.IsChecked == true;
+            //}
+
             get
             {
-                return Bench.dynamicCheckBox.IsEnabled
-                   && Bench.debugCheckBox.IsChecked == false
-                   && Bench.dynamicCheckBox.IsChecked == true;
+                return dynamicRun; //selecting debug now toggles this on/off
+            }
+            set
+            {
+                dynamicRun = value;
+                NotifyPropertyChanged("DynamicRunEnabled");
             }
         }
 
