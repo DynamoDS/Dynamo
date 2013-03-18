@@ -43,6 +43,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="100"/>
+            <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" MaxWidth="300"/>
@@ -254,21 +255,23 @@
             <Button HorizontalAlignment="Stretch" Content="New..." Margin="5,10,10,5"
                         VerticalAlignment="Stretch" Click="NewFunction_Click" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
         </Grid>
-        <Button Name="RunButton" Margin="10,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Run" 
-                FontFamily="Arial" Grid.Row="1" Grid.Column="2" 
-                Command="{Binding Source={x:Static commands:DynamoCommands.RunExpressionCmd}}"
-                CommandParameter="{Binding ElementName=_this, Path=Debug}"/>
-        <Button Name="cancelButton" Margin="120,55" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Cancel" 
-                    Click="Cancel_Click"  FontFamily="Arial" Grid.Row="1" Grid.Column="2" />
-        <CheckBox Margin="10,35" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-                  Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" Grid.Row="1" Grid.Column="2"/>
-        <Label Margin="25,30" Content="Run Automatically" HorizontalAlignment="Left" 
-                   VerticalAlignment="Bottom" FontFamily="Arial" FontSize="11"  Foreground="#FF141414" Grid.Row="1" Grid.Column="2"/>
-        <CheckBox Margin="10,13" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:FieldModifier="public" Name="debugCheckBox" 
-                  FontFamily="Arial" Grid.Row="1" Grid.Column="2"
-                  IsChecked="{Binding ElementName=_this, Path=Debug, Mode=TwoWay}"/>
-        <Label Margin="25,9" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-               FontFamily="Arial" Foreground="#FF141414" FontSize="11" Grid.Row="1" Grid.Column="2"/>
+        <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                   Grid.ColumnSpan="3" Background="#FFF0F0F0">
+            <Button Name="RunButton" Height="25" Width="100" Content="Run" 
+                    FontFamily="Arial" Margin="5"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.RunExpressionCmd}}"
+                    CommandParameter="{Binding ElementName=_this, Path=Debug}"/>
+            <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
+                        Click="Cancel_Click"  FontFamily="Arial" Margin="5"/>
+            <CheckBox Margin="10"
+                      Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 
+                      Content="Run Automatically" IsChecked="{Binding ElementName=_this, Path=Something}"
+                      VerticalAlignment="Center"/>
+            <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+                      FontFamily="Arial" VerticalAlignment="Center"
+                      IsChecked="{Binding ElementName=_this, Path=Debug, Mode=TwoWay}"
+                      Content="Debug"/>
+        </WrapPanel>
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
               Grid.Row="1"
