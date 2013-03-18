@@ -62,6 +62,12 @@ def match_inport_type(x):
 		'Autodesk.Revit.DB.Element':'el'
 	}.get(x,'val')
 
+def convert_param(x):
+	return{
+		'System.Collections.Generic.IList{Autodesk.Revit.DB.XYZ}':'List<Autodesk.Revit.DB.XYZ>',
+		'System.Collections.Generic.IList{System.Double}':'List<double>'
+	}.get(x,x)
+
 wrapperPath = './DynamoRevitNodes.cs'
 # create a new text file to hold our wrapped classes
 try:
@@ -148,7 +154,7 @@ for member in root.iter('members'):
 		f.write('\t\tpublic ' + className + '()\n')
 		f.write('\t\t{\n')
 		for param in methodParams:
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param)+'\", \"' + param + '\",typeof(object)));\n')
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param)+'\", \"' + convert_param(param) + '\",typeof(object)));\n')
 		f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary+'\",typeof(object)));\n')
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
@@ -159,7 +165,7 @@ for member in root.iter('members'):
 		i = 0
 		argList = []
 		for param in methodParams:
-			f.write('\t\t\tvar arg' + str(i) + '=(' + param + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
+			f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
 			argList.append('arg' + str(i))
 			i+=1
 		paramsStr = ",".join(argList)
