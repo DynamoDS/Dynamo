@@ -39,6 +39,7 @@
     </Window.InputBindings>
     <Window.Resources>
         <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
     </Window.Resources>
     <Grid Focusable="True" Name="mainGrid">
         <Grid.RowDefinitions>
@@ -93,10 +94,8 @@
                       <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
                    </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Show Console" Visibility="{Binding ElementName=_this, Path=ConsoleShowing, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}" 
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}" Name="showConsoleItem"/>
-                <MenuItem Header="_Hide Console" Visibility="{Binding ElementName=_this, Path=ConsoleShowing, Mode=OneWay}" 
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}" Name="hideConsoleItem"/>
+                <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}"/>
                 <Separator />
              </MenuItem>
             <MenuItem Header="Settings">

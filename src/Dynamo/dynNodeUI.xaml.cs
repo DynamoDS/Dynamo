@@ -957,4 +957,30 @@ namespace Dynamo.Controls
 
         #endregion
     }
+
+    public class ShowHideConsoleMenuItemConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return "Hide Console";
+            }
+            else
+            {
+                return "Show Console";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
 }
