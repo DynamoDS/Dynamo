@@ -113,6 +113,10 @@ namespace Dynamo.Nodes
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
 
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+
+            ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, 
+                new ProtoFFI.CSModuleHelper()); 
+
             ExecutionMirror mirror = fsr.Execute(script, core);
 
             return Value.NewContainer(true);
