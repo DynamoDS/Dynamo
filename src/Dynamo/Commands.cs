@@ -727,7 +727,7 @@ namespace Dynamo.Commands
                 nodeLookup.Add(node.GUID, newGuid);
 
                 Dictionary<string, object> nodeData = new Dictionary<string, object>();
-                nodeData.Add("x", Canvas.GetLeft(node) + 100);
+                nodeData.Add("x", Canvas.GetLeft(node));
                 nodeData.Add("y", Canvas.GetTop(node) + 100);
                 nodeData.Add("name", node.NickName);
                 nodeData.Add("guid", newGuid);
