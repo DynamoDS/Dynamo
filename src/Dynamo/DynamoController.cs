@@ -102,8 +102,11 @@ namespace Dynamo
             set
             {
                 _cspace = value;
-                Bench.CurrentX = _cspace.PositionX;
-                Bench.CurrentY = _cspace.PositionY;
+                //Bench.CurrentX = _cspace.PositionX;
+                //Bench.CurrentY = _cspace.PositionY;
+
+                Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
+
                 //TODO: Also set the name here.
             }
         }
@@ -136,8 +139,10 @@ namespace Dynamo
 
             homeSpace = CurrentSpace = new HomeWorkspace();
 
-            Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
-            Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
+            //Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
+            //Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
+
+            Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
 
             Bench.InitializeComponent();
             Bench.Log(String.Format(
@@ -1551,9 +1556,15 @@ namespace Dynamo
                     foreach (XmlAttribute att in node.Attributes)
                     {
                         if (att.Name.Equals("X"))
-                            Bench.CurrentX = Convert.ToDouble(att.Value);
+                        {
+                            //Bench.CurrentX = Convert.ToDouble(att.Value);
+                            Bench.CurrentOffset = new Point(Convert.ToDouble(att.Value), Bench.CurrentOffset.Y);
+                        }
                         else if (att.Name.Equals("Y"))
-                            Bench.CurrentY = Convert.ToDouble(att.Value);
+                        {
+                            //Bench.CurrentY = Convert.ToDouble(att.Value);
+                            Bench.CurrentOffset = new Point(Bench.CurrentOffset.X, Convert.ToDouble(att.Value));
+                        }
                     }
                 }
 

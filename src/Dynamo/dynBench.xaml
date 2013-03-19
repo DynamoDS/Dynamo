@@ -9,12 +9,12 @@
         Height="768" Width="1024"
         MouseMove="OnMouseMove" 
         MouseLeftButtonDown="OnMouseLeftButtonDown"
-        MouseWheel="OnMouseWheel"
         MouseDown="OnMouseDown"
         MouseUp="OnMouseUp"
         KeyUp="OnKeyUp"
         PreviewKeyUp="OnPreviewKeyUp"
         PreviewKeyDown="OnPreviewKeyDown"
+        Loaded="_this_Loaded"
         Closed="WindowClosed" 
         MinHeight="600" 
         MinWidth="800" 
@@ -40,6 +40,9 @@
     <Window.Resources>
         <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
+        <controls:ZoomStatConverter x:Key="ZoomStatConverter"/>
+        <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>
+        <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
     </Window.Resources>
     <Grid Focusable="True" Name="mainGrid">
         <Grid.RowDefinitions>
@@ -113,32 +116,25 @@
                  ClipToBounds="True" 
                  Grid.Row="0"
                  Grid.Column="2">
-                <dragCanvas:DragCanvas x:Name="WorkBench"
-                                x:FieldModifier="public"
-                                Width="100000" 
-                                Height="100000" 
-                                Visibility="Hidden" 
-                                ContextMenuOpening="WorkBench_ContextMenuOpening"
-                                RenderTransformOrigin="{Binding ElementName=_this, Path=ZoomCenter}">
-                <Canvas.RenderTransform>
-                    
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="{Binding ElementName=_this,Path=Zoom}" 
-                                     ScaleY="{Binding ElementName=_this,Path=Zoom}" />
-                     <TranslateTransform X="{Binding ElementName=_this, Path=CurrentX}" 
-                                         Y="{Binding ElementName=_this, Path=CurrentY}" />
-                  </TransformGroup>
-               </Canvas.RenderTransform>
-                <Rectangle
-                    x:Name="selectionBox"
-                    Visibility="Collapsed"
-                    Stroke="Black"
-                    StrokeThickness="1"
-                />
-                <Canvas.Background>
-                    <SolidColorBrush Color="Transparent"/>
-                </Canvas.Background>
-                </dragCanvas:DragCanvas>
+                <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
+                    <dragCanvas:DragCanvas x:Name="WorkBench"
+                                    x:FieldModifier="public"
+                                    Width="100000" 
+                                    Height="100000" 
+                                    Visibility="Hidden"
+                                    ContextMenuOpening="WorkBench_ContextMenuOpening">
+                        <Rectangle
+                            x:Name="selectionBox"
+                            Visibility="Collapsed"
+                            Stroke="Black"
+                            StrokeThickness="1"
+                            IsHitTestVisible="False"
+                        />
+                        <Canvas.Background>
+                            <SolidColorBrush Color="Transparent"/>
+                        </Canvas.Background>
+                    </dragCanvas:DragCanvas>
+                </controls:ZoomBorder>
                 <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" 
                        HorizontalContentAlignment="Right" FontSize="24" 
                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
@@ -296,6 +292,14 @@
             <SolidColorBrush />
          </Canvas.Background>
       </Canvas>
+        <!--<StackPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <Label Name="zoomStatLabel" FontFamily="Consolas" FontSize="11" Foreground="White" 
+                   Content="{Binding ElementName=_this, Path=Zoom, Mode=OneWay, Converter={StaticResource ZoomStatConverter}}"/> 
+            <Label Name="transformOriginStatLabel" FontFamily="Consolas" FontSize="11" Foreground="White" 
+                   Content="{Binding ElementName=_this, Path=TransformOrigin, Mode=OneWay, Converter={StaticResource TransformOriginStatConverter}}"/>
+            <Label Name="currentOffsetStatLabel" FontFamily="Consolas" FontSize="11" Foreground="White" 
+                   Content="{Binding ElementName=_this, Path=CurrentOffset, Mode=OneWay, Converter={StaticResource CurrentOffsetStatConverter}}"/>
+        </StackPanel>-->
         <GridSplitter ResizeDirection="Rows" 
                         Grid.Column="2" 
                         Grid.ColumnSpan="1"

@@ -51,13 +51,7 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class dynBench : Window, INotifyPropertyChanged
     {
-        double newX = 0.0;
-        double newY = 0.0;
-        double oldY = 0.0;
-        double oldX = 0.0;
 
-        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
-        private bool isPanning = false;
         private StringWriter sw;
         private string logText;
         private ConnectorType connectorType;
@@ -66,14 +60,14 @@ namespace Dynamo.Controls
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
 
-        Point zoomCenter;
-        public Point ZoomCenter
+        Point transformOrigin;
+        public Point TransformOrigin
         {
-            get { return zoomCenter; }
+            get { return transformOrigin; }
             set 
-            { 
-                zoomCenter = value;
-                NotifyPropertyChanged("ZoomCenter");
+            {
+                transformOrigin = value;
+                NotifyPropertyChanged("TransformOrigin");
             }
         }
 
@@ -167,69 +161,23 @@ namespace Dynamo.Controls
             }
         }
 
-        double zoom = 1.0;
-        public double Zoom
-        {
-            get { return zoom; }
-            set
-            {
-                zoom = value;
-                NotifyPropertyChanged("Zoom");
-            }
-        }
+        public const int CANVAS_OFFSET_Y = 0;
+        public const int CANVAS_OFFSET_X = 0;
 
-        public const int CANVAS_OFFSET_Y = 55;
-        public const int CANVAS_OFFSET_X = 10;
-        public double CurrentX
+        public Point CurrentOffset
         {
-            get { return Controller.CurrentSpace.PositionX; }
+            get { return zoomBorder.GetTranslateTransformOrigin(); }
             set
             {
-                Controller.CurrentSpace.PositionX = Math.Min(CANVAS_OFFSET_X, value);
-                NotifyPropertyChanged("CurrentX");
-            }
-        }
-
-        public double CurrentY
-        {
-            get { return Controller.CurrentSpace.PositionY; }
-            set
-            {
-                Controller.CurrentSpace.PositionY = Math.Min(CANVAS_OFFSET_Y, value);
-                NotifyPropertyChanged("CurrentY");
+                if (zoomBorder != null)
+                {
+                    zoomBorder.SetTranslateTransformOrigin(value);
+                }
+                NotifyPropertyChanged("CurrentOffset");
             }
         }
 
         dynNodeUI draggedNode;
-
-        /// <summary>
-        /// Called when the MouseWheel has been scrolled.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void OnMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            //this.ZoomCenter = new Point(e.GetPosition(WorkBench).X/ WorkBench.Width, e.GetPosition(WorkBench).Y / WorkBench.Height);
-
-            double scale = .001;
-            double newValue = Convert.ToDouble(e.Delta) * scale;
-
-            if (Zoom + newValue <= 1 && Zoom + newValue >= .001)
-            {
-                Zoom += newValue;
-            }
-        }
-
-        static bool HasParentType(Type t, Type testType)
-        {
-            while (t != typeof(object))
-            {
-                t = t.BaseType;
-                if (t.Equals(testType))
-                    return true;
-            }
-            return false;
-        }
 
         /// <summary>
         /// Updates an element and all its ports.
@@ -250,85 +198,16 @@ namespace Dynamo.Controls
             }
         }
 
-        /// <summary>
-        /// Find the user control of type 'testType' by traversing the tree.
-        /// </summary>
-        /// <returns></returns>
-        public UIElement ElementClicked(DependencyObject depObj, Type testType)
-        {
-            UIElement foundElement = null;
-
-            //IInputElement el = Mouse.DirectlyOver;
-            //FrameworkElement fe = el as FrameworkElement;
-            //DependencyObject depObj = fe.Parent;
-
-            //walk up the tree to see whether the element is part of a port
-            //then get the port's parent object
-            while (depObj != null)
-            {
-                // If the current object is a UIElement which is a child of the
-                // Canvas, exit the loop and return it.
-                UIElement elem = depObj as UIElement;
-
-                if (elem != null)
-                {
-                    Type t = elem.GetType();
-
-                    if (HasParentType(t, testType))
-                    {
-                        foundElement = elem;
-                        return foundElement;
-                    }
-
-                    if (elem != null && t.Equals(testType))
-                    {
-                        foundElement = elem;
-                        return foundElement;
-                    }
-                }
-
-                // VisualTreeHelper works with objects of type Visual or Visual3D.
-                // If the current object is not derived from Visual or Visual3D,
-                // then use the LogicalTreeHelper to find the parent element.
-                if (depObj is Visual)
-                    depObj = VisualTreeHelper.GetParent(depObj);
-                else
-                    depObj = LogicalTreeHelper.GetParent(depObj);
-            }
-
-            return foundElement;
-        }
-
-        //Performs a hit test on the given point in the UI.
-        void TestClick(System.Windows.Point pt)
-        {
-            // Set up a callback to receive the hit test result enumeration.
-            VisualTreeHelper.HitTest(WorkBench, null,
-                new HitTestResultCallback(MyHitTestResult),
-                new PointHitTestParameters(pt));
-
-        }
-
-        // Return the result of the hit test to the callback.
-        public HitTestResultBehavior MyHitTestResult(HitTestResult result)
-        {
-            // Add the hit test result to the list that will be processed after the enumeration.
-            hitResultsList.Add(result.VisualHit);
-
-            // Set the behavior to return visuals at all z-order levels.
-            return HitTestResultBehavior.Continue;
-        }
-
         void DrawGrid()
         {
             //clear the canvas's children
-            WorkBench.Children.Clear();
+            //WorkBench.Children.Clear();
             double gridSpacing = 100.0;
 
             for (double i = 0.0; i < WorkBench.Width; i += gridSpacing)
             {
                 Line xLine = new Line();
-                xLine.Stroke = System.Windows.Media.Brushes.LightSteelBlue;
+                xLine.Stroke = new SolidColorBrush(System.Windows.Media.Color.FromRgb(100,100,100));
                 xLine.X1 = i;
                 xLine.Y1 = 0;
                 xLine.X2 = i;
@@ -342,7 +221,7 @@ namespace Dynamo.Controls
             for (double i = 0.0; i < WorkBench.Height; i += gridSpacing)
             {
                 Line yLine = new Line();
-                yLine.Stroke = System.Windows.Media.Brushes.LightSteelBlue;
+                yLine.Stroke = new SolidColorBrush(System.Windows.Media.Color.FromRgb(100, 100, 100));
                 yLine.X1 = 0;
                 yLine.Y1 = i;
                 yLine.X2 = WorkBench.Width;
@@ -362,7 +241,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         public void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
             if (WorkBench.IsConnecting && activeConnector != null)
@@ -386,42 +264,6 @@ namespace Dynamo.Controls
                 foreach (var connector in allConnectors)
                 {
                     connector.Redraw();
-                }
-            }
-
-            //If we are panning the workspace, update the coordinate offset for the
-            //next time we are redrawn.
-            if (isPanning)
-            {
-                if (e.MiddleButton == MouseButtonState.Released)
-                {
-                    isPanning = false;
-
-                    oldX = 0.0;
-                    oldY = 0.0;
-                    newX = 0.0;
-                    newY = 0.0;
-
-                    return;
-                }
-
-                if (oldX == 0.0)
-                {
-                    oldX = e.GetPosition(border).X;
-                    oldY = e.GetPosition(border).Y;
-
-                    //this.ZoomCenter = new Point(0,0);
-                }
-                else
-                {
-                    newX = e.GetPosition(border).X;
-                    newY = e.GetPosition(border).Y;
-                    this.CurrentX += newX - oldX;
-                    this.CurrentY += newY - oldY;
-                    oldX = newX;
-                    oldY = newY;
-
-                    //this.ZoomCenter = new Point(e.GetPosition(WorkBench).X / WorkBench.Width, e.GetPosition(WorkBench).Y / WorkBench.Height);
                 }
             }
 
@@ -477,20 +319,17 @@ namespace Dynamo.Controls
 
             mainGrid.Focus();
 
-            //Pan with middle-click
-            if (e.ChangedButton == MouseButton.Middle)
-            {
-                isPanning = true;
-            }
-
             //close the tool finder if the user
             //has clicked anywhere else on the workbench
             if (dynToolFinder.Instance != null)
             {
                 WorkBench.Children.Remove(dynToolFinder.Instance);
             }
+        }
 
-            if (e.ChangedButton == MouseButton.Left && !WorkBench.IsConnecting)
+        void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (!WorkBench.IsConnecting)
             {
                 #region window selection
 
@@ -513,6 +352,21 @@ namespace Dynamo.Controls
 
                 #endregion
             }
+
+            //if you click on the canvas and you're connecting
+            //then drop the connector, otherwise do nothing
+            if (activeConnector != null)
+            {
+                activeConnector.Kill();
+                WorkBench.IsConnecting = false;
+                activeConnector = null;
+            }
+
+            if (editingName && !hoveringEditBox)
+            {
+                DisableEditNameBox();
+            }
+
         }
 
         /// <summary>
@@ -523,16 +377,6 @@ namespace Dynamo.Controls
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             //Debug.WriteLine("Starting mouse up.");
-
-            //Stop panning if we have released the middle mouse button.
-            if (e.ChangedButton == MouseButton.Middle)
-            {
-                isPanning = false;
-                oldX = 0.0;
-                oldY = 0.0;
-                newX = 0.0;
-                newY = 0.0;
-            }
 
             if (e.ChangedButton == MouseButton.Left)
             {
@@ -730,24 +574,6 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
-        void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            //if you click on the canvas and you're connecting
-            //then drop the connector, otherwise do nothing
-            if (activeConnector != null)
-            {
-                activeConnector.Kill();
-                WorkBench.IsConnecting = false;
-                activeConnector = null;
-            }
-
-            if (editingName && !hoveringEditBox)
-            {
-                DisableEditNameBox();
-            }
-
-        }
-
         //bubbling
         //from element up to root
 
@@ -804,26 +630,28 @@ namespace Dynamo.Controls
                 focusElement.GetType() != typeof(System.Windows.Controls.TextBox) &&
                 focusElement.GetType() !=typeof(dynTextBox))
             {
+                double x = 0;
+                double y = 0;
+
                 if (Keyboard.IsKeyDown(Key.Left))
                 {
-                    this.CurrentX += 20;
-                    e.Handled = true;
+                    x = 20;
                 }
                 if (Keyboard.IsKeyDown(Key.Right))
                 {
-                    this.CurrentX -= 20;
-                    e.Handled = true;
+                    x = -20;
                 }
                 if (Keyboard.IsKeyDown(Key.Up))
                 {
-                    this.CurrentY += 20;
-                    e.Handled = true;
+                    y = 20;
                 }
                 if (Keyboard.IsKeyDown(Key.Down))
                 {
-                    this.CurrentY -= 20;
-                    e.Handled = true;
+                    y = -20;
                 }
+
+                zoomBorder.IncrementTranslateOrigin(x, y);
+                e.Handled = true;
             }
 
             if (editingName)
@@ -848,12 +676,6 @@ namespace Dynamo.Controls
             }
         }
 
-        //void toolFinder_ToolFinderFinished(object sender, EventArgs e)
-        //{
-        //    dynSettings.Workbench.Children.Remove(toolFinder);
-        //    toolFinder = null;
-        //}
-
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             LockUI();
@@ -864,22 +686,6 @@ namespace Dynamo.Controls
 
             UnlockUI();
         }
-
-        private void Run_Click(object sender, RoutedEventArgs e)
-        {
-            //if (DynamoCommands.RunExpressionCmd.CanExecute(this.debugCheckBox.IsChecked))
-            //{
-            //    DynamoCommands.RunExpressionCmd.Execute(this.debugCheckBox.IsChecked);
-            //}
-        }
-
-        //private void SaveFunction_Click(object sender, RoutedEventArgs e)
-        //{
-        //   SaveFunction(this.CurrentSpace);
-        //}
-
-        //private Dictionary<string, System.Windows.Controls.MenuItem> addMenuItemsDict
-        //   = new Dictionary<string, System.Windows.Controls.MenuItem>();
 
         internal Dictionary<string, System.Windows.Controls.MenuItem> viewMenuItemsDict
            = new Dictionary<string, System.Windows.Controls.MenuItem>();
@@ -972,10 +778,7 @@ namespace Dynamo.Controls
             var x = left + e.Width / 2 - this.outerCanvas.ActualWidth / 2;
             var y = top + e.Height / 2 - (this.outerCanvas.ActualHeight / 2 - this.LogScroller.ActualHeight);
 
-            this.CurrentX = -x;
-            this.CurrentY = -y;
-
-            this.Zoom = 1;
+            CurrentOffset = new Point(-x, -y);
         }
 
         private bool beginNameEditClick;
@@ -1332,6 +1135,11 @@ namespace Dynamo.Controls
         private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             
+        }
+
+        private void _this_Loaded(object sender, RoutedEventArgs e)
+        {
+            DrawGrid();
         }
 
     }
