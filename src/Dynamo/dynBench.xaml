@@ -5,9 +5,7 @@
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.Commands"
-        x:Name="_this"
-        Height="768" Width="1024"
-        MouseMove="OnMouseMove" 
+        x:Name="_this" MouseMove="OnMouseMove" 
         MouseLeftButtonDown="OnMouseLeftButtonDown"
         MouseWheel="OnMouseWheel"
         MouseDown="OnMouseDown"
@@ -20,15 +18,14 @@
         MinWidth="800" 
         Title="Dynamo"
         AllowsTransparency="False"
-        FocusManager.FocusedElement="{Binding ElementName=searchBox}">
+        FocusManager.FocusedElement="{Binding ElementName=searchBox}" Loaded="_this_Loaded">
+    
     <Window.InputBindings>
         <KeyBinding Key="Tab"
                     Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
         <KeyBinding Key="Delete"
-                    Modifiers="Control"
                     Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
         <KeyBinding Key="Back"
-                    Modifiers="Control"
                     Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
         <KeyBinding Key="C"
                     Modifiers="Control"
@@ -36,14 +33,19 @@
         <KeyBinding Key="V"
                     Modifiers="Control"
                     Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
+        <KeyBinding Key="Space"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}"/>
+        <KeyBinding Key="Escape"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}"/>
     </Window.InputBindings>
-   <Grid Focusable="True" Name="mainGrid">
+    
+    <Grid Focusable="True" Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="100"/>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions> 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" MaxWidth="300"/>
             <ColumnDefinition Width="Auto"/>
@@ -98,56 +100,64 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
+        
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
             <!--outer canvas clips the inner canvas-->
+            
             <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
                  ClipToBounds="True" 
                  Grid.Row="0"
                  Grid.Column="2">
+                
                 <dragCanvas:DragCanvas x:Name="WorkBench"
                                 x:FieldModifier="public"
                                 Width="100000" 
                                 Height="100000" 
                                 Visibility="Hidden" 
                                 ContextMenuOpening="WorkBench_ContextMenuOpening">
-                <Canvas.RenderTransform>
-                  <TransformGroup>
-                     <ScaleTransform CenterX="-10"
-                                     CenterY="-55"
-                                     ScaleX="{Binding ElementName=_this,Path=Zoom}" 
-                                     ScaleY="{Binding ElementName=_this,Path=Zoom}" />
-                     <TranslateTransform X="{Binding ElementName=_this, Path=CurrentX}" 
-                                         Y="{Binding ElementName=_this, Path=CurrentY}" />
-                  </TransformGroup>
-               </Canvas.RenderTransform>
-                <Rectangle
-                    x:Name="selectionBox"
-                    Visibility="Collapsed"
-                    Stroke="Black"
-                    StrokeThickness="1"
-                />
-                <Canvas.Background>
-                    <SolidColorBrush Color="Transparent"/>
-                </Canvas.Background>
+                    
+                    <Canvas.RenderTransform>
+                      <TransformGroup>
+                         <ScaleTransform CenterX="-10"
+                                         CenterY="-55"
+                                         ScaleX="{Binding ElementName=_this,Path=Zoom}" 
+                                         ScaleY="{Binding ElementName=_this,Path=Zoom}" />
+                         <TranslateTransform X="{Binding ElementName=_this, Path=CurrentX}" 
+                                             Y="{Binding ElementName=_this, Path=CurrentY}" />
+                      </TransformGroup>
+                   </Canvas.RenderTransform>
+
+                    <Rectangle
+                        x:Name="selectionBox"
+                        Visibility="Collapsed"
+                        Stroke="Black"
+                        StrokeThickness="1"
+                    />
+                    
+                    <Canvas.Background>
+                        <SolidColorBrush Color="Transparent"/>
+                    </Canvas.Background>
+                    
                 </dragCanvas:DragCanvas>
+                
                 <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" 
                        HorizontalContentAlignment="Right" FontSize="24" 
                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
+                
                 <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" 
                        MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
                        MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" />
+                
                 <TextBox Canvas.Right="30" Canvas.Top="13" Height="23" Name="editNameBox" Width="263" 
                          Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
                          IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
+                
                 <Canvas.Background>
                     <SolidColorBrush Color="#FF505050" />
-                    <!--<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF4B4B4B" Offset="1" />
-                        <GradientStop Color="#FF7A7A7A" Offset="0" />
-                    </LinearGradientBrush>-->
                 </Canvas.Background>
+                
                 <Canvas.ContextMenu>
                     <ContextMenu>
                        <MenuItem 
@@ -156,8 +166,10 @@
                             Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
                     </ContextMenu>
                 </Canvas.ContextMenu>
+                
             </Canvas>
         </Border>
+        
         <ScrollViewer Name="LogScroller" 
                     VerticalAlignment="Stretch"
                     VerticalScrollBarVisibility="Auto" 
@@ -180,6 +192,7 @@
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" />
         </ScrollViewer>
+        
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Background="#FF505050">
             <Grid.RowDefinitions>
@@ -196,7 +209,9 @@
                 </StackPanel>
             </ScrollViewer>
             <!--<Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>-->
+           
             <Grid Margin="10,10,5,5">
+                
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Background">
@@ -210,10 +225,12 @@
                         </Setter>
                     </Style>
                 </Grid.Style>
+                
                 <TextBox Name="SearchBox" Padding="5"
                             Text="" IsEnabled="True" TextChanged="SearchBox_OnTextChanged" 
                             LostFocus="searchBox_LostFocus" FontFamily="Arial" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch">
                     <TextBox.Style>
+                        
                         <Style TargetType="TextBox">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
@@ -251,6 +268,7 @@
                     </TextBox.Style>
                 </TextBox>
             </Grid>
+            
             <Button HorizontalAlignment="Stretch" Content="New..." Margin="5,10,10,5"
                         VerticalAlignment="Stretch" Click="NewFunction_Click" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
         </Grid>
@@ -266,23 +284,20 @@
                       Checked="debugCheckBox_Checked" Unchecked="debugCheckBox_Unchecked" FontFamily="Arial" Grid.Row="1" Grid.Column="2"/>
         <Label Margin="25,9" Content="Debug" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                FontFamily="Arial" Foreground="#FF141414" FontSize="11" Grid.Row="1" Grid.Column="2"/>
-        <Canvas HorizontalAlignment="Stretch"
-              Margin="0,20,0,0"
-              Grid.Row="1"
-              Grid.Column="0"
-              Grid.RowSpan="3"
+        <Canvas Grid.Row="1" Grid.RowSpan="3"
               Grid.ColumnSpan="3"
               Name="overlayCanvas" 
-              VerticalAlignment="Stretch" 
+              VerticalAlignment="Bottom" 
               Width="Auto" 
               IsHitTestVisible="False" 
               MouseUp="OverlayCanvas_OnMouseUp" 
               PreviewMouseMove="OverlayCanvas_OnMouseMove"
-              Visibility="Visible">
+              Visibility="Visible" Height="687">
          <Canvas.Background>
             <SolidColorBrush />
          </Canvas.Background>
       </Canvas>
+        
         <GridSplitter ResizeDirection="Rows" 
                         Grid.Column="2" 
                         Grid.ColumnSpan="1"

@@ -1337,6 +1337,11 @@ namespace Dynamo.Controls
             
         }
 
+        private void _this_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 
     public class dynSelection : ObservableCollection<System.Windows.Controls.UserControl>

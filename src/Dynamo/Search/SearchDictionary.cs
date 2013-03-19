@@ -27,10 +27,14 @@ namespace Dynamo.Nodes
 
       private Dictionary<string, V> nameDict = new Dictionary<string, V>();
 
+      public void AddName(V value, string name)
+      {
+          if ( !nameDict.ContainsKey(name) )
+              nameDict.Add(name, value);
+      }
+
       public void Add(V value, string tag)
       {
-
-          nameDict.Add(tag, value);
 
          if (tagDict.ContainsKey(tag))
             this.tagDict[tag].Add(value);
@@ -88,42 +92,54 @@ namespace Dynamo.Nodes
 
        }
 
-        public List<V> LevenshteinSearch(string search, int numResults = 10 )
-        {
+      public void Remove(V value, string tag)
+      {
+         this.tagDict[tag].Remove(value);
+         this.symbolDict[value].Remove(tag);
+      }
 
-            var searchDict = new List<KeyValuePair<int, V>>();
+      public void Remove(V value, IEnumerable<string> tags)
+      {
+         foreach (string tag in tags)
+            this.Remove(value, tag);
+      }
 
-            foreach (var pair in this.nameDict )
-            {
-                int levDist = LevenshteinDistance(search, pair.Key.ToLower( ));
-                searchDict.Add(new KeyValuePair<int, V>(levDist, pair.Value));
-            }
+      public List<V> FuzzySearch(string search, int numResults = 10)
+      {
 
-            return searchDict.OrderBy(x => x.Key).Select(x => x.Value).ToList().GetRange(0, numResults);
+          var searchDict = new List<KeyValuePair<int, V>>();
 
-        }
+          foreach (var pair in this.nameDict)
+          {
+              int levDist = LevenshteinDistance(search, pair.Key.ToLower());
+              searchDict.Add(new KeyValuePair<int, V>(levDist, pair.Value));
+          }
 
-        public List<V> LevenshteinSearchSymbols(string search, int numResults = 10)
-        {
+          return searchDict.OrderBy(x => x.Key).Select(x => x.Value).ToList().GetRange(0, numResults);
 
-            var searchDict = new List<KeyValuePair<int, V>>();
+      }
 
-            foreach (var pair in this.symbolDict)
-            {
-                var dist = int.MaxValue;
+      public List<V> FuzzySearchSymbols(string search, int numResults = 10)
+      {
 
-                foreach (var keyword in pair.Value)
-                {
-                    int levDist = LevenshteinDistance(search, keyword.ToLower() );
-                    if (levDist < dist) 
-                        dist = levDist;
-                }
-                searchDict.Add(new KeyValuePair<int, V>(dist, pair.Key));
-            }
+          var searchDict = new List<KeyValuePair<int, V>>();
 
-            return searchDict.OrderBy(x => x.Key).Select(x => x.Value).ToList().GetRange(0, numResults);
+          foreach (var pair in this.symbolDict)
+          {
+              var dist = int.MaxValue;
 
-        }
+              foreach (var keyword in pair.Value)
+              {
+                  int levDist = LevenshteinDistance(search, keyword.ToLower());
+                  if (levDist < dist)
+                      dist = levDist;
+              }
+              searchDict.Add(new KeyValuePair<int, V>(dist, pair.Key));
+          }
+
+          return searchDict.OrderBy(x => x.Key).Select(x => x.Value).ToList().GetRange(0, numResults);
+
+      }
 
       public int LevenshteinDistance(string source, string target)
       {
@@ -144,7 +160,7 @@ namespace Dynamo.Nodes
           var m = target.Length;
           var n = source.Length;
           var distance = new int[2, m + 1];
-          // Initialize the distance 'matrix'
+
           for (var j = 1; j <= m; j++) distance[0, j] = j;
 
           var currentRow = 0;
@@ -163,18 +179,6 @@ namespace Dynamo.Nodes
               }
           }
           return distance[currentRow, m];
-      }
-
-      public void Remove(V value, string tag)
-      {
-         this.tagDict[tag].Remove(value);
-         this.symbolDict[value].Remove(tag);
-      }
-
-      public void Remove(V value, IEnumerable<string> tags)
-      {
-         foreach (string tag in tags)
-            this.Remove(value, tag);
       }
    }
 }

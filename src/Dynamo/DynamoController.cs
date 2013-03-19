@@ -28,8 +28,14 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo
 {
+
+
+
     public class DynamoController
     {
+        private dynSearchController _searchController;
+        public dynSearchController SearchController { get { return _searchController; } }
+
         List<UIElement> clipBoard = new List<UIElement>();
         public List<UIElement> ClipBoard
         {
@@ -120,6 +126,8 @@ namespace Dynamo
         public DynamoController()
         {
             Bench = new dynBench(this);
+
+            _searchController = new dynSearchController(Bench);
 
             homeSpace = CurrentSpace = new HomeWorkspace();
 
@@ -347,10 +355,11 @@ namespace Dynamo
 
                 dynNode newNode = null;
 
+                SearchController.Add( kvp.Value.Type, kvp.Key );
+
                 try
                 {
                     var obj = Activator.CreateInstance(kvp.Value.Type);
-                    //var obj = Activator.CreateInstanceFrom(kvp.Value.assembly.Location, kvp.Value.t.FullName);
                     newNode = (dynNode)obj;//.Unwrap();
                 }
                 catch (Exception e) //TODO: Narrow down
@@ -384,7 +393,6 @@ namespace Dynamo
                     var scale = Math.Min(target / width, .8);
 
                     nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
-                    //nodeUI.nickNameBlock.FontSize *= .8 / scale;
 
                     Tuple<Expander, SortedList<string, dynNodeUI>> expander;
 
@@ -422,9 +430,6 @@ namespace Dynamo
 
                     //--------------//
 
-                    // Add to search
-
-
                     var tagAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
 
                     List<string> tags = null;
@@ -441,6 +446,9 @@ namespace Dynamo
 
                     searchDict.Add(nodeUI, kvp.Key.Split(' ').Where(x => x.Length > 0));
                     searchDict.Add(nodeUI, kvp.Key);
+                    searchDict.AddName(nodeUI, kvp.Key);
+
+
 
                 }
                 catch (Exception e)
@@ -465,6 +473,8 @@ namespace Dynamo
             #endregion
         }
 
+        
+       
         private bool isNodeSubType(Type t)
         {
             return t.Namespace == "Dynamo.Nodes" &&
@@ -551,9 +561,6 @@ namespace Dynamo
                             Header = Path.GetFileName(dirPath),
                             Tag = Path.GetFileName(dirPath)
                         };
-                        //item.Click += new RoutedEventHandler(sample_Click);
-                        //samplesMenu.Items.Add(dirItem);
-                        int menuItemCount = Bench.SamplesMenu.Items.Count;
 
                         filePaths = Directory.GetFiles(dirPath, "*.dyn");
                         if (filePaths.Any())
@@ -692,6 +699,8 @@ namespace Dynamo
             }
         }
 
+        
+
         internal dynWorkspace NewFunction(string name, string category, bool display)
         {
             //Add an entry to the funcdict
@@ -795,6 +804,9 @@ namespace Dynamo
 
             searchDict.Add(newEl.NodeUI, name.Split(' ').Where(x => x.Length > 0));
             searchDict.Add( newEl.NodeUI, name );
+            searchDict.AddName(newEl.NodeUI, name);
+
+            
 
             if (display)
             {
@@ -2346,6 +2358,8 @@ namespace Dynamo
             }
         }
 
+
+
         internal Dictionary<dynNodeUI, WrapPanel> nodeParents = new Dictionary<dynNodeUI, WrapPanel>();
 
         internal void UpdateSearchView(List<dynNodeUI> searchResults, StackPanel sideStackPanel, StackPanel searchResultsView)
@@ -2394,6 +2408,9 @@ namespace Dynamo
 
         }
 
+        // create extra set of dynNodes for search
+
+
         internal void ResetAddMenu()
         {
 
@@ -2425,7 +2442,7 @@ namespace Dynamo
             }
             else
             {
-                Bench.SearchMenu( searchDict.LevenshteinSearchSymbols(search.ToLower()) );
+                Bench.SearchMenu( searchDict.FuzzySearch(search.ToLower()) );
             }
 
         }

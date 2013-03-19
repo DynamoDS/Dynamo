@@ -19,6 +19,28 @@ namespace Dynamo.Commands
 {
     public static class DynamoCommands
     {
+        private static ShowSearchCommand showSearchCmd;
+        public static ShowSearchCommand ShowSearchCmd
+        {
+            get
+            {
+                if (showSearchCmd == null)
+                    showSearchCmd = new ShowSearchCommand();
+                return showSearchCmd;
+            }
+        }
+
+        private static HideSearchCommand hideSearchCmd;
+        public static HideSearchCommand HideSearchCmd
+        {
+            get
+            {
+                if (hideSearchCmd == null)
+                    hideSearchCmd = new HideSearchCommand();
+                return hideSearchCmd;
+            }
+        }
+
         private static NodeFromSelectionCommand nodeFromSelectionCmd;
         public static NodeFromSelectionCommand NodeFromSelectionCmd
         {
@@ -186,6 +208,8 @@ namespace Dynamo.Commands
                 return addToSelectionCmd;
             }
         }
+
+
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -375,6 +399,84 @@ namespace Dynamo.Commands
         public bool CanExecute(object parameters)
         {
             return dynSettings.Workbench.Selection.Count > 0;
+        }
+    }
+
+    public class HideSearchCommand : ICommand
+    {
+
+        private dynSearchUI search;
+        private static bool init = false;
+
+        public HideSearchCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            if (!init)
+            {
+                search = dynSettings.Controller.SearchController.View;
+                init = true;
+            }
+
+            if (search.Visibility == Visibility.Visible)
+            {
+                search.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ShowSearchCommand : ICommand
+    {
+
+        private dynSearchUI search;
+        private static bool init = false;
+
+        public ShowSearchCommand()
+        {
+            
+        }
+
+        public void Execute(object parameters)
+        {
+            if (!init)
+            {
+                search = dynSettings.Controller.SearchController.View;
+                dynSettings.Workbench.Children.Add(search);
+                init = true;
+            }
+
+            if (search.Visibility == Visibility.Collapsed)
+            {
+                dynSettings.Bench.WorkBench.BringToFront(search);
+                search.Visibility = Visibility.Visible;
+                search.SearchTextBox.Focus();
+            }
+
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
         }
     }
 

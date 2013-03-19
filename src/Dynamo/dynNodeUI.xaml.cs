@@ -41,7 +41,7 @@ namespace Dynamo.Controls
 {
     /// <summary>
     /// Interaction logic for dynControl.xaml
-    /// </summary
+    /// </summary>
     public enum ElementState { DEAD, ACTIVE, ERROR };
     public enum LacingType { SHORTEST, LONGEST, FULL };
 
