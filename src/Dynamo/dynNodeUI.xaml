@@ -12,7 +12,7 @@
     KeyUp="OnKeyUp" 
     PreviewKeyUp="OnPreviewKeyUp"
     MouseLeftButtonDown="topControl_MouseLeftButtonDown"
-    MouseRightButtonDown="topControl_MouseRightButtonDown">
+    MouseRightButtonDown="topControl_MouseRightButtonDown" >
    <UserControl.Resources>
         <local:MarginConverter x:Key="MarginConverter" />
         <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>

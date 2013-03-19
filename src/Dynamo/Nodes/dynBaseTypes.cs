@@ -1697,6 +1697,8 @@ namespace Dynamo.Nodes
                 OnChangeCommitted();
             }
             Pending = false;
+
+            dynSettings.Bench.mainGrid.Focus();
         }
 
         new public string Text
@@ -1738,7 +1740,6 @@ namespace Dynamo.Nodes
             if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
             {
                 commit();
-                dynSettings.Bench.mainGrid.Focus();
             }
         }
 
@@ -1746,6 +1747,7 @@ namespace Dynamo.Nodes
         {
             commit();
         }
+
     }
 
     [IsInteractive(true)]
@@ -2046,6 +2048,8 @@ namespace Dynamo.Nodes
             {
                 if (NodeUI.elementCanvas.Children.Contains(displayBox))
                     NodeUI.elementCanvas.Children.Remove(displayBox);
+
+                dynSettings.Bench.mainGrid.Focus();
             };
 
             mintb = new dynTextBox();

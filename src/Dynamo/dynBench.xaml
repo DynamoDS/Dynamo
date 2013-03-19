@@ -11,32 +11,13 @@
         MouseLeftButtonDown="OnMouseLeftButtonDown"
         MouseDown="OnMouseDown"
         MouseUp="OnMouseUp"
-        KeyUp="OnKeyUp"
-        PreviewKeyUp="OnPreviewKeyUp"
         PreviewKeyDown="OnPreviewKeyDown"
         Loaded="_this_Loaded"
         Closed="WindowClosed" 
         MinHeight="600" 
         MinWidth="800" 
         Title="Dynamo"
-        AllowsTransparency="False"
-        FocusManager.FocusedElement="{Binding ElementName=searchBox}">
-    <Window.InputBindings>
-        <KeyBinding Key="Tab"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
-        <KeyBinding Key="Delete"
-                    Modifiers="Control"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
-        <KeyBinding Key="Back"
-                    Modifiers="Control"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
-        <KeyBinding Key="C"
-                    Modifiers="Control"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"/>
-        <KeyBinding Key="V"
-                    Modifiers="Control"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
-    </Window.InputBindings>
+        AllowsTransparency="False">
     <Window.Resources>
         <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
@@ -44,7 +25,23 @@
         <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>
         <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
     </Window.Resources>
-    <Grid Focusable="True" Name="mainGrid">
+    <Window.InputBindings>
+        <KeyBinding Key="Tab"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
+        <KeyBinding Key="Delete"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
+        <KeyBinding Key="Back"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
+        <KeyBinding Key="C"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"/>
+        <KeyBinding Key="V"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
+    </Window.InputBindings>
+    <Grid Name="mainGrid" Focusable="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>
             <RowDefinition Height="*"/>

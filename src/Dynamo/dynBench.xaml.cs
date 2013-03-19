@@ -317,7 +317,7 @@ namespace Dynamo.Controls
         {
             //Debug.WriteLine("Starting mouse down.");
 
-            mainGrid.Focus();
+            this.Focus();
 
             //close the tool finder if the user
             //has clicked anywhere else on the workbench
@@ -574,22 +574,6 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
-        //bubbling
-        //from element up to root
-
-        private void OnKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-
-
-        }
-
-        //tunneling
-        //from root down to element
-        private void OnPreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-
-        }
-
         private void OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             //handle key presses for the bench in the bubbling event
@@ -636,22 +620,26 @@ namespace Dynamo.Controls
                 if (Keyboard.IsKeyDown(Key.Left))
                 {
                     x = 20;
+                    e.Handled = true;
                 }
                 if (Keyboard.IsKeyDown(Key.Right))
                 {
                     x = -20;
+                    e.Handled = true;
                 }
                 if (Keyboard.IsKeyDown(Key.Up))
                 {
                     y = 20;
+                    e.Handled = true;
                 }
                 if (Keyboard.IsKeyDown(Key.Down))
                 {
                     y = -20;
+                    e.Handled = true;
                 }
 
                 zoomBorder.IncrementTranslateOrigin(x, y);
-                e.Handled = true;
+                
             }
 
             if (editingName)
@@ -1140,6 +1128,7 @@ namespace Dynamo.Controls
         private void _this_Loaded(object sender, RoutedEventArgs e)
         {
             DrawGrid();
+            this.mainGrid.Focus();
         }
 
     }
