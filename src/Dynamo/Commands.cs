@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Collections;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -245,6 +247,30 @@ namespace Dynamo.Commands
                     openCmd = new OpenCommand();
 
                 return openCmd;
+            }
+        }
+
+        private static HomeCommand homeCmd;
+        public static HomeCommand HomeCmd
+        {
+            get
+            {
+                if (homeCmd == null)
+                    homeCmd = new HomeCommand();
+
+                return homeCmd;
+            }
+        }
+
+        private static SaveImageCommand saveImageCmd;
+        public static SaveImageCommand SaveImageCmd
+        {
+            get
+            {
+                if (saveImageCmd == null)
+                    saveImageCmd = new SaveImageCommand();
+
+                return saveImageCmd;
             }
         }
     }
@@ -1091,6 +1117,93 @@ namespace Dynamo.Commands
                     }
                 }
                 dynSettings.Bench.UnlockUI();
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class HomeCommand : ICommand
+    {
+        public HomeCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.ViewHomeWorkspace();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class SaveImageCommand : ICommand
+    {
+        public SaveImageCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "PNG Image|*.png";
+            sfd.Title = "Save your Workbench to an Image";
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string imagePath = sfd.FileName;
+
+                Transform trans = dynSettings.Workbench.LayoutTransform;
+                dynSettings.Workbench.LayoutTransform = null;
+                Size size = new Size(dynSettings.Workbench.Width, dynSettings.Workbench.Height);
+                dynSettings.Workbench.Measure(size);
+                dynSettings.Workbench.Arrange(new Rect(size));
+
+                //calculate the necessary width and height
+                double width = 0;
+                double height = 0;
+                foreach (dynNodeUI n in dynSettings.Controller.Nodes.Select(x => x.NodeUI))
+                {
+                    Point relativePoint = n.TransformToAncestor(dynSettings.Workbench)
+                          .Transform(new Point(0, 0));
+
+                    width = Math.Max(relativePoint.X + n.Width, width);
+                    height = Math.Max(relativePoint.Y + n.Height, height);
+                }
+
+                //Rect rect = VisualTreeHelper.GetDescendantBounds(dynSettings.Workbench);
+                Rect rect = VisualTreeHelper.GetDescendantBounds(dynSettings.Bench.border);
+
+                RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
+                  (int)rect.Bottom + 50, 96, 96, System.Windows.Media.PixelFormats.Default);
+                rtb.Render(dynSettings.Workbench);
+                //endcode as PNG
+                BitmapEncoder pngEncoder = new PngBitmapEncoder();
+                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+                using (var stm = System.IO.File.Create(sfd.FileName))
+                {
+                    pngEncoder.Save(stm);
+                }
             }
         }
 

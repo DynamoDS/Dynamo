@@ -691,11 +691,6 @@ namespace Dynamo.Controls
             Controller.DisplayFunction(item.Header.ToString());
         }
 
-        private void Home_Click(object sender, RoutedEventArgs e)
-        {
-            Controller.ViewHomeWorkspace();
-        }
-
         internal void setFunctionBackground()
         {
             //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;

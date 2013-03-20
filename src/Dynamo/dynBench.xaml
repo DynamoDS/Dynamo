@@ -49,6 +49,9 @@
         <KeyBinding Key="O"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.SaveAsCmd}}"/>
+        <KeyBinding Key="H"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}"/>
     </Window.InputBindings>
     <Grid Name="mainGrid" Focusable="True">
         <Grid.RowDefinitions>
@@ -93,12 +96,12 @@
                   <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="_Save Image..." Click="saveImage_Click" Name="saveImage"/>
+                <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.SaveImageCmd}}" Name="saveImage"/>
             <MenuItem Header="_Layout All" Click="layoutAll_Click"  Name="layoutAll"/>
             <Separator />
              </MenuItem>
              <MenuItem Header="_View" Name="viewMenu">
-                <MenuItem Header="_Home" Click="Home_Click" Name="homeButton" IsEnabled="False">
+                <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
                    <MenuItem.Icon>
                       <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
                    </MenuItem.Icon>
