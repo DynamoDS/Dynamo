@@ -297,17 +297,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void SaveAs_Click(object sender, RoutedEventArgs e)
-        {
-            Controller.SaveAs();
-        }
-
-        private void saveButton_Click(object sender, RoutedEventArgs e)
-        {
-            //save the active file
-            Controller.Save();
-        }
-
         /// <summary>
         /// Called when a mouse button is pressed.
         /// </summary>
@@ -707,7 +696,6 @@ namespace Dynamo.Controls
             Controller.ViewHomeWorkspace();
         }
 
-
         internal void setFunctionBackground()
         {
             //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
@@ -717,7 +705,6 @@ namespace Dynamo.Controls
             var bgBrush = (SolidColorBrush)this.outerCanvas.Background;
             bgBrush.Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
         }
-
 
         internal void setHomeBackground()
         {

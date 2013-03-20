@@ -210,6 +210,30 @@ namespace Dynamo.Commands
                 return cancelRunCmd;
             }
         }
+
+        private static SaveAsCommand saveAsCmd;
+        public static SaveAsCommand SaveAsCmd
+        {
+            get
+            {
+                if (saveAsCmd == null)
+                    saveAsCmd = new SaveAsCommand();
+
+                return saveAsCmd;
+            }
+        }
+
+        private static SaveCommand saveCmd;
+        public static SaveCommand SaveCmd
+        {
+            get
+            {
+                if (saveCmd == null)
+                    saveCmd = new SaveCommand();
+
+                return saveCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -945,6 +969,54 @@ namespace Dynamo.Commands
         public void Execute(object parameters)
         {
             dynSettings.Controller.RunCancelled = true;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class SaveAsCommand : ICommand
+    {
+        public SaveAsCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.SaveAs();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class SaveCommand : ICommand
+    {
+        public SaveCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.Save();
         }
 
         public event EventHandler CanExecuteChanged
