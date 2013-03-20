@@ -1035,11 +1035,6 @@ namespace Dynamo.Controls
        
         }
 
-        private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            
-        }
-
         private void _this_Loaded(object sender, RoutedEventArgs e)
         {
             DrawGrid();
