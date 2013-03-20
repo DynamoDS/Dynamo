@@ -30,8 +30,8 @@ limitations under the License.
     <Dynamo.Elements.dynStringInput type="Dynamo.Elements.dynStringInput" guid="d81e9974-c5fe-4e7c-9537-fc3f57aa3dc3" nickname="String" x="0" y="59.55">
       <System.String value="increment" />
     </Dynamo.Elements.dynStringInput>
-    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" nickname="Family Instance Creator - Indexed - Offset - xyz" x="310.55" y="39.25">
-      <Symbol value="Family Instance Creator - Indexed - Offset - xyz" />
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="5a95b8d6-8c93-419d-9f1f-9ebe2d58a99c" nickname="Family Instance Creator - Indexed" x="310.55" y="39.25">
+      <Symbol value="Family Instance Creator - Indexed" />
       <Output value="out" />
       <Inputs>
         <Input value="typ" />

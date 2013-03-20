@@ -1,4 +1,4 @@
-//Copyright 2012 Ian Keough
+//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -122,7 +122,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Parameter Selector")]
+    [NodeName("Family Instance Parameter Selector")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a paramter as a string.")]
     [IsInteractive(true)]
@@ -136,7 +136,7 @@ namespace Dynamo.Nodes
         public dynFamilyInstanceParameterSelector()
         {
             //widen the control
-            NodeUI.topControl.Height = 175;
+            NodeUI.topControl.Width = 175;
 
             //add a drop down list to the window
             paramBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -214,6 +214,11 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = (Element)((Value.Container)args[0]).Item;
+
+            if (input.GetType() != typeof(FamilyInstance))
+            {
+                throw new Exception("The input is not a Family Instance.");
+            }
 
             if (!input.Id.Equals(this.storedId))
             {

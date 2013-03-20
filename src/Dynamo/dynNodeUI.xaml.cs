@@ -1,4 +1,4 @@
-﻿//Copyright 2012 Ian Keough
+﻿//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -47,15 +47,6 @@ namespace Dynamo.Controls
 
     public partial class dynNodeUI : UserControl, INotifyPropertyChanged, ISelectable
     {
-        #region delegates
-        public delegate void dynElementUpdatedHandler(object sender, EventArgs e);
-        public delegate void dynElementDestroyedHandler(object sender, EventArgs e);
-        public delegate void dynElementReadyToBuildHandler(object sender, EventArgs e);
-        public delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
-        public delegate void dynElementSelectedHandler(object sender, EventArgs e);
-        public delegate void dynElementDeselectedHandler(object sender, EventArgs e);
-        #endregion
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void NotifyPropertyChanged(String info)
@@ -75,6 +66,7 @@ namespace Dynamo.Controls
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
         string nickName;
         Guid guid;
+        string toolTipText = "";
         ElementState state;
         LacingType lacingType = LacingType.SHORTEST;
         dynNode nodeLogic;
@@ -101,8 +93,12 @@ namespace Dynamo.Controls
         {
             get
             {
-                //TODO: FIXME
-                return "";
+                return toolTipText;
+            }
+            set
+            {
+                toolTipText = value;
+                NotifyPropertyChanged("ToolTipText");
             }
         }
 
@@ -184,11 +180,25 @@ namespace Dynamo.Controls
                     
                     foreach (dynConnector c in inConnectors)
                     {
-                        c.StrokeBrush = new LinearGradientBrush(Color.FromRgb(31, 31, 31), Colors.Cyan, 0);
+                        if (c.Start != null && c.Start.Owner.IsSelected)
+                        {
+                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
+                        }
+                        else
+                        {
+                            c.StrokeBrush = new LinearGradientBrush(Color.FromRgb(31, 31, 31), Colors.Cyan, 0);
+                        }
                     }
                     foreach (dynConnector c in outConnectors)
                     {
-                        c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Color.FromRgb(31, 31, 31), 0);
+                        if (c.End != null & c.End.Owner.IsSelected)
+                        {
+                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
+                        }
+                        else
+                        {
+                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Color.FromRgb(31, 31, 31), 0);
+                        }
                     }
                 }
                 else
@@ -215,15 +225,6 @@ namespace Dynamo.Controls
                 NotifyPropertyChanged("PreferredHeight");
             }
         }
-        #endregion
-
-        #region events
-        //public event dynElementUpdatedHandler dynElementUpdated;
-        public event dynElementDestroyedHandler dynNodeDestroyed;
-        public event dynElementReadyToBuildHandler dynElementReadyToBuild;
-        public event dynElementReadyToDestroyHandler dynNodeReadyToDestroy;
-        public event dynElementSelectedHandler dynElementSelected;
-        public event dynElementDeselectedHandler dynElementDeselected;
         #endregion
 
         #region constructors
@@ -282,46 +283,6 @@ namespace Dynamo.Controls
         }
 
         #endregion
-
-        protected virtual void OnDynElementDestroyed(EventArgs e)
-        {
-            if (dynNodeDestroyed != null)
-            {
-                dynNodeDestroyed(this, e);
-            }
-        }
-
-        protected virtual void OnDynElementReadyToBuild(EventArgs e)
-        {
-            if (dynElementReadyToBuild != null)
-            {
-                dynElementReadyToBuild(this, e);
-            }
-        }
-
-        protected virtual void OnDynElementReadyToDestroy(EventArgs e)
-        {
-            if (dynNodeReadyToDestroy != null)
-            {
-                dynNodeReadyToDestroy(this, e);
-            }
-        }
-
-        protected virtual void OnDynElementSelected(EventArgs e)
-        {
-            if (dynElementSelected != null)
-            {
-                dynElementSelected(this, e);
-            }
-        }
-
-        protected virtual void OnDynElementDeselected(EventArgs e)
-        {
-            if (dynElementDeselected != null)
-            {
-                dynElementDeselected(this, e);
-            }
-        }
 
         public void RegisterAllPorts()
         {
@@ -715,29 +676,22 @@ namespace Dynamo.Controls
         /// </summary>
         public void ValidateConnections()
         {
-            bool flag = false;
+            var portsWithoutConnectors = inPorts.Select(x => x).Where(x => x.Connectors.Count == 0).Count();
 
-            foreach (dynPort port in inPorts)
-            {
-                if (port.Connectors.Count == 0)
-                {
-                    flag = true;
-                }
-            }
-
-            if (flag)
+            // if there are inputs without connections
+            // mark as dead
+            if(inPorts.Select(x => x).Where(x => x.Connectors.Count == 0).Count() > 0)
             {
                 State = ElementState.DEAD;
             }
             else
             {
-                State = ElementState.ACTIVE;
+                //don't override state if it's in error
+                //if (State != ElementState.ERROR)
+                //{
+                    State = ElementState.ACTIVE;
+                //}
             }
-        }
-
-        protected void MarkConnectionState(bool bad)
-        {
-            State = bad ? ElementState.ERROR : ElementState.ACTIVE;
         }
 
         protected internal void SetColumnAmount(int amt)
@@ -783,16 +737,18 @@ namespace Dynamo.Controls
 
         public void SetTooltip(string message)
         {
-            ToolTip = message;
+            //ToolTip = message;
+            this.ToolTipText = message;
         }
 
         void SetTooltip()
         {
-            object[] rtAttribs = GetType().GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
+            Type t = NodeLogic.GetType();
+            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
             if (rtAttribs.Length > 0)
             {
                 string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-                ToolTip = description;
+                this.ToolTipText = description;
             }
         }
 
@@ -874,27 +830,15 @@ namespace Dynamo.Controls
 
         public void Error(string p)
         {
-            MarkConnectionState(true);
-
-            SetToolTipDelegate sttd = new SetToolTipDelegate(SetTooltip);
-            Dispatcher.Invoke(sttd, System.Windows.Threading.DispatcherPriority.Background,
-                new object[] { p });
+            State = ElementState.ERROR;
+            ToolTipText = p;
         }
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //don't try to select if already selected
-            if (!isSelected)
-            {
-               // Debug.WriteLine("Node left selected.");
-                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    dynSettings.Bench.WorkBench.ClearSelection();
-                }
-
-                if(!dynSettings.Bench.WorkBench.Selection.Contains(this))
-                    dynSettings.Bench.WorkBench.Selection.Add(this);
-            }
+            dynSettings.Bench.mainGrid.Focus();
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
+            dynSettings.Controller.ProcessCommandQueue();
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -989,6 +933,142 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
+        }
+    }
+
+    [ValueConversion(typeof(bool), typeof(bool))]
+    public class InverseBooleanConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(bool))
+                throw new InvalidOperationException("The target must be a boolean");
+
+            return !(bool)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class ShowHideConsoleMenuItemConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return "Hide Console";
+            }
+            else
+            {
+                return "Show Console";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class ZoomStatConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return string.Format("Zoom : {0}", value.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class TransformOriginStatConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            Point p = (Point)value;
+            return string.Format("Transform origin X: {0}, Y: {1}", p.X, p.Y);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class CurrentOffsetStatConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            Point p = (Point)value;
+            return string.Format("Current offset X: {0}, Y: {1}", p.X, p.Y);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class EnumToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            // You could also directly pass an enum value using {x:Static},
+            // then there is no need to parse
+            string parameterString = parameter as string;
+            if (parameterString == null)
+                return DependencyProperty.UnsetValue;
+
+            if (Enum.IsDefined(value.GetType(), value) == false)
+                return DependencyProperty.UnsetValue;
+
+            object parameterValue = Enum.Parse(value.GetType(), parameterString);
+
+            return parameterValue.Equals(value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string parameterString = parameter as string;
+            if (parameterString == null)
+                return DependencyProperty.UnsetValue;
+
+            return Enum.Parse(targetType, parameterString);
         }
     }
 }

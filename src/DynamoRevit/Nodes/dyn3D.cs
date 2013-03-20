@@ -1,4 +1,4 @@
-﻿//Copyright 2012 Ian Keough
+﻿//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -111,7 +111,7 @@ namespace Dynamo.Nodes
             view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             //RenderOptions.SetEdgeMode(view,EdgeMode.Aliased);
             RenderOptions.SetEdgeMode(view, EdgeMode.Unspecified);
-            
+            view.ShowViewCube = false;
             
             //view.IsHitTestVisible = true;
             view.ShowFrameRate = true;
@@ -336,7 +336,7 @@ namespace Dynamo.Nodes
         private void DrawSurface(Face f)
         {
             Mesh mesh;
-            Mesh3D helixMesh;
+            //Mesh3D helixMesh;
 
             mesh = f.Triangulate() as Mesh;
             XYZ vertex0;

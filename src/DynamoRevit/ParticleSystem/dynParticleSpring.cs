@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
         protected double m_springConstant;
         protected double m_Damping;
         protected ElementId m_ElementId;
-        protected double m_residualForce;
+        //protected double m_residualForce;
         protected int m_ID;
 
         public ParticleSpring(int ID, Particle particleA, Particle particleB, double restLength, double springConstant, double damping)

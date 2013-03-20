@@ -16,28 +16,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using System.Windows.Controls;
+using System.Windows;
+using System.Xml;
 
 using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
-using Value = Dynamo.FScheme.Value;
-
-using Microsoft.FSharp.Collections;
 
 using IronPython;
 using IronPython.Hosting;
 using IronPython.Runtime;
+
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
-using System.Windows;
-using System.Xml;
 using Microsoft.FSharp.Core;
+using Microsoft.FSharp.Collections;
 
-namespace Dynamo.Nodes.PythonNode
+using Value = Dynamo.FScheme.Value;
+
+namespace Dynamo.Nodes
 {
     internal static class Converters
     {

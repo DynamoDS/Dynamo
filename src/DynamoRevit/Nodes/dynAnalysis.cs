@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Gets or creates the spatial field manager on the view.")]
     class dynSpatialFieldManager : dynNodeWithOneOutput
     {
-        AnalysisDisplayStyle analysisDisplayStyle;
+        //AnalysisDisplayStyle analysisDisplayStyle;
 
         public dynSpatialFieldManager()
         {

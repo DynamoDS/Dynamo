@@ -1,4 +1,4 @@
-﻿//Copyright 2012 Ian Keough
+﻿//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -154,8 +154,8 @@ namespace Dynamo.Nodes
     {
 
         System.Windows.Controls.Image image1;
-        int width = 320;
-        int height = 240;
+        //int width = 320;
+        //int height = 240;
 
         public dynImageFileReader()
         {

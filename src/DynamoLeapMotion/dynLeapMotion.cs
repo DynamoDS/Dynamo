@@ -27,15 +27,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-
+using System.Windows.Media.Media3D;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
-using Autodesk.Revit.DB;
 using Dynamo.Controls;
+
+using Leap;
 
 namespace Dynamo.Nodes
 {
@@ -61,9 +62,6 @@ namespace Dynamo.Nodes
 
             NodeUI.RegisterAllPorts();
 
-            NodeUI.dynNodeDestroyed += new dynNodeUI.dynElementDestroyedHandler(OnDynLeapMotionDestroyed);
-            NodeUI.dynNodeReadyToDestroy += new dynNodeUI.dynElementReadyToDestroyHandler(OnDynLeapMotionReadyToDestroy);
-
             // Create a menuitem to enable/disable the Leap device
             menuItemLeapEnabled = new System.Windows.Controls.MenuItem();
             menuItemLeapEnabled.Header = "Enable Leap";
@@ -87,14 +85,10 @@ namespace Dynamo.Nodes
             LeapEnable(menuItemLeapEnabled.IsChecked);
         }
 
-        void OnDynLeapMotionDestroyed(object sender, EventArgs e)
+        public override void Cleanup()
         {
-        }
-
-        void OnDynLeapMotionReadyToDestroy(object sender, EventArgs e)
-        {
-            // Disconnect Leap controller
             LeapEnable(false);
+            base.Cleanup();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -102,7 +96,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(leapController);
         }
 
-        public static Leap.Controller Controller
+        public static Leap.Controller CurrentLeapController
         {
             get { return leapController; }
         }
@@ -224,7 +218,7 @@ namespace Dynamo.Nodes
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
@@ -244,7 +238,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
-            OutPortData.Add(new PortData("Translation", "The translation vector", typeof(XYZ)));
+            OutPortData.Add(new PortData("Translation", "The translation vector", typeof(Point3D)));
 
             NodeUI.RegisterAllPorts();
         }
@@ -264,7 +258,7 @@ namespace Dynamo.Nodes
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
@@ -275,7 +269,7 @@ namespace Dynamo.Nodes
             else
                 v = new Leap.Vector();
 
-            return Value.NewContainer(new XYZ(v.x, v.y, v.z));
+            return Value.NewContainer(new Point3D(v.x, v.y, v.z));
         }
     }
 
@@ -289,7 +283,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
-            OutPortData.Add(new PortData("Rotation", "The XYZ rotation in radians", typeof(XYZ)));
+            OutPortData.Add(new PortData("Rotation", "The XYZ rotation in radians", typeof(Point3D)));
 
             NodeUI.RegisterAllPorts();
         }
@@ -309,7 +303,7 @@ namespace Dynamo.Nodes
                     throw new Exception("Leap Frame Age must be >= 0");
             }
 
-            Leap.Controller controller = dynLeapController.Controller;
+            Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
                 throw new Exception("No Leap Controller node.");
 
@@ -319,7 +313,7 @@ namespace Dynamo.Nodes
             float angleY = frame.RotationAngle(sinceFrame, new Leap.Vector((float)0.0, (float)1.0, (float)0.0));
             float angleZ = frame.RotationAngle(sinceFrame, new Leap.Vector((float)0.0, (float)0.0, (float)1.0));
 
-            return Value.NewContainer(new XYZ(angleX, angleY, angleZ));
+            return Value.NewContainer(new Point3D(angleX, angleY, angleZ));
         }
     }
 
@@ -654,7 +648,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Object", "The Hand, Finger, or Tool from the Leap controller", typeof(object)));
 
-            OutPortData.Add(new PortData("XYZ", "The XYZ position in mms", typeof(XYZ)));
+            OutPortData.Add(new PortData("XYZ", "The XYZ position in mms", typeof(Point3D)));
 
             NodeUI.RegisterAllPorts();
         }
@@ -684,7 +678,7 @@ namespace Dynamo.Nodes
                 y = pointable.TipPosition.z;
             }
 
-            return Value.NewContainer(new XYZ(x, y, z));
+            return Value.NewContainer(new Point3D(x, y, z));
         }
     }
 

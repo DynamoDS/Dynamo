@@ -73,16 +73,7 @@ namespace Dynamo.Nodes
                 lastComItem = comItem;
             }
 
-            this.dynElementDestroyed += new dynElementDestroyedHandler(OnDynArduinoDestroyed);
-            this.dynElementReadyToDestroy += new dynElementReadyToDestroyHandler(OnDynArduinoReadyToDestroy);
-
         }
-
-        public new event dynElementDestroyedHandler dynElementDestroyed;
-        public new event dynElementReadyToDestroyHandler dynElementReadyToDestroy;
-
-        public new delegate void dynElementDestroyedHandler(object sender, EventArgs e);
-        public new delegate void dynElementReadyToDestroyHandler(object sender, EventArgs e);
 
         System.Windows.Controls.MenuItem lastComItem = null;
         
@@ -106,25 +97,7 @@ namespace Dynamo.Nodes
             
         }
 
-
-
-        void OnDynArduinoDestroyed(object sender, EventArgs e)
-        {
-            if (dynElementDestroyed != null)
-            {
-
-                if (port != null)
-                {
-                    if (port.IsOpen)
-                        port.Close();
-                }
-                port = null;
-
-                dynElementDestroyed(this, e);
-            }
-        }
-
-        void OnDynArduinoReadyToDestroy(object sender, EventArgs e)
+        public override void Cleanup()
         {
             if (port != null)
             {
@@ -132,8 +105,6 @@ namespace Dynamo.Nodes
                     port.Close();
             }
             port = null;
-
-            dynElementDestroyed(this, e);
         }
 
         public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
@@ -226,7 +197,7 @@ namespace Dynamo.Nodes
                     serialRange = allData.ToList<string>().GetRange(0, range);
                     return serialRange;
                 }
-                catch (Exception e)
+                catch
                 {
                     return serialRange;
                 }

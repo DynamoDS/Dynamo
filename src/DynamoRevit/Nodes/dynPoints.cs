@@ -1,4 +1,4 @@
-//Copyright 2012 Ian Keough
+//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -529,7 +529,8 @@ namespace Dynamo.Nodes
                     this.UIDocument.Document.Delete(el);
                 }
             }
-            Plane p = null;
+            
+            //Plane p = null;
             Reference r = null;
             ReferencePoint pt = ((Value.Container)args[0]).Item as ReferencePoint;
 

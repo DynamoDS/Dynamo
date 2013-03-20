@@ -34,14 +34,14 @@ class Node(object):
     
     
 CATEGORIES = {
-    'BuiltinElementCategories.BOOLEAN': "Boolean",
-    'BuiltinElementCategories.LIST': "List",
-    'BuiltinElementCategories.COMPARISON': "Logic",
-    'BuiltinElementCategories.MATH': "Math",
-    'BuiltinElementCategories.MISC': "Miscellaneous",
-    'BuiltinElementCategories.PRIMITIVES': "Primitives",
-    'BuiltinElementCategories.REVIT': "Revit",
-    'BuiltinElementCategories.ANALYSIS': "Analysis"
+    'BuiltinNodeCategories.BOOLEAN': "Boolean",
+    'BuiltinNodeCategories.LIST': "List",
+    'BuiltinNodeCategories.COMPARISON': "Logic",
+    'BuiltinNodeCategories.MATH': "Math",
+    'BuiltinNodeCategories.MISC': "Miscellaneous",
+    'BuiltinNodeCategories.PRIMITIVES': "Primitives",
+    'BuiltinNodeCategories.REVIT': "Revit",
+    'BuiltinNodeCategories.ANALYSIS': "Analysis"
 }
 
 def getCat(key):
@@ -50,34 +50,42 @@ def getCat(key):
     else:
         return key
         
-cwd = os.getcwd()
+cwd = '../../src/'   # relative path
 
-files = itertools.chain(*([path.join(root, f) for f in files if path.isfile(path.join(root, f)) and path.splitext(f)[1] == '.cs'] for root, dirs, files in os.walk(cwd)))
+# generator nested list comprehension - returns a generator which yields all of the files in a folder ending with .cs and actually a file
+file_array = ( [path.join(root, f) for f in files if path.isfile(path.join(root, f)) and path.splitext(f)[1] == '.cs'] for root, dirs, files in os.walk(cwd) )
+
+# the * operator turns an array in to a list of args for the function
+files = itertools.chain(*file_array)
+
 nodes = []
 
 for file in files:
+
     with open(file) as f:
         name = ""
         desc = ""
         cat = ""
         inputs = []
         output = None
+
         for line in f:
+
             line = line.strip()
             if not len(line): continue
             
-            if not len(name):
-                search = re.search(r'\[ElementName\("([^"]+)"\)\]', line)
+            if not len(name): 
+                search = re.search(r'\[NodeName\("([^"]+)"\)\]', line)
                 if search:
                     name = search.group(1)
             else:
                 if not len(desc):
-                    search = re.search(r'\[ElementDescription\("([^"]+)"\)\]', line)
+                    search = re.search(r'\[NodeDescription\("([^"]+)"\)\]', line)
                     if search:
                         desc = search.group(1)
                         continue
                 if not len(cat):
-                    search = re.search(r'\[ElementCategory\(([^"]+)\)\]', line)
+                    search = re.search(r'\[NodeCategory\(([^"]+)\)\]', line)
                     if search:
                         cat = getCat(search.group(1))
                         continue
@@ -89,7 +97,7 @@ for file in files:
                 if search:
                     output = PortData(*search.group(1, 2, 3))
                     continue
-                search = re.search(r'(?:this\s*\.\s*)?(?:base\s*\.\s*)?RegisterInputsAndOutputs\s*\(\s*\)\s*;', line)
+                search = re.search(r'NodeUI\.RegisterAllPorts\s*\(\s*\)\s*;', line) 
                 if search:
                     nodes.append(Node(name, desc, cat, inputs, output))
                     name = ""
@@ -105,7 +113,7 @@ for node in nodes:
         nodeDict[cat] = []
     nodeDict[cat].append(node)
     
-#pprint(nodeDict)
+# print(nodeDict)
 
 resultDict = {}
 for key in sorted(list(nodeDict.keys())):

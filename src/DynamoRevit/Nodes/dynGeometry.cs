@@ -1,4 +1,4 @@
-﻿//Copyright 2012 Ian Keough
+﻿//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -523,7 +523,7 @@ namespace Dynamo.Nodes
                           SketchPlane sp = null;
 
                           //handle Plane, Reference or PlanarFace, also test for family or project doc. there probably is a cleaner way to test for all these conditions.
-                          if (x is Plane) //TODO: ensure this is correctly casting and testing.
+                          if (((Value.Container)x).Item is Plane) //TODO: ensure this is correctly casting and testing.
                           {
                               sp = (this.UIDocument.Document.IsFamilyDocument)
                               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(
@@ -533,7 +533,7 @@ namespace Dynamo.Nodes
                                  (Plane)((Value.Container)x).Item
                               );
                           }
-                          else if (x is Reference)
+                          else if (((Value.Container)x).Item is Reference)
                           {
                               sp = (this.UIDocument.Document.IsFamilyDocument)
                               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(
@@ -543,7 +543,7 @@ namespace Dynamo.Nodes
                                  (Reference)((Value.Container)x).Item
                               );
                           }
-                          else if (x is PlanarFace)
+                          else if (((Value.Container)x).Item is PlanarFace)
                           {
                               sp = (this.UIDocument.Document.IsFamilyDocument)
                               ? this.UIDocument.Document.FamilyCreate.NewSketchPlane(

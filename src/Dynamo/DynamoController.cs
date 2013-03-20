@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Dynamo.Nodes;
-using Dynamo.Controls;
-using Dynamo.Utilities;
-using Dynamo.FSchemeInterop;
+
 using System.Windows.Controls;
 using System.Reflection;
 using System.IO;
@@ -14,20 +11,57 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Xml;
-using Dynamo.Connectors;
-
-using Expression = Dynamo.FScheme.Expression;
+using System.Windows.Threading;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using Dynamo.FSchemeInterop.Node;
+
+using Dynamo.Nodes;
 using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.FSchemeInterop;
+using Dynamo.Connectors;
+using Dynamo.FSchemeInterop.Node;
 using Dynamo.Commands;
+
+using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo
 {
-    public class DynamoController
+    public class DynamoController:INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Used by various properties to notify observers that a property has changed.
+        /// </summary>
+        /// <param name="info">What changed.</param>
+        protected void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+        List<UIElement> clipBoard = new List<UIElement>();
+        public List<UIElement> ClipBoard
+        {
+            get { return clipBoard; }
+            set { clipBoard = value; }
+        }
+
+        bool isProcessingCommandQueue = false;
+        public bool IsProcessingCommandQueue
+        {
+            get { return isProcessingCommandQueue; }
+        }
+        
+        List<Tuple<object, object>> commandQueue = new List<Tuple<object, object>>();
+        public List<Tuple<object, object>> CommandQueue
+        {
+            get { return commandQueue; }
+        }
+
         //TODO: Remove this?
         public Dictionary<string, dynWorkspace> FunctionDict = new Dictionary<string, dynWorkspace>();
 
@@ -47,19 +81,32 @@ namespace Dynamo
         }
 
         SortedDictionary<string, TypeLoadData> builtinTypesByNickname = new SortedDictionary<string, TypeLoadData>();
+        public SortedDictionary<string, TypeLoadData> BuiltInTypesByNickname
+        {
+            get { return builtinTypesByNickname; }
+        }
+
         Dictionary<string, TypeLoadData> builtinTypesByTypeName = new Dictionary<string, TypeLoadData>();
 
-        SplashScreen splashScreen;
+        DynamoSplash splashScreen;
+        public DynamoSplash SplashScreen
+        {
+            get { return splashScreen; }
+            set { splashScreen = value; }
+        }
 
         dynWorkspace _cspace;
-        internal dynWorkspace CurrentSpace
+        public dynWorkspace CurrentSpace
         {
             get { return _cspace; }
             set
             {
                 _cspace = value;
-                Bench.CurrentX = _cspace.PositionX;
-                Bench.CurrentY = _cspace.PositionY;
+                //Bench.CurrentX = _cspace.PositionX;
+                //Bench.CurrentY = _cspace.PositionY;
+
+                Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
+
                 //TODO: Also set the name here.
             }
         }
@@ -85,15 +132,17 @@ namespace Dynamo
         }
 
         #region Constructor and Initialization
-        public DynamoController(SplashScreen splash)
+        //public DynamoController(SplashScreen splash)
+        public DynamoController()
         {
             Bench = new dynBench(this);
 
-            splashScreen = splash;
             homeSpace = CurrentSpace = new HomeWorkspace();
 
-            Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
-            Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
+            //Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
+            //Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
+
+            Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
 
             Bench.InitializeComponent();
             Bench.Log(String.Format(
@@ -103,6 +152,11 @@ namespace Dynamo
             dynSettings.Bench = Bench;
             dynSettings.Controller = this;
             dynSettings.Workbench = Bench.WorkBench;
+
+            if (DynamoCommands.ShowSplashScreenCmd.CanExecute(null))
+            {
+                DynamoCommands.ShowSplashScreenCmd.Execute(null);
+            }
 
             //WTF
             Bench.settings_curves.IsChecked = true;
@@ -120,6 +174,32 @@ namespace Dynamo
             PopulateSamplesMenu();
 
             Bench.Activated += Bench_Activated;
+
+            //Dispatcher.CurrentDispatcher.Hooks.DispatcherInactive += new EventHandler(Hooks_DispatcherInactive);
+        }
+
+        void Hooks_DispatcherInactive(object sender, EventArgs e)
+        {
+            ProcessCommandQueue();
+        }
+
+        public void ProcessCommandQueue()
+        {
+            foreach (Tuple<object, object> cmdData in commandQueue)
+            {
+                ICommand cmd = cmdData.Item1 as ICommand;
+                if (cmd != null)
+                {
+                    if (cmd.CanExecute(cmdData.Item2))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute(string.Format("Executing command : {0}", cmd.GetType()));
+                        cmd.Execute(cmdData.Item2);
+                    }
+                }
+            }
+            commandQueue.Clear();
+
+            dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}", Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
         }
 
         private bool _activated = false;
@@ -137,8 +217,14 @@ namespace Dynamo
                     //MessageBox.Show("Workbench could not be opened.");
                     Bench.Log("Workbench could not be opened.");
 
-                    dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    dynSettings.Writer.WriteLine(UnlockLoadPath);
+                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
+
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
+                    }
                 }
 
                 UnlockLoadPath = null;
@@ -146,7 +232,10 @@ namespace Dynamo
                 Bench.UnlockUI();
                 Bench.WorkBench.Visibility = System.Windows.Visibility.Visible;
 
-                splashScreen.Close(TimeSpan.FromMilliseconds(100));
+                if (DynamoCommands.CloseSplashScreenCmd.CanExecute(null))
+                {
+                    DynamoCommands.CloseSplashScreenCmd.Execute(null);
+                }
 
                 homeSpace.OnDisplayed();
             }
@@ -181,7 +270,7 @@ namespace Dynamo
 
             //var loadedAssemblies = new List<Assembly>();
             //var assembliesToLoad = new List<string>();
-
+            
             #region determine assemblies to load
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>(
                 AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.Location));
@@ -313,7 +402,7 @@ namespace Dynamo
                     var scale = Math.Min(target / width, .8);
 
                     nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
-                    nodeUI.nickNameBlock.FontSize *= .8 / scale;
+                    //nodeUI.nickNameBlock.FontSize *= .8 / scale;
 
                     Tuple<Expander, SortedList<string, dynNodeUI>> expander;
 
@@ -334,7 +423,7 @@ namespace Dynamo
                                 Width = double.NaN
                             },
                             HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                            //FontWeight = FontWeights.Bold
+                            Foreground = new SolidColorBrush(Color.FromRgb(200,200,200))
                         };
 
                         Bench.addMenuCategoryDict[categoryName] = e;
@@ -426,8 +515,11 @@ namespace Dynamo
                     var loaderExceptions = typeLoadException.LoaderExceptions;
                     Bench.Log("Dll Load Exception: " + loaderExceptions[0].ToString());
                     Bench.Log(loaderExceptions[0].ToString());
-                    Bench.Log("Dll Load Exception: " + loaderExceptions[1].ToString());
-                    Bench.Log(loaderExceptions[1].ToString());
+                    if (loaderExceptions.Count() > 1)
+                    {
+                        Bench.Log("Dll Load Exception: " + loaderExceptions[1].ToString());
+                        Bench.Log(loaderExceptions[1].ToString());
+                    }
                 }
             }
         }
@@ -675,6 +767,7 @@ namespace Dynamo
                     },
                     HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                     //FontWeight = FontWeights.Bold
+                    Foreground = new SolidColorBrush(Color.FromRgb(200,200,200))
                 };
 
                 Bench.addMenuCategoryDict[category] = expander;
@@ -1463,9 +1556,15 @@ namespace Dynamo
                     foreach (XmlAttribute att in node.Attributes)
                     {
                         if (att.Name.Equals("X"))
-                            Bench.CurrentX = Convert.ToDouble(att.Value);
+                        {
+                            //Bench.CurrentX = Convert.ToDouble(att.Value);
+                            Bench.CurrentOffset = new Point(Convert.ToDouble(att.Value), Bench.CurrentOffset.Y);
+                        }
                         else if (att.Name.Equals("Y"))
-                            Bench.CurrentY = Convert.ToDouble(att.Value);
+                        {
+                            //Bench.CurrentY = Convert.ToDouble(att.Value);
+                            Bench.CurrentOffset = new Point(Bench.CurrentOffset.X, Convert.ToDouble(att.Value));
+                        }
                     }
                 }
 
@@ -1696,26 +1795,54 @@ namespace Dynamo
 
         private bool runAgain = false;
 
-        private bool dynamicRun = false;
-
-        protected bool _debug;
+        //protected bool _debug;
         private bool _showErrors;
 
+        protected bool canRunDynamically = true;
+        public virtual bool CanRunDynamically
+        {
+            get
+            {
+                //we don't want to be able to run
+                //dynamically if we're in debug mode
+                return !debug;
+            }
+            set
+            {
+                canRunDynamically = value;
+                NotifyPropertyChanged("CanRunDynamically");
+            }
+        }
+
+        protected bool dynamicRun = false;
         public virtual bool DynamicRunEnabled
         {
             get
             {
-                return Bench.dynamicCheckBox.IsEnabled
-                   && Bench.debugCheckBox.IsChecked == false
-                   && Bench.dynamicCheckBox.IsChecked == true;
+                return dynamicRun; //selecting debug now toggles this on/off
+            }
+            set
+            {
+                dynamicRun = value;
+                NotifyPropertyChanged("DynamicRunEnabled");
             }
         }
 
+        protected bool debug = false;
         public virtual bool RunInDebug
         {
-            get
+            get { return debug; }
+            set
             {
-                return _debug;
+                debug = value;
+
+                //toggle off dynamic run
+                CanRunDynamically = !debug;
+
+                if(debug==true)
+                    DynamicRunEnabled = false;
+
+                NotifyPropertyChanged("RunInDebug");
             }
         }
 
@@ -1725,13 +1852,12 @@ namespace Dynamo
             this.runAgain = true;
         }
 
-        public void RunExpression(bool debug, bool showErrors = true)
+        public void RunExpression(bool showErrors = true)
         {
             //If we're already running, do nothing.
             if (Running)
                 return;
 
-            _debug = debug;
             _showErrors = showErrors;
 
             //TODO: Hack. Might cause things to break later on...
@@ -1743,7 +1869,7 @@ namespace Dynamo
             Running = true;
 
             //Set run auto flag
-            dynamicRun = !showErrors;
+            //this.DynamicRunEnabled = !showErrors;
 
             //Setup background worker
             BackgroundWorker worker = new BackgroundWorker();
@@ -1845,7 +1971,7 @@ namespace Dynamo
                     Bench.Dispatcher.BeginInvoke(new Action(
                        delegate
                        {
-                           RunExpression(_debug, _showErrors);
+                           RunExpression(_showErrors);
                        }
                     ));
                 }
@@ -1855,7 +1981,7 @@ namespace Dynamo
         protected internal virtual void Run(IEnumerable<dynNode> topElements, Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
-            if (_debug)
+            if (debug)
             {
                 //string exp = FScheme.print(runningExpression);
                 Bench.Dispatcher.Invoke(new Action(
@@ -1876,7 +2002,7 @@ namespace Dynamo
                 var expr = FSchemeEnvironment.Evaluate(runningExpression);
 
                 //Print some more stuff if we're in debug mode
-                if (_debug && expr != null)
+                if (debug && expr != null)
                 {
                     Bench.Dispatcher.Invoke(new Action(
                        () => Bench.Log(FScheme.print(expr))

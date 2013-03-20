@@ -12,12 +12,31 @@
     KeyUp="OnKeyUp" 
     PreviewKeyUp="OnPreviewKeyUp"
     MouseLeftButtonDown="topControl_MouseLeftButtonDown"
-    MouseRightButtonDown="topControl_MouseRightButtonDown">
+    MouseRightButtonDown="topControl_MouseRightButtonDown" >
    <UserControl.Resources>
-      <local:MarginConverter x:Key="MarginConverter" />
+        <local:MarginConverter x:Key="MarginConverter" />
         <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
        <local:StateToColorConverter x:Key="StateToColorConverter"/>
     </UserControl.Resources>
+    <UserControl.ToolTip>
+        <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+            <Canvas Canvas.Left="0" Canvas.Top="0" Width="Auto">
+                <Rectangle 
+                    RadiusX="10" 
+                    RadiusY="10" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" 
+                    Fill="Gray" 
+                    Stroke="#FF505050"/>
+            </Canvas>
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock Name="tt_elementName" HorizontalAlignment="Stretch" 
+                           VerticalAlignment="Top" Text="{Binding Path=NickName}" FontSize="12" FontFamily="Arial" FontWeight="Bold" Margin="2"/>
+                <TextBlock Name="tt_longText" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                           Text="{Binding Path=ToolTipText}" FontFamily="Consolas" FontSize="11" TextTrimming="WordEllipsis" Margin="2"/>
+            </StackPanel>
+        </Grid>
+   </UserControl.ToolTip>
    <Grid Name="grid">
       <Grid.ContextMenu>
          <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
@@ -34,7 +53,6 @@
             <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="Auto"/>
          </Grid.ColumnDefinitions>
-
       </Grid>
       <Grid Name="gridRight" 
               HorizontalAlignment="Right" 
@@ -107,8 +125,8 @@
                      HorizontalAlignment="Left"
                      Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Margin="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Converter={StaticResource MarginConverter}, Mode=OneWay}"
-                     FontFamily="Calibri"
-                     FontSize="15" 
+                     FontFamily="Arial"
+                     FontSize="12" 
                      FontWeight="Normal" 
                      TextAlignment="Center" 
                      IsHitTestVisible="False" 
@@ -116,7 +134,7 @@
                      Width="{Binding ElementName=grid, Path=ActualWidth}"
                      MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
                      TextWrapping="Wrap"
-                     Background="Transparent" FontStyle="Normal">
+                     Background="Transparent" FontStyle="Normal" Foreground="#FF141414">
             <!--<TextBox.Background>
                <SolidColorBrush />
             </TextBox.Background>-->

@@ -123,32 +123,32 @@ namespace Dynamo.Nodes
             return p;
         }
 
-        public Particle makeOrUpdateParticle(int ID, double mass, XYZ position, bool fix)
-        {
-            bool found = false;
-            for (int i = 0; i < particles.Count(); ++i)
-            {
-                if (ID != null && (particles[i].ID() != null))
-                {
-                    if (ID == particles[i].ID())
-                    {
-                        found = true;
-                        particles[i].setPosition(position);
-                        return particles[i];
+        //public Particle makeOrUpdateParticle(int ID, double mass, XYZ position, bool fix)
+        //{
+        //    bool found = false;
+        //    for (int i = 0; i < particles.Count(); ++i)
+        //    {
+        //        if (ID != null && (particles[i].ID() != null))
+        //        {
+        //            if (ID == particles[i].ID())
+        //            {
+        //                found = true;
+        //                particles[i].setPosition(position);
+        //                return particles[i];
 
-                    }
-                }
-            }
-            if (found == false)//if we did not find one make a new one
-            {
-                Particle part = new Particle(ID++, mass, position, fix);
-                particles.Add(part);
-                return part;
-            }
+        //            }
+        //        }
+        //    }
+        //    if (found == false)//if we did not find one make a new one
+        //    {
+        //        Particle part = new Particle(ID++, mass, position, fix);
+        //        particles.Add(part);
+        //        return part;
+        //    }
 
-            return null;
+        //    return null;
 
-        }
+        //}
 
         public Particle makeParticleFromElementID(ElementId eid, double mass, XYZ position, bool fix)
         {
@@ -236,29 +236,29 @@ namespace Dynamo.Nodes
             return null;
         }
 
-        public ParticleSpring makeOrUpdateSpring(int ID, Particle a, Particle b, double restLength, double springConstant, double damping)
-        {
-            bool found = false;
-            for (int i = 0; i < springs.Count(); ++i)
-            {
-                if (ID != null && (springs[i].ID() != null))
-                {
-                    if (ID == springs[i].ID())
-                    {
-                        found = true;
-                        return springs[i];
+        //public ParticleSpring makeOrUpdateSpring(int ID, Particle a, Particle b, double restLength, double springConstant, double damping)
+        //{
+        //    bool found = false;
+        //    for (int i = 0; i < springs.Count(); ++i)
+        //    {
+        //        if (ID != null && (springs[i].ID() != null))
+        //        {
+        //            if (ID == springs[i].ID())
+        //            {
+        //                found = true;
+        //                return springs[i];
 
-                    }
-                }
-            }
-            if (found == false)
-            {
-                ParticleSpring s = new ParticleSpring(ID++, a, b, restLength, springConstant, damping);
-                springs.Add(s);
-                return s;
-            }
-            return null;
-        }
+        //            }
+        //        }
+        //    }
+        //    if (found == false)
+        //    {
+        //        ParticleSpring s = new ParticleSpring(ID++, a, b, restLength, springConstant, damping);
+        //        springs.Add(s);
+        //        return s;
+        //    }
+        //    return null;
+        //}
 
         public void applyForces()
         {

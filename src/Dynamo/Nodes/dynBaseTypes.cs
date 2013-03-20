@@ -1,4 +1,4 @@
-//Copyright 2012 Ian Keough
+//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -61,6 +61,7 @@ namespace Dynamo.Nodes
         public const string REVIT_GEOM = "Revit Geometry";
         public const string REVIT_CURVES = "Revit Model Curves";
         public const string REVIT_DATUMS = "Revit Datums";
+        public const string REVIT_API = "Revit API";
         public const string COMMUNICATION = "Communication";
         public const string SCRIPTING = "Scripting";
         public const string STRINGS = "Strings";
@@ -1697,6 +1698,8 @@ namespace Dynamo.Nodes
                 OnChangeCommitted();
             }
             Pending = false;
+
+            dynSettings.Bench.mainGrid.Focus();
         }
 
         new public string Text
@@ -1745,6 +1748,7 @@ namespace Dynamo.Nodes
         {
             commit();
         }
+
     }
 
     [IsInteractive(true)]
@@ -1957,7 +1961,7 @@ namespace Dynamo.Nodes
             //and make this so it's not so wide
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             NodeUI.topControl.Width = 100;
-            NodeUI.topControl.Height = 50;
+            //NodeUI.topControl.Height = 50;
 
             NodeUI.UpdateLayout();
         }
@@ -1993,7 +1997,6 @@ namespace Dynamo.Nodes
             }
         }
 
-
     }
 
     //MDJ - added by Matt Jezyk 10.27.2011
@@ -2009,6 +2012,8 @@ namespace Dynamo.Nodes
 
         public dynDoubleSliderInput()
         {
+            NodeUI.topControl.Width = 200;
+
             //add a slider control to the input grid of the control
             tb_slider = new System.Windows.Controls.Slider();
             tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -2044,10 +2049,12 @@ namespace Dynamo.Nodes
             {
                 if (NodeUI.elementCanvas.Children.Contains(displayBox))
                     NodeUI.elementCanvas.Children.Remove(displayBox);
+
+                dynSettings.Bench.mainGrid.Focus();
             };
 
             mintb = new dynTextBox();
-            mintb.MaxLength = 3;
+            //mintb.MaxLength = 3;
             mintb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             mintb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             mintb.Width = double.NaN;
@@ -2067,7 +2074,7 @@ namespace Dynamo.Nodes
             //mintb.Pending = false;
 
             maxtb = new dynTextBox();
-            maxtb.MaxLength = 3;
+            //maxtb.MaxLength = 3;
             maxtb.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             maxtb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             maxtb.Width = double.NaN;
@@ -2092,7 +2099,7 @@ namespace Dynamo.Nodes
 
             //make the middle column containing the slider
             //take up most of the width
-            NodeUI.inputGrid.ColumnDefinitions[1].Width = new GridLength(.75 * NodeUI.Width);
+            NodeUI.inputGrid.ColumnDefinitions[1].Width = new GridLength(.60 * NodeUI.Width);
 
             System.Windows.Controls.Grid.SetColumn(mintb, 0);
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
@@ -2157,11 +2164,13 @@ namespace Dynamo.Nodes
                 if (value > tb_slider.Maximum)
                 {
                     maxtb.Text = value.ToString();
+                    tb_slider.Maximum = value;
                     //maxtb.Pending = false;
                 }
                 if (value < tb_slider.Minimum)
                 {
                     mintb.Text = value.ToString();
+                    tb_slider.Minimum = value;
                     //mintb.Pending = false;
                 }
 

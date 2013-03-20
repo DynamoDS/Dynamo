@@ -1,4 +1,4 @@
-//Copyright 2012 Ian Keough
+//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -140,7 +140,9 @@ namespace Dynamo.Applications
                 return Result.Succeeded;
             }
 
-            SplashScreen splashScreen = null;
+            //SplashScreen splashScreen = null
+            Window splashScreen = null;
+
             try
             {
                 //create a log file
@@ -177,32 +179,21 @@ namespace Dynamo.Applications
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
                         //prepare and show splash
-                        splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), "splash.png");
-                        //splashScreen.Show(false, true);
+                        splashScreen = new DynamoSplash();
 
                         //show the window
-                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.updater, splashScreen);
+                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.updater);
                         dynamoBench = dynamoController.Bench;
 
                         //set window handle and show dynamo
                         new System.Windows.Interop.WindowInteropHelper(dynamoBench).Owner = mwHandle;
 
-                        if (System.Windows.Forms.SystemInformation.MonitorCount > 1)
-                        {
-                            dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
+                        dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
 
-                            System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[1].Bounds;
-                            dynamoBench.Left = bounds.X;
-                            dynamoBench.Top = bounds.Y;
-                            dynamoBench.Loaded += new RoutedEventHandler(dynamoForm_Loaded);
-                        }
-                        else
-                        {
-                            //System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.AllScreens[0].Bounds;
-                            //dynamoForm.Left = bounds.X;
-                            //dynamoForm.Top = bounds.Y;
-                            dynamoBench.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                        }
+                        System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+                        dynamoBench.Left = bounds.X;
+                        dynamoBench.Top = bounds.Y;
+                        dynamoBench.Loaded += new RoutedEventHandler(dynamoForm_Loaded);
 
                         dynamoBench.Show();
 

@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
                     if (controller.DynamicRunEnabled)
                     {
                         if (!controller.Running)
-                            controller.RunExpression(false, false);
+                            controller.RunExpression(false);
                         else
                             controller.QueueRun();
                     }
