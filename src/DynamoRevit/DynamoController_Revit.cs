@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 using Dynamo.Nodes;
 using Dynamo.Revit;
@@ -79,7 +80,7 @@ namespace Dynamo
                 var pyBindingsProperty = PythonBindings.GetProperty("Bindings");
                 var pyBindings = pyBindingsProperty.GetValue(null, null);
 
-                var Binding = ironPythonAssembly.GetType("Dynamo.Nodes.PythonNode.Binding");
+                var Binding = ironPythonAssembly.GetType("Dynamo.Nodes.Binding");
 
                 Func<string, object, object> CreateBinding = delegate(string name, object boundObject)
                 {
@@ -108,7 +109,7 @@ namespace Dynamo
                 AddToBindings("__revit__", dynRevitSettings.Doc.Application);
                 AddToBindings("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document);
 
-                var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonNode.PythonEngine");
+                var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
                 var oldPyEval = evaluatorField.GetValue(null) as Func<bool, string, object, Value>;
 
@@ -158,7 +159,11 @@ namespace Dynamo
                 //TODO: ADD BACK IN
                 //bindings.Add(new Binding("DynStoredElements", this.Elements));
             }
-            catch { }
+            catch(Exception e) 
+            {
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+            }
         }
         #endregion
         #region Watch Node Revit Hooks
