@@ -21,8 +21,9 @@ using Dynamo.Connectors;
 using System.Windows;
 using Dynamo.Utilities;
 using Dynamo.Controls;
+using Dynamo.Nodes;
 
-namespace Dynamo.Nodes
+namespace Dynamo
 {
     public abstract class dynWorkspace
     {

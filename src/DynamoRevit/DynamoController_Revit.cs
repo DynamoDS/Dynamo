@@ -26,8 +26,6 @@ namespace Dynamo
         PredicateTraverser checkManualTransaction;
         PredicateTraverser checkRequiresTransaction;
 
-        dynamic oldPyEval;
-
         public DynamoController_Revit(DynamoUpdater updater)
             : base()
         {
@@ -54,6 +52,8 @@ namespace Dynamo
         #region Python Nodes Revit Hooks
         private delegate void LogDelegate(string msg);
         private delegate void SaveElementDelegate(Autodesk.Revit.DB.Element e);
+
+        dynamic oldPyEval;
 
         void AddPythonBindings()
         {
@@ -122,7 +122,7 @@ namespace Dynamo
                 var evalDelegateType = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine+EvaluationDelegate");
 
                 Delegate d = Delegate.CreateDelegate(
-                    evalDelegateType,
+                    evalDelegateType, 
                     this,
                     typeof(DynamoController_Revit)
                         .GetMethod("newEval", BindingFlags.NonPublic | BindingFlags.Instance));
@@ -215,6 +215,16 @@ namespace Dynamo
         }
         #endregion
 
+        protected override dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
+        {
+            if (functionDefinition.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)
+                || functionDefinition.Dependencies.Any(d => d.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)))
+            {
+                return new dynFunctionWithRevit(inputs, outputs, functionDefinition);
+            }
+            return base.CreateFunction(inputs, outputs, functionDefinition);
+        }
+
         public bool InIdleThread;
 
         public enum TransactionMode
@@ -288,7 +298,7 @@ namespace Dynamo
 
         bool ExecutionRequiresManualTransaction()
         {
-            return homeSpace.GetTopMostNodes().Any(
+            return HomeSpace.GetTopMostNodes().Any(
                 checkManualTransaction.TraverseUntilAny
             );
         }
@@ -428,11 +438,15 @@ namespace Dynamo
 
         protected override void OnRunCancelled(bool error)
         {
+            base.OnRunCancelled(error);
+
             this.CancelTransaction();
         }
 
         protected override void OnEvaluationCompleted()
         {
+            base.OnEvaluationCompleted();
+
             //Cleanup Delegate
             Action cleanup = delegate
             {

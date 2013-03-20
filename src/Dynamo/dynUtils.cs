@@ -145,5 +145,10 @@ namespace Dynamo.Utilities
 
         public static PackageManagerClient PackageManagerClient { get; internal set; }
 
+        public static Dictionary<Guid, FunctionDefinition> FunctionDict = 
+            new Dictionary<Guid, FunctionDefinition>();
+
+        public static HashSet<FunctionDefinition> FunctionWasEvaluated =
+            new HashSet<FunctionDefinition>();
     }
 }

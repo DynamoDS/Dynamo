@@ -56,12 +56,10 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\revit\vDev\ReleaseWin32\RevitAPI.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\revit\vDev\ReleaseWin32\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -93,9 +91,11 @@
       <Link>DynamoRevitNodes.cs</Link>
     </Compile>
     <Compile Include="DynamoController_Revit.cs" />
+    <Compile Include="dynFunctionWithRevit.cs" />
     <Compile Include="dynRevitSettings.cs" />
     <Compile Include="dynRevitTransactionNode.cs" />
     <Compile Include="dynRevitUtils.cs" />
+    <Compile Include="ElementsContainer.cs" />
     <Compile Include="Nodes\dyn3D.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />

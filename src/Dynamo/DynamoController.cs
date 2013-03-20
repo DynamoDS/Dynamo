@@ -72,18 +72,16 @@ namespace Dynamo
         }
 
         //TODO: Remove this?
-        public Dictionary<string, dynWorkspace> FunctionDict = new Dictionary<string, dynWorkspace>();
-
         public dynBench Bench { get; private set; }
 
         public IEnumerable<dynNode> AllNodes
         {
             get
             {
-                return this.homeSpace.Nodes.Concat(
-                   this.FunctionDict.Values.Aggregate(
+                return HomeSpace.Nodes.Concat(
+                   dynSettings.FunctionDict.Values.Aggregate(
                       (IEnumerable<dynNode>)new List<dynNode>(),
-                      (a, x) => a.Concat(x.Nodes)
+                      (a, x) => a.Concat(x.Workspace.Nodes)
                    )
                 );
             }
@@ -108,7 +106,7 @@ namespace Dynamo
         public dynWorkspace CurrentSpace
         {
             get { return _cspace; }
-            set
+            internal set
             {
                 _cspace = value;
                 //Bench.CurrentX = _cspace.PositionX;
@@ -120,7 +118,7 @@ namespace Dynamo
             }
         }
 
-        protected dynWorkspace homeSpace;
+        public dynWorkspace HomeSpace { get; protected set; }
 
         private string UnlockLoadPath;
 
@@ -137,7 +135,7 @@ namespace Dynamo
 
         public bool ViewingHomespace
         {
-            get { return CurrentSpace == homeSpace; }
+            get { return CurrentSpace == HomeSpace; }
         }
 
         #region Constructor and Initialization
@@ -150,7 +148,7 @@ namespace Dynamo
             PackageManagerClient = new PackageManagerClient(this);
             PackageManagerLoginController = new PackageManagerLoginController(Bench, PackageManagerClient);
 
-            homeSpace = CurrentSpace = new HomeWorkspace();
+            HomeSpace = CurrentSpace = new HomeWorkspace();
 
             //Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
             //Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
@@ -250,7 +248,7 @@ namespace Dynamo
                     DynamoCommands.CloseSplashScreenCmd.Execute(null);
                 }
 
-                homeSpace.OnDisplayed();
+                HomeSpace.OnDisplayed();
             }
         }
 
@@ -404,7 +402,7 @@ namespace Dynamo
 
                     nodeUI.MouseDown += delegate
                     {
-                        Bench.BeginDragElement(nodeUI, name, Mouse.GetPosition(nodeUI));
+                        Bench.BeginDragElement(nodeUI, kvp.Value.Type.ToString(), Mouse.GetPosition(nodeUI));
                         nodeUI.Visibility = System.Windows.Visibility.Hidden;
                     };
 
@@ -722,22 +720,26 @@ namespace Dynamo
             }
         }
 
-        
-
-        internal dynWorkspace NewFunction(string name, string category, bool display)
+        internal FunctionDefinition NewFunction(string name, string category, bool display)
         {
             //Add an entry to the funcdict
-            var workSpace = new FuncWorkspace(name, category, dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+            var workSpace = new FuncWorkspace(
+                name, category, dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
 
             var newElements = workSpace.Nodes;
             var newConnectors = workSpace.Connectors;
 
-            this.FunctionDict[name] = workSpace;
+            var functionDefinition = new FunctionDefinition()
+            {
+                Workspace = workSpace
+            };
+
+            dynSettings.FunctionDict[functionDefinition.FunctionId] = functionDefinition;
 
             //Add an entry to the View menu
             System.Windows.Controls.MenuItem i = new System.Windows.Controls.MenuItem();
             i.Header = name;
-            i.Click += new RoutedEventHandler(Bench.ChangeView_Click);
+            //i.Click += new RoutedEventHandler(Bench.ChangeView_Click);
             Bench.viewMenu.Items.Add(i);
             Bench.viewMenuItemsDict[name] = i;
 
@@ -751,17 +753,16 @@ namespace Dynamo
             //AddMenu.Items.Add(mi);
             //this.addMenuItemsDict[name] = mi;
 
-            dynFunction newEl = new dynFunction(
+            dynFunction newEl = CreateFunction(
                workSpace.Nodes.Where(el => el is dynSymbol)
                   .Select(s => ((dynSymbol)s).Symbol),
                new List<String>() { "out" },
-               name
-            );
-
+               functionDefinition);
+            
             newEl.NodeUI.DisableInteraction();
             newEl.NodeUI.MouseDown += delegate
             {
-                Bench.BeginDragElement(newEl.NodeUI, name, Mouse.GetPosition(newEl.NodeUI));
+                Bench.BeginDragElement(newEl.NodeUI, newEl.Definition.FunctionId.ToString(), Mouse.GetPosition(newEl.NodeUI));
 
                 newEl.NodeUI.Visibility = System.Windows.Visibility.Hidden;
             };
@@ -842,7 +843,7 @@ namespace Dynamo
                 if (!this.ViewingHomespace)
                 {
                     //Step 2: Store function workspace in the function dictionary
-                    this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
+                    //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
                     //Step 3: Save function
                     this.SaveFunction(this.CurrentSpace);
@@ -881,16 +882,34 @@ namespace Dynamo
                 Bench.setFunctionBackground();
             }
 
-            return workSpace;
+            return functionDefinition;
+        }
+
+        protected virtual dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
+        {
+            return new dynFunction(inputs, outputs, functionDefinition);
         }
 
         internal dynNode CreateDragNode(string name)
         {
             dynNode result;
-            if (FunctionDict.ContainsKey(name))
-            {
-                dynWorkspace ws = FunctionDict[name];
 
+            if (builtinTypesByTypeName.ContainsKey(name))
+            {
+                TypeLoadData tld = builtinTypesByTypeName[name];
+
+                var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                var newEl = (dynNode)obj.Unwrap();
+                newEl.NodeUI.DisableInteraction();
+                result = newEl;
+            }
+            else
+            {
+                var def = dynSettings.FunctionDict[Guid.Parse(name)];
+
+                var ws = def.Workspace;
+
+                //TODO: Update to base off of Definition
                 var inputs = 
                     ws.Nodes.Where(e => e is dynSymbol)
                         .Select(s => (s as dynSymbol).Symbol);
@@ -917,16 +936,7 @@ namespace Dynamo
                     outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
                 }
                 
-                result = new dynFunction(inputs, outputs, name);
-            }
-            else
-            {
-                TypeLoadData tld = builtinTypesByNickname[name];
-
-                var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                var newEl = (dynNode)obj.Unwrap();
-                newEl.NodeUI.DisableInteraction();
-                result = newEl;
+                result = new dynFunction(inputs, outputs, def);
             }
 
             //if (result is dynDouble)
@@ -1024,7 +1034,7 @@ namespace Dynamo
                 root.SetAttribute("X", workSpace.PositionX.ToString());
                 root.SetAttribute("Y", workSpace.PositionY.ToString());
 
-                if (workSpace != this.homeSpace) //If we are not saving the home space
+                if (workSpace != HomeSpace) //If we are not saving the home space
                 {
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
@@ -1110,7 +1120,7 @@ namespace Dynamo
                 root.SetAttribute("X", workSpace.PositionX.ToString());
                 root.SetAttribute("Y", workSpace.PositionY.ToString());
 
-                if (workSpace != this.homeSpace) //If we are not saving the home space
+                if (workSpace != HomeSpace) //If we are not saving the home space
                 {
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
@@ -1308,7 +1318,7 @@ namespace Dynamo
                     {
                         var node = (dynFunction)el;
 
-                        if (!node.Symbol.Equals(functionWorkspace.Name))
+                        if (!node.Definition.Workspace.Name.Equals(functionWorkspace.Name))
                             continue;
 
                         node.SetInputs(inputNames);
@@ -1397,7 +1407,7 @@ namespace Dynamo
                         ViewHomeWorkspace(); //TODO: Refactor
                     return this.OpenWorkbench(xmlPath);
                 }
-                else if (this.FunctionDict.ContainsKey(funName))
+                else if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == funName))
                 {
                     Bench.Log("ERROR: Could not load definition for \"" + funName + "\", a node with this name already exists.");
                     return false;
@@ -1406,13 +1416,13 @@ namespace Dynamo
                 Bench.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 //TODO: refactor to include x,y
-                var ws = this.NewFunction(
+                var ws = NewFunction(
                    funName,
                    category.Length > 0
                       ? category
                       : BuiltinNodeCategories.MISC,
                    false
-                );
+                ).Workspace;
 
                 ws.PositionX = cx;
                 ws.PositionY = cy;
@@ -1477,8 +1487,8 @@ namespace Dynamo
                     if (el is dynFunction)
                     {
                         var fun = el as dynFunction;
-                        if (fun.Symbol != ws.Name)
-                            dependencies.Push(fun.Symbol);
+                        if (fun.Definition == null)
+                            dependencies.Push(fun.Definition.Workspace.Name);
                     }
                 }
                 #endregion
@@ -1583,7 +1593,7 @@ namespace Dynamo
                 foreach (var dep in dependencies)
                 {
                     //If the node hasn't been loaded...
-                    if (!FunctionDict.ContainsKey(dep))
+                    if (!dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == dep))
                     {
                         canLoad = false;
                         //Dep -> Ws
@@ -1839,7 +1849,7 @@ namespace Dynamo
 
                 #endregion
 
-                homeSpace.FilePath = xmlPath;
+                HomeSpace.FilePath = xmlPath;
             }
             catch (Exception ex)
             {
@@ -1898,7 +1908,7 @@ namespace Dynamo
         #endregion
 
         #region Running
-        public bool Running = false;
+        public bool Running { get; protected set; }
 
         public bool RunCancelled
         {
@@ -2002,7 +2012,7 @@ namespace Dynamo
             /* Execution Thread */
 
             //Get our entry points (elements with nothing connected to output)
-            var topElements = homeSpace.GetTopMostNodes();
+            var topElements = HomeSpace.GetTopMostNodes();
 
             //Mark the topmost as dirty/clean
             foreach (var topMost in topElements)
@@ -2074,6 +2084,9 @@ namespace Dynamo
                 //No longer running
                 this.Running = false;
 
+                foreach (var def in dynSettings.FunctionWasEvaluated)
+                    def.RequiresRecalc = false;
+                
                 //If we should run again...
                 if (this.runAgain)
                 {
@@ -2155,12 +2168,13 @@ namespace Dynamo
 
         protected virtual void OnRunCancelled(bool error)
         {
-
+            if (error)
+                dynSettings.FunctionWasEvaluated.Clear();
         }
 
         protected virtual void OnEvaluationCompleted()
         {
-
+            
         }
 
         internal void ShowElement(dynNode e)
@@ -2170,18 +2184,18 @@ namespace Dynamo
 
             if (!this.Nodes.Contains(e))
             {
-                if (this.homeSpace != null && this.homeSpace.Nodes.Contains(e))
+                if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
                 {
                     //Show the homespace
                     ViewHomeWorkspace();
                 }
                 else
                 {
-                    foreach (var funcPair in this.FunctionDict)
+                    foreach (var funcDef in dynSettings.FunctionDict.Values)
                     {
-                        if (funcPair.Value.Nodes.Contains(e))
+                        if (funcDef.Workspace.Nodes.Contains(e))
                         {
-                            DisplayFunction(funcPair.Key);
+                            DisplayFunction(funcDef);
                             break;
                         }
                     }
@@ -2212,7 +2226,7 @@ namespace Dynamo
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             //Step 2: Store function workspace in the function dictionary
-            this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
+            //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
             //Step 3: Save function
             this.SaveFunction(this.CurrentSpace);
@@ -2222,7 +2236,7 @@ namespace Dynamo
             //this.connectors = this.homeSpace.connectors;
             //this.CurrentX = this.homeSpace.savedX;
             //this.CurrentY = this.homeSpace.savedY;
-            this.CurrentSpace = this.homeSpace;
+            this.CurrentSpace = HomeSpace;
 
             foreach (var ele in this.Nodes)
             {
@@ -2250,12 +2264,12 @@ namespace Dynamo
             CurrentSpace.OnDisplayed();
         }
 
-        internal void DisplayFunction(string symbol)
+        internal void DisplayFunction(FunctionDefinition symbol)
         {
-            if (!this.FunctionDict.ContainsKey(symbol) || this.CurrentSpace.Name.Equals(symbol))
+            if (this.CurrentSpace.Name.Equals(symbol.Workspace.Name))
                 return;
 
-            var newWs = this.FunctionDict[symbol];
+            var newWs = symbol.Workspace;
 
             //Make sure we aren't dragging
             Bench.WorkBench.isDragInProgress = false;
@@ -2279,7 +2293,7 @@ namespace Dynamo
             if (!this.ViewingHomespace)
             {
                 //Step 2: Store function workspace in the function dictionary
-                this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
+                //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
                 //Step 3: Save function
                 this.SaveFunction(this.CurrentSpace);
@@ -2326,7 +2340,7 @@ namespace Dynamo
         {
             var newName = Bench.editNameBox.Text;
 
-            if (FunctionDict.ContainsKey(newName))
+            if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == newName))
             {
                 Bench.Log("ERROR: Cannot rename to \"" + newName + "\", node with same name already exists.");
                 return;
@@ -2353,7 +2367,7 @@ namespace Dynamo
             var newAddItem = (dynFunction)Bench.addMenuItemsDictNew[this.CurrentSpace.Name].NodeLogic;
             if (newAddItem.NodeUI.NickName.Equals(this.CurrentSpace.Name))
                 newAddItem.NodeUI.NickName = newName;
-            newAddItem.Symbol = newName;
+            //newAddItem.Symbol = newName;
             Bench.addMenuItemsDictNew.Remove(this.CurrentSpace.Name);
             Bench.addMenuItemsDictNew[newName] = newAddItem.NodeUI;
 
@@ -2396,10 +2410,10 @@ namespace Dynamo
                 {
                     var node = (dynFunction)el;
 
-                    if (!node.Symbol.Equals(this.CurrentSpace.Name))
+                    if (!node.Definition.Workspace.Name.Equals(this.CurrentSpace.Name))
                         continue;
 
-                    node.Symbol = newName;
+                    //node.Symbol = newName;
 
                     //Rename nickname only if it's still referring to the old name
                     if (node.NodeUI.NickName.Equals(this.CurrentSpace.Name))
@@ -2427,9 +2441,9 @@ namespace Dynamo
             }
 
             //Update function dictionary
-            var tmp = this.FunctionDict[this.CurrentSpace.Name];
-            this.FunctionDict.Remove(this.CurrentSpace.Name);
-            this.FunctionDict[newName] = tmp;
+            //var tmp = this.FunctionDict[this.CurrentSpace.Name];
+            //this.FunctionDict.Remove(this.CurrentSpace.Name);
+            //this.FunctionDict[newName] = tmp;
 
             ((FuncWorkspace)this.CurrentSpace).Name = newName;
 
@@ -2549,7 +2563,7 @@ namespace Dynamo
                 newNodeName = dialog.Text;
                 newNodeCategory = dialog.Category;
 
-                if (FunctionDict.ContainsKey(newNodeName))
+                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == newNodeName))
                 {
                     error = "A function with this name already exists.";
                 }
@@ -2564,7 +2578,8 @@ namespace Dynamo
             }
             while (!error.Equals(""));
 
-            var newNodeWorkspace = NewFunction(newNodeName, newNodeCategory, false);
+            var newNodeDefinition = NewFunction(newNodeName, newNodeCategory, false);
+            var newNodeWorkspace = newNodeDefinition.Workspace;
             #endregion
 
             CurrentSpace.DisableReporting();
@@ -2692,7 +2707,7 @@ namespace Dynamo
                 outputs
                     .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))
                     .Select(x => x.Item1.OutPortData[x.Item2].NickName),
-                newNodeName);
+                newNodeDefinition);
 
             collapsedNode.NodeUI.GUID = Guid.NewGuid();
 
