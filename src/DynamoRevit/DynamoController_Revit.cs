@@ -19,12 +19,16 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo
 {
+
     public class DynamoController_Revit : DynamoController
     {
+        
         public DynamoUpdater Updater { get; private set; }
 
         PredicateTraverser checkManualTransaction;
         PredicateTraverser checkRequiresTransaction;
+
+        Dynamo.Nodes.PythonEngine.EvaluationDelegate oldPyEval;
 
         public DynamoController_Revit(DynamoUpdater updater)
             : base()
@@ -111,49 +115,10 @@ namespace Dynamo
 
                 var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
-                var oldPyEval = evaluatorField.GetValue(null) as Func<bool, string, object, Value>;
+                oldPyEval = evaluatorField.GetValue(null) as Dynamo.Nodes.PythonEngine.EvaluationDelegate;
 
-                Func<bool, string, object, Value> newEval = delegate(bool dirty, string script, object bindings)
-                {
-                    bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
-
-                    Value result = null;
-
-                    if (dynRevitSettings.Controller.InIdleThread)
-                        result = oldPyEval(dirty, script, bindings);
-                    else
-                    {
-                        result = IdlePromise<Value>.ExecuteOnIdle(
-                           () => oldPyEval(dirty, script, bindings));
-                    }
-
-                    if (transactionRunning)
-                    {
-                        if (!IsTransactionActive())
-                        {
-                            InitTransaction();
-                        }
-                        else
-                        {
-                            var ts = Transaction.GetStatus();
-                            if (ts != TransactionStatus.Started)
-                            {
-                                if (ts != TransactionStatus.RolledBack)
-                                    CancelTransaction();
-                                InitTransaction();
-                            }
-                        }
-                    }
-                    else if (RunInDebug)
-                    {
-                        if (IsTransactionActive())
-                            EndTransaction();
-                    }
-
-                    return result;
-                };
-
-                evaluatorField.SetValue(null, newEval);
+                Dynamo.Nodes.PythonEngine.EvaluationDelegate evaluator = evaluate;
+                evaluatorField.SetValue(null, evaluator);
 
                 // use this to pass into the python script a list of previously created elements from dynamo
                 //TODO: ADD BACK IN
@@ -166,6 +131,47 @@ namespace Dynamo
             }
         }
         #endregion
+
+        private Value evaluate(bool dirty, string script, IEnumerable<Dynamo.Nodes.Binding> bindings)
+        {
+            bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
+
+            Value result = null;
+
+            if (dynRevitSettings.Controller.InIdleThread)
+                result = oldPyEval(dirty, script, bindings);
+            else
+            {
+                result = IdlePromise<Value>.ExecuteOnIdle(
+                   () => oldPyEval(dirty, script, bindings));
+            }
+
+            if (transactionRunning)
+            {
+                if (!IsTransactionActive())
+                {
+                    InitTransaction();
+                }
+                else
+                {
+                    var ts = Transaction.GetStatus();
+                    if (ts != TransactionStatus.Started)
+                    {
+                        if (ts != TransactionStatus.RolledBack)
+                            CancelTransaction();
+                        InitTransaction();
+                    }
+                }
+            }
+            else if (RunInDebug)
+            {
+                if (IsTransactionActive())
+                    EndTransaction();
+            }
+
+            return result;
+        }
+
         #region Watch Node Revit Hooks
         void AddWatchNodeHandler()
         {
