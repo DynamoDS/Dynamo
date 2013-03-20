@@ -881,24 +881,6 @@ namespace Dynamo.Controls
             this.LogText = sw.ToString();
         }
 
-        //private void settings_curves_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    if (settings_plines != null)
-        //    {
-        //        this.connectorType = ConnectorType.BEZIER;
-        //        settings_plines.IsChecked = false;
-        //    }
-        //}
-
-        //private void settings_plines_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    if (settings_curves != null)
-        //    {
-        //        this.connectorType = ConnectorType.POLYLINE;
-        //        settings_curves.IsChecked = false;
-        //    }
-        //}
-
         public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
         {
 
