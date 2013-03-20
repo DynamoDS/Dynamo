@@ -54,11 +54,21 @@ namespace Dynamo.Controls
 
         private StringWriter sw;
         private string logText;
-        private ConnectorType connectorType;
         private bool isWindowSelecting = false;
         private Point mouseDownPos;
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
         Point dragOffset;
+
+        private ConnectorType connectorType;
+        public ConnectorType ConnectorType
+        {
+            get { return connectorType; }
+            set
+            {
+                connectorType = value;
+                NotifyPropertyChanged("ConnectorType");
+            }
+        }
 
         Point transformOrigin;
         public Point TransformOrigin
@@ -102,11 +112,6 @@ namespace Dynamo.Controls
             }
         }
 
-        public ConnectorType ConnectorType
-        {
-            get { return connectorType; }
-        }
-
         DynamoController controller;
         public DynamoController Controller
         {
@@ -122,7 +127,7 @@ namespace Dynamo.Controls
         {
             Controller = controller;
             sw = new StringWriter();
-            connectorType = ConnectorType.BEZIER;
+            this.ConnectorType = ConnectorType.BEZIER;
         }
 
         public void LockUI()
@@ -876,23 +881,23 @@ namespace Dynamo.Controls
             this.LogText = sw.ToString();
         }
 
-        private void settings_curves_Checked(object sender, RoutedEventArgs e)
-        {
-            if (settings_plines != null)
-            {
-                this.connectorType = ConnectorType.BEZIER;
-                settings_plines.IsChecked = false;
-            }
-        }
+        //private void settings_curves_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    if (settings_plines != null)
+        //    {
+        //        this.connectorType = ConnectorType.BEZIER;
+        //        settings_plines.IsChecked = false;
+        //    }
+        //}
 
-        private void settings_plines_Checked(object sender, RoutedEventArgs e)
-        {
-            if (settings_curves != null)
-            {
-                this.connectorType = ConnectorType.POLYLINE;
-                settings_curves.IsChecked = false;
-            }
-        }
+        //private void settings_plines_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    if (settings_curves != null)
+        //    {
+        //        this.connectorType = ConnectorType.POLYLINE;
+        //        settings_curves.IsChecked = false;
+        //    }
+        //}
 
         public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
         {

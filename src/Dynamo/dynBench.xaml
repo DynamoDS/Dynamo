@@ -24,6 +24,7 @@
         <controls:ZoomStatConverter x:Key="ZoomStatConverter"/>
         <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>
         <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
+        <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="Tab"
@@ -119,8 +120,10 @@
              </MenuItem>
             <MenuItem Header="Settings">
                 <MenuItem Header="_Connector Type" IsEnabled="True">
-                    <MenuItem Name="settings_curves" IsCheckable="True" IsChecked="True" Checked="settings_curves_Checked" Header="Curves"/>
-                    <MenuItem Name="settings_plines" IsCheckable="True" IsChecked="False" Checked="settings_plines_Checked" Header="Polylines"/>
+                    <MenuItem Name="settings_curves" IsCheckable="True" 
+                              IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Header="Curves"/>
+                    <MenuItem Name="settings_plines" IsCheckable="True" 
+                              IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
                 </MenuItem>
             </MenuItem>
         </Menu>
