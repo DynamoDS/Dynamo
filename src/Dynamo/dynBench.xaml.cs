@@ -582,7 +582,11 @@ namespace Dynamo.Controls
 
             if (focusElement != null && 
                 focusElement.GetType() != typeof(System.Windows.Controls.TextBox) &&
-                focusElement.GetType() !=typeof(dynTextBox))
+                focusElement.GetType() !=typeof(dynTextBox) && 
+                !Keyboard.IsKeyDown(Key.LeftCtrl) &&
+                !Keyboard.IsKeyDown(Key.RightCtrl) && 
+                !Keyboard.IsKeyDown(Key.LeftShift) && 
+                !Keyboard.IsKeyDown(Key.RightShift))
             {
                 double x = 0;
                 double y = 0;
