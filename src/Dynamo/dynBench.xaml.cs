@@ -52,7 +52,7 @@ namespace Dynamo.Controls
     public partial class dynBench : Window, INotifyPropertyChanged
     {
 
-        private StringWriter sw;
+        public StringWriter sw;
         private string logText;
         private bool isWindowSelecting = false;
         private Point mouseDownPos;
@@ -875,14 +875,6 @@ namespace Dynamo.Controls
         {
             //if (this.searchBox.Text.Equals(""))
             //   this.searchBox.Text = "Search";
-        }
-
-        private void ClearLog_Click(object sender, RoutedEventArgs e)
-        {
-            this.sw.Flush();
-            this.sw.Close();
-            this.sw = new StringWriter();
-            this.LogText = sw.ToString();
         }
 
         public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)

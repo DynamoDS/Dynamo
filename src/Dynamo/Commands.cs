@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Reflection;
+using System.IO;
 
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -296,6 +297,18 @@ namespace Dynamo.Commands
                     clearCmd = new ClearCommand();
 
                 return clearCmd;
+            }
+        }
+
+        private static ClearLogCommand clearLogCmd;
+        public static ClearLogCommand ClearLogCmd
+        {
+            get
+            {
+                if (clearLogCmd == null)
+                    clearLogCmd = new ClearLogCommand();
+
+                return clearLogCmd;
             }
         }
     }
@@ -1363,6 +1376,33 @@ namespace Dynamo.Commands
             dynSettings.Controller.CurrentSpace.FilePath = "";
 
             dynSettings.Bench.UnlockUI();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ClearLogCommand : ICommand
+    {
+        public ClearLogCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Bench.sw.Flush();
+            dynSettings.Bench.sw.Close();
+            dynSettings.Bench.sw = new StringWriter();
+            dynSettings.Bench.LogText = dynSettings.Bench.sw.ToString();
         }
 
         public event EventHandler CanExecuteChanged

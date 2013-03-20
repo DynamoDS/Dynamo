@@ -193,7 +193,7 @@
                     Grid.ColumnSpan="3">
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Clear" Click="ClearLog_Click" />
+                    <MenuItem Header="Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearLogCmd}}"/>
                 </ContextMenu>
             </ScrollViewer.ContextMenu>
             <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
