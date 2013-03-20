@@ -54,8 +54,8 @@ namespace Dynamo.Controls
                 this.MouseDown += child_MouseDown;
 
                 this.MouseMove += child_MouseMove;
-                this.PreviewMouseRightButtonDown += new MouseButtonEventHandler(
-                  child_PreviewMouseRightButtonDown);
+                //this.PreviewMouseRightButtonDown += new MouseButtonEventHandler(
+                //  child_PreviewMouseRightButtonDown);
             }
         }
 
@@ -165,10 +165,10 @@ namespace Dynamo.Controls
             }
         }
 
-        void child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            this.Reset();
-        }
+        //void child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    this.Reset();
+        //}
 
         private void child_MouseMove(object sender, MouseEventArgs e)
         {

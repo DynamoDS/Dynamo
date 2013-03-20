@@ -89,6 +89,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\scripts\NodeGenerator\DynamoRevitNodes.cs">
+      <Link>DynamoRevitNodes.cs</Link>
+    </Compile>
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynRevitSettings.cs" />
     <Compile Include="dynRevitTransactionNode.cs" />

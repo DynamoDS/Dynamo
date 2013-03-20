@@ -28,7 +28,7 @@ root = tree.getroot()
 def match_param(x):
     return {
         'System.Double': 'Value.Number',
-        'System.Boolean': 'Value.Boolean',
+        'System.Boolean': 'Value.Number',
         'System.Int32':'Value.Number',
         'System.String':'Value.String'
         }.get(x, 'Value.Container') 
@@ -84,33 +84,18 @@ node_names = []
 using=[	
 'using System;\n',
 'using System.Collections.Generic;\n',
-'using Dynamo.Elements;\n',
-'using System.IO;\n',
-'using System.Linq;\n',
-'using System.Threading;\n',
-'using System.Windows;\n',
-'using System.Windows.Controls;\n',
-'using System.Windows.Forms;\n',
-'using System.Windows.Media;\n',
-'using System.Xml;\n',
-'using System.Web;\n',
-'using Dynamo.Connectors;\n',
+'using Autodesk.Revit.DB;\n',
+'using Autodesk.Revit;\n',
 'using Dynamo.Controls;\n',
+'using Dynamo.Utilities;\n',
+'using Dynamo.Connectors;\n',
 'using Dynamo.FSchemeInterop;\n',
 'using Dynamo.FSchemeInterop.Node;\n',
-'using Dynamo.Utilities;\n',
 'using Microsoft.FSharp.Collections;\n',
-'using Expression = Dynamo.FScheme.Expression;\n',
-'using TextBox = System.Windows.Controls.TextBox;\n',
-'using System.Diagnostics.Contracts;\n',
-'using System.Text;\n',
-'using System.Windows.Input;\n',
-'using System.Windows.Data;\n',
-'using System.Globalization;\n',
-'using Autodesk.Revit.Creation.Application;\n']
+'using Value = Dynamo.FScheme.Value;\n']
 f.writelines(using)
 
-f.write('namespace Dynamo.Elements\n')
+f.write('namespace Dynamo.Nodes\n')
 f.write('{\n')
 for member in root.iter('members'):
 	node_name_counter = 0
@@ -133,6 +118,7 @@ for member in root.iter('members'):
 		className = member_name.split('.')[4][3:].split('(')[0]
 		methodCall = member_name.split('.')[4].split('(')[0]
 		methodParams = member_name.split('(')[1][:-1].split(',')
+		fullMethodCall = member_name.split(':')[1].split('(')[0]
 
 		# if the class name already exists
 		# append an integer to make it unique
@@ -144,32 +130,36 @@ for member in root.iter('members'):
 
 		node_names.append(className)
 
-		class_attributes = ['\t[ElementName("' + className + '")]\n',
-		'\t[ElementCategory(BuiltinElementCategories.AUTO)]\n',
-		'\t[ElementDescription("' + summary + '")]\n',
-		'\t[RequiresTransaction(false)]\n']
+		class_attributes = ['\t[NodeName("Revit ' + className + '")]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
+		'\t[NodeDescription("' + summary + '")]\n']
 		f.writelines(class_attributes)
-		f.write('\tpublic class ' + className + ' : dynNode\n')
+		f.write('\tpublic class Revit_' + className + ' : dynNodeWithOneOutput\n')
 		f.write('\t{\n')
-		f.write('\t\tpublic ' + className + '()\n')
+		f.write('\t\tpublic Revit_' + className + '()\n')
 		f.write('\t\t{\n')
 		for param in methodParams:
 			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param)+'\", \"' + convert_param(param) + '\",typeof(object)));\n')
 		f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary+'\",typeof(object)));\n')
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
-		f.write('\t\tpublic override Expression Evaluate(FSharpList<Expression> args)\n')
+		f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
 		f.write('\t\t{\n')
 
 		# for each incoming arg, cast it to the matching param
 		i = 0
 		argList = []
 		for param in methodParams:
-			f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
+			# there is no boolean type in FScheme
+			# convert a number type to a boolean
+			if param == 'System.Boolean':
+				f.write('\t\t\tvar arg' + str(i) + '=Convert.ToBoolean(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
+			else:
+				f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
 			argList.append('arg' + str(i))
 			i+=1
 		paramsStr = ",".join(argList)
-		f.write('\t\t\tvar result = ' + methodCall + '(' + paramsStr + ');\n')
+		f.write('\t\t\tvar result = ' + 'dynRevitSettings.Revit.Application.Create.' + methodCall +  '(' + paramsStr + ');\n')
 		f.write('\t\t\treturn Value.NewContainer(result);\n')
 		f.write('\t\t}\n')
 		f.write('\t}\n')
