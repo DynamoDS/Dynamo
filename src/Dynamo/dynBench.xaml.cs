@@ -905,49 +905,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void saveImage_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "PNG Image|*.png";
-            sfd.Title = "Save you Workbench to an Image";
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string imagePath = sfd.FileName;
-
-                Transform trans = WorkBench.LayoutTransform;
-                WorkBench.LayoutTransform = null;
-                Size size = new Size(WorkBench.Width, WorkBench.Height);
-                WorkBench.Measure(size);
-                WorkBench.Arrange(new Rect(size));
-
-                //calculate the necessary width and height
-                double width = 0;
-                double height = 0;
-                foreach (dynNodeUI n in Controller.Nodes.Select(x => x.NodeUI))
-                {
-                    Point relativePoint = n.TransformToAncestor(WorkBench)
-                          .Transform(new Point(0, 0));
-
-                    width = Math.Max(relativePoint.X + n.Width, width);
-                    height = Math.Max(relativePoint.Y + n.Height, height);
-                }
-
-                Rect rect = VisualTreeHelper.GetDescendantBounds(WorkBench);
-
-                RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
-                  (int)rect.Bottom + 50, 96, 96, System.Windows.Media.PixelFormats.Default);
-                rtb.Render(WorkBench);
-                //endcode as PNG
-                BitmapEncoder pngEncoder = new PngBitmapEncoder();
-                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
-
-                using (var stm = System.IO.File.Create(sfd.FileName))
-                {
-                    pngEncoder.Save(stm);
-                }
-            }
-        }
-
         public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
         {
 

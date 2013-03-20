@@ -52,6 +52,9 @@
         <KeyBinding Key="H"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}"/>
+        <KeyBinding Key="Up"
+                                Modifiers="Control+Shift"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}"/>
     </Window.InputBindings>
     <Grid Name="mainGrid" Focusable="True">
         <Grid.RowDefinitions>
@@ -107,7 +110,7 @@
                    </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}"/>
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}" InputGestureText="Ctrl+Shift+Up"/>
                 <Separator />
              </MenuItem>
             <MenuItem Header="Settings">

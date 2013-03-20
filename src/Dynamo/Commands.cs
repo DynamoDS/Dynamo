@@ -1190,7 +1190,6 @@ namespace Dynamo.Commands
                     height = Math.Max(relativePoint.Y + n.Height, height);
                 }
 
-                //Rect rect = VisualTreeHelper.GetDescendantBounds(dynSettings.Workbench);
                 Rect rect = VisualTreeHelper.GetDescendantBounds(dynSettings.Bench.border);
 
                 RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
