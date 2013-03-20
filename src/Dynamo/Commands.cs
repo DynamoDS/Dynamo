@@ -1277,8 +1277,10 @@ namespace Dynamo.Commands
 
             Hashtable typeHash = new Hashtable();
 
-            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (KeyValuePair<string, TypeLoadData> kvp in dynSettings.Controller.BuiltInTypesByNickname)
             {
+                Type t = kvp.Value.Type;
+
                 object[] attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
 
                 if (t.Namespace == "Dynamo.Nodes" &&
