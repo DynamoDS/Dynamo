@@ -142,9 +142,6 @@ limitations under the License.
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynToolFinder.xaml.cs">
-      <DependentUpon>dynToolFinder.xaml</DependentUpon>
-    </Compile>
     <Compile Include="dynUtils.cs" />
     <Compile Include="dynWorkspace.cs" />
     <Compile Include="FunctionNamePrompt.xaml.cs">
@@ -203,10 +200,6 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="dynPort.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="dynToolFinder.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

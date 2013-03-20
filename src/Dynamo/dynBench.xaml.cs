@@ -315,16 +315,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            //Debug.WriteLine("Starting mouse down.");
-
             this.Focus();
-
-            //close the tool finder if the user
-            //has clicked anywhere else on the workbench
-            if (dynToolFinder.Instance != null)
-            {
-                WorkBench.Children.Remove(dynToolFinder.Instance);
-            }
         }
 
         void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseEventArgs e)
@@ -580,21 +571,6 @@ namespace Dynamo.Controls
             //if no other element has already handled this event it will 
             //start at the bench and move up to root, not raising the event
             //on any other elements
-
-            //if the key down is 'b' open the build window
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.B))
-            {
-                //get the mouse position
-                if (!dynSettings.Workbench.Children.Contains(dynToolFinder.Instance))
-                {
-                    dynSettings.Workbench.Children.Add(dynToolFinder.Instance);
-
-                    Point p = Mouse.GetPosition(dynSettings.Workbench);
-                    Canvas.SetLeft(dynToolFinder.Instance, p.X);
-                    Canvas.SetTop(dynToolFinder.Instance, p.Y);
-                    e.Handled = true;
-                }
-            }
 
             if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
             {
