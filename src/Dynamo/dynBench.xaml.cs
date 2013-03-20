@@ -1022,14 +1022,6 @@ namespace Dynamo.Controls
 
         public bool UILocked { get; private set; }
 
-        private void nodeFromSelection_Click(object sender, RoutedEventArgs e)
-        {
-            //if (this.NodeFromSelectionCmd.CanExecute(null))
-            //{
-            //    this.NodeFromSelectionCmd.Execute(null);
-            //}
-        }
-
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
        
