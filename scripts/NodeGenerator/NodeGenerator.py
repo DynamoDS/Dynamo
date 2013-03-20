@@ -124,6 +124,7 @@ f.writelines(using)
 
 f.write('namespace Dynamo.Nodes\n')
 f.write('{\n')
+
 for member in root.iter('members'):
 	node_name_counter = 0
 	for member_data in member.findall('member'):
@@ -144,6 +145,11 @@ for member in root.iter('members'):
 			continue
 
 		summary = member_data.find('summary').text.replace('\n','')
+		params = member_data.findall('param')
+
+		# for param in params:
+		# 	print param.text
+
 		methodDefinition = member_name.split(':')[1]
 
 		# don't use method definitions that don't have the form
@@ -161,11 +167,12 @@ for member in root.iter('members'):
 
 		# if the class name already exists
 		# append an integer to make it unique
-		if className in node_names:
+		classNameStub = className
+		while className in node_names:
 			node_name_counter += 1
-			className = className + '_' + str(node_name_counter)
-		else:
-			node_name_counter = 0
+			className = classNameStub + '_' + str(node_name_counter)
+		# else:
+		node_name_counter = 0
 
 		node_names.append(className)
 
@@ -177,8 +184,12 @@ for member in root.iter('members'):
 		f.write('\t{\n')
 		f.write('\t\tpublic Revit_' + className + '()\n')
 		f.write('\t\t{\n')
-		for param in methodParams:
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param)+'\", \"' + convert_param(param) + '\",typeof(object)));\n')
+
+		i=0
+		for param in params:
+			paramDescription = params[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(methodParams[i])+'\", \"' + paramDescription + '\",typeof(object)));\n')
+			i += 1
 		f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary+'\",typeof(object)));\n')
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
