@@ -481,47 +481,47 @@ namespace Dynamo.Controls
             this.overlayCanvas.IsHitTestVisible = true;
         }
 
-        private void Open_Click(object sender, RoutedEventArgs e)
-        {
-            //string xmlPath = "C:\\test\\myWorkbench.xml";
-            string xmlPath = "";
+        //private void Open_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //string xmlPath = "C:\\test\\myWorkbench.xml";
+        //    string xmlPath = "";
 
-            System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
-            {
-                Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
-            };
+        //    System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
+        //    {
+        //        Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
+        //    };
 
-            if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                xmlPath = openDialog.FileName;
-            }
+        //    if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        //    {
+        //        xmlPath = openDialog.FileName;
+        //    }
 
-            if (!string.IsNullOrEmpty(xmlPath))
-            {
-                if (this.UILocked)
-                {
-                    Controller.QueueLoad(xmlPath);
-                    return;
-                }
+        //    if (!string.IsNullOrEmpty(xmlPath))
+        //    {
+        //        if (this.UILocked)
+        //        {
+        //            Controller.QueueLoad(xmlPath);
+        //            return;
+        //        }
 
-                LockUI();
-                if (!Controller.OpenDefinition(xmlPath))
-                {
-                    //MessageBox.Show("Workbench could not be opened.");
-                    Log("Workbench could not be opened.");
+        //        LockUI();
+        //        if (!Controller.OpenDefinition(xmlPath))
+        //        {
+        //            //MessageBox.Show("Workbench could not be opened.");
+        //            Log("Workbench could not be opened.");
 
-                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    //dynSettings.Writer.WriteLine(xmlPath);
+        //            //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+        //            //dynSettings.Writer.WriteLine(xmlPath);
 
-                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-                    {
-                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
-                        DynamoCommands.WriteToLogCmd.Execute(xmlPath);
-                    }
-                }
-                UnlockUI();
-            }
-        }
+        //            if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+        //            {
+        //                DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+        //                DynamoCommands.WriteToLogCmd.Execute(xmlPath);
+        //            }
+        //        }
+        //        UnlockUI();
+        //    }
+        //}
 
         private void WindowClosed(object sender, EventArgs e)
         {

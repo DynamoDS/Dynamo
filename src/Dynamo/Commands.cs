@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows;
 using System.Collections;
+using System.Windows.Forms;
 
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -232,6 +233,18 @@ namespace Dynamo.Commands
                     saveCmd = new SaveCommand();
 
                 return saveCmd;
+            }
+        }
+
+        private static OpenCommand openCmd;
+        public static OpenCommand OpenCmd
+        {
+            get
+            {
+                if (openCmd == null)
+                    openCmd = new OpenCommand();
+
+                return openCmd;
             }
         }
     }
@@ -1017,6 +1030,68 @@ namespace Dynamo.Commands
         public void Execute(object parameters)
         {
             dynSettings.Controller.Save();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class OpenCommand : ICommand
+    {
+        public OpenCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            //string xmlPath = "C:\\test\\myWorkbench.xml";
+            string xmlPath = "";
+
+            System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
+            {
+                Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
+            };
+
+            if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                xmlPath = openDialog.FileName;
+            }
+
+            if (!string.IsNullOrEmpty(xmlPath))
+            {
+                if (dynSettings.Bench.UILocked)
+                {
+                    dynSettings.Controller.QueueLoad(xmlPath);
+                    return;
+                }
+
+                dynSettings.Bench.LockUI();
+
+                if (!dynSettings.Controller.OpenDefinition(xmlPath))
+                {
+                    //MessageBox.Show("Workbench could not be opened.");
+                    dynSettings.Bench.Log("Workbench could not be opened.");
+
+                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    //dynSettings.Writer.WriteLine(xmlPath);
+
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                        DynamoCommands.WriteToLogCmd.Execute(xmlPath);
+                    }
+                }
+                dynSettings.Bench.UnlockUI();
+            }
         }
 
         public event EventHandler CanExecuteChanged
