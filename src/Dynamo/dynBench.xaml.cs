@@ -877,25 +877,6 @@ namespace Dynamo.Controls
             //   this.searchBox.Text = "Search";
         }
 
-        public static void SaveCanvas(double width, double height, Canvas canvas, int dpi, string filename)
-        {
-
-            //Size size = new Size(width, height);
-            //canvas.Measure(size);
-            //canvas.Arrange(new Rect(size));
-
-            var rtb = new RenderTargetBitmap(
-                (int)width, //width 
-                (int)height, //height 
-                dpi, //dpi x 
-                dpi, //dpi y 
-                PixelFormats.Pbgra32 // pixelformat 
-                );
-            rtb.Render(canvas);
-
-            SaveRTBAsPNG(rtb, filename);
-        }
-
         private static void SaveRTBAsPNG(RenderTargetBitmap bmp, string filename)
         {
             var enc = new System.Windows.Media.Imaging.PngBitmapEncoder();
