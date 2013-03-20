@@ -21,12 +21,9 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class dynSearchUI : UserControl
     {
-
         public dynSearchController Controller;
         public TextBox SearchTextBox;
-        public Grid ParentGrid;
         public ListBox ResultList;
-        public StackPanel Container;
 
         public ObservableCollection<dynNodeUI> VisibleNodes { get { return Controller.VisibleNodes; } }
 
@@ -35,21 +32,17 @@ namespace Dynamo.Nodes
             Controller = controller;
             InitializeComponent();
 
-            ParentGrid = (Grid)this.Content;
-            Container = (StackPanel) ParentGrid.Children[0];
-            SearchTextBox = (TextBox) Container.Children[0];
-            ResultList = (ListBox) ((ScrollViewer) Container.Children[1]).Content;
+            SearchTextBox = (TextBox) this.RSearchBox;
+            ResultList = (ListBox) this.RSearchResultsListBox;
 
-            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
-            
+            ResultList.SelectionMode = SelectionMode.Single;
+
+            this.PreviewKeyDown += new KeyEventHandler(KeyHandler);
         }
 
-        private void HandleEsc(object sender, KeyEventArgs e)
+        private void KeyHandler(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                Controller.SendFirstResultToWorkspace();
-            }
+            Controller.KeyHandler(sender, e);
         }
 
         private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -57,5 +50,32 @@ namespace Dynamo.Nodes
             Controller.SearchAndUpdateUI( this.SearchTextBox.Text.Trim() );
         }
 
+        public void SelectNext()
+        {
+            if (SelectedIndex() == this.ResultList.Items.Count - 1
+                || SelectedIndex() == -1)
+                return;
+
+            SetSelected(SelectedIndex() + 1);
+        }
+
+        public void SelectPrevious()
+        {
+            if (SelectedIndex() == 0 || SelectedIndex() == -1)
+                return;
+
+            SetSelected(SelectedIndex() - 1);
+        }
+
+        public void SetSelected(int i)
+        {
+            this.ResultList.SelectedIndex = i;
+            this.ResultList.ScrollIntoView( this.ResultList.Items[i] );
+        }
+
+        public int SelectedIndex()
+        {
+            return this.ResultList.SelectedIndex;
+        }
     }
 }

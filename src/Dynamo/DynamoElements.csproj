@@ -261,7 +261,16 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="Images\OpenSelectedItemHS.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow_grey.png" />
+    <Resource Include="Images\cloud_download_arrow_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow_gray.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -455,16 +455,12 @@ namespace Dynamo.Commands
             if (!init)
             {
                 search = dynSettings.Controller.SearchController.View;
-                dynSettings.Workbench.Children.Add(search);
+                dynSettings.Bench.outerCanvas.Children.Add(search);
                 init = true;
             }
 
-            if (search.Visibility == Visibility.Collapsed)
-            {
-                dynSettings.Bench.WorkBench.BringToFront(search);
-                search.Visibility = Visibility.Visible;
-                search.SearchTextBox.Focus();
-            }
+            search.Visibility = Visibility.Visible;
+            search.SearchTextBox.Focus();
 
         }
 
@@ -625,7 +621,7 @@ namespace Dynamo.Commands
                 node.NodeUI.GUID = (Guid)data["guid"];
             }
 
-            Point dropPt = new Point((double)data["x"], (double)data["y"]);
+            Point dropPt = new Point((double)data["x"] - el.Width / 2.0, (double)data["y"] - el.Height / 2.0);
             Canvas.SetLeft(el, dropPt.X);
             Canvas.SetTop(el, dropPt.Y);
 

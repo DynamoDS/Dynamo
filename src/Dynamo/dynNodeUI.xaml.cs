@@ -741,6 +741,12 @@ namespace Dynamo.Controls
             this.ToolTipText = message;
         }
 
+        public string Description { get {
+            Type t = NodeLogic.GetType();
+            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true); 
+            return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription; 
+        }}
+
         void SetTooltip()
         {
             Type t = NodeLogic.GetType();

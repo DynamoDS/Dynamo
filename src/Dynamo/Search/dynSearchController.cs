@@ -9,18 +9,23 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Commands;
 using Dynamo.Controls;
+using Dynamo.Nodes;
 
 namespace Dynamo.Nodes
 {
     public class dynSearchController
     {
 
+        #region Properties
+
         private static SearchDictionary<dynNodeUI> _searchDict = new SearchDictionary<dynNodeUI>();
 
         private static List<dynNode> localNodes = new List<dynNode>();
 
-        private static ObservableCollection<dynNodeUI> visibleNodes = new ObservableCollection<dynNodeUI>();
+        private static ObservableCollection< dynNodeUI > visibleNodes = new ObservableCollection<dynNodeUI>();
         public ObservableCollection<dynNodeUI> VisibleNodes { get { return visibleNodes; } }
+
+        public int NumSearchResults { get; set; }
 
         private dynSearchUI _view;
         public dynSearchUI View { get { return _view;  } }
@@ -28,8 +33,11 @@ namespace Dynamo.Nodes
         private dynBench _bench;
         public dynBench Bench { get { return _bench; } }
 
+        #endregion
+
         public dynSearchController( dynBench bench )
         {
+            this.NumSearchResults = 10;
             this._bench = bench;
             this._view = new dynSearchUI(this);
         }
@@ -44,28 +52,59 @@ namespace Dynamo.Nodes
             {
                 visibleNodes.Add(node);
             }
+
+            this.View.SetSelected(0);
         }
 
         internal List<dynNodeUI> Search(string search)
         {
-            return _searchDict.FuzzySearch(search, 10);
+            return _searchDict.FuzzySearch(search, this.NumSearchResults);
         }
 
-        public void SendFirstResultToWorkspace()
+        public void KeyHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                this.SendSelectedToWorkspace();
+            }
+            else if (e.Key == Key.Down)
+            {
+                this.View.SelectNext();
+            }
+            else if (e.Key == Key.Up)
+            {
+                this.View.SelectPrevious();
+            }
+        }
+
+        public void SendSelectedToWorkspace()
         {
             View.Visibility = Visibility.Collapsed;
-            
+
             if (visibleNodes.Count == 0) return;
 
-            DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+            var selectedIndex = View.SelectedIndex();
+
+            // none of the elems are selected, return the first one
+            if (selectedIndex == -1)
+            {
+                DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {
                     {"name", visibleNodes[0].NickName},
-                    {"x", Bench.ActualWidth/2.0},
-                    {"y", Bench.ActualHeight/2.0}
-                   
+                    {"x", Bench.outerCanvas.ActualWidth/2.0},
+                    {"y", Bench.outerCanvas.ActualHeight/2.0}
                 });
+            }
+            else
+            {
+                DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+                {
+                    {"name", visibleNodes[selectedIndex].NickName},
+                    {"x", Bench.outerCanvas.ActualWidth/2.0},
+                    {"y", Bench.outerCanvas.ActualHeight/2.0}
+                });
+            }
         }
-        
 
         public void Add(Type type, string name)
         {
