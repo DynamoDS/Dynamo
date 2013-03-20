@@ -59,14 +59,20 @@ def match_inport_type(x):
 		'Autodesk.Revit.DB.WallType':'wt',
 		'Autodesk.Revit.DB.Face':'f',
 		'Autodesk.Revit.DB.Line':'crv',
-		'Autodesk.Revit.DB.Element':'el'
+		'Autodesk.Revit.DB.Element':'el',
+		'System.Collections.Generic.IList{Autodesk.Revit.DB.ElementId}':'lst'
 	}.get(x,'val')
 
 def convert_param(x):
 	return{
 		'System.Collections.Generic.IList{Autodesk.Revit.DB.XYZ}':'List<Autodesk.Revit.DB.XYZ>',
-		'System.Collections.Generic.IList{System.Double}':'List<double>'
-	}.get(x,x)
+		'System.Collections.Generic.ICollection{Autodesk.Revit.DB.ElementId}':'List<Autodesk.Revit.DB.ElementId>',
+		'System.Collections.Generic.IList{System.Double}':'List<double>',
+		'System.Collections.Generic.List{Autodesk.Revit.Creation.AreaCreationData}':'List<Autodesk.Revit.Creation.AreaCreationData>',
+		'System.Collections.Generic.List{Autodesk.Revit.Creation.RoomCreationData}':'List<Autodesk.Revit.Creation.RoomCreationData>',
+		'System.Collections.Generic.List{Autodesk.Revit.Creation.ProfiledWallCreationData}':'List<Autodesk.Revit.Creation.ProfiledWallCreationData>',
+		'System.Collections.Generic.List{Autodesk.Revit.Creation.RectangularWallCreationData}':'List<Autodesk.Revit.Creation.RectangularWallCreationData>',
+	}.get(x,x).replace('@','')
 
 wrapperPath = './DynamoRevitNodes.cs'
 # create a new text file to hold our wrapped classes
@@ -102,7 +108,19 @@ for member in root.iter('members'):
 	for member_data in member.findall('member'):
 
 		member_name = member_data.get('name')
-		if not "Autodesk.Revit.Creation.Application" in member_name: continue
+
+		#Application.Create
+		#Document.Create
+		#Document.FamilyCreate
+		method_call_prefix = ''
+		if "Autodesk.Revit.Creation.Application" in member_name:
+			method_call_prefix = 'dynRevitSettings.Revit.Application.Create.'
+		elif "Autodesk.Revit.Creation.FamilyItemFactory" in member_name:
+			method_call_prefix  = 'dynRevitSettings.Doc.Document.FamilyCreate.'
+		elif "Autodesk.Revit.Creation.Document" in member_name:
+			method_call_prefix = 'dynRevitSettings.Doc.Document.Create.'
+		else:
+			continue
 
 		summary = member_data.find('summary').text.replace('\n','')
 		methodDefinition = member_name.split(':')[1]
@@ -156,10 +174,14 @@ for member in root.iter('members'):
 				f.write('\t\t\tvar arg' + str(i) + '=Convert.ToBoolean(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
 			else:
 				f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
-			argList.append('arg' + str(i))
+
+			if '@' in param:
+				argList.append('out arg' + str(i))
+			else:
+				argList.append('arg' + str(i))
 			i+=1
 		paramsStr = ",".join(argList)
-		f.write('\t\t\tvar result = ' + 'dynRevitSettings.Revit.Application.Create.' + methodCall +  '(' + paramsStr + ');\n')
+		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall +  '(' + paramsStr + ');\n')
 		f.write('\t\t\treturn Value.NewContainer(result);\n')
 		f.write('\t\t}\n')
 		f.write('\t}\n')
@@ -168,5 +190,6 @@ f.write('\t}\n')
 f.close()
 
 print node_names
+
 
 
