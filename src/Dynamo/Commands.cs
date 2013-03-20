@@ -1338,6 +1338,14 @@ namespace Dynamo.Commands
                     colCount++;
 
                     y += el.NodeUI.Height + rowGutter;
+
+                    if (colCount > 20)
+                    {
+                        y = 60;
+                        colCount = 0;
+                        x += maxWidth + colGutter;
+                        maxWidth = 0;
+                    }
                 }
 
                 y = 0;
