@@ -299,6 +299,19 @@ namespace Dynamo.Controls
                     Canvas.SetTop(selectionBox, mousePos.Y);
                     selectionBox.Height = mouseDownPos.Y - mousePos.Y;
                 }
+
+                if (mousePos.X > mouseDownPos.X)
+                {
+                    #region contain select
+                    selectionBox.StrokeDashArray = null;
+                    #endregion
+                }
+                else if (mousePos.X < mouseDownPos.X)
+                {
+                    #region crossing select
+                    selectionBox.StrokeDashArray = new DoubleCollection() { 4 };
+                    #endregion
+                }
             }
         }
 
@@ -382,8 +395,6 @@ namespace Dynamo.Controls
 
                     //clear the selected elements
                     WorkBench.ClearSelection();
-
-                    
 
                     System.Windows.Rect rect =
                                 new System.Windows.Rect(
