@@ -55,6 +55,10 @@
         <KeyBinding Key="Up"
                                 Modifiers="Control+Shift"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}"/>
+        <KeyBinding Key="C"
+                                Modifiers="Control+Shift"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}"/> 
+       
     </Window.InputBindings>
     <Grid Name="mainGrid" Focusable="True">
         <Grid.RowDefinitions>
@@ -72,7 +76,7 @@
         <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
               VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
              <MenuItem Header="_File" Name="fileMenu">
-            <MenuItem Header="_Clear" Click="Clear_Click" Name="clearButton">
+                <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
                <MenuItem.Icon>
                   <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
                </MenuItem.Icon>

@@ -629,17 +629,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void Clear_Click(object sender, RoutedEventArgs e)
-        {
-            LockUI();
-            Controller.CleanWorkbench();
-
-            //don't save the file path
-            Controller.CurrentSpace.FilePath = "";
-
-            UnlockUI();
-        }
-
         internal Dictionary<string, System.Windows.Controls.MenuItem> viewMenuItemsDict
            = new Dictionary<string, System.Windows.Controls.MenuItem>();
 

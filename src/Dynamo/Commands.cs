@@ -286,6 +286,18 @@ namespace Dynamo.Commands
                 return layoutAllCmd;
             }
         }
+
+        private static ClearCommand clearCmd;
+        public static ClearCommand ClearCmd
+        {
+            get
+            {
+                if (clearCmd == null)
+                    clearCmd = new ClearCommand();
+
+                return clearCmd;
+            }
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand
@@ -1319,6 +1331,36 @@ namespace Dynamo.Commands
                 maxWidth = 0;
 
             }
+
+            dynSettings.Bench.UnlockUI();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ClearCommand : ICommand
+    {
+        public ClearCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Bench.LockUI();
+            dynSettings.Controller.CleanWorkbench();
+
+            //don't save the file path
+            dynSettings.Controller.CurrentSpace.FilePath = "";
 
             dynSettings.Bench.UnlockUI();
         }
