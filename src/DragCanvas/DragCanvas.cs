@@ -326,6 +326,9 @@ namespace Dynamo.Controls
 
          if (!isConnecting)
          {
+             if (this.selection.Count == 0)
+                 return;
+
              //test if we're hitting the background
              // Retrieve the coordinate of the mouse position.
              Point pt = e.GetPosition(this);
@@ -345,13 +348,13 @@ namespace Dynamo.Controls
                  {
                      base.OnMouseLeftButtonDown(e);
 
-                     this.isDragInProgress = false;
+                     //this.isDragInProgress = false;
 
                      // Cache the mouse cursor location.
                      this.origCursorLocation = e.GetPosition(this);
 
-                     if (this.selection.Count == 0)
-                         return;
+                     //if (this.selection.Count == 0)
+                     //    return;
 
                      this.isDragInProgress = true;
 
@@ -474,6 +477,36 @@ namespace Dynamo.Controls
          base.OnMouseUp(e);
 
          this.isDragInProgress = false;
+
+          // recalculate the offsets for all items in
+          // the selection. 
+         int count = 0;
+         foreach (ISelectable n in selection)
+         {
+             UIElement el = (UIElement)n;
+
+             double left = Canvas.GetLeft(el);
+             double right = Canvas.GetRight(el);
+             double top = Canvas.GetTop(el);
+             double bottom = Canvas.GetBottom(el);
+
+             // Calculate the offset deltas and determine for which sides
+             // of the Canvas to adjust the offsets.
+             bool modLeft = false;
+             bool modTop = false;
+             double hOffset = ResolveOffset(left, right, out modLeft);
+             double vOffset = ResolveOffset(top, bottom, out modTop);
+             
+             //OffsetData os = new OffsetData(hOffset, vOffset, modLeft, modTop, n);
+             
+             OffsetData os = offsets[count];
+             os.ModifyLeftOffset = modLeft;
+             os.ModifyTopOffset = modTop;
+             os.OriginalHorizontalOffset = hOffset;
+             os.OriginalVerticalOffset = vOffset;
+
+             count++;
+         }
       }
 
       public void ClearSelection()
