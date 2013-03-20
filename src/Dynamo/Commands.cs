@@ -10,6 +10,7 @@ using System.Collections;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using System.Reflection;
 
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -271,6 +272,18 @@ namespace Dynamo.Commands
                     saveImageCmd = new SaveImageCommand();
 
                 return saveImageCmd;
+            }
+        }
+
+        private static LayoutAllCommand layoutAllCmd;
+        public static LayoutAllCommand LayoutAllCmd
+        {
+            get
+            {
+                if (layoutAllCmd == null)
+                    layoutAllCmd = new LayoutAllCommand();
+
+                return layoutAllCmd;
             }
         }
     }
@@ -1204,6 +1217,110 @@ namespace Dynamo.Commands
                     pngEncoder.Save(stm);
                 }
             }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class LayoutAllCommand : ICommand
+    {
+        public LayoutAllCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Bench.LockUI();
+            dynSettings.Controller.CleanWorkbench();
+
+            double x = 0;
+            double y = 0;
+            double maxWidth = 0;    //track max width of current column
+            double colGutter = 40;     //the space between columns
+            double rowGutter = 40;
+            int colCount = 0;
+
+            Hashtable typeHash = new Hashtable();
+
+            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                object[] attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+
+                if (t.Namespace == "Dynamo.Nodes" &&
+                    !t.IsAbstract &&
+                    attribs.Length > 0 &&
+                    t.IsSubclassOf(typeof(dynNode)))
+                {
+                    NodeCategoryAttribute elCatAttrib = attribs[0] as NodeCategoryAttribute;
+
+                    List<Type> catTypes = null;
+
+                    if (typeHash.ContainsKey(elCatAttrib.ElementCategory))
+                    {
+                        catTypes = typeHash[elCatAttrib.ElementCategory] as List<Type>;
+                    }
+                    else
+                    {
+                        catTypes = new List<Type>();
+                        typeHash.Add(elCatAttrib.ElementCategory, catTypes);
+                    }
+
+                    catTypes.Add(t);
+                }
+            }
+
+            foreach (DictionaryEntry de in typeHash)
+            {
+                List<Type> catTypes = de.Value as List<Type>;
+
+                //add the name of the category here
+                //AddNote(de.Key.ToString(), x, y, Controller.CurrentSpace);
+                Dictionary<string, object> paramDict = new Dictionary<string, object>();
+                paramDict.Add("x", x);
+                paramDict.Add("y", y);
+                paramDict.Add("text", de.Key.ToString());
+                paramDict.Add("workspace", dynSettings.Controller.CurrentSpace);
+                DynamoCommands.AddNoteCmd.Execute(paramDict);
+
+                y += 60;
+
+                foreach (Type t in catTypes)
+                {
+                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+
+                    NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
+                    dynNode el = dynSettings.Controller.AddDynElement(
+                           t, elNameAttrib.Name, Guid.NewGuid(), x, y,
+                           dynSettings.Controller.CurrentSpace
+                        );
+
+                    el.DisableReporting();
+
+                    maxWidth = Math.Max(el.NodeUI.Width, maxWidth);
+
+                    colCount++;
+
+                    y += el.NodeUI.Height + rowGutter;
+                }
+
+                y = 0;
+                colCount = 0;
+                x += maxWidth + colGutter;
+                maxWidth = 0;
+
+            }
+
+            dynSettings.Bench.UnlockUI();
         }
 
         public event EventHandler CanExecuteChanged
