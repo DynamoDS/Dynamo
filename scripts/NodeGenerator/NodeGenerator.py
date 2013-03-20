@@ -60,7 +60,28 @@ def match_inport_type(x):
 		'Autodesk.Revit.DB.Face':'f',
 		'Autodesk.Revit.DB.Line':'crv',
 		'Autodesk.Revit.DB.Element':'el',
-		'System.Collections.Generic.IList{Autodesk.Revit.DB.ElementId}':'lst'
+		'System.Collections.Generic.IList{Autodesk.Revit.DB.ElementId}':'lst',
+		'Autodesk.Revit.DB.SketchPlane':'sp',
+		'Autodesk.Revit.DB.HorizontalAlign':'ha',
+		'Autodesk.Revit.DB.ModelTextType':'mtt',
+		'Autodesk.Revit.DB.Electrical.ElectricalSystemType':'ett',
+		'Autodesk.Revit.DB.Plumbing.PipeSystemType':'pst',
+		'Autodesk.Revit.DB.Mechanical.DuctSystemType':'dst',
+		'Autodesk.Revit.DB.DimensionType':'dt',
+		'Autodesk.Revit.DB.Arc':'arc',
+		'Autodesk.Revit.DB.DimensionType':'dimt',
+		'Autodesk.Revit.DB.ReferenceArray':'refa',
+		'Autodesk.Revit.DB.Form':'frm',
+		'Autodesk.Revit.DB.ReferenceArrayArray':'arar',
+		'Autodesk.Revit.DB.SweepProfile':'swpp',
+		'Autodesk.Revit.DB.ProfilePlaneLocation':'ppl',
+		'Autodesk.Revit.DB.TextNoteLeaderTypes':'tnlts',
+		'Autodesk.Revit.DB.TextNoteLeaderStyles':'tnls',
+		'Autodesk.Revit.DB.TextAlignFlags':'tafs',
+		'Autodesk.Revit.DB.MEPCurve':'mepcrv',
+		'Autodesk.Revit.DB.Connector':'con',
+		'Autodesk.Revit.DB.Plumbing.FlexPipeType':'fpt',
+		'Autodesk.Revit.DB.Plumbing.PipeType':'pt'
 	}.get(x,'val')
 
 def convert_param(x):
