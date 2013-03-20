@@ -19,16 +19,12 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo
 {
-
     public class DynamoController_Revit : DynamoController
     {
-        
         public DynamoUpdater Updater { get; private set; }
 
         PredicateTraverser checkManualTransaction;
         PredicateTraverser checkRequiresTransaction;
-
-        Dynamo.Nodes.PythonEngine.EvaluationDelegate oldPyEval;
 
         public DynamoController_Revit(DynamoUpdater updater)
             : base()
@@ -115,10 +111,23 @@ namespace Dynamo
 
                 var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
-                oldPyEval = evaluatorField.GetValue(null) as Dynamo.Nodes.PythonEngine.EvaluationDelegate;
+                oldPyEval = evaluatorField.GetValue(null) as Func<bool, string, object, Value>;
 
-                Dynamo.Nodes.PythonEngine.EvaluationDelegate evaluator = evaluate;
-                evaluatorField.SetValue(null, evaluator);
+                //var x = PythonEngine.GetMembers();
+                //foreach (var y in x)
+                //    Console.WriteLine(y);
+
+                var evalDelegateType = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine+EvaluationDelegate");
+
+                Delegate d = Delegate.CreateDelegate(
+                    evalDelegateType, 
+                    this, 
+                    typeof(DynamoController_Revit)
+                        .GetMethod("newEval", BindingFlags.NonPublic | BindingFlags.Instance));
+
+                evaluatorField.SetValue(
+                    null,
+                    d);
 
                 // use this to pass into the python script a list of previously created elements from dynamo
                 //TODO: ADD BACK IN
@@ -130,9 +139,8 @@ namespace Dynamo
                 Debug.WriteLine(e.StackTrace);
             }
         }
-        #endregion
 
-        private Value evaluate(bool dirty, string script, IEnumerable<Dynamo.Nodes.Binding> bindings)
+        Value newEval(bool dirty, string script, object bindings)
         {
             bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
 
@@ -171,6 +179,7 @@ namespace Dynamo
 
             return result;
         }
+        #endregion
 
         #region Watch Node Revit Hooks
         void AddWatchNodeHandler()
@@ -203,6 +212,16 @@ namespace Dynamo
             #endregion
         }
         #endregion
+
+        protected override dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
+        {
+            if (functionDefinition.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)
+                || functionDefinition.Dependencies.Any(d => d.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)))
+            {
+                return new dynFunctionWithRevit(inputs, outputs, functionDefinition);
+            }
+            return base.CreateFunction(inputs, outputs, functionDefinition);
+        }
 
         public bool InIdleThread;
 
@@ -277,7 +296,7 @@ namespace Dynamo
 
         bool ExecutionRequiresManualTransaction()
         {
-            return homeSpace.GetTopMostNodes().Any(
+            return HomeSpace.GetTopMostNodes().Any(
                 checkManualTransaction.TraverseUntilAny
             );
         }
@@ -365,6 +384,7 @@ namespace Dynamo
         }
 
         private Transaction _trans;
+        private Func<bool, string, object, Value> oldPyEval;
         public void InitTransaction()
         {
             if (_trans == null || _trans.GetStatus() != TransactionStatus.Started)
@@ -417,11 +437,15 @@ namespace Dynamo
 
         protected override void OnRunCancelled(bool error)
         {
+            base.OnRunCancelled(error);
+
             this.CancelTransaction();
         }
 
         protected override void OnEvaluationCompleted()
         {
+            base.OnEvaluationCompleted();
+
             //Cleanup Delegate
             Action cleanup = delegate
             {

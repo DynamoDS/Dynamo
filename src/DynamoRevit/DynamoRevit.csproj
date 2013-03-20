@@ -38,10 +38,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamoPython, Version=0.2.4827.17995, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Debug\DynamoPython.dll</HintPath>
-    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
@@ -60,12 +56,10 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\revit\vDev\ReleaseWin32\RevitAPI.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\..\revit\vDev\ReleaseWin32\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -97,8 +91,10 @@
       <Link>DynamoRevitNodes.cs</Link>
     </Compile>
     <Compile Include="DynamoController_Revit.cs" />
+    <Compile Include="dynFunctionWithRevit.cs" />
     <Compile Include="dynRevitSettings.cs" />
     <Compile Include="dynRevitTransactionNode.cs" />
+    <Compile Include="ElementsContainer.cs" />
     <Compile Include="Nodes\dyn3D.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />

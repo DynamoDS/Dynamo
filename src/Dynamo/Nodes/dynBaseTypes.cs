@@ -96,7 +96,7 @@ namespace Dynamo.Nodes
 
     public abstract class dynBuiltinFunction : dynNodeWithOneOutput
     {
-        public string Symbol;
+        public string Symbol { get; protected internal set; }
 
         internal dynBuiltinFunction(string symbol)
         {

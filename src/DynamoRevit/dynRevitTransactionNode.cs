@@ -21,7 +21,14 @@ namespace Dynamo.Revit
             get { return dynRevitSettings.Doc; }
         }
 
-        private List<List<ElementId>> elements;
+        private List<List<ElementId>> elements
+        {
+            get
+            {
+                return dynRevitSettings.ElementsContainers.Peek()[this];
+            }
+        }
+
         public List<ElementId> Elements
         {
             get
@@ -41,12 +48,6 @@ namespace Dynamo.Revit
         /// Implementation detail, records how many times this Element has been executed during this run.
         /// </summary>
         private int runCount;
-
-        public dynRevitTransactionNode()
-            : base()
-        {
-            elements = new List<List<ElementId>>() { new List<ElementId>() };
-        }
 
         internal void ResetRuns()
         {
@@ -195,7 +196,14 @@ namespace Dynamo.Revit
                    try
                    {
                        runCount = 0;
-                       foreach (var els in elements)
+
+                       var query = controller.HomeSpace.Nodes
+                           .Where(x => x is dynFunctionWithRevit)
+                           .Select(x => (x as dynFunctionWithRevit).ElementsContainer)
+                           .Where(c => c.HasElements(this))
+                           .SelectMany(c => c[this]);
+
+                       foreach (var els in query)
                        {
                            foreach (ElementId e in els)
                            {
@@ -208,14 +216,8 @@ namespace Dynamo.Revit
                                    //TODO: Flesh out?
                                }
                            }
-                           //els.Clear();
+                           els.Clear();
                        }
-
-                       //clear out the array to avoid object initialization errors
-                       elements.Clear();
-
-                       //clear the data tree
-                       //dataTree.Clear();
                    }
                    catch (Exception ex)
                    {

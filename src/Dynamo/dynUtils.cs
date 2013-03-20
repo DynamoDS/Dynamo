@@ -141,5 +141,11 @@ namespace Dynamo.Utilities
         }
 
         public static DynamoController Controller { get; internal set; }
+
+        public static Dictionary<Guid, FunctionDefinition> FunctionDict = 
+            new Dictionary<Guid, FunctionDefinition>();
+
+        public static HashSet<FunctionDefinition> FunctionWasEvaluated =
+            new HashSet<FunctionDefinition>();
     }
 }

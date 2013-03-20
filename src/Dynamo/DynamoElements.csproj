@@ -71,10 +71,6 @@ limitations under the License.
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Expression.Drawing">
-      <HintPath>..\..\extern\Coding4Fun.Kinect.Wpf.1.1.0\lib\Microsoft.Expression.Drawing.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.Kinect, Version=1.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\kinect\Microsoft.Kinect.dll</HintPath>

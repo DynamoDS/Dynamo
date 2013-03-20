@@ -675,7 +675,7 @@ namespace Dynamo.Controls
                 name = dialog.Text;
                 category = dialog.Category;
 
-                if (Controller.FunctionDict.ContainsKey(name))
+                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == name))
                 {
                     error = "A function with this name already exists.";
                 }
@@ -693,12 +693,12 @@ namespace Dynamo.Controls
             Controller.NewFunction(name, category, true);
         }
 
-        internal void ChangeView_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Controls.MenuItem item = sender as System.Windows.Controls.MenuItem;
+        //internal void ChangeView_Click(object sender, RoutedEventArgs e)
+        //{
+        //    System.Windows.Controls.MenuItem item = sender as System.Windows.Controls.MenuItem;
 
-            Controller.DisplayFunction(item.Header.ToString());
-        }
+        //    Controller.DisplayFunction(item.Header.ToString());
+        //}
 
         internal void setFunctionBackground()
         {
