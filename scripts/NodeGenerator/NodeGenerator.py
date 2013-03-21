@@ -101,7 +101,7 @@ def write_node_attributes(node_name, summary, f):
 		'\t[NodeDescription("' + summary + '")]\n']
 	f.writelines(node_attributes)
 
-def write_node_constructor(node_name, method_params, param_descriptions, summary, f):
+def write_node_constructor(node_name, method_params, param_descriptions, summary, f, required_types):
 	f.write('\t\tpublic Revit_' + node_name + '()\n')
 	f.write('\t\t{\n')
 
@@ -109,7 +109,12 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 	for param_description in param_descriptions:
 		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
 		f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
+
+		if method_params[i] not in required_types and 'Autodesk.Revit.DB' in method_params[i]:
+			required_types.append(method_params[i])
+
 		i += 1
+
 	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary+'\",typeof(object)));\n')
 	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 	f.write('\t\t}\n')
@@ -148,9 +153,15 @@ except IOError as e:
 
 f = open(wrapperPath, 'w')
 
-# define a dictionary to store the node
+# create a list to store the node
 # names that have been created
 node_names = []
+
+# create a list to store necessary 
+# types from Autodesk
+required_types = []
+
+array_types = []
 
 using=[	
 'using System;\n',
@@ -191,20 +202,27 @@ for member in root.iter('members'):
 		summary = member_data.find('summary').text.replace('\n','')
 		paramDescriptions = member_data.findall('param')
 
-		methodDefinition = member_name.split(':')[1]
-
-		# don't use method definitions that don't have the form
-		# someMethodName(param, param, param)
-		if not "(" in methodDefinition: continue
+		# we start with something like M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
+		methodDefinition = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
 
 		#print member_name
+		if not "New" in methodDefinition:
+			continue
 
 		# take something like M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
-		# and turn it into 'Point'
-		methodName = member_name.split('.')[4][3:].split('(')[0]	#
-		methodCall = member_name.split('.')[4].split('(')[0]
-		methodParams = member_name.split('(')[1][:-1].split(',')
-		fullMethodCall = member_name.split(':')[1].split('(')[0]
+		# if there is a parenthesis, we have parameters
+		if "(" in methodDefinition:
+			# print methodDefinition
+			methodName = member_name.split('.')[4][3:].split('(')[0]	#Point
+			methodCall = member_name.split('.')[4].split('(')[0]		#NewPoint
+			methodParams = member_name.split('(')[1][:-1].split(',')	#Autodesk.Revit.DB.XYZ
+			fullMethodCall = member_name.split(':')[1].split('(')[0]	#Autodesk.Revit.Creation.Application.NewPoint
+		else:
+			# print methodDefinition
+			methodName = member_name.split('.')[4][3:]	#Point
+			methodCall = member_name.split('.')[4]		#NewPoint
+			methodParams = []							#Autodesk.Revit.DB.XYZ
+			fullMethodCall = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint
 
 		# if the class name already exists
 		# append an integer to make it unique
@@ -224,7 +242,7 @@ for member in root.iter('members'):
 		f.write('\t{\n')
 
 		#CONSTRUCTOR
-		write_node_constructor(methodName, methodParams, paramDescriptions, summary,f)
+		write_node_constructor(methodName, methodParams, paramDescriptions, summary,f, required_types)
 
 		#EVALUATE
 		write_node_evaluate(method_call_prefix, methodCall, methodParams, f)
@@ -236,6 +254,7 @@ f.write('\t}\n')
 f.close()
 
 print node_names
+#print required_types
 
 
 

@@ -1998,6 +1998,23 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit ViewDrafting")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new drafting view.")]
+	public class Revit_ViewDrafting : dynNodeWithOneOutput
+	{
+		public Revit_ViewDrafting()
+		{
+			OutPortData.Add(new PortData("out","Creates a new drafting view.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit FoundationSlab")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription(" Creates a foundation slab within the project with the given horizontal profile and floor style on the specified level. ")]
@@ -2766,6 +2783,23 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaReinforcement(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit RebarBarType")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of Rebar Bar Type, which defines the bar diameter, bar bend diameter and bar material of the rebar.")]
+	public class Revit_RebarBarType : dynNodeWithOneOutput
+	{
+		public Revit_RebarBarType()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of Rebar Bar Type, which defines the bar diameter, bar bend diameter and bar material of the rebar.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Doc.Document.Create.NewRebarBarType();
 			return Value.NewContainer(result);
 		}
 	}
@@ -3571,6 +3605,23 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit ReferencePointArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates an empty array that can store ReferencePoint objects.")]
+	public class Revit_ReferencePointArray : dynNodeWithOneOutput
+	{
+		public Revit_ReferencePointArray()
+		{
+			OutPortData.Add(new PortData("out","Creates an empty array that can store ReferencePoint objects.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewReferencePointArray();
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit PointRelativeToPoint")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a PointRelativeToPoint object, which is used to define the placement of a ReferencePoint relative to a host point.")]
@@ -3734,6 +3785,23 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.CurveArrArray)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewCurveLoopsProfile(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ElementId")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new Autodesk::Revit::DB::ElementId^ object.")]
+	public class Revit_ElementId : dynNodeWithOneOutput
+	{
+		public Revit_ElementId()
+		{
+			OutPortData.Add(new PortData("out","Creates a new Autodesk::Revit::DB::ElementId^ object.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewElementId();
 			return Value.NewContainer(result);
 		}
 	}
@@ -4177,6 +4245,312 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit SpaceSet")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a space set.")]
+	public class Revit_SpaceSet : dynNodeWithOneOutput
+	{
+		public Revit_SpaceSet()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a space set.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewSpaceSet();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit LoadCombinationArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a LoadCombination array.")]
+	public class Revit_LoadCombinationArray : dynNodeWithOneOutput
+	{
+		public Revit_LoadCombinationArray()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a LoadCombination array.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewLoadCombinationArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit LoadUsageArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a LoadUsage array.")]
+	public class Revit_LoadUsageArray : dynNodeWithOneOutput
+	{
+		public Revit_LoadUsageArray()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a LoadUsage array.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewLoadUsageArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit LoadCaseArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a LoadCase array.")]
+	public class Revit_LoadCaseArray : dynNodeWithOneOutput
+	{
+		public Revit_LoadCaseArray()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a LoadCase array.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewLoadCaseArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ViewSet")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a View set.")]
+	public class Revit_ViewSet : dynNodeWithOneOutput
+	{
+		public Revit_ViewSet()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a View set.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewViewSet();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit IntersectionResultArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of an IntersectionResult array.")]
+	public class Revit_IntersectionResultArray : dynNodeWithOneOutput
+	{
+		public Revit_IntersectionResultArray()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of an IntersectionResult array.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewIntersectionResultArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit FaceArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a face array.")]
+	public class Revit_FaceArray : dynNodeWithOneOutput
+	{
+		public Revit_FaceArray()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a face array.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewFaceArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ReferenceArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a reference array.")]
+	public class Revit_ReferenceArray : dynNodeWithOneOutput
+	{
+		public Revit_ReferenceArray()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a reference array.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewReferenceArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit DoubleArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a double array.")]
+	public class Revit_DoubleArray : dynNodeWithOneOutput
+	{
+		public Revit_DoubleArray()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a double array.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewDoubleArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit VolumeCalculationOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates options related to room volume and area computations.")]
+	public class Revit_VolumeCalculationOptions : dynNodeWithOneOutput
+	{
+		public Revit_VolumeCalculationOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates options related to room volume and area computations.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewVolumeCalculationOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit GBXMLImportOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates Green-Building XML Import options.")]
+	public class Revit_GBXMLImportOptions : dynNodeWithOneOutput
+	{
+		public Revit_GBXMLImportOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates Green-Building XML Import options.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewGBXMLImportOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ImageImportOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates Image Import options.")]
+	public class Revit_ImageImportOptions : dynNodeWithOneOutput
+	{
+		public Revit_ImageImportOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates Image Import options.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewImageImportOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit BuildingSiteExportOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates Building Site Export options.")]
+	public class Revit_BuildingSiteExportOptions : dynNodeWithOneOutput
+	{
+		public Revit_BuildingSiteExportOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates Building Site Export options.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewBuildingSiteExportOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit FBXExportOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates 3D-Studio Max (FBX) Export options.")]
+	public class Revit_FBXExportOptions : dynNodeWithOneOutput
+	{
+		public Revit_FBXExportOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates 3D-Studio Max (FBX) Export options.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewFBXExportOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit GBXMLExportOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates Green-Building XML Export options.")]
+	public class Revit_GBXMLExportOptions : dynNodeWithOneOutput
+	{
+		public Revit_GBXMLExportOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates Green-Building XML Export options.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewGBXMLExportOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit DWFXExportOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates DWFX Export options.")]
+	public class Revit_DWFXExportOptions : dynNodeWithOneOutput
+	{
+		public Revit_DWFXExportOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates DWFX Export options.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewDWFXExportOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit DWFExportOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates DWF Export options.")]
+	public class Revit_DWFExportOptions : dynNodeWithOneOutput
+	{
+		public Revit_DWFExportOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates DWF Export options.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewDWFExportOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit SATExportOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates SAT Export options.")]
+	public class Revit_SATExportOptions : dynNodeWithOneOutput
+	{
+		public Revit_SATExportOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates SAT Export options.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewSATExportOptions();
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit UV")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a UV object by copying the supplied UV object.")]
@@ -4213,6 +4587,23 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=(System.Double)((Value.Number)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewUV(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit UV_2")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a UV object at the origin.")]
+	public class Revit_UV_2 : dynNodeWithOneOutput
+	{
+		public Revit_UV_2()
+		{
+			OutPortData.Add(new PortData("out","Creates a UV object at the origin.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewUV();
 			return Value.NewContainer(result);
 		}
 	}
@@ -4259,6 +4650,23 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit XYZ_2")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a XYZ object at the origin.")]
+	public class Revit_XYZ_2 : dynNodeWithOneOutput
+	{
+		public Revit_XYZ_2()
+		{
+			OutPortData.Add(new PortData("out","Creates a XYZ object at the origin.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewXYZ();
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit BoundingBoxUV")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a two-dimensional rectangle with supplied values.")]
@@ -4280,6 +4688,40 @@ namespace Dynamo.Nodes
 			var arg2=(System.Double)((Value.Number)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewBoundingBoxUV(arg0,arg1,arg2,arg3);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit BoundingBoxUV_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates an empty two-dimensional rectangle.")]
+	public class Revit_BoundingBoxUV_1 : dynNodeWithOneOutput
+	{
+		public Revit_BoundingBoxUV_1()
+		{
+			OutPortData.Add(new PortData("out","Creates an empty two-dimensional rectangle.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewBoundingBoxUV();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit BoundingBoxXYZ")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a three-dimensional rectangular box.")]
+	public class Revit_BoundingBoxXYZ : dynNodeWithOneOutput
+	{
+		public Revit_BoundingBoxXYZ()
+		{
+			OutPortData.Add(new PortData("out","Creates a three-dimensional rectangular box.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewBoundingBoxXYZ();
 			return Value.NewContainer(result);
 		}
 	}
@@ -4594,6 +5036,57 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit Color")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns a new color object.")]
+	public class Revit_Color : dynNodeWithOneOutput
+	{
+		public Revit_Color()
+		{
+			OutPortData.Add(new PortData("out","Returns a new color object.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewColor();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit CombinableElementArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns an array that can hold combinable element objects.")]
+	public class Revit_CombinableElementArray : dynNodeWithOneOutput
+	{
+		public Revit_CombinableElementArray()
+		{
+			OutPortData.Add(new PortData("out","Returns an array that can hold combinable element objects.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewCombinableElementArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit VertexIndexPairArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns an array that can hold VertexIndexPair objects.")]
+	public class Revit_VertexIndexPairArray : dynNodeWithOneOutput
+	{
+		public Revit_VertexIndexPairArray()
+		{
+			OutPortData.Add(new PortData("out","Returns an array that can hold VertexIndexPair objects.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewVertexIndexPairArray();
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit VertexIndexPair")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new VertexIndexPair object.")]
@@ -4611,6 +5104,91 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=(System.Int32)((Value.Number)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewVertexIndexPair(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ElementArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns an array that can hold element objects.")]
+	public class Revit_ElementArray : dynNodeWithOneOutput
+	{
+		public Revit_ElementArray()
+		{
+			OutPortData.Add(new PortData("out","Returns an array that can hold element objects.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewElementArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit CurveArrArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates an empty array that can store geometric curve loops.")]
+	public class Revit_CurveArrArray : dynNodeWithOneOutput
+	{
+		public Revit_CurveArrArray()
+		{
+			OutPortData.Add(new PortData("out","Creates an empty array that can store geometric curve loops.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewCurveArrArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit CurveArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates an empty array that can store geometric curves.")]
+	public class Revit_CurveArray : dynNodeWithOneOutput
+	{
+		public Revit_CurveArray()
+		{
+			OutPortData.Add(new PortData("out","Creates an empty array that can store geometric curves.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewCurveArray();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit StringStringMap")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new map that maps one string to another string.")]
+	public class Revit_StringStringMap : dynNodeWithOneOutput
+	{
+		public Revit_StringStringMap()
+		{
+			OutPortData.Add(new PortData("out","Creates a new map that maps one string to another string.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewStringStringMap();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit GeometryOptions")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates an object to specify user preferences in parsing of geometry.")]
+	public class Revit_GeometryOptions : dynNodeWithOneOutput
+	{
+		public Revit_GeometryOptions()
+		{
+			OutPortData.Add(new PortData("out","Creates an object to specify user preferences in parsing of geometry.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewGeometryOptions();
 			return Value.NewContainer(result);
 		}
 	}
@@ -4680,6 +5258,40 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit MaterialSet")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription(" Create a new instance of MaterialSet. ")]
+	public class Revit_MaterialSet : dynNodeWithOneOutput
+	{
+		public Revit_MaterialSet()
+		{
+			OutPortData.Add(new PortData("out"," Create a new instance of MaterialSet. ",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewMaterialSet();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ElementSet")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a set specifically for holding elements.")]
+	public class Revit_ElementSet : dynNodeWithOneOutput
+	{
+		public Revit_ElementSet()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a set specifically for holding elements.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewElementSet();
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit TypeBinding")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new type binding object containing the categories passed as a parameter.")]
@@ -4699,6 +5311,23 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit TypeBinding_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new empty type binding object.")]
+	public class Revit_TypeBinding_1 : dynNodeWithOneOutput
+	{
+		public Revit_TypeBinding_1()
+		{
+			OutPortData.Add(new PortData("out","Creates a new empty type binding object.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewTypeBinding();
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit InstanceBinding")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance binding object containing the categories passed as a parameter.")]
@@ -4714,6 +5343,40 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.CategorySet)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewInstanceBinding(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit InstanceBinding_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new empty instance binding object.")]
+	public class Revit_InstanceBinding_1 : dynNodeWithOneOutput
+	{
+		public Revit_InstanceBinding_1()
+		{
+			OutPortData.Add(new PortData("out","Creates a new empty instance binding object.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewInstanceBinding();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit CategorySet")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of a set specifically for holding category objects.")]
+	public class Revit_CategorySet : dynNodeWithOneOutput
+	{
+		public Revit_CategorySet()
+		{
+			OutPortData.Add(new PortData("out","Creates a new instance of a set specifically for holding category objects.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = dynRevitSettings.Revit.Application.Create.NewCategorySet();
 			return Value.NewContainer(result);
 		}
 	}
