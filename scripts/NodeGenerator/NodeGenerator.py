@@ -30,7 +30,11 @@ def match_param(x):
         'System.Double': 'Value.Number',
         'System.Boolean': 'Value.Number',
         'System.Int32':'Value.Number',
-        'System.String':'Value.String'
+        'System.String':'Value.String',
+        'Autodesk.Revit.DB.CurveArray':'Value.List',
+        'Autodesk.Revit.DB.CurveArrArray':'Value.List',
+        'Autodesk.Revit.DB.ReferenceArray':'Value.List',
+        'Autodesk.Revit.DB.ReferenceArrayArray':'Value.List',
         }.get(x, 'Value.Container') 
 
 def match_inport_type(x):
@@ -97,6 +101,15 @@ def convert_param(x):
 		'System.Collections.Generic.List{Autodesk.Revit.Creation.FamilyInstanceCreationData}':'List<Autodesk.Revit.Creation.FamilyInstanceCreationData>'
 	}.get(x,x).replace('@','')
 
+def conversion_method(x):
+	return{
+		'Autodesk.Revit.DB.ReferenceArrayArray':'dynRevitUtils.ConvertFSharpListListToReferenceArrayArray',
+		'Autodesk.Revit.DB.ReferenceArray':'dynRevitUtils.ConvertFSharpListListToReferenceArray',
+		'Autodesk.Revit.DB.CurveArrArray':'dynRevitUtils.ConvertFSharpListListToCurveArrayArray',
+		'Autodesk.Revit.DB.CurveArray':'dynRevitUtils.ConvertFSharpListListToCurveArray',
+		'System.Boolean':'Convert.ToBoolean'
+	}.get(x,'')
+
 def write_node_attributes(node_name, summary, f):
 	node_attributes = ['\t[NodeName("Revit ' + node_name + '")]\n',
 		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
@@ -129,13 +142,11 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f):
 	i = 0
 	argList = []
 	for param in method_params:
-		# there is no boolean type in FScheme
-		# convert a number type to a boolean
-		if param == 'System.Boolean':
-			f.write('\t\t\tvar arg' + str(i) + '=Convert.ToBoolean(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
+		if conversion_method(param) !='':
+			f.write('\t\t\tvar arg' + str(i) + '=' + conversion_method(param) + '(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
 		else:
 			f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
-
+		
 		if '@' in param:
 			argList.append('out arg' + str(i))
 		else:

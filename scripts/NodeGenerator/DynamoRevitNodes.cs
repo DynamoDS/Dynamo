@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit;
 using Dynamo.Controls;
@@ -548,7 +549,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Architecture.FasciaType)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewFascia(arg0,arg1);
 			return Value.NewContainer(result);
 		}
@@ -590,7 +591,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Architecture.GutterType)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewGutter(arg0,arg1);
 			return Value.NewContainer(result);
 		}
@@ -632,7 +633,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SlabEdgeType)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewSlabEdge(arg0,arg1);
 			return Value.NewContainer(result);
 		}
@@ -673,7 +674,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.CurtainSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewCurtainSystem2(arg0,arg1);
 			return Value.NewContainer(result);
@@ -694,7 +695,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.CurtainSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewCurtainSystem(arg0,arg1);
 			return Value.NewContainer(result);
@@ -767,7 +768,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRoomBoundaryLines(arg0,arg1,arg2);
 			return Value.NewContainer(result);
@@ -790,7 +791,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpaceBoundaryLines(arg0,arg1,arg2);
 			return Value.NewContainer(result);
@@ -1096,7 +1097,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.ReferencePlane)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.RoofType)((Value.Container)args[3]).Item;
@@ -1123,7 +1124,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.RoofType)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.ModelCurveArray)((Value.Container)args[3]).Item;
@@ -1300,7 +1301,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Line)((Value.Container)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
@@ -1355,7 +1356,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Element)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewOpening(arg0,arg1,arg2);
 			return Value.NewContainer(result);
@@ -1402,7 +1403,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[2]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewOpening(arg0,arg1,arg2);
 			return Value.NewContainer(result);
 		}
@@ -1424,7 +1425,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Element)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.Creation.eRefFace)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewOpening(arg0,arg1,arg2);
 			return Value.NewContainer(result);
@@ -1622,7 +1623,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -1645,7 +1646,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewBeamSystem(arg0,arg1);
 			return Value.NewContainer(result);
@@ -1668,7 +1669,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -1691,7 +1692,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewBeamSystem(arg0,arg1);
 			return Value.NewContainer(result);
@@ -1936,7 +1937,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewGrids(arg0);
 			return Value.NewContainer(result);
 		}
@@ -2033,7 +2034,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.FloorType)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -2060,7 +2061,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.FloorType)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -2086,7 +2087,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.FloorType)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -2109,7 +2110,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewFloor(arg0,arg1);
 			return Value.NewContainer(result);
@@ -2171,7 +2172,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -2197,7 +2198,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -2220,7 +2221,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1);
 			return Value.NewContainer(result);
@@ -2480,7 +2481,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(System.Int32[])((Value.Container)args[1]).Item;
 			var arg2=(System.Int32[])((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
@@ -2511,7 +2512,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(System.Int32[])((Value.Container)args[1]).Item;
 			var arg2=(System.Int32[])((Value.Container)args[2]).Item;
 			var arg3=(List<Autodesk.Revit.DB.XYZ>)((Value.Container)args[3]).Item;
@@ -2759,7 +2760,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Element)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewPathReinforcement(arg0,arg1,arg2);
 			return Value.NewContainer(result);
@@ -2781,7 +2782,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Element)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaReinforcement(arg0,arg1,arg2);
 			return Value.NewContainer(result);
@@ -2985,7 +2986,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Element)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewOpening(arg0,arg1);
 			return Value.NewContainer(result);
 		}
@@ -3251,7 +3252,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[2]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
 			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLinearDimension(arg0,arg1,arg2,arg3);
 			return Value.NewContainer(result);
@@ -3275,7 +3276,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[2]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLinearDimension(arg0,arg1,arg2);
 			return Value.NewContainer(result);
 		}
@@ -3319,7 +3320,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFormByCap(arg0,arg1);
 			return Value.NewContainer(result);
 		}
@@ -3343,7 +3344,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var arg4=(System.Double)((Value.Number)args[4]).Item;
@@ -3368,8 +3369,8 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.ReferenceArrayArray)((Value.Container)args[2]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(((Value.List)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlendForm(arg0,arg1,arg2);
 			return Value.NewContainer(result);
 		}
@@ -3391,7 +3392,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewExtrusionForm(arg0,arg1,arg2);
 			return Value.NewContainer(result);
@@ -3413,7 +3414,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.ReferenceArrayArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLoftForm(arg0,arg1);
 			return Value.NewContainer(result);
 		}
@@ -3489,7 +3490,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[2]).Item;
 			var arg3=(System.Int32)((Value.Number)args[3]).Item;
 			var arg4=(Autodesk.Revit.DB.ProfilePlaneLocation)((Value.Container)args[4]).Item;
@@ -3517,7 +3518,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
 			var arg4=(System.Int32)((Value.Number)args[4]).Item;
@@ -3546,7 +3547,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.CurveArrArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArrayArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.Line)((Value.Container)args[3]).Item;
 			var arg4=(System.Double)((Value.Number)args[4]).Item;
@@ -3573,8 +3574,8 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[2]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
+			var arg2=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[2]).Item);
 			var arg3=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewBlend(arg0,arg1,arg2,arg3);
 			return Value.NewContainer(result);
@@ -3598,7 +3599,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.CurveArrArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArrayArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewExtrusion(arg0,arg1,arg2,arg3);
@@ -4022,7 +4023,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
 			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
 			{
@@ -4481,7 +4482,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[2]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
 			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
 			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
 			{
@@ -4513,7 +4514,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.ReferenceArray)((Value.Container)args[2]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
 			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
 			{
 				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDimension(arg0,arg1,arg2);
@@ -4542,7 +4543,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[1]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
 			{
 				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDetailCurveArray(arg0,arg1);
@@ -4794,7 +4795,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArrArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArrayArray(((Value.List)args[0]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewCurveLoopsProfile(arg0);
 			return Value.NewContainer(result);
 		}
@@ -4925,7 +4926,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -4951,7 +4952,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
@@ -4974,7 +4975,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewProfiledWallCreationData(arg0,arg1);
 			return Value.NewContainer(result);
@@ -5997,7 +5998,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.CurveArray)((Value.Container)args[0]).Item;
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewPlane(arg0);
 			return Value.NewContainer(result);
 		}
