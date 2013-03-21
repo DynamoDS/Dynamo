@@ -93,6 +93,8 @@ def convert_param(x):
 		'System.Collections.Generic.List{Autodesk.Revit.Creation.RoomCreationData}':'List<Autodesk.Revit.Creation.RoomCreationData>',
 		'System.Collections.Generic.List{Autodesk.Revit.Creation.ProfiledWallCreationData}':'List<Autodesk.Revit.Creation.ProfiledWallCreationData>',
 		'System.Collections.Generic.List{Autodesk.Revit.Creation.RectangularWallCreationData}':'List<Autodesk.Revit.Creation.RectangularWallCreationData>',
+		'System.Collections.Generic.List{Autodesk.Revit.Creation.TextNoteCreationData}':'List<Autodesk.Revit.Creation.TextNoteCreationData>',
+		'System.Collections.Generic.List{Autodesk.Revit.Creation.FamilyInstanceCreationData}':'List<Autodesk.Revit.Creation.FamilyInstanceCreationData>'
 	}.get(x,x).replace('@','')
 
 def write_node_attributes(node_name, summary, f):
@@ -140,8 +142,23 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f):
 			argList.append('arg' + str(i))
 		i+=1
 	paramsStr = ",".join(argList)
-	f.write('\t\t\tvar result = ' + method_call_prefix + methodCall +  '(' + paramsStr + ');\n')
-	f.write('\t\t\treturn Value.NewContainer(result);\n')
+
+	if method_call_prefix == 'dynRevitSettings.Doc.Document.':
+		f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
+		f.write('\t\t\t{\n')
+		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall +  '(' + paramsStr + ');\n')
+		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
+		f.write('\t\t\t}\n')
+		f.write('\t\t\telse\n')
+		f.write('\t\t\t{\n')
+		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall +  '(' + paramsStr + ');\n')
+		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
+		f.write('\t\t\t}\n')
+	else:
+		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall +  '(' + paramsStr + ');\n')
+		f.write('\t\t\treturn Value.NewContainer(result);\n')
+
+
 	f.write('\t\t}\n')
 	
 wrapperPath = './DynamoRevitNodes.cs'
@@ -171,6 +188,7 @@ using=[
 'using Dynamo.Controls;\n',
 'using Dynamo.Utilities;\n',
 'using Dynamo.Connectors;\n',
+'using Dynamo.Revit;\n',
 'using Dynamo.FSchemeInterop;\n',
 'using Dynamo.FSchemeInterop.Node;\n',
 'using Microsoft.FSharp.Collections;\n',
@@ -196,6 +214,8 @@ for member in root.iter('members'):
 			method_call_prefix  = 'dynRevitSettings.Doc.Document.FamilyCreate.'
 		elif "Autodesk.Revit.Creation.Document" in member_name:
 			method_call_prefix = 'dynRevitSettings.Doc.Document.Create.'
+		elif "Autodesk.Revit.Creation.ItemFactoryBase" in member_name:
+			method_call_prefix = 'dynRevitSettings.Doc.Document.'
 		else:
 			continue
 
@@ -238,7 +258,7 @@ for member in root.iter('members'):
 
 		write_node_attributes(methodName, summary, f)
 
-		f.write('\tpublic class Revit_' + methodName + ' : dynNodeWithOneOutput\n')
+		f.write('\tpublic class Revit_' + methodName + ' : dynRevitTransactionNodeWithOneOutput\n')
 		f.write('\t{\n')
 
 		#CONSTRUCTOR
