@@ -2291,40 +2291,8 @@ namespace Dynamo
         }
         #endregion
 
-        #region Searching
+        #region Filtering
         SearchDictionary<dynNodeUI> searchDict = new SearchDictionary<dynNodeUI>();
-
-        //internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)
-        //{
-        //    var content = (WrapPanel)ex.Content;
-
-        //    bool filterWholeCategory = true;
-
-        //    foreach (dynNodeUI ele in content.Children)
-        //    {
-        //        if (!elements.Contains(ele))
-        //        {
-        //            ele.Visibility = System.Windows.Visibility.Collapsed;
-        //        }
-        //        else
-        //        {
-        //            ele.Visibility = System.Windows.Visibility.Visible;
-        //            filterWholeCategory = false;
-        //        }
-        //    }
-
-        //    if (filterWholeCategory)
-        //    {
-        //        ex.Visibility = System.Windows.Visibility.Collapsed;
-        //    }
-        //    else
-        //    {
-        //        ex.Visibility = System.Windows.Visibility.Visible;
-
-        //        //if (filter.Length > 0)
-        //        //   ex.IsExpanded = true;
-        //    }
-        //}
 
         internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)
         {
@@ -2358,93 +2326,59 @@ namespace Dynamo
             }
         }
 
-
-
-        internal Dictionary<dynNodeUI, WrapPanel> nodeParents = new Dictionary<dynNodeUI, WrapPanel>();
-
-        internal void UpdateSearchView(List<dynNodeUI> searchResults, StackPanel sideStackPanel, StackPanel searchResultsView)
-        {
-
-            foreach (FrameworkElement ex in sideStackPanel.Children)
-            {
-                if (ex.GetType() == typeof(Expander))
-                {
-                    ex.Visibility = Visibility.Collapsed;
-                }
-            }
-
-            if (!sideStackPanel.Children.Contains(searchResultsView))
-                sideStackPanel.Children.Add(searchResultsView);
-            else
-            {
-                searchResultsView.Children.Clear();
-                searchResultsView.Visibility = Visibility.Visible;
-            }
-
-            double currentOpacity = 1;
-            double minOpacity = 0.2;
-            double dist = searchResults.Count == 0 ? 0 : (currentOpacity - minOpacity) / searchResults.Count;
-
-            foreach (var nodeUI in searchResults)
-            {
-                var p = (System.Windows.Controls.Panel)nodeUI.Parent;
-
-                if (p != null)
-                {
-                    p.Children.Remove(nodeUI);
-
-                    // we'll need to put this node back into the WrapPanel
-                    if (p.GetType() == typeof(WrapPanel))
-                    {
-                        nodeParents.Add(nodeUI, (WrapPanel)p);
-                    }
-                }
-
-                nodeUI.Opacity = currentOpacity;
-                currentOpacity -= dist;
-
-                searchResultsView.Children.Add(nodeUI);
-            }
-
-        }
-
-        // create extra set of dynNodes for search
-
-
-        internal void ResetAddMenu()
-        {
-
-            foreach (var a in nodeParents)
-            {
-
-                var node = a.Key;
-                var parent = a.Value;
-                var p = (System.Windows.Controls.Panel)node.Parent;
-
-                if (p != null)
-                {
-                    p.Children.Remove(node);
-                }
-                node.Opacity = 1;
-                parent.Children.Add(node);
-            }
-
-            nodeParents.Clear();
-
-        }
+        private static Regex searchBarNumRegex = new Regex(@"^-?\d+(\.\d*)?$");
+        private static Regex searchBarStrRegex = new Regex("^\"([^\"]*)\"?$");
+        private double storedSearchNum = 0;
+        private string storedSearchStr = "";
+        private bool storedSearchBool = false;
 
         internal void UpdateSearch(string search)
         {
+            Match m;
 
-            if (search.Length == 0)
+            if (searchBarNumRegex.IsMatch(search))
             {
-                Bench.FilterAddMenu( new HashSet<dynNodeUI>(Bench.addMenuItemsDictNew.Values) ); 
+                storedSearchNum = Convert.ToDouble(search);
+                Bench.FilterAddMenu(
+                   new HashSet<dynNodeUI>() 
+                   { 
+                      Bench.addMenuItemsDictNew["Number"], 
+                      Bench.addMenuItemsDictNew["Number Slider"] 
+                   }
+                );
+            }
+            else if ((m = searchBarStrRegex.Match(search)).Success)  //(search.StartsWith("\""))
+            {
+                storedSearchStr = m.Groups[1].Captures[0].Value;
+                Bench.FilterAddMenu(
+                   new HashSet<dynNodeUI>()
+                   {
+                      Bench.addMenuItemsDictNew["String"]
+                   }
+                );
+            }
+            else if (search.Equals("true") || search.Equals("false"))
+            {
+                storedSearchBool = Convert.ToBoolean(search);
+                Bench.FilterAddMenu(
+                   new HashSet<dynNodeUI>()
+                   {
+                      Bench.addMenuItemsDictNew["Boolean"]
+                   }
+                );
             }
             else
             {
-                Bench.SearchMenu( searchDict.FuzzySearch(search.ToLower()) );
-            }
+                this.storedSearchNum = 0;
+                this.storedSearchStr = "";
+                this.storedSearchBool = false;
 
+                var filter = search.Length == 0
+                   ? new HashSet<dynNodeUI>(Bench.addMenuItemsDictNew.Values)
+                   : searchDict.Search(search.ToLower());
+
+                Bench.FilterAddMenu(filter);
+            }
         }
         #endregion
 

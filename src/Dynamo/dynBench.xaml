@@ -238,7 +238,7 @@
                                         <Setter.Value>
                                             <VisualBrush Stretch="None">
                                                 <VisualBrush.Visual>
-                                                    <TextBlock Text="Search..." FontFamily="Arial" FontSize="12" Foreground="Gray"/>
+                                                    <TextBlock Text="Filter..." FontFamily="Arial" FontSize="12" Foreground="Gray"/>
                                                 </VisualBrush.Visual>
                                             </VisualBrush>
                                         </Setter.Value>
@@ -249,7 +249,7 @@
                                         <Setter.Value>
                                             <VisualBrush Stretch="None">
                                                 <VisualBrush.Visual>
-                                                    <TextBlock Text="Search..." Margin="0" FontFamily="Arial" FontSize="12" Foreground="Gray"/>
+                                                    <TextBlock Text="Filter..." Margin="0" FontFamily="Arial" FontSize="12" Foreground="Gray"/>
                                                 </VisualBrush.Visual>
                                             </VisualBrush>
                                         </Setter.Value>

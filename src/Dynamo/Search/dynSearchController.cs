@@ -35,6 +35,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
+
         public dynSearchController( dynBench bench )
         {
             this.NumSearchResults = 10;
@@ -46,7 +47,7 @@ namespace Dynamo.Nodes
         {
             visibleNodes.Clear();
 
-            if (search == "") return;
+            //if (search == "") return;
 
             foreach (var node in this.Search(search))
             {

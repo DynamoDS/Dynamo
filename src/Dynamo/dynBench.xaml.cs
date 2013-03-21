@@ -1081,16 +1081,8 @@ namespace Dynamo.Controls
             dragOffset = new Point();
         }
 
-        StackPanel searchResultsView = new StackPanel();
-
-        internal void SearchMenu(List<dynNodeUI> searchResults)
-        {
-            Controller.UpdateSearchView(searchResults, this.SideStackPanel, this.searchResultsView);
-        }
-
         internal void FilterAddMenu(HashSet<dynNodeUI> elements)
         {
-            Controller.ResetAddMenu();
 
             foreach (FrameworkElement ex in this.SideStackPanel.Children)
             {

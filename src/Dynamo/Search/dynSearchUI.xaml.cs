@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -24,12 +25,13 @@ namespace Dynamo.Nodes
         public dynSearchController Controller;
         public TextBox SearchTextBox;
         public ListBox ResultList;
-
+        
         public ObservableCollection<dynNodeUI> VisibleNodes { get { return Controller.VisibleNodes; } }
 
         public dynSearchUI( dynSearchController controller )
         {
             Controller = controller;
+
             InitializeComponent();
 
             SearchTextBox = (TextBox) this.RSearchBox;
@@ -38,6 +40,9 @@ namespace Dynamo.Nodes
             ResultList.SelectionMode = SelectionMode.Single;
 
             this.PreviewKeyDown += new KeyEventHandler(KeyHandler);
+            SearchTextBox.IsVisibleChanged += delegate { SearchTextBox.Focus();
+                                                         Controller.SearchAndUpdateUI(this.SearchTextBox.Text.Trim());
+            };
         }
 
         private void KeyHandler(object sender, KeyEventArgs e)

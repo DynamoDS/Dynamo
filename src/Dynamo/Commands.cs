@@ -460,7 +460,6 @@ namespace Dynamo.Commands
             }
 
             search.Visibility = Visibility.Visible;
-            search.SearchTextBox.Focus();
 
         }
 
