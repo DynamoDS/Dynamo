@@ -128,6 +128,23 @@ namespace Dynamo.Utilities
         public static DynamoWarningSwallower WarningSwallower { get; internal set; }
         public static Transaction MainTransaction { get; internal set; }
 
+        private static Autodesk.Revit.DB.Options geometryOptions;
+        public static Autodesk.Revit.DB.Options GeometryOptions
+        {
+            get
+            {
+                if(geometryOptions == null)
+                {
+                    geometryOptions = new Options();
+                    geometryOptions.ComputeReferences = true;
+                    geometryOptions.DetailLevel = ViewDetailLevel.Medium;
+                    geometryOptions.IncludeNonVisibleObjects = false;
+                }
+
+                return geometryOptions;
+            }
+        }
+
         public class DynamoWarningSwallower : IFailuresPreprocessor
         {
             public FailureProcessingResult PreprocessFailures(
@@ -187,7 +204,7 @@ namespace Dynamo.Utilities
                     opts.ComputeReferences = true;
                     opts.DetailLevel = ViewDetailLevel.Medium;
                     opts.IncludeNonVisibleObjects = false;
-
+                    
                     Reference pointRef = doc.Selection.PickObject(ObjectType.Element);
                     //Reference pointRef = IdlePromise<Reference>.ExecuteOnIdle(
                     //    () => doc.Selection.PickObject(ObjectType.Element)

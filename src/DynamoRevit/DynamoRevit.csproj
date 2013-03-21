@@ -100,6 +100,7 @@
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynRevitSettings.cs" />
     <Compile Include="dynRevitTransactionNode.cs" />
+    <Compile Include="dynRevitUtils.cs" />
     <Compile Include="Nodes\dyn3D.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />
