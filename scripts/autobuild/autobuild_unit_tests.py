@@ -1,6 +1,6 @@
 import random
 import unittest
-import auto_build as ab
+import autobuild_test as ab
 
 class AutoBuildTests(unittest.TestCase):
         
@@ -36,7 +36,6 @@ class AutoBuildTests(unittest.TestCase):
     
     def test_interpret_build(self):
         
-        #TOD): need mock build result
         try:
             # failure
             result = open('tests/example_build_result_failure.txt', 'r').read()
@@ -50,6 +49,16 @@ class AutoBuildTests(unittest.TestCase):
         except Exception:
             self.fail("interpret_build raised Exception unexpectedly. Are you sure that the test files are in place?")
   
+    def test_interpret_unit_tests(self):
+
+        try:
+            result = open('tests/example_nunit_result_failure.txt', 'r').read()
+            interpreted_res = ab.interpret_unit_tests( result )
+            self.assertFalse( interpreted_res["success"] )
+        except Exception:
+            self.fail("interpret_testd raised Exception unexpectedly. Are you sure that the test files are in place?")
+
+
     def test_log_results(self):
 
         repo_date = "date"

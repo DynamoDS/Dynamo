@@ -3,10 +3,10 @@ import string
 import subprocess
 import datetime
 import sys
-from collections import namedtuple
 import shutil
 import re
 import os
+from optparse import OptionParser
 
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEBase import MIMEBase
@@ -15,90 +15,81 @@ from email import Encoders
 
 def main():
 
-	# CONSTANTS
+	parser = OptionParser()
+	
+	parser.add_option("-r", "--remote", dest="remote", help="The URI of the git remote.", metavar="FILE", default="https://github.com/ikeough/Dynamo.git")
+	parser.add_option("-f", "--force", action="store_true", dest="force_build_without_commits", default=False, help="Run build even if no commits have taken place")
+	parser.add_option("-s", "--sender", dest="email_sender", default="peter.boyer@autodesk.com" , help="Who the email will be sent from")
+	parser.add_option("-e", "--emails", dest="email_list_path", metavar="FILE", default="emails.txt" , help="A \n delimited list of emails to send the results to")
+	parser.add_option("-d", "--date", dest="repo_date", default=date_string(), help="Override the date of the build")
+	parser.add_option("-n", "--repo_name", dest="repo_name", default="Dynamo" , help="The name of the repo.  Don't screw this up.")
+	parser.add_option("-z", "--debug", dest="debug", action="store_true", default=False, help="Run debug - don't send emails or update realtimedev.")
+	parser.add_option("-p", "--sol_path", dest="solution_path", default="src/Dynamo.sln", help="Solution path relative to repo root.")
+	parser.add_option("-o", "--autodoc_root", dest="autodoc_root", default="scripts/autodoc", help="Autodoc root path relative to repo root.")
+	parser.add_option("-i", "--autodoc_name", dest="autodoc_name", default="autodoc.py", help="Name of autodoc script")
+	parser.add_option("-v", "--realtimedev", dest="realtimedev_root", default="C:/Users/boyerp/Dropbox/DynamoRealtimeDev", help="Root of realtime dev directory")
+	parser.add_option("-b", "--msbuild_path", dest="msbuild_path", default="C:/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe", help="Path to MSBuild.exe")
+	parser.add_option("-c", "--commit_period", dest="commit_period", default="day", help="Amount of time to log commits")
+	(options, args) = parser.parse_args()
 
-	# when True, no installers are copied and no emails sent
-	DEBUG = False; 
-
-	# git 
-	remote_path = "https://github.com/ikeough/Dynamo.git"
-
-	# email and log
-	email_sender = "peter.boyer@autodesk.com"   				
-	email_list_path = "emails.txt"
-
-	# source 
-	repo_date = date_string()
-	sandbox_path = form_path(['repos',repo_date])
-
-	repo_name = "Dynamo"
-	repo_root = form_path( [sandbox_path, repo_name ] )
-	solution_path = form_path( [repo_root, 'src/Dynamo.sln'] )
-
-	# autodoc
-	autodoc_root = form_path( [repo_root, 'scripts/autodoc'] )
-	autodoc_name = 'autodoc.py'
-
-	# installer
+	sandbox_path = form_path(['repos',options.repo_date])
+	repo_root = form_path( [sandbox_path, options.repo_name ] ) 
+	solution_path = form_path( [repo_root, options.solution_path] ) 
+	autodoc_root = form_path( [repo_root, options.autodoc_root] )
+	options.autodoc_name = 'autodoc.py'
 	installer_dir =  form_path( [repo_root, 'scripts/install'] )
 	installer_bin_dir = 'Installers'
 	installer_bat = 'CreateInstallers-RELEASE.bat'
-
-	#realtimedev
-	realtimedev_root = 'C:/Users/boyerp/Dropbox/DynamoRealtimeDev'  
-
-	# build
-	msbuild_path = "C:/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe"
-
-	#log
 	log_prefix = form_path([sandbox_path, "dynamo_auto_build_log_"])
 	
 	# do auto-build!
 	setup(sandbox_path)
 
-	print 'cloning...'
-	pull_result = clone( remote_path, sandbox_path, repo_name ) 
+	pull_result = clone( options.remote, sandbox_path, options.repo_name ) 
 
 	print 'getting commit history...'
-	commits = run_cmd([ 'git','log','--since=1.day'], cwd = repo_root)
-	print commits
-	
-	print 'building....'
-	build_result = build( msbuild_path, solution_path )
-	build_result_debug = build( msbuild_path, solution_path, build_config = "Debug" )
+	commits = run_cmd([ 'git','log',"--since=1."+options.commit_period], cwd = repo_root)
+
+	if commits == "" and not options.force_build_without_commits:
+		message = "No build run as there were no commits for the last " + options.commit_period
+		print message
+		if not options.debug:
+			email_result = email_all( options.email_list_path, options.email_sender, "Dynamo autobuild skipped for " + options.repo_date, message, "" )
+		return
+
+	build_result = build( options.msbuild_path, solution_path )
+	build_result_debug = build( options.msbuild_path, solution_path, build_config = "Debug" )
+
+	unit_test_result = {}
+	if build_result["success"] == True and build_result_debug["success"] == True:
+		unit_test_result = interpret_unit_tests( run_unit_tests( repo_root ) )
 
 	installers_result = "Installers not formed.\n"
 
 	if (build_result['success'] == True and build_result_debug['success'] == True):
 
-		print 'making docs...'
-		autodoc_result = make_docs( autodoc_root, autodoc_name )
+		autodoc_result = make_docs( autodoc_root, options.autodoc_name )
 
-		print 'making installers...'
 		installers_result = make_installers( installer_dir, installer_bat )
 
-		if not DEBUG:
-			print 'copying installers, docs, and binaries to realtime-dev...'
-			update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, realtimedev_root )
+		# if not options.debug:
+		# 	update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, options.realtimedev_root )
 		
 	else:
 		print 'build failed'
 
-	print 'interpreting results...'
-	[subject, message] = get_email_content( repo_date, pull_result, [build_result, build_result_debug], installers_result, commits )
+	[subject, message] = get_email_content( options.repo_date, pull_result, [build_result, build_result_debug], installers_result, commits, unit_test_result )
 	
-	print 'logging...'
-	log = log_results(log_prefix, pull_result, [build_result, build_result_debug], installers_result, commits)
+	log = log_results(log_prefix, pull_result, [build_result, build_result_debug], installers_result, commits, unit_test_result )
 
-	if not DEBUG:
-		print 'emailing results...'
-		email_result = email_all( email_list_path, email_sender, subject, message, log )
+	if not options.debug:
+		email_result = email_all( options.email_list_path, options.email_sender, subject, message, log )
 
 
 def interpret_build(result):
 
-	errors = int( re.search( r"[0-9]* Error", result).group(0).split(' ')[0] )
-	warnings = int( re.search( r"[0-9]* Warning", result).group(0).split(' ')[0] )
+	errors = int( re.search( r"[0-9]+ Error", result).group(0).split(' ')[0] )
+	warnings = int( re.search( r"[0-9]+ Warning", result).group(0).split(' ')[0] )
 
 	return {'result': result, 'errors': errors, 'warnings': warnings, 'success': ( errors == 0) }
 
@@ -112,6 +103,42 @@ def rm_dir(path):
 	if os.path.exists(path):
 		run_cmd(['rmdir', path, '/S', '/Q'])
 
+def interpret_unit_tests( result ):
+
+	parsed_results = {}
+
+	parsed_results['tests_run'] = int( re.search( r"Tests run: [0-9]+", result).group(0).split(' ')[2] )
+	parsed_results['errors'] = int( re.search( r"Errors: [0-9]+", result).group(0).split(' ')[1] )
+	parsed_results['failures'] = int( re.search( r"Failures: [0-9]+", result).group(0).split(' ')[1] )
+	parsed_results['inconclusives'] = int( re.search( r"Inconclusive: [0-9]+", result).group(0).split(' ')[1] )
+	parsed_results['time'] = float( re.search( r"Time: [0-9.]+", result).group(0).split(' ')[1] )
+
+	parsed_results['not_run'] = int( re.search( r"Not run: [0-9]+", result).group(0).split(' ')[2] )
+	parsed_results['invalid'] = int( re.search( r"Invalid: [0-9]+", result).group(0).split(' ')[1] )
+	parsed_results['ignored'] = int( re.search( r"Ignored: [0-9]+", result).group(0).split(' ')[1] )
+	parsed_results['skipped'] = int( re.search( r"Skipped: [0-9]+", result).group(0).split(' ')[1] )
+
+	parsed_results["success"] = False
+
+	if parsed_results['errors'] == 0 and parsed_results['failures'] == 0 and parsed_results['inconclusives'] == 0:
+		parsed_results["success"] = True
+
+	parsed_results["errors_and_failures"] = ""
+
+	parsed_results["full_results"] = result
+
+	ef = re.search(r"\nErrors and Failures:(.|\n)+\r\n\r\n\n", result)
+
+	if ef != None:
+		parsed_results["errors_and_failures"] = ef.group(0)
+
+	return parsed_results
+
+def run_unit_tests(path, build_config = "Debug"):
+
+	print 'running unit tests....'
+	return run_cmd( ['nunit-console', 'DynamoElementsTests.dll'], cwd= form_path( [path, "bin", build_config ]) )
+
 def mkdir(path):
 
 	if os.path.exists(path):
@@ -120,10 +147,12 @@ def mkdir(path):
 
 def make_docs( autodoc_root, autodoc_name ):
 
+	print 'making docs...'
 	return run_cmd(['python',autodoc_name], cwd = autodoc_root )	
 
 def update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, realtimedev_root ):
 
+	print 'copying installers, docs, and binaries to realtime-dev...'
 	if not os.path.exists(realtimedev_root):
 		print 'realtimedev_root does not exist: ' + realtimedev_root
 		return None
@@ -145,12 +174,14 @@ def copy_folder_contents(path, endpath):
 	return run_cmd(['robocopy', path, endpath, '/E' ])
 
 def make_installers(path_to_installer_bats, installer_bat):
+	print 'making installers...'
 	return run_cmd( installer_bat, cwd = path_to_installer_bats )
 
-def log_results(log_prefix, pull_result, build_result, email_result, commits):
+def log_results(log_prefix, pull_result, build_result, email_result, commits, unit_test_result):
+	print 'logging...'
 	path = log_prefix + date_string() + '.log'
 	
-	log = [pull_result, commits, build_result[0]["result"], build_result[1]["result"], email_result]
+	log = [pull_result, commits, build_result[0]["result"], build_result[1]["result"], unit_test_result, email_result]
 	log = map( lambda v: str(v), log )  
 	log_string = '\n############\n'.join( log )
 
@@ -163,13 +194,15 @@ def date_string():
 	return datetime.datetime.now().strftime("%Y%m%dT%H%M%S")
 	
 def clone( git_repo_path_https, pull_dir, repo_name ):
-
+	print 'cloning...'
 	return run_cmd(['git','clone', git_repo_path_https], cwd = pull_dir )		
 	
 def form_path(elements):
 	return "/".join( elements )
 
 def build( compiler_path, solution_path, build_config = "Release" ):
+
+	print 'building....'
 	return interpret_build( run_cmd([compiler_path, '/p:Configuration='+build_config, solution_path]) )
 		
 def run_cmd( args, printOutput = True, cwd = None ):	
@@ -187,20 +220,43 @@ def run_cmd( args, printOutput = True, cwd = None ):
 		
 	return out
 	
-def get_email_content( repo_date, pull_result, build_results, installer_result, commits ):
+def get_email_content( repo_date, pull_result, build_results, installer_result, commits, unit_test_result):
+
+	print 'interpreting results...'
 
 	if (installer_result == None):
 		installer_result = "No installers created"
 
-	success_string = "Failure"
+	success_string = "FAILURE"
 	success = False
 
 	if (build_results[0]["success"] == True and build_results[1]["success"] == True):
 		success = True
 		success_string = "Success"
 
-	subject = "Dynamo autobuild for " + repo_date + ": " + success_string
+	test_success_string = "FAILURE"
+	tests_run = False
+
+	print unit_test_result
+
+	if "success" in unit_test_result and unit_test_result["success"] == True:
+		test_success_string = "Success"
+	
+	if "success" in unit_test_result:
+		tests_run = True
+
+	# Header
+	subject = "Dynamo autobuild - Build: " + success_string + ", Tests: " + test_success_string + ", Date: " + repo_date 
 	message = "The build was a " + success_string + "\n\n"
+
+	# Installers
+	if success:
+		message = message + "The installers were copied to the DynamoRealtimeDev/builds/" + repo_date + "/install\n\n"
+		message = message + "The node docs were copied to the DynamoRealtimeDev/builds/" + repo_date + "/dev\n\n"
+
+	message = message + "Attached is a log.\n\n"
+
+	#Errors, warnings, etc
 	message = message + "------------------------- \n\n"
 	message = message + "There were " + str( build_results[0]["errors"]) + " errors and "
 	message = message + str( build_results[0]["warnings"] ) + " warnings in the Release build. \n\n"
@@ -208,16 +264,33 @@ def get_email_content( repo_date, pull_result, build_results, installer_result, 
 	message = message + "There were " + str( build_results[1]["errors"]) + " errors and "
 	message = message + str( build_results[0]["warnings"] ) + " warnings in the Debug build. \n\n"
 	message = message + "------------------------- \n\n"
+
+	message = message + "Dynamo Elements Unit Tests: \n\n"
+
+	if tests_run:
+
+		# Unit tests
+		if "success" in unit_test_result and unit_test_result["success"] == True:
+			message = message + "Success"
+		else:
+			message = message + "FAILURE."
+
+		message = message + "\n\n" 
+		message = message + "Tests run: " + str( unit_test_result["tests_run"] )
+		message = message + "  Errors: " + str( unit_test_result["errors"] )
+		message = message + "  Failures: " + str( unit_test_result["failures"] )
+		message = message + "  Time elapsed: " + str( unit_test_result["time"] ) + "\n\n"
+		message = message + "\n\n" + "Full results: " + "\n\n" + str( unit_test_result["full_results"] )
+		message = message + "\n\n------------------------- \n\n"
+
+	else:
+		message = message + "Unit tests were not run.  This is likely because of a build failure."
+		message = message + "\n\n------------------------- \n\n"
+
+	# Copies
 	message = message + "Commits since last build: \n\n"
 	message = message + commits
-	message = message + "------------------------- \n\n"
-
-	if success:
-		message = message + "The installers were copied to the DynamoRealtimeDev/builds/" + repo_date + "/install\n\n"
-
-	message = message + "Attached is a log.\n\n"
-
-	message = message + "Peace out, silicon representin\n\n"
+	message = message + "\n\n------------------------- \n\n"
 
 	return [subject, message]
 	
@@ -230,6 +303,8 @@ def get_recipients( path ):
 
 def email_all( emails_path, sender, subject, message, in_log ):
 	
+	print 'emailing results...'
+
 	log = ""
 	
 	recipients = get_recipients( emails_path )
