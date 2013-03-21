@@ -28,8 +28,12 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo
 {
+
     public class DynamoController:INotifyPropertyChanged
     {
+        private dynSearchController _searchController;
+        public dynSearchController SearchController { get { return _searchController; } }
+
         public event PropertyChangedEventHandler PropertyChanged;
         /// <summary>
         /// Used by various properties to notify observers that a property has changed.
@@ -136,6 +140,8 @@ namespace Dynamo
         public DynamoController()
         {
             Bench = new dynBench(this);
+
+            _searchController = new dynSearchController(Bench);
 
             homeSpace = CurrentSpace = new HomeWorkspace();
 
@@ -365,10 +371,11 @@ namespace Dynamo
 
                 dynNode newNode = null;
 
+                SearchController.Add( kvp.Value.Type, kvp.Key );
+
                 try
                 {
                     var obj = Activator.CreateInstance(kvp.Value.Type);
-                    //var obj = Activator.CreateInstanceFrom(kvp.Value.assembly.Location, kvp.Value.t.FullName);
                     newNode = (dynNode)obj;//.Unwrap();
                 }
                 catch (Exception e) //TODO: Narrow down
@@ -402,7 +409,6 @@ namespace Dynamo
                     var scale = Math.Min(target / width, .8);
 
                     nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
-                    //nodeUI.nickNameBlock.FontSize *= .8 / scale;
 
                     Tuple<Expander, SortedList<string, dynNodeUI>> expander;
 
@@ -441,7 +447,9 @@ namespace Dynamo
                     //--------------//
 
                     var tagAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
+
                     List<string> tags = null;
+
                     if (tagAtts.Length > 0)
                     {
                         tags = ((NodeSearchTagsAttribute)tagAtts[0]).Tags;
@@ -454,6 +462,10 @@ namespace Dynamo
 
                     searchDict.Add(nodeUI, kvp.Key.Split(' ').Where(x => x.Length > 0));
                     searchDict.Add(nodeUI, kvp.Key);
+                    searchDict.AddName(nodeUI, kvp.Key);
+
+
+
                 }
                 catch (Exception e)
                 {
@@ -477,6 +489,8 @@ namespace Dynamo
             #endregion
         }
 
+        
+       
         private bool isNodeSubType(Type t)
         {
             return t.Namespace == "Dynamo.Nodes" &&
@@ -563,9 +577,6 @@ namespace Dynamo
                             Header = Path.GetFileName(dirPath),
                             Tag = Path.GetFileName(dirPath)
                         };
-                        //item.Click += new RoutedEventHandler(sample_Click);
-                        //samplesMenu.Items.Add(dirItem);
-                        int menuItemCount = Bench.SamplesMenu.Items.Count;
 
                         filePaths = Directory.GetFiles(dirPath, "*.dyn");
                         if (filePaths.Any())
@@ -704,6 +715,8 @@ namespace Dynamo
             }
         }
 
+        
+
         internal dynWorkspace NewFunction(string name, string category, bool display)
         {
             //Add an entry to the funcdict
@@ -804,7 +817,12 @@ namespace Dynamo
             }
 
             Bench.addMenuItemsDictNew[name] = newEl.NodeUI;
+
             searchDict.Add(newEl.NodeUI, name.Split(' ').Where(x => x.Length > 0));
+            searchDict.Add( newEl.NodeUI, name );
+            searchDict.AddName(newEl.NodeUI, name);
+
+            
 
             if (display)
             {
@@ -901,12 +919,12 @@ namespace Dynamo
                 result = newEl;
             }
 
-            if (result is dynDouble)
-                (result as dynDouble).Value = this.storedSearchNum;
-            else if (result is dynStringInput)
-                (result as dynStringInput).Value = this.storedSearchStr;
-            else if (result is dynBool)
-                (result as dynBool).Value = this.storedSearchBool;
+            //if (result is dynDouble)
+            //    (result as dynDouble).Value = this.storedSearchNum;
+            //else if (result is dynStringInput)
+            //    (result as dynStringInput).Value = this.storedSearchStr;
+            //else if (result is dynBool)
+            //    (result as dynBool).Value = this.storedSearchBool;
 
             return result;
         }
@@ -2262,12 +2280,15 @@ namespace Dynamo
                 wp.Children.Add(child);
             }
 
+
             //Update search dictionary after a rename
             var oldTags = this.CurrentSpace.Name.Split(' ').Where(x => x.Length > 0);
             this.searchDict.Remove(newAddItem.NodeUI, oldTags);
+            this.searchDict.Add(newAddItem.NodeUI, this.CurrentSpace.Name);
 
             var newTags = newName.Split(' ').Where(x => x.Length > 0);
             this.searchDict.Add(newAddItem.NodeUI, newTags);
+            this.searchDict.Add(newAddItem.NodeUI, newName);
 
             //------------------//
 
@@ -2319,7 +2340,7 @@ namespace Dynamo
         }
         #endregion
 
-        #region Searching
+        #region Filtering
         SearchDictionary<dynNodeUI> searchDict = new SearchDictionary<dynNodeUI>();
 
         internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)

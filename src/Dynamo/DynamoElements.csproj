@@ -117,6 +117,10 @@ limitations under the License.
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Search\dynSearchUI.xaml.cs">
+      <DependentUpon>dynSearchUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Search\dynSearchController.cs" />
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
@@ -164,8 +168,8 @@ limitations under the License.
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SearchDictionary.cs" />
     <Compile Include="ZoomBorder.cs" />
+    <Compile Include="Search\SearchDictionary.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -202,6 +206,10 @@ limitations under the License.
     <Page Include="dynPort.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Search\dynSearchUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FunctionNamePrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -246,6 +254,18 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\OpenSelectedItemHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\search.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

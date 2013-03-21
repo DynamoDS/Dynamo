@@ -41,7 +41,7 @@ namespace Dynamo.Controls
 {
     /// <summary>
     /// Interaction logic for dynControl.xaml
-    /// </summary
+    /// </summary>
     public enum ElementState { DEAD, ACTIVE, ERROR };
     public enum LacingType { SHORTEST, LONGEST, FULL };
 
@@ -740,6 +740,12 @@ namespace Dynamo.Controls
             //ToolTip = message;
             this.ToolTipText = message;
         }
+
+        public string Description { get {
+            Type t = NodeLogic.GetType();
+            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true); 
+            return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription; 
+        }}
 
         void SetTooltip()
         {

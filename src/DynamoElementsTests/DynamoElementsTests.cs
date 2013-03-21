@@ -148,10 +148,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(dynSettings.Controller.Nodes.Count, 3);
         }
 
-        [Test]
-        public void CanCreateACustomFunctionEnterItAndLeave()
-        {
-            throw new NotImplementedException();
-        }
+        //[Test]
+        //public void CanCreateACustomFunctionEnterItAndLeave()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
