@@ -183,6 +183,7 @@ array_types = []
 using=[	
 'using System;\n',
 'using System.Collections.Generic;\n',
+'using System.Linq;\n',
 'using Autodesk.Revit.DB;\n',
 'using Autodesk.Revit;\n',
 'using Dynamo.Controls;\n',
