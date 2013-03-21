@@ -95,6 +95,50 @@ def convert_param(x):
 		'System.Collections.Generic.List{Autodesk.Revit.Creation.RectangularWallCreationData}':'List<Autodesk.Revit.Creation.RectangularWallCreationData>',
 	}.get(x,x).replace('@','')
 
+def write_node_attributes(node_name, summary, f):
+	node_attributes = ['\t[NodeName("Revit ' + node_name + '")]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
+		'\t[NodeDescription("' + summary + '")]\n']
+	f.writelines(node_attributes)
+
+def write_node_constructor(node_name, method_params, param_descriptions, summary, f):
+	f.write('\t\tpublic Revit_' + node_name + '()\n')
+	f.write('\t\t{\n')
+
+	i=0
+	for param_description in param_descriptions:
+		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
+		f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
+		i += 1
+	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary+'\",typeof(object)));\n')
+	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
+	f.write('\t\t}\n')
+
+def write_node_evaluate(method_call_prefix, methodCall, method_params, f):
+	f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
+	f.write('\t\t{\n')
+
+	# for each incoming arg, cast it to the matching param
+	i = 0
+	argList = []
+	for param in method_params:
+		# there is no boolean type in FScheme
+		# convert a number type to a boolean
+		if param == 'System.Boolean':
+			f.write('\t\t\tvar arg' + str(i) + '=Convert.ToBoolean(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
+		else:
+			f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
+
+		if '@' in param:
+			argList.append('out arg' + str(i))
+		else:
+			argList.append('arg' + str(i))
+		i+=1
+	paramsStr = ",".join(argList)
+	f.write('\t\t\tvar result = ' + method_call_prefix + methodCall +  '(' + paramsStr + ');\n')
+	f.write('\t\t\treturn Value.NewContainer(result);\n')
+	f.write('\t\t}\n')
+	
 wrapperPath = './DynamoRevitNodes.cs'
 # create a new text file to hold our wrapped classes
 try:
@@ -145,10 +189,7 @@ for member in root.iter('members'):
 			continue
 
 		summary = member_data.find('summary').text.replace('\n','')
-		params = member_data.findall('param')
-
-		# for param in params:
-		# 	print param.text
+		paramDescriptions = member_data.findall('param')
 
 		methodDefinition = member_name.split(':')[1]
 
@@ -160,63 +201,36 @@ for member in root.iter('members'):
 
 		# take something like M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
 		# and turn it into 'Point'
-		className = member_name.split('.')[4][3:].split('(')[0]
+		methodName = member_name.split('.')[4][3:].split('(')[0]	#
 		methodCall = member_name.split('.')[4].split('(')[0]
 		methodParams = member_name.split('(')[1][:-1].split(',')
 		fullMethodCall = member_name.split(':')[1].split('(')[0]
 
 		# if the class name already exists
 		# append an integer to make it unique
-		classNameStub = className
-		while className in node_names:
+		methodNameStub = methodName
+		while methodName in node_names:
 			node_name_counter += 1
-			className = classNameStub + '_' + str(node_name_counter)
+			methodName = methodNameStub + '_' + str(node_name_counter)
 		# else:
 		node_name_counter = 0
 
-		node_names.append(className)
+		#store the node name
+		node_names.append(methodName)
 
-		class_attributes = ['\t[NodeName("Revit ' + className + '")]\n',
-		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
-		'\t[NodeDescription("' + summary + '")]\n']
-		f.writelines(class_attributes)
-		f.write('\tpublic class Revit_' + className + ' : dynNodeWithOneOutput\n')
+		write_node_attributes(methodName, summary, f)
+
+		f.write('\tpublic class Revit_' + methodName + ' : dynNodeWithOneOutput\n')
 		f.write('\t{\n')
-		f.write('\t\tpublic Revit_' + className + '()\n')
-		f.write('\t\t{\n')
 
-		i=0
-		for param in params:
-			paramDescription = params[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(methodParams[i])+'\", \"' + paramDescription + '\",typeof(object)));\n')
-			i += 1
-		f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary+'\",typeof(object)));\n')
-		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
-		f.write('\t\t}\n')
-		f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
-		f.write('\t\t{\n')
+		#CONSTRUCTOR
+		write_node_constructor(methodName, methodParams, paramDescriptions, summary,f)
 
-		# for each incoming arg, cast it to the matching param
-		i = 0
-		argList = []
-		for param in methodParams:
-			# there is no boolean type in FScheme
-			# convert a number type to a boolean
-			if param == 'System.Boolean':
-				f.write('\t\t\tvar arg' + str(i) + '=Convert.ToBoolean(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
-			else:
-				f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
-
-			if '@' in param:
-				argList.append('out arg' + str(i))
-			else:
-				argList.append('arg' + str(i))
-			i+=1
-		paramsStr = ",".join(argList)
-		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall +  '(' + paramsStr + ');\n')
-		f.write('\t\t\treturn Value.NewContainer(result);\n')
-		f.write('\t\t}\n')
+		#EVALUATE
+		write_node_evaluate(method_call_prefix, methodCall, methodParams, f)
+		
 		f.write('\t}\n')
+
 		f.write('\n')
 f.write('\t}\n')
 f.close()
