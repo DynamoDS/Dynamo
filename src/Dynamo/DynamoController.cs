@@ -436,7 +436,7 @@ namespace Dynamo
                                 Width = double.NaN
                             },
                             HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                            Foreground = new SolidColorBrush(Color.FromRgb(200,200,200))
+                            //Foreground = new SolidColorBrush(Color.FromRgb(200,200,200))
                         };
 
                         Bench.addMenuCategoryDict[categoryName] = e;

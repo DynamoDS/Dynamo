@@ -50,21 +50,20 @@
             Background="Transparent"
             Canvas.ZIndex="90">
          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="50"/>
+            <!--<ColumnDefinition Width="Auto"/>-->
          </Grid.ColumnDefinitions>
       </Grid>
       <Grid Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
               Margin="0,5,-7,5" 
-              Width="Auto" 
               IsHitTestVisible="True" 
               Background="Transparent"
               Canvas.ZIndex="90">
          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="50"/>
+            <!--<ColumnDefinition Width="Auto"/>-->
          </Grid.ColumnDefinitions>
       </Grid>
       <Canvas Canvas.Left="0" 
@@ -106,7 +105,7 @@
                        Canvas.ZIndex="90" 
                        IsHitTestVisible="False">
             </Rectangle>-->
-         <Rectangle HorizontalAlignment="Right" 
+         <!--<Rectangle HorizontalAlignment="Right" 
                      Canvas.Left="0"
                      Canvas.Top="2"
                      Width="{Binding ElementName=topControl, Path=Width}"
@@ -119,7 +118,7 @@
             <Rectangle.Fill>
                <SolidColorBrush Opacity=".25" Color="white" />
             </Rectangle.Fill>
-         </Rectangle>
+         </Rectangle>-->
          <TextBlock  Height="Auto" 
                      Name="nickNameBlock" 
                      VerticalAlignment="Center" 

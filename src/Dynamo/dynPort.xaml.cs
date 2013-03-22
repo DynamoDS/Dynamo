@@ -20,6 +20,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Diagnostics;
+using System.ComponentModel;
 
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -34,8 +35,18 @@ namespace Dynamo.Connectors
     public delegate void PortDisconnectedHandler(object sender, EventArgs e);
     public enum PortType { INPUT, OUTPUT };
 
-    public partial class dynPort : UserControl
+    public partial class dynPort : UserControl, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
         #region events
         public event PortConnectedHandler PortConnected;
         public event PortConnectedHandler PortDisconnected;
@@ -61,6 +72,7 @@ namespace Dynamo.Connectors
         dynNodeUI owner;
         int index;
         PortType portType;
+        string name;
 
         #endregion
 
@@ -83,6 +95,16 @@ namespace Dynamo.Connectors
         //    set { isInputPort = value; }
         //}
 
+        public string PortName
+        {
+            get { return name; }
+            set
+            {
+                name = value;
+                NotifyPropertyChanged("PortName");
+            }
+                
+        }
         public PortType PortType
         {
             get { return portType; }
@@ -114,6 +136,7 @@ namespace Dynamo.Connectors
             this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
             this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
 
+            portNameTb.DataContext = this;
         }
         #endregion constructors
 
@@ -163,7 +186,7 @@ namespace Dynamo.Connectors
         #region private methods
         Point UpdateCenter()
         {
-            GeneralTransform transform = this.TransformToAncestor(dynSettings.Workbench);
+            GeneralTransform transform = ellipse1.TransformToAncestor(dynSettings.Workbench);
             Point rootPoint = transform.Transform(new Point(0, 0));
 
             double x = rootPoint.X;
@@ -175,9 +198,12 @@ namespace Dynamo.Connectors
             }
             else
             {
-                x += this.Width / 2;
+                //x += this.Width / 2;
+                x += ellipse1.Width / 2;
             }
-            y += this.Width / 2;
+            //y += this.Height / 2;
+            y += ellipse1.Height / 2;
+
             return new Point(x, y);
 
         }

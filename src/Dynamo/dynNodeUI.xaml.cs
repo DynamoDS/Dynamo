@@ -62,7 +62,6 @@ namespace Dynamo.Controls
         //System.Windows.Shapes.Ellipse dirtyEllipse;
         ObservableCollection<dynPort> inPorts;
         ObservableCollection<dynPort> outPorts;
-        Dictionary<dynPort, TextBlock> portTextBlocks;
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
         string nickName;
         Guid guid;
@@ -255,8 +254,6 @@ namespace Dynamo.Controls
             Binding heightBinding = new Binding("PreferredHeight");
             topControl.SetBinding(UserControl.HeightProperty, heightBinding);
             
-            portTextBlocks = new Dictionary<dynPort, TextBlock>();
-
             State = ElementState.DEAD;
 
             //Fetch the element name from the custom attribute.
@@ -453,7 +450,6 @@ namespace Dynamo.Controls
                 //int index = inPorts.FindIndex(x => x == inport);
                 int index = inPorts.IndexOf(inport);
                 gridLeft.Children.Remove(inport);
-                gridLeft.Children.Remove(portTextBlocks[inport]);
 
                 while (inport.Connectors.Any())
                 {
@@ -536,39 +532,20 @@ namespace Dynamo.Controls
             {
                 if (inPorts.Count > index)
                 {
-                    portTextBlocks[inPorts[index]].Text = name;
                     return inPorts[index];
                 }
                 else
                 {
                     dynPort p = new dynPort(index);
 
-                    //create a text block for the name of the port
-                    TextBlock tb = new TextBlock();
-
-                    tb.VerticalAlignment = VerticalAlignment.Center;
-                    tb.FontSize = 12;
-                    tb.FontWeight = FontWeights.Normal;
-                    tb.Foreground = new SolidColorBrush(Colors.Black);
-                    tb.Text = name;
-                    tb.HorizontalAlignment = HorizontalAlignment.Left;
-                    tb.IsHitTestVisible = false;
-
-                    Canvas.SetZIndex(tb, 200);
-
                     p.PortType = PortType.INPUT;
                     InPorts.Add(p);
-                    portTextBlocks[p] = tb;
                     gridLeft.Children.Add(p);
                     Grid.SetColumn(p, 0);
                     Grid.SetRow(p, index);
 
-                    //portNamesLeft.Children.Add(tb);
-                    gridLeft.Children.Add(tb);
-                    Grid.SetColumn(tb, 1);
-                    Grid.SetRow(tb, index);
-
                     p.Owner = this;
+                    p.PortName = name;
 
                     //register listeners on the port
                     p.PortConnected += new PortConnectedHandler(p_PortConnected);
@@ -581,45 +558,31 @@ namespace Dynamo.Controls
             {
                 if (outPorts.Count > index)
                 {
-                    portTextBlocks[outPorts[index]].Text = name;
                     return outPorts[index];
                 }
                 else
                 {
                     dynPort p = new dynPort(index);
 
-                    //create a text block for the name of the port
-                    TextBlock tb = new TextBlock();
-
-                    tb.VerticalAlignment = VerticalAlignment.Center;
-                    tb.FontSize = 12;
-                    tb.FontWeight = FontWeights.Normal;
-                    tb.Foreground = new SolidColorBrush(Colors.Black);
-                    tb.Text = name;
-
-                    tb.HorizontalAlignment = HorizontalAlignment.Right;
-
                     p.PortType = PortType.OUTPUT;
                     OutPorts.Add(p);
-                    portTextBlocks[p] = tb;
+                    //portTextBlocks[p] = tb;
                     gridRight.Children.Add(p);
                     Grid.SetColumn(p, 1);
                     Grid.SetRow(p, index);
 
-                    //portNamesLeft.Children.Add(tb);
-                    gridRight.Children.Add(tb);
-                    Grid.SetColumn(tb, 0);
-                    Grid.SetRow(tb, index);
-
                     p.Owner = this;
+                    p.PortName = name;
 
                     //register listeners on the port
                     p.PortConnected += new PortConnectedHandler(p_PortConnected);
                     p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
 
-                    ScaleTransform trans = new ScaleTransform(-1, 1, p.Width / 2, p.Height / 2);
-                    p.RenderTransform = trans;
-
+                    //flip the right hand ports
+                    ScaleTransform trans = new ScaleTransform(-1, 1, 25, p.Height / 2);
+                    p.portGrid.RenderTransform = trans;
+                    p.portNameTb.Margin = new Thickness(0, 0, 15, 0);
+                    p.portNameTb.TextAlignment = TextAlignment.Right;
                     return p;
                 }
             }
