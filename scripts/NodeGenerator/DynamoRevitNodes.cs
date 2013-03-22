@@ -13,6 +13,91 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
+	[NodeName("Revit ComputeCentroid")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns the Centroid of this solid.")]
+	public class Revit_ComputeCentroid : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ComputeCentroid()
+		{
+			OutPortData.Add(new PortData("out","The XYZ point of the Centroid of this solid.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = ((Solid)(args[0] as Value.Container).Item).ComputeCentroid();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Volume")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns the signed volume of this solid.")]
+	public class Revit_Volume : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Volume()
+		{
+			OutPortData.Add(new PortData("out","The real number equal to the signed volume of this solid.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = ((Solid)(args[0] as Value.Container).Item).Volume;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit SurfaceArea")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns the total surface area of this solid.")]
+	public class Revit_SurfaceArea : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_SurfaceArea()
+		{
+			OutPortData.Add(new PortData("out","The real number equal to the total area of this solid.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = ((Solid)(args[0] as Value.Container).Item).SurfaceArea;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Faces")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The faces that belong to the solid.")]
+	public class Revit_Faces : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Faces()
+		{
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = ((Solid)(args[0] as Value.Container).Item).Faces;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Edges")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The edges that belong to the solid.")]
+	public class Revit_Edges : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Edges()
+		{
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var result = ((Solid)(args[0] as Value.Container).Item).Edges;
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit TopographySurface")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new TopographySurface element in the document, and initializes it with a set of points.")]
@@ -3013,7 +3098,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Face)(args[0] as Value.Container).Item).Area;
 			return Value.NewContainer(result);
 		}
 	}
@@ -3032,7 +3117,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Face)(args[0] as Value.Container).Item).Reference;
 			return Value.NewContainer(result);
 		}
 	}
@@ -3072,7 +3157,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.UV)((Value.Container)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Face)(args[0] as Value.Container).Item).Evaluate(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -3093,7 +3178,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Face)(args[0] as Value.Container).Item).Triangulate(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -3112,7 +3197,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Face)(args[0] as Value.Container).Item).Triangulate();
 			return Value.NewContainer(result);
 		}
 	}
@@ -3131,7 +3216,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Face)(args[0] as Value.Container).Item).IsTwoSided;
 			return Value.NewContainer(result);
 		}
 	}
@@ -3150,7 +3235,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Face)(args[0] as Value.Container).Item).MaterialElementId;
 			return Value.NewContainer(result);
 		}
 	}
@@ -3169,7 +3254,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Face)(args[0] as Value.Container).Item).EdgeLoops;
 			return Value.NewContainer(result);
 		}
 	}
@@ -3207,7 +3292,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Face)(args[0] as Value.Container).Item).HasRegions;
 			return Value.NewContainer(result);
 		}
 	}
@@ -6813,7 +6898,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Curve)(args[0] as Value.Container).Item).Clone();
 			return Value.NewContainer(result);
 		}
 	}
@@ -6834,7 +6919,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).Project(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -6857,7 +6942,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.IntersectionResultArray)((Value.Container)args[1]).Item;
 			var arg2=((Curve)(args[2] as Value.Container).Item);
-			var result = args[2];
+			var result = ((Curve)(args[0] as Value.Container).Item).Intersect(arg0,out arg1);
 			return Value.NewContainer(result);
 		}
 	}
@@ -6878,7 +6963,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).Intersect(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -6901,7 +6986,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=(System.Int32)((Value.Container)args[1]).Item;
 			var arg2=((Curve)(args[2] as Value.Container).Item);
-			var result = args[2];
+			var result = ((Curve)(args[0] as Value.Container).Item).IsInside(arg0,out arg1);
 			return Value.NewContainer(result);
 		}
 	}
@@ -6922,7 +7007,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).IsInside(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -6945,7 +7030,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var arg2=((Curve)(args[2] as Value.Container).Item);
-			var result = args[2];
+			var result = ((Curve)(args[0] as Value.Container).Item).ComputeDerivatives(arg0,arg1);
 			return Value.NewContainer(result);
 		}
 	}
@@ -6966,7 +7051,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)((Value.Container)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).get_Transformed(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -6985,7 +7070,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Curve)(args[0] as Value.Container).Item).Period;
 			return Value.NewContainer(result);
 		}
 	}
@@ -7004,7 +7089,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Curve)(args[0] as Value.Container).Item).IsCyclic;
 			return Value.NewContainer(result);
 		}
 	}
@@ -7025,7 +7110,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).Distance(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7044,7 +7129,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Curve)(args[0] as Value.Container).Item).Length;
 			return Value.NewContainer(result);
 		}
 	}
@@ -7063,7 +7148,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Curve)(args[0] as Value.Container).Item).ApproximateLength;
 			return Value.NewContainer(result);
 		}
 	}
@@ -7084,7 +7169,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).ComputeRawParameter(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7105,49 +7190,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Curve_MakeUnbound")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Makes this curve unbound.")]
-	public class Revit_Curve_MakeUnbound : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Curve_MakeUnbound()
-		{
-			InPortData.Add(new PortData("crv", "The curve.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Curve_MakeBound")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Changes the bounds of this curve to the specified values.")]
-	public class Revit_Curve_MakeBound : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Curve_MakeBound()
-		{
-			InPortData.Add(new PortData("n", "The new parameter of the start point.",typeof(object)));
-			InPortData.Add(new PortData("n", "The new parameter of the end point.",typeof(object)));
-			InPortData.Add(new PortData("crv", "The curve.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(System.Double)((Value.Number)args[0]).Item;
-			var arg1=(System.Double)((Value.Number)args[1]).Item;
-			var arg2=((Curve)(args[2] as Value.Container).Item);
-			var result = args[2];
+			var result = ((Curve)(args[0] as Value.Container).Item).ComputeNormalizedParameter(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7168,7 +7211,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).get_EndParameter(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7189,7 +7232,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).get_EndPointReference(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7210,7 +7253,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
-			var result = args[1];
+			var result = ((Curve)(args[0] as Value.Container).Item).get_EndPoint(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7229,7 +7272,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Curve)(args[0] as Value.Container).Item).Reference;
 			return Value.NewContainer(result);
 		}
 	}
@@ -7252,7 +7295,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var arg2=((Curve)(args[2] as Value.Container).Item);
-			var result = args[2];
+			var result = ((Curve)(args[0] as Value.Container).Item).Evaluate(arg0,arg1);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7271,7 +7314,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Curve)(args[0] as Value.Container).Item).Tessellate();
 			return Value.NewContainer(result);
 		}
 	}
@@ -7290,7 +7333,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
-			var result = args[0];
+			var result = ((Curve)(args[0] as Value.Container).Item).IsBound;
 			return Value.NewContainer(result);
 		}
 	}

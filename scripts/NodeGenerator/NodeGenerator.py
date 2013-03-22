@@ -181,12 +181,7 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
 		f.write('\t\t\t}\n')
 	else:
-		# if we return void, pass through the last argument,
-		# which will be the object itself
-		if returns_void and isFaceMember or isCurveMember:
-			f.write('\t\t\tvar result = ' + 'args[' + str(i) +'];\n')
-		else:
-			f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
+		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
 		f.write('\t\t\treturn Value.NewContainer(result);\n')
 
 
@@ -210,6 +205,9 @@ node_names = []
 required_types = []
 
 array_types = []
+
+# exclusions that we can deal with later
+skip_list = ['MakeBound', 'MakeUnbound','getGeometry']
 
 using=[	
 'using System;\n',
@@ -241,6 +239,7 @@ for member in root.iter('members'):
 		isFaceMember = False
 		isMethod = False
 		isProperty = False
+		isSolidMember = False
 
 		#Application.Create
 		#Document.Create
@@ -260,6 +259,9 @@ for member in root.iter('members'):
 		elif "Autodesk.Revit.DB.Face." in member_name:
 			method_call_prefix = '((Face)(args[0] as Value.Container).Item).'
 			isFaceMember = True
+		elif "Autodesk.Revit.DB.Solid." in member_name:
+			method_call_prefix = '((Solid)(args[0] as Value.Container).Item).'
+			isSolidMember = True
 		else:
 			continue
 
@@ -279,7 +281,7 @@ for member in root.iter('members'):
 		methodDefinition = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
 
 		#print member_name
-		conditions = [isCurveMember, isFaceMember]
+		conditions = [isCurveMember, isFaceMember, isSolidMember]
 		if not "New" in methodDefinition:
 			if not any(conditions):
 				continue
@@ -311,6 +313,9 @@ for member in root.iter('members'):
 			methodName = methodCall[3:]	#Point
 		else:
 			methodName = methodCall
+
+		if methodName in skip_list:
+			continue;
 
 		# if the class name already exists
 		# append an integer to make it unique
