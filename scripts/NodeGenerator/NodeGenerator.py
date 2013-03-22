@@ -113,10 +113,10 @@ def conversion_method(x):
 def write_node_attributes(node_name, summary, f):
 	node_attributes = ['\t[NodeName("Revit ' + node_name + '")]\n',
 		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
-		'\t[NodeDescription("' + summary + '")]\n']
+		'\t[NodeDescription("' + summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 	f.writelines(node_attributes)
 
-def write_node_constructor(node_name, method_params, param_descriptions, summary, f, required_types, isCurveMember, isFaceMember):
+def write_node_constructor(node_name, method_params, param_descriptions, summary, f, required_types):
 	f.write('\t\tpublic Revit_' + node_name + '()\n')
 	f.write('\t\t{\n')
 
@@ -135,12 +135,14 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 			f.write('\t\t\tInPortData.Add(new PortData(\"f\", \"The face.\",typeof(object)));\n')
 	elif isSolidMember:
 			f.write('\t\t\tInPortData.Add(new PortData(\"s\", \"The solid.\",typeof(object)));\n')
+	elif isFormMember:
+			f.write('\t\t\tInPortData.Add(new PortData(\"frm\", \"The form.\",typeof(object)));\n')
 
 	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
 	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 	f.write('\t\t}\n')
 
-def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMethod, isProperty, isCurveMember, isFaceMember, returns_void):
+def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMethod, isProperty, returns_void):
 	f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
 	f.write('\t\t{\n')
 
@@ -164,6 +166,10 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 		f.write('\t\t\tvar arg' + str(i) + '=((Curve)(args[' + str(i) +'] as Value.Container).Item);\n')
 	elif isFaceMember:
 		f.write('\t\t\tvar arg' + str(i) + '=((Face)(args[' + str(i) +'] as Value.Container).Item);\n')
+	elif isSolidMember:
+		f.write('\t\t\tvar arg' + str(i) + '=((Solid)(args[' + str(i) +'] as Value.Container).Item);\n')
+	elif isFormMember:
+		f.write('\t\t\tvar arg' + str(i) + '=((Form)(args[' + str(i) +'] as Value.Container).Item);\n')
 
 	if isMethod or isProperty and len(method_params) > 0:
 		paramsStr = '(' +  ",".join(argList) + ")"
@@ -242,6 +248,7 @@ for member in root.iter('members'):
 		isMethod = False
 		isProperty = False
 		isSolidMember = False
+		isFormMember = False
 
 		#Application.Create
 		#Document.Create
@@ -264,6 +271,9 @@ for member in root.iter('members'):
 		elif "Autodesk.Revit.DB.Solid." in member_name:
 			method_call_prefix = '((Solid)(args[0] as Value.Container).Item).'
 			isSolidMember = True
+		elif "Autodesk.Revit.DB.Form." in member_name:
+			method_call_prefix = '((Form)(args[0] as Value.Container).Item).'
+			isFormMember = True
 		else:
 			continue
 
@@ -283,7 +293,7 @@ for member in root.iter('members'):
 		methodDefinition = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
 
 		#print member_name
-		conditions = [isCurveMember, isFaceMember, isSolidMember]
+		conditions = [isCurveMember, isFaceMember, isSolidMember, isFormMember]
 		if not "New" in methodDefinition:
 			if not any(conditions):
 				continue
@@ -327,6 +337,8 @@ for member in root.iter('members'):
 			methodName = 'Face_'+methodName
 		elif isSolidMember:
 			methodName = 'Solid_'+methodName
+		elif isFormMember:
+			methodName = 'Form_'+methodName
 		methodNameStub = methodName
 
 		while methodName in node_names:
@@ -344,10 +356,10 @@ for member in root.iter('members'):
 		f.write('\t{\n')
 
 		#CONSTRUCTOR
-		write_node_constructor(methodName, methodParams, paramDescriptions, return_summary,f, required_types, isCurveMember, isFaceMember)
+		write_node_constructor(methodName, methodParams, paramDescriptions, return_summary,f, required_types)
 
 		#EVALUATE
-		write_node_evaluate(method_call_prefix, methodCall, methodParams, f, isMethod, isProperty, isCurveMember, isFaceMember, return_summary == '')
+		write_node_evaluate(method_call_prefix, methodCall, methodParams, f, isMethod, isProperty, return_summary == '')
 		
 		f.write('\t}\n')
 

@@ -26,6 +26,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
+			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).ComputeCentroid();
 			return Value.NewContainer(result);
 		}
@@ -44,6 +45,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
+			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).Volume;
 			return Value.NewContainer(result);
 		}
@@ -62,6 +64,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
+			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).SurfaceArea;
 			return Value.NewContainer(result);
 		}
@@ -80,6 +83,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
+			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).Faces;
 			return Value.NewContainer(result);
 		}
@@ -98,7 +102,937 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
+			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).Edges;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_Rehost")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Rehost Form to sketch plane")]
+	public class Revit_Form_Rehost : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_Rehost()
+		{
+			InPortData.Add(new PortData("sp", "The sketch plane on which to rehost the form.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The location to which to Rehost the form.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=((Form)(args[2] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).Rehost(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_Rehost_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Rehost Form to edge, face or curve.")]
+	public class Revit_Form_Rehost_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_Rehost_1()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference on which to rehost the form.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The location to which to Rehost the form.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=((Form)(args[2] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).Rehost(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_BaseOffset")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Retrieve/set the base offset of the form object. It is only valid for locked form.")]
+	public class Revit_Form_BaseOffset : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_BaseOffset()
+		{
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Form)(args[0] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).BaseOffset;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_TopOffset")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Retrieve/set the top offset of the form object. It is only valid for locked form.")]
+	public class Revit_Form_TopOffset : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_TopOffset()
+		{
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Form)(args[0] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).TopOffset;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_AddProfile")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a profile into the form, by a specified edge/param.")]
+	public class Revit_Form_AddProfile : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_AddProfile()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of edge.",typeof(object)));
+			InPortData.Add(new PortData("n", "The param on edge to specify the location.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","Index of newly created profile.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(System.Double)((Value.Number)args[1]).Item;
+			var arg2=((Form)(args[2] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).AddProfile(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_AddEdge")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add an edge to the form, connecting two edges on same/different profile, by a pair of specified points.")]
+	public class Revit_Form_AddEdge : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_AddEdge()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of start point",typeof(object)));
+			InPortData.Add(new PortData("ref", "The geometry reference of end point",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
+			var arg2=((Form)(args[2] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).AddEdge(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_AddEdge_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add an edge to the form, connecting two edges on same/different profile, by a pair of specified edge/param.")]
+	public class Revit_Form_AddEdge_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_AddEdge_1()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of start edge",typeof(object)));
+			InPortData.Add(new PortData("n", "The param on start edge to specify the location.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The geometry reference of end edge",typeof(object)));
+			InPortData.Add(new PortData("n", "The param on end edge to specify the location.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(System.Double)((Value.Number)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
+			var arg3=(System.Double)((Value.Number)args[3]).Item;
+			var arg4=((Form)(args[4] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).AddEdge(arg0,arg1,arg2,arg3);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_AddEdge_2")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add an edge to the form, connecting two edges on different profiles, by a specified face of the form and a point on face.")]
+	public class Revit_Form_AddEdge_2 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_AddEdge_2()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of face",typeof(object)));
+			InPortData.Add(new PortData("xyz", "A point on the face, defining the position of edge to be created.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=((Form)(args[2] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).AddEdge(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_ScaleProfile")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Scale a profile of the form, by a specified origin and scale factor.")]
+	public class Revit_Form_ScaleProfile : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_ScaleProfile()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile.",typeof(object)));
+			InPortData.Add(new PortData("n", "The scale factor, it should be large than zero.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The origin where scale happens.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=(System.Double)((Value.Number)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=((Form)(args[3] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).ScaleProfile(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_ScaleSubElement")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Scale a face/edge/curve/vertex of the form, by a specified origin and scale factor.")]
+	public class Revit_Form_ScaleSubElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_ScaleSubElement()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of face/edge/curve/vertex",typeof(object)));
+			InPortData.Add(new PortData("n", "The scale factor, it should be large than zero.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The origin where scale happens.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(System.Double)((Value.Number)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=((Form)(args[3] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).ScaleSubElement(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_RotateProfile")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Rotate a profile of the form, by a specified angle around a given axis.")]
+	public class Revit_Form_RotateProfile : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_RotateProfile()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile.",typeof(object)));
+			InPortData.Add(new PortData("crv", "An unbounded line that represents the axis of rotation.",typeof(object)));
+			InPortData.Add(new PortData("n", "The angle, in radians, by which the element is to be rotated around the specified axis.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
+			var arg2=(System.Double)((Value.Number)args[2]).Item;
+			var arg3=((Form)(args[3] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).RotateProfile(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_RotateSubElement")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Rotate a face/edge/curve/vertex of the form, by a specified angle around a given axis.")]
+	public class Revit_Form_RotateSubElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_RotateSubElement()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of face/edge/curve/vertex",typeof(object)));
+			InPortData.Add(new PortData("crv", "An unbounded line that represents the axis of rotation.",typeof(object)));
+			InPortData.Add(new PortData("n", "The angle, in radians, by which the element is to be rotated around the specified axis.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
+			var arg2=(System.Double)((Value.Number)args[2]).Item;
+			var arg3=((Form)(args[3] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).RotateSubElement(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_MoveProfile")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Move a profile of the form, specified by a reference, and an offset vector.")]
+	public class Revit_Form_MoveProfile : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_MoveProfile()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The vector by which the element is to be moved.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=((Form)(args[2] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).MoveProfile(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_MoveSubElement")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Move a face/edge/curve/vertex of the form, specified by a reference, and an offset vector.")]
+	public class Revit_Form_MoveSubElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_MoveSubElement()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of face/edge/curve/vertex",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The vector by which the element is to be moved.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=((Form)(args[2] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).MoveSubElement(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_DeleteProfile")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Delete a profile of the form.")]
+	public class Revit_Form_DeleteProfile : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_DeleteProfile()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).DeleteProfile(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_DeleteSubElement")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Delete a face/edge/curve/vertex of the form, specified by a reference.")]
+	public class Revit_Form_DeleteSubElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_DeleteSubElement()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of face/edge/curve/vertex",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).DeleteSubElement(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_CanManipulateProfile")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if a profile can be deleted/moved/rotated.")]
+	public class Revit_Form_CanManipulateProfile : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_CanManipulateProfile()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).CanManipulateProfile(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_CanManipulateSubElement")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if a sub element can be deleted/moved/rotated/scaled.")]
+	public class Revit_Form_CanManipulateSubElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_CanManipulateSubElement()
+		{
+			InPortData.Add(new PortData("ref", "The geometry reference of face/edge/curve/vertex",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).CanManipulateSubElement(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_GetCurvesAndEdgesReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Given a point, return all edges and curves that it is lying on.")]
+	public class Revit_Form_GetCurvesAndEdgesReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_GetCurvesAndEdgesReference()
+		{
+			InPortData.Add(new PortData("ref", "The reference of a point.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","Reference array containing all edges and curves that the point is lying on.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).GetCurvesAndEdgesReference(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_GetControlPoints")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Given an edge or a curve or a face, return all control points lying on it (in form of geometry references).")]
+	public class Revit_Form_GetControlPoints : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_GetControlPoints()
+		{
+			InPortData.Add(new PortData("ref", "The reference of an edge or curve or face.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","Reference array containing all control points lying on it.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).GetControlPoints(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsConnectingEdge")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if an edge is a connecting edge on a side face. Connecting edges connect vertices on different profiles.")]
+	public class Revit_Form_IsConnectingEdge : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsConnectingEdge()
+		{
+			InPortData.Add(new PortData("ref", "The reference of the edge to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsConnectingEdge(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsProfileEdge")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if an edge or curve is generated from a profile.")]
+	public class Revit_Form_IsProfileEdge : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsProfileEdge()
+		{
+			InPortData.Add(new PortData("ref", "The reference of the edge or curve to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsProfileEdge(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsAutoCreaseEdge")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if an edge is an auto-crease on a top/bottom cap face.")]
+	public class Revit_Form_IsAutoCreaseEdge : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsAutoCreaseEdge()
+		{
+			InPortData.Add(new PortData("ref", "The reference of the edge to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsAutoCreaseEdge(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsSideFace")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Given a face, tell if it is a side face.")]
+	public class Revit_Form_IsSideFace : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsSideFace()
+		{
+			InPortData.Add(new PortData("ref", "The reference of the  face to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsSideFace(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsEndFace")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Given a face, tell if it is an end cap face.")]
+	public class Revit_Form_IsEndFace : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsEndFace()
+		{
+			InPortData.Add(new PortData("ref", "The reference of the face to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsEndFace(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsBeginningFace")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Given a face, tell if it is a beginning cap face.")]
+	public class Revit_Form_IsBeginningFace : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsBeginningFace()
+		{
+			InPortData.Add(new PortData("ref", "The reference of the  face to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsBeginningFace(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsReferenceOnlyProfile")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if the profile is made by referencing existing geometry in the Revit model.")]
+	public class Revit_Form_IsReferenceOnlyProfile : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsReferenceOnlyProfile()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsReferenceOnlyProfile(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsFaceReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if the pick is the reference to a face of the form.")]
+	public class Revit_Form_IsFaceReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsFaceReference()
+		{
+			InPortData.Add(new PortData("ref", "Reference to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsFaceReference(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsCurveReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if the pick is the reference to a curve of the form.")]
+	public class Revit_Form_IsCurveReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsCurveReference()
+		{
+			InPortData.Add(new PortData("ref", "Reference to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsCurveReference(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsEdgeReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if the pick is the reference to an edge of the form.")]
+	public class Revit_Form_IsEdgeReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsEdgeReference()
+		{
+			InPortData.Add(new PortData("ref", "Reference to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsEdgeReference(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsVertexReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if the pick is the reference to a vertex of the form.")]
+	public class Revit_Form_IsVertexReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsVertexReference()
+		{
+			InPortData.Add(new PortData("ref", "Reference to be checked.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsVertexReference(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_HasOpenGeometry")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if the form has an open geometry.")]
+	public class Revit_Form_HasOpenGeometry : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_HasOpenGeometry()
+		{
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Form)(args[0] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).HasOpenGeometry;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_ConstrainProfiles")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Constrain form profiles using the specified profile as master. This is an advanced version of property \"AreProfilesConstrained\", allowing specify the master profile.")]
+	public class Revit_Form_ConstrainProfiles : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_ConstrainProfiles()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile used as master profile.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).ConstrainProfiles(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_AreProfilesConstrained")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Get/set if the form's profiles are constrained.")]
+	public class Revit_Form_AreProfilesConstrained : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_AreProfilesConstrained()
+		{
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Form)(args[0] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).AreProfilesConstrained;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_IsInXRayMode")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Get/set if the form is in X-Ray mode.")]
+	public class Revit_Form_IsInXRayMode : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_IsInXRayMode()
+		{
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Form)(args[0] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).IsInXRayMode;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_HasOneOrMoreReferenceProfiles")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Tell if the form has any reference profile.")]
+	public class Revit_Form_HasOneOrMoreReferenceProfiles : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_HasOneOrMoreReferenceProfiles()
+		{
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Form)(args[0] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).HasOneOrMoreReferenceProfiles;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_GetPathCurveIndexByCurveReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Given a reference to certain curve in the path, return its index.")]
+	public class Revit_Form_GetPathCurveIndexByCurveReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_GetPathCurveIndexByCurveReference()
+		{
+			InPortData.Add(new PortData("ref", "Reference to the curve in path",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).GetPathCurveIndexByCurveReference(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_get_PathCurveReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The curve reference in the path, specified by curve index.")]
+	public class Revit_Form_get_PathCurveReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_get_PathCurveReference()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the curve in path",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).get_PathCurveReference(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_PathCurveCount")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The number of curves in the form path.")]
+	public class Revit_Form_PathCurveCount : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_PathCurveCount()
+		{
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Form)(args[0] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).PathCurveCount;
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_GetProfileAndCurveLoopIndexFromReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Given a reference to certain curve or edge, get the index of its profile and curve loop respectively.")]
+	public class Revit_Form_GetProfileAndCurveLoopIndexFromReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_GetProfileAndCurveLoopIndexFromReference()
+		{
+			InPortData.Add(new PortData("ref", "Reference to a curve/edge that is part of one profile",typeof(object)));
+			InPortData.Add(new PortData("val", "Profile index for output",typeof(object)));
+			InPortData.Add(new PortData("val", "Curve loop index for output",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(System.Int32)((Value.Container)args[1]).Item;
+			var arg2=(System.Int32)((Value.Container)args[2]).Item;
+			var arg3=((Form)(args[3] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).GetProfileAndCurveLoopIndexFromReference(arg0,out arg1,out arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_get_CurveLoopReferencesOnProfile")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The curve references in certain curve loop, specified by profile index and curve loop index.")]
+	public class Revit_Form_get_CurveLoopReferencesOnProfile : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_get_CurveLoopReferencesOnProfile()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile, should be within 0 and (ProfileCount - 1).",typeof(object)));
+			InPortData.Add(new PortData("i", "Index to specify the curve loop, should be within 0 and (CurveLoopCount - 1).",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=(System.Int32)((Value.Number)args[1]).Item;
+			var arg2=((Form)(args[2] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).get_CurveLoopReferencesOnProfile(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_get_ProfileCurveLoopCount")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The number of curve loops in certain profile, specified by profile index.")]
+	public class Revit_Form_get_ProfileCurveLoopCount : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_get_ProfileCurveLoopCount()
+		{
+			InPortData.Add(new PortData("i", "Index to specify the profile, should be within 0 and (ProfileCount - 1).",typeof(object)));
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Form)(args[1] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).get_ProfileCurveLoopCount(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Form_ProfileCount")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The number of profiles in the form.")]
+	public class Revit_Form_ProfileCount : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Form_ProfileCount()
+		{
+			InPortData.Add(new PortData("frm", "The form.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Form)(args[0] as Value.Container).Item);
+			var result = ((Form)(args[0] as Value.Container).Item).ProfileCount;
 			return Value.NewContainer(result);
 		}
 	}
@@ -890,7 +1824,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit SpaceTag")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new SpaceTag. ")]
+	[NodeDescription("Creates a new SpaceTag.")]
 	public class Revit_SpaceTag : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_SpaceTag()
@@ -913,7 +1847,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Spaces2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a set of new unplaced spaces on a given phase. ")]
+	[NodeDescription("Creates a set of new unplaced spaces on a given phase.")]
 	public class Revit_Spaces2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Spaces2()
@@ -933,7 +1867,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Spaces")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a set of new unplaced spaces on a given phase. ")]
+	[NodeDescription("Creates a set of new unplaced spaces on a given phase.")]
 	public class Revit_Spaces : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Spaces()
@@ -953,7 +1887,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Spaces2_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new spaces on the available plan circuits of a the given level. ")]
+	[NodeDescription("Creates new spaces on the available plan circuits of a the given level.")]
 	public class Revit_Spaces2_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Spaces2_1()
@@ -976,7 +1910,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Spaces_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new spaces on the available plan circuits of a the given level. ")]
+	[NodeDescription("Creates new spaces on the available plan circuits of a the given level.")]
 	public class Revit_Spaces_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Spaces_1()
@@ -1043,7 +1977,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Space_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new unplaced space on a given phase. ")]
+	[NodeDescription("Creates a new unplaced space on a given phase.")]
 	public class Revit_Space_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Space_2()
@@ -1376,7 +2310,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Slab")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a slab within the project with the given horizontal profile using the default floor style.")]
+	[NodeDescription("Creates a slab within the project with the given horizontal profile using the default floor style.")]
 	public class Revit_Slab : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Slab()
@@ -1403,7 +2337,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Tag")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new IndependentTag Element. ")]
+	[NodeDescription("Creates a new IndependentTag Element.")]
 	public class Revit_Tag : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Tag()
@@ -1432,7 +2366,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Opening")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new opening in a roof, floor and ceiling. ")]
+	[NodeDescription("Creates a new opening in a roof, floor and ceiling.")]
 	public class Revit_Opening : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Opening()
@@ -1455,7 +2389,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Opening_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a rectangular opening on a wall. ")]
+	[NodeDescription("Creates a rectangular opening on a wall.")]
 	public class Revit_Opening_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Opening_1()
@@ -1478,7 +2412,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Opening_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new shaft opening between a set of levels. ")]
+	[NodeDescription("Creates a new shaft opening between a set of levels.")]
 	public class Revit_Opening_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Opening_2()
@@ -1501,7 +2435,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Opening_3")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new opening in a beam, brace and column. ")]
+	[NodeDescription("Creates a new opening in a beam, brace and column.")]
 	public class Revit_Opening_3 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Opening_3()
@@ -1524,7 +2458,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit AreaBoundaryConditions")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new Area BoundaryConditions element on a host element. ")]
+	[NodeDescription("Creates a new Area BoundaryConditions element on a host element.")]
 	public class Revit_AreaBoundaryConditions : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_AreaBoundaryConditions()
@@ -1555,7 +2489,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit LineBoundaryConditions")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new Line BoundaryConditions element on a host element. ")]
+	[NodeDescription("Creates a new Line BoundaryConditions element on a host element.")]
 	public class Revit_LineBoundaryConditions : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_LineBoundaryConditions()
@@ -1590,7 +2524,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit AreaBoundaryConditions_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new Area BoundaryConditions element on a reference. ")]
+	[NodeDescription("Creates a new Area BoundaryConditions element on a reference.")]
 	public class Revit_AreaBoundaryConditions_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_AreaBoundaryConditions_1()
@@ -1621,7 +2555,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit LineBoundaryConditions_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new Line BoundaryConditions element on a reference. ")]
+	[NodeDescription("Creates a new Line BoundaryConditions element on a reference.")]
 	public class Revit_LineBoundaryConditions_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_LineBoundaryConditions_1()
@@ -1656,7 +2590,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit PointBoundaryConditions")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new Point BoundaryConditions Element. ")]
+	[NodeDescription("Creates a new Point BoundaryConditions Element.")]
 	public class Revit_PointBoundaryConditions : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_PointBoundaryConditions()
@@ -1699,7 +2633,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit BeamSystem")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new BeamSystem with specified profile curves. ")]
+	[NodeDescription("Creates a new BeamSystem with specified profile curves.")]
 	public class Revit_BeamSystem : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_BeamSystem()
@@ -1724,7 +2658,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit BeamSystem_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new 2D BeamSystem with specified profile curves. ")]
+	[NodeDescription("Creates a new 2D BeamSystem with specified profile curves.")]
 	public class Revit_BeamSystem_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_BeamSystem_1()
@@ -1745,7 +2679,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit BeamSystem_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new BeamSystem with specified profile curves.")]
+	[NodeDescription("Creates a new BeamSystem with specified profile curves.")]
 	public class Revit_BeamSystem_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_BeamSystem_2()
@@ -1770,7 +2704,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit BeamSystem_3")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new BeamSystem with specified profile curves. ")]
+	[NodeDescription("Creates a new BeamSystem with specified profile curves.")]
 	public class Revit_BeamSystem_3 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_BeamSystem_3()
@@ -1791,7 +2725,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit RoomTag")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new RoomTag. ")]
+	[NodeDescription("Creates a new RoomTag.")]
 	public class Revit_RoomTag : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_RoomTag()
@@ -1814,7 +2748,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Rooms2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new unplaced rooms in the given phase. ")]
+	[NodeDescription("Creates new unplaced rooms in the given phase.")]
 	public class Revit_Rooms2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Rooms2()
@@ -1835,7 +2769,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Rooms2_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new rooms in each plan circuit found in the given level in the given phase. ")]
+	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the given phase.")]
 	public class Revit_Rooms2_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Rooms2_1()
@@ -1856,7 +2790,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Rooms2_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new rooms in each plan circuit found in the given level in the last phase. ")]
+	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the last phase.")]
 	public class Revit_Rooms2_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Rooms2_2()
@@ -1875,7 +2809,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Rooms")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new unplaced rooms in the given phase. ")]
+	[NodeDescription("Creates new unplaced rooms in the given phase.")]
 	public class Revit_Rooms : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Rooms()
@@ -1896,7 +2830,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Rooms_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new rooms in each plan circuit found in the given level in the given phase. ")]
+	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the given phase.")]
 	public class Revit_Rooms_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Rooms_1()
@@ -1917,7 +2851,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Rooms_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new rooms in each plan circuit found in the given level in the last phase. ")]
+	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the last phase.")]
 	public class Revit_Rooms_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Rooms_2()
@@ -1936,7 +2870,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Rooms_3")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates new rooms using the specified placement data. ")]
+	[NodeDescription("Creates new rooms using the specified placement data.")]
 	public class Revit_Rooms_3 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Rooms_3()
@@ -1955,7 +2889,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Room")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new room within the confines of a plan circuit, or places an unplaced room within the confines of the plan circuit. ")]
+	[NodeDescription("Creates a new room within the confines of a plan circuit, or places an unplaced room within the confines of the plan circuit.")]
 	public class Revit_Room : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Room()
@@ -1976,7 +2910,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Room_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new unplaced room and with an assigned phase. ")]
+	[NodeDescription("Creates a new unplaced room and with an assigned phase.")]
 	public class Revit_Room_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Room_1()
@@ -1995,7 +2929,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Room_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new room on a level at a specified point. ")]
+	[NodeDescription("Creates a new room on a level at a specified point.")]
 	public class Revit_Room_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Room_2()
@@ -2035,7 +2969,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Grid")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new radial grid line. ")]
+	[NodeDescription("Creates a new radial grid line.")]
 	public class Revit_Grid : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Grid()
@@ -2054,7 +2988,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Grid_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new linear grid line. ")]
+	[NodeDescription("Creates a new linear grid line.")]
 	public class Revit_Grid_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Grid_1()
@@ -2109,7 +3043,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FoundationSlab")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a foundation slab within the project with the given horizontal profile and floor style on the specified level. ")]
+	[NodeDescription("Creates a foundation slab within the project with the given horizontal profile and floor style on the specified level.")]
 	public class Revit_FoundationSlab : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FoundationSlab()
@@ -2136,7 +3070,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Floor")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a floor within the project with the given horizontal profile and floor style on the specified level with the specified normal vector. ")]
+	[NodeDescription("Creates a floor within the project with the given horizontal profile and floor style on the specified level with the specified normal vector.")]
 	public class Revit_Floor : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Floor()
@@ -2163,7 +3097,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Floor_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a floor within the project with the given horizontal profile and floor style on the specified level. ")]
+	[NodeDescription("Creates a floor within the project with the given horizontal profile and floor style on the specified level.")]
 	public class Revit_Floor_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Floor_1()
@@ -2188,7 +3122,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Floor_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a floor within the project with the given horizontal profile using the default floor style.")]
+	[NodeDescription("Creates a floor within the project with the given horizontal profile using the default floor style.")]
 	public class Revit_Floor_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Floor_2()
@@ -2209,7 +3143,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Walls")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates profile walls within the project.")]
+	[NodeDescription("Creates profile walls within the project.")]
 	public class Revit_Walls : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Walls()
@@ -2228,7 +3162,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Walls_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates rectangular walls within the project.")]
+	[NodeDescription("Creates rectangular walls within the project.")]
 	public class Revit_Walls_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Walls_1()
@@ -2247,7 +3181,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Wall")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a non rectangular profile wall within the project using the specified wall type and normal vector.")]
+	[NodeDescription("Creates a non rectangular profile wall within the project using the specified wall type and normal vector.")]
 	public class Revit_Wall : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Wall()
@@ -2274,7 +3208,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Wall_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a non rectangular profile wall within the project using the specified wall type.")]
+	[NodeDescription("Creates a non rectangular profile wall within the project using the specified wall type.")]
 	public class Revit_Wall_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Wall_1()
@@ -2299,7 +3233,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Wall_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a non rectangular profile wall within the project using the default wall type.")]
+	[NodeDescription("Creates a non rectangular profile wall within the project using the default wall type.")]
 	public class Revit_Wall_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Wall_2()
@@ -2320,7 +3254,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Wall_3")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new rectangular profile wall within the project using the specified wall type, height, and offset.")]
+	[NodeDescription("Creates a new rectangular profile wall within the project using the specified wall type, height, and offset.")]
 	public class Revit_Wall_3 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Wall_3()
@@ -2351,7 +3285,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Wall_4")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new rectangular profile wall within the project using the default wall style.")]
+	[NodeDescription("Creates a new rectangular profile wall within the project using the default wall style.")]
 	public class Revit_Wall_4 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Wall_4()
@@ -2374,7 +3308,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit SpotElevation")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Generate a new spot elevation object within the project.")]
+	[NodeDescription("Generate a new spot elevation object within the project.")]
 	public class Revit_SpotElevation : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_SpotElevation()
@@ -2405,7 +3339,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit SpotCoordinate")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Generate a new spot coordinate object within the project.")]
+	[NodeDescription("Generate a new spot coordinate object within the project.")]
 	public class Revit_SpotCoordinate : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_SpotCoordinate()
@@ -3553,7 +4487,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit RadialDimension")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Generate a new radial dimension object using a specified dimension type.")]
+	[NodeDescription("Generate a new radial dimension object using a specified dimension type.")]
 	public class Revit_RadialDimension : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_RadialDimension()
@@ -3578,7 +4512,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit DiameterDimension")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new diameter dimension object using the default dimension type.")]
+	[NodeDescription("Creates a new diameter dimension object using the default dimension type.")]
 	public class Revit_DiameterDimension : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_DiameterDimension()
@@ -3601,7 +4535,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit RadialDimension_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new radial dimension object using the default dimension type.")]
+	[NodeDescription("Creates a new radial dimension object using the default dimension type.")]
 	public class Revit_RadialDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_RadialDimension_1()
@@ -3624,7 +4558,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ArcLengthDimension")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new arc length dimension object using the specified dimension type.")]
+	[NodeDescription("Creates a new arc length dimension object using the specified dimension type.")]
 	public class Revit_ArcLengthDimension : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ArcLengthDimension()
@@ -3653,7 +4587,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ArcLengthDimension_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new arc length dimension object using the default dimension type.")]
+	[NodeDescription("Creates a new arc length dimension object using the default dimension type.")]
 	public class Revit_ArcLengthDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ArcLengthDimension_1()
@@ -3680,7 +4614,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit AngularDimension")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new angular dimension object using the specified dimension type.")]
+	[NodeDescription("Creates a new angular dimension object using the specified dimension type.")]
 	public class Revit_AngularDimension : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_AngularDimension()
@@ -3707,7 +4641,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit AngularDimension_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new angular dimension object using the default dimension type.")]
+	[NodeDescription("Creates a new angular dimension object using the default dimension type.")]
 	public class Revit_AngularDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_AngularDimension_1()
@@ -3732,7 +4666,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit LinearDimension")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new linear dimension object using the specified dimension type.")]
+	[NodeDescription("Creates a new linear dimension object using the specified dimension type.")]
 	public class Revit_LinearDimension : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_LinearDimension()
@@ -3757,7 +4691,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit LinearDimension_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Generate a new linear dimension object using the default dimension type.")]
+	[NodeDescription("Generate a new linear dimension object using the default dimension type.")]
 	public class Revit_LinearDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_LinearDimension_1()
@@ -4190,7 +5124,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit TextNotes")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates TextNotes with the specified data. ")]
+	[NodeDescription("Creates TextNotes with the specified data.")]
 	public class Revit_TextNotes : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_TextNotes()
@@ -4217,7 +5151,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit TextNote")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new text note with a single leader. ")]
+	[NodeDescription("Creates a new text note with a single leader.")]
 	public class Revit_TextNote : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_TextNote()
@@ -4264,7 +5198,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit TextNote_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new TextNote object without a leader. ")]
+	[NodeDescription("Creates a new TextNote object without a leader.")]
 	public class Revit_TextNote_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_TextNote_1()
@@ -4303,7 +5237,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit SketchPlane")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new sketch plane on a reference to existing planar geometry. ")]
+	[NodeDescription("Creates a new sketch plane on a reference to existing planar geometry.")]
 	public class Revit_SketchPlane : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_SketchPlane()
@@ -4330,7 +5264,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit SketchPlane_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new sketch plane on a planar face of existing geometry. ")]
+	[NodeDescription("Creates a new sketch plane on a planar face of existing geometry.")]
 	public class Revit_SketchPlane_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_SketchPlane_1()
@@ -4357,7 +5291,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit SketchPlane_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new sketch plane from an arbitrary geometric plane. ")]
+	[NodeDescription("Creates a new sketch plane from an arbitrary geometric plane.")]
 	public class Revit_SketchPlane_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_SketchPlane_2()
@@ -4384,7 +5318,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ReferencePlane2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new instance of ReferencePlane. ")]
+	[NodeDescription("Creates a new instance of ReferencePlane.")]
 	public class Revit_ReferencePlane2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ReferencePlane2()
@@ -4417,7 +5351,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ReferencePlane")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new instance of ReferencePlane. ")]
+	[NodeDescription("Creates a new instance of ReferencePlane.")]
 	public class Revit_ReferencePlane : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ReferencePlane()
@@ -4450,7 +5384,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ViewPlan")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a plan view based on the specified level. ")]
+	[NodeDescription("Creates a plan view based on the specified level.")]
 	public class Revit_ViewPlan : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ViewPlan()
@@ -4481,7 +5415,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Level")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new level. ")]
+	[NodeDescription("Creates a new level.")]
 	public class Revit_Level : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Level()
@@ -4508,7 +5442,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ModelCurveArray")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates an array of new model line elements. ")]
+	[NodeDescription("Creates an array of new model line elements.")]
 	public class Revit_ModelCurveArray : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ModelCurveArray()
@@ -4536,7 +5470,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ModelCurve")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new model line element. ")]
+	[NodeDescription("Creates a new model line element.")]
 	public class Revit_ModelCurve : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ModelCurve()
@@ -4619,7 +5553,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstances2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates Family instances within the document.")]
+	[NodeDescription("Creates Family instances within the document.")]
 	public class Revit_FamilyInstances2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstances2()
@@ -4646,7 +5580,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstances")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates Family instances within the document.")]
+	[NodeDescription("Creates Family instances within the document.")]
 	public class Revit_FamilyInstances : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstances()
@@ -4962,7 +5896,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Dimension")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new linear dimension object using the specified dimension style.")]
+	[NodeDescription("Creates a new linear dimension object using the specified dimension style.")]
 	public class Revit_Dimension : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Dimension()
@@ -4995,7 +5929,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Dimension_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new linear dimension object using the default dimension style.")]
+	[NodeDescription("Creates a new linear dimension object using the default dimension style.")]
 	public class Revit_Dimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Dimension_1()
@@ -5026,7 +5960,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit DetailCurveArray")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates an array of new detail curve elements. ")]
+	[NodeDescription("Creates an array of new detail curve elements.")]
 	public class Revit_DetailCurveArray : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_DetailCurveArray()
@@ -5055,7 +5989,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit DetailCurve")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new detail curve element. ")]
+	[NodeDescription("Creates a new detail curve element.")]
 	public class Revit_DetailCurve : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_DetailCurve()
@@ -5337,7 +6271,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit TextNoteCreationData")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewTextNote() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewTextNote() for batch creation.")]
 	public class Revit_TextNoteCreationData : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_TextNoteCreationData()
@@ -5376,7 +6310,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit TextNoteCreationData_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewTextNote()  for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewTextNote()  for batch creation.")]
 	public class Revit_TextNoteCreationData_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_TextNoteCreationData_1()
@@ -5407,7 +6341,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ProfiledWallCreationData")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class Revit_ProfiledWallCreationData : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ProfiledWallCreationData()
@@ -5434,7 +6368,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ProfiledWallCreationData_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class Revit_ProfiledWallCreationData_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ProfiledWallCreationData_1()
@@ -5459,7 +6393,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ProfiledWallCreationData_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class Revit_ProfiledWallCreationData_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ProfiledWallCreationData_2()
@@ -5480,7 +6414,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit RectangularWallCreationData")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class Revit_RectangularWallCreationData : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_RectangularWallCreationData()
@@ -5503,7 +6437,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit RectangularWallCreationData_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class Revit_RectangularWallCreationData_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_RectangularWallCreationData_1()
@@ -5534,7 +6468,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit RoomCreationData")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewRoom() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewRoom() for batch creation.")]
 	public class Revit_RoomCreationData : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_RoomCreationData()
@@ -5555,7 +6489,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstanceCreationData")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class Revit_FamilyInstanceCreationData : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstanceCreationData()
@@ -5578,7 +6512,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstanceCreationData_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class Revit_FamilyInstanceCreationData_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstanceCreationData_1()
@@ -5603,7 +6537,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstanceCreationData_2")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class Revit_FamilyInstanceCreationData_2 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstanceCreationData_2()
@@ -5630,7 +6564,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstanceCreationData_3")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class Revit_FamilyInstanceCreationData_3 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstanceCreationData_3()
@@ -5657,7 +6591,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstanceCreationData_4")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class Revit_FamilyInstanceCreationData_4 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstanceCreationData_4()
@@ -5682,7 +6616,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstanceCreationData_5")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class Revit_FamilyInstanceCreationData_5 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstanceCreationData_5()
@@ -5707,7 +6641,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstanceCreationData_6")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class Revit_FamilyInstanceCreationData_6 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstanceCreationData_6()
@@ -5732,7 +6666,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit FamilyInstanceCreationData_7")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation. ")]
+	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class Revit_FamilyInstanceCreationData_7 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_FamilyInstanceCreationData_7()
@@ -6483,7 +7417,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Plane")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Creates a new geometric plane from a loop of planar curves. ")]
+	[NodeDescription("Creates a new geometric plane from a loop of planar curves.")]
 	public class Revit_Plane : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Plane()
@@ -6768,7 +7702,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit MaterialSet")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription(" Create a new instance of MaterialSet. ")]
+	[NodeDescription("Create a new instance of MaterialSet.")]
 	public class Revit_MaterialSet : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_MaterialSet()
