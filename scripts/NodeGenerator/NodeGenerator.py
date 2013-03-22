@@ -116,31 +116,36 @@ def write_node_attributes(node_name, summary, f):
 		'\t[NodeDescription("' + summary + '")]\n']
 	f.writelines(node_attributes)
 
-def write_node_constructor(node_name, method_params, param_descriptions, summary, f, required_types):
+def write_node_constructor(node_name, method_params, param_descriptions, summary, f, required_types, isCurveMember, isFaceMember):
 	f.write('\t\tpublic Revit_' + node_name + '()\n')
 	f.write('\t\t{\n')
 
 	i=0
 	for param_description in param_descriptions:
 		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
-		f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
-
-		if method_params[i] not in required_types and 'Autodesk.Revit.DB' in method_params[i]:
-			required_types.append(method_params[i])
-
+		if method_params.count == param_descriptions.count:
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
 		i += 1
 
-	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary+'\",typeof(object)));\n')
+	# if it's a curve or surface method or parameter that we're after
+	# pass in the curve or surface as an input
+	if isCurveMember:
+			f.write('\t\t\tInPortData.Add(new PortData(\"crv\", \"The curve.\",typeof(object)));\n')
+	elif isFaceMember:
+			f.write('\t\t\tInPortData.Add(new PortData(\"f\", \"The face.\",typeof(object)));\n')
+
+	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
 	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 	f.write('\t\t}\n')
 
-def write_node_evaluate(method_call_prefix, methodCall, method_params, f):
+def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMember, isProperty, isCurveMember, isFaceMember, returns_void):
 	f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
 	f.write('\t\t{\n')
 
 	# for each incoming arg, cast it to the matching param
 	i = 0
 	argList = []
+
 	for param in method_params:
 		if conversion_method(param) !='':
 			f.write('\t\t\tvar arg' + str(i) + '=' + conversion_method(param) + '(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
@@ -152,26 +157,41 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f):
 		else:
 			argList.append('arg' + str(i))
 		i+=1
-	paramsStr = ",".join(argList)
 
+	if isCurveMember:
+		f.write('\t\t\tvar arg' + str(i) + '=((Curve)(args[' + str(i) +'] as Value.Container).Item);\n')
+	elif isFaceMember:
+		f.write('\t\t\tvar arg' + str(i) + '=((Face)(args[' + str(i) +'] as Value.Container).Item);\n')
+
+	if isMember or isProperty and len(method_params) > 0:
+		paramsStr = '(' +  ",".join(argList) + ")"
+	else:
+		paramsStr = ''
+
+	# logic for testing if we're in a family document
 	if method_call_prefix == 'dynRevitSettings.Doc.Document.':
 		f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
 		f.write('\t\t\t{\n')
-		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall +  '(' + paramsStr + ');\n')
+		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall + paramsStr + ';\n')
 		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
 		f.write('\t\t\t}\n')
 		f.write('\t\t\telse\n')
 		f.write('\t\t\t{\n')
-		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall +  '(' + paramsStr + ');\n')
+		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall + paramsStr + ';\n')
 		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
 		f.write('\t\t\t}\n')
 	else:
-		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall +  '(' + paramsStr + ');\n')
+		# if we return void, pass through the last argument,
+		# which will be the object itself
+		if returns_void:
+			f.write('\t\t\tvar result = ' + 'args[' + str(i) +'];\n')
+		else:
+			f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
 		f.write('\t\t\treturn Value.NewContainer(result);\n')
 
 
 	f.write('\t\t}\n')
-	
+
 wrapperPath = './DynamoRevitNodes.cs'
 # create a new text file to hold our wrapped classes
 try:
@@ -210,11 +230,17 @@ f.writelines(using)
 f.write('namespace Dynamo.Nodes\n')
 f.write('{\n')
 
+cureNameSpaces = []
 for member in root.iter('members'):
 	node_name_counter = 0
 	for member_data in member.findall('member'):
 
 		member_name = member_data.get('name')
+
+		isCurveMember = False
+		isFaceMember = False
+		isMethod = False
+		isProperty = False
 
 		#Application.Create
 		#Document.Create
@@ -228,37 +254,72 @@ for member in root.iter('members'):
 			method_call_prefix = 'dynRevitSettings.Doc.Document.Create.'
 		elif "Autodesk.Revit.Creation.ItemFactoryBase" in member_name:
 			method_call_prefix = 'dynRevitSettings.Doc.Document.'
+		elif "Autodesk.Revit.DB.Curve." in member_name:
+			method_call_prefix = '((Curve)(args[0] as Value.Container).Item).'
+			isCurveMember = True
+		elif "Autodesk.Revit.DB.Face." in member_name:
+			method_call_prefix = '((Face)(args[0] as Value.Container).Item).'
+			isFaceMember = True
 		else:
 			continue
 
-		summary = member_data.find('summary').text.replace('\n','')
+		try:
+			summary = member_data.find('summary').text.replace('\n','')
+		except:
+			summary = ''
+
+		try:
+			return_summary = member_data.find('returns').text.replace('\n','')
+		except:
+			return_summary = ''
+
 		paramDescriptions = member_data.findall('param')
 
 		# we start with something like M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
 		methodDefinition = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
 
 		#print member_name
+		conditions = [isCurveMember, isFaceMember]
 		if not "New" in methodDefinition:
-			continue
+			if not any(conditions):
+				continue
 
-		# take something like M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
-		# if there is a parenthesis, we have parameters
-		if "(" in methodDefinition:
-			# print methodDefinition
-			methodName = member_name.split('.')[4][3:].split('(')[0]	#Point
-			methodCall = member_name.split('.')[4].split('(')[0]		#NewPoint
-			methodParams = member_name.split('(')[1][:-1].split(',')	#Autodesk.Revit.DB.XYZ
-			fullMethodCall = member_name.split(':')[1].split('(')[0]	#Autodesk.Revit.Creation.Application.NewPoint
+		if 'P:' in member_name:
+			isProperty = True
+		elif 'M:' in member_name:
+			isMethod = True
 		else:
-			# print methodDefinition
-			methodName = member_name.split('.')[4][3:]	#Point
-			methodCall = member_name.split('.')[4]		#NewPoint
-			methodParams = []							#Autodesk.Revit.DB.XYZ
-			fullMethodCall = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint
+			isMethod = True
+
+		# EXAMPLES:
+		# M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ) -> parameters
+		# M:Autodesk.Revit.DB.Curve.MakeUnbound -> parameterless
+		if '(' in methodDefinition:
+			methodCall = methodDefinition.split('(')[0].split('.')[-1]  	#NewPoint
+			if isProperty:
+				# the Revit API lists some properties which can not be returned
+				# without the get_ syntax. the API documentation flags these as properties
+				# but with parameters so we need to append the get_ AND later send the parameters
+				methodCall = 'get_' + methodDefinition.split('(')[0].split('.')[-1]
+			methodParams = methodDefinition.split('(')[1][:-1].split(',')	#Autodesk.Revit.DB.XYZ
+		else:
+			methodCall = methodDefinition.split('.')[-1]	#NewPoint
+			methodParams = []		#NewPoint
+
+		# print methodCall
+		if 'New' in methodCall:
+			methodName = methodCall[3:]	#Point
+		else:
+			methodName = methodCall
 
 		# if the class name already exists
 		# append an integer to make it unique
+		if isCurveMember:
+			methodName = 'Curve_'+methodName
+		elif isFaceMember:
+			methodName = 'Face_'+methodName
 		methodNameStub = methodName
+
 		while methodName in node_names:
 			node_name_counter += 1
 			methodName = methodNameStub + '_' + str(node_name_counter)
@@ -274,10 +335,10 @@ for member in root.iter('members'):
 		f.write('\t{\n')
 
 		#CONSTRUCTOR
-		write_node_constructor(methodName, methodParams, paramDescriptions, summary,f, required_types)
+		write_node_constructor(methodName, methodParams, paramDescriptions, return_summary,f, required_types, isCurveMember, isFaceMember)
 
 		#EVALUATE
-		write_node_evaluate(method_call_prefix, methodCall, methodParams, f)
+		write_node_evaluate(method_call_prefix, methodCall, methodParams, f, isMethod, isProperty, isCurveMember, isFaceMember, return_summary == '')
 		
 		f.write('\t}\n')
 
