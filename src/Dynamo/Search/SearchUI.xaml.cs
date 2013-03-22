@@ -22,13 +22,13 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class dynSearchUI : UserControl
     {
-        public dynSearchController Controller;
+        public SearchController Controller;
         public TextBox SearchTextBox;
         public ListBox ResultList;
         
         public ObservableCollection<dynNodeUI> VisibleNodes { get { return Controller.VisibleNodes; } }
 
-        public dynSearchUI( dynSearchController controller )
+        public dynSearchUI( SearchController controller )
         {
             Controller = controller;
 
