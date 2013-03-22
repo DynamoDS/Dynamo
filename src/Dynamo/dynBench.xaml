@@ -110,6 +110,10 @@
         <Separator />
         <MenuItem Header="_Exit" Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"  Name="exit" InputGestureText="Alt+F4"/>
       </MenuItem>
+      <MenuItem Header="_Edit" Name="editMenu">
+        <MenuItem Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"  Name="copy" InputGestureText="Ctrl+C"/>
+        <MenuItem Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
+      </MenuItem>
       <MenuItem Header="_View" Name="viewMenu">
         <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
           <MenuItem.Icon>
