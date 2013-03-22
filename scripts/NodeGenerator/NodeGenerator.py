@@ -133,6 +133,8 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 			f.write('\t\t\tInPortData.Add(new PortData(\"crv\", \"The curve.\",typeof(object)));\n')
 	elif isFaceMember:
 			f.write('\t\t\tInPortData.Add(new PortData(\"f\", \"The face.\",typeof(object)));\n')
+	elif isSolidMember:
+			f.write('\t\t\tInPortData.Add(new PortData(\"s\", \"The solid.\",typeof(object)));\n')
 
 	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
 	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')

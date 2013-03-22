@@ -20,6 +20,7 @@ namespace Dynamo.Nodes
 	{
 		public Revit_Solid_ComputeCentroid()
 		{
+			InPortData.Add(new PortData("s", "The solid.",typeof(object)));
 			OutPortData.Add(new PortData("out","The XYZ point of the Centroid of this solid.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
@@ -37,6 +38,7 @@ namespace Dynamo.Nodes
 	{
 		public Revit_Solid_Volume()
 		{
+			InPortData.Add(new PortData("s", "The solid.",typeof(object)));
 			OutPortData.Add(new PortData("out","The real number equal to the signed volume of this solid.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
@@ -54,6 +56,7 @@ namespace Dynamo.Nodes
 	{
 		public Revit_Solid_SurfaceArea()
 		{
+			InPortData.Add(new PortData("s", "The solid.",typeof(object)));
 			OutPortData.Add(new PortData("out","The real number equal to the total area of this solid.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
@@ -71,6 +74,7 @@ namespace Dynamo.Nodes
 	{
 		public Revit_Solid_Faces()
 		{
+			InPortData.Add(new PortData("s", "The solid.",typeof(object)));
 			OutPortData.Add(new PortData("out","",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
@@ -88,6 +92,7 @@ namespace Dynamo.Nodes
 	{
 		public Revit_Solid_Edges()
 		{
+			InPortData.Add(new PortData("s", "The solid.",typeof(object)));
 			OutPortData.Add(new PortData("out","",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
