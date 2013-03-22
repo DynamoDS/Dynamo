@@ -744,7 +744,30 @@ namespace Dynamo.Commands
                 node.NodeUI.GUID = (Guid)data["guid"];
             }
 
-            Point dropPt = new Point((double)data["x"] - el.Width / 2.0, (double)data["y"] - el.Height / 2.0);
+            // by default place node at center
+            var x = dynSettings.Bench.outerCanvas.ActualWidth/2.0;
+            var y = dynSettings.Bench.outerCanvas.ActualHeight/2.0;
+            var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
+               
+            if ( data.ContainsKey("x") )
+                x = (double) data["x"];
+
+            if ( data.ContainsKey("y") )
+                y = (double) data["y"];
+                
+            Point dropPt = new Point(x, y);
+
+            // Transform dropPt from outerCanvas space into zoomCanvas space
+            if ( transformFromOuterCanvas )
+            {
+                var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
+                dropPt = a.Transform(dropPt);
+            }
+
+            // center the node at the drop point
+            dropPt.X -= (el.Width / 2.0);
+            dropPt.Y -= (el.Height / 2.0);
+
             Canvas.SetLeft(el, dropPt.X);
             Canvas.SetTop(el, dropPt.Y);
 

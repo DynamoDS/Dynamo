@@ -101,25 +101,16 @@ namespace Dynamo.Nodes
 
             var selectedIndex = View.SelectedIndex();
 
-            // none of the elems are selected, return the first one
+            // none of the elems are selected, return
             if (selectedIndex == -1)
-            {
-                DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
-                {
-                    {"name", visibleNodes[0].NickName},
-                    {"x", Bench.outerCanvas.ActualWidth/2.0},
-                    {"y", Bench.outerCanvas.ActualHeight/2.0}
-                });
-            }
-            else
-            {
-                DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+                return;
+
+            DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {
                     {"name", visibleNodes[selectedIndex].NickName},
-                    {"x", Bench.outerCanvas.ActualWidth/2.0},
-                    {"y", Bench.outerCanvas.ActualHeight/2.0}
+                    {"transformFromOuterCanvasCoordinates", true}
                 });
-            }
+
         }
 
         public void Add(Type type, string name)

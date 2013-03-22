@@ -453,6 +453,8 @@ namespace Dynamo.Controls
             Log(e.StackTrace);
         }
 
+        
+
         internal void BeginDragElement(dynNodeUI nodeUI, string name, Point eleOffset)
         {
             if (this.UILocked)
@@ -461,6 +463,9 @@ namespace Dynamo.Controls
             draggedElementMenuItem = nodeUI;
 
             var pos = Mouse.GetPosition(overlayCanvas);
+
+            
+
 
             double x = pos.X;
             double y = pos.Y;
@@ -496,6 +501,8 @@ namespace Dynamo.Controls
 
             this.overlayCanvas.IsHitTestVisible = true;
         }
+
+
 
         //private void Open_Click(object sender, RoutedEventArgs e)
         //{
