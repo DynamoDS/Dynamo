@@ -123,7 +123,7 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 	i=0
 	for param_description in param_descriptions:
 		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
-		if method_params.count == param_descriptions.count:
+		if len(method_params)-1 >= i:
 			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
 		i += 1
 
@@ -138,7 +138,7 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 	f.write('\t\t}\n')
 
-def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMember, isProperty, isCurveMember, isFaceMember, returns_void):
+def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMethod, isProperty, isCurveMember, isFaceMember, returns_void):
 	f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
 	f.write('\t\t{\n')
 
@@ -163,7 +163,7 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMemb
 	elif isFaceMember:
 		f.write('\t\t\tvar arg' + str(i) + '=((Face)(args[' + str(i) +'] as Value.Container).Item);\n')
 
-	if isMember or isProperty and len(method_params) > 0:
+	if isMethod or isProperty and len(method_params) > 0:
 		paramsStr = '(' +  ",".join(argList) + ")"
 	else:
 		paramsStr = ''
@@ -183,7 +183,7 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMemb
 	else:
 		# if we return void, pass through the last argument,
 		# which will be the object itself
-		if returns_void:
+		if returns_void and isFaceMember or isCurveMember:
 			f.write('\t\t\tvar result = ' + 'args[' + str(i) +'];\n')
 		else:
 			f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
