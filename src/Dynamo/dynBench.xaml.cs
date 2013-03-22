@@ -222,6 +222,7 @@ namespace Dynamo.Controls
                 xLine.StrokeThickness = 1;
                 WorkBench.Children.Add(xLine);
                 Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
+                xLine.IsHitTestVisible = false;
             }
             for (double i = 0.0; i < WorkBench.Height; i += gridSpacing)
             {
@@ -236,6 +237,7 @@ namespace Dynamo.Controls
                 yLine.StrokeThickness = 1;
                 WorkBench.Children.Add(yLine);
                 Dynamo.Controls.DragCanvas.SetCanBeDragged(yLine, false);
+                yLine.IsHitTestVisible = false;
             }
         }
 
