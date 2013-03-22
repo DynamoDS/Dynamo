@@ -57,6 +57,9 @@ limitations under the License.
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Greg">
+      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    </Reference>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
       <Private>True</Private>
@@ -117,10 +120,15 @@ limitations under the License.
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Search\dynSearchUI.xaml.cs">
-      <DependentUpon>dynSearchUI.xaml</DependentUpon>
+    <Compile Include="PackageManager\PackageManagerCommands.cs" />
+    <Compile Include="PackageManager\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Search\dynSearchController.cs" />
+    <Compile Include="PackageManager\PackageManager.cs" />
+    <Compile Include="Search\SearchUI.xaml.cs">
+      <DependentUpon>SearchUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Search\SearchController.cs" />
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
@@ -207,7 +215,11 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Search\dynSearchUI.xaml">
+    <Page Include="PackageManager\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Search\SearchUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -218,6 +230,10 @@ limitations under the License.
     <Page Include="Nodes\Watch\WatchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\DynamoModern.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +282,9 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\padlock-closed-black24x24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

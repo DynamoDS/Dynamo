@@ -22,7 +22,8 @@ using Dynamo.Connectors;
 
 namespace Dynamo.Commands
 {
-    public static class DynamoCommands
+
+    public static partial class DynamoCommands
     {
 
         private static GoToSourceCodeCommand goToSourceCodeCmd;

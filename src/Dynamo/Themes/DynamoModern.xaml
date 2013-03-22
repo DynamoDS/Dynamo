@@ -1,88 +1,31 @@
-﻿<UserControl x:Class="Dynamo.Nodes.dynSearchUI"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:interop="clr-namespace:System.Windows.Interop;assembly=PresentationCore"
-             mc:Ignorable="d" 
-             Visibility="Collapsed" d:DesignWidth="447" x:Name="SearchControl">
-    
-  
-  <Grid Background="Black" MaxHeight="342">
-
-    <StackPanel x:Name="RSearchContainerStackPanel"  Margin="0">
-      
-      <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal">
-
-        <TextBox Name="RSearchBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="18" Padding="10,15,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchBox_OnTextChanged" VerticalAlignment="Stretch" Width="355" Text="" />
-
-        <Button Name="RSearchIcon" Margin="0" Width="90" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
-                      Style="{DynamicResource ResourceKey=SSearchButton}" Tag="..\Images\search.png" />
-
-        <!--<Button Name="RSearchBoxIncludeOnline" Margin="0" Width="90" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
-                      Style="{DynamicResource ResourceKey=SSearchButton}" Tag="..\Images\search.png" />-->
-
-      </StackPanel>
-
-      <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" 
-                      VerticalScrollBarVisibility="Visible" MaxHeight="300" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
-
-          <ListBox Name="RSearchResultsListBox" ItemsSource="{Binding Path=VisibleNodes, ElementName=SearchControl}" 
-                   BorderThickness="0" Padding="0" Background="Black">
-            
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                
-                <Grid VerticalAlignment="Stretch"
-                      Width="{Binding ElementName=RSearchResultsListBox,Path=ActualWidth}" 
-                      HorizontalAlignment="Left" Background="Black">
-
-                  <Line X1="0" X2="{Binding ElementName=RSearchResultsListBox,Path=ActualWidth}" 
-                            Stroke="#111" Y1="0" Y2="0" VerticalAlignment="Top"/>
-                  <TextBlock FontSize="24" Text="{Binding Path=NickName}" Foreground="AliceBlue" Padding="10,5,0,0"/>
-                  <TextBlock FontSize="12" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 39, 0, 10"/>
-                  <Line X1="0" X2="{Binding ElementName=RSearchResultsListBox,Path=ActualWidth}" 
-                            Stroke="DimGray" Y1="0" Y2="0" VerticalAlignment="Bottom"/>
-                  
-                </Grid>
-                
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-            
-          </ListBox>          
-        </ScrollViewer>
-      </StackPanel>
-  </Grid>
-  
-  
-  <UserControl.Resources>
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="SSearchOnlineToggleButton" TargetType="{x:Type ToggleButton}">
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate>
-            
+
             <Grid x:Name="container" Background="Transparent">
               <Grid x:Name="inner" Background="#333">
 
                 <Image Width="24" Height="24" x:Name="display" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}"></Image>
-                
+
               </Grid>
             </Grid>
-            
+
             <ControlTemplate.Triggers>
-              
+
               <Trigger Property="ToggleButton.IsChecked" Value="True">
                 <Setter TargetName="inner" Property="Background" Value="LightBlue"/>
               </Trigger>
-              
+
               <Trigger Property="ToggleButton.IsMouseOver" Value="true">
                 <Setter TargetName="inner" Property = "Background" Value="LightBlue"/>
               </Trigger>
-              
+
             </ControlTemplate.Triggers>
-            
+
           </ControlTemplate>
         </Setter.Value>
       </Setter>
@@ -195,8 +138,5 @@
       </Setter>
     </Style>
 
-  </UserControl.Resources>
-  
-</UserControl>
-  
-  
+
+</ResourceDictionary>
