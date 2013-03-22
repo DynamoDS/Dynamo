@@ -31,8 +31,8 @@ namespace Dynamo
 
     public class DynamoController:INotifyPropertyChanged
     {
-        private dynSearchController _searchController;
-        public dynSearchController SearchController { get { return _searchController; } }
+        private SearchController _searchController;
+        public SearchController SearchController { get { return _searchController; } }
 
         public event PropertyChangedEventHandler PropertyChanged;
         /// <summary>
@@ -141,7 +141,7 @@ namespace Dynamo
         {
             Bench = new dynBench(this);
 
-            _searchController = new dynSearchController(Bench);
+            _searchController = new SearchController(Bench);
 
             homeSpace = CurrentSpace = new HomeWorkspace();
 

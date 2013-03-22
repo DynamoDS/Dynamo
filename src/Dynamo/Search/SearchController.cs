@@ -28,7 +28,7 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Nodes
 {
-    public class dynSearchController
+    public class SearchController
     {
 
         #region Properties
@@ -51,7 +51,7 @@ namespace Dynamo.Nodes
         #endregion
 
 
-        public dynSearchController( dynBench bench )
+        public SearchController( dynBench bench )
         {
             this.NumSearchResults = 10;
             this._bench = bench;
