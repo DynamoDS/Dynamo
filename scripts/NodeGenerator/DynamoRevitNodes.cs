@@ -13,12 +13,12 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
-	[NodeName("Revit ComputeCentroid")]
+	[NodeName("Revit Solid_ComputeCentroid")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Centroid of this solid.")]
-	public class Revit_ComputeCentroid : dynRevitTransactionNodeWithOneOutput
+	public class Revit_Solid_ComputeCentroid : dynRevitTransactionNodeWithOneOutput
 	{
-		public Revit_ComputeCentroid()
+		public Revit_Solid_ComputeCentroid()
 		{
 			OutPortData.Add(new PortData("out","The XYZ point of the Centroid of this solid.",typeof(object)));
 			NodeUI.RegisterAllPorts();
@@ -30,12 +30,12 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit Volume")]
+	[NodeName("Revit Solid_Volume")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the signed volume of this solid.")]
-	public class Revit_Volume : dynRevitTransactionNodeWithOneOutput
+	public class Revit_Solid_Volume : dynRevitTransactionNodeWithOneOutput
 	{
-		public Revit_Volume()
+		public Revit_Solid_Volume()
 		{
 			OutPortData.Add(new PortData("out","The real number equal to the signed volume of this solid.",typeof(object)));
 			NodeUI.RegisterAllPorts();
@@ -47,12 +47,12 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit SurfaceArea")]
+	[NodeName("Revit Solid_SurfaceArea")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the total surface area of this solid.")]
-	public class Revit_SurfaceArea : dynRevitTransactionNodeWithOneOutput
+	public class Revit_Solid_SurfaceArea : dynRevitTransactionNodeWithOneOutput
 	{
-		public Revit_SurfaceArea()
+		public Revit_Solid_SurfaceArea()
 		{
 			OutPortData.Add(new PortData("out","The real number equal to the total area of this solid.",typeof(object)));
 			NodeUI.RegisterAllPorts();
@@ -64,12 +64,12 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit Faces")]
+	[NodeName("Revit Solid_Faces")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The faces that belong to the solid.")]
-	public class Revit_Faces : dynRevitTransactionNodeWithOneOutput
+	public class Revit_Solid_Faces : dynRevitTransactionNodeWithOneOutput
 	{
-		public Revit_Faces()
+		public Revit_Solid_Faces()
 		{
 			OutPortData.Add(new PortData("out","",typeof(object)));
 			NodeUI.RegisterAllPorts();
@@ -81,12 +81,12 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit Edges")]
+	[NodeName("Revit Solid_Edges")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The edges that belong to the solid.")]
-	public class Revit_Edges : dynRevitTransactionNodeWithOneOutput
+	public class Revit_Solid_Edges : dynRevitTransactionNodeWithOneOutput
 	{
-		public Revit_Edges()
+		public Revit_Solid_Edges()
 		{
 			OutPortData.Add(new PortData("out","",typeof(object)));
 			NodeUI.RegisterAllPorts();

@@ -323,6 +323,8 @@ for member in root.iter('members'):
 			methodName = 'Curve_'+methodName
 		elif isFaceMember:
 			methodName = 'Face_'+methodName
+		elif isSolidMember:
+			methodName = 'Solid_'+methodName
 		methodNameStub = methodName
 
 		while methodName in node_names:
