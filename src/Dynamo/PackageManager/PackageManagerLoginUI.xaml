@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Nodes.PackageManager.OxygenLogin"
+﻿<UserControl x:Class="Dynamo.PackageManager.PackageManagerLoginUI"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,7 +11,7 @@
         <StackPanel Name="LoginContainerStackPanel" Orientation="Horizontal" Height="48">
 
           <TextBlock Margin="10" Foreground="DarkGray" FontSize="18">Login to the Package Manager</TextBlock>
-          <Button Name="LoginButton" Margin="0" Width="70" ToolTip="Click To login" Style="{DynamicResource ResourceKey=SSearchButton}" Tag="..\Images\padlock-closed-black24x24.png" />
+      <Button Name="LoginButton" Margin="0" Width="70" Click="LoginButtonClick" ToolTip="Click To login" Style="{DynamicResource ResourceKey=SButton}" Tag="..\Images\arrow-right-white.png" />
           
         </StackPanel>
       

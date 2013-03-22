@@ -18,9 +18,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Search
 {
-   class SearchDictionary<V>
+   public class SearchDictionary<V>
    {
       private Dictionary<string, HashSet<V>> tagDict = new Dictionary<string, HashSet<V>>();
       private Dictionary<V, HashSet<string>> symbolDict = new Dictionary<V, HashSet<string>>();

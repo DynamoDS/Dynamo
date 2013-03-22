@@ -18,6 +18,9 @@ using System.Windows.Media;
 
 using Dynamo.Nodes;
 using Dynamo.Controls;
+using Dynamo.Nodes.PackageManager;
+using Dynamo.PackageManager;
+using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Dynamo.Connectors;
@@ -31,8 +34,10 @@ namespace Dynamo
 
     public class DynamoController:INotifyPropertyChanged
     {
-        private SearchController _searchController;
-        public SearchController SearchController { get { return _searchController; } }
+        public SearchController SearchController { get; internal set; }
+        public PackageManagerLoginController PackageManagerLoginController { get; internal set; }
+
+        public PackageManagerClient PackageManagerClient { get; internal set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         /// <summary>
@@ -141,7 +146,9 @@ namespace Dynamo
         {
             Bench = new dynBench(this);
 
-            _searchController = new SearchController(Bench);
+            SearchController = new SearchController(Bench);
+            PackageManagerClient = new PackageManagerClient();
+            PackageManagerLoginController = new PackageManagerLoginController(Bench, PackageManagerClient);
 
             homeSpace = CurrentSpace = new HomeWorkspace();
 

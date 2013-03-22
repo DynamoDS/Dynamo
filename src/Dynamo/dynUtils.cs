@@ -19,6 +19,7 @@ using System.Linq;
 using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using System.Collections;
@@ -139,7 +140,10 @@ namespace Dynamo.Utilities
             DeadBrush.GradientStops.Add(new GradientStop(colorGray2, .25));
             DeadBrush.GradientStops.Add(new GradientStop(colorGray2, 1.0));
         }
-
+        
         public static DynamoController Controller { get; internal set; }
+
+        public static PackageManagerClient PackageManagerClient { get; internal set; }
+
     }
 }

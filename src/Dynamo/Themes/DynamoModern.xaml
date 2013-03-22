@@ -31,7 +31,33 @@
       </Setter>
     </Style>
 
-    <Style x:Key="SSearchButton" TargetType="{x:Type Button}">
+  <Style x:Key="SButton" TargetType="{x:Type Button}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+
+          <Grid x:Name="container" Background="Transparent">
+            <Grid x:Name="inner" Background="#333">
+
+              <Image Width="24" Height="24" x:Name="display" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}"></Image>
+
+            </Grid>
+          </Grid>
+
+          <ControlTemplate.Triggers>
+
+            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                <Setter TargetName="inner" Property = "Background" Value="LightBlue"/>
+              </Trigger>
+
+          </ControlTemplate.Triggers>
+
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="SSearchButton" TargetType="{x:Type Button}">
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate>

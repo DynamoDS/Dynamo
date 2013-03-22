@@ -63,6 +63,9 @@
 
     <KeyBinding Key="Space"
                     Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}"/>
+    <KeyBinding Key="R"
+                Modifiers="Ctrl"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.PackageManagerShowLoginCmd}}"/>
     <KeyBinding Key="Escape"
                     Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}"/>
 
@@ -122,15 +125,16 @@
         </MenuItem>
         <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}" InputGestureText="Ctrl+Shift+Up"/>
-        <Separator />
       </MenuItem>
       <MenuItem Header="Settings">
+        
         <MenuItem Header="_Connector Type" IsEnabled="True">
           <MenuItem Name="settings_curves" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Header="Curves"/>
           <MenuItem Name="settings_plines" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
         </MenuItem>
+        
       </MenuItem>
       <MenuItem Header="Help">
         <MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>

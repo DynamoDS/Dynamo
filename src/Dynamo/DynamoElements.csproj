@@ -121,10 +121,12 @@ limitations under the License.
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
-    <Compile Include="PackageManager\Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
+    <Compile Include="PackageManager\PackageManagerLoginController.cs" />
+    <Compile Include="PackageManager\PackageManagerLoginUI.xaml.cs">
+      <DependentUpon>PackageManagerLoginUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PackageManager\PackageManager.cs" />
+    <Compile Include="PackageManager\PackageManagerClient.cs" />
+    <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchUI.xaml.cs">
       <DependentUpon>SearchUI.xaml</DependentUpon>
     </Compile>
@@ -215,7 +217,7 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PackageManager\Login.xaml">
+    <Page Include="PackageManager\PackageManagerLoginUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -285,6 +287,14 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\padlock-closed-black24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\arrow-right-white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\arrow-left-black.png" />
+    <Resource Include="Images\arrow-left-white.png" />
+    <Resource Include="Images\arrow-right-black.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

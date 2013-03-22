@@ -26,47 +26,38 @@ using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Search
 {
     public class SearchController
     {
 
         #region Properties
 
-        private static SearchDictionary<dynNodeUI> _searchDict = new SearchDictionary<dynNodeUI>();
-
-        private static List<dynNode> localNodes = new List<dynNode>();
-
-        private static ObservableCollection< dynNodeUI > visibleNodes = new ObservableCollection<dynNodeUI>();
-        public ObservableCollection<dynNodeUI> VisibleNodes { get { return visibleNodes; } }
-
-        public int NumSearchResults { get; set; }
-
-        private dynSearchUI _view;
-        public dynSearchUI View { get { return _view;  } }
-
-        private dynBench _bench;
-        public dynBench Bench { get { return _bench; } }
+            public SearchDictionary<dynNodeUI> SearchDictionary { get; internal set; }
+            public ObservableCollection<dynNodeUI> VisibleNodes { get; internal set; }
+            public int NumSearchResults { get; set; }
+            public SearchUI View { get; internal set; }
+            public dynBench Bench { get; internal set; }
 
         #endregion
 
 
         public SearchController( dynBench bench )
         {
+            this.SearchDictionary = new SearchDictionary<dynNodeUI>();
+            this.VisibleNodes = new ObservableCollection<dynNodeUI>();
             this.NumSearchResults = 10;
-            this._bench = bench;
-            this._view = new dynSearchUI(this);
+            this.Bench = bench;
+            this.View = new SearchUI(this);
         }
 
         internal void SearchAndUpdateUI(string search)
         {
-            visibleNodes.Clear();
-
-            //if (search == "") return;
+            VisibleNodes.Clear();
 
             foreach (var node in this.Search(search))
             {
-                visibleNodes.Add(node);
+                VisibleNodes.Add(node);
             }
 
             this.View.SetSelected(0);
@@ -74,7 +65,7 @@ namespace Dynamo.Nodes
 
         internal List<dynNodeUI> Search(string search)
         {
-            return _searchDict.FuzzySearch(search, this.NumSearchResults);
+            return SearchDictionary.FuzzySearch(search, this.NumSearchResults);
         }
 
         public void KeyHandler(object sender, KeyEventArgs e)
@@ -97,7 +88,7 @@ namespace Dynamo.Nodes
         {
             View.Visibility = Visibility.Collapsed;
 
-            if (visibleNodes.Count == 0) return;
+            if (VisibleNodes.Count == 0) return;
 
             var selectedIndex = View.SelectedIndex();
 
@@ -107,7 +98,7 @@ namespace Dynamo.Nodes
 
             DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {
-                    {"name", visibleNodes[selectedIndex].NickName},
+                    {"name", VisibleNodes[selectedIndex].NickName},
                     {"transformFromOuterCanvasCoordinates", true}
                 });
 
@@ -143,11 +134,9 @@ namespace Dynamo.Nodes
 
             nodeUI.GUID = new Guid();
 
-            _searchDict.Add(nodeUI, name.Split(' ').Where(x => x.Length > 0));
-            _searchDict.Add(nodeUI, name);
-            _searchDict.AddName(nodeUI, name);
-
-            localNodes.Add(newNode);
+            SearchDictionary.Add(nodeUI, name.Split(' ').Where(x => x.Length > 0));
+            SearchDictionary.Add(nodeUI, name);
+            SearchDictionary.AddName(nodeUI, name);
 
         }
 

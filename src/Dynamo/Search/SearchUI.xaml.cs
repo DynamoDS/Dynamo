@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Dynamo.Controls;
+using Dynamo.Search;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Search
 {
     /// <summary>
-    /// Interaction logic for dynSearchUI.xaml
+    /// Interaction logic for SearchUI.xaml
     /// </summary>
-    public partial class dynSearchUI : UserControl
+    public partial class SearchUI : UserControl
     {
         public SearchController Controller;
         public TextBox SearchTextBox;
@@ -28,7 +17,7 @@ namespace Dynamo.Nodes
         
         public ObservableCollection<dynNodeUI> VisibleNodes { get { return Controller.VisibleNodes; } }
 
-        public dynSearchUI( SearchController controller )
+        public SearchUI( SearchController controller )
         {
             Controller = controller;
 
