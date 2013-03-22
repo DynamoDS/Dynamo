@@ -464,9 +464,6 @@ namespace Dynamo.Controls
 
             var pos = Mouse.GetPosition(overlayCanvas);
 
-            
-
-
             double x = pos.X;
             double y = pos.Y;
 

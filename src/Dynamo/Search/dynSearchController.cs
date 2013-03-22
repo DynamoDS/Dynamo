@@ -101,7 +101,7 @@ namespace Dynamo.Nodes
 
             var selectedIndex = View.SelectedIndex();
 
-            // none of the elems are selected, return
+            // none of the elems are selected, return 
             if (selectedIndex == -1)
                 return;
 

@@ -24,6 +24,40 @@ namespace Dynamo.Commands
 {
     public static class DynamoCommands
     {
+
+        private static GoToSourceCodeCommand goToSourceCodeCmd;
+        public static GoToSourceCodeCommand GoToSourceCodeCmd
+        {
+            get
+            {
+                if (goToSourceCodeCmd == null)
+                    goToSourceCodeCmd = new GoToSourceCodeCommand();
+                return goToSourceCodeCmd;
+            }
+        }
+
+        private static GoToWikiCommand goToWikiCmd;
+        public static GoToWikiCommand GoToWikiCmd
+        {
+            get
+            {
+                if (goToWikiCmd == null)
+                    goToWikiCmd = new GoToWikiCommand();
+                return goToWikiCmd;
+            }
+        }
+
+        private static ExitCommand exitCmd;
+        public static ExitCommand ExitCmd
+        {
+            get
+            {
+                if (exitCmd == null)
+                    exitCmd = new ExitCommand();
+                return exitCmd;
+            }
+        }
+
         private static ShowSearchCommand showSearchCmd;
         public static ShowSearchCommand ShowSearchCmd
         {
@@ -334,6 +368,76 @@ namespace Dynamo.Commands
             }
         }
 
+    }
+
+    public class GoToWikiCommand : ICommand
+    {
+        public GoToWikiCommand()
+        {
+        }
+
+        public void Execute(object parameters)
+        {
+            System.Diagnostics.Process.Start("https://github.com/ikeough/Dynamo/wiki");
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class GoToSourceCodeCommand : ICommand
+    {
+        public GoToSourceCodeCommand()
+        {
+        }
+
+        public void Execute(object parameters)
+        {
+            System.Diagnostics.Process.Start("https://github.com/ikeough/Dynamo");
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ExitCommand : ICommand
+    {
+        public ExitCommand()
+        {
+        }
+
+        public void Execute(object parameters)
+        {
+            // TODO: ask for save
+            dynSettings.Bench.Close();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
     }
 
     public class NodeFromSelectionCommand : ICommand

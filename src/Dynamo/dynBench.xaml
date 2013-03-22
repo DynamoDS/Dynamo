@@ -54,6 +54,9 @@
     <KeyBinding Key="Up"
                                 Modifiers="Control+Shift"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}"/>
+    <KeyBinding Key="F4"
+                Modifiers="Alt"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"/>
     <KeyBinding Key="C"
                                 Modifiers="Control+Shift"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}"/>
@@ -80,20 +83,10 @@
     <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
               VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
       <MenuItem Header="_File" Name="fileMenu">
-        <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
-          <MenuItem.Icon>
-            <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <Separator />
+      
         <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.OpenCmd}}" Name="openButton" InputGestureText="Ctrl+O">
           <MenuItem.Icon>
             <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="Samples" Name="SamplesMenu">
-          <MenuItem.Icon>
-            <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
           </MenuItem.Icon>
         </MenuItem>
         <Separator />
@@ -108,8 +101,14 @@
           </MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.SaveImageCmd}}" Name="saveImage"/>
-        <MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>
+          <Separator />
+        <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
+          <MenuItem.Icon>
+            <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
+          </MenuItem.Icon>
+        </MenuItem>
         <Separator />
+        <MenuItem Header="_Exit" Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"  Name="exit" InputGestureText="Alt+F4"/>
       </MenuItem>
       <MenuItem Header="_View" Name="viewMenu">
         <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
@@ -128,6 +127,16 @@
           <MenuItem Name="settings_plines" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
         </MenuItem>
+      </MenuItem>
+      <MenuItem Header="Help">
+        <MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>
+        <MenuItem Header="Samples" Name="SamplesMenu">
+          <MenuItem.Icon>
+            <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
+          </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="_Source Code" Command="{Binding Source={x:Static commands:DynamoCommands.GoToSourceCodeCmd}}"  Name="sourceCode"/>
+        <MenuItem Header="_Wiki" Command="{Binding Source={x:Static commands:DynamoCommands.GoToWikiCmd}}"  Name="wiki"/>
       </MenuItem>
     </Menu>
     <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
