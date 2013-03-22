@@ -56,7 +56,7 @@
                    VerticalAlignment="Stretch"
                    TextAlignment="Left"
                    Padding="2"
-                   FontSize="12" FontFamily="Arial"
-                   IsHitTestVisible="False" Background="{x:Null}" />
+                   FontSize="12" FontFamily="Arial" 
+                   IsHitTestVisible="False" Background="{x:Null}" Foreground="#FF505050" />
     </Grid>
 </UserControl>
