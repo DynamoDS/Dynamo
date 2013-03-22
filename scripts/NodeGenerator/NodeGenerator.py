@@ -215,7 +215,9 @@ required_types = []
 array_types = []
 
 # exclusions that we can deal with later
-skip_list = ['MakeBound', 'MakeUnbound','getGeometry']
+skip_list = ['MakeBound', 'MakeUnbound','getGeometry','Rehost', 'AddEdge','ScaleProfile',
+'ScaleSubElement','RotateProfile', 'RotateSubElement', 'MoveProfile','MoveSubElement','DeleteProfile',
+'DeleteSubElement','ConstrainProfiles','GetProfileAndCurveLoopIndexFromReference']
 
 using=[	
 'using System;\n',
