@@ -114,7 +114,8 @@
                      Name="elementShine" 
                      RadiusX="10" 
                      RadiusY="10"
-                     Canvas.ZIndex="91">
+                     Canvas.ZIndex="91"
+                     IsHitTestVisible="False">
             <Rectangle.Fill>
                <SolidColorBrush Opacity=".25" Color="white" />
             </Rectangle.Fill>

@@ -551,8 +551,8 @@ namespace Dynamo.Controls
                     tb.FontWeight = FontWeights.Normal;
                     tb.Foreground = new SolidColorBrush(Colors.Black);
                     tb.Text = name;
-
                     tb.HorizontalAlignment = HorizontalAlignment.Left;
+                    tb.IsHitTestVisible = false;
 
                     Canvas.SetZIndex(tb, 200);
 
