@@ -33,7 +33,11 @@ namespace Dynamo.PackageManager
         {
             Controller.LoginButtonClick(sender, e);
         }
-        
+
+        private void WebBrowserNavigatedEvent(object sender, NavigationEventArgs e)
+        {
+            Controller.WebBrowserNavigatedEvent(sender, e);
+        }
 
     }
 }
