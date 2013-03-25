@@ -35,6 +35,8 @@ namespace Dynamo.Controls
            }
        }
 
+       private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+
       #region Data
 
       // Stores a reference to the UIElement currently being dragged by the user.
@@ -324,25 +326,42 @@ namespace Dynamo.Controls
 
          if (!isConnecting)
          {
-            base.OnMouseLeftButtonDown(e);
+             if (this.selection.Count == 0)
+                 return;
 
-            this.isDragInProgress = false;
+             //test if we're hitting the background
+             // Retrieve the coordinate of the mouse position.
+             Point pt = e.GetPosition(this);
 
-            // Cache the mouse cursor location.
-            this.origCursorLocation = e.GetPosition(this);
+             hitResultsList.Clear();
 
-            if (this.selection.Count == 0)
-                return;
+             // Set up a callback to receive the hit test result enumeration.
+             VisualTreeHelper.HitTest(this, null,
+                     new HitTestResultCallback(MyHitTestResult),
+                     new PointHitTestParameters(pt));
 
-            this.isDragInProgress = true;
+             //if you hit a selectable object
+             foreach (DependencyObject dobj in hitResultsList)
+             {
+                 ISelectable sel = ElementClicked(dobj) as ISelectable;    //, typeof(ISelectable));
+                 if (sel != null)
+                 {
+                     base.OnMouseLeftButtonDown(e);
 
-             // toggle the background color so you can receive
-             // hit events. we don't want it to be the case that 
-             // when you drag off a node, the drag stops happening because
-             // you're not "hitting" the canvas
-            this.Background = new SolidColorBrush(Colors.Transparent);
+                     //this.isDragInProgress = false;
 
-            e.Handled = true;
+                     // Cache the mouse cursor location.
+                     this.origCursorLocation = e.GetPosition(this);
+
+                     //if (this.selection.Count == 0)
+                     //    return;
+
+                     this.isDragInProgress = true;
+
+                     e.Handled = true;
+                     return;
+                 }
+             }
          }
       }
 
@@ -457,15 +476,35 @@ namespace Dynamo.Controls
       {
          base.OnMouseUp(e);
 
-         // Reset the field whether the left or right mouse button was 
-         // released, in case a context menu was opened on the drag element.
-         //this.ElementBeingDragged = null;
-
          this.isDragInProgress = false;
 
-          // set the background brush to null so that hit events on the canvas (not on a node or connector)
-          // make it down to the bench.
-         this.Background = null;
+          // recalculate the offsets for all items in
+          // the selection. 
+         int count = 0;
+         foreach (ISelectable n in selection)
+         {
+             UIElement el = (UIElement)n;
+
+             double left = Canvas.GetLeft(el);
+             double right = Canvas.GetRight(el);
+             double top = Canvas.GetTop(el);
+             double bottom = Canvas.GetBottom(el);
+
+             // Calculate the offset deltas and determine for which sides
+             // of the Canvas to adjust the offsets.
+             bool modLeft = false;
+             bool modTop = false;
+             double hOffset = ResolveOffset(left, right, out modLeft);
+             double vOffset = ResolveOffset(top, bottom, out modTop);
+
+             OffsetData os = offsets[count];
+             os.ModifyLeftOffset = modLeft;
+             os.ModifyTopOffset = modTop;
+             os.OriginalHorizontalOffset = hOffset;
+             os.OriginalVerticalOffset = vOffset;
+
+             count++;
+         }
       }
 
       public void ClearSelection()
@@ -657,6 +696,80 @@ namespace Dynamo.Controls
 
       #endregion // Private Helpers
 
+      /// <summary>
+      /// Find the user control of type 'testType' by traversing the tree.
+      /// </summary>
+      /// <returns></returns>
+      public UIElement ElementClicked(DependencyObject depObj)  //, Type testType)
+      {
+          UIElement foundElement = null;
+
+          //walk up the tree to see whether the element is part of a port
+          //then get the port's parent object
+          while (depObj != null)
+          {
+              // If the current object is a UIElement which is a child of the
+              // Canvas, exit the loop and return it.
+              UIElement elem = depObj as UIElement;
+
+              if (elem != null)
+              {
+                  Type t = elem.GetType();
+
+                  //if (HasParentType(t, testType))
+                  //{
+                  //    foundElement = elem;
+                  //    return foundElement;
+                  //}
+
+                  //if (elem != null && t.Equals(testType))
+                  //{
+                  //    foundElement = elem;
+                  //    return foundElement;
+                  //}
+
+                  if (elem is ISelectable)
+                  {
+                      foundElement = elem;
+                      return foundElement;
+                  }
+              }
+
+              // VisualTreeHelper works with objects of type Visual or Visual3D.
+              // If the current object is not derived from Visual or Visual3D,
+              // then use the LogicalTreeHelper to find the parent element.
+              if (depObj is Visual)
+                  depObj = VisualTreeHelper.GetParent(depObj);
+              else
+                  depObj = LogicalTreeHelper.GetParent(depObj);
+          }
+
+          return foundElement;
+      }
+
+      // Return the result of the hit test to the callback.
+      public HitTestResultBehavior MyHitTestResult(HitTestResult result)
+      {
+          // Add the hit test result to the list that will be processed after the enumeration.
+          if (!hitResultsList.Contains(result.VisualHit))
+          {
+              hitResultsList.Add(result.VisualHit);
+          }
+
+          // Set the behavior to return visuals at all z-order levels.
+          return HitTestResultBehavior.Continue;
+      }
+
+      static bool HasParentType(Type t, Type testType)
+      {
+          while (t != typeof(object))
+          {
+              t = t.BaseType;
+              if (t.Equals(testType))
+                  return true;
+          }
+          return false;
+      }
    }
 
    public class OffsetData

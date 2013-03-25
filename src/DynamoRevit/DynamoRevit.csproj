@@ -27,7 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,6 +38,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamoPython, Version=0.2.4827.17995, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\DynamoPython.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
@@ -89,9 +94,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\scripts\NodeGenerator\DynamoRevitNodes.cs">
+      <Link>DynamoRevitNodes.cs</Link>
+    </Compile>
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynRevitSettings.cs" />
     <Compile Include="dynRevitTransactionNode.cs" />
+    <Compile Include="dynRevitUtils.cs" />
     <Compile Include="Nodes\dyn3D.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />

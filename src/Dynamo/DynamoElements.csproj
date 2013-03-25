@@ -57,6 +57,9 @@ limitations under the License.
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Greg">
+      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    </Reference>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
       <Private>True</Private>
@@ -117,6 +120,17 @@ limitations under the License.
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PackageManager\PackageManagerCommands.cs" />
+    <Compile Include="PackageManager\PackageManagerLoginController.cs" />
+    <Compile Include="PackageManager\PackageManagerLoginUI.xaml.cs">
+      <DependentUpon>PackageManagerLoginUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManager\PackageManagerClient.cs" />
+    <Compile Include="Search\SearchCommands.cs" />
+    <Compile Include="Search\SearchUI.xaml.cs">
+      <DependentUpon>SearchUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Search\SearchController.cs" />
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
@@ -142,9 +156,6 @@ limitations under the License.
     <Compile Include="dynPort.xaml.cs">
       <DependentUpon>dynPort.xaml</DependentUpon>
     </Compile>
-    <Compile Include="dynToolFinder.xaml.cs">
-      <DependentUpon>dynToolFinder.xaml</DependentUpon>
-    </Compile>
     <Compile Include="dynUtils.cs" />
     <Compile Include="dynWorkspace.cs" />
     <Compile Include="FunctionNamePrompt.xaml.cs">
@@ -167,7 +178,8 @@ limitations under the License.
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SearchDictionary.cs" />
+    <Compile Include="ZoomBorder.cs" />
+    <Compile Include="Search\SearchDictionary.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -205,9 +217,13 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="dynToolFinder.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="PackageManager\PackageManagerLoginUI.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Search\SearchUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FunctionNamePrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -216,6 +232,10 @@ limitations under the License.
     <Page Include="Nodes\Watch\WatchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\DynamoModern.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +272,29 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\OpenSelectedItemHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloud_download_arrow_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\padlock-closed-black24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\arrow-right-white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\arrow-left-black.png" />
+    <Resource Include="Images\arrow-left-white.png" />
+    <Resource Include="Images\arrow-right-black.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

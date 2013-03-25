@@ -41,7 +41,7 @@ namespace Dynamo.Controls
 {
     /// <summary>
     /// Interaction logic for dynControl.xaml
-    /// </summary
+    /// </summary>
     public enum ElementState { DEAD, ACTIVE, ERROR };
     public enum LacingType { SHORTEST, LONGEST, FULL };
 
@@ -62,7 +62,6 @@ namespace Dynamo.Controls
         //System.Windows.Shapes.Ellipse dirtyEllipse;
         ObservableCollection<dynPort> inPorts;
         ObservableCollection<dynPort> outPorts;
-        Dictionary<dynPort, TextBlock> portTextBlocks;
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
         string nickName;
         Guid guid;
@@ -255,8 +254,6 @@ namespace Dynamo.Controls
             Binding heightBinding = new Binding("PreferredHeight");
             topControl.SetBinding(UserControl.HeightProperty, heightBinding);
             
-            portTextBlocks = new Dictionary<dynPort, TextBlock>();
-
             State = ElementState.DEAD;
 
             //Fetch the element name from the custom attribute.
@@ -453,7 +450,6 @@ namespace Dynamo.Controls
                 //int index = inPorts.FindIndex(x => x == inport);
                 int index = inPorts.IndexOf(inport);
                 gridLeft.Children.Remove(inport);
-                gridLeft.Children.Remove(portTextBlocks[inport]);
 
                 while (inport.Connectors.Any())
                 {
@@ -536,39 +532,20 @@ namespace Dynamo.Controls
             {
                 if (inPorts.Count > index)
                 {
-                    portTextBlocks[inPorts[index]].Text = name;
                     return inPorts[index];
                 }
                 else
                 {
                     dynPort p = new dynPort(index);
 
-                    //create a text block for the name of the port
-                    TextBlock tb = new TextBlock();
-
-                    tb.VerticalAlignment = VerticalAlignment.Center;
-                    tb.FontSize = 12;
-                    tb.FontWeight = FontWeights.Normal;
-                    tb.Foreground = new SolidColorBrush(Colors.Black);
-                    tb.Text = name;
-
-                    tb.HorizontalAlignment = HorizontalAlignment.Left;
-
-                    Canvas.SetZIndex(tb, 200);
-
                     p.PortType = PortType.INPUT;
                     InPorts.Add(p);
-                    portTextBlocks[p] = tb;
                     gridLeft.Children.Add(p);
                     Grid.SetColumn(p, 0);
                     Grid.SetRow(p, index);
 
-                    //portNamesLeft.Children.Add(tb);
-                    gridLeft.Children.Add(tb);
-                    Grid.SetColumn(tb, 1);
-                    Grid.SetRow(tb, index);
-
                     p.Owner = this;
+                    p.PortName = name;
 
                     //register listeners on the port
                     p.PortConnected += new PortConnectedHandler(p_PortConnected);
@@ -581,45 +558,31 @@ namespace Dynamo.Controls
             {
                 if (outPorts.Count > index)
                 {
-                    portTextBlocks[outPorts[index]].Text = name;
                     return outPorts[index];
                 }
                 else
                 {
                     dynPort p = new dynPort(index);
 
-                    //create a text block for the name of the port
-                    TextBlock tb = new TextBlock();
-
-                    tb.VerticalAlignment = VerticalAlignment.Center;
-                    tb.FontSize = 12;
-                    tb.FontWeight = FontWeights.Normal;
-                    tb.Foreground = new SolidColorBrush(Colors.Black);
-                    tb.Text = name;
-
-                    tb.HorizontalAlignment = HorizontalAlignment.Right;
-
                     p.PortType = PortType.OUTPUT;
                     OutPorts.Add(p);
-                    portTextBlocks[p] = tb;
+                    //portTextBlocks[p] = tb;
                     gridRight.Children.Add(p);
                     Grid.SetColumn(p, 1);
                     Grid.SetRow(p, index);
 
-                    //portNamesLeft.Children.Add(tb);
-                    gridRight.Children.Add(tb);
-                    Grid.SetColumn(tb, 0);
-                    Grid.SetRow(tb, index);
-
                     p.Owner = this;
+                    p.PortName = name;
 
                     //register listeners on the port
                     p.PortConnected += new PortConnectedHandler(p_PortConnected);
                     p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
 
-                    ScaleTransform trans = new ScaleTransform(-1, 1, p.Width / 2, p.Height / 2);
-                    p.RenderTransform = trans;
-
+                    //flip the right hand ports
+                    ScaleTransform trans = new ScaleTransform(-1, 1, 25, p.Height / 2);
+                    p.portGrid.RenderTransform = trans;
+                    p.portNameTb.Margin = new Thickness(0, 0, 15, 0);
+                    p.portNameTb.TextAlignment = TextAlignment.Right;
                     return p;
                 }
             }
@@ -687,10 +650,10 @@ namespace Dynamo.Controls
             else
             {
                 //don't override state if it's in error
-                if (State != ElementState.ERROR)
-                {
+                //if (State != ElementState.ERROR)
+                //{
                     State = ElementState.ACTIVE;
-                }
+                //}
             }
         }
 
@@ -740,6 +703,12 @@ namespace Dynamo.Controls
             //ToolTip = message;
             this.ToolTipText = message;
         }
+
+        public string Description { get {
+            Type t = NodeLogic.GetType();
+            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true); 
+            return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription; 
+        }}
 
         void SetTooltip()
         {
@@ -836,6 +805,7 @@ namespace Dynamo.Controls
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            dynSettings.Bench.mainGrid.Focus();
             dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
             dynSettings.Controller.ProcessCommandQueue();
         }
@@ -932,6 +902,142 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
+        }
+    }
+
+    [ValueConversion(typeof(bool), typeof(bool))]
+    public class InverseBooleanConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(bool))
+                throw new InvalidOperationException("The target must be a boolean");
+
+            return !(bool)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class ShowHideConsoleMenuItemConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return "Hide Console";
+            }
+            else
+            {
+                return "Show Console";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class ZoomStatConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return string.Format("Zoom : {0}", value.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class TransformOriginStatConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            Point p = (Point)value;
+            return string.Format("Transform origin X: {0}, Y: {1}", p.X, p.Y);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class CurrentOffsetStatConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            Point p = (Point)value;
+            return string.Format("Current offset X: {0}, Y: {1}", p.X, p.Y);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class EnumToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            // You could also directly pass an enum value using {x:Static},
+            // then there is no need to parse
+            string parameterString = parameter as string;
+            if (parameterString == null)
+                return DependencyProperty.UnsetValue;
+
+            if (Enum.IsDefined(value.GetType(), value) == false)
+                return DependencyProperty.UnsetValue;
+
+            object parameterValue = Enum.Parse(value.GetType(), parameterString);
+
+            return parameterValue.Equals(value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string parameterString = parameter as string;
+            if (parameterString == null)
+                return DependencyProperty.UnsetValue;
+
+            return Enum.Parse(targetType, parameterString);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 using Dynamo.Nodes;
 using Dynamo.Revit;
@@ -18,12 +19,16 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo
 {
+
     public class DynamoController_Revit : DynamoController
     {
+        
         public DynamoUpdater Updater { get; private set; }
 
         PredicateTraverser checkManualTransaction;
         PredicateTraverser checkRequiresTransaction;
+
+        Dynamo.Nodes.PythonEngine.EvaluationDelegate oldPyEval;
 
         public DynamoController_Revit(DynamoUpdater updater)
             : base()
@@ -79,7 +84,7 @@ namespace Dynamo
                 var pyBindingsProperty = PythonBindings.GetProperty("Bindings");
                 var pyBindings = pyBindingsProperty.GetValue(null, null);
 
-                var Binding = ironPythonAssembly.GetType("Dynamo.Nodes.PythonNode.Binding");
+                var Binding = ironPythonAssembly.GetType("Dynamo.Nodes.Binding");
 
                 Func<string, object, object> CreateBinding = delegate(string name, object boundObject)
                 {
@@ -108,59 +113,65 @@ namespace Dynamo
                 AddToBindings("__revit__", dynRevitSettings.Doc.Application);
                 AddToBindings("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document);
 
-                var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonNode.PythonEngine");
+                var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
-                var oldPyEval = evaluatorField.GetValue(null) as Func<bool, string, object, Value>;
+                oldPyEval = evaluatorField.GetValue(null) as Dynamo.Nodes.PythonEngine.EvaluationDelegate;
 
-                Func<bool, string, object, Value> newEval = delegate(bool dirty, string script, object bindings)
-                {
-                    bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
-
-                    Value result = null;
-
-                    if (dynRevitSettings.Controller.InIdleThread)
-                        result = oldPyEval(dirty, script, bindings);
-                    else
-                    {
-                        result = IdlePromise<Value>.ExecuteOnIdle(
-                           () => oldPyEval(dirty, script, bindings));
-                    }
-
-                    if (transactionRunning)
-                    {
-                        if (!IsTransactionActive())
-                        {
-                            InitTransaction();
-                        }
-                        else
-                        {
-                            var ts = Transaction.GetStatus();
-                            if (ts != TransactionStatus.Started)
-                            {
-                                if (ts != TransactionStatus.RolledBack)
-                                    CancelTransaction();
-                                InitTransaction();
-                            }
-                        }
-                    }
-                    else if (RunInDebug)
-                    {
-                        if (IsTransactionActive())
-                            EndTransaction();
-                    }
-
-                    return result;
-                };
-
-                evaluatorField.SetValue(null, newEval);
+                Dynamo.Nodes.PythonEngine.EvaluationDelegate evaluator = evaluate;
+                evaluatorField.SetValue(null, evaluator);
 
                 // use this to pass into the python script a list of previously created elements from dynamo
                 //TODO: ADD BACK IN
                 //bindings.Add(new Binding("DynStoredElements", this.Elements));
             }
-            catch { }
+            catch(Exception e) 
+            {
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+            }
         }
         #endregion
+
+        private Value evaluate(bool dirty, string script, IEnumerable<Dynamo.Nodes.Binding> bindings)
+        {
+            bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
+
+            Value result = null;
+
+            if (dynRevitSettings.Controller.InIdleThread)
+                result = oldPyEval(dirty, script, bindings);
+            else
+            {
+                result = IdlePromise<Value>.ExecuteOnIdle(
+                   () => oldPyEval(dirty, script, bindings));
+            }
+
+            if (transactionRunning)
+            {
+                if (!IsTransactionActive())
+                {
+                    InitTransaction();
+                }
+                else
+                {
+                    var ts = Transaction.GetStatus();
+                    if (ts != TransactionStatus.Started)
+                    {
+                        if (ts != TransactionStatus.RolledBack)
+                            CancelTransaction();
+                        InitTransaction();
+                    }
+                }
+            }
+            else if (RunInDebug)
+            {
+                if (IsTransactionActive())
+                    EndTransaction();
+            }
+
+            return result;
+        }
+
         #region Watch Node Revit Hooks
         void AddWatchNodeHandler()
         {
@@ -193,14 +204,6 @@ namespace Dynamo
         }
         #endregion
 
-        public override bool RunInDebug
-        {
-            get
-            {
-                return this.TransMode == TransactionMode.Debug;
-            }
-        }
-
         public bool InIdleThread;
 
         public enum TransactionMode
@@ -209,21 +212,66 @@ namespace Dynamo
             Manual,
             Debug
         }
-        public TransactionMode TransMode;
+
+        private TransactionMode transMode;
+        public TransactionMode TransMode
+        {
+            get { return transMode; }
+            set
+            {
+                transMode = value;
+                if (transMode == TransactionMode.Debug)
+                {
+                    this.RunInDebug = true;
+                }
+
+                NotifyPropertyChanged("TransMode");
+            }
+        }
+
+        public override bool CanRunDynamically
+        {
+            get
+            {
+                //we don't want to be able to run
+                //dynamically if we're in debug mode
+                bool manTran = ExecutionRequiresManualTransaction();
+                return !manTran && !debug;
+            }
+            set
+            {
+                canRunDynamically = value;
+                NotifyPropertyChanged("CanRunDynamically");
+            }
+        }
 
         public override bool DynamicRunEnabled
         {
             get
             {
-                var result = base.DynamicRunEnabled;
+                return dynamicRun;
+            }
+            set
+            {
+                dynamicRun = value;
+                NotifyPropertyChanged("DynamicRunEnabled");
+            }
+        }
 
-                bool manTran = ExecutionRequiresManualTransaction();
+        public override bool RunInDebug
+        {
+            get { return debug; }
+            set
+            {
+                debug = value;
 
-                Bench.dynamicCheckBox.IsEnabled = !manTran && Bench.debugCheckBox.IsChecked == false;
-                if (manTran)
-                    Bench.dynamicCheckBox.IsChecked = false;
+                //toggle off dynamic run
+                CanRunDynamically = !debug;
 
-                return !manTran && result;
+                if(debug == true)
+                    DynamicRunEnabled = false;
+
+                NotifyPropertyChanged("RunInDebug");
             }
         }
 
@@ -404,7 +452,7 @@ namespace Dynamo
         protected override void Run(IEnumerable<dynNode> topElements, FScheme.Expression runningExpression)
         {
             //If we are not running in debug...
-            if (!_debug)
+            if (!this.RunInDebug)
             {
                 //Do we need manual transaction control?
                 bool manualTrans = topElements.Any(checkManualTransaction.TraverseUntilAny);

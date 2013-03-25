@@ -18,6 +18,9 @@ using System.Windows.Media;
 
 using Dynamo.Nodes;
 using Dynamo.Controls;
+using Dynamo.Nodes.PackageManager;
+using Dynamo.PackageManager;
+using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop;
 using Dynamo.Connectors;
@@ -28,8 +31,27 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo
 {
-    public class DynamoController
+
+    public class DynamoController:INotifyPropertyChanged
     {
+        public SearchController SearchController { get; internal set; }
+        public PackageManagerLoginController PackageManagerLoginController { get; internal set; }
+
+        public PackageManagerClient PackageManagerClient { get; internal set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Used by various properties to notify observers that a property has changed.
+        /// </summary>
+        /// <param name="info">What changed.</param>
+        protected void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
         List<UIElement> clipBoard = new List<UIElement>();
         public List<UIElement> ClipBoard
         {
@@ -89,8 +111,11 @@ namespace Dynamo
             set
             {
                 _cspace = value;
-                Bench.CurrentX = _cspace.PositionX;
-                Bench.CurrentY = _cspace.PositionY;
+                //Bench.CurrentX = _cspace.PositionX;
+                //Bench.CurrentY = _cspace.PositionY;
+
+                Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
+
                 //TODO: Also set the name here.
             }
         }
@@ -121,10 +146,16 @@ namespace Dynamo
         {
             Bench = new dynBench(this);
 
+            SearchController = new SearchController(Bench);
+            PackageManagerClient = new PackageManagerClient();
+            PackageManagerLoginController = new PackageManagerLoginController(Bench, PackageManagerClient);
+
             homeSpace = CurrentSpace = new HomeWorkspace();
 
-            Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
-            Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
+            //Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
+            //Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
+
+            Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
 
             Bench.InitializeComponent();
             Bench.Log(String.Format(
@@ -347,10 +378,11 @@ namespace Dynamo
 
                 dynNode newNode = null;
 
+                SearchController.Add( kvp.Value.Type, kvp.Key );
+
                 try
                 {
                     var obj = Activator.CreateInstance(kvp.Value.Type);
-                    //var obj = Activator.CreateInstanceFrom(kvp.Value.assembly.Location, kvp.Value.t.FullName);
                     newNode = (dynNode)obj;//.Unwrap();
                 }
                 catch (Exception e) //TODO: Narrow down
@@ -384,7 +416,6 @@ namespace Dynamo
                     var scale = Math.Min(target / width, .8);
 
                     nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
-                    //nodeUI.nickNameBlock.FontSize *= .8 / scale;
 
                     Tuple<Expander, SortedList<string, dynNodeUI>> expander;
 
@@ -423,7 +454,9 @@ namespace Dynamo
                     //--------------//
 
                     var tagAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
+
                     List<string> tags = null;
+
                     if (tagAtts.Length > 0)
                     {
                         tags = ((NodeSearchTagsAttribute)tagAtts[0]).Tags;
@@ -436,6 +469,10 @@ namespace Dynamo
 
                     searchDict.Add(nodeUI, kvp.Key.Split(' ').Where(x => x.Length > 0));
                     searchDict.Add(nodeUI, kvp.Key);
+                    searchDict.AddName(nodeUI, kvp.Key);
+
+
+
                 }
                 catch (Exception e)
                 {
@@ -459,6 +496,8 @@ namespace Dynamo
             #endregion
         }
 
+        
+       
         private bool isNodeSubType(Type t)
         {
             return t.Namespace == "Dynamo.Nodes" &&
@@ -545,9 +584,6 @@ namespace Dynamo
                             Header = Path.GetFileName(dirPath),
                             Tag = Path.GetFileName(dirPath)
                         };
-                        //item.Click += new RoutedEventHandler(sample_Click);
-                        //samplesMenu.Items.Add(dirItem);
-                        int menuItemCount = Bench.SamplesMenu.Items.Count;
 
                         filePaths = Directory.GetFiles(dirPath, "*.dyn");
                         if (filePaths.Any())
@@ -686,6 +722,8 @@ namespace Dynamo
             }
         }
 
+        
+
         internal dynWorkspace NewFunction(string name, string category, bool display)
         {
             //Add an entry to the funcdict
@@ -786,7 +824,12 @@ namespace Dynamo
             }
 
             Bench.addMenuItemsDictNew[name] = newEl.NodeUI;
+
             searchDict.Add(newEl.NodeUI, name.Split(' ').Where(x => x.Length > 0));
+            searchDict.Add( newEl.NodeUI, name );
+            searchDict.AddName(newEl.NodeUI, name);
+
+            
 
             if (display)
             {
@@ -883,12 +926,12 @@ namespace Dynamo
                 result = newEl;
             }
 
-            if (result is dynDouble)
-                (result as dynDouble).Value = this.storedSearchNum;
-            else if (result is dynStringInput)
-                (result as dynStringInput).Value = this.storedSearchStr;
-            else if (result is dynBool)
-                (result as dynBool).Value = this.storedSearchBool;
+            //if (result is dynDouble)
+            //    (result as dynDouble).Value = this.storedSearchNum;
+            //else if (result is dynStringInput)
+            //    (result as dynStringInput).Value = this.storedSearchStr;
+            //else if (result is dynBool)
+            //    (result as dynBool).Value = this.storedSearchBool;
 
             return result;
         }
@@ -1538,9 +1581,15 @@ namespace Dynamo
                     foreach (XmlAttribute att in node.Attributes)
                     {
                         if (att.Name.Equals("X"))
-                            Bench.CurrentX = Convert.ToDouble(att.Value);
+                        {
+                            //Bench.CurrentX = Convert.ToDouble(att.Value);
+                            Bench.CurrentOffset = new Point(Convert.ToDouble(att.Value), Bench.CurrentOffset.Y);
+                        }
                         else if (att.Name.Equals("Y"))
-                            Bench.CurrentY = Convert.ToDouble(att.Value);
+                        {
+                            //Bench.CurrentY = Convert.ToDouble(att.Value);
+                            Bench.CurrentOffset = new Point(Bench.CurrentOffset.X, Convert.ToDouble(att.Value));
+                        }
                     }
                 }
 
@@ -1771,26 +1820,54 @@ namespace Dynamo
 
         private bool runAgain = false;
 
-        private bool dynamicRun = false;
-
-        protected bool _debug;
+        //protected bool _debug;
         private bool _showErrors;
 
+        protected bool canRunDynamically = true;
+        public virtual bool CanRunDynamically
+        {
+            get
+            {
+                //we don't want to be able to run
+                //dynamically if we're in debug mode
+                return !debug;
+            }
+            set
+            {
+                canRunDynamically = value;
+                NotifyPropertyChanged("CanRunDynamically");
+            }
+        }
+
+        protected bool dynamicRun = false;
         public virtual bool DynamicRunEnabled
         {
             get
             {
-                return Bench.dynamicCheckBox.IsEnabled
-                   && Bench.debugCheckBox.IsChecked == false
-                   && Bench.dynamicCheckBox.IsChecked == true;
+                return dynamicRun; //selecting debug now toggles this on/off
+            }
+            set
+            {
+                dynamicRun = value;
+                NotifyPropertyChanged("DynamicRunEnabled");
             }
         }
 
+        protected bool debug = false;
         public virtual bool RunInDebug
         {
-            get
+            get { return debug; }
+            set
             {
-                return _debug;
+                debug = value;
+
+                //toggle off dynamic run
+                CanRunDynamically = !debug;
+
+                if(debug==true)
+                    DynamicRunEnabled = false;
+
+                NotifyPropertyChanged("RunInDebug");
             }
         }
 
@@ -1800,13 +1877,12 @@ namespace Dynamo
             this.runAgain = true;
         }
 
-        public void RunExpression(bool debug, bool showErrors = true)
+        public void RunExpression(bool showErrors = true)
         {
             //If we're already running, do nothing.
             if (Running)
                 return;
 
-            _debug = debug;
             _showErrors = showErrors;
 
             //TODO: Hack. Might cause things to break later on...
@@ -1818,7 +1894,7 @@ namespace Dynamo
             Running = true;
 
             //Set run auto flag
-            dynamicRun = !showErrors;
+            //this.DynamicRunEnabled = !showErrors;
 
             //Setup background worker
             BackgroundWorker worker = new BackgroundWorker();
@@ -1920,7 +1996,7 @@ namespace Dynamo
                     Bench.Dispatcher.BeginInvoke(new Action(
                        delegate
                        {
-                           RunExpression(_debug, _showErrors);
+                           RunExpression(_showErrors);
                        }
                     ));
                 }
@@ -1930,7 +2006,7 @@ namespace Dynamo
         protected internal virtual void Run(IEnumerable<dynNode> topElements, Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
-            if (_debug)
+            if (debug)
             {
                 //string exp = FScheme.print(runningExpression);
                 Bench.Dispatcher.Invoke(new Action(
@@ -1951,7 +2027,7 @@ namespace Dynamo
                 var expr = FSchemeEnvironment.Evaluate(runningExpression);
 
                 //Print some more stuff if we're in debug mode
-                if (_debug && expr != null)
+                if (debug && expr != null)
                 {
                     Bench.Dispatcher.Invoke(new Action(
                        () => Bench.Log(FScheme.print(expr))
@@ -2211,12 +2287,15 @@ namespace Dynamo
                 wp.Children.Add(child);
             }
 
+
             //Update search dictionary after a rename
             var oldTags = this.CurrentSpace.Name.Split(' ').Where(x => x.Length > 0);
             this.searchDict.Remove(newAddItem.NodeUI, oldTags);
+            this.searchDict.Add(newAddItem.NodeUI, this.CurrentSpace.Name);
 
             var newTags = newName.Split(' ').Where(x => x.Length > 0);
             this.searchDict.Add(newAddItem.NodeUI, newTags);
+            this.searchDict.Add(newAddItem.NodeUI, newName);
 
             //------------------//
 
@@ -2268,7 +2347,7 @@ namespace Dynamo
         }
         #endregion
 
-        #region Searching
+        #region Filtering
         SearchDictionary<dynNodeUI> searchDict = new SearchDictionary<dynNodeUI>();
 
         internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)

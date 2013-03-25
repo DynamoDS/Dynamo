@@ -7,8 +7,14 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows;
 using System.Collections;
+using System.Windows.Forms;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.Reflection;
+using System.IO;
 
 using Dynamo.Controls;
+using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Connectors;
@@ -17,8 +23,43 @@ using Dynamo.Connectors;
 
 namespace Dynamo.Commands
 {
-    public static class DynamoCommands
+
+    public static partial class DynamoCommands
     {
+
+        private static GoToSourceCodeCommand goToSourceCodeCmd;
+        public static GoToSourceCodeCommand GoToSourceCodeCmd
+        {
+            get
+            {
+                if (goToSourceCodeCmd == null)
+                    goToSourceCodeCmd = new GoToSourceCodeCommand();
+                return goToSourceCodeCmd;
+            }
+        }
+
+        private static GoToWikiCommand goToWikiCmd;
+        public static GoToWikiCommand GoToWikiCmd
+        {
+            get
+            {
+                if (goToWikiCmd == null)
+                    goToWikiCmd = new GoToWikiCommand();
+                return goToWikiCmd;
+            }
+        }
+
+        private static ExitCommand exitCmd;
+        public static ExitCommand ExitCmd
+        {
+            get
+            {
+                if (exitCmd == null)
+                    exitCmd = new ExitCommand();
+                return exitCmd;
+            }
+        }
+
         private static NodeFromSelectionCommand nodeFromSelectionCmd;
         public static NodeFromSelectionCommand NodeFromSelectionCmd
         {
@@ -185,6 +226,197 @@ namespace Dynamo.Commands
 
                 return addToSelectionCmd;
             }
+        }
+
+        private static ShowConsoleCommand showConsoleCmd;
+        public static ShowConsoleCommand ShowConsoleCmd
+        {
+            get
+            {
+                if (showConsoleCmd == null)
+                    showConsoleCmd = new ShowConsoleCommand();
+
+                return showConsoleCmd;
+            }
+        }
+
+        private static CancelRunCommand cancelRunCmd;
+        public static CancelRunCommand CancelRunCmd
+        {
+            get
+            {
+                if (cancelRunCmd == null)
+                    cancelRunCmd = new CancelRunCommand();
+
+                return cancelRunCmd;
+            }
+        }
+
+        private static SaveAsCommand saveAsCmd;
+        public static SaveAsCommand SaveAsCmd
+        {
+            get
+            {
+                if (saveAsCmd == null)
+                    saveAsCmd = new SaveAsCommand();
+
+                return saveAsCmd;
+            }
+        }
+
+        private static SaveCommand saveCmd;
+        public static SaveCommand SaveCmd
+        {
+            get
+            {
+                if (saveCmd == null)
+                    saveCmd = new SaveCommand();
+
+                return saveCmd;
+            }
+        }
+
+        private static OpenCommand openCmd;
+        public static OpenCommand OpenCmd
+        {
+            get
+            {
+                if (openCmd == null)
+                    openCmd = new OpenCommand();
+
+                return openCmd;
+            }
+        }
+
+        private static HomeCommand homeCmd;
+        public static HomeCommand HomeCmd
+        {
+            get
+            {
+                if (homeCmd == null)
+                    homeCmd = new HomeCommand();
+
+                return homeCmd;
+            }
+        }
+
+        private static SaveImageCommand saveImageCmd;
+        public static SaveImageCommand SaveImageCmd
+        {
+            get
+            {
+                if (saveImageCmd == null)
+                    saveImageCmd = new SaveImageCommand();
+
+                return saveImageCmd;
+            }
+        }
+
+        private static LayoutAllCommand layoutAllCmd;
+        public static LayoutAllCommand LayoutAllCmd
+        {
+            get
+            {
+                if (layoutAllCmd == null)
+                    layoutAllCmd = new LayoutAllCommand();
+
+                return layoutAllCmd;
+            }
+        }
+
+        private static ClearCommand clearCmd;
+        public static ClearCommand ClearCmd
+        {
+            get
+            {
+                if (clearCmd == null)
+                    clearCmd = new ClearCommand();
+
+                return clearCmd;
+            }
+        }
+
+        private static ClearLogCommand clearLogCmd;
+        public static ClearLogCommand ClearLogCmd
+        {
+            get
+            {
+                if (clearLogCmd == null)
+                    clearLogCmd = new ClearLogCommand();
+
+                return clearLogCmd;
+            }
+        }
+
+    }
+
+    public class GoToWikiCommand : ICommand
+    {
+        public GoToWikiCommand()
+        {
+        }
+
+        public void Execute(object parameters)
+        {
+            System.Diagnostics.Process.Start("https://github.com/ikeough/Dynamo/wiki");
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class GoToSourceCodeCommand : ICommand
+    {
+        public GoToSourceCodeCommand()
+        {
+        }
+
+        public void Execute(object parameters)
+        {
+            System.Diagnostics.Process.Start("https://github.com/ikeough/Dynamo");
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ExitCommand : ICommand
+    {
+        public ExitCommand()
+        {
+        }
+
+        public void Execute(object parameters)
+        {
+            // TODO: ask for save
+            dynSettings.Bench.Close();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
         }
     }
 
@@ -378,7 +610,7 @@ namespace Dynamo.Commands
         }
     }
 
-    public class ShowSplashScreenCommand : ICommand
+  public class ShowSplashScreenCommand : ICommand
     {
         public ShowSplashScreenCommand()
         {
@@ -523,7 +755,30 @@ namespace Dynamo.Commands
                 node.NodeUI.GUID = (Guid)data["guid"];
             }
 
-            Point dropPt = new Point((double)data["x"], (double)data["y"]);
+            // by default place node at center
+            var x = dynSettings.Bench.outerCanvas.ActualWidth/2.0;
+            var y = dynSettings.Bench.outerCanvas.ActualHeight/2.0;
+            var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
+               
+            if ( data.ContainsKey("x") )
+                x = (double) data["x"];
+
+            if ( data.ContainsKey("y") )
+                y = (double) data["y"];
+                
+            Point dropPt = new Point(x, y);
+
+            // Transform dropPt from outerCanvas space into zoomCanvas space
+            if ( transformFromOuterCanvas )
+            {
+                var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
+                dropPt = a.Transform(dropPt);
+            }
+
+            // center the node at the drop point
+            dropPt.X -= (el.Width / 2.0);
+            dropPt.Y -= (el.Height / 2.0);
+
             Canvas.SetLeft(el, dropPt.X);
             Canvas.SetTop(el, dropPt.Y);
 
@@ -703,7 +958,7 @@ namespace Dynamo.Commands
                 nodeLookup.Add(node.GUID, newGuid);
 
                 Dictionary<string, object> nodeData = new Dictionary<string, object>();
-                nodeData.Add("x", Canvas.GetLeft(node) + 100);
+                nodeData.Add("x", Canvas.GetLeft(node));
                 nodeData.Add("y", Canvas.GetTop(node) + 100);
                 nodeData.Add("name", node.NickName);
                 nodeData.Add("guid", newGuid);
@@ -874,6 +1129,430 @@ namespace Dynamo.Commands
                 return false;
             }
 
+            return true;
+        }
+    }
+
+    public class ShowConsoleCommand : ICommand
+    {
+        public ShowConsoleCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            if (dynSettings.Bench.ConsoleShowing)
+            {
+                dynSettings.Bench.consoleRow.Height = new GridLength(0.0);
+                dynSettings.Bench.ConsoleShowing = false;
+            }
+            else
+            {
+                dynSettings.Bench.consoleRow.Height = new GridLength(100.0);
+                dynSettings.Bench.ConsoleShowing = true;
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class CancelRunCommand : ICommand
+    {
+        public CancelRunCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.RunCancelled = true;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class SaveAsCommand : ICommand
+    {
+        public SaveAsCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.SaveAs();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class SaveCommand : ICommand
+    {
+        public SaveCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.Save();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class OpenCommand : ICommand
+    {
+        public OpenCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            //string xmlPath = "C:\\test\\myWorkbench.xml";
+            string xmlPath = "";
+
+            System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
+            {
+                Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
+            };
+
+            if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                xmlPath = openDialog.FileName;
+            }
+
+            if (!string.IsNullOrEmpty(xmlPath))
+            {
+                if (dynSettings.Bench.UILocked)
+                {
+                    dynSettings.Controller.QueueLoad(xmlPath);
+                    return;
+                }
+
+                dynSettings.Bench.LockUI();
+
+                if (!dynSettings.Controller.OpenDefinition(xmlPath))
+                {
+                    //MessageBox.Show("Workbench could not be opened.");
+                    dynSettings.Bench.Log("Workbench could not be opened.");
+
+                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    //dynSettings.Writer.WriteLine(xmlPath);
+
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                        DynamoCommands.WriteToLogCmd.Execute(xmlPath);
+                    }
+                }
+                dynSettings.Bench.UnlockUI();
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class HomeCommand : ICommand
+    {
+        public HomeCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.ViewHomeWorkspace();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class SaveImageCommand : ICommand
+    {
+        public SaveImageCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "PNG Image|*.png";
+            sfd.Title = "Save your Workbench to an Image";
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string imagePath = sfd.FileName;
+
+                Transform trans = dynSettings.Workbench.LayoutTransform;
+                dynSettings.Workbench.LayoutTransform = null;
+                Size size = new Size(dynSettings.Workbench.Width, dynSettings.Workbench.Height);
+                dynSettings.Workbench.Measure(size);
+                dynSettings.Workbench.Arrange(new Rect(size));
+
+                //calculate the necessary width and height
+                double width = 0;
+                double height = 0;
+                foreach (dynNodeUI n in dynSettings.Controller.Nodes.Select(x => x.NodeUI))
+                {
+                    Point relativePoint = n.TransformToAncestor(dynSettings.Workbench)
+                          .Transform(new Point(0, 0));
+
+                    width = Math.Max(relativePoint.X + n.Width, width);
+                    height = Math.Max(relativePoint.Y + n.Height, height);
+                }
+
+                Rect rect = VisualTreeHelper.GetDescendantBounds(dynSettings.Bench.border);
+
+                RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right + 50,
+                  (int)rect.Bottom + 50, 96, 96, System.Windows.Media.PixelFormats.Default);
+                rtb.Render(dynSettings.Workbench);
+                //endcode as PNG
+                BitmapEncoder pngEncoder = new PngBitmapEncoder();
+                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+                using (var stm = System.IO.File.Create(sfd.FileName))
+                {
+                    pngEncoder.Save(stm);
+                }
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class LayoutAllCommand : ICommand
+    {
+        public LayoutAllCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Bench.LockUI();
+            dynSettings.Controller.CleanWorkbench();
+
+            double x = 0;
+            double y = 0;
+            double maxWidth = 0;    //track max width of current column
+            double colGutter = 40;     //the space between columns
+            double rowGutter = 40;
+            int colCount = 0;
+
+            Hashtable typeHash = new Hashtable();
+
+            foreach (KeyValuePair<string, TypeLoadData> kvp in dynSettings.Controller.BuiltInTypesByNickname)
+            {
+                Type t = kvp.Value.Type;
+
+                object[] attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+
+                if (t.Namespace == "Dynamo.Nodes" &&
+                    !t.IsAbstract &&
+                    attribs.Length > 0 &&
+                    t.IsSubclassOf(typeof(dynNode)))
+                {
+                    NodeCategoryAttribute elCatAttrib = attribs[0] as NodeCategoryAttribute;
+
+                    List<Type> catTypes = null;
+
+                    if (typeHash.ContainsKey(elCatAttrib.ElementCategory))
+                    {
+                        catTypes = typeHash[elCatAttrib.ElementCategory] as List<Type>;
+                    }
+                    else
+                    {
+                        catTypes = new List<Type>();
+                        typeHash.Add(elCatAttrib.ElementCategory, catTypes);
+                    }
+
+                    catTypes.Add(t);
+                }
+            }
+
+            foreach (DictionaryEntry de in typeHash)
+            {
+                List<Type> catTypes = de.Value as List<Type>;
+
+                //add the name of the category here
+                //AddNote(de.Key.ToString(), x, y, Controller.CurrentSpace);
+                Dictionary<string, object> paramDict = new Dictionary<string, object>();
+                paramDict.Add("x", x);
+                paramDict.Add("y", y);
+                paramDict.Add("text", de.Key.ToString());
+                paramDict.Add("workspace", dynSettings.Controller.CurrentSpace);
+                DynamoCommands.AddNoteCmd.Execute(paramDict);
+
+                y += 60;
+
+                foreach (Type t in catTypes)
+                {
+                    object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+
+                    NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
+                    dynNode el = dynSettings.Controller.AddDynElement(
+                           t, elNameAttrib.Name, Guid.NewGuid(), x, y,
+                           dynSettings.Controller.CurrentSpace
+                        );
+
+                    el.DisableReporting();
+
+                    maxWidth = Math.Max(el.NodeUI.Width, maxWidth);
+
+                    colCount++;
+
+                    y += el.NodeUI.Height + rowGutter;
+
+                    if (colCount > 20)
+                    {
+                        y = 60;
+                        colCount = 0;
+                        x += maxWidth + colGutter;
+                        maxWidth = 0;
+                    }
+                }
+
+                y = 0;
+                colCount = 0;
+                x += maxWidth + colGutter;
+                maxWidth = 0;
+
+            }
+
+            dynSettings.Bench.UnlockUI();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ClearCommand : ICommand
+    {
+        public ClearCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Bench.LockUI();
+            dynSettings.Controller.CleanWorkbench();
+
+            //don't save the file path
+            dynSettings.Controller.CurrentSpace.FilePath = "";
+
+            dynSettings.Bench.UnlockUI();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ClearLogCommand : ICommand
+    {
+        public ClearLogCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Bench.sw.Flush();
+            dynSettings.Bench.sw.Close();
+            dynSettings.Bench.sw = new StringWriter();
+            dynSettings.Bench.LogText = dynSettings.Bench.sw.ToString();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
             return true;
         }
     }

@@ -61,6 +61,7 @@ namespace Dynamo.Nodes
         public const string REVIT_GEOM = "Revit Geometry";
         public const string REVIT_CURVES = "Revit Model Curves";
         public const string REVIT_DATUMS = "Revit Datums";
+        public const string REVIT_API = "Revit API";
         public const string COMMUNICATION = "Communication";
         public const string SCRIPTING = "Scripting";
         public const string STRINGS = "Strings";
@@ -1697,6 +1698,8 @@ namespace Dynamo.Nodes
                 OnChangeCommitted();
             }
             Pending = false;
+
+            dynSettings.Bench.mainGrid.Focus();
         }
 
         new public string Text
@@ -1738,7 +1741,6 @@ namespace Dynamo.Nodes
             if (e.Key == System.Windows.Input.Key.Return || e.Key == System.Windows.Input.Key.Enter)
             {
                 commit();
-                dynSettings.Bench.mainGrid.Focus();
             }
         }
 
@@ -1746,6 +1748,7 @@ namespace Dynamo.Nodes
         {
             commit();
         }
+
     }
 
     [IsInteractive(true)]
@@ -2046,6 +2049,8 @@ namespace Dynamo.Nodes
             {
                 if (NodeUI.elementCanvas.Children.Contains(displayBox))
                     NodeUI.elementCanvas.Children.Remove(displayBox);
+
+                dynSettings.Bench.mainGrid.Focus();
             };
 
             mintb = new dynTextBox();
