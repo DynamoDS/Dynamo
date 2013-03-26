@@ -150,6 +150,19 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 	i = 0
 	argList = []
 
+	if isCurveMember:
+		f.write('\t\t\tvar arg' + str(i) + '=((Curve)(args[' + str(i) +'] as Value.Container).Item);\n')
+		i+=1
+	elif isFaceMember:
+		f.write('\t\t\tvar arg' + str(i) + '=((Face)(args[' + str(i) +'] as Value.Container).Item);\n')
+		i+=1
+	elif isSolidMember:
+		f.write('\t\t\tvar arg' + str(i) + '=((Solid)(args[' + str(i) +'] as Value.Container).Item);\n')
+		i+=1
+	elif isFormMember:
+		f.write('\t\t\tvar arg' + str(i) + '=((Form)(args[' + str(i) +'] as Value.Container).Item);\n')
+		i+=1
+
 	for param in method_params:
 		if conversion_method(param) !='':
 			f.write('\t\t\tvar arg' + str(i) + '=' + conversion_method(param) + '(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
@@ -161,15 +174,6 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 		else:
 			argList.append('arg' + str(i))
 		i+=1
-
-	if isCurveMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Curve)(args[' + str(i) +'] as Value.Container).Item);\n')
-	elif isFaceMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Face)(args[' + str(i) +'] as Value.Container).Item);\n')
-	elif isSolidMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Solid)(args[' + str(i) +'] as Value.Container).Item);\n')
-	elif isFormMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Form)(args[' + str(i) +'] as Value.Container).Item);\n')
 
 	if isMethod or isProperty and len(method_params) > 0:
 		paramsStr = '(' +  ",".join(argList) + ")"
