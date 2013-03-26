@@ -19,16 +19,14 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo
 {
-
     public class DynamoController_Revit : DynamoController
     {
-        
         public DynamoUpdater Updater { get; private set; }
 
         PredicateTraverser checkManualTransaction;
         PredicateTraverser checkRequiresTransaction;
 
-        Dynamo.Nodes.PythonEngine.EvaluationDelegate oldPyEval;
+        Func<bool, string, object, Value> oldPyEval;
 
         public DynamoController_Revit(DynamoUpdater updater)
             : base()
@@ -90,7 +88,7 @@ namespace Dynamo
                 {
                     return Activator.CreateInstance(Binding, new object[] { name, boundObject });
                 };
-                
+
                 Action<string, object> AddToBindings = delegate(string name, object boundObject)
                 {
                     pyBindings.GetType().InvokeMember("Add", BindingFlags.InvokeMethod, null, pyBindings, new object[] { CreateBinding(name, boundObject) });
@@ -115,24 +113,36 @@ namespace Dynamo
 
                 var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
-                oldPyEval = evaluatorField.GetValue(null) as Dynamo.Nodes.PythonEngine.EvaluationDelegate;
+                oldPyEval = evaluatorField.GetValue(null) as Func<bool, string, object, Value>;
 
-                Dynamo.Nodes.PythonEngine.EvaluationDelegate evaluator = evaluate;
-                evaluatorField.SetValue(null, evaluator);
+                //var x = PythonEngine.GetMembers();
+                //foreach (var y in x)
+                //    Console.WriteLine(y);
+
+                var evalDelegateType = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine+EvaluationDelegate");
+
+                Delegate d = Delegate.CreateDelegate(
+                    evalDelegateType,
+                    this,
+                    typeof(DynamoController_Revit)
+                        .GetMethod("newEval", BindingFlags.NonPublic | BindingFlags.Instance));
+
+                evaluatorField.SetValue(
+                    null,
+                    d);
 
                 // use this to pass into the python script a list of previously created elements from dynamo
                 //TODO: ADD BACK IN
                 //bindings.Add(new Binding("DynStoredElements", this.Elements));
             }
-            catch(Exception e) 
+            catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
         }
-        #endregion
 
-        private Value evaluate(bool dirty, string script, IEnumerable<Dynamo.Nodes.Binding> bindings)
+        Value newEval(bool dirty, string script, object bindings)
         {
             bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
 
@@ -171,6 +181,7 @@ namespace Dynamo
 
             return result;
         }
+        #endregion
 
         #region Watch Node Revit Hooks
         void AddWatchNodeHandler()
