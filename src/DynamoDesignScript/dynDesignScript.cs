@@ -72,6 +72,9 @@ namespace Dynamo.Nodes
             NodeUI.RegisterAllPorts();
 
             NodeUI.UpdateLayout();
+
+            Autodesk.ASM.State.Start();
+            Autodesk.ASM.State.StartViewer();
         }
 
         public override bool RequiresRecalc
@@ -108,6 +111,8 @@ namespace Dynamo.Nodes
             else
                 coreSet = true;
 
+            GLPersistentManager.StartTrackingObjects();
+
             core = new ProtoCore.Core(new ProtoCore.Options());
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
@@ -119,7 +124,12 @@ namespace Dynamo.Nodes
 
             ExecutionMirror mirror = fsr.Execute(script, core);
 
-            return Value.NewContainer(true);
+            List<Autodesk.DesignScript.Interfaces.IDesignScriptEntity> entities =
+                GLPersistentManager.PersistedObjects();
+
+            int num = entities.Count;
+
+            return Value.NewContainer(num);
         }
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)

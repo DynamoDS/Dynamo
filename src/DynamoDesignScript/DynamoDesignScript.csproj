@@ -33,24 +33,37 @@
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
-    <Reference Include="ManagedAsmGeometry">
-      <HintPath>..\..\extern\DesignScript\Release\ManagedAsmGeometry.dll</HintPath>
+    <Reference Include="ManagedAsmGeometry, Version=1.0.4833.4933, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\ManagedAsmGeometry.dll</HintPath>
+    </Reference>
+    <Reference Include="ManagedAsmPersistentManager, Version=1.0.4833.4934, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\ManagedAsmPersistentManager.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="ProtoAssociative">
-      <HintPath>..\..\extern\DesignScript\Release\ProtoAssociative.dll</HintPath>
+    <Reference Include="ProtoAssociative, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=033bb90092e920f1, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\ProtoAssociative.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoCore">
-      <HintPath>..\..\extern\DesignScript\Release\ProtoCore.dll</HintPath>
+    <Reference Include="ProtoCore, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=3dcef168889f4ae5, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\ProtoCore.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoImperative">
-      <HintPath>..\..\extern\DesignScript\Release\ProtoImperative.dll</HintPath>
+    <Reference Include="ProtoImperative, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=c105c91cdd939850, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\ProtoImperative.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoScript">
-      <HintPath>..\..\extern\DesignScript\Release\ProtoScript.dll</HintPath>
+    <Reference Include="ProtoInterface, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=c656126677b5691e, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoScript, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=59290779bfb1c866, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\ProtoScript.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
