@@ -1800,7 +1800,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.RoofType)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.RoofType));
 			var arg3=(Autodesk.Revit.DB.ModelCurveArray)DynamoTypeConverter.ConvertInput(args[3],typeof(Autodesk.Revit.DB.ModelCurveArray));
 			var result = dynRevitSettings.Doc.Document.Create.NewFootPrintRoof(arg0,arg1,arg2,out arg3);
-			return DynamoTypeConverter.ConvertToValue(result);
+			return DynamoTypeConverter.ConvertToValue(arg3);
 		}
 	}
 
@@ -3517,7 +3517,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.Curve));
 			var arg2=(Autodesk.Revit.DB.IntersectionResultArray)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.IntersectionResultArray));
 			var result = ((Face)(args[0] as Value.Container).Item).Intersect(arg1,out arg2);
-			return DynamoTypeConverter.ConvertToValue(result);
+			return DynamoTypeConverter.ConvertToValue(arg2);
 		}
 	}
 
@@ -3561,7 +3561,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.UV)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.UV));
 			var arg2=(Autodesk.Revit.DB.IntersectionResult)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.IntersectionResult));
 			var result = ((Face)(args[0] as Value.Container).Item).IsInside(arg1,out arg2);
-			return DynamoTypeConverter.ConvertToValue(result);
+			return DynamoTypeConverter.ConvertToValue(arg2);
 		}
 	}
 
@@ -7529,7 +7529,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.Curve));
 			var arg2=(Autodesk.Revit.DB.IntersectionResultArray)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.IntersectionResultArray));
 			var result = ((Curve)(args[0] as Value.Container).Item).Intersect(arg1,out arg2);
-			return DynamoTypeConverter.ConvertToValue(result);
+			return DynamoTypeConverter.ConvertToValue(arg2);
 		}
 	}
 
@@ -7573,7 +7573,7 @@ namespace Dynamo.Nodes
 			var arg1=(System.Double)DynamoTypeConverter.ConvertInput(args[1],typeof(System.Double));
 			var arg2=(System.Int32)DynamoTypeConverter.ConvertInput(args[2],typeof(System.Int32));
 			var result = ((Curve)(args[0] as Value.Container).Item).IsInside(arg1,out arg2);
-			return DynamoTypeConverter.ConvertToValue(result);
+			return DynamoTypeConverter.ConvertToValue(arg2);
 		}
 	}
 

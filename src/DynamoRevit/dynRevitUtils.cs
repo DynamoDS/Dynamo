@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Autodesk.Revit.DB;
+using Dynamo.FSchemeInterop;
 
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
@@ -256,6 +257,29 @@ namespace Dynamo.Utilities
             else if (input.GetType() == typeof(bool))
             {
                 return Value.NewNumber(System.Convert.ToInt16(input));
+            }
+            else if (input.GetType() == typeof(IntersectionResultArray))
+            {
+                // for interesection results, send out two lists
+                // a list for the XYZs and one for the UVs
+                List<Value> xyzs = new List<Value>();
+                List<Value> uvs = new List<Value>();
+                
+                foreach (IntersectionResult ir in (IntersectionResultArray)input)
+                {
+                    xyzs.Add(Value.NewContainer(ir.XYZPoint));
+                    uvs.Add(Value.NewContainer(ir.UVPoint));
+                }
+
+                FSharpList<Value> result = FSharpList<Value>.Empty;
+                result = FSharpList<Value>.Cons(
+                           Value.NewList(Utils.SequenceToFSharpList(uvs)),
+                           result);
+                result = FSharpList<Value>.Cons(
+                           Value.NewList(Utils.SequenceToFSharpList(xyzs)),
+                           result);
+
+                return Value.NewList(result);
             }
             else
             {

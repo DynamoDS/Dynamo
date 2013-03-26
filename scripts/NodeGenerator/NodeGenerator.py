@@ -163,6 +163,8 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 		f.write('\t\t\tvar arg' + str(i) + '=(Form)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Form));\n')
 		i+=1
 
+	outMember = ''
+
 	for param in method_params:
 		# if conversion_method(param) !='':
 		# 	f.write('\t\t\tvar arg' + str(i) + '=' + conversion_method(param) + '(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
@@ -173,6 +175,7 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 
 		if '@' in param:
 			argList.append('out arg' + str(i))
+			outMember = 'arg' + str(i) #flag this out value so we can return it
 		else:
 			argList.append('arg' + str(i))
 		i+=1
@@ -187,16 +190,25 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 		f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
 		f.write('\t\t\t{\n')
 		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall + paramsStr + ';\n')
-		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		if outMember != '':
+			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		else:
+			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 		f.write('\t\t\t}\n')
 		f.write('\t\t\telse\n')
 		f.write('\t\t\t{\n')
 		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall + paramsStr + ';\n')
-		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		if outMember != '':
+			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		else:
+			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 		f.write('\t\t\t}\n')
 	else:
 		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
-		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		if outMember != '':
+			f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		else:
+			f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 
 
 	f.write('\t\t}\n')
