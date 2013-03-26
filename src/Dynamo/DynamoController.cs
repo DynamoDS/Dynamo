@@ -147,7 +147,7 @@ namespace Dynamo
             Bench = new dynBench(this);
 
             SearchController = new SearchController(Bench);
-            PackageManagerClient = new PackageManagerClient();
+            PackageManagerClient = new PackageManagerClient(this);
             PackageManagerLoginController = new PackageManagerLoginController(Bench, PackageManagerClient);
 
             homeSpace = CurrentSpace = new HomeWorkspace();
@@ -1008,12 +1008,97 @@ namespace Dynamo
             }
         }
 
+        // PB: this will be moved elsewhere, useful for early package manager work
+        public XmlDocument GetXmlFromWorkspace(dynWorkspace workSpace)
+        {
+            try
+            {
+                //create the xml document
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.CreateXmlDeclaration("1.0", null, null);
+
+                XmlElement root = xmlDoc.CreateElement("dynWorkspace");  //write the root element
+                root.SetAttribute("X", workSpace.PositionX.ToString());
+                root.SetAttribute("Y", workSpace.PositionY.ToString());
+
+                if (workSpace != this.homeSpace) //If we are not saving the home space
+                {
+                    root.SetAttribute("Name", workSpace.Name);
+                    root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
+                }
+
+                xmlDoc.AppendChild(root);
+
+                XmlElement elementList = xmlDoc.CreateElement("dynElements");  //write the root element
+                root.AppendChild(elementList);
+
+                foreach (dynNode el in workSpace.Nodes)
+                {
+                    XmlElement dynEl = xmlDoc.CreateElement(el.GetType().ToString());
+                    elementList.AppendChild(dynEl);
+
+                    //set the type attribute
+                    dynEl.SetAttribute("type", el.GetType().ToString());
+                    dynEl.SetAttribute("guid", el.NodeUI.GUID.ToString());
+                    dynEl.SetAttribute("nickname", el.NodeUI.NickName);
+                    dynEl.SetAttribute("x", Canvas.GetLeft(el.NodeUI).ToString());
+                    dynEl.SetAttribute("y", Canvas.GetTop(el.NodeUI).ToString());
+
+                    el.SaveElement(xmlDoc, dynEl);
+                }
+
+                //write only the output connectors
+                XmlElement connectorList = xmlDoc.CreateElement("dynConnectors");  //write the root element
+                root.AppendChild(connectorList);
+
+                foreach (dynNode el in workSpace.Nodes)
+                {
+                    foreach (var port in el.NodeUI.OutPorts)
+                    {
+                        foreach (dynConnector c in port.Connectors.Where(c => c.Start != null && c.End != null))
+                        {
+                            XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
+                            connectorList.AppendChild(connector);
+                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
+                            connector.SetAttribute("start_index", c.Start.Index.ToString());
+                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
+                            connector.SetAttribute("end_index", c.End.Index.ToString());
+
+                            if (c.End.PortType == PortType.INPUT)
+                                connector.SetAttribute("portType", "0");
+                        }
+                    }
+                }
+
+                //save the notes
+                XmlElement noteList = xmlDoc.CreateElement("dynNotes");  //write the root element
+                root.AppendChild(noteList);
+                foreach (dynNote n in workSpace.Notes)
+                {
+                    XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
+                    noteList.AppendChild(note);
+                    note.SetAttribute("text", n.noteText.Text);
+                    note.SetAttribute("x", Canvas.GetLeft(n).ToString());
+                    note.SetAttribute("y", Canvas.GetTop(n).ToString());
+                }
+
+                return xmlDoc;
+
+            }
+            catch (Exception ex)
+            {
+                Bench.Log(ex);
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                return null;
+            }
+
+        } 
+
         bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
         {
             Bench.Log("Saving " + xmlPath + "...");
             try
             {
-                //create the xml document
                 //create the xml document
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);

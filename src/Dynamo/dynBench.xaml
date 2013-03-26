@@ -134,7 +134,13 @@
           <MenuItem Name="settings_plines" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
         </MenuItem>
-        
+
+        <MenuItem Header="_Package Manager" IsEnabled="True">
+          <MenuItem Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.PackageManagerShowLoginCmd}}"  Name="showLogin" />
+          <MenuItem Header="_Get Available" Command="{Binding Source={x:Static commands:DynamoCommands.GetAvailableCmd}}"  Name="getAvailable" />
+          <MenuItem Header="_Publish Selected" Command="{Binding Source={x:Static commands:DynamoCommands.UploadSelectedCommand}}"  Name="publishSelected" />
+        </MenuItem>
+
       </MenuItem>
       <MenuItem Header="Help">
         <MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>

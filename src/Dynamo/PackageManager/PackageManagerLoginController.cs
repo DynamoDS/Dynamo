@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.PackageManager;
 using Dynamo.Search;
@@ -27,9 +28,13 @@ namespace Dynamo.Nodes.PackageManager
 
         public void LoginButtonClick(object sender, RoutedEventArgs e)
         {
-            View.webBrowser.Source = AuthorizeUrl = Client.Client.GetRequestTokenAndAuthorize();
-        }
 
+            Client.Client.GetRequestTokenAsync((uri, token) => View.Dispatcher.Invoke((Action) (() =>
+                {
+                    this.AuthorizeUrl = this.View.webBrowser.Source = uri;
+                })));
+        }
+        
         public void WebBrowserNavigatedEvent(object sender, NavigationEventArgs e)
         {
             View.webBrowser.Visibility = Visibility.Visible;
@@ -37,7 +42,10 @@ namespace Dynamo.Nodes.PackageManager
             if (View.webBrowser.Source.AbsoluteUri.IndexOf("Allow") > -1)
             {
                 View.Visibility = Visibility.Hidden;
-                Client.Client.GetAccessToken(); // show pending progress
+                Client.Client.GetAccessTokenAsync( (s) =>
+                    {
+                        Client.Client.IsAuthenticatedAsync((authed) => Console.WriteLine(authed)); // TODO: get rid of this stuff
+                    });
             }
         }
 

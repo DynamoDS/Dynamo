@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 
 namespace Dynamo.Commands
@@ -52,7 +53,15 @@ namespace Dynamo.Commands
                 init = true;
             }
 
-            ui.Visibility = Visibility.Visible;
+            if (ui.Visibility == Visibility.Visible)
+            {
+                ui.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ui.Visibility = Visibility.Visible;
+            }
+           
         }
 
         public event EventHandler CanExecuteChanged
@@ -76,7 +85,7 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            Dynamo.Utilities.dynSettings.PackageManagerClient.GetAvailable();
+            Dynamo.Utilities.dynSettings.Controller.PackageManagerClient.RefreshAvailable();
         }
 
         public event EventHandler CanExecuteChanged
@@ -91,12 +100,59 @@ namespace Dynamo.Commands
         }
     }
 
+    public class PackageManagerUploadSelectedCommand : ICommand
+    {
+        private PackageManagerClient _client;
+
+        public PackageManagerUploadSelectedCommand()
+        {
+
+        }
+
+        public void Execute(object parameters)
+        {
+           this._client = dynSettings.Controller.PackageManagerClient;
+
+           if (!this._client.Client.IsAuthenticated())
+           {
+               Console.WriteLine("Not authenticated");
+               return;
+           }
+           else
+           {
+               Console.WriteLine(this._client.Publish(_client.GetPackageUploadFromCurrentWorkspace()));
+           }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            // todo: should check authentication state, connected to internet
+            return true;
+        }
+    }
+
 
     public static partial class DynamoCommands
     {
 
-        private static Dynamo.Commands.PackageManagerGetAvailableCommand getAvailableCmd;
+        private static Dynamo.Commands.PackageManagerUploadSelectedCommand uploadSelectedCmd;
+        public static Dynamo.Commands.PackageManagerUploadSelectedCommand UploadSelectedCommand
+        {
+            get
+            {
+                if (uploadSelectedCmd == null)
+                    uploadSelectedCmd = new Dynamo.Commands.PackageManagerUploadSelectedCommand();
+                return uploadSelectedCmd;
+            }
+        }
 
+        private static Dynamo.Commands.PackageManagerGetAvailableCommand getAvailableCmd;
         public static Dynamo.Commands.PackageManagerGetAvailableCommand GetAvailableCmd
         {
             get
@@ -108,7 +164,6 @@ namespace Dynamo.Commands
         }
 
         private static Dynamo.Commands.PackageManagerShowLoginCommand packageManagerShowLoginCmd;
-
         public static Dynamo.Commands.PackageManagerShowLoginCommand PackageManagerShowLoginCmd
         {
             get
@@ -120,7 +175,6 @@ namespace Dynamo.Commands
         }
 
         private static Dynamo.Commands.PackageManagerLoginCommand loginCmd;
-
         public static Dynamo.Commands.PackageManagerLoginCommand LoginCmd
         {
             get
