@@ -309,7 +309,8 @@ namespace Dynamo.Nodes
         {
             int lastPointColor = Points.Count() - 1;//master Point list for color assignment
             var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
-            Points[lastPointColor].Add(ptVis);
+            //Points[lastPointColor].Add(ptVis);
+            Points[0].Add(ptVis);
         }
 
         private void DrawCurve(Curve c)
