@@ -12,9 +12,13 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Utilities
 {
-    public static class dynRevitUtils
+
+    /// <summary>
+    /// Used with the Auto-generator. Allows automatic conversion of inputs and outputs
+    /// </summary>
+    public static class DynamoTypeConverter
     {
-        public static ReferenceArrayArray ConvertFSharpListListToReferenceArrayArray(FSharpList<Value> lstlst)
+        private static ReferenceArrayArray ConvertFSharpListListToReferenceArrayArray(FSharpList<Value> lstlst)
         {
             ReferenceArrayArray refArrArr = new ReferenceArrayArray();
             foreach (Value v in lstlst)
@@ -41,7 +45,7 @@ namespace Dynamo.Utilities
                 var p = (vInner as Value.Container).Item as Point;
                 var c = (vInner as Value.Container).Item as Curve;
                 var rp = (vInner as Value.Container).Item as ReferencePlane;
-                
+
                 if (mc != null)
                     refArr.Append(mc.GeometryCurve.Reference);
                 else if (f != null)
@@ -53,20 +57,20 @@ namespace Dynamo.Utilities
                 else if (c != null)
                     refArr.Append(rp.Reference);
             }
-            
+
         }
 
-        public static ReferenceArray ConvertFSharpListListToReferenceArray(FSharpList<Value> lstlst)
+        private static ReferenceArray ConvertFSharpListListToReferenceArray(FSharpList<Value> lstlst)
         {
             ReferenceArray refArr = new ReferenceArray();
 
             AddReferencesToArray(refArr, lstlst);
-            
+
             return refArr;
 
         }
 
-        public static CurveArrArray ConvertFSharpListListToCurveArrayArray(FSharpList<Value> lstlst)
+        private static CurveArrArray ConvertFSharpListListToCurveArrayArray(FSharpList<Value> lstlst)
         {
             CurveArrArray crvArrArr = new CurveArrArray();
             foreach (Value v in lstlst)
@@ -82,7 +86,7 @@ namespace Dynamo.Utilities
             return crvArrArr;
         }
 
-        public static CurveArray ConvertFSharpListListToCurveArray(FSharpList<Value> lstlst)
+        private static CurveArray ConvertFSharpListListToCurveArray(FSharpList<Value> lstlst)
         {
             CurveArray crvArr = new CurveArray();
 
@@ -103,14 +107,7 @@ namespace Dynamo.Utilities
             }
 
         }
-
-    }
-
-    /// <summary>
-    /// Used with the Auto-generator. Allows automatic conversion of inputs and outputs
-    /// </summary>
-    public static class DynamoTypeConverter
-    {
+        
         public static object ConvertInput(Value input, Type output)
         {
             if (input.IsContainer)
@@ -218,19 +215,19 @@ namespace Dynamo.Utilities
 
                 if (output == typeof(ReferenceArrayArray))
                 {
-                    return dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(a);
+                    return DynamoTypeConverter.ConvertFSharpListListToReferenceArrayArray(a);
                 }
                 else if (output == typeof(ReferenceArray))
                 {
-                    return dynRevitUtils.ConvertFSharpListListToReferenceArray(a);
+                    return DynamoTypeConverter.ConvertFSharpListListToReferenceArray(a);
                 }
                 else if (output == typeof(CurveArrArray))
                 {
-                    return dynRevitUtils.ConvertFSharpListListToCurveArray(a);
+                    return DynamoTypeConverter.ConvertFSharpListListToCurveArray(a);
                 }
                 else if (output == typeof(CurveArray))
                 {
-                    return dynRevitUtils.ConvertFSharpListListToCurveArray(a);
+                    return DynamoTypeConverter.ConvertFSharpListListToCurveArray(a);
                 }
 
                 return a;
