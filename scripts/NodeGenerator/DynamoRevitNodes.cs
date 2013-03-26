@@ -13,6 +13,48 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
+	[NodeName("Revit Solid_GetBoundingBox")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Retrieves a box that circumscribes the solid geometry.")]
+	public class Revit_Solid_GetBoundingBox : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Solid_GetBoundingBox()
+		{
+			InPortData.Add(new PortData("s", "The solid.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=((Solid)(args[0] as Value.Container).Item);
+			var result = ((Solid)(args[0] as Value.Container).Item).GetBoundingBox();
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Solid_IntersectWithCurve")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Calculates and returns the intersection between a curve and this solid.")]
+	public class Revit_Solid_IntersectWithCurve : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Solid_IntersectWithCurve()
+		{
+			InPortData.Add(new PortData("crv", "The curve.",typeof(object)));
+			InPortData.Add(new PortData("val", "The options.  If NULL, the default options will be used.",typeof(object)));
+			InPortData.Add(new PortData("s", "The solid.",typeof(object)));
+			OutPortData.Add(new PortData("out","The intersection results.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.SolidCurveIntersectionOptions)((Value.Container)args[1]).Item;
+			var arg2=((Solid)(args[2] as Value.Container).Item);
+			var result = ((Solid)(args[0] as Value.Container).Item).IntersectWithCurve(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit Solid_ComputeCentroid")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Centroid of this solid.")]
@@ -1352,27 +1394,6 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit CurtainSystem_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new CurtainSystem element from a set of face references.")]
-	public class Revit_CurtainSystem_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_CurtainSystem_1()
-		{
-			InPortData.Add(new PortData("refa", "The faces new CurtainSystem will be created on.",typeof(object)));
-			InPortData.Add(new PortData("val", "The Type of CurtainSystem to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","A set of CurtainSystems will be returned when the operation succeeds.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.CurtainSystemType)((Value.Container)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewCurtainSystem(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
 	[NodeName("Revit Wire")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new wire element.")]
@@ -1512,26 +1533,6 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit Spaces")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a set of new unplaced spaces on a given phase.")]
-	public class Revit_Spaces : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Spaces()
-		{
-			InPortData.Add(new PortData("val", "The phase in which the spaces are to exist.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful, a set if new unplaced spaces are be returned, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Phase)((Value.Container)args[0]).Item;
-			var arg1=(System.Int32)((Value.Number)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewSpaces(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
 	[NodeName("Revit Spaces2_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new spaces on the available plan circuits of a the given level.")]
@@ -1551,29 +1552,6 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpaces2(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Spaces_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates new spaces on the available plan circuits of a the given level.")]
-	public class Revit_Spaces_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Spaces_1()
-		{
-			InPortData.Add(new PortData("l", "The level on which the spaces is to exist.",typeof(object)));
-			InPortData.Add(new PortData("val", "The phase in which the spaces is to exist.",typeof(object)));
-			InPortData.Add(new PortData("v", "The view on which the space tags for the spaces are to display.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful an Element set which contains the rooms should be returned, otherwise the exception will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewSpaces(arg0,arg1,arg2);
 			return Value.NewContainer(result);
 		}
 	}
@@ -1710,31 +1688,10 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit ElectricalSystem_1")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new MEP Electrical System element from a set of electrical components.")]
+	[NodeDescription("Creates a new MEP Electrical System element from an unused Connector.")]
 	public class Revit_ElectricalSystem_1 : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_ElectricalSystem_1()
-		{
-			InPortData.Add(new PortData("val", "The electrical components in this system.",typeof(object)));
-			InPortData.Add(new PortData("ett", "The System Type of electrical system.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new MEP Electrical System element within the project, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.ElementSet)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Electrical.ElectricalSystemType)((Value.Container)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewElectricalSystem(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ElectricalSystem_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new MEP Electrical System element from an unused Connector.")]
-	public class Revit_ElectricalSystem_2 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ElectricalSystem_2()
 		{
 			InPortData.Add(new PortData("con", "The Connector to create this Electrical System.",typeof(object)));
 			InPortData.Add(new PortData("ett", "The System Type of electrical system.",typeof(object)));
@@ -1889,28 +1846,6 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit AreaViewPlan")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new view for the new area.")]
-	public class Revit_AreaViewPlan : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_AreaViewPlan()
-		{
-			InPortData.Add(new PortData("s", "The name of new created view",typeof(object)));
-			InPortData.Add(new PortData("l", "The type of area element",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(System.String)((Value.String)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.AreaElemType)((Value.Container)args[2]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewAreaViewPlan(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
 	[NodeName("Revit AreaBoundaryLine")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new boundary line as an Area border.")]
@@ -1989,7 +1924,7 @@ namespace Dynamo.Nodes
 	{
 		public Revit_Tag()
 		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("v", "The view in which the tag is to be visible.",typeof(object)));
 			InPortData.Add(new PortData("el", "The host object of tag.",typeof(object)));
 			InPortData.Add(new PortData("b", "Whether there will be a leader.",typeof(object)));
 			InPortData.Add(new PortData("val", "The mode of the tag. Add by Category, add by Multi-Category, or add by material.",typeof(object)));
@@ -2286,7 +2221,7 @@ namespace Dynamo.Nodes
 		public Revit_BeamSystem()
 		{
 			InPortData.Add(new PortData("crvs", "The profile of the BeamSystem. The profile must be a closed curve loop in the level.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the BeamSystem is to be created. The work plane of the BeamSystem will be the ketch plane associated with the Level.If there is no current sketch plane associated with the level yet, we will create a default one.",typeof(object)));
+			InPortData.Add(new PortData("l", "The level on which the BeamSystem is to be created. The work plane of the BeamSystem will be the sketch plane associated with the Level.If there is no current sketch plane associated with the level yet, we will create a default one.",typeof(object)));
 			InPortData.Add(new PortData("xyz", "The direction is the direction of the BeamSystem. This argument is optional – may be null.",typeof(object)));
 			InPortData.Add(new PortData("b", "Whether the BeamSystem is 3D or not",typeof(object)));
 			OutPortData.Add(new PortData("out","If successful a new BeamSystem object will be returned, otherwise",typeof(object)));
@@ -2311,7 +2246,7 @@ namespace Dynamo.Nodes
 		public Revit_BeamSystem_1()
 		{
 			InPortData.Add(new PortData("crvs", "The profile of the BeamSystem. The profile must be a closed curve loop in the level.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the BeamSystem is to be created. The work plane of the BeamSystem will be the ketch plane associated with the Level.If there is no current sketch plane associated with the level yet, we will create a default one.",typeof(object)));
+			InPortData.Add(new PortData("l", "The level on which the BeamSystem is to be created. The work plane of the BeamSystem will be the sketch plane associated with the Level.If there is no current sketch plane associated with the level yet, we will create a default one.",typeof(object)));
 			OutPortData.Add(new PortData("out","If successful a new BeamSystem object will be returned, otherwise",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
@@ -2372,10 +2307,33 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit RoomTag")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new RoomTag.")]
+	[NodeDescription("Creates a new RoomTag referencing a room in the host model or in a Revit link.")]
 	public class Revit_RoomTag : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_RoomTag()
+		{
+			InPortData.Add(new PortData("val", "The HostOrLinkElementId of the Room.",typeof(object)));
+			InPortData.Add(new PortData("uv", "A 2D point that defines the tag location on the level of the room.",typeof(object)));
+			InPortData.Add(new PortData("val", "The id of the view where the tag will be shown. If",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful a RoomTag object will be returned, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.LinkElementId)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.ElementId)((Value.Container)args[2]).Item;
+			var result = dynRevitSettings.Doc.Document.Create.NewRoomTag(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit RoomTag_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new RoomTag.")]
+	public class Revit_RoomTag_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_RoomTag_1()
 		{
 			InPortData.Add(new PortData("val", "The Room which the tag refers.",typeof(object)));
 			InPortData.Add(new PortData("uv", "A 2D point that dictates the location on the level of the room.",typeof(object)));
@@ -2450,86 +2408,6 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRooms2(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Rooms")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates new unplaced rooms in the given phase.")]
-	public class Revit_Rooms : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Rooms()
-		{
-			InPortData.Add(new PortData("val", "The phase on which the rooms are to exist.",typeof(object)));
-			InPortData.Add(new PortData("i", "The number of the rooms to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful an Element set which contain the rooms should be returned, otherwise the exception will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Phase)((Value.Container)args[0]).Item;
-			var arg1=(System.Int32)((Value.Number)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewRooms(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Rooms_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the given phase.")]
-	public class Revit_Rooms_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Rooms_1()
-		{
-			InPortData.Add(new PortData("l", "The level from which the circuits are found.",typeof(object)));
-			InPortData.Add(new PortData("val", "The phase on which the room is to exist.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful an Element set which contains the rooms should be returned, otherwise the exception will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewRooms(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Rooms_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the last phase.")]
-	public class Revit_Rooms_2 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Rooms_2()
-		{
-			InPortData.Add(new PortData("l", "The level from which the circuits are found.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful an Element set which contain the rooms created should be returned, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewRooms(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Rooms_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates new rooms using the specified placement data.")]
-	public class Revit_Rooms_3 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Rooms_3()
-		{
-			InPortData.Add(new PortData("val", "A list of RoomCreationData which wraps the creation arguments of the rooms to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful an ElementSet contains the rooms should be returned, otherwise the exception will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(List<Autodesk.Revit.Creation.RoomCreationData>)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewRooms(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -2784,171 +2662,6 @@ namespace Dynamo.Nodes
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewFloor(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Walls")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates profile walls within the project.")]
-	public class Revit_Walls : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Walls()
-		{
-			InPortData.Add(new PortData("val", "A list of ProfiledWallCreationData which wraps the creation arguments of the walls to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","If the creation is successful an ElementSet which contains the walls should be returned, otherwise the exception will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(List<Autodesk.Revit.Creation.ProfiledWallCreationData>)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewWalls(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Walls_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates rectangular walls within the project.")]
-	public class Revit_Walls_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Walls_1()
-		{
-			InPortData.Add(new PortData("val", "A list of RectangularWallCreationData which wraps the creation arguments of the walls to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","If the creation is successful an ElementSet which contains the walls should be returned, otherwise the exception will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(List<Autodesk.Revit.Creation.RectangularWallCreationData>)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewWalls(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Wall")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a non rectangular profile wall within the project using the specified wall type and normal vector.")]
-	public class Revit_Wall : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Wall()
-		{
-			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(object)));
-			InPortData.Add(new PortData("wt", "A wall type to be used by the new wall instead of the default type.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "A vector that must be perpendicular to the profile which dictates which side of the wall is consideredto be inside and outside.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new wall object within the project, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
-			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
-			var arg4=(Autodesk.Revit.DB.XYZ)((Value.Container)args[4]).Item;
-			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Wall_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a non rectangular profile wall within the project using the specified wall type.")]
-	public class Revit_Wall_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Wall_1()
-		{
-			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(object)));
-			InPortData.Add(new PortData("wt", "A wall type to be used by the new wall instead of the default type.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new wall object within the project, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
-			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
-			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Wall_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a non rectangular profile wall within the project using the default wall type.")]
-	public class Revit_Wall_2 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Wall_2()
-		{
-			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new wall object within the project, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
-			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
-			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Wall_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new rectangular profile wall within the project using the specified wall type, height, and offset.")]
-	public class Revit_Wall_3 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Wall_3()
-		{
-			InPortData.Add(new PortData("crv", "An arc or line representing the base line of the wall.",typeof(object)));
-			InPortData.Add(new PortData("wt", "A wall type to be used by the new wall instead of the default type.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("n", "The height of the wall other than the default height.",typeof(object)));
-			InPortData.Add(new PortData("n", "Modifies the wall's Base Offset parameter to determine its vertical placement.",typeof(object)));
-			InPortData.Add(new PortData("b", "Change which side of the wall is considered to be the inside and outside of the wall.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new wall object within the project, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
-			var arg3=(System.Double)((Value.Number)args[3]).Item;
-			var arg4=(System.Double)((Value.Number)args[4]).Item;
-			var arg5=Convert.ToBoolean(((Value.Number)args[5]).Item);
-			var arg6=Convert.ToBoolean(((Value.Number)args[6]).Item);
-			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Wall_4")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new rectangular profile wall within the project using the default wall style.")]
-	public class Revit_Wall_4 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Wall_4()
-		{
-			InPortData.Add(new PortData("crv", "An arc or line representing the base line of the wall.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new wall object within the project, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
-			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
-			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1,arg2);
 			return Value.NewContainer(result);
 		}
 	}
@@ -3500,10 +3213,54 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revit Face_Intersect")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Calculates the intersection of the specified curve with this face and returns the intersection results.")]
+	[NodeDescription("Calculates the intersection of the specified face with this face and returns the intersection results.")]
 	public class Revit_Face_Intersect : dynRevitTransactionNodeWithOneOutput
 	{
 		public Revit_Face_Intersect()
+		{
+			InPortData.Add(new PortData("f", "The specified face to intersect with this face.",typeof(object)));
+			InPortData.Add(new PortData("val", "A single Curve representing the intersection.",typeof(object)));
+			InPortData.Add(new PortData("f", "The face.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Face)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item;
+			var arg2=((Face)(args[2] as Value.Container).Item);
+			var result = ((Face)(args[0] as Value.Container).Item).Intersect(arg0,out arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Face_Intersect_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Calculates the intersection of the specified face with this face and returns the intersection results.")]
+	public class Revit_Face_Intersect_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Face_Intersect_1()
+		{
+			InPortData.Add(new PortData("f", "The specified face to intersect with this face.",typeof(object)));
+			InPortData.Add(new PortData("f", "The face.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Face)((Value.Container)args[0]).Item;
+			var arg1=((Face)(args[1] as Value.Container).Item);
+			var result = ((Face)(args[0] as Value.Container).Item).Intersect(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Face_Intersect_2")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Calculates the intersection of the specified curve with this face and returns the intersection results.")]
+	public class Revit_Face_Intersect_2 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Face_Intersect_2()
 		{
 			InPortData.Add(new PortData("crv", "The specified curve to intersect with this face.",typeof(object)));
 			InPortData.Add(new PortData("val", "Provides more information about the intersection.",typeof(object)));
@@ -3521,12 +3278,12 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit Face_Intersect_1")]
+	[NodeName("Revit Face_Intersect_3")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Calculates the intersection of the specified curve with this face.")]
-	public class Revit_Face_Intersect_1 : dynRevitTransactionNodeWithOneOutput
+	public class Revit_Face_Intersect_3 : dynRevitTransactionNodeWithOneOutput
 	{
-		public Revit_Face_Intersect_1()
+		public Revit_Face_Intersect_3()
 		{
 			InPortData.Add(new PortData("crv", "The specified curve to intersect with this face.",typeof(object)));
 			InPortData.Add(new PortData("f", "The face.",typeof(object)));
@@ -3883,1817 +3640,6 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit DividedSurface")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a DividedSurface element on one surface of another element.")]
-	public class Revit_DividedSurface : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_DividedSurface()
-		{
-			InPortData.Add(new PortData("ref", "Reference to a surface on an existing element. The elementmust be one of the following:",typeof(object)));
-			OutPortData.Add(new PortData("out","The newly created DividedSurface element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDividedSurface(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit CurveByPoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a 3d curve through two or more points in an AutodeskRevit family document.")]
-	public class Revit_CurveByPoints : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_CurveByPoints()
-		{
-			InPortData.Add(new PortData("val", "Two or more PointElements. The curve will interpolatethese points.",typeof(object)));
-			OutPortData.Add(new PortData("out","The newly created curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.ReferencePointArray)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ReferencePoint")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a reference point on an existing reference in an AutodeskRevit family document.")]
-	public class Revit_ReferencePoint : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ReferencePoint()
-		{
-			OutPortData.Add(new PortData("out","The newly created ReferencePoint.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.PointElementReference)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ReferencePoint_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a reference point at a given location and with a givencoordinate system in an Autodesk Revit family document.")]
-	public class Revit_ReferencePoint_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ReferencePoint_1()
-		{
-			OutPortData.Add(new PortData("out","The newly created ReferencePoint.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Transform)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ReferencePoint_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a reference point at a given location in an AutodeskRevit family document.")]
-	public class Revit_ReferencePoint_2 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ReferencePoint_2()
-		{
-			OutPortData.Add(new PortData("out","The newly created ReferencePoint.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit SymbolicCurve")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a symbolic curve in an Autodesk Revit family document.")]
-	public class Revit_SymbolicCurve : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_SymbolicCurve()
-		{
-			InPortData.Add(new PortData("crv", "The geometry curve of the newly created symbolic curve.",typeof(object)));
-			InPortData.Add(new PortData("sp", "The sketch plane for the symbolic curve.",typeof(object)));
-			OutPortData.Add(new PortData("out","The newly created symbolic curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSymbolicCurve(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Control")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new control into the Autodesk Revit family document.")]
-	public class Revit_Control : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Control()
-		{
-			InPortData.Add(new PortData("val", "The shape of the control.",typeof(object)));
-			InPortData.Add(new PortData("v", "The view in which the control is to be visible. Itmust be a FloorPlan view or a CeilingPlan view.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The origin of the control.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful, the newly created control is returned, otherwise anexception with error information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.ControlShape)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.View)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewControl(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ModelText")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a model text in the Autodesk Revit family document.")]
-	public class Revit_ModelText : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ModelText()
-		{
-			InPortData.Add(new PortData("s", "The text to be displayed.",typeof(object)));
-			InPortData.Add(new PortData("mtt", "The type of model text. If this parameter is",typeof(object)));
-			InPortData.Add(new PortData("sp", "The sketch plane of the model text. The direction of model text is determined by the normal of the sketch plane.To extrude in the other direction set the depth value to negative.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The position of the model text. The position must lie in the sketch plane.",typeof(object)));
-			InPortData.Add(new PortData("ha", "The horizontal alignment.",typeof(object)));
-			InPortData.Add(new PortData("n", "The depth of the model text.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful, the newly created model text is returned, otherwise anexception with error information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(System.String)((Value.String)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.ModelTextType)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
-			var arg4=(Autodesk.Revit.DB.HorizontalAlign)((Value.Container)args[4]).Item;
-			var arg5=(System.Double)((Value.Number)args[5]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewModelText(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Opening_4")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create an opening to cut the wall or ceiling.")]
-	public class Revit_Opening_4 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Opening_4()
-		{
-			InPortData.Add(new PortData("el", "Host elements that new opening would lie in. The host can only be a wall or a ceiling.",typeof(object)));
-			InPortData.Add(new PortData("crvs", "The profile of the newly created opening. This may contain more than one curve loop. Each loop must be a fully closed curve loop and the loops may not intersect. The profiles will be projected into the host plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful, the newly created opening is returned, otherwise anexception with error information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Element)((Value.Container)args[0]).Item;
-			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewOpening(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ElectricalConnector")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new Electrical connector into the Autodesk Revit family document.")]
-	public class Revit_ElectricalConnector : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ElectricalConnector()
-		{
-			InPortData.Add(new PortData("ref", "A reference to a planar face where the connector will be placed.",typeof(object)));
-			InPortData.Add(new PortData("ett", "Indicates the system type of this new Electrical connector.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new Electrical Connector is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Electrical.ElectricalSystemType)((Value.Container)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewElectricalConnector(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit PipeConnector")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new pipe connector into the Autodesk Revit family document.")]
-	public class Revit_PipeConnector : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_PipeConnector()
-		{
-			InPortData.Add(new PortData("ref", "A reference to a planar face where the connector will be placed.",typeof(object)));
-			InPortData.Add(new PortData("pst", "Indicates the system type of this new Pipe connector.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new pipe connector is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Plumbing.PipeSystemType)((Value.Container)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewPipeConnector(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit DuctConnector")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new duct connector into the Autodesk Revit family document.")]
-	public class Revit_DuctConnector : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_DuctConnector()
-		{
-			InPortData.Add(new PortData("ref", "A reference to a planar face where the connector will be placed.",typeof(object)));
-			InPortData.Add(new PortData("dst", "Indicates the system type of this new duct connector.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new Duct Connector is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Mechanical.DuctSystemType)((Value.Container)args[1]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDuctConnector(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit RadialDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Generate a new radial dimension object using a specified dimension type.")]
-	public class Revit_RadialDimension : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_RadialDimension()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The point where the witness line of the radial dimension will lie.",typeof(object)));
-			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRadialDimension(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit DiameterDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new diameter dimension object using the default dimension type.")]
-	public class Revit_DiameterDimension : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_DiameterDimension()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The point where the witness line of the diameter dimension will lie.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new diameter dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDiameterDimension(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit RadialDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new radial dimension object using the default dimension type.")]
-	public class Revit_RadialDimension_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_RadialDimension_1()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The point where the witness line of the radial dimension will lie.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRadialDimension(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ArcLengthDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new arc length dimension object using the specified dimension type.")]
-	public class Revit_ArcLengthDimension : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ArcLengthDimension()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("arc", "The extension arc of the dimension.",typeof(object)));
-			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.This reference must be parallel to the extension arc.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound.This reference must intersect the arcRef reference.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.This reference must intersect the arcRef reference.",typeof(object)));
-			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Arc)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
-			var arg4=(Autodesk.Revit.DB.Reference)((Value.Container)args[4]).Item;
-			var arg5=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[5]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewArcLengthDimension(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ArcLengthDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new arc length dimension object using the default dimension type.")]
-	public class Revit_ArcLengthDimension_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ArcLengthDimension_1()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("arc", "The extension arc of the dimension.",typeof(object)));
-			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.This reference must be parallel to the extension arc.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound. This reference must intersect the arcRef reference.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound. This reference must intersect the arcRef reference.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Arc)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
-			var arg4=(Autodesk.Revit.DB.Reference)((Value.Container)args[4]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewArcLengthDimension(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit AngularDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new angular dimension object using the specified dimension type.")]
-	public class Revit_AngularDimension : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_AngularDimension()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("arc", "The extension arc of the dimension.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(object)));
-			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new angular dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Arc)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
-			var arg4=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[4]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAngularDimension(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit AngularDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new angular dimension object using the default dimension type.")]
-	public class Revit_AngularDimension_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_AngularDimension_1()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("arc", "The extension arc of the dimension.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new angular dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Arc)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAngularDimension(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit LinearDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new linear dimension object using the specified dimension type.")]
-	public class Revit_LinearDimension : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_LinearDimension()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("crv", "The extension line of the dimension.",typeof(object)));
-			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.You must supply at least two references, and all references supplied must be parallel to each other and perpendicular to the extension line.",typeof(object)));
-			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new linear dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
-			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLinearDimension(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit LinearDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Generate a new linear dimension object using the default dimension type.")]
-	public class Revit_LinearDimension_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_LinearDimension_1()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("crv", "The extension line of the dimension.",typeof(object)));
-			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.You must supply at least two references, and all references supplied must be parallel to each other and perpendicular to the extension line.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new linear dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLinearDimension(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit FormByThickenSingleSurface")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a new Form element by thickening a single-surface form, and add it into the Autodesk Revit family document.")]
-	public class Revit_FormByThickenSingleSurface : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FormByThickenSingleSurface()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("frm", "The single-surface form element. It can have one top/bottom face or one side face.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The offset of capped solid.",typeof(object)));
-			OutPortData.Add(new PortData("out","This function will modify the input singleSurfaceForm and return the same element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.Form)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFormByThickenSingleSurface(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit FormByCap")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create new Form element by cap operation (to create a single-surface form), and add it into the Autodesk Revit family document.")]
-	public class Revit_FormByCap : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FormByCap()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("refa", "The profile of the newly created cap. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful new form is returned.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFormByCap(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit RevolveForms")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create new Form elements by revolve operation, and add them into the Autodesk Revit family document.")]
-	public class Revit_RevolveForms : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_RevolveForms()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("refa", "The profile of the newly created revolution. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The axis of revolution. This axis must lie in the same plane as the curve loops.",typeof(object)));
-			InPortData.Add(new PortData("n", "The start angle of Revolution in radians.",typeof(object)));
-			InPortData.Add(new PortData("n", "The end angle of Revolution in radians.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful new forms are returned.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
-			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
-			var arg3=(System.Double)((Value.Number)args[3]).Item;
-			var arg4=(System.Double)((Value.Number)args[4]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRevolveForms(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit SweptBlendForm")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create new Form element by swept blend operation, and add it into the Autodesk Revit family document.")]
-	public class Revit_SweptBlendForm : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_SweptBlendForm()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("refa", "The path of the swept blend. The path should be 2D, where all input curves lie in one plane. If there’s more than one profile, the path should be a single curve. It’s required to reference existing geometry.",typeof(object)));
-			InPortData.Add(new PortData("arar", "The profile set of the newly created swept blend. Each profile should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful new form is returned.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
-			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(((Value.List)args[2]).Item);
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlendForm(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ExtrusionForm")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create new Form element by Extrude operation, and add it into the Autodesk Revit family document.")]
-	public class Revit_ExtrusionForm : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ExtrusionForm()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("refa", "The profile of extrusion. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The direction of extrusion, with its length the length of the extrusion. The direction must be perpendicular to the plane determined by profile. The length of vector must be non-zero.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful new form is returned.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewExtrusionForm(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit LoftForm")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create new Form element by Loft operation, and add it into the Autodesk Revit family document.")]
-	public class Revit_LoftForm : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_LoftForm()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("arar", "The profile set of the newly created loft. Each profile should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful form is are returned.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(((Value.List)args[1]).Item);
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLoftForm(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit SweptBlend")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Adds a new swept blend into the family document, using a selected reference as the path.")]
-	public class Revit_SweptBlend : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_SweptBlend()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the swept blend is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The path of the swept blend. The path might be a reference of single curve or edge obtained from existing geometry.Or the path can be a single sketched curve, and the curve is not required to reference existing geometry.",typeof(object)));
-			InPortData.Add(new PortData("swpp", "The bottom profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(object)));
-			InPortData.Add(new PortData("swpp", "The top profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new Swept blend is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlend(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit SweptBlend_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new swept blend into the family document, using a curve as the path.")]
-	public class Revit_SweptBlend_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_SweptBlend_1()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the swept blend is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("crv", "The path of the swept blend. The path should be a single curve.Or the path can be a single sketched curve, and the curve is not required to reference existing geometry.",typeof(object)));
-			InPortData.Add(new PortData("sp", "The sketch plane for the path. Use this when you want to create a 2D path that resides on an existing planar face. Optional, can be",typeof(object)));
-			InPortData.Add(new PortData("swpp", "The bottom profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(object)));
-			InPortData.Add(new PortData("swpp", "The top profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new Swept blend is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
-			var arg4=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[4]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlend(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Sweep")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Adds a new sweep form into the family document, using an array of selected references as a 3D path.")]
-	public class Revit_Sweep : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Sweep()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Sweep is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("refa", "The path of the sweep. The path should be reference of curve or edge obtained from existing geometry.",typeof(object)));
-			InPortData.Add(new PortData("swpp", "The profile of the newly created Sweep. This may containmore than one curve loop or a profile family. Each loop must be a fully closed curve loop and the loops must not intersect. All loops must lie in the same plane.The loop can be a unbound circle or ellipse,  but its geometry will be split in two in order to satisfy requirements for sketches used in extrusions.",typeof(object)));
-			InPortData.Add(new PortData("i", "The index of the path curves. The curve upon which the profileplane will be determined.",typeof(object)));
-			InPortData.Add(new PortData("ppl", "The location on the profileLocationCurve where the profileplane will be determined.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new Sweep is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
-			var arg2=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[2]).Item;
-			var arg3=(System.Int32)((Value.Number)args[3]).Item;
-			var arg4=(Autodesk.Revit.DB.ProfilePlaneLocation)((Value.Container)args[4]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweep(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Sweep_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Adds a new sweep form to the family document, using a path of curve elements.")]
-	public class Revit_Sweep_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Sweep_1()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Sweep is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("crvs", "The path of the sweep. The path should be 2D, where all input curves lie in one plane, and the curves are not required to reference existing geometry.",typeof(object)));
-			InPortData.Add(new PortData("sp", "The sketch plane for the path. Use this when you want to create a 2D path that resides on an existing planar face. Optional, can be",typeof(object)));
-			InPortData.Add(new PortData("swpp", "The profile of the newly created Sweep. This may containmore than one curve loop or a profile family. Each loop must be a fully closed curve loop and the loops must not intersect. All loops must lie in the same plane.The loop can be a unbound circle or ellipse,  but its geometry will be split in two in order to satisfy requirements for sketches used in extrusions.",typeof(object)));
-			InPortData.Add(new PortData("i", "The index of the path curves. The curve upon which the profileplane will be determined.",typeof(object)));
-			InPortData.Add(new PortData("ppl", "The location on the profileLocationCurve where the profileplane will be determined.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new Sweep is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
-			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
-			var arg4=(System.Int32)((Value.Number)args[4]).Item;
-			var arg5=(Autodesk.Revit.DB.ProfilePlaneLocation)((Value.Container)args[5]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweep(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Revolution")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new Revolution instance into the Autodesk Revit family document.")]
-	public class Revit_Revolution : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Revolution()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Revolution is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("crvs", "The profile of the newly created revolution. This may containmore than one curve loop. Each loop must be a fully closed curve loop and the loops must not intersect. All loops must lie in the same plane.The loop can be a unbound circle or ellipse,  but its geometry will be split in two in order to satisfy requirements for sketches used in extrusions.",typeof(object)));
-			InPortData.Add(new PortData("sp", "The sketch plane for the revolution.  The direction of revolutionis determined by the normal for the sketch plane.",typeof(object)));
-			InPortData.Add(new PortData("crv", "The axis of revolution. This axis must lie in the same plane as the curve loops.",typeof(object)));
-			InPortData.Add(new PortData("n", "The start angle of Revolution in radians.",typeof(object)));
-			InPortData.Add(new PortData("n", "The end angle of Revolution in radians.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new revolution is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArrayArray(((Value.List)args[1]).Item);
-			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.Line)((Value.Container)args[3]).Item;
-			var arg4=(System.Double)((Value.Number)args[4]).Item;
-			var arg5=(System.Double)((Value.Number)args[5]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRevolution(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Blend")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new Blend instance into the Autodesk Revit family document.")]
-	public class Revit_Blend : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Blend()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Blend is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("crvs", "The top blend section. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
-			InPortData.Add(new PortData("crvs", "The base blend section. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
-			InPortData.Add(new PortData("sp", "The sketch plane for the base profile. Use this to associate the base of the blend to geometry from another element. Optional, it can be",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new blend is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
-			var arg2=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[2]).Item);
-			var arg3=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[3]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewBlend(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Extrusion")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new Extrusion instance into the Autodesk Revit family document.")]
-	public class Revit_Extrusion : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Extrusion()
-		{
-			InPortData.Add(new PortData("b", "Indicates if the Extrusion is Solid or Void.",typeof(object)));
-			InPortData.Add(new PortData("crvs", "The profile of the newly created Extrusion. This may contain more than one curve loop. Each loop must be a fully closed curve loop and the loops may not intersect. All input curves must lie in the same plane.The loop can be a unbound circle or ellipse,  but its geometry will be split in two in order to satisfy requirements for sketches used in extrusions.",typeof(object)));
-			InPortData.Add(new PortData("sp", "The sketch plane for the extrusion.  The direction of extrusionis determined by the normal for the sketch plane.  To extrude in the other direction set the end value to negative.",typeof(object)));
-			InPortData.Add(new PortData("n", "The length of the extrusion.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new Extrusion is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
-			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArrayArray(((Value.List)args[1]).Item);
-			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
-			var arg3=(System.Double)((Value.Number)args[3]).Item;
-			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewExtrusion(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit Alignment")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new locked alignment into the Autodesk Revit document.")]
-	public class Revit_Alignment : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Alignment()
-		{
-			InPortData.Add(new PortData("v", "The view that determines the orientation of the alignment.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The first reference.",typeof(object)));
-			InPortData.Add(new PortData("ref", "The second reference.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful the new locked alignment dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAlignment(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewAlignment(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit ViewSection")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new section view.")]
-	public class Revit_ViewSection : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ViewSection()
-		{
-			InPortData.Add(new PortData("val", "The view volume of the section will correspond geometrically to the specified bounding box.",typeof(object)));
-			OutPortData.Add(new PortData("out","The newly created section view.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.BoundingBoxXYZ)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewViewSection(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewViewSection(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit View3D")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new 3D view.")]
-	public class Revit_View3D : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_View3D()
-		{
-			InPortData.Add(new PortData("xyz", "The view direction - the vector pointing from the eye towards the model.",typeof(object)));
-			OutPortData.Add(new PortData("out","The newly created 3D view.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewView3D(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewView3D(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit TextNotes")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates TextNotes with the specified data.")]
-	public class Revit_TextNotes : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_TextNotes()
-		{
-			InPortData.Add(new PortData("val", "A list of TextNoteCreationData which wraps the creation arguments of the TextNotes to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","If the creation is successful an ElementSet which contains the TextNotes should be returned, otherwise Autodesk::Revit::Exceptions::InvalidOperationException will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(List<Autodesk.Revit.Creation.TextNoteCreationData>)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewTextNotes(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewTextNotes(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit TextNote")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new text note with a single leader.")]
-	public class Revit_TextNote : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_TextNote()
-		{
-			InPortData.Add(new PortData("v", "The view where the text note object will be visible.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The origin of the text note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The horizontal direction for text in the text note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The vertical direction for text in the text note.",typeof(object)));
-			InPortData.Add(new PortData("n", "The width of the rectangle bounding the note text.",typeof(object)));
-			InPortData.Add(new PortData("tafs", "Flags indicating the alignment of the note.  This should be a bitwise OR including one of TEF_ALIGN_TOP, TEF_ALIGN_MIDDLE and TEF_ALIGN_BOTTOM and one of TEF_ALIGN_LEFT, TEF_ALIGN_CENTER and TEF_ALIGN_RIGHT.The defaults for this flag are TEF_ALIGN_TOP | TEF_ALIGN_LEFT.",typeof(object)));
-			InPortData.Add(new PortData("tnlts", "The type and alignment of the leader for the note.",typeof(object)));
-			InPortData.Add(new PortData("tnls", "The style of the leader for the note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The end point for the leader.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The elbow point for the leader.",typeof(object)));
-			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful, a TextNote object is returned.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
-			var arg4=(System.Double)((Value.Number)args[4]).Item;
-			var arg5=(Autodesk.Revit.DB.TextAlignFlags)((Value.Container)args[5]).Item;
-			var arg6=(Autodesk.Revit.DB.TextNoteLeaderTypes)((Value.Container)args[6]).Item;
-			var arg7=(Autodesk.Revit.DB.TextNoteLeaderStyles)((Value.Container)args[7]).Item;
-			var arg8=(Autodesk.Revit.DB.XYZ)((Value.Container)args[8]).Item;
-			var arg9=(Autodesk.Revit.DB.XYZ)((Value.Container)args[9]).Item;
-			var arg10=(System.String)((Value.String)args[10]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewTextNote(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewTextNote(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit TextNote_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new TextNote object without a leader.")]
-	public class Revit_TextNote_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_TextNote_1()
-		{
-			InPortData.Add(new PortData("v", "The view where the text note object will be visible.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The origin of the text note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The horizontal direction for text in the text note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The vertical direction for text in the text note.",typeof(object)));
-			InPortData.Add(new PortData("n", "The width of the rectangle bounding the note text.",typeof(object)));
-			InPortData.Add(new PortData("tafs", "Flags indicating the alignment of the note.  This should be a bitwise OR including one of TEF_ALIGN_TOP, TEF_ALIGN_MIDDLE and TEF_ALIGN_BOTTOM and one of TEF_ALIGN_LEFT, TEF_ALIGN_CENTER and TEF_ALIGN_RIGHT.The defaults for this flag are TEF_ALIGN_TOP | TEF_ALIGN_LEFT.",typeof(object)));
-			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful, a TextNote object is returned.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
-			var arg4=(System.Double)((Value.Number)args[4]).Item;
-			var arg5=(Autodesk.Revit.DB.TextAlignFlags)((Value.Container)args[5]).Item;
-			var arg6=(System.String)((Value.String)args[6]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewTextNote(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewTextNote(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit SketchPlane")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new sketch plane on a reference to existing planar geometry.")]
-	public class Revit_SketchPlane : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_SketchPlane()
-		{
-			InPortData.Add(new PortData("ref", "The planar face reference to locate sketch plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new sketch plane will be returned. Otherwise an exception withfailure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewSketchPlane(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit SketchPlane_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new sketch plane on a planar face of existing geometry.")]
-	public class Revit_SketchPlane_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_SketchPlane_1()
-		{
-			InPortData.Add(new PortData("val", "The geometry planar face to locate sketch plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new sketch plane will be returned. Otherwise an exception withfailure information will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.PlanarFace)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewSketchPlane(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit SketchPlane_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new sketch plane from an arbitrary geometric plane.")]
-	public class Revit_SketchPlane_2 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_SketchPlane_2()
-		{
-			InPortData.Add(new PortData("p", "The geometry plane to locate sketch plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new sketch plane will be returned. Otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Plane)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewSketchPlane(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit ReferencePlane2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new instance of ReferencePlane.")]
-	public class Revit_ReferencePlane2 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ReferencePlane2()
-		{
-			InPortData.Add(new PortData("xyz", "The bubble end applied to reference plane.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The free end applied to reference plane.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "A third point needed to define the reference plane.",typeof(object)));
-			InPortData.Add(new PortData("v", "The specific view apply to the Reference plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","The newly created reference plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.View)((Value.Container)args[3]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePlane2(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewReferencePlane2(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit ReferencePlane")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new instance of ReferencePlane.")]
-	public class Revit_ReferencePlane : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ReferencePlane()
-		{
-			InPortData.Add(new PortData("xyz", "The bubble end applied to reference plane.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The free end applied to reference plane.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The cut vector apply to reference plane, should perpendicular to the vector  (bubbleEnd-freeEnd).",typeof(object)));
-			InPortData.Add(new PortData("v", "The specific view apply to the Reference plane.",typeof(object)));
-			OutPortData.Add(new PortData("out","The newly created reference plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.View)((Value.Container)args[3]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePlane(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewReferencePlane(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit ViewPlan")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a plan view based on the specified level.")]
-	public class Revit_ViewPlan : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ViewPlan()
-		{
-			InPortData.Add(new PortData("s", "The name for the new plan view, must be unique or",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the plan view is to be associated.",typeof(object)));
-			InPortData.Add(new PortData("val", "The type of plan view to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","if successful, a new plan view object within the project, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(System.String)((Value.String)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.ViewPlanType)((Value.Container)args[2]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewViewPlan(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewViewPlan(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit Level")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new level.")]
-	public class Revit_Level : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Level()
-		{
-			InPortData.Add(new PortData("n", "The elevation to apply to the new level.",typeof(object)));
-			OutPortData.Add(new PortData("out","The newly created level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(System.Double)((Value.Number)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLevel(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewLevel(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit ModelCurveArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an array of new model line elements.")]
-	public class Revit_ModelCurveArray : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ModelCurveArray()
-		{
-			InPortData.Add(new PortData("crvs", "An array containing the internal geometry curves for model lines.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful an array of new model line elements. Otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurveArray(arg0,arg1);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewModelCurveArray(arg0,arg1);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit ModelCurve")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new model line element.")]
-	public class Revit_ModelCurve : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ModelCurve()
-		{
-			InPortData.Add(new PortData("crv", "The internal geometry curve for model line.",typeof(object)));
-			InPortData.Add(new PortData("sp", "The sketch plane this new model line resides in.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new model line element. Otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(arg0,arg1);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewModelCurve(arg0,arg1);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit Group")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new type of group.")]
-	public class Revit_Group : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Group()
-		{
-			InPortData.Add(new PortData("val", "A set of elements which will be made into the new group.",typeof(object)));
-			OutPortData.Add(new PortData("out","A new instance of a group containing the elements specified.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(List<Autodesk.Revit.DB.ElementId>)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewGroup(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewGroup(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit Group_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new type of group.")]
-	public class Revit_Group_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Group_1()
-		{
-			InPortData.Add(new PortData("val", "A set of elements which will be made into the new group.",typeof(object)));
-			OutPortData.Add(new PortData("out","A new instance of a group containing the elements specified.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.ElementSet)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewGroup(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewGroup(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstances2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates Family instances within the document.")]
-	public class Revit_FamilyInstances2 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstances2()
-		{
-			InPortData.Add(new PortData("val", "A list of FamilyInstanceCreationData which wraps the creation arguments of the families to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","If the creation is successful, a set of ElementIds which contains the Family instances should be returned, otherwise the exception will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(List<Autodesk.Revit.Creation.FamilyInstanceCreationData>)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstances2(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstances2(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstances")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates Family instances within the document.")]
-	public class Revit_FamilyInstances : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstances()
-		{
-			InPortData.Add(new PortData("val", "A list of FamilyInstanceCreationData which wraps the creation arguments of the families to be created.",typeof(object)));
-			OutPortData.Add(new PortData("out","If the creation is successful an ElementSet which contains the Family instances should be returned, otherwise the exception will be thrown.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(List<Autodesk.Revit.Creation.FamilyInstanceCreationData>)((Value.Container)args[0]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstances(arg0);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstances(arg0);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a line based detail family instance into the Autodesk Revit document, using an line and a view where the instance should be placed.")]
-	public class Revit_FamilyInstance_3 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_3()
-		{
-			InPortData.Add(new PortData("crv", "The line location of family instance. The line must in the plane of the view.",typeof(object)));
-			InPortData.Add(new PortData("fs", "A family symbol object that represents the type of the instance that is to be inserted.",typeof(object)));
-			InPortData.Add(new PortData("v", "A 2D view in which to display the family instance.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Line)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_4")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new family instance into the Autodesk Revit document, using an origin and a view where the instance should be placed.")]
-	public class Revit_FamilyInstance_4 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_4()
-		{
-			InPortData.Add(new PortData("xyz", "The origin of family instance. If created on a",typeof(object)));
-			InPortData.Add(new PortData("fs", "A family symbol object that represents the type of the instance that is to be inserted.",typeof(object)));
-			InPortData.Add(new PortData("v", "The 2D view in which to place the family instance.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_5")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Inserts a new instance of a family onto a face referenced by the input Reference instance, using a line on that face for its position, and a type/symbol.")]
-	public class Revit_FamilyInstance_5 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_5()
-		{
-			InPortData.Add(new PortData("ref", "A reference to a face.",typeof(object)));
-			InPortData.Add(new PortData("crv", "A line on the face defining where the symbol is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted. Note that this symbol must represent a family whose",typeof(object)));
-			OutPortData.Add(new PortData("out","An instance of the new object if creation was successful, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[2]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_6")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Inserts a new instance of a family onto a face referenced by the input Reference instance, using a location, reference direction, and a type/symbol.")]
-	public class Revit_FamilyInstance_6 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_6()
-		{
-			InPortData.Add(new PortData("ref", "A reference to a face.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "Point on the face where the instance is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "A vector that defines the direction of the family instance.Note that this direction defines the rotation of the instance on the face, and thus cannot be parallelto the face normal.",typeof(object)));
-			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(object)));
-			OutPortData.Add(new PortData("out","An instance of the new object if creation was successful, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[3]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_7")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Inserts a new instance of a family onto a face of an existing element, using a line on that face for its position, and a type/symbol.")]
-	public class Revit_FamilyInstance_7 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_7()
-		{
-			InPortData.Add(new PortData("f", "A face of a geometry object.",typeof(object)));
-			InPortData.Add(new PortData("crv", "A line on the face defining where the symbol is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(object)));
-			OutPortData.Add(new PortData("out","An instance of the new object if creation was successful, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Face)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[2]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_8")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Inserts a new instance of a family onto a face of an existing element, using a location, reference direction, and a type/symbol.")]
-	public class Revit_FamilyInstance_8 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_8()
-		{
-			InPortData.Add(new PortData("f", "A face of a geometry object.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "Point on the face where the instance is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "A vector that defines the direction of the family instance.Note that this direction defines the rotation of the instance on the face, and thus cannot be parallelto the face normal.",typeof(object)));
-			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(object)));
-			OutPortData.Add(new PortData("out","An instance of the new object if creation was successful, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Face)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[3]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_9")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Inserts a new instance of a family into the document, using a location and atype/symbol.")]
-	public class Revit_FamilyInstance_9 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_9()
-		{
-			InPortData.Add(new PortData("xyz", "The physical location where the instance is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(object)));
-			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[2]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_10")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Inserts a new instance of a family into the document,using a location, type/symbol, and the host element.")]
-	public class Revit_FamilyInstance_10 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_10()
-		{
-			InPortData.Add(new PortData("xyz", "The physical location where the instance is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(object)));
-			InPortData.Add(new PortData("el", "The object into which the FamilyInstance is to be inserted, often known as the host.",typeof(object)));
-			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Element)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[3]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit FamilyInstance_11")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Inserts a new instance of a family into the document,using a location, type/symbol, the host element and a reference direction.")]
-	public class Revit_FamilyInstance_11 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_FamilyInstance_11()
-		{
-			InPortData.Add(new PortData("xyz", "The physical location where the instance is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "A vector that dictates the direction of certain family instances.",typeof(object)));
-			InPortData.Add(new PortData("el", "A host object into which the instance will be embedded",typeof(object)));
-			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.Element)((Value.Container)args[3]).Item;
-			var arg4=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[4]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2,arg3,arg4);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3,arg4);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit Dimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new linear dimension object using the specified dimension style.")]
-	public class Revit_Dimension : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Dimension()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("crv", "The line drawn for the dimension.",typeof(object)));
-			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.",typeof(object)));
-			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new dimension object, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
-			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDimension(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewDimension(arg0,arg1,arg2,arg3);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit Dimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new linear dimension object using the default dimension style.")]
-	public class Revit_Dimension_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_Dimension_1()
-		{
-			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("crv", "The line drawn for the dimension.",typeof(object)));
-			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new dimension object, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
-			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDimension(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewDimension(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit DetailCurveArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an array of new detail curve elements.")]
-	public class Revit_DetailCurveArray : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_DetailCurveArray()
-		{
-			InPortData.Add(new PortData("v", "The view in which the detail curves are to be visible.",typeof(object)));
-			InPortData.Add(new PortData("crvs", "An array containing the internal geometry curves for detail lines. The curve in array should be bound curve.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful an array of new detail curve elements. Otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDetailCurveArray(arg0,arg1);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewDetailCurveArray(arg0,arg1);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit DetailCurve")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new detail curve element.")]
-	public class Revit_DetailCurve : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_DetailCurve()
-		{
-			InPortData.Add(new PortData("v", "The view in which the detail curve is to be visible.",typeof(object)));
-			InPortData.Add(new PortData("crv", "The internal geometry curve for detail curve. It should be a bound curve.",typeof(object)));
-			OutPortData.Add(new PortData("out","If successful a new detail curve element. Otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDetailCurve(arg0,arg1);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewDetailCurve(arg0,arg1);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
-	[NodeName("Revit AnnotationSymbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Add a new instance of an Annotation Symbol into the Autodesk Revit document, using an origin and a view where the instance should be placed.")]
-	public class Revit_AnnotationSymbol : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_AnnotationSymbol()
-		{
-			InPortData.Add(new PortData("xyz", "The origin of the annotation symbol. If created on",typeof(object)));
-			InPortData.Add(new PortData("val", "An annotation symbol type that represents the type of the instance that is to be inserted.",typeof(object)));
-			InPortData.Add(new PortData("v", "A 2D view in which to display the annotation symbol.",typeof(object)));
-			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned, otherwise",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.AnnotationSymbolType)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
-			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-			{
-				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAnnotationSymbol(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-			else
-			{
-				var result = dynRevitSettings.Doc.Document.Create.NewAnnotationSymbol(arg0,arg1,arg2);
-				return Value.NewContainer(result);
-			}
-		}
-	}
-
 	[NodeName("Revit ReferencePointArray")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an empty array that can store ReferencePoint objects.")]
@@ -5912,224 +3858,6 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.ViewPlan)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewAreaCreationData(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit TextNoteCreationData")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewTextNote() for batch creation.")]
-	public class Revit_TextNoteCreationData : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_TextNoteCreationData()
-		{
-			InPortData.Add(new PortData("v", "The view where the text note object will be visible.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The origin of the text note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The horizontal direction for text in the text note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The vertical direction for text in the text note.",typeof(object)));
-			InPortData.Add(new PortData("n", "The width of the rectangle bounding the note text.",typeof(object)));
-			InPortData.Add(new PortData("tafs", "Flags indicating the alignment of the note.  This should be a bitwise OR including one of TEF_ALIGN_TOP, TEF_ALIGN_MIDDLE and TEF_ALIGN_BOTTOM and one of TEF_ALIGN_LEFT, TEF_ALIGN_CENTER and TEF_ALIGN_RIGHT.The defaults for this flag are TEF_ALIGN_TOP | TEF_ALIGN_LEFT.",typeof(object)));
-			InPortData.Add(new PortData("tnlts", "The type and alignment of the leader for the note.",typeof(object)));
-			InPortData.Add(new PortData("tnls", "The style for the leader.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The end point for the leader.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The elbow point for the leader.",typeof(object)));
-			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
-			var arg4=(System.Double)((Value.Number)args[4]).Item;
-			var arg5=(Autodesk.Revit.DB.TextAlignFlags)((Value.Container)args[5]).Item;
-			var arg6=(Autodesk.Revit.DB.TextNoteLeaderTypes)((Value.Container)args[6]).Item;
-			var arg7=(Autodesk.Revit.DB.TextNoteLeaderStyles)((Value.Container)args[7]).Item;
-			var arg8=(Autodesk.Revit.DB.XYZ)((Value.Container)args[8]).Item;
-			var arg9=(Autodesk.Revit.DB.XYZ)((Value.Container)args[9]).Item;
-			var arg10=(System.String)((Value.String)args[10]).Item;
-			var result = dynRevitSettings.Revit.Application.Create.NewTextNoteCreationData(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit TextNoteCreationData_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewTextNote()  for batch creation.")]
-	public class Revit_TextNoteCreationData_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_TextNoteCreationData_1()
-		{
-			InPortData.Add(new PortData("v", "The view where the text note object will be visible.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The origin of the text note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The horizontal direction for text in the text note.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "The vertical direction for text in the text note.",typeof(object)));
-			InPortData.Add(new PortData("n", "The width of the rectangle bounding the note text.",typeof(object)));
-			InPortData.Add(new PortData("tafs", "Flags indicating the alignment of the note.  This should be a bitwise OR including one of TEF_ALIGN_TOP, TEF_ALIGN_MIDDLE and TEF_ALIGN_BOTTOM and one of TEF_ALIGN_LEFT, TEF_ALIGN_CENTER and TEF_ALIGN_RIGHT.The defaults for this flag are TEF_ALIGN_TOP | TEF_ALIGN_LEFT.",typeof(object)));
-			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
-			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
-			var arg4=(System.Double)((Value.Number)args[4]).Item;
-			var arg5=(Autodesk.Revit.DB.TextAlignFlags)((Value.Container)args[5]).Item;
-			var arg6=(System.String)((Value.String)args[6]).Item;
-			var result = dynRevitSettings.Revit.Application.Create.NewTextNoteCreationData(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ProfiledWallCreationData")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
-	public class Revit_ProfiledWallCreationData : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ProfiledWallCreationData()
-		{
-			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(object)));
-			InPortData.Add(new PortData("wt", "A wall type to be used by the new wall instead of the default type.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			InPortData.Add(new PortData("xyz", "A vector that must be perpendicular to the profile which dictates which side of the wall is considered.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
-			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
-			var arg4=(Autodesk.Revit.DB.XYZ)((Value.Container)args[4]).Item;
-			var result = dynRevitSettings.Revit.Application.Create.NewProfiledWallCreationData(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ProfiledWallCreationData_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
-	public class Revit_ProfiledWallCreationData_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ProfiledWallCreationData_1()
-		{
-			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(object)));
-			InPortData.Add(new PortData("wt", "A wall type to be used by the new wall instead of the default type.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
-			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
-			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
-			var result = dynRevitSettings.Revit.Application.Create.NewProfiledWallCreationData(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit ProfiledWallCreationData_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
-	public class Revit_ProfiledWallCreationData_2 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ProfiledWallCreationData_2()
-		{
-			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
-			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
-			var result = dynRevitSettings.Revit.Application.Create.NewProfiledWallCreationData(arg0,arg1);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit RectangularWallCreationData")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
-	public class Revit_RectangularWallCreationData : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_RectangularWallCreationData()
-		{
-			InPortData.Add(new PortData("crv", "An arc or line representing the base line of the wall.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
-			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
-			var result = dynRevitSettings.Revit.Application.Create.NewRectangularWallCreationData(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit RectangularWallCreationData_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
-	public class Revit_RectangularWallCreationData_1 : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_RectangularWallCreationData_1()
-		{
-			InPortData.Add(new PortData("crv", "An arc or line representing the base line of the wall.",typeof(object)));
-			InPortData.Add(new PortData("wt", "A wall type to be used by the new wall instead of the default type.",typeof(object)));
-			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(object)));
-			InPortData.Add(new PortData("n", "The height of the wall.",typeof(object)));
-			InPortData.Add(new PortData("n", "An offset distance, in feet from the specified baseline. The wall will be placed that distancefrom the baseline.",typeof(object)));
-			InPortData.Add(new PortData("b", "Change which side of the wall is considered to be the inside and outside of the wall.",typeof(object)));
-			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.WallType)((Value.Container)args[1]).Item;
-			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
-			var arg3=(System.Double)((Value.Number)args[3]).Item;
-			var arg4=(System.Double)((Value.Number)args[4]).Item;
-			var arg5=Convert.ToBoolean(((Value.Number)args[5]).Item);
-			var arg6=Convert.ToBoolean(((Value.Number)args[6]).Item);
-			var result = dynRevitSettings.Revit.Application.Create.NewRectangularWallCreationData(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit RoomCreationData")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates an object which wraps the arguments of NewRoom() for batch creation.")]
-	public class Revit_RoomCreationData : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_RoomCreationData()
-		{
-			InPortData.Add(new PortData("l", "- The level on which the room is to exist.",typeof(object)));
-			InPortData.Add(new PortData("uv", "A 2D point the dictates the location on that specified level.",typeof(object)));
-			OutPortData.Add(new PortData("out","",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
-			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
-			var result = dynRevitSettings.Revit.Application.Create.NewRoomCreationData(arg0,arg1);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7197,23 +4925,6 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	[NodeName("Revit ElementArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Returns an array that can hold element objects.")]
-	public class Revit_ElementArray : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_ElementArray()
-		{
-			OutPortData.Add(new PortData("out","An empty array that can contain any Autodesk Revit element derived objects.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var result = dynRevitSettings.Revit.Application.Create.NewElementArray();
-			return Value.NewContainer(result);
-		}
-	}
-
 	[NodeName("Revit CurveArrArray")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an empty array that can store geometric curve loops.")]
@@ -7244,23 +4955,6 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewCurveArray();
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit StringStringMap")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new map that maps one string to another string.")]
-	public class Revit_StringStringMap : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_StringStringMap()
-		{
-			OutPortData.Add(new PortData("out","A map that maps one string to another.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var result = dynRevitSettings.Revit.Application.Create.NewStringStringMap();
 			return Value.NewContainer(result);
 		}
 	}
@@ -7343,23 +5037,6 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewLine(arg0,arg1,arg2);
-			return Value.NewContainer(result);
-		}
-	}
-
-	[NodeName("Revit MaterialSet")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Create a new instance of MaterialSet.")]
-	public class Revit_MaterialSet : dynRevitTransactionNodeWithOneOutput
-	{
-		public Revit_MaterialSet()
-		{
-			OutPortData.Add(new PortData("out","The newly created MaterialSet instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-		public override Value Evaluate(FSharpList<Value> args)
-		{
-			var result = dynRevitSettings.Revit.Application.Create.NewMaterialSet();
 			return Value.NewContainer(result);
 		}
 	}
@@ -7621,6 +5298,27 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit Curve_CreateTransformed")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Crates a new instance of a curve as a transformation of this curve.")]
+	public class Revit_Curve_CreateTransformed : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Curve_CreateTransformed()
+		{
+			InPortData.Add(new PortData("val", "The transform to apply.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The curve.",typeof(object)));
+			OutPortData.Add(new PortData("out","The new curve.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Transform)((Value.Container)args[0]).Item;
+			var arg1=((Curve)(args[1] as Value.Container).Item);
+			var result = ((Curve)(args[0] as Value.Container).Item).CreateTransformed(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit Curve_get_Transformed")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Applies the specified transformation to this curve and returns the result.")]
@@ -7802,6 +5500,27 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit Curve_GetEndParameter")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns the raw parameter value at the start or end of this curve.")]
+	public class Revit_Curve_GetEndParameter : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Curve_GetEndParameter()
+		{
+			InPortData.Add(new PortData("i", "0 for the start or 1 for end of the curve.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The curve.",typeof(object)));
+			OutPortData.Add(new PortData("out","The parameter.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Curve)(args[1] as Value.Container).Item);
+			var result = ((Curve)(args[0] as Value.Container).Item).GetEndParameter(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit Curve_get_EndPointReference")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a stable reference to the start point or the end point of the curve.")]
@@ -7823,6 +5542,27 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("Revit Curve_GetEndPointReference")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns a stable reference to the start point or the end point of the curve.")]
+	public class Revit_Curve_GetEndPointReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Curve_GetEndPointReference()
+		{
+			InPortData.Add(new PortData("i", "Use 0 for the start point; 1 for the end point.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The curve.",typeof(object)));
+			OutPortData.Add(new PortData("out","Reference to the point or",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Curve)(args[1] as Value.Container).Item);
+			var result = ((Curve)(args[0] as Value.Container).Item).GetEndPointReference(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
 	[NodeName("Revit Curve_get_EndPoint")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The start or the end point of this curve.")]
@@ -7840,6 +5580,27 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).get_EndPoint(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Curve_GetEndPoint")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Returns the 3D point at the start or end of this curve.")]
+	public class Revit_Curve_GetEndPoint : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Curve_GetEndPoint()
+		{
+			InPortData.Add(new PortData("i", "0 for the start or 1 for end of the curve.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The curve.",typeof(object)));
+			OutPortData.Add(new PortData("out","The curve endpoint.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Int32)((Value.Number)args[0]).Item;
+			var arg1=((Curve)(args[1] as Value.Container).Item);
+			var result = ((Curve)(args[0] as Value.Container).Item).GetEndPoint(arg0);
 			return Value.NewContainer(result);
 		}
 	}
@@ -7921,6 +5682,1557 @@ namespace Dynamo.Nodes
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).IsBound;
 			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit DividedSurface")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a DividedSurface element on one surface of another element.")]
+	public class Revit_DividedSurface : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_DividedSurface()
+		{
+			InPortData.Add(new PortData("ref", "Reference to a surface on an existing element. The elementmust be one of the following:",typeof(object)));
+			OutPortData.Add(new PortData("out","The newly created DividedSurface element.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDividedSurface(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit CurveByPoints")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a 3d curve through two or more points in an AutodeskRevit family document.")]
+	public class Revit_CurveByPoints : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_CurveByPoints()
+		{
+			InPortData.Add(new PortData("val", "Two or more PointElements. The curve will interpolatethese points.",typeof(object)));
+			OutPortData.Add(new PortData("out","The newly created curve.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.ReferencePointArray)((Value.Container)args[0]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ReferencePoint")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a reference point on an existing reference in an AutodeskRevit family document.")]
+	public class Revit_ReferencePoint : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ReferencePoint()
+		{
+			OutPortData.Add(new PortData("out","The newly created ReferencePoint.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.PointElementReference)((Value.Container)args[0]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ReferencePoint_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a reference point at a given location and with a givencoordinate system in an Autodesk Revit family document.")]
+	public class Revit_ReferencePoint_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ReferencePoint_1()
+		{
+			OutPortData.Add(new PortData("out","The newly created ReferencePoint.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Transform)((Value.Container)args[0]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ReferencePoint_2")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a reference point at a given location in an AutodeskRevit family document.")]
+	public class Revit_ReferencePoint_2 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ReferencePoint_2()
+		{
+			OutPortData.Add(new PortData("out","The newly created ReferencePoint.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit SymbolicCurve")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a symbolic curve in an Autodesk Revit family document.")]
+	public class Revit_SymbolicCurve : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_SymbolicCurve()
+		{
+			InPortData.Add(new PortData("crv", "The geometry curve of the newly created symbolic curve.",typeof(object)));
+			InPortData.Add(new PortData("sp", "The sketch plane for the symbolic curve.",typeof(object)));
+			OutPortData.Add(new PortData("out","The newly created symbolic curve.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSymbolicCurve(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Control")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a new control into the Autodesk Revit family document.")]
+	public class Revit_Control : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Control()
+		{
+			InPortData.Add(new PortData("val", "The shape of the control.",typeof(object)));
+			InPortData.Add(new PortData("v", "The view in which the control is to be visible. Itmust be a FloorPlan view or a CeilingPlan view.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The origin of the control.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful, the newly created control is returned, otherwise anexception with error information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.ControlShape)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.View)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewControl(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ModelText")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a model text in the Autodesk Revit family document.")]
+	public class Revit_ModelText : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ModelText()
+		{
+			InPortData.Add(new PortData("s", "The text to be displayed.",typeof(object)));
+			InPortData.Add(new PortData("mtt", "The type of model text. If this parameter is",typeof(object)));
+			InPortData.Add(new PortData("sp", "The sketch plane of the model text. The direction of model text is determined by the normal of the sketch plane.To extrude in the other direction set the depth value to negative.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The position of the model text. The position must lie in the sketch plane.",typeof(object)));
+			InPortData.Add(new PortData("ha", "The horizontal alignment.",typeof(object)));
+			InPortData.Add(new PortData("n", "The depth of the model text.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful, the newly created model text is returned, otherwise anexception with error information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.String)((Value.String)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.ModelTextType)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
+			var arg4=(Autodesk.Revit.DB.HorizontalAlign)((Value.Container)args[4]).Item;
+			var arg5=(System.Double)((Value.Number)args[5]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewModelText(arg0,arg1,arg2,arg3,arg4,arg5);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Opening_4")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create an opening to cut the wall or ceiling.")]
+	public class Revit_Opening_4 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Opening_4()
+		{
+			InPortData.Add(new PortData("el", "Host elements that new opening would lie in. The host can only be a wall or a ceiling.",typeof(object)));
+			InPortData.Add(new PortData("crvs", "The profile of the newly created opening. This may contain more than one curve loop. Each loop must be a fully closed curve loop and the loops may not intersect. The profiles will be projected into the host plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful, the newly created opening is returned, otherwise anexception with error information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Element)((Value.Container)args[0]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewOpening(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit RadialDimension")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Generate a new radial dimension object using a specified dimension type.")]
+	public class Revit_RadialDimension : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_RadialDimension()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The point where the witness line of the radial dimension will lie.",typeof(object)));
+			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRadialDimension(arg0,arg1,arg2,arg3);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit DiameterDimension")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new diameter dimension object using the default dimension type.")]
+	public class Revit_DiameterDimension : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_DiameterDimension()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The point where the witness line of the diameter dimension will lie.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new diameter dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDiameterDimension(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit RadialDimension_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new radial dimension object using the default dimension type.")]
+	public class Revit_RadialDimension_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_RadialDimension_1()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The point where the witness line of the radial dimension will lie.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRadialDimension(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ArcLengthDimension")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new arc length dimension object using the specified dimension type.")]
+	public class Revit_ArcLengthDimension : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ArcLengthDimension()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("arc", "The extension arc of the dimension.",typeof(object)));
+			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.This reference must be parallel to the extension arc.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound.This reference must intersect the arcRef reference.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.This reference must intersect the arcRef reference.",typeof(object)));
+			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Arc)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
+			var arg4=(Autodesk.Revit.DB.Reference)((Value.Container)args[4]).Item;
+			var arg5=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[5]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewArcLengthDimension(arg0,arg1,arg2,arg3,arg4,arg5);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ArcLengthDimension_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new arc length dimension object using the default dimension type.")]
+	public class Revit_ArcLengthDimension_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ArcLengthDimension_1()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("arc", "The extension arc of the dimension.",typeof(object)));
+			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.This reference must be parallel to the extension arc.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound. This reference must intersect the arcRef reference.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound. This reference must intersect the arcRef reference.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Arc)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
+			var arg4=(Autodesk.Revit.DB.Reference)((Value.Container)args[4]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewArcLengthDimension(arg0,arg1,arg2,arg3,arg4);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit AngularDimension")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new angular dimension object using the specified dimension type.")]
+	public class Revit_AngularDimension : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_AngularDimension()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("arc", "The extension arc of the dimension.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(object)));
+			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new angular dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Arc)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
+			var arg4=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[4]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAngularDimension(arg0,arg1,arg2,arg3,arg4);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit AngularDimension_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new angular dimension object using the default dimension type.")]
+	public class Revit_AngularDimension_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_AngularDimension_1()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("arc", "The extension arc of the dimension.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new angular dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Arc)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAngularDimension(arg0,arg1,arg2,arg3);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit LinearDimension")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new linear dimension object using the specified dimension type.")]
+	public class Revit_LinearDimension : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_LinearDimension()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The extension line of the dimension.",typeof(object)));
+			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.You must supply at least two references, and all references supplied must be parallel to each other and perpendicular to the extension line.",typeof(object)));
+			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new linear dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
+			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLinearDimension(arg0,arg1,arg2,arg3);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit LinearDimension_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Generate a new linear dimension object using the default dimension type.")]
+	public class Revit_LinearDimension_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_LinearDimension_1()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The extension line of the dimension.",typeof(object)));
+			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.You must supply at least two references, and all references supplied must be parallel to each other and perpendicular to the extension line.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new linear dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLinearDimension(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit FormByThickenSingleSurface")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a new Form element by thickening a single-surface form, and add it into the Autodesk Revit family document.")]
+	public class Revit_FormByThickenSingleSurface : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FormByThickenSingleSurface()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("frm", "The single-surface form element. It can have one top/bottom face or one side face.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The offset of capped solid.",typeof(object)));
+			OutPortData.Add(new PortData("out","This function will modify the input singleSurfaceForm and return the same element.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=(Autodesk.Revit.DB.Form)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFormByThickenSingleSurface(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit FormByCap")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create new Form element by cap operation (to create a single-surface form), and add it into the Autodesk Revit family document.")]
+	public class Revit_FormByCap : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FormByCap()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("refa", "The profile of the newly created cap. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful new form is returned.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFormByCap(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit RevolveForms")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create new Form elements by revolve operation, and add them into the Autodesk Revit family document.")]
+	public class Revit_RevolveForms : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_RevolveForms()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("refa", "The profile of the newly created revolution. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The axis of revolution. This axis must lie in the same plane as the curve loops.",typeof(object)));
+			InPortData.Add(new PortData("n", "The start angle of Revolution in radians.",typeof(object)));
+			InPortData.Add(new PortData("n", "The end angle of Revolution in radians.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful new forms are returned.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
+			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
+			var arg3=(System.Double)((Value.Number)args[3]).Item;
+			var arg4=(System.Double)((Value.Number)args[4]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRevolveForms(arg0,arg1,arg2,arg3,arg4);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit SweptBlendForm")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create new Form element by swept blend operation, and add it into the Autodesk Revit family document.")]
+	public class Revit_SweptBlendForm : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_SweptBlendForm()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("refa", "The path of the swept blend. The path should be 2D, where all input curves lie in one plane. If there’s more than one profile, the path should be a single curve. It’s required to reference existing geometry.",typeof(object)));
+			InPortData.Add(new PortData("arar", "The profile set of the newly created swept blend. Each profile should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful new form is returned.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(((Value.List)args[2]).Item);
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlendForm(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit ExtrusionForm")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create new Form element by Extrude operation, and add it into the Autodesk Revit family document.")]
+	public class Revit_ExtrusionForm : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ExtrusionForm()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("refa", "The profile of extrusion. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The direction of extrusion, with its length the length of the extrusion. The direction must be perpendicular to the plane determined by profile. The length of vector must be non-zero.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful new form is returned.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewExtrusionForm(arg0,arg1,arg2);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit LoftForm")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create new Form element by Loft operation, and add it into the Autodesk Revit family document.")]
+	public class Revit_LoftForm : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_LoftForm()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("arar", "The profile set of the newly created loft. Each profile should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful form is are returned.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(((Value.List)args[1]).Item);
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLoftForm(arg0,arg1);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit SweptBlend")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Adds a new swept blend into the family document, using a selected reference as the path.")]
+	public class Revit_SweptBlend : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_SweptBlend()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the swept blend is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The path of the swept blend. The path might be a reference of single curve or edge obtained from existing geometry.Or the path can be a single sketched curve, and the curve is not required to reference existing geometry.",typeof(object)));
+			InPortData.Add(new PortData("swpp", "The bottom profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(object)));
+			InPortData.Add(new PortData("swpp", "The top profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new Swept blend is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlend(arg0,arg1,arg2,arg3);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit SweptBlend_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a new swept blend into the family document, using a curve as the path.")]
+	public class Revit_SweptBlend_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_SweptBlend_1()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the swept blend is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The path of the swept blend. The path should be a single curve.Or the path can be a single sketched curve, and the curve is not required to reference existing geometry.",typeof(object)));
+			InPortData.Add(new PortData("sp", "The sketch plane for the path. Use this when you want to create a 2D path that resides on an existing planar face. Optional, can be",typeof(object)));
+			InPortData.Add(new PortData("swpp", "The bottom profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(object)));
+			InPortData.Add(new PortData("swpp", "The top profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new Swept blend is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=(Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
+			var arg4=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[4]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlend(arg0,arg1,arg2,arg3,arg4);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Sweep")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Adds a new sweep form into the family document, using an array of selected references as a 3D path.")]
+	public class Revit_Sweep : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Sweep()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Sweep is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("refa", "The path of the sweep. The path should be reference of curve or edge obtained from existing geometry.",typeof(object)));
+			InPortData.Add(new PortData("swpp", "The profile to create the new Sweep. The profile must lie in the XY plane, and it will be transformed to the profile plane automatically. This may contain more than one curve loop or a profile family. Each loop must be a fully closed curve loop and the loops must not intersect.The loop can be a unbound circle or ellipse,  but its geometry will be split in two in order to satisfy requirements for sketches used in extrusions.",typeof(object)));
+			InPortData.Add(new PortData("i", "The index of the path curves. The curve upon which the profileplane will be determined.",typeof(object)));
+			InPortData.Add(new PortData("ppl", "The location on the profileLocationCurve where the profileplane will be determined.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new Sweep is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
+			var arg2=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[2]).Item;
+			var arg3=(System.Int32)((Value.Number)args[3]).Item;
+			var arg4=(Autodesk.Revit.DB.ProfilePlaneLocation)((Value.Container)args[4]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweep(arg0,arg1,arg2,arg3,arg4);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Sweep_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Adds a new sweep form to the family document, using a path of curve elements.")]
+	public class Revit_Sweep_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Sweep_1()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Sweep is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("crvs", "The path of the sweep. The path should be 2D, where all input curves lie in one plane, and the curves are not required to reference existing geometry.",typeof(object)));
+			InPortData.Add(new PortData("sp", "The sketch plane for the path. Use this when you want to create a 2D path that resides on an existing planar face. Optional, can be",typeof(object)));
+			InPortData.Add(new PortData("swpp", "The profile of the newly created Sweep. This may containmore than one curve loop or a profile family. Each loop must be a fully closed curve loop and the loops must not intersect. All loops must lie in the same plane.The loop can be a unbound circle or ellipse,  but its geometry will be split in two in order to satisfy requirements for sketches used in extrusions.",typeof(object)));
+			InPortData.Add(new PortData("i", "The index of the path curves. The curve upon which the profileplane will be determined.",typeof(object)));
+			InPortData.Add(new PortData("ppl", "The location on the profileLocationCurve where the profileplane will be determined.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new Sweep is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
+			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
+			var arg4=(System.Int32)((Value.Number)args[4]).Item;
+			var arg5=(Autodesk.Revit.DB.ProfilePlaneLocation)((Value.Container)args[5]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweep(arg0,arg1,arg2,arg3,arg4,arg5);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Revolution")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a new Revolution instance into the Autodesk Revit family document.")]
+	public class Revit_Revolution : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Revolution()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Revolution is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("crvs", "The profile of the newly created revolution. This may containmore than one curve loop. Each loop must be a fully closed curve loop and the loops must not intersect. All loops must lie in the same plane.The loop can be a unbound circle or ellipse,  but its geometry will be split in two in order to satisfy requirements for sketches used in extrusions.",typeof(object)));
+			InPortData.Add(new PortData("sp", "The sketch plane for the revolution.  The direction of revolutionis determined by the normal for the sketch plane.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The axis of revolution. This axis must lie in the same plane as the curve loops.",typeof(object)));
+			InPortData.Add(new PortData("n", "The start angle of Revolution in radians.",typeof(object)));
+			InPortData.Add(new PortData("n", "The end angle of Revolution in radians.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new revolution is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArrayArray(((Value.List)args[1]).Item);
+			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.Line)((Value.Container)args[3]).Item;
+			var arg4=(System.Double)((Value.Number)args[4]).Item;
+			var arg5=(System.Double)((Value.Number)args[5]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRevolution(arg0,arg1,arg2,arg3,arg4,arg5);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Blend")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a new Blend instance into the Autodesk Revit family document.")]
+	public class Revit_Blend : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Blend()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Blend is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("crvs", "The top blend section. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
+			InPortData.Add(new PortData("crvs", "The base blend section. It should consist of only one curve loop.The input profile must be in one plane.",typeof(object)));
+			InPortData.Add(new PortData("sp", "The sketch plane for the base profile. Use this to associate the base of the blend to geometry from another element. Optional, it can be",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new blend is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
+			var arg2=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[2]).Item);
+			var arg3=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[3]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewBlend(arg0,arg1,arg2,arg3);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Extrusion")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a new Extrusion instance into the Autodesk Revit family document.")]
+	public class Revit_Extrusion : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Extrusion()
+		{
+			InPortData.Add(new PortData("b", "Indicates if the Extrusion is Solid or Void.",typeof(object)));
+			InPortData.Add(new PortData("crvs", "The profile of the newly created Extrusion. This may contain more than one curve loop. Each loop must be a fully closed curve loop and the loops may not intersect. All input curves must lie in the same plane.The loop can be a unbound circle or ellipse,  but its geometry will be split in two in order to satisfy requirements for sketches used in extrusions.",typeof(object)));
+			InPortData.Add(new PortData("sp", "The sketch plane for the extrusion.  The direction of extrusionis determined by the normal for the sketch plane.  To extrude in the other direction set the end value to negative.",typeof(object)));
+			InPortData.Add(new PortData("n", "The length of the extrusion.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new Extrusion is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArrayArray(((Value.List)args[1]).Item);
+			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
+			var arg3=(System.Double)((Value.Number)args[3]).Item;
+			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewExtrusion(arg0,arg1,arg2,arg3);
+			return Value.NewContainer(result);
+		}
+	}
+
+	[NodeName("Revit Alignment")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a new locked alignment into the Autodesk Revit document.")]
+	public class Revit_Alignment : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Alignment()
+		{
+			InPortData.Add(new PortData("v", "The view that determines the orientation of the alignment.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The first reference.",typeof(object)));
+			InPortData.Add(new PortData("ref", "The second reference.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful the new locked alignment dimension is returned, otherwise an exception with failure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAlignment(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewAlignment(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit TextNote")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new text note with a single leader.")]
+	public class Revit_TextNote : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_TextNote()
+		{
+			InPortData.Add(new PortData("v", "The view where the text note object will be visible.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The origin of the text note.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The horizontal direction for text in the text note.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The vertical direction for text in the text note.",typeof(object)));
+			InPortData.Add(new PortData("n", "The width of the rectangle bounding the note text.",typeof(object)));
+			InPortData.Add(new PortData("tafs", "Flags indicating the alignment of the note.  This should be a bitwise OR including one of TEF_ALIGN_TOP, TEF_ALIGN_MIDDLE and TEF_ALIGN_BOTTOM and one of TEF_ALIGN_LEFT, TEF_ALIGN_CENTER and TEF_ALIGN_RIGHT.The defaults for this flag are TEF_ALIGN_TOP | TEF_ALIGN_LEFT.",typeof(object)));
+			InPortData.Add(new PortData("tnlts", "The type and alignment of the leader for the note.",typeof(object)));
+			InPortData.Add(new PortData("tnls", "The style of the leader for the note.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The end point for the leader.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The elbow point for the leader.",typeof(object)));
+			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful, a TextNote object is returned.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
+			var arg4=(System.Double)((Value.Number)args[4]).Item;
+			var arg5=(Autodesk.Revit.DB.TextAlignFlags)((Value.Container)args[5]).Item;
+			var arg6=(Autodesk.Revit.DB.TextNoteLeaderTypes)((Value.Container)args[6]).Item;
+			var arg7=(Autodesk.Revit.DB.TextNoteLeaderStyles)((Value.Container)args[7]).Item;
+			var arg8=(Autodesk.Revit.DB.XYZ)((Value.Container)args[8]).Item;
+			var arg9=(Autodesk.Revit.DB.XYZ)((Value.Container)args[9]).Item;
+			var arg10=(System.String)((Value.String)args[10]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewTextNote(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewTextNote(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit TextNote_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new TextNote object without a leader.")]
+	public class Revit_TextNote_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_TextNote_1()
+		{
+			InPortData.Add(new PortData("v", "The view where the text note object will be visible.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The origin of the text note.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The horizontal direction for text in the text note.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The vertical direction for text in the text note.",typeof(object)));
+			InPortData.Add(new PortData("n", "The width of the rectangle bounding the note text.",typeof(object)));
+			InPortData.Add(new PortData("tafs", "Flags indicating the alignment of the note.  This should be a bitwise OR including one of TEF_ALIGN_TOP, TEF_ALIGN_MIDDLE and TEF_ALIGN_BOTTOM and one of TEF_ALIGN_LEFT, TEF_ALIGN_CENTER and TEF_ALIGN_RIGHT.The defaults for this flag are TEF_ALIGN_TOP | TEF_ALIGN_LEFT.",typeof(object)));
+			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful, a TextNote object is returned.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
+			var arg4=(System.Double)((Value.Number)args[4]).Item;
+			var arg5=(Autodesk.Revit.DB.TextAlignFlags)((Value.Container)args[5]).Item;
+			var arg6=(System.String)((Value.String)args[6]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewTextNote(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewTextNote(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit SketchPlane")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new sketch plane on a reference to existing planar geometry.")]
+	public class Revit_SketchPlane : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_SketchPlane()
+		{
+			InPortData.Add(new PortData("ref", "The planar face reference to locate sketch plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful a new sketch plane will be returned. Otherwise an exception withfailure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(arg0);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewSketchPlane(arg0);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit SketchPlane_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new sketch plane on a planar face of existing geometry.")]
+	public class Revit_SketchPlane_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_SketchPlane_1()
+		{
+			InPortData.Add(new PortData("val", "The geometry planar face to locate sketch plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful a new sketch plane will be returned. Otherwise an exception withfailure information will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.PlanarFace)((Value.Container)args[0]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(arg0);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewSketchPlane(arg0);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit SketchPlane_2")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new sketch plane from an arbitrary geometric plane.")]
+	public class Revit_SketchPlane_2 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_SketchPlane_2()
+		{
+			InPortData.Add(new PortData("p", "The geometry plane to locate sketch plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful a new sketch plane will be returned. Otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Plane)((Value.Container)args[0]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(arg0);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewSketchPlane(arg0);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit ReferencePlane2")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of ReferencePlane.")]
+	public class Revit_ReferencePlane2 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ReferencePlane2()
+		{
+			InPortData.Add(new PortData("xyz", "The bubble end applied to reference plane.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The free end applied to reference plane.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "A third point needed to define the reference plane.",typeof(object)));
+			InPortData.Add(new PortData("v", "The specific view apply to the Reference plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","The newly created reference plane.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.View)((Value.Container)args[3]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePlane2(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewReferencePlane2(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit ReferencePlane")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of ReferencePlane.")]
+	public class Revit_ReferencePlane : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ReferencePlane()
+		{
+			InPortData.Add(new PortData("xyz", "The bubble end applied to reference plane.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The free end applied to reference plane.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "The cut vector apply to reference plane, should perpendicular to the vector  (bubbleEnd-freeEnd).",typeof(object)));
+			InPortData.Add(new PortData("v", "The specific view apply to the Reference plane.",typeof(object)));
+			OutPortData.Add(new PortData("out","The newly created reference plane.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.View)((Value.Container)args[3]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePlane(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewReferencePlane(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit Level")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new level.")]
+	public class Revit_Level : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Level()
+		{
+			InPortData.Add(new PortData("n", "The elevation to apply to the new level.",typeof(object)));
+			OutPortData.Add(new PortData("out","The newly created level.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(System.Double)((Value.Number)args[0]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLevel(arg0);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewLevel(arg0);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit ModelCurveArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates an array of new model line elements.")]
+	public class Revit_ModelCurveArray : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ModelCurveArray()
+		{
+			InPortData.Add(new PortData("crvs", "An array containing the internal geometry curves for model lines.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful an array of new model line elements. Otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
+			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurveArray(arg0,arg1);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewModelCurveArray(arg0,arg1);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit ModelCurve")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new model line element.")]
+	public class Revit_ModelCurve : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_ModelCurve()
+		{
+			InPortData.Add(new PortData("crv", "The internal geometry curve for model line.",typeof(object)));
+			InPortData.Add(new PortData("sp", "The sketch plane this new model line resides in.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful a new model line element. Otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(arg0,arg1);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewModelCurve(arg0,arg1);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit Group")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new type of group.")]
+	public class Revit_Group : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Group()
+		{
+			InPortData.Add(new PortData("val", "A set of elements which will be made into the new group.",typeof(object)));
+			OutPortData.Add(new PortData("out","A new instance of a group containing the elements specified.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(List<Autodesk.Revit.DB.ElementId>)((Value.Container)args[0]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewGroup(arg0);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewGroup(arg0);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstances2")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates Family instances within the document.")]
+	public class Revit_FamilyInstances2 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstances2()
+		{
+			InPortData.Add(new PortData("val", "A list of FamilyInstanceCreationData which wraps the creation arguments of the families to be created.",typeof(object)));
+			OutPortData.Add(new PortData("out","If the creation is successful, a set of ElementIds which contains the Family instances should be returned, otherwise the exception will be thrown.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(List<Autodesk.Revit.Creation.FamilyInstanceCreationData>)((Value.Container)args[0]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstances2(arg0);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstances2(arg0);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_3")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a line based detail family instance into the Autodesk Revit document, using an line and a view where the instance should be placed.")]
+	public class Revit_FamilyInstance_3 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_3()
+		{
+			InPortData.Add(new PortData("crv", "The line location of family instance. The line must in the plane of the view.",typeof(object)));
+			InPortData.Add(new PortData("fs", "A family symbol object that represents the type of the instance that is to be inserted.",typeof(object)));
+			InPortData.Add(new PortData("v", "A 2D view in which to display the family instance.",typeof(object)));
+			OutPortData.Add(new PortData("out","",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Line)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_4")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Add a new family instance into the Autodesk Revit document, using an origin and a view where the instance should be placed.")]
+	public class Revit_FamilyInstance_4 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_4()
+		{
+			InPortData.Add(new PortData("xyz", "The origin of family instance. If created on a",typeof(object)));
+			InPortData.Add(new PortData("fs", "A family symbol object that represents the type of the instance that is to be inserted.",typeof(object)));
+			InPortData.Add(new PortData("v", "The 2D view in which to place the family instance.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_5")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Inserts a new instance of a family onto a face referenced by the input Reference instance, using a line on that face for its position, and a type/symbol.")]
+	public class Revit_FamilyInstance_5 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_5()
+		{
+			InPortData.Add(new PortData("ref", "A reference to a face.",typeof(object)));
+			InPortData.Add(new PortData("crv", "A line on the face defining where the symbol is to be placed.",typeof(object)));
+			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted. Note that this symbol must represent a family whose",typeof(object)));
+			OutPortData.Add(new PortData("out","An instance of the new object if creation was successful, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[2]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_6")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Inserts a new instance of a family onto a face referenced by the input Reference instance, using a location, reference direction, and a type/symbol.")]
+	public class Revit_FamilyInstance_6 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_6()
+		{
+			InPortData.Add(new PortData("ref", "A reference to a face.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "Point on the face where the instance is to be placed.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "A vector that defines the direction of the family instance.Note that this direction defines the rotation of the instance on the face, and thus cannot be parallelto the face normal.",typeof(object)));
+			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(object)));
+			OutPortData.Add(new PortData("out","An instance of the new object if creation was successful, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[3]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_7")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Inserts a new instance of a family onto a face of an existing element, using a line on that face for its position, and a type/symbol.")]
+	public class Revit_FamilyInstance_7 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_7()
+		{
+			InPortData.Add(new PortData("f", "A face of a geometry object.",typeof(object)));
+			InPortData.Add(new PortData("crv", "A line on the face defining where the symbol is to be placed.",typeof(object)));
+			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(object)));
+			OutPortData.Add(new PortData("out","An instance of the new object if creation was successful, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Face)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[2]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_8")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Inserts a new instance of a family onto a face of an existing element, using a location, reference direction, and a type/symbol.")]
+	public class Revit_FamilyInstance_8 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_8()
+		{
+			InPortData.Add(new PortData("f", "A face of a geometry object.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "Point on the face where the instance is to be placed.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "A vector that defines the direction of the family instance.Note that this direction defines the rotation of the instance on the face, and thus cannot be parallelto the face normal.",typeof(object)));
+			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(object)));
+			OutPortData.Add(new PortData("out","An instance of the new object if creation was successful, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.Face)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[3]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_9")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Inserts a new instance of a family into the document, using a location and atype/symbol.")]
+	public class Revit_FamilyInstance_9 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_9()
+		{
+			InPortData.Add(new PortData("xyz", "The physical location where the instance is to be placed.",typeof(object)));
+			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(object)));
+			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[2]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_10")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Inserts a new instance of a family into the document,using a location, type/symbol, and the host element.")]
+	public class Revit_FamilyInstance_10 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_10()
+		{
+			InPortData.Add(new PortData("xyz", "The physical location where the instance is to be placed.",typeof(object)));
+			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(object)));
+			InPortData.Add(new PortData("el", "The object into which the FamilyInstance is to be inserted, often known as the host.",typeof(object)));
+			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.Element)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[3]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit FamilyInstance_11")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Inserts a new instance of a family into the document,using a location, type/symbol, the host element and a reference direction.")]
+	public class Revit_FamilyInstance_11 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_FamilyInstance_11()
+		{
+			InPortData.Add(new PortData("xyz", "The physical location where the instance is to be placed.",typeof(object)));
+			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(object)));
+			InPortData.Add(new PortData("xyz", "A vector that dictates the direction of certain family instances.",typeof(object)));
+			InPortData.Add(new PortData("el", "A host object into which the instance will be embedded",typeof(object)));
+			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(object)));
+			OutPortData.Add(new PortData("out","If creation was successful then an instance to the new object is returned, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
+			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
+			var arg3=(Autodesk.Revit.DB.Element)((Value.Container)args[3]).Item;
+			var arg4=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[4]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstance(arg0,arg1,arg2,arg3,arg4);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3,arg4);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit Dimension")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new linear dimension object using the specified dimension style.")]
+	public class Revit_Dimension : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Dimension()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The line drawn for the dimension.",typeof(object)));
+			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.",typeof(object)));
+			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful a new dimension object, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
+			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDimension(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewDimension(arg0,arg1,arg2,arg3);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit Dimension_1")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new linear dimension object using the default dimension style.")]
+	public class Revit_Dimension_1 : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_Dimension_1()
+		{
+			InPortData.Add(new PortData("v", "The view in which the dimension is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The line drawn for the dimension.",typeof(object)));
+			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful a new dimension object, otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
+			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDimension(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewDimension(arg0,arg1,arg2);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit DetailCurveArray")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates an array of new detail curve elements.")]
+	public class Revit_DetailCurveArray : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_DetailCurveArray()
+		{
+			InPortData.Add(new PortData("v", "The view in which the detail curves are to be visible.",typeof(object)));
+			InPortData.Add(new PortData("crvs", "An array containing the internal geometry curves for detail lines. The curve in array should be bound curve.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful an array of new detail curve elements. Otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDetailCurveArray(arg0,arg1);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewDetailCurveArray(arg0,arg1);
+				return Value.NewContainer(result);
+			}
+		}
+	}
+
+	[NodeName("Revit DetailCurve")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new detail curve element.")]
+	public class Revit_DetailCurve : dynRevitTransactionNodeWithOneOutput
+	{
+		public Revit_DetailCurve()
+		{
+			InPortData.Add(new PortData("v", "The view in which the detail curve is to be visible.",typeof(object)));
+			InPortData.Add(new PortData("crv", "The internal geometry curve for detail curve. It should be a bound curve.",typeof(object)));
+			OutPortData.Add(new PortData("out","If successful a new detail curve element. Otherwise",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.View)((Value.Container)args[0]).Item;
+			var arg1=(Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item;
+			if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+			{
+				var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDetailCurve(arg0,arg1);
+				return Value.NewContainer(result);
+			}
+			else
+			{
+				var result = dynRevitSettings.Doc.Document.Create.NewDetailCurve(arg0,arg1);
+				return Value.NewContainer(result);
+			}
 		}
 	}
 
