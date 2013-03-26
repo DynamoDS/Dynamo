@@ -190,7 +190,7 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 		f.write('\t\t\t}\n')
 	else:
 		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
-		f.write('\t\t\treturn Value.NewContainer(result);\n')
+		f.write('\t\t\treturn DynamoOutputTypeConverter.Convert(result);\n')
 
 
 	f.write('\t\t}\n')

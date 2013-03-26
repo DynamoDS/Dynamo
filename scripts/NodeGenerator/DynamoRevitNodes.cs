@@ -28,7 +28,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).ComputeCentroid();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -47,7 +47,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).Volume;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -66,7 +66,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).SurfaceArea;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -85,7 +85,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).Faces;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -104,7 +104,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Solid)(args[0] as Value.Container).Item);
 			var result = ((Solid)(args[0] as Value.Container).Item).Edges;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -123,7 +123,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Form)(args[0] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).BaseOffset;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -142,7 +142,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Form)(args[0] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).TopOffset;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -165,7 +165,7 @@ namespace Dynamo.Nodes
 			var arg1=(System.Double)((Value.Number)args[1]).Item;
 			var arg2=((Form)(args[2] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).AddProfile(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -186,7 +186,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).CanManipulateProfile(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -207,7 +207,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).CanManipulateSubElement(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -228,7 +228,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).GetCurvesAndEdgesReference(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -249,7 +249,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).GetControlPoints(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -270,7 +270,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsConnectingEdge(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -291,7 +291,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsProfileEdge(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -312,7 +312,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsAutoCreaseEdge(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -333,7 +333,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsSideFace(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -354,7 +354,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsEndFace(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -375,7 +375,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsBeginningFace(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -396,7 +396,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsReferenceOnlyProfile(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -417,7 +417,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsFaceReference(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -438,7 +438,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsCurveReference(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -459,7 +459,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsEdgeReference(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -480,7 +480,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsVertexReference(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -499,7 +499,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Form)(args[0] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).HasOpenGeometry;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -518,7 +518,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Form)(args[0] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).AreProfilesConstrained;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -537,7 +537,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Form)(args[0] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).IsInXRayMode;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -556,7 +556,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Form)(args[0] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).HasOneOrMoreReferenceProfiles;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -577,7 +577,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).GetPathCurveIndexByCurveReference(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -598,7 +598,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).get_PathCurveReference(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -617,7 +617,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Form)(args[0] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).PathCurveCount;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -640,7 +640,7 @@ namespace Dynamo.Nodes
 			var arg1=(System.Int32)((Value.Number)args[1]).Item;
 			var arg2=((Form)(args[2] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).get_CurveLoopReferencesOnProfile(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -661,7 +661,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Form)(args[1] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).get_ProfileCurveLoopCount(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -680,7 +680,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Form)(args[0] as Value.Container).Item);
 			var result = ((Form)(args[0] as Value.Container).Item).ProfileCount;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -699,7 +699,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(List<Autodesk.Revit.DB.XYZ>)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewTopographySurface(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -720,7 +720,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Connector)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.MEPCurve)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewTakeoffFitting(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -741,7 +741,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Connector)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewUnionFitting(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -766,7 +766,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Connector)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.Connector)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewCrossFitting(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -787,7 +787,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Connector)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewTransitionFitting(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -810,7 +810,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Connector)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewTeeFitting(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -831,7 +831,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Connector)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewElbowFitting(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -854,7 +854,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Plumbing.FlexPipeType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFlexPipe(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -877,7 +877,7 @@ namespace Dynamo.Nodes
 			var arg1=(List<Autodesk.Revit.DB.XYZ>)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Plumbing.FlexPipeType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFlexPipe(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -898,7 +898,7 @@ namespace Dynamo.Nodes
 			var arg0=(List<Autodesk.Revit.DB.XYZ>)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Plumbing.FlexPipeType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFlexPipe(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -921,7 +921,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Plumbing.PipeType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewPipe(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -944,7 +944,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Plumbing.PipeType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewPipe(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -967,7 +967,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Plumbing.PipeType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewPipe(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -990,7 +990,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Mechanical.FlexDuctType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFlexDuct(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1013,7 +1013,7 @@ namespace Dynamo.Nodes
 			var arg1=(List<Autodesk.Revit.DB.XYZ>)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Mechanical.FlexDuctType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFlexDuct(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1034,7 +1034,7 @@ namespace Dynamo.Nodes
 			var arg0=(List<Autodesk.Revit.DB.XYZ>)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Mechanical.FlexDuctType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFlexDuct(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1057,7 +1057,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Mechanical.DuctType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewDuct(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1080,7 +1080,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Connector)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Mechanical.DuctType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewDuct(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1103,7 +1103,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Mechanical.DuctType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewDuct(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1128,7 +1128,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1153,7 +1153,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1180,7 +1180,7 @@ namespace Dynamo.Nodes
 			var arg3=(Autodesk.Revit.DB.Level)((Value.Container)args[3]).Item;
 			var arg4=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFamilyInstance(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1201,7 +1201,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Architecture.FasciaType)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFascia(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1222,7 +1222,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Architecture.FasciaType)((Value.Container)args[0]).Item;
 			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewFascia(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1243,7 +1243,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Architecture.GutterType)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewGutter(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1264,7 +1264,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Architecture.GutterType)((Value.Container)args[0]).Item;
 			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewGutter(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1285,7 +1285,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.SlabEdgeType)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSlabEdge(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1306,7 +1306,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.SlabEdgeType)((Value.Container)args[0]).Item;
 			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewSlabEdge(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1327,7 +1327,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.FaceArray)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.CurtainSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewCurtainSystem(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1348,7 +1348,7 @@ namespace Dynamo.Nodes
 			var arg0=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.CurtainSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewCurtainSystem2(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1369,7 +1369,7 @@ namespace Dynamo.Nodes
 			var arg0=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.CurtainSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewCurtainSystem(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1398,7 +1398,7 @@ namespace Dynamo.Nodes
 			var arg4=(Autodesk.Revit.DB.Electrical.WireType)((Value.Container)args[4]).Item;
 			var arg5=(Autodesk.Revit.DB.Electrical.WiringType)((Value.Container)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewWire(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1419,7 +1419,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewZone(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1442,7 +1442,7 @@ namespace Dynamo.Nodes
 			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRoomBoundaryLines(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1465,7 +1465,7 @@ namespace Dynamo.Nodes
 			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpaceBoundaryLines(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1488,7 +1488,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpaceTag(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1508,7 +1508,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Phase)((Value.Container)args[0]).Item;
 			var arg1=(System.Int32)((Value.Number)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpaces2(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1528,7 +1528,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Phase)((Value.Container)args[0]).Item;
 			var arg1=(System.Int32)((Value.Number)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpaces(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1551,7 +1551,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpaces2(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1574,7 +1574,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpaces(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1597,7 +1597,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.UV)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpace(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1618,7 +1618,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpace(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1637,7 +1637,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Phase)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewSpace(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1660,7 +1660,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.ConnectorSet)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Plumbing.PipeSystemType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewPipingSystem(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1683,7 +1683,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.ConnectorSet)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Mechanical.DuctSystemType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewMechanicalSystem(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1704,7 +1704,7 @@ namespace Dynamo.Nodes
 			var arg0=(List<Autodesk.Revit.DB.ElementId>)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Electrical.ElectricalSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewElectricalSystem(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1725,7 +1725,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.ElementSet)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Electrical.ElectricalSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewElectricalSystem(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1746,7 +1746,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Connector)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Electrical.ElectricalSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewElectricalSystem(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1775,7 +1775,7 @@ namespace Dynamo.Nodes
 			var arg4=(System.Double)((Value.Number)args[4]).Item;
 			var arg5=(System.Double)((Value.Number)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewExtrusionRoof(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1800,7 +1800,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.RoofType)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.ModelCurveArray)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFootPrintRoof(arg0,arg1,arg2,out arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1823,7 +1823,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Curve)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewTruss(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1842,7 +1842,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(List<Autodesk.Revit.Creation.AreaCreationData>)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreas(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1863,7 +1863,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.ViewPlan)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewArea(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1885,7 +1885,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Area)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.UV)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaTag(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1907,7 +1907,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.AreaElemType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaViewPlan(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1930,7 +1930,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.ViewPlan)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaBoundaryLine(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1951,7 +1951,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.ContFootingType)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Wall)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFoundationWall(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -1978,7 +1978,7 @@ namespace Dynamo.Nodes
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var arg4=Convert.ToBoolean(((Value.Number)args[4]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewSlab(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2007,7 +2007,7 @@ namespace Dynamo.Nodes
 			var arg4=(Autodesk.Revit.DB.TagOrientation)((Value.Container)args[4]).Item;
 			var arg5=(Autodesk.Revit.DB.XYZ)((Value.Container)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewTag(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2030,7 +2030,7 @@ namespace Dynamo.Nodes
 			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewOpening(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2053,7 +2053,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewOpening(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2076,7 +2076,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var arg2=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewOpening(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2099,7 +2099,7 @@ namespace Dynamo.Nodes
 			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.Creation.eRefFace)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewOpening(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2130,7 +2130,7 @@ namespace Dynamo.Nodes
 			var arg5=(Autodesk.Revit.DB.Structure.TranslationRotationValue)((Value.Container)args[5]).Item;
 			var arg6=(System.Double)((Value.Number)args[6]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaBoundaryConditions(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2165,7 +2165,7 @@ namespace Dynamo.Nodes
 			var arg7=(Autodesk.Revit.DB.Structure.TranslationRotationValue)((Value.Container)args[7]).Item;
 			var arg8=(System.Double)((Value.Number)args[8]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLineBoundaryConditions(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2196,7 +2196,7 @@ namespace Dynamo.Nodes
 			var arg5=(Autodesk.Revit.DB.Structure.TranslationRotationValue)((Value.Container)args[5]).Item;
 			var arg6=(System.Double)((Value.Number)args[6]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaBoundaryConditions(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2231,7 +2231,7 @@ namespace Dynamo.Nodes
 			var arg7=(Autodesk.Revit.DB.Structure.TranslationRotationValue)((Value.Container)args[7]).Item;
 			var arg8=(System.Double)((Value.Number)args[8]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLineBoundaryConditions(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2274,7 +2274,7 @@ namespace Dynamo.Nodes
 			var arg11=(Autodesk.Revit.DB.Structure.TranslationRotationValue)((Value.Container)args[11]).Item;
 			var arg12=(System.Double)((Value.Number)args[12]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewPointBoundaryConditions(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2299,7 +2299,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewBeamSystem(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2320,7 +2320,7 @@ namespace Dynamo.Nodes
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewBeamSystem(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2345,7 +2345,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewBeamSystem(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2366,7 +2366,7 @@ namespace Dynamo.Nodes
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewBeamSystem(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2389,7 +2389,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.View)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRoomTag(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2410,7 +2410,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Phase)((Value.Container)args[0]).Item;
 			var arg1=(System.Int32)((Value.Number)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRooms2(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2431,7 +2431,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRooms2(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2450,7 +2450,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRooms2(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2471,7 +2471,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Phase)((Value.Container)args[0]).Item;
 			var arg1=(System.Int32)((Value.Number)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRooms(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2492,7 +2492,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Phase)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRooms(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2511,7 +2511,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRooms(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2530,7 +2530,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(List<Autodesk.Revit.Creation.RoomCreationData>)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRooms(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2551,7 +2551,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Architecture.Room)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.PlanCircuit)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRoom(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2570,7 +2570,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Phase)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRoom(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2591,7 +2591,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewRoom(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2610,7 +2610,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewGrids(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2629,7 +2629,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Arc)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewGrid(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2648,7 +2648,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Line)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewGrid(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2667,7 +2667,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewViewSheet(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2684,7 +2684,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Doc.Document.Create.NewViewDrafting();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2711,7 +2711,7 @@ namespace Dynamo.Nodes
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var arg4=(Autodesk.Revit.DB.XYZ)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFoundationSlab(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2738,7 +2738,7 @@ namespace Dynamo.Nodes
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var arg4=(Autodesk.Revit.DB.XYZ)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewFloor(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2763,7 +2763,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewFloor(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2784,7 +2784,7 @@ namespace Dynamo.Nodes
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewFloor(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2803,7 +2803,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(List<Autodesk.Revit.Creation.ProfiledWallCreationData>)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewWalls(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2822,7 +2822,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(List<Autodesk.Revit.Creation.RectangularWallCreationData>)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewWalls(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2849,7 +2849,7 @@ namespace Dynamo.Nodes
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var arg4=(Autodesk.Revit.DB.XYZ)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2874,7 +2874,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2895,7 +2895,7 @@ namespace Dynamo.Nodes
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2926,7 +2926,7 @@ namespace Dynamo.Nodes
 			var arg5=Convert.ToBoolean(((Value.Number)args[5]).Item);
 			var arg6=Convert.ToBoolean(((Value.Number)args[6]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2949,7 +2949,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewWall(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -2980,7 +2980,7 @@ namespace Dynamo.Nodes
 			var arg5=(Autodesk.Revit.DB.XYZ)((Value.Container)args[5]).Item;
 			var arg6=Convert.ToBoolean(((Value.Number)args[6]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewSpotElevation(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3011,7 +3011,7 @@ namespace Dynamo.Nodes
 			var arg5=(Autodesk.Revit.DB.XYZ)((Value.Container)args[5]).Item;
 			var arg6=Convert.ToBoolean(((Value.Number)args[6]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewSpotCoordinate(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3042,7 +3042,7 @@ namespace Dynamo.Nodes
 			var arg5=(Autodesk.Revit.DB.Structure.LoadCombinationArray)((Value.Container)args[5]).Item;
 			var arg6=(Autodesk.Revit.DB.Structure.LoadUsageArray)((Value.Container)args[6]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLoadCombination(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3065,7 +3065,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Structure.LoadNature)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Category)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLoadCase(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3084,7 +3084,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.String)((Value.String)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLoadUsage(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3103,7 +3103,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(System.String)((Value.String)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLoadNature(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3128,7 +3128,7 @@ namespace Dynamo.Nodes
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var arg3=(Autodesk.Revit.DB.Structure.AreaLoadType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaLoad(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3161,7 +3161,7 @@ namespace Dynamo.Nodes
 			var arg6=Convert.ToBoolean(((Value.Number)args[6]).Item);
 			var arg7=(Autodesk.Revit.DB.Structure.AreaLoadType)((Value.Container)args[7]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaLoad(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3190,7 +3190,7 @@ namespace Dynamo.Nodes
 			var arg4=Convert.ToBoolean(((Value.Number)args[4]).Item);
 			var arg5=(Autodesk.Revit.DB.Structure.AreaLoadType)((Value.Container)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaLoad(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3215,7 +3215,7 @@ namespace Dynamo.Nodes
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var arg3=(Autodesk.Revit.DB.Structure.AreaLoadType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaLoad(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3248,7 +3248,7 @@ namespace Dynamo.Nodes
 			var arg6=(Autodesk.Revit.DB.Structure.LineLoadType)((Value.Container)args[6]).Item;
 			var arg7=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[7]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLineLoad(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3281,7 +3281,7 @@ namespace Dynamo.Nodes
 			var arg6=(Autodesk.Revit.DB.Structure.LineLoadType)((Value.Container)args[6]).Item;
 			var arg7=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[7]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLineLoad(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3314,7 +3314,7 @@ namespace Dynamo.Nodes
 			var arg6=(Autodesk.Revit.DB.Structure.LineLoadType)((Value.Container)args[6]).Item;
 			var arg7=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[7]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLineLoad(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3353,7 +3353,7 @@ namespace Dynamo.Nodes
 			var arg9=(Autodesk.Revit.DB.Structure.LineLoadType)((Value.Container)args[9]).Item;
 			var arg10=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[10]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewLineLoad(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3382,7 +3382,7 @@ namespace Dynamo.Nodes
 			var arg4=(Autodesk.Revit.DB.Structure.PointLoadType)((Value.Container)args[4]).Item;
 			var arg5=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewPointLoad(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3411,7 +3411,7 @@ namespace Dynamo.Nodes
 			var arg4=(Autodesk.Revit.DB.Structure.PointLoadType)((Value.Container)args[4]).Item;
 			var arg5=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewPointLoad(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3434,7 +3434,7 @@ namespace Dynamo.Nodes
 			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.Create.NewPathReinforcement(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3456,7 +3456,7 @@ namespace Dynamo.Nodes
 			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.Create.NewAreaReinforcement(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3473,7 +3473,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Doc.Document.Create.NewRebarBarType();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3494,7 +3494,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).Project(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3517,7 +3517,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.IntersectionResultArray)((Value.Container)args[1]).Item;
 			var arg2=((Face)(args[2] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).Intersect(arg0,out arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3538,7 +3538,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).Intersect(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3561,7 +3561,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.IntersectionResult)((Value.Container)args[1]).Item;
 			var arg2=((Face)(args[2] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).IsInside(arg0,out arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3582,7 +3582,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.UV)((Value.Container)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).IsInside(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3603,7 +3603,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.UV)((Value.Container)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).ComputeNormal(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3624,7 +3624,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.UV)((Value.Container)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).ComputeDerivatives(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3645,7 +3645,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).get_Period(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3666,7 +3666,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).get_IsCyclic(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3685,7 +3685,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).Area;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3704,7 +3704,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).Reference;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3723,7 +3723,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).GetBoundingBox();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3744,7 +3744,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.UV)((Value.Container)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).Evaluate(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3765,7 +3765,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=((Face)(args[1] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).Triangulate(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3784,7 +3784,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).Triangulate();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3803,7 +3803,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).IsTwoSided;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3822,7 +3822,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).MaterialElementId;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3841,7 +3841,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).EdgeLoops;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3860,7 +3860,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).GetRegions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3879,7 +3879,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Face)(args[0] as Value.Container).Item);
 			var result = ((Face)(args[0] as Value.Container).Item).HasRegions;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3898,7 +3898,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDividedSurface(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3917,7 +3917,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.ReferencePointArray)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3935,7 +3935,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.PointElementReference)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3953,7 +3953,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3971,7 +3971,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -3992,7 +3992,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSymbolicCurve(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4015,7 +4015,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.View)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewControl(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4044,7 +4044,7 @@ namespace Dynamo.Nodes
 			var arg4=(Autodesk.Revit.DB.HorizontalAlign)((Value.Container)args[4]).Item;
 			var arg5=(System.Double)((Value.Number)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewModelText(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4065,7 +4065,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Element)((Value.Container)args[0]).Item;
 			var arg1=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewOpening(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4086,7 +4086,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Electrical.ElectricalSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewElectricalConnector(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4107,7 +4107,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Plumbing.PipeSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewPipeConnector(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4128,7 +4128,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Mechanical.DuctSystemType)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDuctConnector(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4153,7 +4153,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRadialDimension(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4176,7 +4176,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewDiameterDimension(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4199,7 +4199,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRadialDimension(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4228,7 +4228,7 @@ namespace Dynamo.Nodes
 			var arg4=(Autodesk.Revit.DB.Reference)((Value.Container)args[4]).Item;
 			var arg5=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewArcLengthDimension(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4255,7 +4255,7 @@ namespace Dynamo.Nodes
 			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
 			var arg4=(Autodesk.Revit.DB.Reference)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewArcLengthDimension(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4282,7 +4282,7 @@ namespace Dynamo.Nodes
 			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
 			var arg4=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAngularDimension(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4307,7 +4307,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Reference)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.Reference)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewAngularDimension(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4332,7 +4332,7 @@ namespace Dynamo.Nodes
 			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
 			var arg3=(Autodesk.Revit.DB.DimensionType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLinearDimension(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4355,7 +4355,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
 			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLinearDimension(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4378,7 +4378,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Form)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFormByThickenSingleSurface(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4399,7 +4399,7 @@ namespace Dynamo.Nodes
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
 			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewFormByCap(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4426,7 +4426,7 @@ namespace Dynamo.Nodes
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var arg4=(System.Double)((Value.Number)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRevolveForms(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4449,7 +4449,7 @@ namespace Dynamo.Nodes
 			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var arg2=dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(((Value.List)args[2]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlendForm(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4472,7 +4472,7 @@ namespace Dynamo.Nodes
 			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArray(((Value.List)args[1]).Item);
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewExtrusionForm(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4493,7 +4493,7 @@ namespace Dynamo.Nodes
 			var arg0=Convert.ToBoolean(((Value.Number)args[0]).Item);
 			var arg1=dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(((Value.List)args[1]).Item);
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewLoftForm(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4518,7 +4518,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlend(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4545,7 +4545,7 @@ namespace Dynamo.Nodes
 			var arg3=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[3]).Item;
 			var arg4=(Autodesk.Revit.DB.SweepProfile)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweptBlend(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4572,7 +4572,7 @@ namespace Dynamo.Nodes
 			var arg3=(System.Int32)((Value.Number)args[3]).Item;
 			var arg4=(Autodesk.Revit.DB.ProfilePlaneLocation)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweep(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4601,7 +4601,7 @@ namespace Dynamo.Nodes
 			var arg4=(System.Int32)((Value.Number)args[4]).Item;
 			var arg5=(Autodesk.Revit.DB.ProfilePlaneLocation)((Value.Container)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewSweep(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4630,7 +4630,7 @@ namespace Dynamo.Nodes
 			var arg4=(System.Double)((Value.Number)args[4]).Item;
 			var arg5=(System.Double)((Value.Number)args[5]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewRevolution(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4655,7 +4655,7 @@ namespace Dynamo.Nodes
 			var arg2=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[2]).Item);
 			var arg3=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewBlend(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -4680,7 +4680,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.SketchPlane)((Value.Container)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var result = dynRevitSettings.Doc.Document.FamilyCreate.NewExtrusion(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5707,7 +5707,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewReferencePointArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5726,7 +5726,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewPointRelativeToPoint(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5748,7 +5748,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewPointOnEdgeFaceIntersection(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5769,7 +5769,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.Reference)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewPointOnEdgeEdgeIntersection(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5790,7 +5790,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewPointOnFace(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5815,7 +5815,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.UV)((Value.Container)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewPointOnPlane(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5836,7 +5836,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Reference)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.PointLocationOnCurve)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewPointOnEdge(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5855,7 +5855,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilySymbolProfile(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5874,7 +5874,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArrayArray(((Value.List)args[0]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewCurveLoopsProfile(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5891,7 +5891,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewElementId();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5912,7 +5912,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.ViewPlan)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewAreaCreationData(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5951,7 +5951,7 @@ namespace Dynamo.Nodes
 			var arg9=(Autodesk.Revit.DB.XYZ)((Value.Container)args[9]).Item;
 			var arg10=(System.String)((Value.String)args[10]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewTextNoteCreationData(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -5982,7 +5982,7 @@ namespace Dynamo.Nodes
 			var arg5=(Autodesk.Revit.DB.TextAlignFlags)((Value.Container)args[5]).Item;
 			var arg6=(System.String)((Value.String)args[6]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewTextNoteCreationData(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6009,7 +6009,7 @@ namespace Dynamo.Nodes
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var arg4=(Autodesk.Revit.DB.XYZ)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewProfiledWallCreationData(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6034,7 +6034,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=Convert.ToBoolean(((Value.Number)args[3]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewProfiledWallCreationData(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6055,7 +6055,7 @@ namespace Dynamo.Nodes
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewProfiledWallCreationData(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6078,7 +6078,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Level)((Value.Container)args[1]).Item;
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewRectangularWallCreationData(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6109,7 +6109,7 @@ namespace Dynamo.Nodes
 			var arg5=Convert.ToBoolean(((Value.Number)args[5]).Item);
 			var arg6=Convert.ToBoolean(((Value.Number)args[6]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewRectangularWallCreationData(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6130,7 +6130,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Level)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.UV)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewRoomCreationData(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6153,7 +6153,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.Line)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilyInstanceCreationData(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6178,7 +6178,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilyInstanceCreationData(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6205,7 +6205,7 @@ namespace Dynamo.Nodes
 			var arg3=(Autodesk.Revit.DB.Element)((Value.Container)args[3]).Item;
 			var arg4=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilyInstanceCreationData(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6232,7 +6232,7 @@ namespace Dynamo.Nodes
 			var arg3=(Autodesk.Revit.DB.Level)((Value.Container)args[3]).Item;
 			var arg4=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[4]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilyInstanceCreationData(arg0,arg1,arg2,arg3,arg4);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6257,7 +6257,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Element)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilyInstanceCreationData(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6282,7 +6282,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilyInstanceCreationData(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6307,7 +6307,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.Level)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilyInstanceCreationData(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6330,7 +6330,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.FamilySymbol)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.Structure.StructuralType)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewFamilyInstanceCreationData(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6347,7 +6347,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewSpaceSet();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6364,7 +6364,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewLoadCombinationArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6381,7 +6381,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewLoadUsageArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6398,7 +6398,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewLoadCaseArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6415,7 +6415,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewViewSet();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6432,7 +6432,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewIntersectionResultArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6449,7 +6449,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewFaceArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6466,7 +6466,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewReferenceArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6483,7 +6483,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewDoubleArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6500,7 +6500,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewVolumeCalculationOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6517,7 +6517,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewGBXMLImportOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6534,7 +6534,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewImageImportOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6551,7 +6551,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewBuildingSiteExportOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6568,7 +6568,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewFBXExportOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6585,7 +6585,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewGBXMLExportOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6602,7 +6602,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewDWFXExportOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6619,7 +6619,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewDWFExportOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6636,7 +6636,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewSATExportOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6655,7 +6655,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.UV)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewUV(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6676,7 +6676,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=(System.Double)((Value.Number)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewUV(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6693,7 +6693,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewUV();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6712,7 +6712,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewXYZ(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6735,7 +6735,7 @@ namespace Dynamo.Nodes
 			var arg1=(System.Double)((Value.Number)args[1]).Item;
 			var arg2=(System.Double)((Value.Number)args[2]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewXYZ(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6752,7 +6752,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewXYZ();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6777,7 +6777,7 @@ namespace Dynamo.Nodes
 			var arg2=(System.Double)((Value.Number)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewBoundingBoxUV(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6794,7 +6794,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewBoundingBoxUV();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6811,7 +6811,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewBoundingBoxXYZ();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6836,7 +6836,7 @@ namespace Dynamo.Nodes
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var arg3=(Autodesk.Revit.DB.XYZ)((Value.Container)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewHermiteSpline(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6857,7 +6857,7 @@ namespace Dynamo.Nodes
 			var arg0=(List<Autodesk.Revit.DB.XYZ>)((Value.Container)args[0]).Item;
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewHermiteSpline(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6878,7 +6878,7 @@ namespace Dynamo.Nodes
 			var arg0=(List<Autodesk.Revit.DB.XYZ>)((Value.Container)args[0]).Item;
 			var arg1=(List<double>)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewNurbSpline(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6907,7 +6907,7 @@ namespace Dynamo.Nodes
 			var arg4=Convert.ToBoolean(((Value.Number)args[4]).Item);
 			var arg5=Convert.ToBoolean(((Value.Number)args[5]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewNurbSpline(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6938,7 +6938,7 @@ namespace Dynamo.Nodes
 			var arg5=(System.Double)((Value.Number)args[5]).Item;
 			var arg6=(System.Double)((Value.Number)args[6]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewEllipse(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6963,7 +6963,7 @@ namespace Dynamo.Nodes
 			var arg2=(System.Double)((Value.Number)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewProjectPosition(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -6986,7 +6986,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewArc(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7010,7 +7010,7 @@ namespace Dynamo.Nodes
 			var arg2=(System.Double)((Value.Number)args[2]).Item;
 			var arg3=(System.Double)((Value.Number)args[3]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewArc(arg0,arg1,arg2,arg3);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7039,7 +7039,7 @@ namespace Dynamo.Nodes
 			var arg4=(Autodesk.Revit.DB.XYZ)((Value.Container)args[4]).Item;
 			var arg5=(Autodesk.Revit.DB.XYZ)((Value.Container)args[5]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewArc(arg0,arg1,arg2,arg3,arg4,arg5);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7058,7 +7058,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewPoint(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7077,7 +7077,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=dynRevitUtils.ConvertFSharpListListToCurveArray(((Value.List)args[0]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewPlane(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7098,7 +7098,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewPlane(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7121,7 +7121,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var arg2=(Autodesk.Revit.DB.XYZ)((Value.Container)args[2]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewPlane(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7138,7 +7138,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewColor();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7155,7 +7155,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewCombinableElementArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7172,7 +7172,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewVertexIndexPairArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7193,7 +7193,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=(System.Int32)((Value.Number)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewVertexIndexPair(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7210,7 +7210,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewElementArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7227,7 +7227,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewCurveArrArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7244,7 +7244,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewCurveArray();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7261,7 +7261,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewStringStringMap();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7278,7 +7278,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewGeometryOptions();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7299,7 +7299,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewLineUnbound(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7320,7 +7320,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewLineBound(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7343,7 +7343,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.XYZ)((Value.Container)args[1]).Item;
 			var arg2=Convert.ToBoolean(((Value.Number)args[2]).Item);
 			var result = dynRevitSettings.Revit.Application.Create.NewLine(arg0,arg1,arg2);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7360,7 +7360,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewMaterialSet();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7377,7 +7377,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewElementSet();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7396,7 +7396,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.CategorySet)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewTypeBinding(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7413,7 +7413,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewTypeBinding();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7432,7 +7432,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=(Autodesk.Revit.DB.CategorySet)((Value.Container)args[0]).Item;
 			var result = dynRevitSettings.Revit.Application.Create.NewInstanceBinding(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7449,7 +7449,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewInstanceBinding();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7466,7 +7466,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var result = dynRevitSettings.Revit.Application.Create.NewCategorySet();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7485,7 +7485,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Clone();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7506,7 +7506,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Project(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7529,7 +7529,7 @@ namespace Dynamo.Nodes
 			var arg1=(Autodesk.Revit.DB.IntersectionResultArray)((Value.Container)args[1]).Item;
 			var arg2=((Curve)(args[2] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Intersect(arg0,out arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7550,7 +7550,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Curve)((Value.Container)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Intersect(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7573,7 +7573,7 @@ namespace Dynamo.Nodes
 			var arg1=(System.Int32)((Value.Container)args[1]).Item;
 			var arg2=((Curve)(args[2] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).IsInside(arg0,out arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7594,7 +7594,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).IsInside(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7617,7 +7617,7 @@ namespace Dynamo.Nodes
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var arg2=((Curve)(args[2] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).ComputeDerivatives(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7638,7 +7638,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Transform)((Value.Container)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).get_Transformed(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7657,7 +7657,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Period;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7676,7 +7676,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).IsCyclic;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7697,7 +7697,7 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.XYZ)((Value.Container)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Distance(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7716,7 +7716,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Length;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7735,7 +7735,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).ApproximateLength;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7756,7 +7756,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).ComputeRawParameter(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7777,7 +7777,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Double)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).ComputeNormalizedParameter(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7798,7 +7798,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).get_EndParameter(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7819,7 +7819,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).get_EndPointReference(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7840,7 +7840,7 @@ namespace Dynamo.Nodes
 			var arg0=(System.Int32)((Value.Number)args[0]).Item;
 			var arg1=((Curve)(args[1] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).get_EndPoint(arg0);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7859,7 +7859,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Reference;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7882,7 +7882,7 @@ namespace Dynamo.Nodes
 			var arg1=Convert.ToBoolean(((Value.Number)args[1]).Item);
 			var arg2=((Curve)(args[2] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Evaluate(arg0,arg1);
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7901,7 +7901,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).Tessellate();
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
@@ -7920,7 +7920,7 @@ namespace Dynamo.Nodes
 		{
 			var arg0=((Curve)(args[0] as Value.Container).Item);
 			var result = ((Curve)(args[0] as Value.Container).Item).IsBound;
-			return Value.NewContainer(result);
+			return DynamoOutputTypeConverter.Convert(result);
 		}
 	}
 
