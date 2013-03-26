@@ -121,12 +121,6 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 	f.write('\t\t{\n')
 
 	i=0
-	for param_description in param_descriptions:
-		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
-		if len(method_params)-1 >= i:
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
-		i += 1
-
 	# if it's a curve or surface method or parameter that we're after
 	# pass in the curve or surface as an input
 	if isCurveMember:
@@ -137,6 +131,12 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 			f.write('\t\t\tInPortData.Add(new PortData(\"s\", \"The solid.\",typeof(object)));\n')
 	elif isFormMember:
 			f.write('\t\t\tInPortData.Add(new PortData(\"frm\", \"The form.\",typeof(object)));\n')
+
+	for param_description in param_descriptions:
+		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
+		if len(method_params)-1 >= i:
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
+		i += 1
 
 	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
 	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
