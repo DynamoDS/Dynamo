@@ -278,8 +278,17 @@ namespace Dynamo.Utilities
                 result = FSharpList<Value>.Cons(
                            Value.NewList(Utils.SequenceToFSharpList(xyzs)),
                            result);
-
-                return Value.NewList(result);
+                if (xyzs.Count > 0 || uvs.Count > 0)
+                {
+                    return Value.NewList(result);
+                }
+                else
+                {
+                    //TODO: if we don't have any XYZs or UVs, chances are
+                    //we have just created an intersection result array to
+                    //catch some values. in this case, don't convert.
+                    return Value.NewContainer(input);
+                }
             }
             else
             {
