@@ -166,16 +166,11 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 	outMember = ''
 
 	for param in method_params:
-		# if conversion_method(param) !='':
-		# 	f.write('\t\t\tvar arg' + str(i) + '=' + conversion_method(param) + '(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
-		# else:
-		# 	f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
-		
 		f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(i) +'],typeof(' + convert_param(param).replace('@','') +'));\n')
 
 		if '@' in param:
 			argList.append('out arg' + str(i))
-			outMember = 'arg' + str(i) #flag this out value so we can return it
+			outMember = 'arg' + str(i) #flag this out value so we can return it instead of the result
 		else:
 			argList.append('arg' + str(i))
 		i+=1
