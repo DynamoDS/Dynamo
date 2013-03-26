@@ -151,24 +151,26 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 	argList = []
 
 	if isCurveMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Curve)(args[' + str(i) +'] as Value.Container).Item);\n')
+		f.write('\t\t\tvar arg' + str(i) + '=(Curve)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Curve));\n')
 		i+=1
 	elif isFaceMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Face)(args[' + str(i) +'] as Value.Container).Item);\n')
+		f.write('\t\t\tvar arg' + str(i) + '=(Face)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Face));\n')
 		i+=1
 	elif isSolidMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Solid)(args[' + str(i) +'] as Value.Container).Item);\n')
+		f.write('\t\t\tvar arg' + str(i) + '=(Solid)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Solid));\n')
 		i+=1
 	elif isFormMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Form)(args[' + str(i) +'] as Value.Container).Item);\n')
+		f.write('\t\t\tvar arg' + str(i) + '=(Form)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Form));\n')
 		i+=1
 
 	for param in method_params:
-		if conversion_method(param) !='':
-			f.write('\t\t\tvar arg' + str(i) + '=' + conversion_method(param) + '(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
-		else:
-			f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
+		# if conversion_method(param) !='':
+		# 	f.write('\t\t\tvar arg' + str(i) + '=' + conversion_method(param) + '(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
+		# else:
+		# 	f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
 		
+		f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(i) +'],typeof(' + convert_param(param).replace('@','') +'));\n')
+
 		if '@' in param:
 			argList.append('out arg' + str(i))
 		else:
@@ -185,16 +187,16 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 		f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
 		f.write('\t\t\t{\n')
 		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall + paramsStr + ';\n')
-		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
+		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 		f.write('\t\t\t}\n')
 		f.write('\t\t\telse\n')
 		f.write('\t\t\t{\n')
 		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall + paramsStr + ';\n')
-		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
+		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 		f.write('\t\t\t}\n')
 	else:
 		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
-		f.write('\t\t\treturn DynamoOutputTypeConverter.Convert(result);\n')
+		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 
 
 	f.write('\t\t}\n')

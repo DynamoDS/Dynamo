@@ -106,95 +106,140 @@ namespace Dynamo.Utilities
     }
 
     /// <summary>
-    /// Used with the Auto-generator. Allows automatic conversion between input types.
+    /// Used with the Auto-generator. Allows automatic conversion of inputs and outputs
     /// </summary>
-    public static class DynamoRevitTypeConverter
+    public static class DynamoTypeConverter
     {
-        public static object Convert(object input, object output)
+        public static object ConvertInput(Value input, Type output)
         {
-            #region ModelCurve
-            if (input.GetType() ==  typeof(ModelCurve))
+            if (input.IsContainer)
             {
-                if (output.GetType() == typeof(Curve))
-                {
-                    return ((ModelCurve)input).GeometryCurve;
-                }
-            }
-            #endregion
+                object item = ((Value.Container)input).Item;
 
-            #region SketchPlane
-            if (input.GetType() == typeof(SketchPlane))
+                #region ModelCurve
+                if (item.GetType() == typeof(ModelCurve))
+                {
+                    ModelCurve a = (ModelCurve)item;
+
+                    if (output == typeof(Curve))
+                    {
+                        return ((ModelCurve)item).GeometryCurve;
+                    }
+                }
+                #endregion
+
+                #region SketchPlane
+                else if (item.GetType() == typeof(SketchPlane))
+                {
+                    SketchPlane a = (SketchPlane)item;
+
+                    if (output == typeof(Plane))
+                    {
+                        return a.Plane;
+                    }
+                    else if (output == typeof(ReferencePlane))
+                    {
+                        return a.Plane;
+                    }
+                    else if (output == typeof(string))
+                    {
+                        return string.Format("{0},{1},{2},{3},{4},{5}", a.Plane.Origin.X, a.Plane.Origin.Y, a.Plane.Origin.Z,
+                            a.Plane.Normal.X, a.Plane.Normal.Y, a.Plane.Normal.Z);
+                    }
+                }
+                #endregion
+
+                #region Point
+               else if (item.GetType() == typeof(Point))
+                {
+                    Point a = (Point)item;
+
+                    if (output == typeof(XYZ))
+                    {
+                        return a.Coord;
+                    }
+                    else if (output == typeof(string))
+                    {
+                        return string.Format("{0},{1},{2}", a.Coord.X, a.Coord.Y, a.Coord.Z);
+                    }
+                }
+                #endregion
+
+                #region ReferencePoint
+                else if (item.GetType() == typeof(ReferencePoint))
+                {
+                    ReferencePoint a = (ReferencePoint)item;
+
+                    if (output == typeof(XYZ))
+                    {
+                        return a.Position;
+                    }
+                    else if (output == typeof(Reference))
+                    {
+                        return a.GetCoordinatePlaneReferenceXY();
+                    }
+                    else if (output == typeof(Transform))
+                    {
+                        return a.GetCoordinateSystem();
+                    }
+                    else if (output == typeof(string))
+                    {
+                        return string.Format("{0},{1},{2}", a.Position.X, a.Position.Y, a.Position.Z);
+                    }
+                }
+                #endregion
+
+                return item;
+            }
+            else if (input.IsNumber)
             {
-                SketchPlane a = (SketchPlane)input;
+                double a = (double)((Value.Number)input).Item;
 
-                if (output.GetType() == typeof(Plane))
+                if (output == typeof(bool))
                 {
-                    return a.Plane;
+                    return Convert.ToBoolean(a);
                 }
-                else if (output.GetType() == typeof(ReferencePlane))
+                else if (output == typeof(Int32))
                 {
-                    return a.Plane; 
+                    return Convert.ToInt32(a);
                 }
-                else if (output.GetType() == typeof(string))
-                {
-                    return string.Format("{0},{1},{2},{3},{4},{5}", a.Plane.Origin.X, a.Plane.Origin.Y, a.Plane.Origin.Z, 
-                        a.Plane.Normal.X, a.Plane.Normal.Y, a.Plane.Normal.Z);
-                }
+
+                return a;
             }
-            #endregion
-
-            #region Point
-            if (input.GetType() == typeof(Point))
+            else if(input.IsString)
             {
-                Point a = (Point)input;
-
-                if (output.GetType() == typeof(XYZ))
-                {
-                    return a.Coord;
-                }
-                else if (output.GetType() == typeof(string))
-                {
-                    return string.Format("{0},{1},{2}", a.Coord.X, a.Coord.Y, a.Coord.Z);
-                }
+                string a = ((Value.String)input).Item.ToString();
+                return a;
             }
-            #endregion
-
-            #region ReferencePoint
-            if (input.GetType() == typeof(ReferencePoint))
+            else if (input.IsList)
             {
-                ReferencePoint a = (ReferencePoint)input;
+                FSharpList<Value> a = ((Value.List)input).Item;
 
-                if (output == typeof(XYZ))
+                if (output == typeof(ReferenceArrayArray))
                 {
-                    return a.Position;
+                    return dynRevitUtils.ConvertFSharpListListToReferenceArrayArray(a);
                 }
-                else if (output.GetType() == typeof(Reference))
+                else if (output == typeof(ReferenceArray))
                 {
-                    return a.GetCoordinatePlaneReferenceXY();
+                    return dynRevitUtils.ConvertFSharpListListToReferenceArray(a);
                 }
-                else if (output.GetType() == typeof(Transform))
+                else if (output == typeof(CurveArrArray))
                 {
-                    return a.GetCoordinateSystem();
+                    return dynRevitUtils.ConvertFSharpListListToCurveArray(a);
                 }
-                else if (output.GetType() == typeof(string))
+                else if (output == typeof(CurveArray))
                 {
-                    return string.Format("{0},{1},{2}", a.Position.X, a.Position.Y, a.Position.Z);
+                    return dynRevitUtils.ConvertFSharpListListToCurveArray(a);
                 }
 
+                return a;
             }
-            #endregion
 
             //return the input by default
             return input;
         }
-    }
 
-    /// <summary>
-    /// Used with the Auto-generator. Allows automatic conversion of outputs to FScheme.Value Types
-    /// </summary>
-    public static class DynamoOutputTypeConverter
-    {
-        public static Value Convert(object input)
+        public static Value ConvertToValue(object input)
         {
             if (input.GetType() == typeof(double))
             {
