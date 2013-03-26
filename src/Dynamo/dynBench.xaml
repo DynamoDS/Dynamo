@@ -65,7 +65,7 @@
                     Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}"/>
     <KeyBinding Key="R"
                 Modifiers="Ctrl"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.PackageManagerShowLoginCmd}}"/>
+                    Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"/>
     <KeyBinding Key="Escape"
                     Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}"/>
 
@@ -136,9 +136,11 @@
         </MenuItem>
 
         <MenuItem Header="_Package Manager" IsEnabled="True">
-          <MenuItem Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.PackageManagerShowLoginCmd}}"  Name="showLogin" />
-          <MenuItem Header="_Get Available" Command="{Binding Source={x:Static commands:DynamoCommands.GetAvailableCmd}}"  Name="getAvailable" />
-          <MenuItem Header="_Publish Selected" Command="{Binding Source={x:Static commands:DynamoCommands.UploadSelectedCommand}}"  Name="publishSelected" />
+          <MenuItem Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
+          <MenuItem Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
+          <MenuItem Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
+
+          <MenuItem Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
         </MenuItem>
 
       </MenuItem>

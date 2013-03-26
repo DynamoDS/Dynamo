@@ -93,14 +93,9 @@ namespace Dynamo.PackageManager
             Greg.Requests.HeaderDownload m = new HeaderDownload(id);
             var p = this.Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);
 
-
             // then save it to a file in packages
             var d = new XmlDocument();
             d.LoadXml(p.content.versions[0].contents);
-
-            // write some stuff to see
-            Console.WriteLine("version: " + p.content.versions[0].version);
-            Console.WriteLine(p.content.versions[0].contents);
 
             // for which we need to create path
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

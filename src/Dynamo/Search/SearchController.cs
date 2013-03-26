@@ -144,10 +144,8 @@ namespace Dynamo.Search
                 });
             } else if (VisibleNodes[selectedIndex] is PackageManagerSearchElement)
             {
-                // TODO: 
                 var ele = (PackageManagerSearchElement) VisibleNodes[selectedIndex];
-                var success = dynSettings.Controller.PackageManagerClient.ImportPackage(ele.Id);
-                Console.WriteLine(success);
+                dynSettings.Controller.PackageManagerClient.ImportPackage(ele.Id);
             }
 
         }
