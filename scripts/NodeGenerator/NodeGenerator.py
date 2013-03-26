@@ -121,12 +121,6 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 	f.write('\t\t{\n')
 
 	i=0
-	for param_description in param_descriptions:
-		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
-		if len(method_params)-1 >= i:
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
-		i += 1
-
 	# if it's a curve or surface method or parameter that we're after
 	# pass in the curve or surface as an input
 	if isCurveMember:
@@ -137,6 +131,12 @@ def write_node_constructor(node_name, method_params, param_descriptions, summary
 			f.write('\t\t\tInPortData.Add(new PortData(\"s\", \"The solid.\",typeof(object)));\n')
 	elif isFormMember:
 			f.write('\t\t\tInPortData.Add(new PortData(\"frm\", \"The form.\",typeof(object)));\n')
+
+	for param_description in param_descriptions:
+		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
+		if len(method_params)-1 >= i:
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
+		i += 1
 
 	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
 	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
@@ -150,26 +150,30 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 	i = 0
 	argList = []
 
+	if isCurveMember:
+		f.write('\t\t\tvar arg' + str(i) + '=(Curve)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Curve));\n')
+		i+=1
+	elif isFaceMember:
+		f.write('\t\t\tvar arg' + str(i) + '=(Face)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Face));\n')
+		i+=1
+	elif isSolidMember:
+		f.write('\t\t\tvar arg' + str(i) + '=(Solid)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Solid));\n')
+		i+=1
+	elif isFormMember:
+		f.write('\t\t\tvar arg' + str(i) + '=(Form)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Form));\n')
+		i+=1
+
+	outMember = ''
+
 	for param in method_params:
-		if conversion_method(param) !='':
-			f.write('\t\t\tvar arg' + str(i) + '=' + conversion_method(param) + '(((' + match_param(param) + ')args[' + str(i) +']).Item);\n')
-		else:
-			f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param) + ')((' + match_param(param) + ')args[' + str(i) +']).Item;\n')
-		
+		f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(i) +'],typeof(' + convert_param(param).replace('@','') +'));\n')
+
 		if '@' in param:
 			argList.append('out arg' + str(i))
+			outMember = 'arg' + str(i) #flag this out value so we can return it instead of the result
 		else:
 			argList.append('arg' + str(i))
 		i+=1
-
-	if isCurveMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Curve)(args[' + str(i) +'] as Value.Container).Item);\n')
-	elif isFaceMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Face)(args[' + str(i) +'] as Value.Container).Item);\n')
-	elif isSolidMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Solid)(args[' + str(i) +'] as Value.Container).Item);\n')
-	elif isFormMember:
-		f.write('\t\t\tvar arg' + str(i) + '=((Form)(args[' + str(i) +'] as Value.Container).Item);\n')
 
 	if isMethod or isProperty and len(method_params) > 0:
 		paramsStr = '(' +  ",".join(argList) + ")"
@@ -181,16 +185,25 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 		f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
 		f.write('\t\t\t{\n')
 		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall + paramsStr + ';\n')
-		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
+		if outMember != '':
+			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		else:
+			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 		f.write('\t\t\t}\n')
 		f.write('\t\t\telse\n')
 		f.write('\t\t\t{\n')
 		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall + paramsStr + ';\n')
-		f.write('\t\t\t\treturn Value.NewContainer(result);\n')
+		if outMember != '':
+			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		else:
+			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 		f.write('\t\t\t}\n')
 	else:
 		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
-		f.write('\t\t\treturn Value.NewContainer(result);\n')
+		if outMember != '':
+			f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		else:
+			f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 
 
 	f.write('\t\t}\n')

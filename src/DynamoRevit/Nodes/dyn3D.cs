@@ -46,7 +46,7 @@ namespace Dynamo.Nodes
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
 
         bool isScreenShot= false;
-        bool isDrawingPoints;
+        //bool isDrawingPoints;
         ParticleSystem ps;
         Curve c;
         XYZ pt;
@@ -199,19 +199,19 @@ namespace Dynamo.Nodes
             if (points != null)
             {
                 //hook up the points collection to the visual
-                if (isDrawingPoints)
-                {
+                //if (isDrawingPoints)
+                //{
                     points.Points = Points[0];
-                }
-                else
-                {
+                //}
+                //else
+                //{
                     for(int i=0; i<linesList.Count(); i++)
                     {
                         linesList[i].Points = Points[i];
                     }
 
                     fixedPoints.Points = FixedPoints;
-                }
+                //}
                 
             }
         }                                                                                                                                                                                                         
@@ -226,37 +226,10 @@ namespace Dynamo.Nodes
                     //If we are receiving a list, we test to see if they are XYZs or curves and then make Preview3d elements.
                     if (input.IsList)
                     {
-                        #region points and curves
-                        //FSharpList<Value> list = ((Value.List)args[0]).Item;
-                        var inList = (input as Value.List).Item;
-
                         DetachVisuals();
                         ClearPointsCollections();
 
-                        //test the first item in the list.
-                        //if it's an XYZ, assume XYZs for the list
-                        //create points. otherwise, create curves
-                        XYZ ptTest = (inList.First() as Value.Container).Item as XYZ;
-                        Curve cvTest = (inList.First() as Value.Container).Item as Curve;
-
-                        if (ptTest != null) isDrawingPoints = true;
-
-                        foreach (Value e in inList)
-                        {
-                            if (isDrawingPoints)
-                            {
-                                pt = (e as Value.Container).Item as XYZ;
-                                DrawPoint(pt);
-                            }
-                            else
-                            {
-                                c = (e as Value.Container).Item as Curve;
-                                DrawCurve(c);
-
-                            }
-                        }
-                        RaisePropertyChanged("Points");
-                        #endregion
+                        DrawList(input);
                     }
                     else if (input.IsContainer) //if not a list, try to cast to either a particle system, curve, or xyz
                     {
@@ -268,11 +241,8 @@ namespace Dynamo.Nodes
 
                             try
                             {
-
                                 UpdateVisualsFromParticleSystem();
-
                                 RaisePropertyChanged("Points");
-
                             }
                             catch (Exception e)
                             {
@@ -305,11 +275,51 @@ namespace Dynamo.Nodes
             
         }
 
+        private void DrawList(Value input)
+        {
+            #region points and curves
+            //FSharpList<Value> list = ((Value.List)args[0]).Item;
+            var inList = (input as Value.List).Item;
+
+            //test the first item in the list.
+            //if it's an XYZ, assume XYZs for the list
+            //create points. otherwise, create curves
+            Value.List lst = inList.First() as Value.List;
+
+            foreach (Value e in inList)
+            {
+                if (e.IsList)
+                {
+                    DrawList(e);
+                }
+                else if (e.IsContainer)
+                {
+                    XYZ ptTest = (inList.First() as Value.Container).Item as XYZ;
+                    Curve cvTest = (inList.First() as Value.Container).Item as Curve;
+
+                    if (ptTest != null)
+                    {
+                        pt = (e as Value.Container).Item as XYZ;
+                        DrawPoint(pt);
+                    }
+                    else if (cvTest != null)
+                    {
+                        c = (e as Value.Container).Item as Curve;
+                        DrawCurve(c);
+                    }
+                }
+            }
+            
+            RaisePropertyChanged("Points");
+            #endregion
+        }
+
         private void DrawPoint(XYZ pt)
         {
             int lastPointColor = Points.Count() - 1;//master Point list for color assignment
             var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
-            Points[lastPointColor].Add(ptVis);
+            //Points[lastPointColor].Add(ptVis);
+            FixedPoints.Add(ptVis);
         }
 
         private void DrawCurve(Curve c)

@@ -13,12 +13,7 @@ namespace Dynamo.PackageManager
 
         public PackageManagerClient()
         {
-            Client = new Greg.Client();
-        }
-
-        public void Login()
-        {
-            Client.Authorize();
+            Client = new Greg.Client("https://accounts-dev.autodesk.com", "http://10.142.107.55:8080");
         }
 
         public void GetAvailable()
