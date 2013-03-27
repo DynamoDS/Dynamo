@@ -21,8 +21,9 @@ using Dynamo.Connectors;
 using System.Windows;
 using Dynamo.Utilities;
 using Dynamo.Controls;
+using Dynamo.Nodes;
 
-namespace Dynamo.Nodes
+namespace Dynamo
 {
     public abstract class dynWorkspace
     {
@@ -108,11 +109,13 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+
         public override void Modified()
         {
             base.Modified();
 
-            dynSettings.Controller.SaveFunction(this);
+            dynSettings.Controller.SaveFunction(
+                dynSettings.FunctionDict.Values.First(x => x.Workspace == this));
         }
 
         public override void OnDisplayed()

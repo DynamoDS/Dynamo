@@ -113,6 +113,7 @@ namespace Dynamo
 
                 var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
+
                 oldPyEval = (dynamic)evaluatorField.GetValue(null);
 
                 //var x = PythonEngine.GetMembers();
@@ -215,6 +216,16 @@ namespace Dynamo
         }
         #endregion
 
+        protected override dynFunction CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
+        {
+            if (functionDefinition.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)
+                || functionDefinition.Dependencies.Any(d => d.Workspace.Nodes.Any(x => x is dynRevitTransactionNode)))
+            {
+                return new dynFunctionWithRevit(inputs, outputs, functionDefinition);
+            }
+            return base.CreateFunction(inputs, outputs, functionDefinition);
+        }
+
         public bool InIdleThread;
 
         public enum TransactionMode
@@ -288,7 +299,7 @@ namespace Dynamo
 
         bool ExecutionRequiresManualTransaction()
         {
-            return homeSpace.GetTopMostNodes().Any(
+            return HomeSpace.GetTopMostNodes().Any(
                 checkManualTransaction.TraverseUntilAny
             );
         }
@@ -428,11 +439,15 @@ namespace Dynamo
 
         protected override void OnRunCancelled(bool error)
         {
+            base.OnRunCancelled(error);
+
             this.CancelTransaction();
         }
 
         protected override void OnEvaluationCompleted()
         {
+            base.OnEvaluationCompleted();
+
             //Cleanup Delegate
             Action cleanup = delegate
             {

@@ -7,6 +7,7 @@ using Autodesk.Revit.UI;
 using System.Collections;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.DB.Analysis;
+using Dynamo.Revit;
 
 namespace Dynamo.Utilities
 {
@@ -552,5 +553,8 @@ namespace Dynamo.Utilities
         }
 
         public static DynamoController_Revit Controller { get; internal set; }
+
+        public static Stack<ElementsContainer> ElementsContainers
+            = new Stack<ElementsContainer>(new[] { new ElementsContainer() });
     }
 }
