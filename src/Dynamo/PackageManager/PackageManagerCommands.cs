@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Controls;
+using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 
@@ -53,13 +53,13 @@ namespace Dynamo.Commands
                 init = true;
             }
 
-            if (ui.Visibility == Visibility.Visible)
+            if (ui.LoginContainerStackPanel.Visibility == Visibility.Visible)
             {
-                ui.Visibility = Visibility.Collapsed;
+                ui.LoginContainerStackPanel.Visibility = Visibility.Collapsed;
             }
             else
             {
-                ui.Visibility = Visibility.Visible;
+                ui.LoginContainerStackPanel.Visibility = Visibility.Visible;
             }
            
         }
@@ -113,13 +113,17 @@ namespace Dynamo.Commands
         {
            this._client = dynSettings.Controller.PackageManagerClient;
 
+
+            dynSettings.Bench.WorkBench.Selection.Where(x => x is dynFunction)
+                       .Select(x => (x as dynNodeUI).NodeLogic.WorkSpace );
+
            if (!this._client.Client.IsAuthenticated())
            {
                return;
            }
            else
            {
-              this._client.Publish(_client.GetPackageUploadFromCurrentWorkspace());
+              this._client.Publish( _client.GetPackageUploadFromCurrentWorkspace() );
            }
         }
 

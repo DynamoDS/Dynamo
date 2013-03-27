@@ -23,7 +23,7 @@ namespace Dynamo.PackageManager
 
         public PackageManagerClient(DynamoController controller)
         {
-            Client = new Greg.Client("https://accounts-dev.autodesk.com", "http://10.142.107.55:8080");
+            Client = new Greg.Client("https://accounts-dev.autodesk.com", "http://10.142.107.26:8080");
             this.Controller = controller;
         }
 

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Navigation;
-using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.PackageManager;
-using Dynamo.Search;
+using RestSharp;
 
 namespace Dynamo.Nodes.PackageManager
 {
@@ -28,13 +24,17 @@ namespace Dynamo.Nodes.PackageManager
 
         public void LoginButtonClick(object sender, RoutedEventArgs e)
         {
-
-            Client.Client.GetRequestTokenAsync((uri, token) => View.Dispatcher.Invoke((Action) (() =>
-                {
-                    this.AuthorizeUrl = this.View.webBrowser.Source = uri;
-                })));
+            NavigateToLogin();
         }
-        
+
+        public void NavigateToLogin()
+        {
+           Client.Client.GetRequestTokenAsync((uri, token) => View.Dispatcher.Invoke((Action) (() =>
+               {
+                   this.AuthorizeUrl = this.View.webBrowser.Source = uri;
+               })), Greg.Client.AuthorizationPageViewMode.Desktop);
+        }
+
         public void WebBrowserNavigatedEvent(object sender, NavigationEventArgs e)
         {
             View.webBrowser.Visibility = Visibility.Visible;
@@ -44,7 +44,7 @@ namespace Dynamo.Nodes.PackageManager
                 View.Visibility = Visibility.Hidden;
                 Client.Client.GetAccessTokenAsync( (s) =>
                     {
-                        Client.Client.IsAuthenticatedAsync((authed) => Console.WriteLine(authed)); // TODO: get rid of this stuff
+                        Client.Client.IsAuthenticatedAsync((authed) => Console.WriteLine(authed)); // Do something to confirm authentication
                     });
             }
         }

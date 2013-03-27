@@ -31,11 +31,15 @@
   <Window.InputBindings>
     <KeyBinding Key="Tab"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
+    
     <KeyBinding Key="Delete"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
     <KeyBinding Key="C"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"/>
+    <KeyBinding Key="D"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
     <KeyBinding Key="V"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
@@ -116,6 +120,8 @@
       <MenuItem Header="_Edit" Name="editMenu">
         <MenuItem Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"  Name="copy" InputGestureText="Ctrl+C"/>
         <MenuItem Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
+        <Separator/>
+        <MenuItem Header="_Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
       </MenuItem>
       <MenuItem Header="_View" Name="viewMenu">
         <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">

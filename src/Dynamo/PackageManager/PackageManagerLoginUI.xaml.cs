@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Dynamo.Nodes.PackageManager;
 
 namespace Dynamo.PackageManager
@@ -27,6 +17,8 @@ namespace Dynamo.PackageManager
             InitializeComponent();
 
             this.Controller = controller;
+
+            this.LoginContainerStackPanel.IsVisibleChanged += delegate { if (this.LoginContainerStackPanel.Visibility == Visibility.Visible) Controller.NavigateToLogin(); };
         }
 
         public void LoginButtonClick(object sender, RoutedEventArgs e)
