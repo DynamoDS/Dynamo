@@ -89,6 +89,7 @@
     </Grid.ColumnDefinitions>
     <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
               VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
+      
       <MenuItem Header="_File" Name="fileMenu">
       
         <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.OpenCmd}}" Name="openButton" InputGestureText="Ctrl+O">
@@ -160,7 +161,9 @@
         <MenuItem Header="_Source Code" Command="{Binding Source={x:Static commands:DynamoCommands.GoToSourceCodeCmd}}"  Name="sourceCode"/>
         <MenuItem Header="_Wiki" Command="{Binding Source={x:Static commands:DynamoCommands.GoToWikiCmd}}"  Name="wiki"/>
       </MenuItem>
+
     </Menu>
+
     <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
       <!--outer canvas clips the inner canvas-->
@@ -310,6 +313,7 @@
       <Button HorizontalAlignment="Stretch" Content="New..." Margin="5,10,10,5"
                         VerticalAlignment="Stretch" Click="NewFunction_Click" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
     </Grid>
+    
     <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3" Background="#FFF0F0F0">
       <Button Name="RunButton" Height="25" Width="100" Content="Run" 
@@ -327,7 +331,17 @@
                       FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
                       IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}"
                       Content="Debug" VerticalContentAlignment="Center"/>
+
+      
+      
     </WrapPanel>
+    
+    <!-- Not the best place for this - PB -->
+    <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
+      <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
+      <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
+    </DockPanel>
+
     <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
               Grid.Row="1"
@@ -345,6 +359,7 @@
         <SolidColorBrush />
       </Canvas.Background>
     </Canvas>
+    
     <!--<StackPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom">
             <Label Name="zoomStatLabel" FontFamily="Consolas" FontSize="11" Foreground="White" 
                    Content="{Binding ElementName=_this, Path=Zoom, Mode=OneWay, Converter={StaticResource ZoomStatConverter}}"/> 

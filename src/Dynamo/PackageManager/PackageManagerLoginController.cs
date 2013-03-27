@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Navigation;
 using Dynamo.Controls;
 using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using RestSharp;
 
 namespace Dynamo.Nodes.PackageManager
@@ -42,10 +43,14 @@ namespace Dynamo.Nodes.PackageManager
             if (View.webBrowser.Source.AbsoluteUri.IndexOf("Allow") > -1)
             {
                 View.Visibility = Visibility.Hidden;
-                Client.Client.GetAccessTokenAsync( (s) =>
+                Client.Client.GetAccessTokenAsync( (s) => Client.Client.IsAuthenticatedAsync((auth) => View.Dispatcher.Invoke((Action) (() =>
                     {
-                        Client.Client.IsAuthenticatedAsync((authed) => Console.WriteLine(authed)); // Do something to confirm authentication
-                    });
+                        if (auth)
+                        {
+                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                            dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                        }
+                    }))));
             }
         }
 
