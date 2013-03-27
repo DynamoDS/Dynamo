@@ -132,7 +132,9 @@ namespace Dynamo.Commands
             {
                 if ( dynSettings.Controller.FunctionDict.ContainsKey( nodeList[0] ) )
                 {
-                    this._client.Publish( _client.GetPackageUploadFromWorkspace( dynSettings.Controller.FunctionDict[ nodeList[0] ] ) );
+                    Console.WriteLine(
+                        this._client.Publish(
+                            _client.GetPackageUploadFromWorkspace(dynSettings.Controller.FunctionDict[nodeList[0]])));
                 }
                 else
                 {

@@ -26,7 +26,7 @@ namespace Dynamo.PackageManager
 
         public PackageManagerClient(DynamoController controller)
         {
-            Client = new Greg.Client("https://accounts-dev.autodesk.com", "http://10.142.107.26:8080");
+            Client = new Greg.Client("https://accounts-dev.autodesk.com", "http://54.243.225.192:8080");
             this.Controller = controller;
         }
 
@@ -84,9 +84,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public bool Publish( PackageUpload newPackage )
+       public bool Publish( PackageUpload newPackage )
         {
-            return this.Client.ExecuteAndDeserialize(newPackage).success;
+            var ret =  this.Client.ExecuteAndDeserialize(newPackage);
+            dynSettings.Bench.Log(ret.message);
+            return ret.success;
         }
 
         public bool ImportPackage( out string name, string id, string version = "")
@@ -118,6 +120,8 @@ namespace Dynamo.PackageManager
 
                 // now return the name of the successfully imported node
                 name = p.content.name;
+
+                dynSettings.Bench.Log("Successfully imported package " + p.content.name);
 
                 return true;
             }
