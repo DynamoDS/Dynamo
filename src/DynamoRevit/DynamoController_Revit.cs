@@ -26,7 +26,7 @@ namespace Dynamo
         PredicateTraverser checkManualTransaction;
         PredicateTraverser checkRequiresTransaction;
 
-        Func<bool, string, object, Value> oldPyEval;
+        dynamic oldPyEval;
 
         public DynamoController_Revit(DynamoUpdater updater)
             : base()
@@ -113,7 +113,7 @@ namespace Dynamo
 
                 var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
-                oldPyEval = evaluatorField.GetValue(null) as Func<bool, string, object, Value>;
+                oldPyEval = (dynamic)evaluatorField.GetValue(null);
 
                 //var x = PythonEngine.GetMembers();
                 //foreach (var y in x)
