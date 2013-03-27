@@ -170,6 +170,9 @@ namespace Dynamo.Search
                     {"name", name},
                     {"transformFromOuterCanvasCoordinates", true}
                 });
+            } else if ( VisibleNodes[selectedIndex] is WorkspaceSearchElement )
+            {
+                
             }
 
         }
@@ -183,6 +186,16 @@ namespace Dynamo.Search
             SearchDictionary.Add(searchEle, searchEle.Keywords);
             SearchDictionary.AddName(searchEle, searchEle.Name);
         }
+
+        public void Add(dynWorkspace workspace)
+        {
+            var searchEle = new WorkspaceSearchElement(workspace.Name, "Workspace");
+
+            SearchDictionary.Add(searchEle, searchEle.Name.Split(' ').Where(x => x.Length > 0));
+            SearchDictionary.Add(searchEle, searchEle.Name);
+            SearchDictionary.AddName(searchEle, searchEle.Name);
+        }
+
 
         public void Add(Type type, string name)
         {

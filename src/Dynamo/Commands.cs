@@ -26,6 +26,16 @@ namespace Dynamo.Commands
 
     public static partial class DynamoCommands
     {
+        private static GoToWorkspaceCommand goToWorkspaceCmd;
+        public static GoToWorkspaceCommand GoToWorkspaceCmd
+        {
+            get
+            {
+                if (goToWorkspaceCmd == null)
+                    goToWorkspaceCmd = new GoToWorkspaceCommand();
+                return goToWorkspaceCmd;
+            }
+        }
 
         private static GoToSourceCodeCommand goToSourceCodeCmd;
         public static GoToSourceCodeCommand GoToSourceCodeCmd
@@ -698,6 +708,33 @@ namespace Dynamo.Commands
             }
 
             return false;
+        }
+    }
+
+    public class GoToWorkspaceCommand : ICommand
+    {
+        public GoToWorkspaceCommand()
+        {
+
+        }
+
+        public void Execute(object parameter)
+        {
+           if (parameter is String)
+           {
+               dynSettings.Controller.DisplayFunction( parameter as String );   
+           }     
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
         }
     }
 
