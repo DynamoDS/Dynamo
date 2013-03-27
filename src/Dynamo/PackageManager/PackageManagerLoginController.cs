@@ -50,8 +50,8 @@ namespace Dynamo.Nodes.PackageManager
                             {
                                 if (auth)
                                 {
-                                    dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                                    dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                    //dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                                    //dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
                                 }
                             }))));
                 }
