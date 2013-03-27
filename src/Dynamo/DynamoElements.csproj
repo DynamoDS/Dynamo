@@ -130,6 +130,9 @@ limitations under the License.
       <DependentUpon>PackageManagerLoginUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\PackageManagerClient.cs" />
+    <Compile Include="PackageManager\PackageManagerPublishUI.xaml.cs">
+      <DependentUpon>PackageManagerPublishUI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchUI.xaml.cs">
       <DependentUpon>SearchUI.xaml</DependentUpon>
@@ -222,6 +225,10 @@ limitations under the License.
       <SubType>Designer</SubType>
     </Page>
     <Page Include="PackageManager\PackageManagerLoginUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageManager\PackageManagerPublishUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

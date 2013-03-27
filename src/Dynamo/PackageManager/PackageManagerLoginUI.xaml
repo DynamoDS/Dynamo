@@ -11,7 +11,7 @@
     <StackPanel Name="BrowserContainer" Orientation="Vertical">
 
       <StackPanel  Visibility="Collapsed" Name="LoginContainerStackPanel" Orientation="Horizontal" VerticalAlignment="Top" Height="48">
-        <TextBlock Padding="10" Width ="350" Foreground="DarkGray" FontSize="18">Login to the Package Manager...</TextBlock>
+        <TextBlock Padding="10,15,10,10"  Width ="350" Foreground="DarkGray" FontSize="18">Login to the Package Manager...</TextBlock>
        </StackPanel>
 
       <WebBrowser Visibility="Collapsed" Name="webBrowser" Height="340" Width="350" LoadCompleted="WebBrowserNavigatedEvent" />
