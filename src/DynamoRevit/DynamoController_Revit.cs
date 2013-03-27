@@ -142,7 +142,7 @@ namespace Dynamo
             }
         }
 
-        Value newEval(bool dirty, string script, object bindings)
+        Value newEval(bool dirty, string script, dynamic bindings)
         {
             bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
 
