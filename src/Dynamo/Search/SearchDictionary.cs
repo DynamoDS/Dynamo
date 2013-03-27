@@ -33,6 +33,12 @@ namespace Dynamo.Search
               nameDict.Add(name, value);
       }
 
+      public void RemoveName(string name)
+      {
+          if (nameDict.ContainsKey(name))
+              nameDict.Remove(name);
+      }
+
       public void Add(V value, string tag)
       {
 

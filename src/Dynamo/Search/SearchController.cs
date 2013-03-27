@@ -172,7 +172,7 @@ namespace Dynamo.Search
                 });
             } else if ( VisibleNodes[selectedIndex] is WorkspaceSearchElement )
             {
-                
+                DynamoCommands.GoToWorkspaceCmd.Execute( VisibleNodes[selectedIndex].Name.Substring(1) );
             }
 
         }
@@ -180,22 +180,19 @@ namespace Dynamo.Search
         public void Add(PackageHeader packageHeader)
         {
             var searchEle = new PackageManagerSearchElement(packageHeader);
-
-            SearchDictionary.Add(searchEle, searchEle.Name.Split(' ').Where(x => x.Length > 0));
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            SearchDictionary.Add(searchEle, searchEle.Keywords);
             SearchDictionary.AddName(searchEle, searchEle.Name);
         }
 
         public void Add(dynWorkspace workspace)
         {
-            var searchEle = new WorkspaceSearchElement(workspace.Name, "Workspace");
-
-            SearchDictionary.Add(searchEle, searchEle.Name.Split(' ').Where(x => x.Length > 0));
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            SearchDictionary.AddName(searchEle, searchEle.Name);
+            this.Add( workspace, workspace.Name );
         }
 
+        public void Add(dynWorkspace workspace, string name )
+        {
+            var searchEle = new WorkspaceSearchElement("@" + name, "Workspace");
+            SearchDictionary.AddName(searchEle, searchEle.Name);
+        }
 
         public void Add(Type type, string name)
         {
@@ -229,11 +226,14 @@ namespace Dynamo.Search
 
             var searchEle = new LocalSearchElement(dynNode);
 
-            SearchDictionary.Add(searchEle, searchEle.Name.Split(' ').Where(x => x.Length > 0));
-            SearchDictionary.Add(searchEle, searchEle.Name);
             SearchDictionary.AddName(searchEle, searchEle.Name);
 
         }
 
+        public void Refactor(dynWorkspace currentSpace, string newName)
+        {
+            SearchDictionary.RemoveName(currentSpace.Name);
+            this.Add( currentSpace, newName );
+        }
     }
 }

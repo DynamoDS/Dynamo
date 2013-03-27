@@ -741,6 +741,9 @@ namespace Dynamo
             Bench.viewMenu.Items.Add(i);
             Bench.viewMenuItemsDict[name] = i;
 
+            // add the element to search
+            SearchController.Add(workSpace);
+
             //Add an entry to the Add menu
             //System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
             //mi.Header = name;
@@ -2336,6 +2339,8 @@ namespace Dynamo
             viewItem.Header = newName;
             Bench.viewMenuItemsDict.Remove(CurrentSpace.Name);
             Bench.viewMenuItemsDict[newName] = viewItem;
+
+            SearchController.Refactor(CurrentSpace, newName);
 
             //Update add menu
             //var addItem = this.addMenuItemsDict[this.currentFunctionName];
