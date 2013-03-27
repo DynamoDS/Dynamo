@@ -28,7 +28,7 @@ using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo
 {
-    public class DynamoController:INotifyPropertyChanged
+    public class DynamoController : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         /// <summary>
@@ -55,7 +55,7 @@ namespace Dynamo
         {
             get { return isProcessingCommandQueue; }
         }
-        
+
         List<Tuple<object, object>> commandQueue = new List<Tuple<object, object>>();
         public List<Tuple<object, object>> CommandQueue
         {
@@ -239,7 +239,7 @@ namespace Dynamo
             }
         }
 
-        
+
         #endregion
 
         #region Loading
@@ -268,7 +268,7 @@ namespace Dynamo
 
             //var loadedAssemblies = new List<Assembly>();
             //var assembliesToLoad = new List<string>();
-            
+
             #region determine assemblies to load
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>(
                 AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.Location));
@@ -388,7 +388,7 @@ namespace Dynamo
 
                     nodeUI.MouseDown += delegate
                     {
-                        Bench.BeginDragElement(nodeUI, kvp.Value.Type.ToString(), Mouse.GetPosition(nodeUI));
+                        Bench.BeginDragElement(nodeUI, nodeUI.NodeLogic.GetType().ToString(), Mouse.GetPosition(nodeUI));
                         nodeUI.Visibility = System.Windows.Visibility.Hidden;
                     };
 
@@ -421,7 +421,7 @@ namespace Dynamo
                                 Width = double.NaN
                             },
                             HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                            Foreground = new SolidColorBrush(Color.FromRgb(200,200,200))
+                            Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
                         };
 
                         Bench.addMenuCategoryDict[categoryName] = e;
@@ -622,12 +622,12 @@ namespace Dynamo
 
         private void loadUserWorkspaces(string directory)
         {
-            var parentBuffer = new Dictionary<string, HashSet<string>>();
-            var childrenBuffer = new Dictionary<string, HashSet<dynWorkspace>>();
+            var parentBuffer = new Dictionary<Guid, HashSet<Guid>>();
+            var childrenBuffer = new Dictionary<Guid, HashSet<FunctionDefinition>>();
             string[] filePaths = Directory.GetFiles(directory, "*.dyf");
             foreach (string filePath in filePaths)
             {
-                this.OpenDefinition(filePath, childrenBuffer, parentBuffer);
+                OpenDefinition(filePath, childrenBuffer, parentBuffer);
             }
             foreach (var e in this.AllNodes)
             {
@@ -702,7 +702,7 @@ namespace Dynamo
             }
         }
 
-        internal FunctionDefinition NewFunction(string name, string category, bool display)
+        internal FunctionDefinition NewFunction(Guid id, string name, string category, bool display)
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(
@@ -711,7 +711,7 @@ namespace Dynamo
             var newElements = workSpace.Nodes;
             var newConnectors = workSpace.Connectors;
 
-            var functionDefinition = new FunctionDefinition()
+            var functionDefinition = new FunctionDefinition(id)
             {
                 Workspace = workSpace
             };
@@ -737,7 +737,9 @@ namespace Dynamo
                   .Select(s => ((dynSymbol)s).Symbol),
                new List<String>() { "out" },
                functionDefinition);
-            
+
+            newEl.NodeUI.NickName = name;
+
             newEl.NodeUI.DisableInteraction();
             newEl.NodeUI.MouseDown += delegate
             {
@@ -770,7 +772,7 @@ namespace Dynamo
                     },
                     HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                     //FontWeight = FontWeights.Bold
-                    Foreground = new SolidColorBrush(Color.FromRgb(200,200,200))
+                    Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
                 };
 
                 Bench.addMenuCategoryDict[category] = expander;
@@ -820,7 +822,7 @@ namespace Dynamo
                     //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
                     //Step 3: Save function
-                    this.SaveFunction(this.CurrentSpace);
+                    SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
                 }
 
                 //Make old workspace invisible
@@ -884,7 +886,7 @@ namespace Dynamo
                 var ws = def.Workspace;
 
                 //TODO: Update to base off of Definition
-                var inputs = 
+                var inputs =
                     ws.Nodes.Where(e => e is dynSymbol)
                         .Select(s => (s as dynSymbol).Symbol);
 
@@ -909,8 +911,9 @@ namespace Dynamo
 
                     outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
                 }
-                
+
                 result = new dynFunction(inputs, outputs, def);
+                result.NodeUI.NickName = ws.Name;
             }
 
             if (result is dynDouble)
@@ -1013,6 +1016,10 @@ namespace Dynamo
                 {
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
+                    root.SetAttribute(
+                        "ID",
+                        dynSettings.FunctionDict.Values
+                            .First(x => x.Workspace == workSpace).FunctionId.ToString());
                 }
 
                 xmlDoc.AppendChild(root);
@@ -1089,8 +1096,10 @@ namespace Dynamo
             return true;
         }
 
-        public void SaveFunction(dynWorkspace functionWorkspace, bool writeDefinition = true)
+        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true)
         {
+            dynWorkspace functionWorkspace = definition.Workspace;
+
             //Generate xml, and save it in a fixed place
             if (writeDefinition)
             {
@@ -1147,7 +1156,7 @@ namespace Dynamo
 
                     outputNames = outNames;
                 }
-                
+
                 foreach (var ele in topMost)
                 {
                     ele.Item2.NodeUI.ValidateConnections();
@@ -1175,7 +1184,7 @@ namespace Dynamo
                         node.ConnectInput(inputName, topNode.Item2.Build(buildDict, topNode.Item1));
                         i++;
                     }
-                    
+
                     top = node;
                 }
                 else
@@ -1198,7 +1207,7 @@ namespace Dynamo
 
                 Expression expression = Utils.MakeAnon(variables.Select(x => x.NodeUI.GUID.ToString()), top.Compile());
 
-                FSchemeEnvironment.DefineSymbol(functionWorkspace.Name, expression);
+                FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), expression);
 
                 //Update existing function nodes which point to this function to match its changes
                 foreach (var el in this.AllNodes)
@@ -1207,7 +1216,7 @@ namespace Dynamo
                     {
                         var node = (dynFunction)el;
 
-                        if (!node.Definition.Workspace.Name.Equals(functionWorkspace.Name))
+                        if (node.Definition != definition)
                             continue;
 
                         node.SetInputs(inputNames);
@@ -1252,14 +1261,14 @@ namespace Dynamo
         {
             return OpenDefinition(
                 xmlPath,
-                new Dictionary<string, HashSet<dynWorkspace>>(),
-                new Dictionary<string, HashSet<string>>());
+                new Dictionary<Guid, HashSet<FunctionDefinition>>(),
+                new Dictionary<Guid, HashSet<Guid>>());
         }
 
         bool OpenDefinition(
             string xmlPath,
-            Dictionary<string, HashSet<dynWorkspace>> children,
-            Dictionary<string, HashSet<string>> parents)
+            Dictionary<Guid, HashSet<FunctionDefinition>> children,
+            Dictionary<Guid, HashSet<Guid>> parents)
         {
             try
             {
@@ -1272,6 +1281,7 @@ namespace Dynamo
                 string category = "";
                 double cx = dynBench.CANVAS_OFFSET_X;
                 double cy = dynBench.CANVAS_OFFSET_Y;
+                string id = "";
 
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
@@ -1285,6 +1295,8 @@ namespace Dynamo
                             funName = att.Value;
                         else if (att.Name.Equals("Category"))
                             category = att.Value;
+                        else if (att.Name.Equals("ID"))
+                            id = att.Value;
                     }
                 }
 
@@ -1305,13 +1317,16 @@ namespace Dynamo
                 Bench.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 //TODO: refactor to include x,y
-                var ws = NewFunction(
-                   funName,
-                   category.Length > 0
-                      ? category
-                      : BuiltinNodeCategories.MISC,
-                   false
-                ).Workspace;
+                var def = NewFunction(
+                    Guid.Parse(id),
+                    funName,
+                    category.Length > 0
+                        ? category
+                        : BuiltinNodeCategories.MISC,
+                    false
+                );
+
+                var ws = def.Workspace;
 
                 ws.PositionX = cx;
                 ws.PositionY = cy;
@@ -1326,7 +1341,7 @@ namespace Dynamo
                 XmlNode cNodesList = cNodes[0] as XmlNode;
                 XmlNode nNodesList = nNodes[0] as XmlNode;
 
-                var dependencies = new Stack<string>();
+                var dependencies = new Stack<Guid>();
 
                 #region instantiate nodes
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
@@ -1376,8 +1391,13 @@ namespace Dynamo
                     if (el is dynFunction)
                     {
                         var fun = el as dynFunction;
-                        if (fun.Definition == null)
-                            dependencies.Push(fun.Definition.Workspace.Name);
+                        var funId = Guid.Parse(fun.Symbol);
+
+                        FunctionDefinition funcDef;
+                        if (dynSettings.FunctionDict.TryGetValue(funId, out funcDef))
+                            fun.Definition = funcDef;
+                        else
+                            dependencies.Push(funId);
                     }
                 }
                 #endregion
@@ -1481,28 +1501,24 @@ namespace Dynamo
                 //For each node this workspace depends on...
                 foreach (var dep in dependencies)
                 {
-                    //If the node hasn't been loaded...
-                    if (!dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == dep))
-                    {
-                        canLoad = false;
-                        //Dep -> Ws
-                        if (children.ContainsKey(dep))
-                            children[dep].Add(ws);
-                        else
-                            children[dep] = new HashSet<dynWorkspace>() { ws };
+                    canLoad = false;
+                    //Dep -> Ws
+                    if (children.ContainsKey(dep))
+                        children[dep].Add(def);
+                    else
+                        children[dep] = new HashSet<FunctionDefinition>() { def };
 
-                        //Ws -> Deps
-                        if (parents.ContainsKey(ws.Name))
-                            parents[ws.Name].Add(dep);
-                        else
-                            parents[ws.Name] = new HashSet<string>() { dep };
-                    }
+                    //Ws -> Deps
+                    if (parents.ContainsKey(def.FunctionId))
+                        parents[def.FunctionId].Add(dep);
+                    else
+                        parents[def.FunctionId] = new HashSet<Guid>() { dep };
                 }
 
                 if (canLoad)
-                    SaveFunction(ws, false);
+                    SaveFunction(def, false);
 
-                nodeWorkspaceWasLoaded(ws, children, parents);
+                nodeWorkspaceWasLoaded(def, children, parents);
             }
             catch (Exception ex)
             {
@@ -1517,20 +1533,20 @@ namespace Dynamo
         }
 
         void nodeWorkspaceWasLoaded(
-            dynWorkspace ws,
-            Dictionary<string, HashSet<dynWorkspace>> children,
-            Dictionary<string, HashSet<string>> parents)
+            FunctionDefinition def,
+            Dictionary<Guid, HashSet<FunctionDefinition>> children,
+            Dictionary<Guid, HashSet<Guid>> parents)
         {
             //If there were some workspaces that depended on this node...
-            if (children.ContainsKey(ws.Name))
+            if (children.ContainsKey(def.FunctionId))
             {
                 //For each workspace...
-                foreach (var child in children[ws.Name])
+                foreach (var child in children[def.FunctionId])
                 {
                     //Nodes the workspace depends on
-                    var allParents = parents[child.Name];
+                    var allParents = parents[child.FunctionId];
                     //Remove this workspace, since it's now loaded.
-                    allParents.Remove(ws.Name);
+                    allParents.Remove(def.FunctionId);
                     //If everything the node depends on has been loaded...
                     if (!allParents.Any())
                     {
@@ -1632,6 +1648,18 @@ namespace Dynamo
 
                     if (this.ViewingHomespace)
                         el.SaveResult = true;
+
+                    if (el is dynFunction)
+                    {
+                        var fun = el as dynFunction;
+                        var funId = Guid.Parse(fun.Symbol);
+
+                        FunctionDefinition funcDef;
+                        if (dynSettings.FunctionDict.TryGetValue(funId, out funcDef))
+                            fun.Definition = funcDef;
+                        else
+                            fun.NodeUI.Error("No definition found.");
+                    }
 
                     //read the sub elements
                     //set any numeric values 
@@ -1851,7 +1879,7 @@ namespace Dynamo
                 //toggle off dynamic run
                 CanRunDynamically = !debug;
 
-                if(debug==true)
+                if (debug == true)
                     DynamicRunEnabled = false;
 
                 NotifyPropertyChanged("RunInDebug");
@@ -1975,7 +2003,7 @@ namespace Dynamo
 
                 foreach (var def in dynSettings.FunctionWasEvaluated)
                     def.RequiresRecalc = false;
-                
+
                 //If we should run again...
                 if (this.runAgain)
                 {
@@ -2063,7 +2091,7 @@ namespace Dynamo
 
         protected virtual void OnEvaluationCompleted()
         {
-            
+
         }
 
         internal void ShowElement(dynNode e)
@@ -2118,7 +2146,7 @@ namespace Dynamo
             //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
             //Step 3: Save function
-            this.SaveFunction(this.CurrentSpace);
+            SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
 
             //Step 4: Make home workspace visible
             //this.elements = this.homeSpace.elements;
@@ -2155,7 +2183,7 @@ namespace Dynamo
 
         internal void DisplayFunction(FunctionDefinition symbol)
         {
-            if (this.CurrentSpace.Name.Equals(symbol.Workspace.Name))
+            if (symbol == null || CurrentSpace.Name.Equals(symbol.Workspace.Name))
                 return;
 
             var newWs = symbol.Workspace;
@@ -2185,7 +2213,7 @@ namespace Dynamo
                 //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
                 //Step 3: Save function
-                this.SaveFunction(this.CurrentSpace);
+                SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
             }
 
             //Step 4: Make home workspace visible
@@ -2331,7 +2359,7 @@ namespace Dynamo
 
             ((FuncWorkspace)this.CurrentSpace).Name = newName;
 
-            this.SaveFunction(this.CurrentSpace);
+            SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
         }
         #endregion
 
@@ -2462,7 +2490,7 @@ namespace Dynamo
             }
             while (!error.Equals(""));
 
-            var newNodeDefinition = NewFunction(newNodeName, newNodeCategory, false);
+            var newNodeDefinition = NewFunction(Guid.NewGuid(), newNodeName, newNodeCategory, false);
             var newNodeWorkspace = newNodeDefinition.Workspace;
             #endregion
 
@@ -2494,13 +2522,13 @@ namespace Dynamo
             #endregion
 
             #region Detect 1-node holes (higher-order function extraction)
-            var curriedNodeArgs = 
+            var curriedNodeArgs =
                 new HashSet<dynNode>(
                     inputs
                         .Select(x => x.Item3.Item2)
                         .Intersect(outputs.Select(x => x.Item3.Item2)))
                 .Select(
-                    outerNode => 
+                    outerNode =>
                     {
                         var node = new dynApply1();
 
@@ -2537,10 +2565,10 @@ namespace Dynamo
                         var nodeInputs = outputs
                             .Where(output => output.Item3.Item2 == outerNode)
                             .Select(
-                                output => 
-                                    new 
-                                    { 
-                                        InnerNodeInputSender = output.Item1, 
+                                output =>
+                                    new
+                                    {
+                                        InnerNodeInputSender = output.Item1,
                                         OuterNodeInPortData = output.Item3.Item1
                                     }).ToList();
 
@@ -2628,13 +2656,13 @@ namespace Dynamo
             foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
             {
                 var inputIndex = input.Item1;
-                
+
                 var inputReceiverNode = input.Item2.Item1;
                 var inputReceiverData = input.Item2.Item2;
 
                 var inputNode = input.Item2.Item3.Item2;
                 var inputData = input.Item2.Item3.Item1;
-                
+
                 //Connect outside input to the node
                 CurrentSpace.Connectors.Add(
                     new dynConnector(
@@ -2835,10 +2863,8 @@ namespace Dynamo
 
             CurrentSpace.EnableReporting();
 
-            SaveFunction(newNodeWorkspace, true);
+            SaveFunction(newNodeDefinition, true);
         }
         #endregion
-        
     }
-
 }

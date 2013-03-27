@@ -690,7 +690,7 @@ namespace Dynamo.Controls
             }
             while (!error.Equals(""));
 
-            Controller.NewFunction(name, category, true);
+            Controller.NewFunction(Guid.NewGuid(), name, category, true);
         }
 
         //internal void ChangeView_Click(object sender, RoutedEventArgs e)

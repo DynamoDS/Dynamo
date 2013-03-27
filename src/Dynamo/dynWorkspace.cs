@@ -109,11 +109,13 @@ namespace Dynamo
         }
 
         #endregion
+
         public override void Modified()
         {
             base.Modified();
 
-            dynSettings.Controller.SaveFunction(this);
+            dynSettings.Controller.SaveFunction(
+                dynSettings.FunctionDict.Values.First(x => x.Workspace == this));
         }
 
         public override void OnDisplayed()

@@ -1419,7 +1419,7 @@ namespace Dynamo.Nodes
 
             if (inputs.Any())
             {
-                var newBegin = new BeginNode();
+                var newBegin = new BeginNode(new List<string>() { "expr1", "expr2" });
                 newBegin.ConnectInput("expr1", nestedBegins(inputs, preBuilt));
                 newBegin.ConnectInput("expr2", firstVal);
                 return newBegin;

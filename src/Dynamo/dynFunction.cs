@@ -46,9 +46,6 @@ namespace Dynamo
                 foreach (var output in outputs)
                     OutPortData.Add(new PortData(output, "function output", typeof(object)));
 
-                //Set the nickname
-                NodeUI.NickName = Symbol;
-
                 //Add a drop-shadow.
                 ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
 
@@ -178,8 +175,13 @@ namespace Dynamo
             public override void SaveElement(XmlDocument xmlDoc, XmlElement dynEl)
             {
                 //Debug.WriteLine(pd.Object.GetType().ToString());
-                XmlElement outEl = xmlDoc.CreateElement("Symbol");
+                XmlElement outEl = xmlDoc.CreateElement("ID");
+                
                 outEl.SetAttribute("value", Symbol);
+                dynEl.AppendChild(outEl);
+
+                outEl = xmlDoc.CreateElement("Name");
+                outEl.SetAttribute("value", NodeUI.NickName);
                 dynEl.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Inputs");
@@ -205,10 +207,15 @@ namespace Dynamo
             {
                 foreach (XmlNode subNode in elNode.ChildNodes)
                 {
-                    if (subNode.Name.Equals("Symbol"))
+                    if (subNode.Name.Equals("ID"))
                     {
-                        Definition = dynSettings.FunctionDict.Values.FirstOrDefault(
-                            x => x.Workspace.Name == subNode.Attributes[0].Value);
+                        Symbol = subNode.Attributes[0].Value;
+                        //Definition = dynSettings.FunctionDict.Values.FirstOrDefault(
+                        //    x => x.Workspace.Name == subNode.Attributes[0].Value);
+                    }
+                    else if (subNode.Name.Equals("Name"))
+                    {
+                        NodeUI.NickName = subNode.Attributes[0].Value;
                     }
                     else if (subNode.Name.Equals("Outputs"))
                     {
@@ -441,9 +448,11 @@ namespace Dynamo
 
     public class FunctionDefinition
     {
-        internal FunctionDefinition()
+        internal FunctionDefinition() : this(Guid.NewGuid()) { }
+
+        internal FunctionDefinition(Guid id)
         {
-            FunctionId = Guid.NewGuid();
+            FunctionId = id;
             RequiresRecalc = true;
         }
 
@@ -452,6 +461,7 @@ namespace Dynamo
         public List<Tuple<int, dynNode>> OutPortMappings { get; internal set; }
         public List<Tuple<int, dynNode>> InPortMappings { get; internal set; }
         public bool RequiresRecalc { get; internal set; }
+
         public IEnumerable<FunctionDefinition> Dependencies
         {
             get
