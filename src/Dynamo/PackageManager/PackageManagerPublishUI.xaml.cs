@@ -11,16 +11,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Dynamo.Nodes.PackageManager;
 
-namespace Dynamo.Nodes.PackageManager
+namespace Dynamo.PackageManager
 {
     /// <summary>
     /// Interaction logic for PackageManagerPublishUI.xaml
     /// </summary>
     public partial class PackageManagerPublishUI : UserControl
     {
-        public PackageManagerPublishUI()
+         
+
+        public PackageManagerPublishUI(PackageManagerPublishController packageManagerPublishController)
         {
+            this.Controller = controller;
+
             InitializeComponent();
         }
     }

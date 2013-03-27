@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Nodes.PackageManager.PackageManagerPublishUI"
+﻿<UserControl x:Class="Dynamo.PackageManager.PackageManagerPublishUI"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,7 +10,7 @@
 
     <StackPanel Name="BrowserContainer" Orientation="Vertical">
 
-      <TextBlock Padding="10,15,10,10" Width ="350" Background="#333" Foreground="DarkGray" FontSize="18">Publish a node...</TextBlock>
+      <TextBlock Padding="10,15,10,10" Width ="350" Background="#333" Foreground="White" FontSize="18">Publish a node...</TextBlock>
 
       <Label Content="Description of the node" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" />
       <TextBox Name="DescriptionInput" Margin="5" Padding="5" />
@@ -29,7 +29,7 @@
         The default is the MIT license.
       </Label>
 
-      <Button Style="{DynamicResource ResourceKey=STextButton}" Width="120" Margin="10" HorizontalAlignment="Right">Submit Node</Button>
+      <Button Style="{DynamicResource ResourceKey=STextButton}" Width="70" Margin="10" HorizontalAlignment="Right">Submit</Button>
       
     </StackPanel>
 

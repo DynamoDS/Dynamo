@@ -34,6 +34,48 @@ namespace Dynamo.Commands
         }
     }
 
+    public class ShowPublishInformationCommand : ICommand
+    {
+        private bool init;
+        private PackageManager.PackageManagerPublishUI ui;
+
+        public ShowPublishInformationCommand()
+        {
+            this.init = false;
+        }
+
+        public void Execute(object parameters)
+        {
+            if (!init)
+            {
+                //ui = dynSettings.Controller.
+                //dynSettings.Bench.outerCanvas.Children.Add(ui);
+                init = true;
+            }
+
+            //if (ui.LoginContainerStackPanel.Visibility == Visibility.Visible)
+            //{
+            //    ui.LoginContainerStackPanel.Visibility = Visibility.Collapsed;
+            //}
+            //else
+            //{
+            //    ui.LoginContainerStackPanel.Visibility = Visibility.Visible;
+            //}
+
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
     public class ShowLoginCommand : ICommand
     {
         private bool init;
@@ -112,7 +154,6 @@ namespace Dynamo.Commands
         public void Execute(object parameters)
         {
             this._client = dynSettings.Controller.PackageManagerClient;
-
 
             var nodeList = dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI && ((dynNodeUI)x).NodeLogic is dynFunction )
                                         .Select(x => ( ((dynNodeUI)x).NodeLogic as dynFunction ).Symbol ).ToList();
@@ -195,6 +236,17 @@ namespace Dynamo.Commands
     
     public static partial class DynamoCommands
     {
+
+        private static Dynamo.Commands.ShowPublishInformationCommand showPublishInformationCmd;
+        public static Dynamo.Commands.ShowPublishInformationCommand ShowPublishInformationCmd
+        {
+            get
+            {
+                if (showPublishInformationCmd == null)
+                    showPublishInformationCmd = new Dynamo.Commands.ShowPublishInformationCommand();
+                return showPublishInformationCmd;
+            }
+        }
 
         private static Dynamo.Commands.PublishCurrentWorkspaceCommand publishCurrentWorkspaceCmd;
         public static Dynamo.Commands.PublishCurrentWorkspaceCommand PublishCurrentWorkspaceCmd

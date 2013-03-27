@@ -146,9 +146,7 @@ namespace Dynamo.Search
 
         public void SendSelectedToWorkspace()
         {
-            View.Visibility = Visibility.Collapsed;
 
-            
             if (VisibleNodes.Count == 0) return;
 
             var selectedIndex = View.SelectedIndex();
@@ -156,6 +154,8 @@ namespace Dynamo.Search
             // none of the elems are selected, return 
             if (selectedIndex == -1)
                 return;
+
+            View.Visibility = Visibility.Collapsed;
 
             if (VisibleNodes[selectedIndex] is LocalSearchElement)
             {
