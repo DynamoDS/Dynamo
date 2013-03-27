@@ -48,6 +48,21 @@ namespace Dynamo.Search
         public override string Description { get { return Node.NodeUI.Description; } }
     }
 
+    public class WorkspaceSearchElement : ISearchElement
+    {
+        private string _description;
+        private string _name;
+
+        public WorkspaceSearchElement(string symbol, string description)
+        {
+            this._name = symbol;
+            this._description = "Workspace";
+        }
+
+        public override string Name { get { return _name; } }
+        public override string Description { get { return _description; } }
+    }
+
     public class PackageManagerSearchElement : ISearchElement
     {
         
@@ -145,7 +160,9 @@ namespace Dynamo.Search
             } else if (VisibleNodes[selectedIndex] is PackageManagerSearchElement)
             {
                 var ele = (PackageManagerSearchElement) VisibleNodes[selectedIndex];
-                dynSettings.Controller.PackageManagerClient.ImportPackage(ele.Id);
+                string name;
+                dynSettings.Controller.PackageManagerClient.ImportPackage( out name, ele.Id);
+                
             }
 
         }

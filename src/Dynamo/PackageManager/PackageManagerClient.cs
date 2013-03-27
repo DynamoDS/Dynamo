@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Linq;
 using Dynamo.Nodes;
@@ -86,11 +88,11 @@ namespace Dynamo.PackageManager
             return this.Client.ExecuteAndDeserialize(newPackage).success;
         }
 
-        public bool ImportPackage( string id, string version = "" )
+        public bool ImportPackage( out string name, string id, string version = "")
         {
 
             // download the package
-            Greg.Requests.HeaderDownload m = new HeaderDownload(id);
+            HeaderDownload m = new HeaderDownload(id);
             var p = this.Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);
 
             // then save it to a file in packages
@@ -112,10 +114,46 @@ namespace Dynamo.PackageManager
 
                 // then open it via controller
                 Controller.OpenDefinition(path);
+
+                // now return the name of the successfully imported node
+                name = p.content.name;
+
+                // this all needs to get out of here
+                    var node = dynSettings.Controller.CreateDragNode(name);
+                
+                    var el = node.NodeUI;
+
+                    dynSettings.Workbench.Children.Add(el);
+                    dynSettings.Controller.Nodes.Add(el.NodeLogic);
+
+                    // by default place node at center
+                    var x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
+                    var y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
+
+                    Point dropPt = new Point(x, y);
+
+                    var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
+                    dropPt = a.Transform(dropPt);
+
+                    // center the node at the drop point
+                    dropPt.X -= (el.Width / 2.0);
+                    dropPt.Y -= (el.Height / 2.0);
+
+                    Canvas.SetLeft(el, dropPt.X);
+                    Canvas.SetTop(el, dropPt.Y);
+
+                    el.EnableInteraction();
+
+                    if (dynSettings.Controller.ViewingHomespace)
+                    {
+                        el.NodeLogic.SaveResult = true;
+                    }
+
                 return true;
             }
             catch
             {
+                name = "";
                 return false;
             } 
 
