@@ -111,20 +111,34 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-           this._client = dynSettings.Controller.PackageManagerClient;
+            this._client = dynSettings.Controller.PackageManagerClient;
 
 
-            dynSettings.Bench.WorkBench.Selection.Where(x => x is dynFunction)
-                       .Select(x => (x as dynNodeUI).NodeLogic.WorkSpace );
+            var nodeList = dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI && ((dynNodeUI)x).NodeLogic is dynFunction )
+                                        .Select(x => ( ((dynNodeUI)x).NodeLogic as dynFunction ).Symbol ).ToList();
 
-           if (!this._client.Client.IsAuthenticated())
-           {
-               return;
-           }
-           else
-           {
-              this._client.Publish( _client.GetPackageUploadFromCurrentWorkspace() );
-           }
+            if (nodeList.Count != 1)
+            {
+                MessageBox.Show("You must select a single user-defined node.  You selected " + nodeList.Count + " nodes." , "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                return;
+            }
+
+            if (!this._client.Client.IsAuthenticated())
+            {
+                MessageBox.Show("You must be authenticated in order to publish a node.", "Authentication Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                return;
+            }
+            else
+            {
+                if ( dynSettings.Controller.FunctionDict.ContainsKey( nodeList[0] ) )
+                {
+                    this._client.Publish( _client.GetPackageUploadFromWorkspace( dynSettings.Controller.FunctionDict[ nodeList[0] ] ) );
+                }
+                else
+                {
+                    MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                }
+            }
         }
 
         public event EventHandler CanExecuteChanged
