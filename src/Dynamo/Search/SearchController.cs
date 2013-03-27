@@ -102,6 +102,13 @@ namespace Dynamo.Search
             this.NumSearchResults = 10;
             this.Bench = bench;
             this.View = new SearchUI(this);
+
+            this.AddHomeToSearch();
+        }
+
+        private void AddHomeToSearch()
+        {
+            this.SearchDictionary.AddName(new WorkspaceSearchElement("@Home", "The default workspace"), "@Home");
         }
 
         internal void SearchAndUpdateUI(string search)
@@ -172,7 +179,16 @@ namespace Dynamo.Search
                 });
             } else if ( VisibleNodes[selectedIndex] is WorkspaceSearchElement )
             {
-                DynamoCommands.GoToWorkspaceCmd.Execute( VisibleNodes[selectedIndex].Name.Substring(1) );
+                var name = VisibleNodes[selectedIndex].Name.Substring(1);
+                if (name == "Home")
+                {
+                    DynamoCommands.HomeCmd.Execute(null);
+                }
+                else
+                {
+                    DynamoCommands.GoToWorkspaceCmd.Execute(name);
+                }
+                
             }
 
         }
