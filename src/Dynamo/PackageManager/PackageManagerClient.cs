@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Linq;
+using Dynamo.Commands;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Utilities;
@@ -117,37 +118,6 @@ namespace Dynamo.PackageManager
 
                 // now return the name of the successfully imported node
                 name = p.content.name;
-
-                // this all needs to get out of here
-                    var node = dynSettings.Controller.CreateDragNode(name);
-                
-                    var el = node.NodeUI;
-
-                    dynSettings.Workbench.Children.Add(el);
-                    dynSettings.Controller.Nodes.Add(el.NodeLogic);
-
-                    // by default place node at center
-                    var x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
-                    var y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
-
-                    Point dropPt = new Point(x, y);
-
-                    var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
-                    dropPt = a.Transform(dropPt);
-
-                    // center the node at the drop point
-                    dropPt.X -= (el.Width / 2.0);
-                    dropPt.Y -= (el.Height / 2.0);
-
-                    Canvas.SetLeft(el, dropPt.X);
-                    Canvas.SetTop(el, dropPt.Y);
-
-                    el.EnableInteraction();
-
-                    if (dynSettings.Controller.ViewingHomespace)
-                    {
-                        el.NodeLogic.SaveResult = true;
-                    }
 
                 return true;
             }

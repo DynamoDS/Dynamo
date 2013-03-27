@@ -717,18 +717,27 @@ namespace Dynamo.Commands
                 return;
             }
 
-            TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[data["name"].ToString()];
+            dynNode node;
+            
+            // check is user-defined node
+            if ( dynSettings.Controller.FunctionDict.ContainsKey( data["name"].ToString() ) )
+            {
+                // the node is user-defined, load it's definition
+                node = dynSettings.Controller.CreateDragNode( data["name"].ToString() );
+            } else
+            {
+                TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[data["name"].ToString()];
 
-            var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-            var node = (dynNode)obj.Unwrap();
-            node.NodeUI.DisableInteraction();
+                var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                node = (dynNode)obj.Unwrap();
+                node.NodeUI.DisableInteraction();    
+            }
 
-            var el = node.NodeUI;
-
-            dynSettings.Workbench.Children.Add(el);
-            dynSettings.Controller.Nodes.Add(el.NodeLogic);
-            el.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
-            el.Opacity = 1;
+            dynNodeUI nodeUi = node.NodeUI;
+            dynSettings.Workbench.Children.Add(nodeUi);
+            dynSettings.Controller.Nodes.Add(nodeUi.NodeLogic);
+            nodeUi.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
+            nodeUi.Opacity = 1;
 
             //if we've received a value in the dictionary
             //try to set the value on the node
@@ -776,17 +785,17 @@ namespace Dynamo.Commands
             }
 
             // center the node at the drop point
-            dropPt.X -= (el.Width / 2.0);
-            dropPt.Y -= (el.Height / 2.0);
+            dropPt.X -= (nodeUi.Width / 2.0);
+            dropPt.Y -= (nodeUi.Height / 2.0);
 
-            Canvas.SetLeft(el, dropPt.X);
-            Canvas.SetTop(el, dropPt.Y);
+            Canvas.SetLeft(nodeUi, dropPt.X);
+            Canvas.SetTop(nodeUi, dropPt.Y);
 
-            el.EnableInteraction();
+            nodeUi.EnableInteraction();
 
             if (dynSettings.Controller.ViewingHomespace)
             {
-                el.NodeLogic.SaveResult = true;
+                nodeUi.NodeLogic.SaveResult = true;
             }
             
         }

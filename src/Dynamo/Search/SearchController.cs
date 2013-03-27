@@ -160,9 +160,16 @@ namespace Dynamo.Search
             } else if (VisibleNodes[selectedIndex] is PackageManagerSearchElement)
             {
                 var ele = (PackageManagerSearchElement) VisibleNodes[selectedIndex];
-                string name;
-                dynSettings.Controller.PackageManagerClient.ImportPackage( out name, ele.Id);
-                
+
+                string name = ele.Name;
+                if (!dynSettings.Controller.FunctionDict.ContainsKey(ele.Name))
+                    dynSettings.Controller.PackageManagerClient.ImportPackage(out name, ele.Id);
+               
+                DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+                {
+                    {"name", name},
+                    {"transformFromOuterCanvasCoordinates", true}
+                });
             }
 
         }
