@@ -20,11 +20,11 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PackageManagerPublishUI : UserControl
     {
-         
+        
 
         public PackageManagerPublishUI(PackageManagerPublishController packageManagerPublishController)
         {
-            this.Controller = controller;
+            //this.Controller = controller;
 
             InitializeComponent();
         }

@@ -130,6 +130,7 @@ limitations under the License.
       <DependentUpon>PackageManagerLoginUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\PackageManagerClient.cs" />
+    <Compile Include="PackageManager\PackageManagerPublishController.cs" />
     <Compile Include="PackageManager\PackageManagerPublishUI.xaml.cs">
       <DependentUpon>PackageManagerPublishUI.xaml</DependentUpon>
     </Compile>

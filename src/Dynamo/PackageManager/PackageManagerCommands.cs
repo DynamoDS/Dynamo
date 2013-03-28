@@ -34,47 +34,47 @@ namespace Dynamo.Commands
         }
     }
 
-    public class ShowPublishInformationCommand : ICommand
-    {
-        private bool init;
-        private PackageManager.PackageManagerPublishUI ui;
+    //public class ShowPublishInformationCommand : ICommand
+    //{
+    //    private bool init;
+    //    private PackageManager.PackageManagerPublishUI ui;
 
-        public ShowPublishInformationCommand()
-        {
-            this.init = false;
-        }
+    //    public ShowPublishInformationCommand()
+    //    {
+    //        this.init = false;
+    //    }
 
-        public void Execute(object parameters)
-        {
-            if (!init)
-            {
-                //ui = dynSettings.Controller.
-                //dynSettings.Bench.outerCanvas.Children.Add(ui);
-                init = true;
-            }
+    //    public void Execute(object parameters)
+    //    {
+    //        if (!init)
+    //        {
+    //            //ui = dynSettings.Controller.
+    //            //dynSettings.Bench.outerCanvas.Children.Add(ui);
+    //            init = true;
+    //        }
 
-            //if (ui.LoginContainerStackPanel.Visibility == Visibility.Visible)
-            //{
-            //    ui.LoginContainerStackPanel.Visibility = Visibility.Collapsed;
-            //}
-            //else
-            //{
-            //    ui.LoginContainerStackPanel.Visibility = Visibility.Visible;
-            //}
+    //        //if (ui.LoginContainerStackPanel.Visibility == Visibility.Visible)
+    //        //{
+    //        //    ui.LoginContainerStackPanel.Visibility = Visibility.Collapsed;
+    //        //}
+    //        //else
+    //        //{
+    //        //    ui.LoginContainerStackPanel.Visibility = Visibility.Visible;
+    //        //}
 
-        }
+    //    }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
+    //    public event EventHandler CanExecuteChanged
+    //    {
+    //        add { CommandManager.RequerySuggested += value; }
+    //        remove { CommandManager.RequerySuggested -= value; }
+    //    }
 
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
+    //    public bool CanExecute(object parameters)
+    //    {
+    //        return true;
+    //    }
+    //}
 
     public class ShowLoginCommand : ICommand
     {
@@ -237,16 +237,16 @@ namespace Dynamo.Commands
     public static partial class DynamoCommands
     {
 
-        private static Dynamo.Commands.ShowPublishInformationCommand showPublishInformationCmd;
-        public static Dynamo.Commands.ShowPublishInformationCommand ShowPublishInformationCmd
-        {
-            get
-            {
-                if (showPublishInformationCmd == null)
-                    showPublishInformationCmd = new Dynamo.Commands.ShowPublishInformationCommand();
-                return showPublishInformationCmd;
-            }
-        }
+        //private static Dynamo.Commands.ShowPublishInformationCommand showPublishInformationCmd;
+        //public static Dynamo.Commands.ShowPublishInformationCommand ShowPublishInformationCmd
+        //{
+        //    get
+        //    {
+        //        if (showPublishInformationCmd == null)
+        //            showPublishInformationCmd = new Dynamo.Commands.ShowPublishInformationCommand();
+        //        return showPublishInformationCmd;
+        //    }
+        //}
 
         private static Dynamo.Commands.PublishCurrentWorkspaceCommand publishCurrentWorkspaceCmd;
         public static Dynamo.Commands.PublishCurrentWorkspaceCommand PublishCurrentWorkspaceCmd
