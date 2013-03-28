@@ -901,6 +901,15 @@ namespace Dynamo
                 newEl.NodeUI.DisableInteraction();
                 result = newEl;
             }
+            else if (builtinTypesByNickname.ContainsKey(name))
+            {
+                TypeLoadData tld = builtinTypesByNickname[name];
+
+                var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                var newEl = (dynNode)obj.Unwrap();
+                newEl.NodeUI.DisableInteraction();
+                result = newEl;
+            }
             else
             {
                 var def = dynSettings.FunctionDict[Guid.Parse(name)];
@@ -2248,7 +2257,7 @@ namespace Dynamo
                 note.Visibility = System.Windows.Visibility.Hidden;
             }
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
-
+             
             //Step 2: Store function workspace in the function dictionary
             //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 

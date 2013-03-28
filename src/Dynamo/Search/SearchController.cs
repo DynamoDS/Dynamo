@@ -16,15 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Greg.Responses;
 
@@ -69,6 +67,7 @@ namespace Dynamo.Search
         public PackageManagerSearchElement(PackageHeader header )
         {
             this.Header = header;
+            this.Guid = PackageManagerClient.ExtractFunctionDefinitionGuid(header, 0); 
         }
 
         public PackageHeader Header { get; internal set;  }
@@ -76,6 +75,7 @@ namespace Dynamo.Search
         public override string Name { get { return Header.name; } }
         public override string Description { get { return Header.description; } }
 
+        public Guid Guid { get; internal set; }
         public string Id { get { return Header._id; } }
         public List<String> Keywords { get { return Header.keywords; } }
         public string Group { get { return Header.group;  } }
@@ -168,13 +168,13 @@ namespace Dynamo.Search
             {
                 var ele = (PackageManagerSearchElement) VisibleNodes[selectedIndex];
 
-                string name = ele.Name;
-                if (!dynSettings.Controller.FunctionDict.ContainsKey(ele.Name))
-                    dynSettings.Controller.PackageManagerClient.ImportPackage(out name, ele.Id);
+                Guid guid = ele.Guid;
+                if (!dynSettings.FunctionDict.ContainsKey( ele.Guid ) )
+                    dynSettings.Controller.PackageManagerClient.ImportFunctionDefinition(out guid, ele.Id);
                
                 DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {
-                    {"name", name},
+                    {"name", guid.ToString() },
                     {"transformFromOuterCanvasCoordinates", true}
                 });
             } else if ( VisibleNodes[selectedIndex] is WorkspaceSearchElement )

@@ -34,7 +34,6 @@ namespace Dynamo
         public double PositionX { get; set; }
         public double PositionY { get; set; }
         public string FilePath { get; set; }
-
         public String Name { get; set; }
 
         public event Action OnModified;
@@ -152,7 +151,12 @@ namespace Dynamo
 
         public HomeWorkspace(List<dynNode> e, List<dynConnector> c, double x, double y)
             : base("Home", e, c, x, y)
-        { }
+        {
+            var homeGuid = Guid.Parse("32AAC852-90A7-4FBD-B78A-8FDB69302670");
+            var homeWorkspaceFuncDef = new FunctionDefinition();
+            homeWorkspaceFuncDef.Workspace = this;
+            dynSettings.FunctionDict.Add( homeGuid, homeWorkspaceFuncDef );
+        }
 
         #endregion
 
