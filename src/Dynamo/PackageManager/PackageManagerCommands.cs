@@ -34,47 +34,51 @@ namespace Dynamo.Commands
         }
     }
 
-    //public class ShowPublishInformationCommand : ICommand
-    //{
-    //    private bool init;
-    //    private PackageManager.PackageManagerPublishUI ui;
+    public class ShowNodePublishInfoCommand : ICommand
+    {
+        private bool init;
+        private PackageManager.PackageManagerPublishUI ui;
 
-    //    public ShowPublishInformationCommand()
-    //    {
-    //        this.init = false;
-    //    }
+        public ShowNodePublishInfoCommand()
+        {
+            this.init = false;
+        }
 
-    //    public void Execute(object parameters)
-    //    {
-    //        if (!init)
-    //        {
-    //            //ui = dynSettings.Controller.
-    //            //dynSettings.Bench.outerCanvas.Children.Add(ui);
-    //            init = true;
-    //        }
+        public void Execute(object funcDef)
+        {
+            if (!init)
+            {
+                ui = dynSettings.Controller.PackageManagerPublishController.View;
+                dynSettings.Bench.outerCanvas.Children.Add(ui);
+                init = true;
+            }
 
-    //        //if (ui.LoginContainerStackPanel.Visibility == Visibility.Visible)
-    //        //{
-    //        //    ui.LoginContainerStackPanel.Visibility = Visibility.Collapsed;
-    //        //}
-    //        //else
-    //        //{
-    //        //    ui.LoginContainerStackPanel.Visibility = Visibility.Visible;
-    //        //}
+            if (funcDef is FunctionDefinition)
+            {
+                dynSettings.Controller.PackageManagerPublishController.FunctionDefinition =
+                    funcDef as FunctionDefinition;
+            }
+            else
+            {
+                dynSettings.Bench.Log("Failed to obtain function definition from node.");
+                return;
+            }
+            
+            ui.Visibility = Visibility.Visible;
 
-    //    }
+        }
 
-    //    public event EventHandler CanExecuteChanged
-    //    {
-    //        add { CommandManager.RequerySuggested += value; }
-    //        remove { CommandManager.RequerySuggested -= value; }
-    //    }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
 
-    //    public bool CanExecute(object parameters)
-    //    {
-    //        return true;
-    //    }
-    //}
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
 
     public class ShowLoginCommand : ICommand
     {
@@ -95,14 +99,7 @@ namespace Dynamo.Commands
                 init = true;
             }
 
-            if (ui.LoginContainerStackPanel.Visibility == Visibility.Visible)
-            {
-                ui.LoginContainerStackPanel.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ui.LoginContainerStackPanel.Visibility = Visibility.Visible;
-            }
+            ui.Visibility = Visibility.Visible;
            
         }
 
@@ -164,28 +161,15 @@ namespace Dynamo.Commands
                 return;
             }
 
-            if (!this._client.Client.IsAuthenticated())
+            if ( dynSettings.FunctionDict.ContainsKey( nodeList[0] ) )
             {
-                MessageBox.Show("You must be authenticated in order to publish a node.", "Authentication Error", MessageBoxButton.OK, MessageBoxImage.Question);
-                return;
+                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute( dynSettings.FunctionDict[nodeList[0]] );
             }
             else
             {
-                if ( dynSettings.FunctionDict.ContainsKey( nodeList[0] ) )
-                {
-                    var success = this._client.Publish(
-                        _client.GetPackageUploadFromWorkspace(dynSettings.FunctionDict[nodeList[0]].Workspace, nodeList[0]));
-                    
-                    if (!success)
-                    {
-                        dynSettings.Bench.Log("Failed to publish the node.");
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
-                }
+                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
             }
+
         }
 
         public event EventHandler CanExecuteChanged
@@ -203,7 +187,6 @@ namespace Dynamo.Commands
 
     public class PublishCurrentWorkspaceCommand : ICommand
     {
-        private PackageManagerClient _client;
 
         public PublishCurrentWorkspaceCommand()
         {
@@ -212,19 +195,7 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            this._client = dynSettings.Controller.PackageManagerClient;
-
-            if (!this._client.Client.IsAuthenticated())
-            {
-                return;
-            }
-            else
-            {
-                // Get current selection
-                // Get workspace
-                // Publish that bad boy
-                // this._client.Publish( _client.GetPackageUploadFromCurrentWorkspace() );
-            }
+            throw new NotImplementedException();
         }
 
         public event EventHandler CanExecuteChanged
@@ -235,7 +206,6 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            // todo: should check authentication state, connected to internet
             return true;
         }
     }
@@ -243,16 +213,16 @@ namespace Dynamo.Commands
     public static partial class DynamoCommands
     {
 
-        //private static Dynamo.Commands.ShowPublishInformationCommand showPublishInformationCmd;
-        //public static Dynamo.Commands.ShowPublishInformationCommand ShowPublishInformationCmd
-        //{
-        //    get
-        //    {
-        //        if (showPublishInformationCmd == null)
-        //            showPublishInformationCmd = new Dynamo.Commands.ShowPublishInformationCommand();
-        //        return showPublishInformationCmd;
-        //    }
-        //}
+        private static Dynamo.Commands.ShowNodePublishInfoCommand _showNodePublishInfoCmd;
+        public static Dynamo.Commands.ShowNodePublishInfoCommand ShowNodeNodePublishInfoCmd
+        {
+            get
+            {
+                if (_showNodePublishInfoCmd == null)
+                    _showNodePublishInfoCmd = new Dynamo.Commands.ShowNodePublishInfoCommand();
+                return _showNodePublishInfoCmd;
+            }
+        }
 
         private static Dynamo.Commands.PublishCurrentWorkspaceCommand publishCurrentWorkspaceCmd;
         public static Dynamo.Commands.PublishCurrentWorkspaceCommand PublishCurrentWorkspaceCmd

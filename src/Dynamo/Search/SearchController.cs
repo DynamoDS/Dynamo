@@ -30,6 +30,7 @@ namespace Dynamo.Search
 {
     public abstract class ISearchElement
     {
+        public abstract string Type { get; }
         public abstract string Name { get; }
         public abstract string Description { get; }
     }
@@ -42,6 +43,7 @@ namespace Dynamo.Search
         }
 
         public dynNode Node { get; internal set; }
+        public override string Type { get { return "Standard Node"; } }
         public override string Name { get { return Node.NodeUI.NickName; } }
         public override string Description { get { return Node.NodeUI.Description; } }
     }
@@ -58,6 +60,7 @@ namespace Dynamo.Search
         }
 
         public override string Name { get { return _name; } }
+        public override string Type { get { return "Workspace"; } }
         public override string Description { get { return _description; } }
     }
 
@@ -77,6 +80,7 @@ namespace Dynamo.Search
 
         public Guid Guid { get; internal set; }
         public string Id { get { return Header._id; } }
+        public override string Type { get { return "Community Node"; } }
         public List<String> Keywords { get { return Header.keywords; } }
         public string Group { get { return Header.group;  } }
         
@@ -161,21 +165,24 @@ namespace Dynamo.Search
                 DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {
                     {"name", VisibleNodes[selectedIndex].Name},
-                    {"transformFromOuterCanvasCoordinates", true}
+                    {"transformFromOuterCanvasCoordinates", true},
+                    {"guid", Guid.NewGuid() }
                 });
             } else if (VisibleNodes[selectedIndex] is PackageManagerSearchElement)
             {
                 var ele = (PackageManagerSearchElement) VisibleNodes[selectedIndex];
 
                 Guid guid = ele.Guid;
-                if (!dynSettings.FunctionDict.ContainsKey( ele.Guid ) )
-                    dynSettings.Controller.PackageManagerClient.ImportFunctionDefinition(out guid, ele.Id);
+
+                if (!dynSettings.FunctionDict.ContainsKey(ele.Guid))
+                    dynSettings.Controller.PackageManagerClient.ImportFunctionDefinition(ele.Id, "", (finalGuid) => 
+                        DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+                        {
+                            {"name", guid.ToString() },
+                            {"transformFromOuterCanvasCoordinates", true},
+                            {"guid", Guid.NewGuid() }
+                        }));
                
-                DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
-                {
-                    {"name", guid.ToString() },
-                    {"transformFromOuterCanvasCoordinates", true}
-                });
             } else if ( VisibleNodes[selectedIndex] is WorkspaceSearchElement )
             {
                 var name = VisibleNodes[selectedIndex].Name.Substring(1);

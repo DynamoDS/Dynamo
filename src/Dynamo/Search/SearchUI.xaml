@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interop="clr-namespace:System.Windows.Interop;assembly=PresentationCore"
+             xmlns:src="clr-namespace:Dynamo.Search"
              mc:Ignorable="d" 
              Visibility="Collapsed" d:DesignWidth="447" x:Name="SearchControl">
     
@@ -17,11 +18,8 @@
         <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="18" Padding="10,15,5,10" Margin ="0"
                        IsEnabled="True" TextChanged="SearchBox_OnTextChanged" VerticalAlignment="Stretch" Width="355" Text="" />
 
-        <Button Name="RSearchIcon" Margin="0" Width="90" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
-                      Style="{DynamicResource ResourceKey=SSearchButton}" Tag="..\Images\search.png" />
-
-        <!--<Button Name="RSearchBoxIncludeOnline" Margin="0" Width="90" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
-                      Style="{DynamicResource ResourceKey=SSearchButton}" Tag="..\Images\search.png" />-->
+        <ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="90" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
+                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" Click="SearchOnline_Click"  Tag="..\Images\cloud_download_arrow_white.png" />
 
       </StackPanel>
 
@@ -30,25 +28,45 @@
 
           <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=VisibleNodes, ElementName=SearchControl}" 
                    BorderThickness="0" Padding="0" Background="Black">
-            
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                
-                <Grid VerticalAlignment="Stretch"
+
+          <ListBox.ItemTemplate >
+
+            <DataTemplate>
+
+              <Grid Name="SearchEle" VerticalAlignment="Stretch"
                       Width="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                       HorizontalAlignment="Left" Background="Black">
 
                   <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="#111" Y1="0" Y2="0" VerticalAlignment="Top"/>
-                  <TextBlock FontSize="24" Text="{Binding Path=Name}" Foreground="AliceBlue" Padding="10,5,0,0"/>
-                  <TextBlock FontSize="12" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 39, 0, 10"/>
-                 <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
+                  <TextBlock FontSize="24" Name="name" Text="{Binding Path=Name}" Foreground="AliceBlue" Padding="10,5,0,0"/>
+                  <TextBlock FontSize="12" Name="description" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 39, 0, 10"/>
+                  <TextBlock FontSize="12" Name="type" Text="{Binding Path=Type}" Foreground="Gray" HorizontalAlignment="Right" Padding="10, 5, 10, 10"/>
+
+                <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="DimGray" Y1="0" Y2="0" VerticalAlignment="Bottom"/>
                   
-                </Grid>
+              </Grid>
                 
-              </DataTemplate>
-            </ListBox.ItemTemplate>
+              <DataTemplate.Triggers>
+
+                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Workspace">
+                    <DataTrigger.Setters>
+                      <Setter Property="Foreground" Value="Gold" TargetName="name" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Community Node">
+                  <DataTrigger.Setters>
+                    <Setter Property="Foreground" Value="LightBlue" TargetName="name" />
+                  </DataTrigger.Setters>
+                </DataTrigger>
+
+              </DataTemplate.Triggers>
+
+            </DataTemplate>
+            
+          </ListBox.ItemTemplate>
             
           </ListBox>          
         </ScrollViewer>

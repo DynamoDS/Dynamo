@@ -4,16 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="385" d:DesignWidth="350">
+             d:DesignHeight="405" d:DesignWidth="350" Name="PublishInfoControl">
   
   <Grid Background="Black">
 
     <StackPanel Name="BrowserContainer" Orientation="Vertical">
 
-      <TextBlock Padding="10,15,10,10" Width ="350" Background="#333" Foreground="White" FontSize="18">Publish a node...</TextBlock>
+      <TextBlock Name ="Title" Padding="10,15,10,10" Width ="350" Background="#333" Foreground="White" FontSize="18" />
 
       <Label Content="Description of the node" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" />
-      <TextBox Name="DescriptionInput" Margin="5" Padding="5" />
+      <TextBox Name="DescriptionInput" Margin="5" Padding="5" VerticalScrollBarVisibility="Visible" Height="50" AcceptsReturn="True" TextWrapping="Wrap" />
 
       <Label Content="Keywords (separated by spaces)" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
       <TextBox Name="KeywordsInput" Margin="5" Padding="5" />
@@ -29,7 +29,7 @@
         The default is the MIT license.
       </Label>
 
-      <Button Style="{DynamicResource ResourceKey=STextButton}" Width="70" Margin="10" HorizontalAlignment="Right">Submit</Button>
+      <Button Style="{DynamicResource ResourceKey=STextButton}" Width="70" Margin="10" HorizontalAlignment="Right" Click="Submit_Click" >Submit</Button>
       
     </StackPanel>
 

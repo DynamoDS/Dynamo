@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Search;
+using Dynamo.Utilities;
 
 namespace Dynamo.Search
 {
@@ -30,6 +32,11 @@ namespace Dynamo.Search
             };
         }
 
+        public void SearchOnline_Click(object sender, RoutedEventArgs e)
+        {
+            dynSettings.Controller.PackageManagerClient.RefreshAvailable();
+        }
+        
         private void KeyHandler(object sender, KeyEventArgs e)
         {
             Controller.KeyHandler(sender, e);

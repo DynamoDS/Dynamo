@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Dynamo.Nodes.PackageManager;
 
 namespace Dynamo.PackageManager
@@ -20,13 +11,23 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PackageManagerPublishUI : UserControl
     {
-        
 
-        public PackageManagerPublishUI(PackageManagerPublishController packageManagerPublishController)
+        public PackageManagerPublishController Controller { get; internal set; }
+
+        public PackageManagerPublishUI(PackageManagerPublishController controller)
         {
-            //this.Controller = controller;
-
+            this.Controller = controller;
             InitializeComponent();
+
+            Binding binding = new Binding() { Source = controller, Path = new PropertyPath("DialogTitle") };
+            BindingOperations.SetBinding(this.Title, TextBlock.TextProperty, binding);
+
         }
+
+        public void Submit_Click(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Controller.Submit();
+        }
+
     }
 }

@@ -170,7 +170,7 @@
       <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
                  ClipToBounds="True" 
-                 Grid.Row="0"
+                 Grid.Row="0" 
                  Grid.Column="2">
         <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
           <dragCanvas:DragCanvas x:Name="WorkBench"
@@ -310,7 +310,7 @@
           </TextBox.Style>
         </TextBox>
       </Grid>
-      <Button HorizontalAlignment="Stretch" Content="New..." Margin="5,10,10,5"
+      <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
                         VerticalAlignment="Stretch" Click="NewFunction_Click" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
     </Grid>
     

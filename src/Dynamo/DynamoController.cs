@@ -35,7 +35,7 @@ namespace Dynamo
     {
         public SearchController SearchController { get; internal set; }
         public PackageManagerLoginController PackageManagerLoginController { get; internal set; }
-
+        public PackageManagerPublishController PackageManagerPublishController { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -145,7 +145,8 @@ namespace Dynamo
 
             SearchController = new SearchController(Bench);
             PackageManagerClient = new PackageManagerClient(this);
-            PackageManagerLoginController = new PackageManagerLoginController(Bench, PackageManagerClient);
+            PackageManagerLoginController = new PackageManagerLoginController(PackageManagerClient);
+            PackageManagerPublishController = new PackageManagerPublishController(PackageManagerClient);
 
             HomeSpace = CurrentSpace = new HomeWorkspace();
 
@@ -1030,7 +1031,7 @@ namespace Dynamo
         }
 
         // PB: this will be moved elsewhere, useful for early package manager work
-        public XmlDocument GetXmlFromWorkspace(dynWorkspace workSpace)
+        public XmlDocument GetXmlDocumentFromWorkspace(dynWorkspace workSpace)
         {
             try
             {
@@ -2362,7 +2363,7 @@ namespace Dynamo
             Bench.editNameButton.IsHitTestVisible = true;
 
             Bench.setFunctionBackground();
-
+            
             CurrentSpace.OnDisplayed();
         }
 
