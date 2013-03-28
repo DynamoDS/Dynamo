@@ -720,9 +720,9 @@ namespace Dynamo.Commands
 
         public void Execute(object parameter)
         {
-           if (parameter is String)
+           if (parameter is Guid && dynSettings.FunctionDict.ContainsKey( (Guid)parameter ) )
            {
-               dynSettings.Controller.DisplayFunction( parameter as String );   
+               dynSettings.Controller.DisplayFunction( dynSettings.FunctionDict[ (Guid) parameter] );   
            }     
         }
 
@@ -754,23 +754,9 @@ namespace Dynamo.Commands
                 return;
             }
 
-            dynNode node;
-            
-            // check is user-defined node
-            if ( dynSettings.Controller.FunctionDict.ContainsKey( data["name"].ToString() ) )
-            {
-                // the node is user-defined, load it's definition
-                node = dynSettings.Controller.CreateDragNode( data["name"].ToString() );
-            } else
-            {
-                TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[data["name"].ToString()];
-
-                var obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                node = (dynNode)obj.Unwrap();
-                node.NodeUI.DisableInteraction();    
-            }
-
-            dynNodeUI nodeUi = node.NodeUI;
+            dynNode node = dynSettings.Controller.CreateDragNode( data["name"].ToString() );
+ 
+            dynNodeUI nodeUi = node.NodeUI; 
             dynSettings.Workbench.Children.Add(nodeUi);
             dynSettings.Controller.Nodes.Add(nodeUi.NodeLogic);
             nodeUi.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;

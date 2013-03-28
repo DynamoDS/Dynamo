@@ -13,29 +13,20 @@
 //limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-
 using Dynamo.Connectors;
 using Dynamo.Nodes;
-using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
 using Dynamo.Commands;
 
@@ -681,7 +672,7 @@ namespace Dynamo.Controls
                 name = dialog.Text;
                 category = dialog.Category;
 
-                if (Controller.FunctionDict.ContainsKey(name))
+                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == name))
                 {
                     error = "A function with this name already exists.";
                 }
@@ -696,15 +687,15 @@ namespace Dynamo.Controls
             }
             while (!error.Equals(""));
 
-            Controller.NewFunction(name, category, true);
+            Controller.NewFunction(Guid.NewGuid(), name, category, true);
         }
 
-        internal void ChangeView_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Controls.MenuItem item = sender as System.Windows.Controls.MenuItem;
+        //internal void ChangeView_Click(object sender, RoutedEventArgs e)
+        //{
+        //    System.Windows.Controls.MenuItem item = sender as System.Windows.Controls.MenuItem;
 
-            Controller.DisplayFunction(item.Header.ToString());
-        }
+        //    Controller.DisplayFunction(item.Header.ToString());
+        //}
 
         internal void setFunctionBackground()
         {

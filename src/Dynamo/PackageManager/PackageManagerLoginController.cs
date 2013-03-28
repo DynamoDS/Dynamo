@@ -43,14 +43,23 @@ namespace Dynamo.Nodes.PackageManager
             if (View.webBrowser.Source.AbsoluteUri.IndexOf("Allow") > -1)
             {
                 View.Visibility = Visibility.Hidden;
-                Client.Client.GetAccessTokenAsync( (s) => Client.Client.IsAuthenticatedAsync((auth) => View.Dispatcher.Invoke((Action) (() =>
-                    {
-                        if (auth)
-                        {
-                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                            dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
-                        }
-                    }))));
+                try
+                {
+                    Client.Client.GetAccessTokenAsync(
+                        (s) => Client.Client.IsAuthenticatedAsync((auth) => View.Dispatcher.Invoke((Action) (() =>
+                            {
+                                if (auth)
+                                {
+                                    //dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                                    //dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                }
+                            }))));
+                }
+                catch
+                {
+                    Bench.Log("Failed to login. Are you connected to the internet?");
+                }
+
             }
         }
 
