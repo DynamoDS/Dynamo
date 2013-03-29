@@ -248,6 +248,8 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         public void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
+            Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
             if (WorkBench.IsConnecting && activeConnector != null)

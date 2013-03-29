@@ -175,7 +175,10 @@
                             StrokeThickness="1"
                             IsHitTestVisible="False"
                         />
-            <Canvas.Background>
+                        <Ellipse Canvas.Left="0" Canvas.Right="0" Fill="Red" Width="10" Height="10" Name="debugPt" IsHitTestVisible="False">
+                            
+                        </Ellipse>
+                            <Canvas.Background>
               <SolidColorBrush Color="Transparent"/>
             </Canvas.Background>
           </dragCanvas:DragCanvas>
@@ -302,7 +305,6 @@
       <Button HorizontalAlignment="Stretch" Content="New..." Margin="5,10,10,5"
                         VerticalAlignment="Stretch" Click="NewFunction_Click" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
     </Grid>
-    
     <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3" Background="#FFF0F0F0">
       <Button Name="RunButton" Height="25" Width="100" Content="Run" 
@@ -324,8 +326,6 @@
       
       
     </WrapPanel>
-    
-  
     <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
               Grid.Row="1"
