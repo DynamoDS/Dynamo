@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="10" Y="55" Name="solarradopt" Category="Miscellaneous">
+<dynWorkspace X="10" Y="55" Name="solarradopt" Category="Miscellaneous" ID="d9380158-c69d-4ea8-b6eb-ae495afb90d0">
   <dynElements>
     <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="2a85adcd-37f6-4f62-a3dd-314335d11499" nickname="Variable" x="0" y="0">
       <Symbol value="fI" />
@@ -42,7 +42,7 @@ limitations under the License.
     </Dynamo.Nodes.dynBegin>
     <Dynamo.Nodes.dynFamilyInstanceParameterSetter type="Dynamo.Nodes.dynFamilyInstanceParameterSetter" guid="9bddd7d9-63f6-453e-822f-9f79421dc307" nickname="Set Instance Parameter" x="410.098987854251" y="0" />
     <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="f500e100-e1b7-48e0-ba40-6782add9f521" nickname="solarradopt" x="720.974291497975" y="302.684615384616">
-      <Symbol value="solarradopt" />
+      <ID value="d9380158-c69d-4ea8-b6eb-ae495afb90d0" />
       <Output value="out" />
       <Inputs>
         <Input value="fI" />
@@ -63,7 +63,7 @@ limitations under the License.
       <Symbol value="fw" />
     </Dynamo.Nodes.dynSymbol>
     <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="389b73e8-b53c-48a1-b505-f8587ff09111" nickname="solarradcomp" x="537.62995951417" y="527.667611336033">
-      <Symbol value="solarradcomp" />
+      <ID value="b8e990e3-a480-4118-9f81-0e02af495e72" />
       <Output value="out" />
       <Inputs>
         <Input value="old" />

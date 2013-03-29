@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="10" Y="55" Name="ConnectPoints" Category="Revit">
+<dynWorkspace X="10" Y="55" Name="ConnectPoints" Category="Revit" ID="fbdfbd95-f779-49ae-869f-227f4a3fdb1e">
   <dynElements>
     <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="05aa4619-8fc1-489f-9e6f-f4c3f5163f17" nickname="Variable" x="0" y="0">
       <Symbol value="refPts" />
@@ -29,7 +29,7 @@ limitations under the License.
     <Dynamo.Nodes.dynTakeList type="Dynamo.Nodes.dynTakeList" guid="36f06341-a5dc-4da3-8840-65c31cf091f3" nickname="take" x="314.144736842105" y="103.157894736842" />
     <Dynamo.Nodes.dynCurveByPoints type="Dynamo.Nodes.dynCurveByPoints" guid="2ddc4a75-d3eb-4458-ae64-d2dd8cbad1e4" nickname="Curve By Points" x="471.776315789474" y="113.026315789474" />
     <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="83f91f2e-4221-4708-9839-9ba8f3f7f479" nickname="ConnectPoints" x="471.447368421053" y="198.618421052632">
-      <Symbol value="ConnectPoints" />
+      <ID value="fbdfbd95-f779-49ae-869f-227f4a3fdb1e" />
       <Output value="out" />
       <Inputs>
         <Input value="refPts" />

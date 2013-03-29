@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="-82" Y="55" Name="Dice" Category="Lists">
+<dynWorkspace X="-82" Y="55" Name="Dice" Category="Lists" ID="3df7a151-5ec3-44c8-a2ea-c3151b06e99d">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="8199ef18-b7b8-4b1b-b133-7d7dc1ab1b5a" nickname="Variable" x="199.75" y="14">
       <Symbol value="lst" />
@@ -24,7 +24,7 @@ limitations under the License.
     <Dynamo.Elements.dynTakeList type="Dynamo.Elements.dynTakeList" guid="13796042-cb8f-4cc8-87d2-db35963ddcb3" nickname="Take" x="528.25" y="51" />
     <Dynamo.Elements.dynDropList type="Dynamo.Elements.dynDropList" guid="e1a9ca3a-d0f5-45d0-ba06-b263650fe346" nickname="Drop" x="529.5" y="128.75" />
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="767881fb-f0d0-47ea-a613-145b333ac4f8" nickname="Dice" x="685.25" y="202.5">
-      <Symbol value="Dice" />
+      <ID value="3df7a151-5ec3-44c8-a2ea-c3151b06e99d" />
       <Output value="out" />
       <Inputs>
         <Input value="lst" />

@@ -1,4 +1,4 @@
-<dynWorkspace X="-10" Y="55" Name="Dynamic Relaxation Loop" Category="Miscellaneous">
+<dynWorkspace X="-10" Y="55" Name="Dynamic Relaxation Loop" Category="Miscellaneous" ID="7f6594ea-2171-4b21-b17d-3da4e0caf03e">
   <dynElements>
     <Dynamo.Elements.dynDynamicRelaxationStep type="Dynamo.Elements.dynDynamicRelaxationStep" guid="c14da9fd-2099-4567-ad43-5f0bc798dba4" nickname="Dynamic Relaxation Step" x="420.25" y="129.75" />
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="4ae485f9-78ad-4d8a-8b49-6150fc74c6d9" nickname="Variable" x="0" y="204.5">
@@ -17,7 +17,7 @@
       <System.Double value="0.5" />
     </Dynamo.Elements.dynDoubleInput>
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="f326d4dc-be0f-4940-b640-e1022503d10f" nickname="Dynamic Relaxation Loop" x="423.75" y="231">
-      <Symbol value="Dynamic Relaxation Loop" />
+      <ID value="7f6594ea-2171-4b21-b17d-3da4e0caf03e" />
       <Output value="out" />
       <Inputs>
         <Input value="ps" />
