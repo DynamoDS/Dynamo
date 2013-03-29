@@ -2333,6 +2333,8 @@ namespace Dynamo.Nodes
 
             //remove the margins
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+
+            Value = "";
         }
 
         public override string Value
