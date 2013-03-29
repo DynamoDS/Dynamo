@@ -18,7 +18,7 @@
                 <DropShadowEffect BlurRadius="5" Color="Black" Opacity="0.8" ShadowDepth="1" />
             </Border.Effect>
             <Border.Background>
-                <SolidColorBrush Color="#FF8D8D8D" />
+                <SolidColorBrush Color="Gray" />
             </Border.Background>
         </Border>
         <Label Content="{Binding ElementName=_this, Path=CurrentVersion}" Height="28" 
@@ -26,7 +26,7 @@
                VerticalAlignment="Bottom" Foreground="#FFDED9D9" />
         <Label Content="dynamo" Height="51" HorizontalAlignment="Left" Margin="5,25" Name="title_label" 
                VerticalAlignment="Bottom" 
-               FontFamily="Arial" FontWeight="Bold" FontSize="36" Foreground="#FFFFE05F" />
+               FontFamily="Arial" FontWeight="Bold" FontSize="36" Foreground="AntiqueWhite" />
         <Label Content="{Binding ElementName=_this, Path=LoadingStatus}" Foreground="#FFDED9D9" Height="28" 
                HorizontalAlignment="Right" Margin="5" Name="status_label" VerticalAlignment="Bottom" />
     </Grid>

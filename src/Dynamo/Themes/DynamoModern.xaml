@@ -64,14 +64,22 @@
 
           <Grid x:Name="container" Background="Transparent">
             <Grid x:Name="inner" Background="#333">
-              <TextBlock Foreground="WhiteSmoke" Margin="7,10,7,7" FontSize="18" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
+              <TextBlock x:Name="text" Foreground="WhiteSmoke" Margin="7,10,7,7" FontSize="18" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
             </Grid>
           </Grid>
 
           <ControlTemplate.Triggers>
 
-            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+            <Trigger Property="Button.IsMouseOver" Value="true">
               <Setter TargetName="inner" Property = "Background" Value="LightBlue"/>
+            </Trigger>
+
+            <Trigger Property="IsEnabled" Value="true">
+              <Setter TargetName="text" Property = "Foreground" Value="WhiteSmoke"/>
+            </Trigger>
+
+            <Trigger Property="IsEnabled" Value="false">
+              <Setter TargetName="text" Property = "Foreground" Value="DarkGray"/>
             </Trigger>
 
           </ControlTemplate.Triggers>

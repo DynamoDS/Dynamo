@@ -24,7 +24,7 @@
       </StackPanel>
 
       <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" 
-                      VerticalScrollBarVisibility="Visible" MaxHeight="300" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" MaxHeight="300" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
 
           <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=VisibleNodes, ElementName=SearchControl}" 
                    BorderThickness="0" Padding="0" Background="Black">
@@ -52,13 +52,13 @@
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Workspace">
                     <DataTrigger.Setters>
-                      <Setter Property="Foreground" Value="Gold" TargetName="name" />
+                      <Setter Property="Foreground" Value="Gold" TargetName="type" />
                     </DataTrigger.Setters>
                 </DataTrigger>
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Community Node">
                   <DataTrigger.Setters>
-                    <Setter Property="Foreground" Value="LightBlue" TargetName="name" />
+                    <Setter Property="Foreground" Value="LightBlue" TargetName="type" />
                   </DataTrigger.Setters>
                 </DataTrigger>
 

@@ -13,13 +13,13 @@ namespace Dynamo.Search
     /// </summary>
     public partial class SearchUI : UserControl
     {
-        public SearchController Controller;
+        public SearchViewModel ViewModel;
         
-        public ObservableCollection<ISearchElement> VisibleNodes { get { return Controller.VisibleNodes; } }
+        public ObservableCollection<ISearchElement> VisibleNodes { get { return ViewModel.VisibleNodes; } }
 
-        public SearchUI( SearchController controller )
+        public SearchUI( SearchViewModel viewModel )
         {
-            Controller = controller;
+            ViewModel = viewModel;
 
             InitializeComponent();
 
@@ -28,23 +28,35 @@ namespace Dynamo.Search
             this.PreviewKeyDown += new KeyEventHandler(KeyHandler);
             SearchTextBox.IsVisibleChanged += delegate { SearchTextBox.Focus();
                                                          SearchTextBox.SelectAll();
-                                                         Controller.SearchAndUpdateUI(this.SearchTextBox.Text.Trim());
+                                                         ViewModel.SearchAndUpdateUI(this.SearchTextBox.Text.Trim());
             };
         }
 
+        private bool HasPackageManagerElements;
         public void SearchOnline_Click(object sender, RoutedEventArgs e)
         {
-            dynSettings.Controller.PackageManagerClient.RefreshAvailable();
+            if (!this.HasPackageManagerElements)
+            {
+                this.HasPackageManagerElements = true;
+                dynSettings.Controller.PackageManagerClient.RefreshAvailable();
+            }
+            else
+            {
+                this.HasPackageManagerElements = false;
+                ViewModel.SearchDictionary.RemoveName((s) => s is PackageManagerSearchElement );
+                ViewModel.SearchAndUpdateUI();
+            }
+            
         }
         
         private void KeyHandler(object sender, KeyEventArgs e)
         {
-            Controller.KeyHandler(sender, e);
+            ViewModel.KeyHandler(sender, e);
         }
 
         private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            Controller.SearchAndUpdateUI( this.SearchTextBox.Text.Trim() );
+            ViewModel.SearchAndUpdateUI( this.SearchTextBox.Text.Trim() );
         }
 
         public void SelectNext()
@@ -67,7 +79,8 @@ namespace Dynamo.Search
         public void SetSelected(int i)
         {
             this.SearchResultsListBox.SelectedIndex = i;
-            this.SearchResultsListBox.ScrollIntoView( this.SearchResultsListBox.Items[i] );
+            if ( i < this.SearchResultsListBox.Items.Count )
+                this.SearchResultsListBox.ScrollIntoView( this.SearchResultsListBox.Items[i] );
         }
 
         public int SelectedIndex()

@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Leap")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
-    [NodeDescription("Manages connection to a Leap Motion controller.")]
+    [NodeDescription("Manages connection to a Leap Motion ViewModel.")]
     public class dynLeapController : dynNodeWithOneOutput
     {
         System.Windows.Controls.MenuItem menuItemLeapEnabled = null;
@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("Read", "Read a frame of data from the Leap", typeof(object)));
 
             // Output from this node is the data from a single frame
-            OutPortData.Add(new PortData("Leap", "The Leap controller", typeof(object)));
+            OutPortData.Add(new PortData("Leap", "The Leap ViewModel", typeof(object)));
 
             NodeUI.RegisterAllPorts();
 
@@ -124,12 +124,12 @@ namespace Dynamo.Nodes
 
     [NodeName("Leap Frame N")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
-    [NodeDescription("Frame from the Leap Motion controller.")]
+    [NodeDescription("Frame from the Leap Motion ViewModel.")]
     public class dynLeapFrameN : dynNodeWithOneOutput
     {
         public dynLeapFrameN()
         {
-            InPortData.Add(new PortData("Leap", "The Leap controller", typeof(object)));
+            InPortData.Add(new PortData("Leap", "The Leap ViewModel", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the frame to retrieve (0 == current, 1..N previous).", typeof(int)));
 
             OutPortData.Add(new PortData("Frame", "The frame of data", typeof(object)));
@@ -141,7 +141,7 @@ namespace Dynamo.Nodes
         {
             Leap.Controller controller = (Leap.Controller)((Value.Container)args[0]).Item;
             if (controller == null)
-                throw new Exception("No Leap Controller attached.");
+                throw new Exception("No Leap ViewModel attached.");
 
             int age = (int)((Value.Number)args[1]).Item;
             if (age < 0)
@@ -155,12 +155,12 @@ namespace Dynamo.Nodes
 
     [NodeName("Leap Frame")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
-    [NodeDescription("Current Frame from the Leap Motion controller.")]
+    [NodeDescription("Current Frame from the Leap Motion ViewModel.")]
     public class dynLeapFrame : dynNodeWithOneOutput
     {
         public dynLeapFrame()
         {
-            InPortData.Add(new PortData("Leap", "The Leap controller", typeof(object)));
+            InPortData.Add(new PortData("Leap", "The Leap ViewModel", typeof(object)));
 
             OutPortData.Add(new PortData("Frame", "The frame of data", typeof(object)));
 
@@ -171,7 +171,7 @@ namespace Dynamo.Nodes
         {
             Leap.Controller controller = (Leap.Controller)((Value.Container)args[0]).Item;
             if (controller == null)
-                throw new Exception("No Leap Controller attached.");
+                throw new Exception("No Leap ViewModel attached.");
 
             Leap.Frame frame = controller.Frame();
 
@@ -196,7 +196,7 @@ namespace Dynamo.Nodes
     {
         public dynLeapFrameScaleFactor()
         {
-            InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
+            InPortData.Add(new PortData("Frame", "A Frame from a Leap ViewModel", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame (1..N).", typeof(int)));
 
             OutPortData.Add(new PortData("ScaleFactor", "The scale factor", typeof(double)));
@@ -220,7 +220,7 @@ namespace Dynamo.Nodes
 
             Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
-                throw new Exception("No Leap Controller node.");
+                throw new Exception("No Leap ViewModel node.");
 
             Leap.Frame sinceFrame = controller.Frame(age);
 
@@ -235,7 +235,7 @@ namespace Dynamo.Nodes
     {
         public dynLeapFrameTranslation()
         {
-            InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
+            InPortData.Add(new PortData("Frame", "A Frame from a Leap ViewModel", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
             OutPortData.Add(new PortData("Translation", "The translation vector", typeof(Point3D)));
@@ -260,7 +260,7 @@ namespace Dynamo.Nodes
 
             Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
-                throw new Exception("No Leap Controller node.");
+                throw new Exception("No Leap ViewModel node.");
 
             Leap.Vector v;
             Leap.Frame sinceFrame = controller.Frame(age);
@@ -280,7 +280,7 @@ namespace Dynamo.Nodes
     {
         public dynLeapFrameRotation()
         {
-            InPortData.Add(new PortData("Frame", "A Frame from a Leap controller", typeof(object)));
+            InPortData.Add(new PortData("Frame", "A Frame from a Leap ViewModel", typeof(object)));
             InPortData.Add(new PortData("Age", "The age of the previous frame.", typeof(int)));
 
             OutPortData.Add(new PortData("Rotation", "The XYZ rotation in radians", typeof(Point3D)));
@@ -305,7 +305,7 @@ namespace Dynamo.Nodes
 
             Leap.Controller controller = dynLeapController.CurrentLeapController;
             if (controller == null)
-                throw new Exception("No Leap Controller node.");
+                throw new Exception("No Leap ViewModel node.");
 
             Leap.Frame sinceFrame = controller.Frame(age);
 
@@ -573,7 +573,7 @@ namespace Dynamo.Nodes
         {
             ToolIndex = 0;
 
-            InPortData.Add(new PortData("Frame", "The frame of data from the Leap Motion controller", typeof(object)));
+            InPortData.Add(new PortData("Frame", "The frame of data from the Leap Motion ViewModel", typeof(object)));
 
             OutPortData.Add(new PortData("Tool", "The tool data.", typeof(object)));
         }
@@ -604,7 +604,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Leap Tool N")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
-    [NodeDescription("Reads a tool with a specified index from a Leap Motion controller.")]
+    [NodeDescription("Reads a tool with a specified index from a Leap Motion ViewModel.")]
     public class dynLeapToolN : dynLeapTool
     {
         public dynLeapToolN()
@@ -628,7 +628,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Leap Tool 1")]
     [NodeCategory(BuiltinNodeCategories.COMMUNICATION)]
-    [NodeDescription("Reads tool #1 from a Leap Motion controller.")]
+    [NodeDescription("Reads tool #1 from a Leap Motion ViewModel.")]
     public class dynLeapTool1 : dynLeapTool
     {
         public dynLeapTool1()
@@ -646,7 +646,7 @@ namespace Dynamo.Nodes
     {
         public dynLeapPosition()
         {
-            InPortData.Add(new PortData("Object", "The Hand, Finger, or Tool from the Leap controller", typeof(object)));
+            InPortData.Add(new PortData("Object", "The Hand, Finger, or Tool from the Leap ViewModel", typeof(object)));
 
             OutPortData.Add(new PortData("XYZ", "The XYZ position in mms", typeof(Point3D)));
 

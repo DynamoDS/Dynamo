@@ -1061,7 +1061,7 @@ namespace Dynamo.Commands
 
             dynSettings.Controller.ProcessCommandQueue();
 
-            //dynSettings.Controller.ClipBoard.Clear();
+            //dynSettings.ViewModel.ClipBoard.Clear();
         }
 
         public event EventHandler CanExecuteChanged
@@ -1473,7 +1473,7 @@ namespace Dynamo.Commands
                 List<Type> catTypes = de.Value as List<Type>;
 
                 //add the name of the category here
-                //AddNote(de.Key.ToString(), x, y, Controller.CurrentSpace);
+                //AddNote(de.Key.ToString(), x, y, ViewModel.CurrentSpace);
                 Dictionary<string, object> paramDict = new Dictionary<string, object>();
                 paramDict.Add("x", x);
                 paramDict.Add("y", y);

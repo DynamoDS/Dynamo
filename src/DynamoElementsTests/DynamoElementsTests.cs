@@ -36,7 +36,7 @@ namespace Dynamo.Tests
             tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
             dynSettings.Writer = tw;
 
-            //create a new instance of the controller
+            //create a new instance of the ViewModel
             DynamoController controller = new DynamoController();
             controller.Bench.Show();
         }

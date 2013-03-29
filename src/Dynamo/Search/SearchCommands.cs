@@ -49,7 +49,7 @@ namespace Dynamo.Commands
         {
             if (!init)
             {
-                search = dynSettings.Controller.SearchController.View;
+                search = dynSettings.Controller.SearchViewModel.View;
                 init = true;
             }
 
@@ -86,7 +86,7 @@ namespace Dynamo.Commands
         {
             if (!init)
             {
-                search = dynSettings.Controller.SearchController.View;
+                search = dynSettings.Controller.SearchViewModel.View;
                 dynSettings.Bench.outerCanvas.Children.Add(search);
                 init = true;
             }

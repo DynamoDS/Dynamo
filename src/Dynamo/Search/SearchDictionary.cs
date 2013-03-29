@@ -33,6 +33,15 @@ namespace Dynamo.Search
               nameDict.Add(name, value);
       }
 
+      public void RemoveName(Predicate<V> conditionForRemoval)
+      {
+          var removeKeys = nameDict.Keys.Where(k => conditionForRemoval(nameDict[k])).ToList();
+          foreach (var key in removeKeys)
+          {
+              nameDict.Remove(key);
+          }
+      }
+
       public void RemoveName(string name)
       {
           if (nameDict.ContainsKey(name))
@@ -108,6 +117,27 @@ namespace Dynamo.Search
       {
          foreach (string tag in tags)
             this.Remove(value, tag);
+      }
+
+      public List<V> RegexSearch(string search, int numResults = 10)
+      {
+          var searchDict = new List<KeyValuePair<double, V>>();
+
+          foreach (var pair in this.nameDict)
+          {
+              var pattern = ".*("+Regex.Escape(search)+").*"; 
+
+              var matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
+              if (matches.Count > 0)
+              {
+                  double weight = 10;
+                  weight += Math.Max( ((double) (pair.Key.Length - search.Length)) / weight, 0); // if it's an exist match, weight it highly
+                  searchDict.Add(new KeyValuePair<double, V>(weight, pair.Value));
+              }
+          }
+
+          return searchDict.OrderBy(x => x.Key).Select(x => x.Value).ToList().GetRange(0, Math.Min(numResults, searchDict.Count));
+
       }
 
       public List<V> FuzzySearch(string search, int numResults = 10)

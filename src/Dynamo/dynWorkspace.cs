@@ -83,9 +83,12 @@ namespace Dynamo
             new Dictionary<string, dynNodeUI>();
     }
 
+
+
     public class FuncWorkspace : dynWorkspace
     {
         public String Category { get; set; }
+
 
         #region Contructors
 

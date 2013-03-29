@@ -78,6 +78,9 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\kinect\Microsoft.Kinect.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -121,20 +124,20 @@ limitations under the License.
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
-    <Compile Include="PackageManager\PackageManagerLoginController.cs" />
-    <Compile Include="PackageManager\PackageManagerLoginUI.xaml.cs">
+    <Compile Include="PackageManager\Login\PackageManagerLoginController.cs" />
+    <Compile Include="PackageManager\Login\PackageManagerLoginUI.xaml.cs">
       <DependentUpon>PackageManagerLoginUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\PackageManagerClient.cs" />
-    <Compile Include="PackageManager\PackageManagerPublishController.cs" />
-    <Compile Include="PackageManager\PackageManagerPublishUI.xaml.cs">
+    <Compile Include="PackageManager\Publish\PackageManagerPublishViewModel.cs" />
+    <Compile Include="PackageManager\Publish\PackageManagerPublishUI.xaml.cs">
       <DependentUpon>PackageManagerPublishUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchUI.xaml.cs">
       <DependentUpon>SearchUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Search\SearchController.cs" />
+    <Compile Include="Search\SearchViewModel.cs" />
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="dynEditWindow.xaml.cs">
       <DependentUpon>dynEditWindow.xaml</DependentUpon>
@@ -221,11 +224,11 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PackageManager\PackageManagerLoginUI.xaml">
+    <Page Include="PackageManager\Login\PackageManagerLoginUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PackageManager\PackageManagerPublishUI.xaml">
+    <Page Include="PackageManager\Publish\PackageManagerPublishUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

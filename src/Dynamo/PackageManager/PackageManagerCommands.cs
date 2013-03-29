@@ -37,7 +37,7 @@ namespace Dynamo.Commands
     public class ShowNodePublishInfoCommand : ICommand
     {
         private bool init;
-        private PackageManager.PackageManagerPublishUI ui;
+        private PackageManagerPublishUI ui;
 
         public ShowNodePublishInfoCommand()
         {
@@ -46,17 +46,34 @@ namespace Dynamo.Commands
 
         public void Execute(object funcDef)
         {
+
+            if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
+            {
+                DynamoCommands.ShowLoginCmd.Execute(null);
+                dynSettings.Bench.Log("Must login first to publish a node.");
+                return;
+            }
+
             if (!init)
             {
-                ui = dynSettings.Controller.PackageManagerPublishController.View;
+                ui = new PackageManagerPublishUI(dynSettings.Controller.PackageManagerPublishViewModel);
                 dynSettings.Bench.outerCanvas.Children.Add(ui);
                 init = true;
             }
-
+            
             if (funcDef is FunctionDefinition)
             {
-                dynSettings.Controller.PackageManagerPublishController.FunctionDefinition =
-                    funcDef as FunctionDefinition;
+                var f = funcDef as FunctionDefinition;
+
+                dynSettings.Controller.PackageManagerPublishViewModel.FunctionDefinition =
+                    f;
+
+                // we're submitting a new version
+                if ( dynSettings.Controller.PackageHeaders.ContainsKey(f) )
+                {
+                    dynSettings.Controller.PackageManagerPublishViewModel.PackageHeader =
+                        dynSettings.Controller.PackageHeaders[f];
+                }
             }
             else
             {
@@ -64,8 +81,6 @@ namespace Dynamo.Commands
                 return;
             }
             
-            ui.Visibility = Visibility.Visible;
-
         }
 
         public event EventHandler CanExecuteChanged
@@ -188,6 +203,8 @@ namespace Dynamo.Commands
     public class PublishCurrentWorkspaceCommand : ICommand
     {
 
+        private PackageManagerClient _client;
+
         public PublishCurrentWorkspaceCommand()
         {
 
@@ -195,7 +212,26 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            throw new NotImplementedException();
+            this._client = dynSettings.Controller.PackageManagerClient;
+            
+            if ( dynSettings.Controller.ViewingHomespace )
+            {
+                MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                return;
+            }
+
+            var currentFunDef =
+                dynSettings.FunctionDict.FirstOrDefault(x => x.Value.Workspace == dynSettings.Controller.CurrentSpace).Value;
+
+            if ( currentFunDef != null )
+            {
+                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute(currentFunDef);
+            }
+            else
+            {
+                MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+            }
+
         }
 
         public event EventHandler CanExecuteChanged

@@ -26,16 +26,18 @@ using Dynamo.FSchemeInterop;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Commands;
-
+using Greg.Responses;
+using RestSharp;
+using RestSharp.Deserializers;
 using Expression = Dynamo.FScheme.Expression;
 
 namespace Dynamo
 {
     public class DynamoController : INotifyPropertyChanged
     {
-        public SearchController SearchController { get; internal set; }
+        public SearchViewModel SearchViewModel { get; internal set; }
         public PackageManagerLoginController PackageManagerLoginController { get; internal set; }
-        public PackageManagerPublishController PackageManagerPublishController { get; internal set; }
+        public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -143,10 +145,10 @@ namespace Dynamo
         {
             Bench = new dynBench(this);
 
-            SearchController = new SearchController(Bench);
+            SearchViewModel = new SearchViewModel(Bench);
             PackageManagerClient = new PackageManagerClient(this);
             PackageManagerLoginController = new PackageManagerLoginController(PackageManagerClient);
-            PackageManagerPublishController = new PackageManagerPublishController(PackageManagerClient);
+            PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
 
             HomeSpace = CurrentSpace = new HomeWorkspace();
 
@@ -376,7 +378,7 @@ namespace Dynamo
 
                 dynNode newNode = null;
 
-                SearchController.Add( kvp.Value.Type, kvp.Key );
+                SearchViewModel.Add( kvp.Value.Type, kvp.Key );
 
                 try
                 {
@@ -741,7 +743,7 @@ namespace Dynamo
             Bench.viewMenuItemsDict[name] = i;
 
             // add the element to search
-            SearchController.Add(workSpace);
+            SearchViewModel.Add(workSpace);
 
             //Add an entry to the Add menu
             //System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
@@ -910,11 +912,17 @@ namespace Dynamo
                 var newEl = (dynNode)obj.Unwrap();
                 newEl.NodeUI.DisableInteraction();
                 result = newEl;
-            }
+            } 
             else
             {
-                var def = dynSettings.FunctionDict[Guid.Parse(name)];
-
+                FunctionDefinition def;
+                dynSettings.FunctionDict.TryGetValue(Guid.Parse(name), out def);
+                if (def == null)
+                {
+                    Bench.Log("Failed to find FunctionDefinition.");
+                    return null;
+                }
+                
                 var ws = def.Workspace;
 
                 //TODO: Update to base off of Definition
@@ -1047,6 +1055,10 @@ namespace Dynamo
                 {
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
+                    root.SetAttribute(
+                       "ID",
+                       dynSettings.FunctionDict.Values
+                           .First(x => x.Workspace == workSpace).FunctionId.ToString());
                 }
 
                 xmlDoc.AppendChild(root);
@@ -1217,6 +1229,7 @@ namespace Dynamo
         {
             dynWorkspace functionWorkspace = definition.Workspace;
 
+            // must create a guid for the definition, save it to xml, 
             //Generate xml, and save it in a fixed place
             if (writeDefinition)
             {
@@ -1226,10 +1239,11 @@ namespace Dynamo
                 try
                 {
                     if (!Directory.Exists(pluginsPath))
-                        Directory.CreateDirectory(pluginsPath);
+                        Directory.CreateDirectory(pluginsPath); 
 
                     string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
                     SaveWorkspace(path, functionWorkspace);
+                    this.SearchViewModel.Add(definition.Workspace);
                 }
                 catch (Exception e)
                 {
@@ -1635,6 +1649,8 @@ namespace Dynamo
                 if (canLoad)
                     SaveFunction(def, false);
 
+                this.SearchForPackageHeader(def, funName);
+
                 nodeWorkspaceWasLoaded(def, children, parents);
             }
             catch (Exception ex)
@@ -1647,6 +1663,38 @@ namespace Dynamo
             }
 
             return true;
+        }
+
+        // move to packagemanagerclient, stores package header if discovered
+        public void SearchForPackageHeader(FunctionDefinition funcDef, string name)
+        {
+            try
+            {
+                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string pluginsPath = Path.Combine(directory, "packages");
+
+                // find the file matching the expected name
+                var files = Directory.GetFiles(pluginsPath, name + ".json");
+
+                if (files.Length == 1) // There can only be one!
+                {
+                    // open and deserialize to a PackageHeader object
+                    // this is a bit hacky looking, but does the job
+                    var proxyResponse = new RestResponse();
+                    proxyResponse.Content = File.ReadAllText(files[0]);
+                    var jsonDes = new JsonDeserializer();
+                    var packageHeader = jsonDes.Deserialize<PackageHeader>(proxyResponse);
+                    Bench.Log("Loading package control information for " + name + " from packages");
+                    PackageHeaders.Add(funcDef, packageHeader);
+                }
+            }
+            catch (Exception ex)
+            {
+                Bench.Log("Failed to open the package header information.");
+                Bench.Log(ex);
+                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
+            }
+
         }
 
         void nodeWorkspaceWasLoaded(
@@ -2289,6 +2337,8 @@ namespace Dynamo
             Bench.homeButton.IsEnabled = false;
             //this.varItem.IsEnabled = false;
 
+            HidePackageControlInformation();
+
             Bench.workspaceLabel.Content = "Home";
             Bench.editNameButton.Visibility = System.Windows.Visibility.Collapsed;
             Bench.editNameButton.IsHitTestVisible = false;
@@ -2358,13 +2408,44 @@ namespace Dynamo
             Bench.homeButton.IsEnabled = true;
             //this.varItem.IsEnabled = true;
 
-            Bench.workspaceLabel.Content = symbol;
-            Bench.editNameButton.Visibility = System.Windows.Visibility.Visible;
+            Bench.workspaceLabel.Content = symbol.Workspace.Name;
+            
+            Bench.editNameButton.Visibility = Visibility.Visible;
             Bench.editNameButton.IsHitTestVisible = true;
 
             Bench.setFunctionBackground();
+
+            this.ShowPackageControlInformation();
             
             CurrentSpace.OnDisplayed();
+        }
+
+        // all of this stuff needs to move to PackageManagerClient
+        public Dictionary<FunctionDefinition, PackageHeader> PackageHeaders = new Dictionary<FunctionDefinition, PackageHeader>();
+
+        public void ShowPackageControlInformation()
+        {
+            var f = dynSettings.FunctionDict.First(x => x.Value.Workspace == this.CurrentSpace).Value;
+
+            if (f != null)
+            {
+                if (PackageHeaders.ContainsKey(f) )
+                {
+                    Bench.packageControlLabel.Content = "Under package control";
+                    Bench.editNameButton.Visibility = Visibility.Collapsed;
+                    Bench.editNameButton.IsHitTestVisible = true;
+                }
+                else
+                {
+                    Bench.packageControlLabel.Content = "Not under package control";
+                }
+                Bench.packageControlLabel.Visibility = Visibility.Visible;
+            }
+        }
+
+        public void HidePackageControlInformation()
+        {
+            Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
 
         #endregion
@@ -2388,7 +2469,7 @@ namespace Dynamo
             Bench.viewMenuItemsDict.Remove(CurrentSpace.Name);
             Bench.viewMenuItemsDict[newName] = viewItem;
 
-            SearchController.Refactor(CurrentSpace, newName);
+            SearchViewModel.Refactor(CurrentSpace, newName);
 
             //Update add menu
             //var addItem = this.addMenuItemsDict[this.currentFunctionName];

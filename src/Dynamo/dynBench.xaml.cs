@@ -110,7 +110,7 @@ namespace Dynamo.Controls
             set
             {
                 controller = value;
-                NotifyPropertyChanged("Controller");
+                NotifyPropertyChanged("ViewModel");
             }
         }
 
@@ -513,12 +513,12 @@ namespace Dynamo.Controls
         //    {
         //        if (this.UILocked)
         //        {
-        //            Controller.QueueLoad(xmlPath);
+        //            ViewModel.QueueLoad(xmlPath);
         //            return;
         //        }
 
         //        LockUI();
-        //        if (!Controller.OpenDefinition(xmlPath))
+        //        if (!ViewModel.OpenDefinition(xmlPath))
         //        {
         //            //MessageBox.Show("Workbench could not be opened.");
         //            Log("Workbench could not be opened.");
@@ -694,7 +694,7 @@ namespace Dynamo.Controls
         //{
         //    System.Windows.Controls.MenuItem item = sender as System.Windows.Controls.MenuItem;
 
-        //    Controller.DisplayFunction(item.Header.ToString());
+        //    ViewModel.DisplayFunction(item.Header.ToString());
         //}
 
         internal void setFunctionBackground()
