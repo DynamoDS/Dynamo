@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<dynWorkspace X="-69" Y="55" Name="chomp" Category="Miscellaneous">
+<dynWorkspace X="-69" Y="55" Name="chomp" Category="Miscellaneous" ID="8506a91f-e6e2-4155-9431-4cb1be829967">
   <dynElements>
     <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="3107a28e-f51d-42af-b0ea-36e9b8003915" nickname="Variable" x="163.5" y="92">
       <Symbol value="lst" />
@@ -34,7 +34,7 @@ limitations under the License.
     <Dynamo.Elements.dynGetFromList type="Dynamo.Elements.dynGetFromList" guid="cb58f806-3f86-4897-8d6d-8e308af25020" nickname="Get" x="617.5" y="115.5" />
     <Dynamo.Elements.dynGetFromList type="Dynamo.Elements.dynGetFromList" guid="88069cd3-0ce8-4e16-87c0-86218d3db789" nickname="Get" x="618.25" y="195" />
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="ff4b11d5-0a2c-4d26-b462-e74f58907892" nickname="chomp" x="853" y="367.25">
-      <Symbol value="chomp" />
+      <ID value="8506a91f-e6e2-4155-9431-4cb1be829967" />
       <Output value="out" />
       <Inputs>
         <Input value="lst" />

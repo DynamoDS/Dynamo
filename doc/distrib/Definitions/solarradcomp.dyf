@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="10" Y="55" Name="solarradcomp" Category="Miscellaneous">
+<dynWorkspace X="10" Y="55" Name="solarradcomp" Category="Miscellaneous" ID="b8e990e3-a480-4118-9f81-0e02af495e72">
   <dynElements>
     <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="b744d305-0928-4af0-86d3-ce6034125e7b" nickname="Variable" x="0" y="0">
       <Symbol value="old" />

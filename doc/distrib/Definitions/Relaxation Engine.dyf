@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="10" Y="-68.25" Name="Relaxation Engine" Category="Miscellaneous">
+<dynWorkspace X="10" Y="-68.25" Name="Relaxation Engine" Category="Miscellaneous" ID="b3d69f37-9865-4c8e-94c2-ee3144cb0ebc">
   <dynElements>
     <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="597b3ffe-426a-460c-b49a-ddde14add408" nickname="Number" x="0" y="104.75">
       <System.Double value="1" />
