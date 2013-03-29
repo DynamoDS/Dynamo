@@ -279,12 +279,7 @@ namespace Dynamo.Nodes
         {
             #region points and curves
             //FSharpList<Value> list = ((Value.List)args[0]).Item;
-            var inList = (input as Value.List).Item;
-
-            //test the first item in the list.
-            //if it's an XYZ, assume XYZs for the list
-            //create points. otherwise, create curves
-            Value.List lst = inList.First() as Value.List;
+            var inList = ((Value.List)input).Item;
 
             foreach (Value e in inList)
             {
