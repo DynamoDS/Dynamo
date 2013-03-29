@@ -37,6 +37,11 @@ using System.Windows;
 using System.Xml;
 using Microsoft.FSharp.Core;
 
+using Autodesk.Revit;
+using Autodesk.Revit.DB;
+
+using Autodesk.ASM;
+
 // DS
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
@@ -47,6 +52,7 @@ namespace Dynamo.Nodes
     [NodeName("DesignScript Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded DesignScript script")]
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
     public class dynDesignScript : dynNodeWithOneOutput
     {
         private bool dirty = true;
@@ -55,6 +61,8 @@ namespace Dynamo.Nodes
 
         ProtoCore.Core core;
         bool coreSet = false;
+
+        private static bool asm_started = false;
 
         public dynDesignScript()
         {
@@ -66,15 +74,24 @@ namespace Dynamo.Nodes
             NodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
 
-            InPortData.Add(new PortData("IN", "Input", typeof(object)));
+            InPortData.Add(new PortData("Bindings", "A list of <string, object> variable tuples", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the DesignScript script", typeof(object)));
 
             NodeUI.RegisterAllPorts();
 
             NodeUI.UpdateLayout();
+        }
 
+        internal void start_asm()
+        {
+            if (asm_started)
+                return;
+
+            Autodesk.ASM.State.UseExternalASM();
             Autodesk.ASM.State.Start();
             Autodesk.ASM.State.StartViewer();
+
+            asm_started = true;
         }
 
         public override bool RequiresRecalc
@@ -107,11 +124,44 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (coreSet)
+            {
                 core.Cleanup();
+                Autodesk.ASM.State.ClearPersistedObjects();
+                Autodesk.ASM.DynamoOutput.Reset();
+            }
             else
+            {
+                start_asm();
                 coreSet = true;
+            }
 
-            GLPersistentManager.StartTrackingObjects();
+            Dictionary<string, object> context = new Dictionary<string, object>();
+
+            if (args[0].IsList)
+            {
+                FSharpList<Value> containers = Utils.SequenceToFSharpList(
+                    ((Value.List)args[0]).Item);
+
+                foreach (Value e in containers)
+                {
+                    if (!e.IsList)
+                        continue;
+
+                    FSharpList<Value> tuple = Utils.SequenceToFSharpList(
+                        ((Value.List)e).Item);
+
+                    string var_name = (string)((Value.String)tuple[0]).Item;
+                    object var_value = null;
+
+                    if (tuple[1].IsNumber)
+                        var_value = (object)((Value.Number)tuple[1]).Item;
+                    else if (tuple[1].IsContainer)
+                        var_value = (object)((Value.Container)tuple[1]).Item;
+
+                    if (var_value != null)
+                        context.Add(var_name, var_value);
+                }
+            }
 
             core = new ProtoCore.Core(new ProtoCore.Options());
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
@@ -120,16 +170,52 @@ namespace Dynamo.Nodes
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
 
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, 
-                new ProtoFFI.CSModuleHelper()); 
+                new ProtoFFI.CSModuleHelper());
 
-            ExecutionMirror mirror = fsr.Execute(script, core);
+            ExecutionMirror mirror = fsr.Execute(script, core, context);
 
             List<Autodesk.DesignScript.Interfaces.IDesignScriptEntity> entities =
-                GLPersistentManager.PersistedObjects();
+                new List<Autodesk.DesignScript.Interfaces.IDesignScriptEntity>();
 
-            int num = entities.Count;
+            FSharpList<Value> created_objects = FSharpList<Value>.Empty;
 
-            return Value.NewContainer(num);
+            List<object> output_objects = Autodesk.ASM.DynamoOutput.Objects();
+            List<Autodesk.Revit.DB.Solid> solids = new List<Autodesk.Revit.DB.Solid>();
+            List<Autodesk.Revit.DB.Element> elements = new List<Autodesk.Revit.DB.Element>();
+
+            foreach (object o in output_objects)
+            {
+                Autodesk.DesignScript.Geometry.Geometry g = o as Autodesk.DesignScript.Geometry.Geometry;
+
+                if (g == null)
+                    continue;
+
+                Autodesk.DesignScript.Interfaces.IGeometryEntity entity =
+                Autodesk.DesignScript.Geometry.GeometryExtension.ToEntity<
+                    Autodesk.DesignScript.Geometry.Geometry,
+                    Autodesk.DesignScript.Interfaces.IGeometryEntity>(g);
+
+                Autodesk.ASM.DesignScriptEntity ds_entity = entity as Autodesk.ASM.DesignScriptEntity;
+
+                if (ds_entity == null)
+                    continue;
+
+                Autodesk.Revit.DB.Solid solid = Autodesk.Revit.DB.GeometryCreationUtilities.ConvertAsmBodyToGeometry(ds_entity.BodyPtr);
+                solids.Add(solid);
+
+                FreeFormElement elem = Autodesk.Revit.DB.FreeFormElement.Create(
+                    Dynamo.Utilities.dynRevitSettings.Doc.Document, solid);
+
+                elements.Add(elem);
+            }
+
+            foreach (Autodesk.Revit.DB.Element revit_entity in elements)
+            {
+                Value element = Value.NewContainer(revit_entity);
+                created_objects = FSharpList<Value>.Cons(element, created_objects);
+            }
+
+            return Value.NewList(created_objects);
         }
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)

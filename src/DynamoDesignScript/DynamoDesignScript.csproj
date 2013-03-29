@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamoOutput, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\DynamoOutput.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
     <Reference Include="ManagedAsmGeometry, Version=1.0.4833.4933, Culture=neutral, processorArchitecture=AMD64">
@@ -53,6 +57,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Release\ProtoCore.dll</HintPath>
     </Reference>
+    <Reference Include="ProtoGeometry, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=d524304daf1f8b35, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Release\ProtoGeometry.dll</HintPath>
+    </Reference>
     <Reference Include="ProtoImperative, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=c105c91cdd939850, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Release\ProtoImperative.dll</HintPath>
@@ -64,6 +72,12 @@
     <Reference Include="ProtoScript, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=59290779bfb1c866, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Release\ProtoScript.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPI">
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\Program\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\Program\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -83,6 +97,10 @@
     <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
       <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
       <Name>DragCanvas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
+      <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
+      <Name>DynamoRevit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
