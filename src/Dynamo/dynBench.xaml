@@ -186,9 +186,7 @@
                             StrokeThickness="1"
                             IsHitTestVisible="False"
                         />
-                        <Ellipse Canvas.Left="0" Canvas.Right="0" Fill="Red" Width="10" Height="10" Name="debugPt" IsHitTestVisible="False">
-                            
-                        </Ellipse>
+                        <!--<Ellipse Canvas.Left="0" Canvas.Right="0" Fill="Red" Width="10" Height="10" Name="debugPt" IsHitTestVisible="False"/>-->
                             <Canvas.Background>
               <SolidColorBrush Color="Transparent"/>
             </Canvas.Background>
