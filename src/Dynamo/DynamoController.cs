@@ -51,6 +51,17 @@ namespace Dynamo
             }
         }
 
+        private bool runEnabled = true;
+        public bool RunEnabled
+        {
+            get { return runEnabled; }
+            set
+            {
+                runEnabled = value;
+                NotifyPropertyChanged("RunEnabled");
+            }
+        }
+
         List<UIElement> clipBoard = new List<UIElement>();
         public List<UIElement> ClipBoard
         {
@@ -141,6 +152,9 @@ namespace Dynamo
         //public DynamoController(SplashScreen splash)
         public DynamoController()
         {
+            this.RunEnabled = true;
+            this.CanRunDynamically = true;
+
             Bench = new dynBench(this);
 
             SearchController = new SearchController(Bench);
@@ -2032,9 +2046,11 @@ namespace Dynamo
             worker.DoWork += new DoWorkEventHandler(EvaluationThread);
 
             //Disable Run Button
-            Bench.Dispatcher.Invoke(new Action(
-               delegate { Bench.RunButton.IsEnabled = false; }
-            ));
+            //Bench.Dispatcher.Invoke(new Action(
+            //   delegate { Bench.RunButton.IsEnabled = false; }
+            //));
+
+            this.RunEnabled = false;
 
             //Let's start
             worker.RunWorkerAsync();
@@ -2107,12 +2123,14 @@ namespace Dynamo
                 /* Post-evaluation cleanup */
 
                 //Re-enable run button
-                Bench.Dispatcher.Invoke(new Action(
-                   delegate
-                   {
-                       Bench.RunButton.IsEnabled = true;
-                   }
-                ));
+                //Bench.Dispatcher.Invoke(new Action(
+                //   delegate
+                //   {
+                //       Bench.RunButton.IsEnabled = true;
+                //   }
+                //));
+
+                this.RunEnabled = true;
 
                 //No longer running
                 this.Running = false;
