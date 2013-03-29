@@ -38,7 +38,6 @@ namespace Dynamo
         private readonly List<Tuple<object, object>> commandQueue = new List<Tuple<object, object>>();
         private string UnlockLoadPath;
         private dynWorkspace _cspace;
-        private List<UIElement> clipBoard = new List<UIElement>();
         private bool isProcessingCommandQueue = false;
 
         public SearchViewModel SearchViewModel { get; internal set; }
@@ -46,6 +45,18 @@ namespace Dynamo
         public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
 
+        private bool runEnabled = true;
+        public bool RunEnabled
+        {
+            get { return runEnabled; }
+            set
+            {
+                runEnabled = value;
+                NotifyPropertyChanged("RunEnabled");
+            }
+        }
+
+        List<UIElement> clipBoard = new List<UIElement>();
         public List<UIElement> ClipBoard
         {
             get { return clipBoard; }
@@ -120,6 +131,9 @@ namespace Dynamo
 
         public DynamoController()
         {
+            this.RunEnabled = true;
+            this.CanRunDynamically = true;
+
             Bench = new dynBench(this);
 
             SearchViewModel = new SearchViewModel(Bench);
@@ -1921,9 +1935,12 @@ namespace Dynamo
             worker.DoWork += EvaluationThread;
 
             //Disable Run Button
-            Bench.Dispatcher.Invoke(new Action(
-                                        delegate { Bench.RunButton.IsEnabled = false; }
-                                        ));
+
+            //Bench.Dispatcher.Invoke(new Action(
+            //   delegate { Bench.RunButton.IsEnabled = false; }
+            //));
+
+            this.RunEnabled = false;
 
             //Let's start
             worker.RunWorkerAsync();
@@ -1993,9 +2010,14 @@ namespace Dynamo
                 /* Post-evaluation cleanup */
 
                 //Re-enable run button
-                Bench.Dispatcher.Invoke(new Action(
-                                            delegate { Bench.RunButton.IsEnabled = true; }
-                                            ));
+                //Bench.Dispatcher.Invoke(new Action(
+                //   delegate
+                //   {
+                //       Bench.RunButton.IsEnabled = true;
+                //   }
+                //));
+
+                this.RunEnabled = true;
 
                 //No longer running
                 Running = false;
