@@ -778,6 +778,16 @@ namespace Dynamo.Commands
                 {
                     (node as dynBasicInteractive<bool>).Value = (bool)data["value"];
                 }
+                else if(typeof(dynVariableInput).IsAssignableFrom(node.GetType()))
+                {
+                    int portCount = (int)data["value"];
+                    for (int i = 0; i < portCount - 1; i++)
+                    {
+                        (node as dynVariableInput).AddInput();
+                    }
+                    (node as dynVariableInput).NodeUI.RegisterAllPorts();
+                    
+                }
             }
 
             //override the guid so we can store
@@ -1006,6 +1016,13 @@ namespace Dynamo.Commands
                 else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.NodeLogic.GetType()))
                 {
                     nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<bool>).Value);
+                }
+                else if(typeof(dynVariableInput).IsAssignableFrom(node.NodeLogic.GetType()))
+                {
+                    //for list type nodes send the number of ports
+                    //as the value - so we can setup the new node with
+                    //the right number of ports
+                    nodeData.Add("value", node.InPorts.Count);
                 }
 
                 dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeData));
