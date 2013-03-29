@@ -115,7 +115,7 @@ namespace Dynamo.Commands
 
 
             var nodeList = dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI && ((dynNodeUI)x).NodeLogic is dynFunction )
-                                        .Select(x => ( ((dynNodeUI)x).NodeLogic as dynFunction ).Symbol ).ToList();
+                                        .Select(x => ( ((dynNodeUI)x).NodeLogic as dynFunction ).Definition.FunctionId ).ToList();
 
             if (nodeList.Count != 1)
             {
@@ -130,11 +130,15 @@ namespace Dynamo.Commands
             }
             else
             {
-                if ( dynSettings.Controller.FunctionDict.ContainsKey( nodeList[0] ) )
+                if ( dynSettings.FunctionDict.ContainsKey( nodeList[0] ) )
                 {
-                    Console.WriteLine(
-                        this._client.Publish(
-                            _client.GetPackageUploadFromWorkspace(dynSettings.Controller.FunctionDict[nodeList[0]])));
+                    var success = this._client.Publish(
+                        _client.GetPackageUploadFromWorkspace(dynSettings.FunctionDict[nodeList[0]].Workspace, nodeList[0]));
+                    
+                    if (!success)
+                    {
+                        dynSettings.Bench.Log("Failed to publish the node.");
+                    }
                 }
                 else
                 {

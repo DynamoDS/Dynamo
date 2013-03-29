@@ -113,6 +113,7 @@ namespace Dynamo
 
                 var PythonEngine = ironPythonAssembly.GetType("Dynamo.Nodes.PythonEngine");
                 var evaluatorField = PythonEngine.GetField("Evaluator");
+
                 oldPyEval = (dynamic)evaluatorField.GetValue(null);
 
                 //var x = PythonEngine.GetMembers();

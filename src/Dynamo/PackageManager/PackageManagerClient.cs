@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
@@ -30,7 +31,6 @@ namespace Dynamo.PackageManager
             this.Controller = controller;
         }
 
-        // TODO: make async
         public void RefreshAvailable()
         {
 
@@ -39,31 +39,29 @@ namespace Dynamo.PackageManager
 
             if (response.success)
             {
-                
                 foreach (var header in response.content)
                 {
                     dynSettings.Controller.SearchController.Add(header);
                 }
             }
-            
         }
 
-        public dynWorkspace GetCurrentWorkspace()
+        //public dynWorkspace GetCurrentWorkspace()
+        //{
+        //    return Controller.CurrentSpace.
+        //}
+
+        //public PackageUpload GetPackageUploadFromCurrentWorkspace()
+        //{
+        //    return GetPackageUploadFromWorkspace(GetCurrentWorkspace());
+        //}
+
+        public XmlDocument GetXmlDocumentFromWorkspace(dynWorkspace workspace)
         {
-            return Controller.CurrentSpace;
+            return Controller.GetXmlFromWorkspace( workspace );
         }
 
-        public XmlDocument GetXmlDocumentFromWorkspace()
-        {
-            return Controller.GetXmlFromWorkspace( GetCurrentWorkspace() );
-        }
-
-        public PackageUpload GetPackageUploadFromCurrentWorkspace()
-        {
-            return GetPackageUploadFromWorkspace(GetCurrentWorkspace());
-        }
-
-        public PackageUpload GetPackageUploadFromWorkspace(dynWorkspace workspace)
+        public PackageUpload GetPackageUploadFromWorkspace(dynWorkspace workspace, Guid FuncDefGuid )
         {
             try
             {
@@ -75,8 +73,11 @@ namespace Dynamo.PackageManager
                 var license = "MIT";                            //nope
                 var contents = Controller.GetXmlFromWorkspace(workspace).OuterXml;
                 var engineVersion = "0.1.0";                    //nope
+                var engineMetadata = "";                        //store the guid here
 
-                return PackageUpload.MakeDynamoPackage(name, version, description, keywords, license, contents, engineVersion);
+                var pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license, contents, engineVersion, engineMetadata);
+
+                return pkg;
             } 
             catch 
             {
@@ -91,7 +92,7 @@ namespace Dynamo.PackageManager
             return ret.success;
         }
 
-        public bool ImportPackage( out string name, string id, string version = "")
+        public bool ImportFunctionDefinition( out Guid funcDefGuid, string id, string version = "")
         {
 
             // download the package
@@ -101,6 +102,13 @@ namespace Dynamo.PackageManager
             // then save it to a file in packages
             var d = new XmlDocument();
             d.LoadXml(p.content.versions[0].contents);
+
+            // obtain the funcDefGuid
+            funcDefGuid = PackageManagerClient.ExtractFunctionDefinitionGuid(p.content, 0);
+            if (Guid.Empty == funcDefGuid)
+            {
+                return false;
+            }
 
             // for which we need to create path
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -112,25 +120,39 @@ namespace Dynamo.PackageManager
                     Directory.CreateDirectory(pluginsPath);
 
                 // now save it
-                string path = Path.Combine(pluginsPath, p.content.name + p.content.versions[0].version + ".dyf");
+                string path = Path.Combine(pluginsPath, p.content.name + ".dyf");
                 d.Save(path);
 
                 // then open it via controller
                 Controller.OpenDefinition(path);
 
-                // now return the name of the successfully imported node
-                name = p.content.name;
-
                 dynSettings.Bench.Log("Successfully imported package " + p.content.name);
-
                 return true;
             }
             catch
             {
-                name = "";
+                funcDefGuid = new Guid();
                 return false;
             } 
 
+        }
+        
+        internal static Guid ExtractFunctionDefinitionGuid(string s)
+        {
+            var pattern = "FunctionDefinitionGuid:{([0-9a-f-]{36})}"; // match a FunctionDefinition
+            var matches = Regex.Matches(s, pattern, RegexOptions.IgnoreCase);
+
+            if (matches.Count != 1)
+            {
+                return new Guid();
+            }
+
+            return new Guid(matches[0].Groups[1].Value);
+        } 
+
+        public static Guid ExtractFunctionDefinitionGuid(PackageHeader header, int versionIndex)
+        {
+            return PackageManagerClient.ExtractFunctionDefinitionGuid(header.versions[versionIndex].engine_metadata);
         }
 
 
