@@ -1335,6 +1335,9 @@ namespace Dynamo.Commands
                 }
                 dynSettings.Bench.UnlockUI();
             }
+
+            //clear the clipboard to avoid copying between dyns
+            dynSettings.Controller.ClipBoard.Clear();
         }
 
         public event EventHandler CanExecuteChanged
