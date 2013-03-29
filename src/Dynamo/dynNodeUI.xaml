@@ -149,6 +149,6 @@
             HorizontalAlignment="Stretch"
             Height="Auto"
             Width="Auto"
-            Margin="45,5,45,5"/>
+            Margin="45,5,45,5" Canvas.ZIndex="300"/>
    </Grid>
 </UserControl>
