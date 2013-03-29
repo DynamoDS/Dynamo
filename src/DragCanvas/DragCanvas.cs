@@ -720,18 +720,6 @@ namespace Dynamo.Controls
               {
                   Type t = elem.GetType();
 
-                  //if (HasParentType(t, testType))
-                  //{
-                  //    foundElement = elem;
-                  //    return foundElement;
-                  //}
-
-                  //if (elem != null && t.Equals(testType))
-                  //{
-                  //    foundElement = elem;
-                  //    return foundElement;
-                  //}
-
                   //only hit test against visible elements
                   //we want to avoid elements in other workspaces.
                   if (elem is ISelectable && elem.Visibility == System.Windows.Visibility.Visible)
