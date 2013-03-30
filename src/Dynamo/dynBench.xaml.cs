@@ -565,7 +565,8 @@ namespace Dynamo.Controls
                 {
                     DynamoCommands.WriteToLogCmd.Execute("Dynamo ended " + DateTime.Now.ToString());
                 }
-                dynSettings.Writer.Close();
+
+                dynSettings.FinishLogging();
             }
 
             //end the transaction 

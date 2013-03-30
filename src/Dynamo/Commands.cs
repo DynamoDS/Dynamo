@@ -550,7 +550,7 @@ namespace Dynamo.Commands
             {
                 dynSettings.Controller.SaveAs(_fileDialog.FileName);
             }
-            
+          
         }
 
         public event EventHandler CanExecuteChanged
@@ -906,7 +906,6 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-
             Dictionary<string, object> data = parameters as Dictionary<string, object>;
             if (data == null)
             {
@@ -1676,4 +1675,5 @@ namespace Dynamo.Commands
             return true;
         }
     }
+
 }

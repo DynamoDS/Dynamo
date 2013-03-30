@@ -196,7 +196,6 @@ namespace Dynamo
                 {
                     if (cmd.CanExecute(cmdData.Item2))
                     {
-                        DynamoCommands.WriteToLogCmd.Execute(string.Format("Executing command : {0}", cmd.GetType()));
                         cmd.Execute(cmdData.Item2);
                     }
                 }
