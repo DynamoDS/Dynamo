@@ -26,7 +26,7 @@ limitations under the License.
       <System.Double value="36" />
     </Dynamo.Elements.dynDoubleInput>
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="4e7b027c-030c-4f18-8e83-a70d88b09a7e" nickname="Solar Radiation Optimizer" x="339.1" y="68.2">
-      <Symbol value="Solar Radiation Optimizer" />
+      <ID value="c5e9ebfb-236f-43c0-93c3-f05a8f667ac6" />
       <Output value="out" />
       <Inputs>
         <Input value="famInst" />
