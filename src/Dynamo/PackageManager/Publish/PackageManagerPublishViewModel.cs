@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Controls;
-using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
-namespace Dynamo.Nodes.PackageManager
+namespace Dynamo.PackageManager
 {
 
     public class PackageManagerPublishViewModel : NotificationObject
@@ -193,7 +188,7 @@ namespace Dynamo.Nodes.PackageManager
                 if (pkg != null)
                 {
                     Client.Publish(pkg, this.FunctionDefinition);
-                    dynSettings.Controller.ShowPackageControlInformation();
+                    dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
                     this.Visible = Visibility.Collapsed;
                 }
             }
@@ -206,7 +201,7 @@ namespace Dynamo.Nodes.PackageManager
                 if (pkgVersion != null)
                 {
                     Client.Publish(pkgVersion, this.FunctionDefinition);
-                    dynSettings.Controller.ShowPackageControlInformation();
+                    dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
                     this.Visible = Visibility.Collapsed;
                 }
             }

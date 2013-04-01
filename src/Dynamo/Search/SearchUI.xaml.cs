@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.Search;
 using Dynamo.Utilities;
@@ -13,79 +14,28 @@ namespace Dynamo.Search
     /// </summary>
     public partial class SearchUI : UserControl
     {
-        public SearchViewModel ViewModel;
-        
-        public ObservableCollection<ISearchElement> VisibleNodes { get { return ViewModel.VisibleNodes; } }
 
         public SearchUI( SearchViewModel viewModel )
         {
-            ViewModel = viewModel;
-
+            this.DataContext = viewModel;
             InitializeComponent();
+     
+            this.PreviewKeyDown += viewModel.KeyHandler;
 
-            SearchResultsListBox.SelectionMode = SelectionMode.Single;
-
-            this.PreviewKeyDown += new KeyEventHandler(KeyHandler);
-            SearchTextBox.IsVisibleChanged += delegate { SearchTextBox.Focus();
-                                                         SearchTextBox.SelectAll();
-                                                         ViewModel.SearchAndUpdateUI(this.SearchTextBox.Text.Trim());
-            };
+            SearchTextBox.IsVisibleChanged += delegate
+                {
+                    SearchTextBox.Focus();
+                    SearchTextBox.SelectAll();
+                    DynamoCommands.SearchCmd.Execute(null);
+                };
         }
 
-        private bool HasPackageManagerElements;
-        public void SearchOnline_Click(object sender, RoutedEventArgs e)
+        public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!this.HasPackageManagerElements)
-            {
-                this.HasPackageManagerElements = true;
-                dynSettings.Controller.PackageManagerClient.RefreshAvailable();
-            }
-            else
-            {
-                this.HasPackageManagerElements = false;
-                ViewModel.SearchDictionary.RemoveName((s) => s is PackageManagerSearchElement );
-                ViewModel.SearchAndUpdateUI();
-            }
-            
-        }
-        
-        private void KeyHandler(object sender, KeyEventArgs e)
-        {
-            ViewModel.KeyHandler(sender, e);
+            var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
+            if (binding != null)
+                binding.UpdateSource();
         }
 
-        private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            ViewModel.SearchAndUpdateUI( this.SearchTextBox.Text.Trim() );
-        }
-
-        public void SelectNext()
-        {
-            if (SelectedIndex() == this.SearchResultsListBox.Items.Count - 1
-                || SelectedIndex() == -1)
-                return;
-
-            SetSelected(SelectedIndex() + 1);
-        }
-
-        public void SelectPrevious()
-        {
-            if (SelectedIndex() == 0 || SelectedIndex() == -1)
-                return;
-
-            SetSelected(SelectedIndex() - 1);
-        }
-
-        public void SetSelected(int i)
-        {
-            this.SearchResultsListBox.SelectedIndex = i;
-            if ( i < this.SearchResultsListBox.Items.Count )
-                this.SearchResultsListBox.ScrollIntoView( this.SearchResultsListBox.Items[i] );
-        }
-
-        public int SelectedIndex()
-        {
-            return this.SearchResultsListBox.SelectedIndex;
-        }
     }
 }

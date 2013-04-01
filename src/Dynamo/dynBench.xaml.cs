@@ -891,7 +891,7 @@ namespace Dynamo.Controls
         private void searchBox_LostFocus(object sender, RoutedEventArgs e)
         {
             //if (this.searchBox.Text.Equals(""))
-            //   this.searchBox.Text = "Search";
+            //   this.searchBox.Text = "Filter";
         }
 
         private static void SaveRTBAsPNG(RenderTargetBitmap bmp, string filename)

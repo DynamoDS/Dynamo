@@ -1,36 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows;
 using System.Xml;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Greg.Responses;
+using RestSharp;
+using RestSharp.Deserializers;
 using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
     public class PackageManagerClient
-
     {
+        #region Properties
         public Greg.Client Client { get; internal set; }
         private DynamoController Controller;
         public bool IsLoggedIn { get; internal set; }
+        public BackgroundWorker Worker { get; internal set; }
+        public Dictionary<FunctionDefinition, PackageHeader> LoadedPackageHeaders { get; internal set; }
+        #endregion
 
         public PackageManagerClient(DynamoController controller)
         {
             Controller = controller;
+          
+            LoadedPackageHeaders = new Dictionary<FunctionDefinition, PackageHeader>();
             Client = new Greg.Client("https://accounts-dev.autodesk.com", "http://54.243.225.192:8080");
+            Worker = new BackgroundWorker();
+            
             this.IsLoggedIn = false;
         }
-        
+
         public void RefreshAvailable()
         {
             ThreadStart start = () =>
             {
-                var req = Greg.Requests.HeaderCollectionDownload.ByEngine("dynamo");
+                var req = HeaderCollectionDownload.ByEngine("dynamo");
 
                 try
                 {
@@ -55,7 +68,7 @@ namespace Dynamo.PackageManager
             };
             new Thread(start).Start();
         }
-
+        
         public PackageUpload GetPackageUpload( FunctionDefinition funDef, string version, string description, List<string> keywords, string license, string group)
         {
             try
@@ -109,7 +122,7 @@ namespace Dynamo.PackageManager
                     dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                         {
                             dynSettings.Bench.Log(ret.message);
-                            dynSettings.Controller.PackageHeaders.Add(funDef, ret.content);
+                            this.LoadedPackageHeaders.Add(funDef, ret.content);
                             this.SavePackageHeader(ret.content);
                         }));
 
@@ -269,6 +282,62 @@ namespace Dynamo.PackageManager
         public static Guid ExtractFunctionDefinitionGuid(PackageHeader header, int versionIndex)
         {
             return ExtractFunctionDefinitionGuid( header.versions[versionIndex].engine_metadata );
+        }
+
+        public void LoadPackageHeader(FunctionDefinition funcDef, string name)
+        {
+            try
+            {
+                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string pluginsPath = Path.Combine(directory, "packages");
+
+                // find the file matching the expected name
+                var files = Directory.GetFiles(pluginsPath, name + ".json");
+
+                if (files.Length == 1) // There can only be one!
+                {
+                    // open and deserialize to a PackageHeader object
+                    // this is a bit hacky looking, but does the job
+                    var proxyResponse = new RestResponse();
+                    proxyResponse.Content = File.ReadAllText(files[0]);
+                    var jsonDes = new JsonDeserializer();
+                    var packageHeader = jsonDes.Deserialize<PackageHeader>(proxyResponse);
+                    dynSettings.Bench.Log("Loading package control information for " + name + " from packages");
+                    LoadedPackageHeaders.Add(funcDef, packageHeader);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynSettings.Bench.Log("Failed to open the package header information.");
+                dynSettings.Bench.Log(ex);
+                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
+            }
+
+        }
+
+        public void ShowPackageControlInformation()
+        {
+            var f = dynSettings.FunctionDict.First(x => x.Value.Workspace == this.Controller.CurrentSpace).Value;
+
+            if (f != null)
+            {
+                if (LoadedPackageHeaders.ContainsKey(f))
+                {
+                    dynSettings.Bench.packageControlLabel.Content = "Under package control";
+                    dynSettings.Bench.editNameButton.Visibility = Visibility.Collapsed;
+                    dynSettings.Bench.editNameButton.IsHitTestVisible = true;
+                }
+                else
+                {
+                    dynSettings.Bench.packageControlLabel.Content = "Not under package control";
+                }
+                dynSettings.Bench.packageControlLabel.Visibility = Visibility.Visible;
+            }
+        }
+
+        public void HidePackageControlInformation()
+        {
+            dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
     }
 }

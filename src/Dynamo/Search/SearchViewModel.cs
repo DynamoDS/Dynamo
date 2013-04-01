@@ -12,247 +12,181 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Greg.Responses;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Search
 {
-    public interface ISearchElement
-    {
-        string Type { get; }
-        string Name { get; }
-        string Description { get; }
-    }
-    
-    public class LocalSearchElement : ISearchElement
-    {
-        public LocalSearchElement(dynNode node)
-        {
-            this.Node = node;
-        }
-
-        public dynNode Node { get; internal set; }
-        public string Type { get { return "Standard Node"; } }
-        public string Name { get { return Node.NodeUI.NickName; } }
-        public string Description { get { return Node.NodeUI.Description; } }
-    }
-
-    public class WorkspaceSearchElement : ISearchElement
-    {
-        private string _description;
-        private string _name;
-
-        public WorkspaceSearchElement(string symbol, string description)
-        {
-            this._name = symbol;
-            this._description = "Workspace";
-        }
-
-        public Guid Guid { get; set; }
-        public string Name { get { return _name; } }
-        public string Type { get { return "Workspace"; } }
-        public string Description { get { return _description; } }
-    }
-
-    public class PackageManagerSearchElement : ISearchElement
-    {
-        
-        public PackageManagerSearchElement(PackageHeader header )
-        {
-            this.Header = header;
-            this.Guid = PackageManagerClient.ExtractFunctionDefinitionGuid(header, 0); 
-        }
-
-        public PackageHeader Header { get; internal set;  }
-
-        public string Name { get { return Header.name; } }
-        public string Description { get { return Header.description; } }
-
-        public Guid Guid { get; internal set; }
-        public string Id { get { return Header._id; } }
-        public string Type { get { return "Community Node"; } }
-        public List<String> Keywords { get { return Header.keywords; } }
-        public string Group { get { return Header.group;  } }
-        
-    }
-
-    public class SearchViewModel
+    public class SearchViewModel : NotificationObject
     {
 
         #region Properties
 
-            public SearchDictionary<ISearchElement> SearchDictionary { get; internal set; }
-            public ObservableCollection<ISearchElement> VisibleNodes { get; internal set; }
-            public int NumSearchResults { get; set; }
-            public SearchUI View { get; internal set; }
-            public dynBench Bench { get; internal set; }
+            public SearchDictionary<SearchElementBase> SearchDictionary { get; private set; }
+            public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
+            public int MaxNumSearchResults { get; set; }
+            public dynBench Bench { get; private set; }
+
+            private int _selectedIndex;
+            public int SelectedIndex
+            {
+                get { return _selectedIndex; }
+                set
+                {
+                    if (this._selectedIndex != value)
+                    {
+                        this._selectedIndex = value;
+
+                        //if (i < this.SearchResultsListBox.Items.Count)
+                        //    this.SearchResultsListBox.ScrollIntoView(this.SearchResultsListBox.Items[i]);
+
+                        RaisePropertyChanged("SelectedIndex");
+                    }
+                }
+            }
+
+            private Visibility _visible;
+            public Visibility Visible
+            {
+                get { return _visible; }
+                set
+                {
+                    if (this._visible != value)
+                    {
+                        this._visible = value;
+                        RaisePropertyChanged("Visible");
+                    }
+                }
+            }
+
+            public string _SearchText;
+            public string SearchText
+            {
+                get { return _SearchText; }
+                set
+                {
+                    _SearchText = value; 
+                    RaisePropertyChanged("SearchText");
+                    DynamoCommands.SearchCmd.Execute(null);
+            }}
+
+            public bool _IncludePackageManagerSearchElements;
+            public bool IncludePackageManagerSearchElements
+            {
+                get { return _IncludePackageManagerSearchElements; }
+                set
+                {
+                    _IncludePackageManagerSearchElements = value;
+                    RaisePropertyChanged("IncludePackageManagerSearchElements");
+                    DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+                }
+            }
 
         #endregion
 
         public SearchViewModel( dynBench bench )
         {
-            
-            this.SearchDictionary = new SearchDictionary<ISearchElement>();
-            this.VisibleNodes = new ObservableCollection<ISearchElement>();
-            this.NumSearchResults = 10;
+            this.SelectedIndex = 0;
+            this.SearchDictionary = new SearchDictionary<SearchElementBase>();
+            this.SearchResults = new ObservableCollection<SearchElementBase>();
+            this.MaxNumSearchResults = 10;
             this.Bench = bench;
-            this.View = new SearchUI(this);
-
+            this.Visible = Visibility.Collapsed;
+            this._SearchText = "";
             this.AddHomeToSearch();
         }
 
         private void AddHomeToSearch()
         {
-            this.SearchDictionary.AddName(new WorkspaceSearchElement("Home", "The default workspace"), "Home");
+            this.SearchDictionary.Add(new WorkspaceSearchElement("Home", "Workspace"), "Home");
         }
 
-        internal void SearchAndUpdateUI(string search)
+        internal void SearchAndUpdateResults(string search)
         {
-            if (View.Visibility != Visibility.Visible)
+            if (this.Visible != Visibility.Visible)
                 return;
 
-            VisibleNodes.Clear();
+            SearchResults.Clear();
 
             foreach (var node in this.Search(search))
             {
-                VisibleNodes.Add(node);
+                SearchResults.Add(node);
             }
 
-            this.View.SetSelected(0);
+            SelectedIndex = 0;
+        }
+        
+        public void SelectNext()
+        {
+            if (SelectedIndex == SearchResults.Count - 1
+                || SelectedIndex == -1)
+                return;
+
+            SelectedIndex = SelectedIndex + 1;
         }
 
-        internal void SearchAndUpdateUI()
+        public void SelectPrevious()
         {
-            SearchAndUpdateUI(View.SearchTextBox.Text);
+            if (SelectedIndex == 0 || SelectedIndex == -1)
+                return;
+
+            SelectedIndex = SelectedIndex - 1;
         }
 
-        internal List<ISearchElement> Search(string search)
+        internal void SearchAndUpdateResults()
         {
-            return SearchDictionary.RegexSearch(search, this.NumSearchResults);
+            SearchAndUpdateResults(SearchText);
+        }
+
+        internal List<SearchElementBase> Search(string search)
+        {
+            return SearchDictionary.Search(search, this.MaxNumSearchResults);
         }
 
         public void KeyHandler(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                this.SendSelectedToWorkspace();
+                this.ExecuteSelected();
             }
             else if (e.Key == Key.Down)
             {
-                this.View.SelectNext();
+                this.SelectNext(); // nope
             }
             else if (e.Key == Key.Up)
             {
-                this.View.SelectPrevious();
+                this.SelectPrevious(); // nope
             }
         }
 
-        public void SendSelectedToWorkspace()
+        public void ExecuteSelected()
         {
-            if (VisibleNodes.Count == 0) return;
-
-            int selectedIndex = View.SelectedIndex();
+            if (SearchResults.Count == 0) return;
 
             // none of the elems are selected, return 
-            if (selectedIndex == -1)
+            if (SelectedIndex == -1)
                 return;
 
-            View.Visibility = Visibility.Collapsed;
-
-            if (VisibleNodes[selectedIndex] is LocalSearchElement)
-            {
-                DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
-                {
-                    {"name", VisibleNodes[selectedIndex].Name},
-                    {"transformFromOuterCanvasCoordinates", true},
-                    {"guid", Guid.NewGuid() }
-                });
-            } else if (VisibleNodes[selectedIndex] is PackageManagerSearchElement)
-            {
-                var ele = (PackageManagerSearchElement) VisibleNodes[selectedIndex];
-
-                Guid guid = ele.Guid;
-
-                if (!dynSettings.FunctionDict.ContainsKey(ele.Guid))
-                {
-                    // go get the node from online, place it in view asynchronously
-                    dynSettings.Controller.PackageManagerClient.Download(ele.Id, "", (finalGuid) => DynamoCommands
-                            .CreateNodeCmd.Execute(new Dictionary<string
-                                                                                                                      ,
-                                                                                                                      object
-                                                                                                                      >()
-                                                                                                             {
-                                                                                                                 {
-                                                                                                                     "name"
-                                                                                                                     ,
-                                                                                                                     guid
-                                                                                                                      .ToString
-                                                                                                                      ()
-                                                                                                                 },
-                                                                                                                 {
-                                                                                                                     "transformFromOuterCanvasCoordinates"
-                                                                                                                     ,
-                                                                                                                     true
-                                                                                                                 },
-                                                                                                                 {
-                                                                                                                     "guid"
-                                                                                                                     ,
-                                                                                                                     Guid
-                                                                                                                      .NewGuid
-                                                                                                                      ()
-                                                                                                                 }
-                                                                                                             })
-                        );
-
-
-                }
-                else
-                {
-                    // get the node from here
-                    DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
-                    {
-                        {"name", ((PackageManagerSearchElement) VisibleNodes[selectedIndex]).Guid.ToString() },
-                        {"transformFromOuterCanvasCoordinates", true},
-                        {"guid", Guid.NewGuid() }
-                    });
-                }
-                
-               
-
-            } else if ( VisibleNodes[selectedIndex] is WorkspaceSearchElement )
-            {
-                var name = VisibleNodes[selectedIndex].Name;
-                if (name == "Home")
-                {
-                    DynamoCommands.HomeCmd.Execute(null);
-                }
-                else
-                {
-                    var guid = ((WorkspaceSearchElement)VisibleNodes[selectedIndex]).Guid;
-                    DynamoCommands.GoToWorkspaceCmd.Execute(guid);
-                }
-                
-            }
+            this.Visible = Visibility.Collapsed;
+            SearchResults[SelectedIndex].Execute();
 
         }
 
         public void Add(PackageHeader packageHeader)
         {
             var searchEle = new PackageManagerSearchElement(packageHeader);
-            SearchDictionary.AddName(searchEle, searchEle.Name);
-            this.SearchAndUpdateUI();
+            SearchDictionary.Add(searchEle, searchEle.Name);
+            this.SearchAndUpdateResults();
         }
 
         public void Add(dynWorkspace workspace)
@@ -264,14 +198,12 @@ namespace Dynamo.Search
         {
             var searchEle = new WorkspaceSearchElement(name, "Workspace");
             searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
-            // must store guid
-            SearchDictionary.AddName(searchEle, searchEle.Name);
-            this.SearchAndUpdateUI();
+            SearchDictionary.Add(searchEle, searchEle.Name);
+            this.SearchAndUpdateResults();
         }
 
         public void Add(Type type, string name)
         {
-
             dynNode dynNode = null;
 
             try
@@ -286,29 +218,16 @@ namespace Dynamo.Search
                 return;
             }
 
-            var nodeUI = dynNode.NodeUI;
-            nodeUI.DisableInteraction();
-            nodeUI.Margin = new Thickness(5, 30, 5, 5);
-            nodeUI.LayoutTransform = new ScaleTransform(0.8, 0.8);
-
-            nodeUI.MouseDown += delegate
-            {
-                Bench.BeginDragElement(nodeUI, name, Mouse.GetPosition(nodeUI));
-                nodeUI.Visibility = System.Windows.Visibility.Hidden;
-            };
-
-            nodeUI.GUID = new Guid();
-
             var searchEle = new LocalSearchElement(dynNode);
-
-            SearchDictionary.AddName(searchEle, searchEle.Name);
+            SearchDictionary.Add(searchEle, searchEle.Name);
 
         }
 
         public void Refactor(dynWorkspace currentSpace, string newName)
         {
-            SearchDictionary.RemoveName(currentSpace.Name);
+            SearchDictionary.Remove(currentSpace.Name);
             this.Add( currentSpace, newName );
         }
+
     }
 }

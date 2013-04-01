@@ -15,20 +15,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Input;
 using System.Xml;
 
-using Dynamo;
-using Dynamo.Nodes;
 using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
-
-using IronPython;
+using DynamoPython;
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using IronPython.Hosting;
-using IronPython.Runtime;
 
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
@@ -245,14 +244,13 @@ namespace Dynamo.Nodes
         private bool dirty = true;
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
-        //TextBox tb;
-        string script;
+        private string script = "# Write your script here.";
 
         public dynPython()
         {
             //add an edit window option to the 
             //main context window
-            System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
+            var editWindowItem = new System.Windows.Controls.MenuItem();
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
             NodeUI.MainContextMenu.Items.Add(editWindowItem);
@@ -316,9 +314,25 @@ namespace Dynamo.Nodes
             return PythonEngine.Evaluator(dirty, script, makeBindings(args));
         }
 
+        private dynScriptEditWindow editWindow;
+        private bool initWindow = false;
+
         void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            dynEditWindow editWindow = new dynEditWindow();
+            if (!initWindow)
+            {
+                editWindow = new dynScriptEditWindow();
+                // callbacks for autocompletion
+                // editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
+                // editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
+
+                var pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
+                var elem = GetType().Assembly.GetManifestResourceStream("DynamoPython.Resources." + pythonHighlighting);
+
+                editWindow.editText.SyntaxHighlighting =
+                HighlightingLoader.Load(new XmlTextReader(elem ),
+                HighlightingManager.Instance);
+            }
 
             //set the text of the edit window to begin
             editWindow.editText.Text = script;
@@ -333,7 +347,49 @@ namespace Dynamo.Nodes
 
             this.dirty = true;
         }
+
+    //    CompletionWindow completionWindow;
+
+    //    void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+    //    {
+    //        if (e.Text == ".")
+    //        {
+
+    //            // Open code completion after the user has pressed dot:
+    //            completionWindow = new CompletionWindow( editWindow.editText.TextArea );
+    //            IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+
+    //            data.Add( new DynamoCompletionData("Item1") );
+    //            data.Add( new DynamoCompletionData("Item2") );
+    //            data.Add( new DynamoCompletionData("Item3") );
+
+
+    //            completionWindow.Show();
+
+    //            completionWindow.Closed += delegate
+    //            {
+    //                completionWindow = null;
+    //            };
+    //        }
+    //    }
+
+    //    void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+    //    {
+    //        if (e.Text.Length > 0 && completionWindow != null)
+    //        {
+    //            if (!char.IsLetterOrDigit(e.Text[0]))
+    //            {
+    //                // Whenever a non-letter is typed while the completion window is open,
+    //                // insert the currently selected element.
+    //                completionWindow.CompletionList.RequestInsertion(e);
+    //            }
+    //        }
+    //        // Do not set e.Handled=true.
+    //        // We still want to insert the character that was typed.
+    //    }
+
     }
+
 
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]

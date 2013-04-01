@@ -9,7 +9,6 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Commands
 {
-
     public class LoginCommand : ICommand
     {
         public LoginCommand()
@@ -69,10 +68,10 @@ namespace Dynamo.Commands
                     f;
 
                 // we're submitting a new version
-                if ( dynSettings.Controller.PackageHeaders.ContainsKey(f) )
+                if ( dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders.ContainsKey(f) )
                 {
                     dynSettings.Controller.PackageManagerPublishViewModel.PackageHeader =
-                        dynSettings.Controller.PackageHeaders[f];
+                        dynSettings.Controller.PackageManagerClient.LoadedPackageHeaders[f];
                 }
             }
             else
@@ -139,7 +138,7 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            Dynamo.Utilities.dynSettings.Controller.PackageManagerClient.RefreshAvailable();
+            dynSettings.Controller.PackageManagerClient.RefreshAvailable();
         }
 
         public event EventHandler CanExecuteChanged

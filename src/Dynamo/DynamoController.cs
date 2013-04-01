@@ -467,9 +467,7 @@ namespace Dynamo
                         searchDict.Add(nodeUI, tags.Where(x => x.Length > 0));
                     }
 
-                    searchDict.Add(nodeUI, kvp.Key.Split(' ').Where(x => x.Length > 0));
                     searchDict.Add(nodeUI, kvp.Key);
-                    searchDict.AddName(nodeUI, kvp.Key);
                 }
                 catch (Exception e)
                 {
@@ -830,11 +828,7 @@ namespace Dynamo
 
             Bench.addMenuItemsDictNew[name] = newEl.NodeUI;
 
-            searchDict.Add(newEl.NodeUI, name.Split(' ').Where(x => x.Length > 0));
-            searchDict.Add( newEl.NodeUI, name );
-            searchDict.AddName(newEl.NodeUI, name);
-
-            
+            searchDict.Add(newEl.NodeUI, name);
 
             if (display)
             {
@@ -1649,7 +1643,7 @@ namespace Dynamo
                 if (canLoad)
                     SaveFunction(def, false);
 
-                this.SearchForPackageHeader(def, funName);
+                PackageManagerClient.LoadPackageHeader(def, funName);
 
                 nodeWorkspaceWasLoaded(def, children, parents);
             }
@@ -1665,37 +1659,7 @@ namespace Dynamo
             return true;
         }
 
-        // move to packagemanagerclient, stores package header if discovered
-        public void SearchForPackageHeader(FunctionDefinition funcDef, string name)
-        {
-            try
-            {
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "packages");
 
-                // find the file matching the expected name
-                var files = Directory.GetFiles(pluginsPath, name + ".json");
-
-                if (files.Length == 1) // There can only be one!
-                {
-                    // open and deserialize to a PackageHeader object
-                    // this is a bit hacky looking, but does the job
-                    var proxyResponse = new RestResponse();
-                    proxyResponse.Content = File.ReadAllText(files[0]);
-                    var jsonDes = new JsonDeserializer();
-                    var packageHeader = jsonDes.Deserialize<PackageHeader>(proxyResponse);
-                    Bench.Log("Loading package control information for " + name + " from packages");
-                    PackageHeaders.Add(funcDef, packageHeader);
-                }
-            }
-            catch (Exception ex)
-            {
-                Bench.Log("Failed to open the package header information.");
-                Bench.Log(ex);
-                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
-            }
-
-        }
 
         void nodeWorkspaceWasLoaded(
             FunctionDefinition def,
@@ -2337,7 +2301,7 @@ namespace Dynamo
             Bench.homeButton.IsEnabled = false;
             //this.varItem.IsEnabled = false;
 
-            HidePackageControlInformation();
+            PackageManagerClient.HidePackageControlInformation();
 
             Bench.workspaceLabel.Content = "Home";
             Bench.editNameButton.Visibility = System.Windows.Visibility.Collapsed;
@@ -2415,37 +2379,9 @@ namespace Dynamo
 
             Bench.setFunctionBackground();
 
-            this.ShowPackageControlInformation();
+            PackageManagerClient.ShowPackageControlInformation();
             
             CurrentSpace.OnDisplayed();
-        }
-
-        // all of this stuff needs to move to PackageManagerClient
-        public Dictionary<FunctionDefinition, PackageHeader> PackageHeaders = new Dictionary<FunctionDefinition, PackageHeader>();
-
-        public void ShowPackageControlInformation()
-        {
-            var f = dynSettings.FunctionDict.First(x => x.Value.Workspace == this.CurrentSpace).Value;
-
-            if (f != null)
-            {
-                if (PackageHeaders.ContainsKey(f) )
-                {
-                    Bench.packageControlLabel.Content = "Under package control";
-                    Bench.editNameButton.Visibility = Visibility.Collapsed;
-                    Bench.editNameButton.IsHitTestVisible = true;
-                }
-                else
-                {
-                    Bench.packageControlLabel.Content = "Not under package control";
-                }
-                Bench.packageControlLabel.Visibility = Visibility.Visible;
-            }
-        }
-
-        public void HidePackageControlInformation()
-        {
-            Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
 
         #endregion
@@ -2650,7 +2586,7 @@ namespace Dynamo
 
                 var filter = search.Length == 0
                    ? new HashSet<dynNodeUI>(Bench.addMenuItemsDictNew.Values)
-                   : searchDict.Search(search.ToLower());
+                   : searchDict.Filter(search.ToLower());
 
                 Bench.FilterAddMenu(filter);
             }

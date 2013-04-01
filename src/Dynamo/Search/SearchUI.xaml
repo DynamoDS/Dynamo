@@ -3,12 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:interop="clr-namespace:System.Windows.Interop;assembly=PresentationCore"
-             xmlns:src="clr-namespace:Dynamo.Search"
              mc:Ignorable="d" 
-             Visibility="Collapsed" d:DesignWidth="447" x:Name="SearchControl">
+             Visibility="{Binding Path=Visible}" d:DesignWidth="447" x:Name="SearchControl">
     
-  
   <Grid Background="Black" MaxHeight="342">
 
     <StackPanel x:Name="RSearchContainerStackPanel"  Margin="0">
@@ -16,18 +13,18 @@
       <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal">
 
         <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="18" Padding="10,15,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchBox_OnTextChanged" VerticalAlignment="Stretch" Width="355" Text="" />
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="355" Text="{Binding Path=SearchText,Mode=TwoWay}" />
 
         <ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="90" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
-                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" Click="SearchOnline_Click"  Tag="..\Images\cloud_download_arrow_white.png" />
+                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" IsChecked="{Binding IncludePackageManagerSearchElements, Mode=TwoWay}" Tag="..\Images\cloud_download_arrow_white.png" />
 
       </StackPanel>
 
       <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" 
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" MaxHeight="300" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
 
-          <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=VisibleNodes, ElementName=SearchControl}" 
-                   BorderThickness="0" Padding="0" Background="Black">
+          <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" 
+                   BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
 
           <ListBox.ItemTemplate >
 

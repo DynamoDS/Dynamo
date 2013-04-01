@@ -68,6 +68,9 @@ limitations under the License.
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
@@ -134,6 +137,10 @@ limitations under the License.
       <DependentUpon>PackageManagerPublishUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchCommands.cs" />
+    <Compile Include="Search\SearchElements\LocalSearchElement.cs" />
+    <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
+    <Compile Include="Search\SearchElements\SearchElementBase.cs" />
+    <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
     <Compile Include="Search\SearchUI.xaml.cs">
       <DependentUpon>SearchUI.xaml</DependentUpon>
     </Compile>

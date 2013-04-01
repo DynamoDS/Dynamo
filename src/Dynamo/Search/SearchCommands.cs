@@ -10,6 +10,18 @@ namespace Dynamo.Commands
     public static partial class DynamoCommands
     {
 
+        private static SearchCommand searchCmd;
+
+        public static SearchCommand SearchCmd
+        {
+            get
+            {
+                if (searchCmd == null)
+                    searchCmd = new SearchCommand();
+                return searchCmd;
+            }
+        }
+
         private static ShowSearchCommand showSearchCmd;
 
         public static ShowSearchCommand ShowSearchCmd
@@ -35,28 +47,30 @@ namespace Dynamo.Commands
         }
     }
 
-    public class HideSearchCommand : ICommand {
-
-        private SearchUI search;
-        private static bool init = false;
-
-        public HideSearchCommand()
+    public class SearchCommand : ICommand
+    {
+        public void Execute(object parameters)
         {
-
+            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
         }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class HideSearchCommand : ICommand {
 
         public void Execute(object parameters)
         {
-            if (!init)
-            {
-                search = dynSettings.Controller.SearchViewModel.View;
-                init = true;
-            }
-
-            if (search.Visibility == Visibility.Visible)
-            {
-                search.Visibility = Visibility.Collapsed;
-            }
+            dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
         }
 
         public event EventHandler CanExecuteChanged
@@ -73,25 +87,19 @@ namespace Dynamo.Commands
 
     public class ShowSearchCommand : ICommand
     {
-
         private SearchUI search;
         private static bool init = false;
-
-        public ShowSearchCommand()
-        {
-            
-        }
 
         public void Execute(object parameters)
         {
             if (!init)
             {
-                search = dynSettings.Controller.SearchViewModel.View;
+                search = new SearchUI(dynSettings.Controller.SearchViewModel);
                 dynSettings.Bench.outerCanvas.Children.Add(search);
                 init = true;
             }
 
-            search.Visibility = Visibility.Visible;
+            dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;
 
         }
 

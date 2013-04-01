@@ -1,8 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using Dynamo.Nodes.PackageManager;
+﻿using System.Windows.Controls;
 
 namespace Dynamo.PackageManager
 {
@@ -17,8 +13,8 @@ namespace Dynamo.PackageManager
 
             InitializeComponent();
             this.DataContext = viewModel;
-
         }
 
     }
+
 }

@@ -15,38 +15,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Dynamo.Search
 {
    public class SearchDictionary<V>
    {
+
       private Dictionary<string, HashSet<V>> tagDict = new Dictionary<string, HashSet<V>>();
       private Dictionary<V, HashSet<string>> symbolDict = new Dictionary<V, HashSet<string>>();
-
-      private Dictionary<string, V> nameDict = new Dictionary<string, V>();
-
-      public void AddName(V value, string name)
-      {
-          if ( !nameDict.ContainsKey(name) )
-              nameDict.Add(name, value);
-      }
-
-      public void RemoveName(Predicate<V> conditionForRemoval)
-      {
-          var removeKeys = nameDict.Keys.Where(k => conditionForRemoval(nameDict[k])).ToList();
-          foreach (var key in removeKeys)
-          {
-              nameDict.Remove(key);
-          }
-      }
-
-      public void RemoveName(string name)
-      {
-          if (nameDict.ContainsKey(name))
-              nameDict.Remove(name);
-      }
 
       public void Add(V value, string tag)
       {
@@ -55,7 +32,7 @@ namespace Dynamo.Search
             this.tagDict[tag].Add(value);
          else
             this.tagDict[tag] = new HashSet<V>() { value };
-
+           
          if (this.symbolDict.ContainsKey(value))
             this.symbolDict[value].Add(tag);
          else
@@ -89,8 +66,52 @@ namespace Dynamo.Search
          foreach (var tag in tags)
             this.Add(values, tag);
       }
+       
+      public void Remove(V value, string tag)
+      {
+         this.tagDict[tag].Remove(value);
+         this.symbolDict[value].Remove(tag);
+      }
 
-      public HashSet<V> Search(string search)
+      public void Remove(string tag)
+       {
+           if (this.tagDict.ContainsKey(tag))
+           {
+               var elems = tagDict[tag];
+               tagDict.Remove(tag);
+               foreach (var elem in elems)
+               {
+                   symbolDict[elem].Remove(tag);
+               }
+           }
+       }
+
+      public void Remove(Predicate<V> removeCondition)
+       {
+           var removeSet = new HashSet<V>();
+           // remove from tagDict and keep track of which elements were removed
+           foreach (var pair in tagDict )
+           {
+               foreach (var ele in pair.Value)
+               {
+                   if (removeCondition(ele)) removeSet.Add(ele);
+               }
+               pair.Value.RemoveWhere(removeCondition);
+           }
+           // remove from symbol dictionary
+           foreach (var ele in removeSet)
+           {
+               symbolDict.Remove(ele);
+           }
+       }
+
+      public void Remove(V value, IEnumerable<string> tags)
+      {
+         foreach (string tag in tags)
+            this.Remove(value, tag);
+      }
+
+      public HashSet<V> Filter(string search)
       {
           var result = new HashSet<V>();
 
@@ -105,116 +126,46 @@ namespace Dynamo.Search
 
           return result;
 
-       }
-
-      public void Remove(V value, string tag)
-      {
-         this.tagDict[tag].Remove(value);
-         this.symbolDict[value].Remove(tag);
       }
 
-      public void Remove(V value, IEnumerable<string> tags)
+      public List<V> Search(string search, int numResults = 10)
       {
-         foreach (string tag in tags)
-            this.Remove(value, tag);
-      }
+          var searchDict = new Dictionary<V, double>();
 
-      public List<V> RegexSearch(string search, int numResults = 10)
-      {
-          var searchDict = new List<KeyValuePair<double, V>>();
-
-          foreach (var pair in this.nameDict)
+          foreach (var pair in this.tagDict)
           {
-              var pattern = ".*("+Regex.Escape(search)+").*"; 
-
+              // does the key have an internal match with the search?
+              var pattern = ".*(" + Regex.Escape(search) + ").*";
               var matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
               if (matches.Count > 0)
               {
-                  double weight = 10;
-                  weight += Math.Max( ((double) (pair.Key.Length - search.Length)) / weight, 0); // if it's an exist match, weight it highly
-                  searchDict.Add(new KeyValuePair<double, V>(weight, pair.Value));
+                  // it has a match, how close is it to matching the entire string?
+                  var matchCloseness = Math.Max(((double)(pair.Key.Length - search.Length)) / pair.Key.Length, 0);
+                  foreach (var ele in pair.Value)
+                  {
+                      double weight = matchCloseness;
+                      // search elements have a weight associated with them
+                      var @base = ele as SearchElementBase;
+                      if (@base != null)
+                          weight *= @base.Weight;
+
+                      // we may have seen V before
+                      if (searchDict.ContainsKey(ele))
+                      {
+                          // if we have, update its weight if better than the current one
+                          if (searchDict[ele] < weight) searchDict[ele] = weight;
+                      }
+                      else
+                      {
+                          // if we haven't seen it, add it to the dictionary for this search
+                          searchDict.Add(ele, weight);
+                      }
+                  }
               }
           }
 
-          return searchDict.OrderBy(x => x.Key).Select(x => x.Value).ToList().GetRange(0, Math.Min(numResults, searchDict.Count));
+          return searchDict.OrderBy(x => x.Value).Select(x => x.Key).ToList().GetRange(0, Math.Min(numResults, searchDict.Count));
 
-      }
-
-      public List<V> FuzzySearch(string search, int numResults = 10)
-      {
-
-          var searchDict = new List<KeyValuePair<int, V>>();
-
-          foreach (var pair in this.nameDict)
-          {
-              int levDist = LevenshteinDistance(search, pair.Key.ToLower());
-              searchDict.Add(new KeyValuePair<int, V>(levDist, pair.Value));
-          }
-
-          return searchDict.OrderBy(x => x.Key).Select(x => x.Value).ToList().GetRange(0, numResults);
-
-      }
-
-      public List<V> FuzzySearchSymbols(string search, int numResults = 10)
-      {
-
-          var searchDict = new List<KeyValuePair<int, V>>();
-
-          foreach (var pair in this.symbolDict)
-          {
-              var dist = int.MaxValue;
-
-              foreach (var keyword in pair.Value)
-              {
-                  int levDist = LevenshteinDistance(search, keyword.ToLower());
-                  if (levDist < dist)
-                      dist = levDist;
-              }
-              searchDict.Add(new KeyValuePair<int, V>(dist, pair.Key));
-          }
-
-          return searchDict.OrderBy(x => x.Key).Select(x => x.Value).ToList().GetRange(0, numResults);
-
-      }
-
-      public int LevenshteinDistance(string source, string target)
-      {
-          if (String.IsNullOrEmpty(source))
-          {
-              if (String.IsNullOrEmpty(target)) return 0;
-              return target.Length;
-          }
-          if (String.IsNullOrEmpty(target)) return source.Length;
-
-          if (source.Length > target.Length)
-          {
-              var temp = target;
-              target = source;
-              source = temp;
-          }
-
-          var m = target.Length;
-          var n = source.Length;
-          var distance = new int[2, m + 1];
-
-          for (var j = 1; j <= m; j++) distance[0, j] = j;
-
-          var currentRow = 0;
-          for (var i = 1; i <= n; ++i)
-          {
-              currentRow = i & 1;
-              distance[currentRow, 0] = i;
-              var previousRow = currentRow ^ 1;
-              for (var j = 1; j <= m; j++)
-              {
-                  var cost = (target[j - 1] == source[i - 1] ? 0 : 1);
-                  distance[currentRow, j] = Math.Min(Math.Min(
-                                          distance[previousRow, j] + 1,
-                                          distance[currentRow, j - 1] + 1),
-                                          distance[previousRow, j - 1] + cost);
-              }
-          }
-          return distance[currentRow, m];
       }
    }
 }
