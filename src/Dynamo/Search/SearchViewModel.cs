@@ -27,16 +27,41 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Search
 {
+    /// <summary>
+    /// This is the core ViewModel for searching</summary>
     public class SearchViewModel : NotificationObject
     {
 
         #region Properties
 
+            /// <summary>
+            /// SearchDictionary property </summary>
+            /// <value>
+            /// This is the dictionary used to search </value>
             public SearchDictionary<SearchElementBase> SearchDictionary { get; private set; }
+
+            /// <summary>
+            /// SearchResults property </summary>
+            /// <value>
+            /// This property is observed by SearchUI to see the search results </value>
             public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
+
+            /// <summary>
+            /// MaxNumSearchResults property </summary>
+            /// <value>
+            /// Internal limit on the number of search results returned by SearchDictionary</value>
             public int MaxNumSearchResults { get; set; }
+
+            /// <summary>
+            /// Bench property </summary>
+            /// <value>
+            /// This is the core UI for Dynamo, primarily used for logging.</value>
             public dynBench Bench { get; private set; }
 
+            /// <summary>
+            /// SelectedIndex property </summary>
+            /// <value>
+            /// This is the currently selected element in the UI.</value>
             private int _selectedIndex;
             public int SelectedIndex
             {
@@ -55,6 +80,10 @@ namespace Dynamo.Search
                 }
             }
 
+            /// <summary>
+            /// Visible property </summary>
+            /// <value>
+            /// This is the core UI for Dynamo, primarily used for logging.</value>
             private Visibility _visible;
             public Visibility Visible
             {
@@ -69,6 +98,10 @@ namespace Dynamo.Search
                 }
             }
 
+            /// <summary>
+            /// SearchText property </summary>
+            /// <value>
+            /// This is the core UI for Dynamo, primarily used for logging.</value>
             public string _SearchText;
             public string SearchText
             {
@@ -80,6 +113,10 @@ namespace Dynamo.Search
                     DynamoCommands.SearchCmd.Execute(null);
             }}
 
+            /// <summary>
+            /// IncludePackageManagerSearchElements property </summary>
+            /// <value>
+            /// Specifies whether we are including PackageManagerSearchElements in search - possibly for remote download.</value>
             public bool _IncludePackageManagerSearchElements;
             public bool IncludePackageManagerSearchElements
             {
@@ -88,12 +125,22 @@ namespace Dynamo.Search
                 {
                     _IncludePackageManagerSearchElements = value;
                     RaisePropertyChanged("IncludePackageManagerSearchElements");
-                    DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+                    if (value)
+                    {
+                        DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+                    }    
+                    else
+                    {
+                        this.SearchDictionary.Remove( (element) => element is PackageManagerSearchElement );
+                    }
                 }
             }
 
         #endregion
 
+        /// <summary>
+        /// The class constructor. </summary>
+        /// <param name="bench"> Reference to dynBench object for logging </param>
         public SearchViewModel( dynBench bench )
         {
             this.SelectedIndex = 0;
@@ -106,11 +153,16 @@ namespace Dynamo.Search
             this.AddHomeToSearch();
         }
 
+        /// <summary>
+        /// Adds the Home Workspace to search.</summary>
         private void AddHomeToSearch()
         {
             this.SearchDictionary.Add(new WorkspaceSearchElement("Home", "Workspace"), "Home");
         }
 
+        /// <summary>
+        /// Performs a search given a search query and updates the observable SearchResults property.</summary>
+        /// <param name="search"> The search query </param>
         internal void SearchAndUpdateResults(string search)
         {
             if (this.Visible != Visibility.Visible)
@@ -125,7 +177,9 @@ namespace Dynamo.Search
 
             SelectedIndex = 0;
         }
-        
+
+        /// <summary>
+        /// Increments the selected element by 1, unless it is the last element already</summary>
         public void SelectNext()
         {
             if (SelectedIndex == SearchResults.Count - 1
@@ -135,24 +189,38 @@ namespace Dynamo.Search
             SelectedIndex = SelectedIndex + 1;
         }
 
+        /// <summary>
+        /// Decrements the selected element by 1, unless it is the first element already</summary>
         public void SelectPrevious()
         {
-            if (SelectedIndex == 0 || SelectedIndex == -1)
+            if (SelectedIndex <= 0)
                 return;
 
             SelectedIndex = SelectedIndex - 1;
         }
 
+        /// <summary>
+        /// Performs a search using the internal SearcText as the query and 
+        /// updates the observable SearchResults property.</summary>
         internal void SearchAndUpdateResults()
         {
             SearchAndUpdateResults(SearchText);
         }
 
+        /// <summary>
+        /// Performs a search using the given string as query, but does not update
+        /// the SearchResults object. </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
         internal List<SearchElementBase> Search(string search)
         {
             return SearchDictionary.Search(search, this.MaxNumSearchResults);
         }
 
+        /// <summary>
+        /// A KeyHandler method used by SearchUI, increments decrements and executes based on input. </summary>
+        /// <param name="sender">Originating object for the KeyHandler </param>
+        /// <param name="e">Parameters describing the key push</param>
         public void KeyHandler(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -169,6 +237,9 @@ namespace Dynamo.Search
             }
         }
 
+        /// <summary>
+        /// Runs the Execute() method of the current selected SearchElementBase object
+        /// amongst the SearchResults. </summary>
         public void ExecuteSelected()
         {
             if (SearchResults.Count == 0) return;
@@ -182,6 +253,9 @@ namespace Dynamo.Search
 
         }
 
+        /// <summary>
+        /// Adds a PackageHeader, recently downloaded from the Package Manager, to Search </summary>
+        /// <param name="packageHeader">A PackageHeader object</param>
         public void Add(PackageHeader packageHeader)
         {
             var searchEle = new PackageManagerSearchElement(packageHeader);
@@ -189,11 +263,18 @@ namespace Dynamo.Search
             this.SearchAndUpdateResults();
         }
 
+        /// <summary>
+        /// Adds a Workspace object to the search dictionary using it's Name property for a name </summary>
+        /// <param name="workspace">A dynWorkspace to add</param>
         public void Add(dynWorkspace workspace)
         {
             this.Add(workspace, workspace.Name);
         }
 
+        /// <summary>
+        /// Adds a Workspace object with a given Name</summary>
+        /// <param name="workspace">A dynWorkspace to add</param>
+        /// <param name="name">The name to use</param>
         public void Add(dynWorkspace workspace, string name )
         {
             var searchEle = new WorkspaceSearchElement(name, "Workspace");
@@ -202,7 +283,10 @@ namespace Dynamo.Search
             this.SearchAndUpdateResults();
         }
 
-        public void Add(Type type, string name)
+        /// <summary>
+        /// Adds a local DynNode to search </summary>
+        /// <param name="type">A type object that will be used by Activator to instantiate the object</param>
+        public void Add(Type type)
         {
             dynNode dynNode = null;
 
@@ -213,7 +297,7 @@ namespace Dynamo.Search
             }
             catch (Exception e)
             {
-                Bench.Log("Error creating search element for: " + name);
+                Bench.Log("Error creating search element ");
                 Bench.Log(e.InnerException);
                 return;
             }
@@ -223,10 +307,14 @@ namespace Dynamo.Search
 
         }
 
-        public void Refactor(dynWorkspace currentSpace, string newName)
+        /// <summary>
+        /// Rename a workspace that is currently part of the SearchDictionary</summary>
+        /// <param name="workspace">The workspace whose name must change</param>
+        /// <param name="newName">The new name to assign to the workspace</param>
+        public void Refactor(dynWorkspace workspace, string newName)
         {
-            SearchDictionary.Remove(currentSpace.Name);
-            this.Add( currentSpace, newName );
+            SearchDictionary.Remove(workspace.Name);
+            this.Add( workspace, newName );
         }
 
     }
