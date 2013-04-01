@@ -23,6 +23,7 @@ using Dynamo.PackageManager;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using System.Collections;
+using System.Reflection;
 
 namespace Dynamo.Utilities
 {
@@ -145,5 +146,37 @@ namespace Dynamo.Utilities
 
         public static PackageManagerClient PackageManagerClient { get; internal set; }
 
+        public static Dictionary<Guid, FunctionDefinition> FunctionDict = 
+            new Dictionary<Guid, FunctionDefinition>();
+
+        public static HashSet<FunctionDefinition> FunctionWasEvaluated =
+            new HashSet<FunctionDefinition>();
+
+        public static void StartLogging()
+        {
+            //create log files in a directory 
+            //with the executing assembly
+            string log_dir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dynamo_logs");
+            if (!Directory.Exists(log_dir))
+            {
+                Directory.CreateDirectory(log_dir);
+            }
+
+            string logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+
+            TextWriter tw = new StreamWriter(logPath);
+            tw.WriteLine("Dynamo log started " + System.DateTime.Now.ToString());
+
+            dynSettings.Writer = tw;
+        }
+
+        public static void FinishLogging()
+        {
+            if (dynSettings.Writer != null)
+            {
+                dynSettings.Writer.WriteLine("Goodbye.");
+                dynSettings.Writer.Close();
+            }
+        }
     }
 }

@@ -17,19 +17,14 @@ namespace DynamoSandbox
     class Program
     {
         static DynamoController dynamoController;
-        static TextWriter tw;
+
         [STAThread]
         static void Main(string[] args)
         {
+            dynSettings.StartLogging();
+
             try
             {
-                string tempPath = Path.GetTempPath();
-                string logPath = Path.Combine(tempPath, "dynamoLog.txt");
-
-                tw = new StreamWriter(logPath);
-                tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
-                dynSettings.Writer = tw;
-
                 dynamoController = new DynamoController();
                 var bench = dynamoController.Bench;
                 bench.ShowDialog();

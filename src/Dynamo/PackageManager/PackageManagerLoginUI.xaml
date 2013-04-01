@@ -4,18 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignWidth="335">
+             d:DesignWidth="350">
              
     <Grid Background="Black">
 
     <StackPanel Name="BrowserContainer" Orientation="Vertical">
-      
-      <StackPanel Name="LoginContainerStackPanel" Orientation="Horizontal" VerticalAlignment="Top" Height="48">
-        <TextBlock Margin="10" Width ="245" Foreground="DarkGray" FontSize="18">Login to the Package Manager</TextBlock>
-        <Button Name="LoginButton" Margin="0" Width="70" Click="LoginButtonClick" ToolTip="Click To login" Style="{DynamicResource ResourceKey=SButton}" Tag="..\Images\arrow-right-white.png" />
-      </StackPanel>
 
-      <WebBrowser Visibility="Collapsed" Name="webBrowser" Height="400" Width="335" LoadCompleted="WebBrowserNavigatedEvent" />
+      <StackPanel  Visibility="Collapsed" Name="LoginContainerStackPanel" Orientation="Horizontal" VerticalAlignment="Top" Height="48">
+        <TextBlock Padding="10,15,10,10"  Width ="350" Foreground="DarkGray" FontSize="18">Login to the Package Manager...</TextBlock>
+       </StackPanel>
+
+      <WebBrowser Visibility="Collapsed" Name="webBrowser" Height="340" Width="350" LoadCompleted="WebBrowserNavigatedEvent" />
       
     </StackPanel>
 

@@ -248,6 +248,9 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         public void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            //Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
+            //Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);
+
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
             if (WorkBench.IsConnecting && activeConnector != null)
@@ -554,7 +557,8 @@ namespace Dynamo.Controls
                 {
                     DynamoCommands.WriteToLogCmd.Execute("Dynamo ended " + System.DateTime.Now.ToString());
                 }
-                dynSettings.Writer.Close();
+
+                dynSettings.FinishLogging();
             }
 
             //end the transaction 
@@ -681,7 +685,7 @@ namespace Dynamo.Controls
                 name = dialog.Text;
                 category = dialog.Category;
 
-                if (Controller.FunctionDict.ContainsKey(name))
+                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == name))
                 {
                     error = "A function with this name already exists.";
                 }
@@ -696,15 +700,15 @@ namespace Dynamo.Controls
             }
             while (!error.Equals(""));
 
-            Controller.NewFunction(name, category, true);
+            Controller.NewFunction(Guid.NewGuid(), name, category, true);
         }
 
-        internal void ChangeView_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Controls.MenuItem item = sender as System.Windows.Controls.MenuItem;
+        //internal void ChangeView_Click(object sender, RoutedEventArgs e)
+        //{
+        //    System.Windows.Controls.MenuItem item = sender as System.Windows.Controls.MenuItem;
 
-            Controller.DisplayFunction(item.Header.ToString());
-        }
+        //    Controller.DisplayFunction(item.Header.ToString());
+        //}
 
         internal void setFunctionBackground()
         {

@@ -18,7 +18,7 @@
       <System.Double value="1" min="1" max="30" />
     </Dynamo.Elements.dynDoubleSliderInput>
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="ae1d1ebf-708b-4e09-b690-8600548c52d5" nickname="Dynamic Relaxation Loop" x="609" y="331.25">
-      <Symbol value="Dynamic Relaxation Loop" />
+      <ID value="7f6594ea-2171-4b21-b17d-3da4e0caf03e" />
       <Output value="out" />
       <Inputs>
         <Input value="ps" />

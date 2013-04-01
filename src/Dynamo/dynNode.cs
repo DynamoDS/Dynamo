@@ -73,19 +73,8 @@ namespace Dynamo.Nodes
             get { return dynSettings.Controller; }
         }
 
-        protected internal static HashSet<string> _taggedSymbols = new HashSet<string>();
-        protected internal static bool _startTag = false;
-
-        //private bool __isDirty = true;
         private bool _isDirty = true;
-        //{
-        //    get { return __isDirty; }
-        //    set
-        //    {
-        //        __isDirty = value;
-        //        Dispatcher.BeginInvoke(new Action(() => dirtyEllipse.Fill = __isDirty ? Brushes.Red : Brushes.Green));
-        //    }
-        //}
+
         ///<summary>
         ///Does this Element need to be regenerated? Setting this to true will trigger a modification event
         ///for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
@@ -100,18 +89,8 @@ namespace Dynamo.Nodes
                     return true;
                 else
                 {
-                    //TODO: move this entirely to dynFunction?
-                    bool start = _startTag;
-                    _startTag = true;
-
                     bool dirty = Inputs.Values.Where(x => x != null).Any(x => x.Item2.RequiresRecalc);
                     _isDirty = dirty;
-
-                    if (!start)
-                    {
-                        _startTag = false;
-                        _taggedSymbols.Clear();
-                    }
 
                     return dirty;
                 }
@@ -759,17 +738,16 @@ namespace Dynamo.Nodes
 
             if (entry is dynFunction)
             {
-                var symbol = (entry as dynFunction).Symbol;
-                if (!dynSettings.Controller.FunctionDict.ContainsKey(symbol))
+                var symbol = Guid.Parse((entry as dynFunction).Symbol);
+                if (!dynSettings.FunctionDict.ContainsKey(symbol))
                 {
                     dynSettings.Bench.Log("WARNING -- No implementation found for node: " + symbol);
                     entry.NodeUI.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }
 
-                result = dynSettings.Controller.FunctionDict[symbol]
-                    .GetTopMostNodes()
-                    .Any(ContinueTraversalUntilAny);
+                result = dynSettings.FunctionDict[symbol]
+                    .Workspace.GetTopMostNodes().Any(ContinueTraversalUntilAny);
             }
             resultDict[entry] = result;
             if (result)

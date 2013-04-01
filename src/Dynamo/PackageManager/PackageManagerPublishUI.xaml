@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Dynamo.Nodes.PackageManager.PackageManagerPublishUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="385" d:DesignWidth="350">
+  
+  <Grid Background="Black">
+
+    <StackPanel Name="BrowserContainer" Orientation="Vertical">
+
+      <TextBlock Padding="10,15,10,10" Width ="350" Background="#333" Foreground="DarkGray" FontSize="18">Publish a node...</TextBlock>
+
+      <Label Content="Description of the node" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" />
+      <TextBox Name="DescriptionInput" Margin="5" Padding="5" />
+
+      <Label Content="Keywords (separated by spaces)" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+      <TextBox Name="KeywordsInput" Margin="5" Padding="5" />
+
+      <Label Content="Version (major minor build)" Height="28" Margin="0,10,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+      <StackPanel Orientation="Horizontal">
+        <TextBox Name="VersionMajor" Width ="30" Margin="5" Padding="5" HorizontalAlignment="Left"/>
+        <TextBox Name="VersionMinor" Width ="30" Margin="5" Padding="5" HorizontalAlignment="Left"/>
+        <TextBox Name="VersionBuild" Width ="30" Margin="5" Padding="5" HorizontalAlignment="Left"/>
+      </StackPanel>
+
+      <Label Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="LicenseLabel" VerticalAlignment="Top">
+        The default is the MIT license.
+      </Label>
+
+      <Button Style="{DynamicResource ResourceKey=STextButton}" Width="120" Margin="10" HorizontalAlignment="Right">Submit Node</Button>
+      
+    </StackPanel>
+
+  </Grid>
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="..\Themes\DynamoModern.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+</UserControl>

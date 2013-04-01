@@ -12,10 +12,8 @@ namespace Dynamo.Search
     public partial class SearchUI : UserControl
     {
         public SearchController Controller;
-        public TextBox SearchTextBox;
-        public ListBox ResultList;
         
-        public ObservableCollection<dynNodeUI> VisibleNodes { get { return Controller.VisibleNodes; } }
+        public ObservableCollection<ISearchElement> VisibleNodes { get { return Controller.VisibleNodes; } }
 
         public SearchUI( SearchController controller )
         {
@@ -23,13 +21,11 @@ namespace Dynamo.Search
 
             InitializeComponent();
 
-            SearchTextBox = (TextBox) this.RSearchBox;
-            ResultList = (ListBox) this.RSearchResultsListBox;
-
-            ResultList.SelectionMode = SelectionMode.Single;
+            SearchResultsListBox.SelectionMode = SelectionMode.Single;
 
             this.PreviewKeyDown += new KeyEventHandler(KeyHandler);
             SearchTextBox.IsVisibleChanged += delegate { SearchTextBox.Focus();
+                                                         SearchTextBox.SelectAll();
                                                          Controller.SearchAndUpdateUI(this.SearchTextBox.Text.Trim());
             };
         }
@@ -46,7 +42,7 @@ namespace Dynamo.Search
 
         public void SelectNext()
         {
-            if (SelectedIndex() == this.ResultList.Items.Count - 1
+            if (SelectedIndex() == this.SearchResultsListBox.Items.Count - 1
                 || SelectedIndex() == -1)
                 return;
 
@@ -63,13 +59,13 @@ namespace Dynamo.Search
 
         public void SetSelected(int i)
         {
-            this.ResultList.SelectedIndex = i;
-            this.ResultList.ScrollIntoView( this.ResultList.Items[i] );
+            this.SearchResultsListBox.SelectedIndex = i;
+            this.SearchResultsListBox.ScrollIntoView( this.SearchResultsListBox.Items[i] );
         }
 
         public int SelectedIndex()
         {
-            return this.ResultList.SelectedIndex;
+            return this.SearchResultsListBox.SelectedIndex;
         }
     }
 }

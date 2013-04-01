@@ -16,14 +16,14 @@ limitations under the License.
 <dynWorkspace X="10" Y="55">
   <dynElements>
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="2fa5df5e-28b4-4f13-b5e0-8188e9009aeb" nickname="ConnectPoints" x="879" y="131.5">
-      <Symbol value="ConnectPoints" />
+      <ID value="fbdfbd95-f779-49ae-869f-227f4a3fdb1e" />
       <Output value="out" />
       <Inputs>
         <Input value="refPts" />
       </Inputs>
     </Dynamo.Elements.dynFunction>
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="9c8c2279-6f59-417c-8218-3b337230bd99" nickname="GraphFunction" x="534.75" y="118.5">
-      <Symbol value="GraphFunction" />
+      <ID value="07e6b150-d902-4abb-8103-79193552eee7" />
       <Output value="out" />
       <Inputs>
         <Input value="x-start" />

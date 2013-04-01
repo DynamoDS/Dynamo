@@ -14,7 +14,7 @@
       
       <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal">
 
-        <TextBox Name="RSearchBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="18" Padding="10,15,5,10" Margin ="0"
+        <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="18" Padding="10,15,5,10" Margin ="0"
                        IsEnabled="True" TextChanged="SearchBox_OnTextChanged" VerticalAlignment="Stretch" Width="355" Text="" />
 
         <Button Name="RSearchIcon" Margin="0" Width="90" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
@@ -28,21 +28,21 @@
       <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" 
                       VerticalScrollBarVisibility="Visible" MaxHeight="300" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
 
-          <ListBox Name="RSearchResultsListBox" ItemsSource="{Binding Path=VisibleNodes, ElementName=SearchControl}" 
+          <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=VisibleNodes, ElementName=SearchControl}" 
                    BorderThickness="0" Padding="0" Background="Black">
             
             <ListBox.ItemTemplate>
               <DataTemplate>
                 
                 <Grid VerticalAlignment="Stretch"
-                      Width="{Binding ElementName=RSearchResultsListBox,Path=ActualWidth}" 
+                      Width="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                       HorizontalAlignment="Left" Background="Black">
 
-                  <Line X1="0" X2="{Binding ElementName=RSearchResultsListBox,Path=ActualWidth}" 
+                  <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="#111" Y1="0" Y2="0" VerticalAlignment="Top"/>
-                  <TextBlock FontSize="24" Text="{Binding Path=NickName}" Foreground="AliceBlue" Padding="10,5,0,0"/>
+                  <TextBlock FontSize="24" Text="{Binding Path=Name}" Foreground="AliceBlue" Padding="10,5,0,0"/>
                   <TextBlock FontSize="12" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 39, 0, 10"/>
-                  <Line X1="0" X2="{Binding ElementName=RSearchResultsListBox,Path=ActualWidth}" 
+                 <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="DimGray" Y1="0" Y2="0" VerticalAlignment="Bottom"/>
                   
                 </Grid>

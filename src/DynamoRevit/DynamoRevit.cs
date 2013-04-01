@@ -130,7 +130,7 @@ namespace Dynamo.Applications
         Autodesk.Revit.UI.UIApplication m_revit;
         Autodesk.Revit.UI.UIDocument m_doc;
         static dynBench dynamoBench;
-        TextWriter tw;
+
 
         public Autodesk.Revit.UI.Result Execute(Autodesk.Revit.UI.ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -143,18 +143,11 @@ namespace Dynamo.Applications
             //SplashScreen splashScreen = null
             Window splashScreen = null;
 
+            dynSettings.StartLogging();
+
             try
             {
-                //create a log file
-                string tempPath = System.IO.Path.GetTempPath();
-                string logPath = Path.Combine(tempPath, "dynamoLog.txt");
-
-                if (File.Exists(logPath))
-                    File.Delete(logPath);
-
-                tw = new StreamWriter(logPath);
-                tw.WriteLine("Dynamo log started " + System.DateTime.Now.ToString());
-
+                
                 m_revit = revit.Application;
                 m_doc = m_revit.ActiveUIDocument;
 
@@ -170,7 +163,6 @@ namespace Dynamo.Applications
                 dynRevitSettings.Revit = m_revit;
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
-                dynSettings.Writer = tw;
 
                 IdlePromise.ExecuteOnIdle(new Action(
                     delegate
@@ -204,12 +196,11 @@ namespace Dynamo.Applications
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show(ex.ToString());
-                if (tw != null)
+                if (dynSettings.Writer != null)
                 {
-                    tw.WriteLine(ex.Message);
-                    tw.WriteLine(ex.StackTrace);
-                    tw.WriteLine("Dynamo log ended " + System.DateTime.Now.ToString());
-                    tw.Close();
+                    dynSettings.Writer.WriteLine(ex.Message);
+                    dynSettings.Writer.WriteLine(ex.StackTrace);
+                    dynSettings.Writer.WriteLine("Dynamo log ended " + System.DateTime.Now.ToString());
                 }
                 return Result.Failed;
             }
