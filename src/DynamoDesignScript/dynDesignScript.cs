@@ -37,8 +37,8 @@ using System.Windows;
 using System.Xml;
 using Microsoft.FSharp.Core;
 
-using Autodesk.Revit;
-using Autodesk.Revit.DB;
+//using Autodesk.Revit;
+//using Autodesk.Revit.DB;
 
 using Autodesk.ASM;
 
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
     [NodeName("DesignScript Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded DesignScript script")]
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
+    //[Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
     public class dynDesignScript : dynNodeWithOneOutput
     {
         private bool dirty = true;
@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
             if (asm_started)
                 return;
 
-            Autodesk.ASM.State.UseExternalASM();
+            //Autodesk.ASM.State.UseExternalASM();
             Autodesk.ASM.State.Start();
             Autodesk.ASM.State.StartViewer();
 
@@ -180,42 +180,58 @@ namespace Dynamo.Nodes
             FSharpList<Value> created_objects = FSharpList<Value>.Empty;
 
             List<object> output_objects = Autodesk.ASM.DynamoOutput.Objects();
-            List<Autodesk.Revit.DB.Solid> solids = new List<Autodesk.Revit.DB.Solid>();
-            List<Autodesk.Revit.DB.Element> elements = new List<Autodesk.Revit.DB.Element>();
+            //List<Autodesk.Revit.DB.Solid> solids = new List<Autodesk.Revit.DB.Solid>();
+            //List<Autodesk.Revit.DB.Element> elements = new List<Autodesk.Revit.DB.Element>();
+
+            //foreach (object o in output_objects)
+            //{
+                //Autodesk.DesignScript.Geometry.Geometry g = o as Autodesk.DesignScript.Geometry.Geometry;
+
+                //if (g == null)
+                //    continue;
+
+                //Autodesk.DesignScript.Interfaces.IGeometryEntity entity =
+                //Autodesk.DesignScript.Geometry.GeometryExtension.ToEntity<
+                //    Autodesk.DesignScript.Geometry.Geometry,
+                //    Autodesk.DesignScript.Interfaces.IGeometryEntity>(g);
+
+                //Autodesk.ASM.DesignScriptEntity ds_entity = entity as Autodesk.ASM.DesignScriptEntity;
+
+                //if (ds_entity == null)
+                //    continue;
+
+                //Autodesk.Revit.DB.Solid solid = Autodesk.Revit.DB.GeometryCreationUtilities.ConvertAsmBodyToGeometry(ds_entity.BodyPtr);
+                //solids.Add(solid);
+
+                //Autodesk.DesignScript.Geometry.Point p = o as Autodesk.DesignScript.Geometry.Point;
+
+                //if (p == null)
+                //    continue;
+
+                //Autodesk.Revit.DB.XYZ xyz = Autodesk.Revit.DB.XYZ(p.X, p.Y, p.Z);
+
+                ////FreeFormElement elem = Autodesk.Revit.DB.FreeFormElement.Create(
+                ////    Dynamo.Utilities.dynRevitSettings.Doc.Document, solid);
+                //ReferencePoint elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(xyz);
+
+
+                //elements.Add(elem);
+            //}
+
+            //foreach (Autodesk.Revit.DB.Element revit_entity in elements)
+            //{
+            //    Value element = Value.NewContainer(revit_entity);
+            //    created_objects = FSharpList<Value>.Cons(element, created_objects);
+            //}
 
             foreach (object o in output_objects)
             {
-                Autodesk.DesignScript.Geometry.Geometry g = o as Autodesk.DesignScript.Geometry.Geometry;
-
-                if (g == null)
-                    continue;
-
-                Autodesk.DesignScript.Interfaces.IGeometryEntity entity =
-                Autodesk.DesignScript.Geometry.GeometryExtension.ToEntity<
-                    Autodesk.DesignScript.Geometry.Geometry,
-                    Autodesk.DesignScript.Interfaces.IGeometryEntity>(g);
-
-                Autodesk.ASM.DesignScriptEntity ds_entity = entity as Autodesk.ASM.DesignScriptEntity;
-
-                if (ds_entity == null)
-                    continue;
-
-                Autodesk.Revit.DB.Solid solid = Autodesk.Revit.DB.GeometryCreationUtilities.ConvertAsmBodyToGeometry(ds_entity.BodyPtr);
-                solids.Add(solid);
-
-                FreeFormElement elem = Autodesk.Revit.DB.FreeFormElement.Create(
-                    Dynamo.Utilities.dynRevitSettings.Doc.Document, solid);
-
-                elements.Add(elem);
-            }
-
-            foreach (Autodesk.Revit.DB.Element revit_entity in elements)
-            {
-                Value element = Value.NewContainer(revit_entity);
+                Value element = Value.NewContainer(o);
                 created_objects = FSharpList<Value>.Cons(element, created_objects);
             }
 
             return Value.NewList(created_objects);
+            //return Value.NewContainer(null);
         }
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)

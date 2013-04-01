@@ -73,12 +73,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Release\ProtoScript.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\Program\RevitAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\Program\RevitAPIUI.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -97,10 +91,6 @@
     <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
       <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
       <Name>DragCanvas</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
-      <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
-      <Name>DynamoRevit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
