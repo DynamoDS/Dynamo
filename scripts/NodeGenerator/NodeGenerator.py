@@ -22,8 +22,211 @@
 
 import xml.etree.ElementTree as ET
 
-tree = ET.parse('RevitAPI.xml')
-root = tree.getroot()
+def main():
+	tree = ET.parse('RevitAPI.xml')
+	root = tree.getroot()
+
+	wrapperPath = './DynamoRevitNodes.cs'
+	# create a new text file to hold our wrapped classes
+	try:
+	   with open(wrapperPath) as f: pass
+	except IOError as e:
+	   print 'Could not find existing wrapper path .'
+
+	f = open(wrapperPath, 'w')
+
+	# create a list to store the node
+	# names that have been created
+	node_names = []
+
+	# create a list to store necessary 
+	# types from Autodesk
+	required_types = []
+
+	array_types = []
+
+	# exclusions that we can deal with later
+	skip_list = ['MakeBound', 'MakeUnbound','getGeometry','Rehost', 'AddEdge','ScaleProfile',
+	'ScaleSubElement','RotateProfile', 'RotateSubElement', 'MoveProfile','MoveSubElement','DeleteProfile',
+	'DeleteSubElement','ConstrainProfiles','GetProfileAndCurveLoopIndexFromReference']
+
+	using=[	
+	'using System;\n',
+	'using System.Collections.Generic;\n',
+	'using System.Linq;\n',
+	'using Autodesk.Revit.DB;\n',
+	'using Autodesk.Revit;\n',
+	'using Dynamo.Controls;\n',
+	'using Dynamo.Utilities;\n',
+	'using Dynamo.Connectors;\n',
+	'using Dynamo.Revit;\n',
+	'using Dynamo.FSchemeInterop;\n',
+	'using Dynamo.FSchemeInterop.Node;\n',
+	'using Microsoft.FSharp.Collections;\n',
+	'using Value = Dynamo.FScheme.Value;\n']
+	f.writelines(using)
+
+	f.write('namespace Dynamo.Nodes\n')
+	f.write('{\n')
+
+	read_types(root)
+
+	# cureNameSpaces = []
+	# for member in root.iter('members'):
+	# 	node_name_counter = 0
+	# 	for member_data in member.findall('member'):
+
+	# 		member_name = member_data.get('name')
+
+	# 		isCurveMember = False
+	# 		isFaceMember = False
+	# 		isMethod = False
+	# 		isProperty = False
+	# 		isSolidMember = False
+	# 		isFormMember = False
+
+	# 		#Application.Create
+	# 		#Document.Create
+	# 		#Document.FamilyCreate
+	# 		method_call_prefix = ''
+	# 		if "Autodesk.Revit.Creation.Application" in member_name:
+	# 			method_call_prefix = 'dynRevitSettings.Revit.Application.Create.'
+	# 		elif "Autodesk.Revit.Creation.FamilyItemFactory" in member_name:
+	# 			method_call_prefix  = 'dynRevitSettings.Doc.Document.FamilyCreate.'
+	# 		elif "Autodesk.Revit.Creation.Document" in member_name:
+	# 			method_call_prefix = 'dynRevitSettings.Doc.Document.Create.'
+	# 		elif "Autodesk.Revit.Creation.ItemFactoryBase" in member_name:
+	# 			method_call_prefix = 'dynRevitSettings.Doc.Document.'
+	# 		elif "Autodesk.Revit.DB.Curve." in member_name:
+	# 			method_call_prefix = '((Curve)(args[0] as Value.Container).Item).'
+	# 			isCurveMember = True
+	# 		elif "Autodesk.Revit.DB.Face." in member_name:
+	# 			method_call_prefix = '((Face)(args[0] as Value.Container).Item).'
+	# 			isFaceMember = True
+	# 		elif "Autodesk.Revit.DB.Solid." in member_name:
+	# 			method_call_prefix = '((Solid)(args[0] as Value.Container).Item).'
+	# 			isSolidMember = True
+	# 		elif "Autodesk.Revit.DB.Form." in member_name:
+	# 			method_call_prefix = '((Form)(args[0] as Value.Container).Item).'
+	# 			isFormMember = True
+	# 		else:
+	# 			continue
+
+	# 		try:
+	# 			summary = member_data.find('summary').text.replace('\n','')
+	# 		except:
+	# 			summary = ''
+
+	# 		try:
+	# 			return_summary = member_data.find('returns').text.replace('\n','')
+	# 		except:
+	# 			return_summary = ''
+
+	# 		paramDescriptions = member_data.findall('param')
+
+	# 		# we start with something like M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
+	# 		methodDefinition = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
+
+	# 		#print member_name
+	# 		conditions = [isCurveMember, isFaceMember, isSolidMember, isFormMember]
+	# 		if not "New" in methodDefinition:
+	# 			if not any(conditions):
+	# 				continue
+
+	# 		if 'P:' in member_name:
+	# 			isProperty = True
+	# 		elif 'M:' in member_name:
+	# 			isMethod = True
+	# 		else:
+	# 			isMethod = True
+
+	# 		# EXAMPLES:
+	# 		# M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ) -> parameters
+	# 		# M:Autodesk.Revit.DB.Curve.MakeUnbound -> parameterless
+	# 		if '(' in methodDefinition:
+	# 			methodCall = methodDefinition.split('(')[0].split('.')[-1]  	#NewPoint
+	# 			if isProperty:
+	# 				# the Revit API lists some properties which can not be returned
+	# 				# without the get_ syntax. the API documentation flags these as properties
+	# 				# but with parameters so we need to append the get_ AND later send the parameters
+	# 				methodCall = 'get_' + methodDefinition.split('(')[0].split('.')[-1]
+	# 			methodParams = methodDefinition.split('(')[1][:-1].split(',')	#Autodesk.Revit.DB.XYZ
+	# 		else:
+	# 			methodCall = methodDefinition.split('.')[-1]	#NewPoint
+	# 			methodParams = []		#NewPoint
+
+	# 		# print methodCall
+	# 		if 'New' in methodCall:
+	# 			methodName = methodCall[3:]	#Point
+	# 		else:
+	# 			methodName = methodCall
+
+	# 		if methodName in skip_list:
+	# 			continue;
+
+	# 		# if the class name already exists
+	# 		# append an integer to make it unique
+	# 		if isCurveMember:
+	# 			methodName = 'Curve_'+methodName
+	# 		elif isFaceMember:
+	# 			methodName = 'Face_'+methodName
+	# 		elif isSolidMember:
+	# 			methodName = 'Solid_'+methodName
+	# 		elif isFormMember:
+	# 			methodName = 'Form_'+methodName
+	# 		methodNameStub = methodName
+
+	# 		while methodName in node_names:
+	# 			node_name_counter += 1
+	# 			methodName = methodNameStub + '_' + str(node_name_counter)
+	# 		# else:
+	# 		node_name_counter = 0
+
+	# 		#store the node name
+	# 		node_names.append(methodName)
+
+	# 		write_node_attributes(methodName, summary, f)
+
+	# 		f.write('\tpublic class Revit_' + methodName + ' : dynRevitTransactionNodeWithOneOutput\n')
+	# 		f.write('\t{\n')
+
+	# 		#CONSTRUCTOR
+	# 		write_node_constructor(methodName, methodParams, paramDescriptions, return_summary,f, required_types)
+
+	# 		#EVALUATE
+	# 		write_node_evaluate(method_call_prefix, methodCall, methodParams, f, isMethod, isProperty, return_summary == '')
+			
+	# 		f.write('\t}\n')
+
+	# 		f.write('\n')
+	f.write('\t}\n')
+	f.close()
+
+	# print node_names
+	#print required_types
+
+def read_members(root):
+	for member in root.iter('members'):
+		for member_data in member.findall('member'):
+			member_name = member_data.get('name')
+			if "T:" in member_name:
+				read_type(member_name)
+
+def read_type(member_name):
+	for member in root.iter('members'):
+		for member_data in member.findall('member'):
+			member_name = member_data.get('name')
+			if type_name.split(':')[1] in member_name:
+				if "M:" in member_name:
+					read_method(member_data)
+				elif "P:" in member_name:
+					read_property(member_data) 
+
+def read_method(data):
+	print data
+
+def read_propert(data):
+	print data
 
 def match_param(x):
     return {
@@ -208,182 +411,6 @@ def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMeth
 
 	f.write('\t\t}\n')
 
-wrapperPath = './DynamoRevitNodes.cs'
-# create a new text file to hold our wrapped classes
-try:
-   with open(wrapperPath) as f: pass
-except IOError as e:
-   print 'Could not find existing wrapper path .'
-
-f = open(wrapperPath, 'w')
-
-# create a list to store the node
-# names that have been created
-node_names = []
-
-# create a list to store necessary 
-# types from Autodesk
-required_types = []
-
-array_types = []
-
-# exclusions that we can deal with later
-skip_list = ['MakeBound', 'MakeUnbound','getGeometry','Rehost', 'AddEdge','ScaleProfile',
-'ScaleSubElement','RotateProfile', 'RotateSubElement', 'MoveProfile','MoveSubElement','DeleteProfile',
-'DeleteSubElement','ConstrainProfiles','GetProfileAndCurveLoopIndexFromReference']
-
-using=[	
-'using System;\n',
-'using System.Collections.Generic;\n',
-'using System.Linq;\n',
-'using Autodesk.Revit.DB;\n',
-'using Autodesk.Revit;\n',
-'using Dynamo.Controls;\n',
-'using Dynamo.Utilities;\n',
-'using Dynamo.Connectors;\n',
-'using Dynamo.Revit;\n',
-'using Dynamo.FSchemeInterop;\n',
-'using Dynamo.FSchemeInterop.Node;\n',
-'using Microsoft.FSharp.Collections;\n',
-'using Value = Dynamo.FScheme.Value;\n']
-f.writelines(using)
-
-f.write('namespace Dynamo.Nodes\n')
-f.write('{\n')
-
-cureNameSpaces = []
-for member in root.iter('members'):
-	node_name_counter = 0
-	for member_data in member.findall('member'):
-
-		member_name = member_data.get('name')
-
-		isCurveMember = False
-		isFaceMember = False
-		isMethod = False
-		isProperty = False
-		isSolidMember = False
-		isFormMember = False
-
-		#Application.Create
-		#Document.Create
-		#Document.FamilyCreate
-		method_call_prefix = ''
-		if "Autodesk.Revit.Creation.Application" in member_name:
-			method_call_prefix = 'dynRevitSettings.Revit.Application.Create.'
-		elif "Autodesk.Revit.Creation.FamilyItemFactory" in member_name:
-			method_call_prefix  = 'dynRevitSettings.Doc.Document.FamilyCreate.'
-		elif "Autodesk.Revit.Creation.Document" in member_name:
-			method_call_prefix = 'dynRevitSettings.Doc.Document.Create.'
-		elif "Autodesk.Revit.Creation.ItemFactoryBase" in member_name:
-			method_call_prefix = 'dynRevitSettings.Doc.Document.'
-		elif "Autodesk.Revit.DB.Curve." in member_name:
-			method_call_prefix = '((Curve)(args[0] as Value.Container).Item).'
-			isCurveMember = True
-		elif "Autodesk.Revit.DB.Face." in member_name:
-			method_call_prefix = '((Face)(args[0] as Value.Container).Item).'
-			isFaceMember = True
-		elif "Autodesk.Revit.DB.Solid." in member_name:
-			method_call_prefix = '((Solid)(args[0] as Value.Container).Item).'
-			isSolidMember = True
-		elif "Autodesk.Revit.DB.Form." in member_name:
-			method_call_prefix = '((Form)(args[0] as Value.Container).Item).'
-			isFormMember = True
-		else:
-			continue
-
-		try:
-			summary = member_data.find('summary').text.replace('\n','')
-		except:
-			summary = ''
-
-		try:
-			return_summary = member_data.find('returns').text.replace('\n','')
-		except:
-			return_summary = ''
-
-		paramDescriptions = member_data.findall('param')
-
-		# we start with something like M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
-		methodDefinition = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
-
-		#print member_name
-		conditions = [isCurveMember, isFaceMember, isSolidMember, isFormMember]
-		if not "New" in methodDefinition:
-			if not any(conditions):
-				continue
-
-		if 'P:' in member_name:
-			isProperty = True
-		elif 'M:' in member_name:
-			isMethod = True
-		else:
-			isMethod = True
-
-		# EXAMPLES:
-		# M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ) -> parameters
-		# M:Autodesk.Revit.DB.Curve.MakeUnbound -> parameterless
-		if '(' in methodDefinition:
-			methodCall = methodDefinition.split('(')[0].split('.')[-1]  	#NewPoint
-			if isProperty:
-				# the Revit API lists some properties which can not be returned
-				# without the get_ syntax. the API documentation flags these as properties
-				# but with parameters so we need to append the get_ AND later send the parameters
-				methodCall = 'get_' + methodDefinition.split('(')[0].split('.')[-1]
-			methodParams = methodDefinition.split('(')[1][:-1].split(',')	#Autodesk.Revit.DB.XYZ
-		else:
-			methodCall = methodDefinition.split('.')[-1]	#NewPoint
-			methodParams = []		#NewPoint
-
-		# print methodCall
-		if 'New' in methodCall:
-			methodName = methodCall[3:]	#Point
-		else:
-			methodName = methodCall
-
-		if methodName in skip_list:
-			continue;
-
-		# if the class name already exists
-		# append an integer to make it unique
-		if isCurveMember:
-			methodName = 'Curve_'+methodName
-		elif isFaceMember:
-			methodName = 'Face_'+methodName
-		elif isSolidMember:
-			methodName = 'Solid_'+methodName
-		elif isFormMember:
-			methodName = 'Form_'+methodName
-		methodNameStub = methodName
-
-		while methodName in node_names:
-			node_name_counter += 1
-			methodName = methodNameStub + '_' + str(node_name_counter)
-		# else:
-		node_name_counter = 0
-
-		#store the node name
-		node_names.append(methodName)
-
-		write_node_attributes(methodName, summary, f)
-
-		f.write('\tpublic class Revit_' + methodName + ' : dynRevitTransactionNodeWithOneOutput\n')
-		f.write('\t{\n')
-
-		#CONSTRUCTOR
-		write_node_constructor(methodName, methodParams, paramDescriptions, return_summary,f, required_types)
-
-		#EVALUATE
-		write_node_evaluate(method_call_prefix, methodCall, methodParams, f, isMethod, isProperty, return_summary == '')
-		
-		f.write('\t}\n')
-
-		f.write('\n')
-f.write('\t}\n')
-f.close()
-
-print node_names
-#print required_types
-
-
+if __name__ == "__main__":
+    main()
 
