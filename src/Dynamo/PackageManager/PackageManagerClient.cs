@@ -301,7 +301,7 @@ namespace Dynamo.PackageManager
 
                     // then save it to a file in packages
                     var d = new XmlDocument();
-                    d.LoadXml(p.content.versions[0].contents);
+                    d.LoadXml(p.content.versions[p.content.versions.Count-1].contents);
 
                     // obtain the funcDefGuid
                     Guid funcDefGuid = ExtractFunctionDefinitionGuid(p.content, 0);

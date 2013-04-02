@@ -334,9 +334,6 @@
                       FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
                       IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}"
                       Content="Debug" VerticalContentAlignment="Center"/>
-
-      
-      
     </WrapPanel>
     
     <!-- Not the best place for this - PB -->
