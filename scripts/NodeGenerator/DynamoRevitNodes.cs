@@ -2605,14 +2605,13 @@ namespace Dynamo.Nodes
 	{
 		public AdaptiveComponentFamilyUtils_GetPointConstraintType()
 		{
-			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Constraint type of the Adaptive Shape Handle Point.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.ElementId));
 			var result = Autodesk.Revit.DB.AdaptiveComponentFamilyUtils.GetPointConstraintType(arg0,arg1);
 			return DynamoTypeConverter.ConvertToValue(result);
@@ -2627,14 +2626,13 @@ namespace Dynamo.Nodes
 	{
 		public AdaptiveComponentFamilyUtils_GetPointOrientationType()
 		{
-			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Orientation type of Adaptive Placement Point.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.ElementId));
 			var result = Autodesk.Revit.DB.AdaptiveComponentFamilyUtils.GetPointOrientationType(arg0,arg1);
 			return DynamoTypeConverter.ConvertToValue(result);
@@ -2649,14 +2647,13 @@ namespace Dynamo.Nodes
 	{
 		public AdaptiveComponentFamilyUtils_GetPlacementNumber()
 		{
-			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Placement number of the Adaptive Placement Point.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.ElementId));
 			var result = Autodesk.Revit.DB.AdaptiveComponentFamilyUtils.GetPlacementNumber(arg0,arg1);
 			return DynamoTypeConverter.ConvertToValue(result);
@@ -2731,14 +2728,13 @@ namespace Dynamo.Nodes
 	{
 		public AdaptiveComponentFamilyUtils_IsAdaptiveShapeHandlePoint()
 		{
-			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","True if the Point is an Adaptive Shape Handle Point.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.ElementId));
 			var result = Autodesk.Revit.DB.AdaptiveComponentFamilyUtils.IsAdaptiveShapeHandlePoint(arg0,arg1);
 			return DynamoTypeConverter.ConvertToValue(result);
@@ -2753,14 +2749,13 @@ namespace Dynamo.Nodes
 	{
 		public AdaptiveComponentFamilyUtils_IsAdaptivePlacementPoint()
 		{
-			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","True if the Point is an Adaptive Placement Point.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.ElementId));
 			var result = Autodesk.Revit.DB.AdaptiveComponentFamilyUtils.IsAdaptivePlacementPoint(arg0,arg1);
 			return DynamoTypeConverter.ConvertToValue(result);
@@ -2775,14 +2770,13 @@ namespace Dynamo.Nodes
 	{
 		public AdaptiveComponentFamilyUtils_IsAdaptivePoint()
 		{
-			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","True if the Point is an Adaptive Point (Placement Point or Shape Handle Point).",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.ElementId));
 			var result = Autodesk.Revit.DB.AdaptiveComponentFamilyUtils.IsAdaptivePoint(arg0,arg1);
 			return DynamoTypeConverter.ConvertToValue(result);
@@ -5883,14 +5877,13 @@ namespace Dynamo.Nodes
 	{
 		public AdaptiveComponentInstanceUtils_CreateAdaptiveComponentInstance()
 		{
-			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("fs", "The FamilySymbol",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","The Family Instance",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.FamilySymbol)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.FamilySymbol));
 			var result = Autodesk.Revit.DB.AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(arg0,arg1);
 			return DynamoTypeConverter.ConvertToValue(result);
@@ -8633,7 +8626,6 @@ namespace Dynamo.Nodes
 	{
 		public PointCloudInstance_Create()
 		{
-			InPortData.Add(new PortData("val", "The document in which the new instance is created",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The element id of the PointCloudType.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("val", "The transform that defines the placement of the instance in the Revit document coordinate system.",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The newly created point cloud instance.",typeof(object)));
@@ -8641,7 +8633,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.ElementId));
 			var arg2=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.Transform));
 			var result = Autodesk.Revit.DB.PointCloudInstance.Create(arg0,arg1,arg2);
@@ -10167,14 +10159,13 @@ namespace Dynamo.Nodes
 	{
 		public Material_Create()
 		{
-			InPortData.Add(new PortData("val", "The document in which to create the material.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("s", "The name of the new material.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Identifier of the new material.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(System.String)DynamoTypeConverter.ConvertInput(args[1],typeof(System.String));
 			var result = Autodesk.Revit.DB.Material.Create(arg0,arg1);
 			return DynamoTypeConverter.ConvertToValue(result);
@@ -11071,7 +11062,6 @@ namespace Dynamo.Nodes
 	{
 		public Wall_Create()
 		{
-			InPortData.Add(new PortData("val", "The document in which the new wall is created.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(List<Autodesk.Revit.DB.Curve>)));
 			InPortData.Add(new PortData("val", "Id of the wall type to be used by the new wall instead of the default type.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("val", "Id of the level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.ElementId)));
@@ -11082,7 +11072,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(List<Autodesk.Revit.DB.Curve>)DynamoTypeConverter.ConvertInput(args[1],typeof(List<Autodesk.Revit.DB.Curve>));
 			var arg2=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.ElementId));
 			var arg3=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[3],typeof(Autodesk.Revit.DB.ElementId));
@@ -11101,7 +11091,6 @@ namespace Dynamo.Nodes
 	{
 		public Wall_Create_1()
 		{
-			InPortData.Add(new PortData("val", "The document in which the new wall is created.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(List<Autodesk.Revit.DB.Curve>)));
 			InPortData.Add(new PortData("val", "Id of the wall type to be used by the new wall instead of the default type.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("val", "Id of the level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.ElementId)));
@@ -11111,7 +11100,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(List<Autodesk.Revit.DB.Curve>)DynamoTypeConverter.ConvertInput(args[1],typeof(List<Autodesk.Revit.DB.Curve>));
 			var arg2=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.ElementId));
 			var arg3=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[3],typeof(Autodesk.Revit.DB.ElementId));
@@ -11129,7 +11118,6 @@ namespace Dynamo.Nodes
 	{
 		public Wall_Create_2()
 		{
-			InPortData.Add(new PortData("val", "The document in which the new wall is created.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(List<Autodesk.Revit.DB.Curve>)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","If successful a new wall object within the project.",typeof(object)));
@@ -11137,7 +11125,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(List<Autodesk.Revit.DB.Curve>)DynamoTypeConverter.ConvertInput(args[1],typeof(List<Autodesk.Revit.DB.Curve>));
 			var arg2=(System.Boolean)DynamoTypeConverter.ConvertInput(args[2],typeof(System.Boolean));
 			var result = Autodesk.Revit.DB.Wall.Create(arg0,arg1,arg2);
@@ -11153,7 +11141,6 @@ namespace Dynamo.Nodes
 	{
 		public Wall_Create_3()
 		{
-			InPortData.Add(new PortData("val", "The document in which the new wall is created.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("crv", "An arc or line representing the base line of the wall.",typeof(Autodesk.Revit.DB.Curve)));
 			InPortData.Add(new PortData("val", "Id of the wall type to be used by the new wall instead of the default type.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("val", "Id of the level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.ElementId)));
@@ -11166,7 +11153,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.Curve));
 			var arg2=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.ElementId));
 			var arg3=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[3],typeof(Autodesk.Revit.DB.ElementId));
@@ -11187,7 +11174,6 @@ namespace Dynamo.Nodes
 	{
 		public Wall_Create_4()
 		{
-			InPortData.Add(new PortData("val", "The document in which the new wall is created.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("crv", "An arc or line representing the base line of the wall.",typeof(Autodesk.Revit.DB.Curve)));
 			InPortData.Add(new PortData("val", "Id of the level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
@@ -11196,7 +11182,7 @@ namespace Dynamo.Nodes
 		}
 		public override Value Evaluate(FSharpList<Value> args)
 		{
-			var arg0=(Autodesk.Revit.DB.Document)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.Document));
+			var arg0=dynRevitSettings.Doc.Document;
 			var arg1=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.Curve));
 			var arg2=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[2],typeof(Autodesk.Revit.DB.ElementId));
 			var arg3=(System.Boolean)DynamoTypeConverter.ConvertInput(args[3],typeof(System.Boolean));

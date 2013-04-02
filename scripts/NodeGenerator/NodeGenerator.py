@@ -255,6 +255,10 @@ class RevitMethod:
 			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(' + self.type + ')));\n')
 
 		for param in self.parameters:
+			#we already store a reference to the document on the 
+			#dynRevitSettings. don't take it as an input
+			if param.param_type == 'Autodesk.Revit.DB.Document':
+				continue
 			param_description = param.description.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
 			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param.param_type)+'\", \"' + param_description + '\",typeof(' + convert_param(param.param_type) + ')));\n')
 
@@ -409,7 +413,13 @@ class RevitParameter:
 			self.isOut = True
 
 	def write(self, index, outMember, argList, f):
-		f.write('\t\t\tvar arg' + str(index) + '=(' + convert_param(self.param_type).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(index) +'],typeof(' + convert_param(self.param_type).replace('@','') +'));\n')
+
+		#we store the document reference on dynRevitSettings
+		#so do not list it as a parameter
+		if self.param_type == 'Autodesk.Revit.DB.Document':
+			f.write('\t\t\tvar arg' + str(index) + '=dynRevitSettings.Doc.Document;\n')
+		else:
+			f.write('\t\t\tvar arg' + str(index) + '=(' + convert_param(self.param_type).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(index) +'],typeof(' + convert_param(self.param_type).replace('@','') +'));\n')
 
 		if self.isOut:
 			argList.append('out arg' + str(index))
