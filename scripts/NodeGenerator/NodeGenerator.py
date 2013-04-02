@@ -14,17 +14,6 @@ def main():
 
 	f = open(wrapperPath, 'w')
 
-	# create a list to store necessary 
-	# types from Autodesk
-	# required_types = []
-
-	# array_types = []
-
-	# # exclusions that we can deal with later
-	# skip_list = ['MakeBound', 'MakeUnbound','getGeometry','Rehost', 'AddEdge','ScaleProfile',
-	# 'ScaleSubElement','RotateProfile', 'RotateSubElement', 'MoveProfile','MoveSubElement','DeleteProfile',
-	# 'DeleteSubElement','ConstrainProfiles','GetProfileAndCurveLoopIndexFromReference']
-
 	using=[	
 	'using System;\n',
 	'using System.Collections.Generic;\n',
@@ -44,44 +33,80 @@ def main():
 	f.write('namespace Dynamo.Nodes\n')
 	f.write('{\n')
 
+	skip_list = [
+	'Autodesk.Revit.DB.Transform.Identity',
+	'Autodesk.Revit.DB.XYZ.BasisX',
+	'Autodesk.Revit.DB.XYZ.BasisY',
+	'Autodesk.Revit.DB.XYZ.BasisZ',
+	'Autodesk.Revit.DB.XYZ.Zero',
+	'Autodesk.Revit.DB.UV.BasisU',
+	'Autodesk.Revit.DB.UV.BasisV',
+	'Autodesk.Revit.DB.UV.Zero',
+	]
+
 	valid_namespaces = [
 	'Autodesk.Revit.Creation.Application', 
 	'Autodesk.Revit.Creation.FamilyItemFactory', 
 	'Autodesk.Revit.Creation.Document', 
 	'Autodesk.Revit.Creation.ItemFactoryBase',
+
 	'Autodesk.Revit.DB.Curve',
 	'Autodesk.Revit.DB.Arc',
 	'Autodesk.Revit.DB.Ellipse',
 	'Autodesk.Revit.DB.HermiteSpline',
 	'Autodesk.Revit.DB.Line',
 	'Autodesk.Revit.DB.NurbSpline',
+
 	'Autodesk.Revit.DB.Face',
 	'Autodesk.Revit.DB.ConicalFace',
 	'Autodesk.Revit.DB.CylindricalFace',
 	'Autodesk.Revit.DB.HermiteFace',
 	'Autodesk.Revit.DB.RevolvedFace',
 	'Autodesk.Revit.DB.RuledFace',
+
+	'Autodesk.Revit.DB.GenericForm',
+    'Autodesk.Revit.DB.Blend',
+    'Autodesk.Revit.DB.Extrusion',
+    'Autodesk.Revit.DB.Form',
+    'Autodesk.Revit.DB.Revolution',
+    'Autodesk.Revit.DB.Sweep',
+    'Autodesk.Revit.DB.SweptBlend',
+
 	'Autodesk.Revit.DB.GeometryObject',
     'Autodesk.Revit.DB.Edge',
-    'Autodesk.Revit.DB.GeometryElement',
     'Autodesk.Revit.DB.GeometryInstance',
     'Autodesk.Revit.DB.Mesh',
     'Autodesk.Revit.DB.Point',
     'Autodesk.Revit.DB.PolyLine',
     'Autodesk.Revit.DB.Profile',
     'Autodesk.Revit.DB.Solid',
+
     'Autodesk.Revit.DB.Instance',
     'Autodesk.Revit.DB.FamilyInstance',
-    'Autodesk.Revit.DB.PointCloudInstance'
+    'Autodesk.Revit.DB.PointCloudInstance',
+
+    'Autodesk.Revit.DB.DividedSurface',
+
+    'Autodesk.Revit.DB.AdaptiveComponentFamilyUtils',
+    'Autodesk.Revit.DB.AdaptiveComponentInstanceUtils',
+
+    'Autodesk.Revit.DB.Transform',
+    'Autodesk.Revit.DB.ModelArc',
+    'Autodesk.Revit.DB.ModelCurve',
+    'Autodesk.Revit.DB.ModelSpline',
+    'Autodesk.Revit.DB.ModelHermiteSpline',
+    'Autodesk.Revit.DB.ModelEllipse',
+    'Autodesk.Revit.DB.ModelLine',
+
+    'Autodesk.Revit.DB.XYZ',
+    'Autodesk.Revit.DB.UV',
+
     'Autodesk.Revit.DB.Wall',
     'Autodesk.Revit.DB.Material',
     'Autodesk.Revit.DB.Level',
-    'Autodesk.Revit.DB.AdaptiveComponentFamilyUtils',
-    'Autodesk.Revit.DB.AdaptiveComponentInstanceUtils',
+    'Autodesk.Revit.DB.Color',
     'Autodesk.Revit.DB.BoundingBoxUV',
     'Autodesk.Revit.DB.BoundingBoxXYZ',
-    'Autodesk.Revit.DB.Color',
-    'Autodesk.Revit.DB.Transform'
 	]
 
 	revit_types = {}
@@ -91,8 +116,8 @@ def main():
 	node_names = []
 
 	read_types(root, revit_types, valid_namespaces)
-	read_methods(root, revit_types, valid_namespaces, node_names)
-	read_properties(root, revit_types, valid_namespaces)
+	read_methods(root, revit_types, valid_namespaces, node_names, skip_list)
+	read_properties(root, revit_types, valid_namespaces, skip_list)
 
 	for key in revit_types.keys():
 		revit_types[key].write(f);
@@ -121,8 +146,8 @@ class RevitType:
 	def write(self, f):
 		for m in self.methods:
 			m.write(f)
-		# for p in t.properties:
-		# 	write_property(p,f)
+		for p in self.properties:
+			p.write(f)
 
 class RevitMethod:
 	def __init__(self, name, returns, summary, node_names):
@@ -283,12 +308,58 @@ class RevitProperty:
 	def __init__(self, name, summary):
 		self.name = name
 		self.summary = summary
-		self.nickName = 'Revit_' + self.name.split('.')[-1]
+		self.parameters=[]
+		self.isStatic = False
+		self.type = self.name.split('(')[0].rsplit('.',1)[0]
+		splits = self.name.split('(')[0].split('.')
+		self.nickName = 'Revit_' + splits[-2] + '_' + splits[-1]
+
+		if '(' in self.name:
+			self.method_call = self.name.split('(')[0].split('.')[-1]  	
+		else:
+			self.method_call = self.name.split('.')[-1] 
 
 	def __str__(self):
 		string = self.name +"\n"
 		string += self.summary +"\n"
 		return string
+
+	def write(self, f):
+		self.write_attributes(f)
+		f.write('\tpublic class ' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
+		f.write('\t{\n')
+		self.write_constructor(f)
+		self.write_evaluate(f)
+		f.write('\t}\n')
+		f.write('\n')
+
+	def write_attributes(self,f):
+		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
+		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
+		f.writelines(node_attributes)
+
+	def write_constructor(self, f):
+		f.write('\t\tpublic ' + self.nickName + '()\n')
+		f.write('\t\t{\n')
+
+		f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(object)));\n')
+		f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
+		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
+		f.write('\t\t}\n')
+
+	def write_evaluate(self, f):
+		f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
+		f.write('\t\t{\n')
+
+		# for each incoming arg, cast it to the matching param
+		i = 0
+		f.write('\t\t\tvar arg' + str(i) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(' + self.type + '));\n')
+		i+=1
+		f.write('\t\t\tvar result = ((' + self.type + ')(args[0] as Value.Container).Item).' + self.method_call +  ';\n')
+
+		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		f.write('\t\t}\n')
 
 class RevitParameter:
 	def __init__(self, name, param_type, description):
@@ -337,23 +408,23 @@ def read_type(member_data, revit_types):
 	newType = RevitType(name, summary)
 	revit_types[name] = newType
 
-def read_methods(root, revit_types, valid_namespaces, node_names):
+def read_methods(root, revit_types, valid_namespaces, node_names, skip_list):
 	for member in root.iter('members'):
 		for member_data in member.findall('member'):
 			member_name = member_data.get('name')
 			if "M:" in member_name:
 				if check_namespace(member_name, valid_namespaces):
-					read_method(member_data, revit_types, node_names)
+					read_method(member_data, revit_types, node_names,skip_list)
 
-def read_properties(root, revit_types, valid_namespaces):
+def read_properties(root, revit_types, valid_namespaces, skip_list):
 	for member in root.iter('members'):
 		for member_data in member.findall('member'):
 			member_name = member_data.get('name')
 			if "P:" in member_name:
 				if check_namespace(member_name, valid_namespaces):
-					read_property(member_data, revit_types)
+					read_property(member_data, revit_types, skip_list)
 
-def read_method(member_data, revit_types, node_names):
+def read_method(member_data, revit_types, node_names, skip_list):
 
 	method_name = member_data.get('name').split(':')[1] #take off the M:
 	print method_name
@@ -363,6 +434,9 @@ def read_method(member_data, revit_types, node_names):
 		param_types = method_name.split('(')[1][:-1].split(',')
 		method_name = method_name.split('(')[0]
 		#print len(param_types)
+
+	if method_name in skip_list:
+		return
 
 	try:
 		summary = member_data.find('summary').text.replace('\n','')
@@ -376,6 +450,10 @@ def read_method(member_data, revit_types, node_names):
 
 	#do not read void members for now
 	if returns == '':
+		return
+
+	#do not read operator overloads for now
+	if 'op_' in method_name:
 		return
 
 	newMethod = RevitMethod(method_name, summary, returns, node_names)
@@ -409,14 +487,48 @@ def read_method(member_data, revit_types, node_names):
 		revit_types[type_name] = RevitType(type_name, '')
 	revit_types[type_name].methods.append(newMethod)
 
-def read_property(member_data, revit_types):
+def read_property(member_data, revit_types, skip_list):
 	property_name = member_data.get('name').split(':')[1] #take off the M:
 	try:
 		summary = member_data.find('summary').text.replace('\n','')
 	except:
 		summary = ''
 
+	param_types = []
+	if '(' in property_name:
+		param_types = property_name.split('(')[1][:-1].split(',')
+		property_name = property_name.split('(')[0]
+
+	if property_name in skip_list:
+		return
+
+	params = member_data.findall('param')
+
+	#don't wrap properties with parameters now
+	if len(param_types) > 0:
+		return
+
+	#the Revit API xml has methods where there are
+	#more parameter descriptions than there are parameters
+	#in this case, just return
+	if len(param_types) != len(params):
+		return
+	
 	newProperty = RevitProperty(property_name, summary)
+
+	paramCount = 0
+	for param in params:
+		param_name = param.get('name').replace('\n','')
+		if param.text is None:
+			param_description = ''
+		else:
+			param_description = param.text
+		newParameter = RevitParameter(param_name, param_types[paramCount],param_description)
+		newProperty.parameters.append(newParameter)
+		paramCount += 1
+
+	if paramCount > 0:
+		newProperty.isStatic = True
 
 	#the type name is the method name minus the
 	#last segment after the '.'
@@ -498,7 +610,10 @@ def convert_param(x):
 		'System.Collections.Generic.List{Autodesk.Revit.Creation.ProfiledWallCreationData}':'List<Autodesk.Revit.Creation.ProfiledWallCreationData>',
 		'System.Collections.Generic.List{Autodesk.Revit.Creation.RectangularWallCreationData}':'List<Autodesk.Revit.Creation.RectangularWallCreationData>',
 		'System.Collections.Generic.List{Autodesk.Revit.Creation.TextNoteCreationData}':'List<Autodesk.Revit.Creation.TextNoteCreationData>',
-		'System.Collections.Generic.List{Autodesk.Revit.Creation.FamilyInstanceCreationData}':'List<Autodesk.Revit.Creation.FamilyInstanceCreationData>'
+		'System.Collections.Generic.List{Autodesk.Revit.Creation.FamilyInstanceCreationData}':'List<Autodesk.Revit.Creation.FamilyInstanceCreationData>',
+		'System.Collections.Generic.IList{Autodesk.Revit.DB.Curve}':'List<Autodesk.Revit.DB.Curve>',
+		'System.Collections.Generic.IList{Autodesk.Revit.DB.Reference}':'List<Autodesk.Revit.DB.Reference>',
+		'Autodesk.Revit.DB.Phase!System.Runtime.CompilerServices.IsByValue':'Autodesk.Revit.DB.Phase'
 	}.get(x,x).replace('@','')
 
 def conversion_method(x):
