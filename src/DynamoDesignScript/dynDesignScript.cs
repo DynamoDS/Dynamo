@@ -37,8 +37,10 @@ using System.Windows;
 using System.Xml;
 using Microsoft.FSharp.Core;
 
-//using Autodesk.Revit;
-//using Autodesk.Revit.DB;
+using Autodesk.Revit;
+using Autodesk.Revit.DB;
+
+using Dynamo.Revit;
 
 using Autodesk.ASM;
 
@@ -53,7 +55,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded DesignScript script")]
     //[Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
-    public class dynDesignScript : dynNodeWithOneOutput
+    public class dynDesignScript : dynRevitTransactionNodeWithOneOutput
     {
         private bool dirty = true;
 
@@ -174,12 +176,70 @@ namespace Dynamo.Nodes
 
             ExecutionMirror mirror = fsr.Execute(script, core, context);
 
-            List<Autodesk.DesignScript.Interfaces.IDesignScriptEntity> entities =
-                new List<Autodesk.DesignScript.Interfaces.IDesignScriptEntity>();
-
             FSharpList<Value> created_objects = FSharpList<Value>.Empty;
 
             List<object> output_objects = Autodesk.ASM.DynamoOutput.Objects();
+            List<Autodesk.Revit.DB.ElementId> created_ids = new List<Autodesk.Revit.DB.ElementId>();
+
+            string temp_dir = "C:\\Temp\\";
+
+            foreach (object o in output_objects)
+            {
+                Autodesk.DesignScript.Geometry.Point p = o as Autodesk.DesignScript.Geometry.Point;
+
+                if (p != null)
+                {
+                    Autodesk.Revit.DB.XYZ xyz = new Autodesk.Revit.DB.XYZ(p.X, p.Y, p.Z);
+                    ReferencePoint elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(xyz);
+
+                    created_ids.Add(elem.Id);
+
+                    continue;
+                }
+
+                Autodesk.DesignScript.Geometry.Line l = o as Autodesk.DesignScript.Geometry.Line;
+
+                if (l != null)
+                {
+                    Autodesk.Revit.DB.XYZ xyz_start = new Autodesk.Revit.DB.XYZ(
+                        l.StartPoint.X, l.StartPoint.Y, l.StartPoint.Z);
+                    Autodesk.Revit.DB.XYZ xyz_end = new Autodesk.Revit.DB.XYZ(
+                        l.EndPoint.X, l.EndPoint.Y, l.EndPoint.Z);
+                    Autodesk.Revit.DB.Line revit_line = 
+                        Autodesk.Revit.DB.Line.CreateBound(xyz_start, xyz_end);
+
+                    Autodesk.Revit.DB.DetailCurve line_elem = 
+                        Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewDetailCurve(
+                        Dynamo.Utilities.dynRevitSettings.Doc.ActiveView,
+                        revit_line);
+
+                    created_ids.Add(line_elem.Id);
+
+                    continue;
+                }
+
+                Autodesk.DesignScript.Geometry.Geometry g = o as Autodesk.DesignScript.Geometry.Geometry;
+
+                if (g == null)
+                    continue;
+
+                System.Guid guid = System.Guid.NewGuid();
+
+                string temp_file_name = temp_dir + guid.ToString() + ".sat";
+
+                g.ExportToSAT(temp_file_name);
+
+                Autodesk.Revit.DB.SATImportOptions options = new
+                    Autodesk.Revit.DB.SATImportOptions();
+
+                Autodesk.Revit.DB.ElementId new_id =
+                    Dynamo.Utilities.dynRevitSettings.Doc.Document.Import(
+                    temp_file_name, options,
+                    Dynamo.Utilities.dynRevitSettings.Doc.ActiveView);
+
+                created_ids.Add(new_id);
+            }
+
             //List<Autodesk.Revit.DB.Solid> solids = new List<Autodesk.Revit.DB.Solid>();
             //List<Autodesk.Revit.DB.Element> elements = new List<Autodesk.Revit.DB.Element>();
 
@@ -224,14 +284,13 @@ namespace Dynamo.Nodes
             //    created_objects = FSharpList<Value>.Cons(element, created_objects);
             //}
 
-            foreach (object o in output_objects)
+            foreach (Autodesk.Revit.DB.ElementId id in created_ids)
             {
-                Value element = Value.NewContainer(o);
+                Value element = Value.NewContainer(id);
                 created_objects = FSharpList<Value>.Cons(element, created_objects);
             }
 
             return Value.NewList(created_objects);
-            //return Value.NewContainer(null);
         }
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)

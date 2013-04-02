@@ -37,13 +37,13 @@
     </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
-    <Reference Include="ManagedAsmGeometry, Version=1.0.4833.4933, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ManagedAsmGeometry, Version=1.0.4836.3531, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Release\ManagedAsmGeometry.dll</HintPath>
+      <HintPath>..\..\..\..\asmgeometry\bin_release\ManagedAsmGeometry.dll</HintPath>
     </Reference>
-    <Reference Include="ManagedAsmPersistentManager, Version=1.0.4833.4934, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ManagedAsmPersistentManager, Version=1.0.4834.18817, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Release\ManagedAsmPersistentManager.dll</HintPath>
+      <HintPath>..\..\..\..\asmgeometry\bin_release\ManagedAsmPersistentManager.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
@@ -51,27 +51,35 @@
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="ProtoAssociative, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=033bb90092e920f1, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Release\ProtoAssociative.dll</HintPath>
+      <HintPath>..\..\..\..\asmgeometry\bin_release\ProtoAssociative.dll</HintPath>
     </Reference>
     <Reference Include="ProtoCore, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=3dcef168889f4ae5, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Release\ProtoCore.dll</HintPath>
+      <HintPath>..\..\..\..\asmgeometry\bin_release\ProtoCore.dll</HintPath>
     </Reference>
     <Reference Include="ProtoGeometry, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=d524304daf1f8b35, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Release\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\..\asmgeometry\bin_release\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="ProtoImperative, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=c105c91cdd939850, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Release\ProtoImperative.dll</HintPath>
+      <HintPath>..\..\..\..\asmgeometry\bin_release\ProtoImperative.dll</HintPath>
     </Reference>
     <Reference Include="ProtoInterface, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=c656126677b5691e, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Release\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\..\..\asmgeometry\bin_release\ProtoInterface.dll</HintPath>
     </Reference>
     <Reference Include="ProtoScript, Version=0.3.949.6890, Culture=neutral, PublicKeyToken=59290779bfb1c866, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Release\ProtoScript.dll</HintPath>
+      <HintPath>..\..\..\..\asmgeometry\bin_release\ProtoScript.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPI, Version=2014.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\tiernep\Desktop\2014_Ship_x64_Inst_20130326_2115\Program\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI, Version=2014.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\tiernep\Desktop\2014_Ship_x64_Inst_20130326_2115\Program\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -91,6 +99,10 @@
     <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
       <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
       <Name>DragCanvas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
+      <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
+      <Name>DynamoRevit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
