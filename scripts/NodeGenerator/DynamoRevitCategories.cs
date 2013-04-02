@@ -10,7 +10,6 @@ namespace Dynamo.Nodes
 		public const string AUTODESK_REVIT_DB_CYLINDRICALFACE = "Autodesk.Revit.DB.CylindricalFace";
 		public const string AUTODESK_REVIT_DB_CONICALFACE = "Autodesk.Revit.DB.ConicalFace";
 		public const string AUTODESK_REVIT_DB_RULEDFACE = "Autodesk.Revit.DB.RuledFace";
-		public const string AUTODESK_REVIT_DB_GEOMETRYOBJECT = "Autodesk.Revit.DB.GeometryObject";
 		public const string AUTODESK_REVIT_DB_HERMITESPLINE = "Autodesk.Revit.DB.HermiteSpline";
 		public const string AUTODESK_REVIT_DB_BLEND = "Autodesk.Revit.DB.Blend";
 		public const string AUTODESK_REVIT_DB_SWEEP = "Autodesk.Revit.DB.Sweep";

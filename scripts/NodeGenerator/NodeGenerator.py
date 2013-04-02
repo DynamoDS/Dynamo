@@ -44,6 +44,8 @@ def main():
 	'Autodesk.Revit.DB.UV.BasisU',
 	'Autodesk.Revit.DB.UV.BasisV',
 	'Autodesk.Revit.DB.UV.Zero',
+	'Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference',
+	'Autodesk.Revit.DB.Solid.getGeometry'
 	]
 
 	valid_namespaces = {
@@ -74,7 +76,6 @@ def main():
     'Autodesk.Revit.DB.Sweep':['generic','form','sweep'],
     'Autodesk.Revit.DB.SweptBlend':['generic','sweep','swept','blend'],
 
-	'Autodesk.Revit.DB.GeometryObject':['geometry','object'],
     'Autodesk.Revit.DB.Edge':['edge'],
     'Autodesk.Revit.DB.GeometryInstance':['geometry','instance'],
     'Autodesk.Revit.DB.Mesh':['mesh'],
@@ -177,7 +178,7 @@ class RevitType:
 			p.write(f, valid_namespaces)
 
 class RevitMethod:
-	def __init__(self, name, returns, summary, node_names):
+	def __init__(self, name, summary, returns, node_names):
 		self.name = name
 		self.returns = returns
 		self.summary = summary
@@ -229,7 +230,7 @@ class RevitMethod:
 
 	def write(self, f, valid_namespaces):
 		self.write_attributes(f, valid_namespaces)
-		f.write('\tpublic class ' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
+		f.write('\tpublic class API_' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
 		f.write('\t{\n')
 		self.write_constructor(f)
 		self.write_evaluate(f)
@@ -248,10 +249,12 @@ class RevitMethod:
 		f.writelines(node_attributes)
 
 	def write_constructor(self, f):
-		f.write('\t\tpublic ' + self.nickName + '()\n')
+		f.write('\t\tpublic API_' + self.nickName + '()\n')
 		f.write('\t\t{\n')
 
-		if not self.isStatic:
+		#if the method is static or is the constructor,
+		#do not write the type as an input
+		if not self.isStatic and not self.isConstructor:
 			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(' + self.type + ')));\n')
 
 		for param in self.parameters:
@@ -275,7 +278,9 @@ class RevitMethod:
 		i = 0
 		argList = []
 
-		if not self.isStatic:
+		#if the method is static or is the constructor,
+		#do not write the type as an input
+		if not self.isStatic and not self.isConstructor:
 			f.write('\t\t\tvar arg' + str(i) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(' + self.type + '));\n')
 			i+=1
 
@@ -309,12 +314,17 @@ class RevitMethod:
 				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 			f.write('\t\t\t}\n')
 		else:
-			f.write('\t\t\tvar result = ' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
-			if outMember != '':
-				f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+			#if the node returns void and it is not a constructor we'll send out an empty list
+			if self.returns is '' and not self.isConstructor:
+				f.write('\t\t\t' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
+				f.write('\t\t\treturn Value.NewList(FSharpList<Value>.Empty);\n')
 			else:
-				f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-
+				f.write('\t\t\tvar result = ' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
+				if outMember != '':
+					f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+				else:
+					f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+				
 		f.write('\t\t}\n')
 	
 	def match_method_call(self):
@@ -363,7 +373,7 @@ class RevitProperty:
 
 	def write(self, f, valid_namespaces):
 		self.write_attributes(f, valid_namespaces)
-		f.write('\tpublic class ' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
+		f.write('\tpublic class API_' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
 		f.write('\t{\n')
 		self.write_constructor(f)
 		self.write_evaluate(f)
@@ -382,7 +392,7 @@ class RevitProperty:
 		f.writelines(node_attributes)
 
 	def write_constructor(self, f):
-		f.write('\t\tpublic ' + self.nickName + '()\n')
+		f.write('\t\tpublic API_' + self.nickName + '()\n')
 		f.write('\t\t{\n')
 
 		f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(' + convert_param(self.type) + ')));\n')
@@ -497,8 +507,8 @@ def read_method(member_data, revit_types, node_names, skip_list):
 		returns = ''
 
 	#do not read void members for now
-	if returns == '':
-		return
+	# if returns == '':
+	# 	return
 
 	#do not read operator overloads for now
 	if 'op_' in method_name:
