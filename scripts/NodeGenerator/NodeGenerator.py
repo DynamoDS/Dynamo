@@ -14,20 +14,16 @@ def main():
 
 	f = open(wrapperPath, 'w')
 
-	# create a list to store the node
-	# names that have been created
-	node_names = []
-
 	# create a list to store necessary 
 	# types from Autodesk
-	required_types = []
+	# required_types = []
 
-	array_types = []
+	# array_types = []
 
-	# exclusions that we can deal with later
-	skip_list = ['MakeBound', 'MakeUnbound','getGeometry','Rehost', 'AddEdge','ScaleProfile',
-	'ScaleSubElement','RotateProfile', 'RotateSubElement', 'MoveProfile','MoveSubElement','DeleteProfile',
-	'DeleteSubElement','ConstrainProfiles','GetProfileAndCurveLoopIndexFromReference']
+	# # exclusions that we can deal with later
+	# skip_list = ['MakeBound', 'MakeUnbound','getGeometry','Rehost', 'AddEdge','ScaleProfile',
+	# 'ScaleSubElement','RotateProfile', 'RotateSubElement', 'MoveProfile','MoveSubElement','DeleteProfile',
+	# 'DeleteSubElement','ConstrainProfiles','GetProfileAndCurveLoopIndexFromReference']
 
 	using=[	
 	'using System;\n',
@@ -55,7 +51,6 @@ def main():
 	'Autodesk.Revit.Creation.ItemFactoryBase',
 	'Autodesk.Revit.DB.Curve',
 	'Autodesk.Revit.DB.Arc',
-	'Autodesk.Revit.DB.CylindricalHelix',
 	'Autodesk.Revit.DB.Ellipse',
 	'Autodesk.Revit.DB.HermiteSpline',
 	'Autodesk.Revit.DB.Line',
@@ -78,145 +73,31 @@ def main():
     'Autodesk.Revit.DB.Instance',
     'Autodesk.Revit.DB.FamilyInstance',
     'Autodesk.Revit.DB.PointCloudInstance'
+    'Autodesk.Revit.DB.Wall',
+    'Autodesk.Revit.DB.Material',
+    'Autodesk.Revit.DB.Level',
+    'Autodesk.Revit.DB.AdaptiveComponentFamilyUtils',
+    'Autodesk.Revit.DB.AdaptiveComponentInstanceUtils',
+    'Autodesk.Revit.DB.BoundingBoxUV',
+    'Autodesk.Revit.DB.BoundingBoxXYZ',
+    'Autodesk.Revit.DB.Color',
+    'Autodesk.Revit.DB.Transform'
 	]
 
 	revit_types = {}
+	
+	# create a list to store the node
+	# names that have been created
+	node_names = []
+
 	read_types(root, revit_types, valid_namespaces)
-	read_methods(root, revit_types, valid_namespaces)
+	read_methods(root, revit_types, valid_namespaces, node_names)
 	read_properties(root, revit_types, valid_namespaces)
 
 	for key in revit_types.keys():
 		revit_types[key].write(f);
 
-	# cureNameSpaces = []
-	# for member in root.iter('members'):
-	# 	node_name_counter = 0
-	# 	for member_data in member.findall('member'):
-
-	# 		member_name = member_data.get('name')
-
-	# 		isCurveMember = False
-	# 		isFaceMember = False
-	# 		isMethod = False
-	# 		isProperty = False
-	# 		isSolidMember = False
-	# 		isFormMember = False
-
-	# 		#Application.Create
-	# 		#Document.Create
-	# 		#Document.FamilyCreate
-	# 		method_call_prefix = ''
-	# 		if "Autodesk.Revit.Creation.Application" in member_name:
-	# 			method_call_prefix = 'dynRevitSettings.Revit.Application.Create.'
-	# 		elif "Autodesk.Revit.Creation.FamilyItemFactory" in member_name:
-	# 			method_call_prefix  = 'dynRevitSettings.Doc.Document.FamilyCreate.'
-	# 		elif "Autodesk.Revit.Creation.Document" in member_name:
-	# 			method_call_prefix = 'dynRevitSettings.Doc.Document.Create.'
-	# 		elif "Autodesk.Revit.Creation.ItemFactoryBase" in member_name:
-	# 			method_call_prefix = 'dynRevitSettings.Doc.Document.'
-	# 		elif "Autodesk.Revit.DB.Curve." in member_name:
-	# 			method_call_prefix = '((Curve)(args[0] as Value.Container).Item).'
-	# 			isCurveMember = True
-	# 		elif "Autodesk.Revit.DB.Face." in member_name:
-	# 			method_call_prefix = '((Face)(args[0] as Value.Container).Item).'
-	# 			isFaceMember = True
-	# 		elif "Autodesk.Revit.DB.Solid." in member_name:
-	# 			method_call_prefix = '((Solid)(args[0] as Value.Container).Item).'
-	# 			isSolidMember = True
-	# 		elif "Autodesk.Revit.DB.Form." in member_name:
-	# 			method_call_prefix = '((Form)(args[0] as Value.Container).Item).'
-	# 			isFormMember = True
-	# 		else:
-	# 			continue
-
-	# 		try:
-	# 			summary = member_data.find('summary').text.replace('\n','')
-	# 		except:
-	# 			summary = ''
-
-	# 		try:
-	# 			return_summary = member_data.find('returns').text.replace('\n','')
-	# 		except:
-	# 			return_summary = ''
-
-	# 		paramDescriptions = member_data.findall('param')
-
-	# 		# we start with something like M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
-	# 		methodDefinition = member_name.split(':')[1]	#Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ)
-
-	# 		#print member_name
-	# 		conditions = [isCurveMember, isFaceMember, isSolidMember, isFormMember]
-	# 		if not "New" in methodDefinition:
-	# 			if not any(conditions):
-	# 				continue
-
-	# 		if 'P:' in member_name:
-	# 			isProperty = True
-	# 		elif 'M:' in member_name:
-	# 			isMethod = True
-	# 		else:
-	# 			isMethod = True
-
-	# 		# EXAMPLES:
-	# 		# M:Autodesk.Revit.Creation.Application.NewPoint(Autodesk.Revit.DB.XYZ) -> parameters
-	# 		# M:Autodesk.Revit.DB.Curve.MakeUnbound -> parameterless
-	# 		if '(' in methodDefinition:
-	# 			methodCall = methodDefinition.split('(')[0].split('.')[-1]  	#NewPoint
-	# 			if isProperty:
-	# 				# the Revit API lists some properties which can not be returned
-	# 				# without the get_ syntax. the API documentation flags these as properties
-	# 				# but with parameters so we need to append the get_ AND later send the parameters
-	# 				methodCall = 'get_' + methodDefinition.split('(')[0].split('.')[-1]
-	# 			methodParams = methodDefinition.split('(')[1][:-1].split(',')	#Autodesk.Revit.DB.XYZ
-	# 		else:
-	# 			methodCall = methodDefinition.split('.')[-1]	#NewPoint
-	# 			methodParams = []		#NewPoint
-
-	# 		# print methodCall
-	# 		if 'New' in methodCall:
-	# 			methodName = methodCall[3:]	#Point
-	# 		else:
-	# 			methodName = methodCall
-
-	# 		if methodName in skip_list:
-	# 			continue;
-
-	# 		# if the class name already exists
-	# 		# append an integer to make it unique
-	# 		if isCurveMember:
-	# 			methodName = 'Curve_'+methodName
-	# 		elif isFaceMember:
-	# 			methodName = 'Face_'+methodName
-	# 		elif isSolidMember:
-	# 			methodName = 'Solid_'+methodName
-	# 		elif isFormMember:
-	# 			methodName = 'Form_'+methodName
-	# 		methodNameStub = methodName
-
-	# 		while methodName in node_names:
-	# 			node_name_counter += 1
-	# 			methodName = methodNameStub + '_' + str(node_name_counter)
-	# 		# else:
-	# 		node_name_counter = 0
-
-	# 		#store the node name
-	# 		node_names.append(methodName)
-
-	# 		write_node_attributes(methodName, summary, f)
-
-	# 		f.write('\tpublic class Revit_' + methodName + ' : dynRevitTransactionNodeWithOneOutput\n')
-	# 		f.write('\t{\n')
-
-	# 		#CONSTRUCTOR
-	# 		write_node_constructor(methodName, methodParams, paramDescriptions, return_summary,f, required_types)
-
-	# 		#EVALUATE
-	# 		write_node_evaluate(method_call_prefix, methodCall, methodParams, f, isMethod, isProperty, return_summary == '')
-			
-	# 		f.write('\t}\n')
-
-	# 		f.write('\n')
-	f.write('\t}\n')
+	f.write('}\n')
 	f.close()
 
 class RevitType:
@@ -244,16 +125,46 @@ class RevitType:
 		# 	write_property(p,f)
 
 class RevitMethod:
-	def __init__(self, name, returns, summary):
+	def __init__(self, name, returns, summary, node_names):
 		self.name = name
 		self.returns = returns
 		self.summary = summary
 		self.parameters=[]
+		self.isStatic = False
+		self.isConstructor = False
+
+		if '(' in self.name:
+			self.type = self.name.split('(')[0].rsplit('.',1)[0]
+		else:
+			self.type = self.name.rsplit('.',1)[0]
+
 		if '#ctor' in self.name:
+			self.isConstructor = True;
 			self.nickName = 'Revit_' + self.name.split('.')[-2]
 		else:
 			splits = self.name.split('.')
 			self.nickName = 'Revit_' + splits[-2] + '_' + splits[-1]
+
+		#append an index to the method
+		#if a similar method exists
+		methodNameStub = self.nickName
+		node_name_counter = 0
+		while self.nickName in node_names:
+			node_name_counter += 1
+			self.nickName = methodNameStub + '_' + str(node_name_counter)
+		
+		node_names.append(self.nickName)
+		node_name_counter = 0
+
+		if '(' in self.name:
+			self.methodCall = self.name.split('(')[0].split('.')[-1]  	
+		else:
+			self.methodCall = self.name.split('.')[-1] 
+
+		if self.isConstructor:
+			self.methodCall = self.name.rsplit('.',2)[1]
+
+		self.match_method_call()
 
 	def __str__(self):
 		string = "name:" + self.name + "\n"
@@ -271,6 +182,7 @@ class RevitMethod:
 		self.write_constructor(f)
 		self.write_evaluate(f)
 		f.write('\t}\n')
+		f.write('\n')
 
 	def write_attributes(self, f):
 		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
@@ -281,6 +193,9 @@ class RevitMethod:
 	def write_constructor(self, f):
 		f.write('\t\tpublic ' + self.nickName + '()\n')
 		f.write('\t\t{\n')
+
+		if not self.isStatic:
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(object)));\n')
 
 		for param in self.parameters:
 			param_description = param.description.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
@@ -298,51 +213,71 @@ class RevitMethod:
 		i = 0
 		argList = []
 
+		if not self.isStatic:
+			f.write('\t\t\tvar arg' + str(i) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(' + self.type + '));\n')
+			i+=1
+
 		outMember = ''
 
 		for param in self.parameters:
-			param.write(i, argList, f)
+			param.write(i, outMember, argList, f)
 			i+=1
 
 		if len(self.parameters) > 0:
 			paramsStr = '(' +  ",".join(argList) + ")"
 		else:
-			paramsStr = ''
+			paramsStr = '()'
 
-		if '(' in self.name:
-			methodCall = self.name.split('(')[0].split('.')[-1]  	
+		# logic for testing if we're in a family document
+		if self.method_call_prefix == 'dynRevitSettings.Doc.Document':
+			f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
+			f.write('\t\t\t{\n')
+			f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.FamilyCreate.' + self.methodCall + paramsStr + ';\n')
+			if outMember != '':
+				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+			else:
+				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+			f.write('\t\t\t}\n')
+			f.write('\t\t\telse\n')
+			f.write('\t\t\t{\n')
+			f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.Create.' + self.methodCall + paramsStr + ';\n')
+			if outMember != '':
+				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+			else:
+				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+			f.write('\t\t\t}\n')
 		else:
-			methodCall = self.name.split('.')[-1] 
-
-		method_call_prefix = match_method_call(self.name)
-
-		# # logic for testing if we're in a family document
-		# if method_call_prefix == 'dynRevitSettings.Doc.Document.':
-		# 	f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
-		# 	f.write('\t\t\t{\n')
-		# 	f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall + paramsStr + ';\n')
-		# 	if outMember != '':
-		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-		# 	else:
-		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-		# 	f.write('\t\t\t}\n')
-		# 	f.write('\t\t\telse\n')
-		# 	f.write('\t\t\t{\n')
-		# 	f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall + paramsStr + ';\n')
-		# 	if outMember != '':
-		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-		# 	else:
-		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-		# 	f.write('\t\t\t}\n')
-		# else:
-		# 	f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
-		# 	if outMember != '':
-		# 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-		# 	else:
-		# 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-
+			f.write('\t\t\tvar result = ' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
+			if outMember != '':
+				f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+			else:
+				f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 
 		f.write('\t\t}\n')
+	
+	def match_method_call(self):
+
+		def_prefix = '((' + self.type + ')(args[0] as Value.Container).Item)'
+
+		self.method_call_prefix = {
+			"Autodesk.Revit.Creation.Application":'dynRevitSettings.Revit.Application.Create',
+			"Autodesk.Revit.Creation.FamilyItemFactory":'dynRevitSettings.Doc.Document.FamilyCreate',
+			"Autodesk.Revit.Creation.Document":'dynRevitSettings.Doc.Document.Create',
+			"Autodesk.Revit.Creation.ItemFactoryBase":'dynRevitSettings.Doc.Document',
+			"Autodesk.Revit.DB.AdaptiveComponentFamilyUtils":'Autodesk.Revit.DB.AdaptiveComponentFamilyUtils',
+			"Autodesk.Revit.DB.AdaptiveComponentInstanceUtils":'Autodesk.Revit.DB.AdaptiveComponentInstanceUtils',
+		}.get(self.type, def_prefix)
+
+		if self.method_call_prefix is not def_prefix:
+			self.isStatic = True
+
+		print self.name
+		if '.Create' in self.name:
+			self.isStatic = True
+			self.method_call_prefix = self.type
+
+		if self.isConstructor:
+			self.method_call_prefix = 'new ' + self.name.rsplit('.',2)[0]
 
 class RevitProperty:
 	def __init__(self, name, summary):
@@ -356,15 +291,18 @@ class RevitProperty:
 		return string
 
 class RevitParameter:
-	def __init__(self, name, param_type, description ):
+	def __init__(self, name, param_type, description):
 		self.name = name
 		self.param_type = param_type
 		self.description = description
+		self.isOut = False
+		if '@' in self.param_type:	
+			self.isOut = True
 
-	def write(self, index, argList, f):
+	def write(self, index, outMember, argList, f):
 		f.write('\t\t\tvar arg' + str(index) + '=(' + convert_param(self.param_type).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(index) +'],typeof(' + convert_param(self.param_type).replace('@','') +'));\n')
 
-		if '@' in self.name:
+		if self.isOut:
 			argList.append('out arg' + str(index))
 			outMember = 'arg' + str(index) #flag this out value so we can return it instead of the result
 		else:
@@ -375,7 +313,7 @@ def check_namespace(name, valid_namespaces):
 		check_name = name.split('(')[0].rsplit('.',1)[0].split(':')[1] 
 	else:
 		check_name = name.rsplit('.',1)[0].split(':')[1]
-		
+
 	for namespace in valid_namespaces:
 		if namespace == check_name:
 			return True
@@ -399,13 +337,13 @@ def read_type(member_data, revit_types):
 	newType = RevitType(name, summary)
 	revit_types[name] = newType
 
-def read_methods(root, revit_types, valid_namespaces):
+def read_methods(root, revit_types, valid_namespaces, node_names):
 	for member in root.iter('members'):
 		for member_data in member.findall('member'):
 			member_name = member_data.get('name')
 			if "M:" in member_name:
 				if check_namespace(member_name, valid_namespaces):
-					read_method(member_data, revit_types)
+					read_method(member_data, revit_types, node_names)
 
 def read_properties(root, revit_types, valid_namespaces):
 	for member in root.iter('members'):
@@ -415,7 +353,7 @@ def read_properties(root, revit_types, valid_namespaces):
 				if check_namespace(member_name, valid_namespaces):
 					read_property(member_data, revit_types)
 
-def read_method(member_data, revit_types):
+def read_method(member_data, revit_types, node_names):
 
 	method_name = member_data.get('name').split(':')[1] #take off the M:
 	print method_name
@@ -436,7 +374,11 @@ def read_method(member_data, revit_types):
 	except:
 		returns = ''
 
-	newMethod = RevitMethod(method_name, summary, returns)
+	#do not read void members for now
+	if returns == '':
+		return
+
+	newMethod = RevitMethod(method_name, summary, returns, node_names)
 
 	params = member_data.findall('param')
 
@@ -482,15 +424,6 @@ def read_property(member_data, revit_types):
 	if type_name not in revit_types:
 		revit_types[type_name] = RevitType(type_name, '')
 	revit_types[type_name].properties.append(newProperty)
-
-def match_method_call(x):
-	return {
-		"Autodesk.Revit.Creation.Application":'dynRevitSettings.Revit.Application.Create.',
-		"Autodesk.Revit.Creation.FamilyItemFactory":'dynRevitSettings.Doc.Document.FamilyCreate.',
-		"Autodesk.Revit.Creation.Document":'dynRevitSettings.Doc.Document.Create.',
-		"Autodesk.Revit.Creation.ItemFactoryBase":'dynRevitSettings.Doc.Document.',
-		"Autodesk.Revit.DB":'new '
-	}.get(x,x)
 
 def match_param(x):
     return {
@@ -576,104 +509,6 @@ def conversion_method(x):
 		'Autodesk.Revit.DB.CurveArray':'dynRevitUtils.ConvertFSharpListListToCurveArray',
 		'System.Boolean':'Convert.ToBoolean'
 	}.get(x,'')
-
-def write_node_attributes(node_name, summary, f):
-	node_attributes = ['\t[NodeName("' + node_name + '")]\n',
-		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
-		'\t[NodeDescription("' + summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
-	f.writelines(node_attributes)
-
-def write_node_constructor(node_name, method_params, param_descriptions, summary, f, required_types):
-	f.write('\t\tpublic Revit_' + node_name + '()\n')
-	f.write('\t\t{\n')
-
-	i=0
-	# if it's a curve or surface method or parameter that we're after
-	# pass in the curve or surface as an input
-	if isCurveMember:
-			f.write('\t\t\tInPortData.Add(new PortData(\"crv\", \"The curve.\",typeof(object)));\n')
-	elif isFaceMember:
-			f.write('\t\t\tInPortData.Add(new PortData(\"f\", \"The face.\",typeof(object)));\n')
-	elif isSolidMember:
-			f.write('\t\t\tInPortData.Add(new PortData(\"s\", \"The solid.\",typeof(object)));\n')
-	elif isFormMember:
-			f.write('\t\t\tInPortData.Add(new PortData(\"frm\", \"The form.\",typeof(object)));\n')
-
-	for param_description in param_descriptions:
-		param_description = param_descriptions[i].text.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
-		if len(method_params)-1 >= i:
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(method_params[i])+'\", \"' + param_description + '\",typeof(object)));\n')
-		i += 1
-
-	f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
-	f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
-	f.write('\t\t}\n')
-
-def write_node_evaluate(method_call_prefix, methodCall, method_params, f, isMethod, isProperty, returns_void):
-	f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
-	f.write('\t\t{\n')
-
-	# for each incoming arg, cast it to the matching param
-	i = 0
-	argList = []
-
-	if isCurveMember:
-		f.write('\t\t\tvar arg' + str(i) + '=(Curve)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Curve));\n')
-		i+=1
-	elif isFaceMember:
-		f.write('\t\t\tvar arg' + str(i) + '=(Face)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Face));\n')
-		i+=1
-	elif isSolidMember:
-		f.write('\t\t\tvar arg' + str(i) + '=(Solid)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Solid));\n')
-		i+=1
-	elif isFormMember:
-		f.write('\t\t\tvar arg' + str(i) + '=(Form)DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(Form));\n')
-		i+=1
-
-	outMember = ''
-
-	for param in method_params:
-		f.write('\t\t\tvar arg' + str(i) + '=(' + convert_param(param).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(i) +'],typeof(' + convert_param(param).replace('@','') +'));\n')
-
-		if '@' in param:
-			argList.append('out arg' + str(i))
-			outMember = 'arg' + str(i) #flag this out value so we can return it instead of the result
-		else:
-			argList.append('arg' + str(i))
-		i+=1
-
-	if isMethod or isProperty and len(method_params) > 0:
-		paramsStr = '(' +  ",".join(argList) + ")"
-	else:
-		paramsStr = ''
-
-	# logic for testing if we're in a family document
-	if method_call_prefix == 'dynRevitSettings.Doc.Document.':
-		f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
-		f.write('\t\t\t{\n')
-		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall + paramsStr + ';\n')
-		if outMember != '':
-			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-		else:
-			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-		f.write('\t\t\t}\n')
-		f.write('\t\t\telse\n')
-		f.write('\t\t\t{\n')
-		f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall + paramsStr + ';\n')
-		if outMember != '':
-			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-		else:
-			f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-		f.write('\t\t\t}\n')
-	else:
-		f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
-		if outMember != '':
-			f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-		else:
-			f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-
-
-	f.write('\t\t}\n')
 
 if __name__ == "__main__":
     main()
