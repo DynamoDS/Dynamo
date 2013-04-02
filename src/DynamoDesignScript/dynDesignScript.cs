@@ -131,7 +131,13 @@ namespace Dynamo.Nodes
         {
             foreach (Autodesk.Revit.DB.Element elem in created_elements)
             {
-                Dynamo.Utilities.dynRevitSettings.Doc.Document.Delete(elem.Id);
+                try
+                {
+                    Dynamo.Utilities.dynRevitSettings.Doc.Document.Delete(elem.Id);
+                }
+                catch (System.Exception)
+                {
+                }
             }
 
             created_elements.Clear();
