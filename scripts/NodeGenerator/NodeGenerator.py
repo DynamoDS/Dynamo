@@ -92,7 +92,7 @@ def main():
     'Autodesk.Revit.DB.AdaptiveComponentFamilyUtils':['adaptive','component','family','utils'],
     'Autodesk.Revit.DB.AdaptiveComponentInstanceUtils':['adpative', 'component','family','utils'],
 
-    'Autodesk.Revit.DB.Transform':['transform'],
+    'Autodesk.Revit.DB.Transform':['transform','coordinate system','cs'],
     'Autodesk.Revit.DB.ModelArc':['model','curve','arc'],
     'Autodesk.Revit.DB.ModelCurve':['model','curve'],
     'Autodesk.Revit.DB.ModelSpline':['model','curve','spline'],
@@ -190,10 +190,10 @@ class RevitMethod:
 
 		if '#ctor' in self.name:
 			self.isConstructor = True;
-			self.nickName = 'Revit_' + self.name.split('.')[-2]
+			self.nickName = self.name.split('.')[-2]
 		else:
 			splits = self.name.split('.')
-			self.nickName = 'Revit_' + splits[-2] + '_' + splits[-1]
+			self.nickName = splits[-2] + '_' + splits[-1]
 			
 		#append an index to the method
 		#if a similar method exists
@@ -342,7 +342,7 @@ class RevitProperty:
 		self.isStatic = False
 		self.type = self.name.split('(')[0].rsplit('.',1)[0]
 		splits = self.name.split('(')[0].split('.')
-		self.nickName = 'Revit_' + splits[-2] + '_' + splits[-1]
+		self.nickName = splits[-2] + '_' + splits[-1]
 
 		if '(' in self.name:
 			self.method_call = self.name.split('(')[0].split('.')[-1]  	
