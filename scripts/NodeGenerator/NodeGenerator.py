@@ -250,13 +250,14 @@ class RevitMethod:
 		f.write('\t\t{\n')
 
 		if not self.isStatic:
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(object)));\n')
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(' + self.type + ')));\n')
 
 		for param in self.parameters:
 			param_description = param.description.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param.param_type)+'\", \"' + param_description + '\",typeof(object)));\n')
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param.param_type)+'\", \"' + param_description + '\",typeof(' + convert_param(param.param_type) + ')));\n')
 
 		f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
+
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
 
@@ -378,7 +379,7 @@ class RevitProperty:
 		f.write('\t\tpublic ' + self.nickName + '()\n')
 		f.write('\t\t{\n')
 
-		f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(object)));\n')
+		f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(' + convert_param(self.type) + ')));\n')
 		f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
