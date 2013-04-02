@@ -127,22 +127,22 @@ limitations under the License.
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
-    <Compile Include="PackageManager\Login\PackageManagerLoginController.cs" />
-    <Compile Include="PackageManager\Login\PackageManagerLoginUI.xaml.cs">
-      <DependentUpon>PackageManagerLoginUI.xaml</DependentUpon>
+    <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
+    <Compile Include="PackageManager\Login\PackageManagerLoginView.xaml.cs">
+      <DependentUpon>PackageManagerLoginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="PackageManager\Publish\PackageManagerPublishViewModel.cs" />
-    <Compile Include="PackageManager\Publish\PackageManagerPublishUI.xaml.cs">
-      <DependentUpon>PackageManagerPublishUI.xaml</DependentUpon>
+    <Compile Include="PackageManager\Publish\PackageManagerPublishView.xaml.cs">
+      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\LocalSearchElement.cs" />
     <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
-    <Compile Include="Search\SearchUI.xaml.cs">
-      <DependentUpon>SearchUI.xaml</DependentUpon>
+    <Compile Include="Search\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchViewModel.cs" />
     <Compile Include="Nodes\dynColors.cs" />
@@ -231,15 +231,15 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PackageManager\Login\PackageManagerLoginUI.xaml">
+    <Page Include="PackageManager\Login\PackageManagerLoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PackageManager\Publish\PackageManagerPublishUI.xaml">
+    <Page Include="PackageManager\Publish\PackageManagerPublishView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Search\SearchUI.xaml">
+    <Page Include="Search\SearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

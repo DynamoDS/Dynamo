@@ -3,12 +3,12 @@
 namespace Dynamo.PackageManager
 {
     /// <summary>
-    /// Interaction logic for PackageManagerPublishUI.xaml
+    /// Interaction logic for PackageManagerPublishView.xaml
     /// </summary>
-    public partial class PackageManagerPublishUI : UserControl
+    public partial class PackageManagerPublishView : UserControl
     {
 
-        public PackageManagerPublishUI(PackageManagerPublishViewModel viewModel)
+        public PackageManagerPublishView(PackageManagerPublishViewModel viewModel)
         {
 
             InitializeComponent();

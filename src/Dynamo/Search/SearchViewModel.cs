@@ -43,7 +43,7 @@ namespace Dynamo.Search
             /// <summary>
             /// SearchResults property </summary>
             /// <value>
-            /// This property is observed by SearchUI to see the search results </value>
+            /// This property is observed by SearchView to see the search results </value>
             public ObservableCollection<SearchElementBase> SearchResults { get; private set; }
 
             /// <summary>
@@ -83,7 +83,7 @@ namespace Dynamo.Search
             /// <summary>
             /// Visible property </summary>
             /// <value>
-            /// This is the core UI for Dynamo, primarily used for logging.</value>
+            /// Tells whether the </value>
             private Visibility _visible;
             public Visibility Visible
             {
@@ -218,7 +218,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// A KeyHandler method used by SearchUI, increments decrements and executes based on input. </summary>
+        /// A KeyHandler method used by SearchView, increments decrements and executes based on input. </summary>
         /// <param name="sender">Originating object for the KeyHandler </param>
         /// <param name="e">Parameters describing the key push</param>
         public void KeyHandler(object sender, KeyEventArgs e)

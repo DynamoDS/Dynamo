@@ -18,7 +18,6 @@ using System.Windows.Media;
 
 using Dynamo.Nodes;
 using Dynamo.Controls;
-using Dynamo.Nodes.PackageManager;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
@@ -36,7 +35,7 @@ namespace Dynamo
     public class DynamoController : INotifyPropertyChanged
     {
         public SearchViewModel SearchViewModel { get; internal set; }
-        public PackageManagerLoginController PackageManagerLoginController { get; internal set; }
+        public PackageManagerLoginViewModel PackageManagerLoginViewModel { get; internal set; }
         public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
 
@@ -147,7 +146,7 @@ namespace Dynamo
 
             SearchViewModel = new SearchViewModel(Bench);
             PackageManagerClient = new PackageManagerClient(this);
-            PackageManagerLoginController = new PackageManagerLoginController(PackageManagerClient);
+            PackageManagerLoginViewModel = new PackageManagerLoginViewModel(PackageManagerClient);
             PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
 
             HomeSpace = CurrentSpace = new HomeWorkspace();
@@ -378,7 +377,7 @@ namespace Dynamo
 
                 dynNode newNode = null;
 
-                SearchViewModel.Add( kvp.Value.Type, kvp.Key );
+                SearchViewModel.Add( kvp.Value.Type );
 
                 try
                 {

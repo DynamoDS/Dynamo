@@ -1,4 +1,18 @@
-﻿using System;
+﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
+//
+//Licensed under the Apache License, Version 2.0 (the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at
+//
+//http://www.apache.org/licenses/LICENSE-2.0
+//
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
+
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -36,7 +50,7 @@ namespace Dynamo.Commands
     public class ShowNodePublishInfoCommand : ICommand
     {
         private bool init;
-        private PackageManagerPublishUI ui;
+        private PackageManagerPublishView _view;
 
         public ShowNodePublishInfoCommand()
         {
@@ -55,8 +69,8 @@ namespace Dynamo.Commands
 
             if (!init)
             {
-                ui = new PackageManagerPublishUI(dynSettings.Controller.PackageManagerPublishViewModel);
-                dynSettings.Bench.outerCanvas.Children.Add(ui);
+                _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
+                dynSettings.Bench.outerCanvas.Children.Add(_view);
                 init = true;
             }
             
@@ -96,25 +110,17 @@ namespace Dynamo.Commands
 
     public class ShowLoginCommand : ICommand
     {
-        private bool init;
-        private PackageManager.PackageManagerLoginUI ui;
-
-        public ShowLoginCommand()
-        {
-            this.init = false;
-        }
+        private bool _init;
 
         public void Execute(object parameters)
         {
-            if (!init)
+            if (!_init)
             {
-                ui = dynSettings.Controller.PackageManagerLoginController.View;
-                dynSettings.Bench.outerCanvas.Children.Add(ui);
-                init = true;
+                dynSettings.Bench.outerCanvas.Children.Add(new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel));
+                _init = true;
             }
 
-            ui.Visibility = Visibility.Visible;
-           
+            dynSettings.Controller.PackageManagerLoginViewModel.Visible = Visibility.Visible;
         }
 
         public event EventHandler CanExecuteChanged
@@ -131,11 +137,6 @@ namespace Dynamo.Commands
 
     public class RefreshRemotePackagesCommand : ICommand
     {
-        public RefreshRemotePackagesCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Controller.PackageManagerClient.RefreshAvailable();
@@ -156,11 +157,6 @@ namespace Dynamo.Commands
     public class PublishSelectedNodeCommand : ICommand
     {
         private PackageManagerClient _client;
-
-        public PublishSelectedNodeCommand()
-        {
-
-        }
 
         public void Execute(object parameters)
         {
@@ -204,11 +200,6 @@ namespace Dynamo.Commands
 
         private PackageManagerClient _client;
 
-        public PublishCurrentWorkspaceCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             this._client = dynSettings.Controller.PackageManagerClient;
@@ -248,68 +239,68 @@ namespace Dynamo.Commands
     public static partial class DynamoCommands
     {
 
-        private static Dynamo.Commands.ShowNodePublishInfoCommand _showNodePublishInfoCmd;
-        public static Dynamo.Commands.ShowNodePublishInfoCommand ShowNodeNodePublishInfoCmd
+        private static ShowNodePublishInfoCommand _showNodePublishInfoCmd;
+        public static ShowNodePublishInfoCommand ShowNodeNodePublishInfoCmd
         {
             get
             {
                 if (_showNodePublishInfoCmd == null)
-                    _showNodePublishInfoCmd = new Dynamo.Commands.ShowNodePublishInfoCommand();
+                    _showNodePublishInfoCmd = new ShowNodePublishInfoCommand();
                 return _showNodePublishInfoCmd;
             }
         }
 
-        private static Dynamo.Commands.PublishCurrentWorkspaceCommand publishCurrentWorkspaceCmd;
-        public static Dynamo.Commands.PublishCurrentWorkspaceCommand PublishCurrentWorkspaceCmd
+        private static PublishCurrentWorkspaceCommand publishCurrentWorkspaceCmd;
+        public static PublishCurrentWorkspaceCommand PublishCurrentWorkspaceCmd
         {
             get
             {
                 if (publishCurrentWorkspaceCmd == null)
-                    publishCurrentWorkspaceCmd = new Dynamo.Commands.PublishCurrentWorkspaceCommand();
+                    publishCurrentWorkspaceCmd = new PublishCurrentWorkspaceCommand();
                 return publishCurrentWorkspaceCmd;
             }
         }
 
-        private static Dynamo.Commands.PublishSelectedNodeCommand publishSelectedNodeCmd;
-        public static Dynamo.Commands.PublishSelectedNodeCommand PublishSelectedNodeCmd
+        private static PublishSelectedNodeCommand publishSelectedNodeCmd;
+        public static PublishSelectedNodeCommand PublishSelectedNodeCmd
         {
             get
             {
                 if (publishSelectedNodeCmd == null)
-                    publishSelectedNodeCmd = new Dynamo.Commands.PublishSelectedNodeCommand();
+                    publishSelectedNodeCmd = new PublishSelectedNodeCommand();
                 return publishSelectedNodeCmd;
             }
         }
 
-        private static Dynamo.Commands.RefreshRemotePackagesCommand refreshRemotePackagesCmd;
-        public static Dynamo.Commands.RefreshRemotePackagesCommand RefreshRemotePackagesCmd
+        private static RefreshRemotePackagesCommand refreshRemotePackagesCmd;
+        public static RefreshRemotePackagesCommand RefreshRemotePackagesCmd
         {
             get
             {
                 if (refreshRemotePackagesCmd == null)
-                    refreshRemotePackagesCmd = new Dynamo.Commands.RefreshRemotePackagesCommand();
+                    refreshRemotePackagesCmd = new RefreshRemotePackagesCommand();
                 return refreshRemotePackagesCmd;
             }
         }
 
-        private static Dynamo.Commands.ShowLoginCommand showLoginCmd;
-        public static Dynamo.Commands.ShowLoginCommand ShowLoginCmd
+        private static ShowLoginCommand showLoginCmd;
+        public static ShowLoginCommand ShowLoginCmd
         {
             get
             {
                 if (showLoginCmd == null)
-                    showLoginCmd = new Dynamo.Commands.ShowLoginCommand();
+                    showLoginCmd = new ShowLoginCommand();
                 return showLoginCmd;
             }
         }
 
-        private static Dynamo.Commands.LoginCommand loginCmd;
-        public static Dynamo.Commands.LoginCommand LoginCmd
+        private static LoginCommand loginCmd;
+        public static LoginCommand LoginCmd
         {
             get
             {
                 if (loginCmd == null)
-                    loginCmd = new Dynamo.Commands.LoginCommand();
+                    loginCmd = new LoginCommand();
                 return loginCmd;
             }
         }
