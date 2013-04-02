@@ -55,5 +55,6 @@ namespace Dynamo.Nodes
 		public const string AUTODESK_REVIT_DB_PROFILE = "Autodesk.Revit.DB.Profile";
 		public const string AUTODESK_REVIT_DB_MODELCURVE = "Autodesk.Revit.DB.ModelCurve";
 		public const string AUTODESK_REVIT_DB_NURBSPLINE = "Autodesk.Revit.DB.NurbSpline";
+		public const string AUTODESK_REVIT_DB_ADAPTIVEPOINTTYPE = "Autodesk.Revit.DB.AdaptivePointType";
 	}
 }

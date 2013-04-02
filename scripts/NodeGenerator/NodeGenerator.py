@@ -112,6 +112,8 @@ def main():
     'Autodesk.Revit.DB.Color':['color'],
     'Autodesk.Revit.DB.BoundingBoxUV':['bounding','box','bounds','bbox'],
     'Autodesk.Revit.DB.BoundingBoxXYZ':['bounding','box','bounds','bbox'],
+
+    'Autodesk.Revit.DB.AdaptivePointType':['adaptive','point','type']
 	}
 
 	revit_types = {}
@@ -123,6 +125,7 @@ def main():
 	read_types(root, revit_types, valid_namespaces)
 	read_methods(root, revit_types, valid_namespaces, node_names, skip_list)
 	read_properties(root, revit_types, valid_namespaces, skip_list)
+	read_fields(root, revit_types, valid_namespaces, skip_list)
 
 	for key in revit_types.keys():
 		revit_types[key].write(f, valid_namespaces);
@@ -157,6 +160,7 @@ class RevitType:
 	def __init__(self, name, summary):
 	    self.methods = []
 	    self.properties = []
+	    self.fields = []
 	    self.name = name
 	    self.summary = summary
 
@@ -176,6 +180,8 @@ class RevitType:
 			m.write(f, valid_namespaces)
 		for p in self.properties:
 			p.write(f, valid_namespaces)
+		for field in self.fields:
+			field.write(f,valid_namespaces)
 
 class RevitMethod:
 	def __init__(self, name, summary, returns, node_names):
@@ -343,7 +349,6 @@ class RevitMethod:
 		if self.method_call_prefix is not def_prefix:
 			self.isStatic = True
 
-		print self.name
 		if '.Create' in self.name:
 			self.isStatic = True
 			self.method_call_prefix = self.type
@@ -437,6 +442,38 @@ class RevitParameter:
 		else:
 			argList.append('arg' + str(index))
 
+class RevitField:
+	def __init__(self, name, summary):
+		self.name = name
+		self.nickName = self.name.rsplit('.',1)[1] # this should get the name of the field i.e. 'ViewDiscipline'
+		self.summary = summary
+
+	def write(self, f, valid_namespaces):
+		self.write_attributes(f, valid_namespaces)
+		f.write('\tpublic class API_' + self.nickName + ' : dynEnum\n')
+		f.write('\t{\n')
+		self.write_constructor(f)
+		# self.write_evaluate(f)
+		f.write('\t}\n')
+		f.write('\n')
+
+	def write_attributes(self, f, valid_namespaces):
+		search_tags = []
+		for tag in valid_namespaces[self.name]:
+			search_tags.append('\"' + tag + '\"')
+
+		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.' + self.name.upper().replace('.','_') + ')]\n',
+		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
+		f.writelines(node_attributes)
+
+	def write_constructor(self,f):
+		f.write('\t\tpublic API_' + self.nickName + '()\n')
+		f.write('\t\t{\n')
+		f.write('\t\t\tWireToEnum(Enum.GetValues(typeof(' + self.nickName + ')));\n')
+		f.write('\t\t}\n')
+
 def check_namespace(name, valid_namespaces):
 	if '(' in name:
 		check_name = name.split('(')[0].rsplit('.',1)[0].split(':')[1] 
@@ -456,16 +493,6 @@ def read_types(root, revit_types, valid_namespaces):
 				if check_namespace(member_name, valid_namespaces):
 					read_type(member_data, revit_types)
 
-def read_type(member_data, revit_types):
-	name = member_data.get('name').split(':')[1]
-	try:
-		summary = member_data.find('summary').text.replace('\n','')
-	except:
-		summary = ''
-
-	newType = RevitType(name, summary)
-	revit_types[name] = newType
-
 def read_methods(root, revit_types, valid_namespaces, node_names, skip_list):
 	for member in root.iter('members'):
 		for member_data in member.findall('member'):
@@ -482,10 +509,27 @@ def read_properties(root, revit_types, valid_namespaces, skip_list):
 				if check_namespace(member_name, valid_namespaces):
 					read_property(member_data, revit_types, skip_list)
 
+def read_fields(root, revit_types, valid_namespaces, skip_list):
+	for member in root.iter('members'):
+		for member_data in member.findall('member'):
+			member_name = member_data.get('name')
+			if "F:" in member_name:
+				if check_namespace(member_name, valid_namespaces):
+					read_field(member_data, revit_types, skip_list)
+
+def read_type(member_data, revit_types):
+	name = member_data.get('name').split(':')[1]
+	try:
+		summary = member_data.find('summary').text.replace('\n','')
+	except:
+		summary = ''
+
+	newType = RevitType(name, summary)
+	revit_types[name] = newType
+
 def read_method(member_data, revit_types, node_names, skip_list):
 
 	method_name = member_data.get('name').split(':')[1] #take off the M:
-	print method_name
 
 	param_types = []
 	if '(' in method_name:
@@ -594,6 +638,25 @@ def read_property(member_data, revit_types, skip_list):
 	if type_name not in revit_types:
 		revit_types[type_name] = RevitType(type_name, '')
 	revit_types[type_name].properties.append(newProperty)
+
+def read_field(member_data, revit_types, skip_list):
+
+	field_name = member_data.get('name').rsplit('.',1)[0].split(':')[1]
+
+	try:
+		summary = member_data.find('summary').text.replace('\n','')
+	except:
+		summary = ''
+
+	newField = RevitField(field_name, summary)
+
+	#fields from the api documentation represent the values
+	#of enums. so you don't want to put ALL of them in the type list
+	#just put the first one with this name in there
+	if field_name not in revit_types:
+		print field_name
+		revit_types[field_name] = RevitType(field_name, '')
+		revit_types[field_name].fields.append(newField)
 
 def match_param(x):
     return {

@@ -14528,6 +14528,18 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("AdaptivePointType")]
+	[NodeSearchTags("adaptive","point","type")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVEPOINTTYPE)]
+	[NodeDescription("Shape Handle Point.")]
+	public class API_AdaptivePointType : dynEnum
+	{
+		public API_AdaptivePointType()
+		{
+			WireToEnum(Enum.GetValues(typeof(AdaptivePointType)));
+		}
+	}
+
 	[NodeName("Wall_Create")]
 	[NodeSearchTags("wall")]
 	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
