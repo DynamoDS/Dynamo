@@ -281,20 +281,27 @@ class RevitMethod:
 		f.write('\t\t{\n')
 
 		# for each incoming arg, cast it to the matching param
-		i = 0
+		arg_index = 0
+		input_index = 0
 		argList = []
 
 		#if the method is static or is the constructor,
 		#do not write the type as an input
 		if not self.isStatic and not self.isConstructor:
-			f.write('\t\t\tvar arg' + str(i) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(' + self.type + '));\n')
-			i+=1
+			f.write('\t\t\tvar arg' + str(arg_index) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(input_index)+'], typeof(' + self.type + '));\n')
+			arg_index+=1
+			input_index += 1
 
 		outMember = ''
 
 		for param in self.parameters:
-			param.write(i, outMember, argList, f)
-			i+=1
+			param.write(arg_index, input_index, outMember, argList, f)
+			arg_index+=1
+			#we store a reference to the document and don't want to 
+			#increment the input counter if we're using our local copy
+			#and not that from the args list
+			if param.param_type != 'Autodesk.Revit.DB.Document':
+				input_index += 1
 
 		if len(self.parameters) > 0:
 			paramsStr = '(' +  ",".join(argList) + ")"
@@ -427,14 +434,14 @@ class RevitParameter:
 		if '@' in self.param_type:	
 			self.isOut = True
 
-	def write(self, index, outMember, argList, f):
+	def write(self, index, input_index, outMember, argList, f):
 
 		#we store the document reference on dynRevitSettings
-		#so do not list it as a parameter
+		#so do not list it as a parameter.
 		if self.param_type == 'Autodesk.Revit.DB.Document':
 			f.write('\t\t\tvar arg' + str(index) + '=dynRevitSettings.Doc.Document;\n')
 		else:
-			f.write('\t\t\tvar arg' + str(index) + '=(' + convert_param(self.param_type).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(index) +'],typeof(' + convert_param(self.param_type).replace('@','') +'));\n')
+			f.write('\t\t\tvar arg' + str(index) + '=(' + convert_param(self.param_type).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(input_index) +'],typeof(' + convert_param(self.param_type).replace('@','') +'));\n')
 
 		if self.isOut:
 			argList.append('out arg' + str(index))
