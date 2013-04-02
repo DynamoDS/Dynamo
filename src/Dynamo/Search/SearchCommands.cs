@@ -82,6 +82,8 @@ namespace Dynamo.Commands
         public void Execute(object parameters)
         {
             dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+            dynSettings.Controller.PackageManagerLoginViewModel.Visible = Visibility.Collapsed;
+            dynSettings.Controller.PackageManagerPublishViewModel.Visible = Visibility.Collapsed;
         }
 
         public event EventHandler CanExecuteChanged

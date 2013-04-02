@@ -12,8 +12,11 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
+using Greg;
 
 namespace Dynamo.PackageManager
 {
@@ -22,12 +25,30 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PackageManagerLoginView : UserControl
     {
+        private PackageManagerLoginViewModel viewModel;
+
         public PackageManagerLoginView( PackageManagerLoginViewModel viewModel )
         {
             InitializeComponent();
-            this.DataContext = viewModel;
+            this.DataContext = this.viewModel = viewModel;
             this.webBrowser.LoadCompleted += viewModel.WebBrowserNavigatedEvent;
+
+
+
+
             this.LoginContainerStackPanel.IsVisibleChanged += delegate { if (this.LoginContainerStackPanel.Visibility == Visibility.Visible) viewModel.NavigateToLogin(); };
         }
+
+        /// <summary>
+        ///     The method called when the browser changes its url.
+        /// </summary>
+        /// <param name="sender">Originating object for the event </param>
+        /// <param name="e">Parameters describing the navigation</param>
+        public void WebBrowserNavigatedEvent(object sender, NavigationEventArgs e)
+        {
+            viewModel.WebBrowserNavigatedEvent(this.webBrowser, e);
+        }
+
+
     }
 }
