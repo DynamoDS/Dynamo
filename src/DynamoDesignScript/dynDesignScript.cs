@@ -57,7 +57,9 @@ namespace Dynamo.Nodes
     //[Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
     public class dynDesignScript : dynRevitTransactionNodeWithOneOutput
     {
-        private bool dirty = true;
+        bool dirty = false;
+
+        string temp_dir = "C:\\Temp\\";
 
         string script;
 
@@ -65,6 +67,8 @@ namespace Dynamo.Nodes
         bool coreSet = false;
 
         private static bool asm_started = false;
+
+        List<Autodesk.Revit.DB.Element> created_elements = new List<Element>();
 
         public dynDesignScript()
         {
@@ -123,6 +127,16 @@ namespace Dynamo.Nodes
             }
         }
 
+        private void ClearCreatedElements()
+        {
+            foreach (Autodesk.Revit.DB.Element elem in created_elements)
+            {
+                Dynamo.Utilities.dynRevitSettings.Doc.Document.Delete(elem.Id);
+            }
+
+            created_elements.Clear();
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (coreSet)
@@ -130,6 +144,7 @@ namespace Dynamo.Nodes
                 core.Cleanup();
                 Autodesk.ASM.State.ClearPersistedObjects();
                 Autodesk.ASM.DynamoOutput.Reset();
+                ClearCreatedElements();
             }
             else
             {
@@ -178,10 +193,8 @@ namespace Dynamo.Nodes
 
             FSharpList<Value> created_objects = FSharpList<Value>.Empty;
 
+            // These are the objects added in the DesignScript script
             List<object> output_objects = Autodesk.ASM.DynamoOutput.Objects();
-            List<Autodesk.Revit.DB.ElementId> created_ids = new List<Autodesk.Revit.DB.ElementId>();
-
-            string temp_dir = "C:\\Temp\\";
 
             foreach (object o in output_objects)
             {
@@ -191,8 +204,7 @@ namespace Dynamo.Nodes
                 {
                     Autodesk.Revit.DB.XYZ xyz = new Autodesk.Revit.DB.XYZ(p.X, p.Y, p.Z);
                     ReferencePoint elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(xyz);
-
-                    created_ids.Add(elem.Id);
+                    created_elements.Add(elem);
 
                     continue;
                 }
@@ -201,19 +213,21 @@ namespace Dynamo.Nodes
 
                 if (l != null)
                 {
-                    Autodesk.Revit.DB.XYZ xyz_start = new Autodesk.Revit.DB.XYZ(
-                        l.StartPoint.X, l.StartPoint.Y, l.StartPoint.Z);
-                    Autodesk.Revit.DB.XYZ xyz_end = new Autodesk.Revit.DB.XYZ(
-                        l.EndPoint.X, l.EndPoint.Y, l.EndPoint.Z);
-                    Autodesk.Revit.DB.Line revit_line = 
-                        Autodesk.Revit.DB.Line.CreateBound(xyz_start, xyz_end);
+                    ReferencePoint start_point = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(
+                        new Autodesk.Revit.DB.XYZ(l.StartPoint.X, l.StartPoint.Y, 
+                            l.StartPoint.Z));
+                    ReferencePoint end_point = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(
+                        new Autodesk.Revit.DB.XYZ(
+                        l.EndPoint.X, l.EndPoint.Y, l.EndPoint.Z));
 
-                    Autodesk.Revit.DB.DetailCurve line_elem = 
-                        Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewDetailCurve(
-                        Dynamo.Utilities.dynRevitSettings.Doc.ActiveView,
-                        revit_line);
+                    ReferencePointArray point_array = new ReferencePointArray();
+                    point_array.Append(start_point);
+                    point_array.Append(end_point);
 
-                    created_ids.Add(line_elem.Id);
+                    CurveByPoints curve_elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(
+                        point_array);
+
+                    created_elements.Add(curve_elem);
 
                     continue;
                 }
@@ -231,62 +245,22 @@ namespace Dynamo.Nodes
 
                 Autodesk.Revit.DB.SATImportOptions options = new
                     Autodesk.Revit.DB.SATImportOptions();
+                
+                // TODO: get this from the current document. This should be 
+                //       synced with the "default" unit used for ReferencePoints
+                options.Unit = ImportUnit.Foot;
 
                 Autodesk.Revit.DB.ElementId new_id =
                     Dynamo.Utilities.dynRevitSettings.Doc.Document.Import(
                     temp_file_name, options,
                     Dynamo.Utilities.dynRevitSettings.Doc.ActiveView);
 
-                created_ids.Add(new_id);
+                created_elements.Add(Dynamo.Utilities.dynRevitSettings.Doc.Document.GetElement(new_id));
             }
 
-            //List<Autodesk.Revit.DB.Solid> solids = new List<Autodesk.Revit.DB.Solid>();
-            //List<Autodesk.Revit.DB.Element> elements = new List<Autodesk.Revit.DB.Element>();
-
-            //foreach (object o in output_objects)
-            //{
-                //Autodesk.DesignScript.Geometry.Geometry g = o as Autodesk.DesignScript.Geometry.Geometry;
-
-                //if (g == null)
-                //    continue;
-
-                //Autodesk.DesignScript.Interfaces.IGeometryEntity entity =
-                //Autodesk.DesignScript.Geometry.GeometryExtension.ToEntity<
-                //    Autodesk.DesignScript.Geometry.Geometry,
-                //    Autodesk.DesignScript.Interfaces.IGeometryEntity>(g);
-
-                //Autodesk.ASM.DesignScriptEntity ds_entity = entity as Autodesk.ASM.DesignScriptEntity;
-
-                //if (ds_entity == null)
-                //    continue;
-
-                //Autodesk.Revit.DB.Solid solid = Autodesk.Revit.DB.GeometryCreationUtilities.ConvertAsmBodyToGeometry(ds_entity.BodyPtr);
-                //solids.Add(solid);
-
-                //Autodesk.DesignScript.Geometry.Point p = o as Autodesk.DesignScript.Geometry.Point;
-
-                //if (p == null)
-                //    continue;
-
-                //Autodesk.Revit.DB.XYZ xyz = Autodesk.Revit.DB.XYZ(p.X, p.Y, p.Z);
-
-                ////FreeFormElement elem = Autodesk.Revit.DB.FreeFormElement.Create(
-                ////    Dynamo.Utilities.dynRevitSettings.Doc.Document, solid);
-                //ReferencePoint elem = Dynamo.Utilities.dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(xyz);
-
-
-                //elements.Add(elem);
-            //}
-
-            //foreach (Autodesk.Revit.DB.Element revit_entity in elements)
-            //{
-            //    Value element = Value.NewContainer(revit_entity);
-            //    created_objects = FSharpList<Value>.Cons(element, created_objects);
-            //}
-
-            foreach (Autodesk.Revit.DB.ElementId id in created_ids)
+            foreach (Autodesk.Revit.DB.Element elem in created_elements)
             {
-                Value element = Value.NewContainer(id);
+                Value element = Value.NewContainer(elem);
                 created_objects = FSharpList<Value>.Cons(element, created_objects);
             }
 
