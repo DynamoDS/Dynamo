@@ -19,153 +19,203 @@ using System.Text.RegularExpressions;
 
 namespace Dynamo.Search
 {
-   public class SearchDictionary<V>
-   {
+    /// <summary>
+    ///     A dictionary of objects for search
+    /// </summary>
+    public class SearchDictionary<V>
+    {
+        private readonly Dictionary<V, HashSet<string>> _symbolDictionary = new Dictionary<V, HashSet<string>>();
+        private readonly Dictionary<string, HashSet<V>> _tagDictionary = new Dictionary<string, HashSet<V>>();
 
-      private Dictionary<string, HashSet<V>> tagDict = new Dictionary<string, HashSet<V>>();
-      private Dictionary<V, HashSet<string>> symbolDict = new Dictionary<V, HashSet<string>>();
-
-      public void Add(V value, string tag)
-      {
-
-         if (tagDict.ContainsKey(tag))
-            this.tagDict[tag].Add(value);
-         else
-            this.tagDict[tag] = new HashSet<V>() { value };
-           
-         if (this.symbolDict.ContainsKey(value))
-            this.symbolDict[value].Add(tag);
-         else
-            this.symbolDict[value] = new HashSet<string>() { tag };
-      }
-
-      public void Add(IEnumerable<V> values, string tag)
-      {
-         if (this.tagDict.ContainsKey(tag))
-            this.tagDict[tag].UnionWith(values);
-         else
-            this.tagDict[tag] = new HashSet<V>(values);
-
-         foreach (V val in values)
-         {
-            if (this.symbolDict.ContainsKey(val))
-               this.symbolDict[val].Add(tag);
+        /// <summary>
+        ///     Add a single element with a single tag
+        /// </summary>
+        /// <param name="value"> The object to add  </param>
+        /// <param name="tag"> The string to identify it in search </param>
+        public void Add(V value, string tag)
+        {
+            if (_tagDictionary.ContainsKey(tag))
+                _tagDictionary[tag].Add(value);
             else
-               this.symbolDict[val] = new HashSet<string>() { tag };
-         }
-      }
+                _tagDictionary[tag] = new HashSet<V> {value};
 
-      public void Add(V value, IEnumerable<string> tags)
-      {
-         foreach (var tag in tags)
-            this.Add(value, tag);
-      }
+            if (_symbolDictionary.ContainsKey(value))
+                _symbolDictionary[value].Add(tag);
+            else
+                _symbolDictionary[value] = new HashSet<string> {tag};
+        }
 
-      public void Add(IEnumerable<V> values, IEnumerable<string> tags)
-      {
-         foreach (var tag in tags)
-            this.Add(values, tag);
-      }
-       
-      public void Remove(V value, string tag)
-      {
-         this.tagDict[tag].Remove(value);
-         this.symbolDict[value].Remove(tag);
-      }
+        /// <summary>
+        ///     Add a list of elements with a single tag
+        /// </summary>
+        /// <param name="values"> List of objects to add  </param>
+        /// <param name="tag"> The string to identify it in search </param>
+        public void Add(IEnumerable<V> values, string tag)
+        {
+            if (_tagDictionary.ContainsKey(tag))
+                _tagDictionary[tag].UnionWith(values);
+            else
+                _tagDictionary[tag] = new HashSet<V>(values);
 
-      public void Remove(string tag)
-       {
-           if (this.tagDict.ContainsKey(tag))
-           {
-               var elems = tagDict[tag];
-               tagDict.Remove(tag);
-               foreach (var elem in elems)
-               {
-                   symbolDict[elem].Remove(tag);
-               }
-           }
-       }
+            foreach (V val in values)
+            {
+                if (_symbolDictionary.ContainsKey(val))
+                    _symbolDictionary[val].Add(tag);
+                else
+                    _symbolDictionary[val] = new HashSet<string> {tag};
+            }
+        }
 
-      public void Remove(Predicate<V> removeCondition)
-       {
-           var removeSet = new HashSet<V>();
-           // remove from tagDict and keep track of which elements were removed
-           foreach (var pair in tagDict )
-           {
-               foreach (var ele in pair.Value)
-               {
-                   if (removeCondition(ele)) removeSet.Add(ele);
-               }
-               pair.Value.RemoveWhere(removeCondition);
-           }
-           // remove from symbol dictionary
-           foreach (var ele in removeSet)
-           {
-               symbolDict.Remove(ele);
-           }
-       }
+        /// <summary>
+        ///     Add a single element with a number of tags
+        /// </summary>
+        /// <param name="value"> The object to add  </param>
+        /// <param name="tags"> The list of strings to identify it in search </param>
+        public void Add(V value, IEnumerable<string> tags)
+        {
+            foreach (string tag in tags)
+                Add(value, tag);
+        }
 
-      public void Remove(V value, IEnumerable<string> tags)
-      {
-         foreach (string tag in tags)
-            this.Remove(value, tag);
-      }
+        /// <summary>
+        ///     Add a coordinated list of objects and strings.
+        /// </summary>
+        /// <param name="values"> The objects to add. Must have the same cardinality as the second parameter</param>
+        /// <param name="tags"> The list of strings to identify it in search. Must have the same cardinality as the first parameter </param>
+        public void Add(IEnumerable<V> values, IEnumerable<string> tags)
+        {
+            foreach (string tag in tags)
+                Add(values, tag);
+        }
 
-      public HashSet<V> Filter(string search)
-      {
-          var result = new HashSet<V>();
+        /// <summary>
+        ///     Remove an element from the search
+        /// </summary>
+        /// <param name="value"> The object to remove </param>
+        /// <param name="tag"> The tags to remove for the given value </param>
+        public void Remove(V value, string tag)
+        {
+            _tagDictionary[tag].Remove(value);
+            _symbolDictionary[value].Remove(tag);
+        }
 
-          foreach (var word in search.Split(new char[] { ' ' }).Where(x => x.Length > 0))
-          {
-              foreach (var pair in this.tagDict)
-              {
-                  if (pair.Key.ToLower().StartsWith(word))
-                      result.UnionWith(pair.Value);
-              }
-          }
+        /// <summary>
+        ///     Remove an element from the search
+        /// </summary>
+        /// <param name="tag"> The tag for which to remove elements </param>
+        public void Remove(string tag)
+        {
+            if (_tagDictionary.ContainsKey(tag))
+            {
+                HashSet<V> elems = _tagDictionary[tag];
+                _tagDictionary.Remove(tag);
+                foreach (V elem in elems)
+                {
+                    _symbolDictionary[elem].Remove(tag);
+                }
+            }
+        }
 
-          return result;
+        /// <summary>
+        ///     Remove elements from search based on a predicate
+        /// </summary>
+        /// <param name="removeCondition"> The predicate with which to test.  True results in removal. </param>
+        public void Remove(Predicate<V> removeCondition)
+        {
+            var removeSet = new HashSet<V>();
+            // remove from _tagDictionary and keep track of which elements were removed
+            foreach (var pair in _tagDictionary)
+            {
+                foreach (V ele in pair.Value)
+                {
+                    if (removeCondition(ele)) removeSet.Add(ele);
+                }
+                pair.Value.RemoveWhere(removeCondition);
+            }
+            // remove from symbol dictionary
+            foreach (V ele in removeSet)
+            {
+                _symbolDictionary.Remove(ele);
+            }
+        }
 
-      }
+        /// <summary>
+        ///     Remove elements from search
+        /// </summary>
+        /// <param name="value"> The object to remove </param>
+        /// <param name="tags"> The list of tags to remove. </param>
+        public void Remove(V value, IEnumerable<string> tags)
+        {
+            foreach (string tag in tags)
+                Remove(value, tag);
+        }
 
-      public List<V> Search(string search, int numResults = 10)
-      {
-          var searchDict = new Dictionary<V, double>();
+        /// <summary>
+        ///     Filter the elements in the SearchDictionary, based on whether there is a word
+        ///     in tag that starts with the given query
+        /// </summary>
+        /// <param name="query"> The query </param>
+        public HashSet<V> Filter(string query)
+        {
+            var result = new HashSet<V>();
 
-          foreach (var pair in this.tagDict)
-          {
-              // does the key have an internal match with the search?
-              var pattern = ".*(" + Regex.Escape(search) + ").*";
-              var matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
-              if (matches.Count > 0)
-              {
-                  // it has a match, how close is it to matching the entire string?
-                  var matchCloseness = Math.Max(((double)(pair.Key.Length - search.Length)) / pair.Key.Length, 0);
-                  foreach (var ele in pair.Value)
-                  {
-                      double weight = matchCloseness;
-                      // search elements have a weight associated with them
-                      var @base = ele as SearchElementBase;
-                      if (@base != null)
-                          weight *= @base.Weight;
+            foreach (string word in query.Split(new[] {' '}).Where(x => x.Length > 0))
+            {
+                foreach (var pair in _tagDictionary)
+                {
+                    if (pair.Key.ToLower().StartsWith(word))
+                        result.UnionWith(pair.Value);
+                }
+            }
 
-                      // we may have seen V before
-                      if (searchDict.ContainsKey(ele))
-                      {
-                          // if we have, update its weight if better than the current one
-                          if (searchDict[ele] < weight) searchDict[ele] = weight;
-                      }
-                      else
-                      {
-                          // if we haven't seen it, add it to the dictionary for this search
-                          searchDict.Add(ele, weight);
-                      }
-                  }
-              }
-          }
+            return result;
+        }
 
-          return searchDict.OrderBy(x => x.Value).Select(x => x.Key).ToList().GetRange(0, Math.Min(numResults, searchDict.Count));
+        /// <summary>
+        ///     Search for elements in the dictionary based on the query
+        /// </summary>
+        /// <param name="query"> The query </param>
+        /// <param name="numResults"> The max number of results to return </param>
+        public List<V> Search(string query, int numResults = 10)
+        {
+            var searchDict = new Dictionary<V, double>();
 
-      }
-   }
+            foreach (var pair in _tagDictionary)
+            {
+                // does the key have an internal match with the search?
+                string pattern = ".*(" + Regex.Escape(query) + ").*";
+                MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
+                if (matches.Count > 0)
+                {
+                    // it has a match, how close is it to matching the entire string?
+                    double matchCloseness = Math.Max(((double) (pair.Key.Length - query.Length))/pair.Key.Length, 0);
+                    foreach (V ele in pair.Value)
+                    {
+                        double weight = matchCloseness;
+                        // search elements have a weight associated with them
+                        var @base = ele as SearchElementBase;
+                        if (@base != null)
+                            weight *= @base.Weight;
+
+                        // we may have seen V before
+                        if (searchDict.ContainsKey(ele))
+                        {
+                            // if we have, update its weight if better than the current one
+                            if (searchDict[ele] < weight) searchDict[ele] = weight;
+                        }
+                        else
+                        {
+                            // if we haven't seen it, add it to the dictionary for this search
+                            searchDict.Add(ele, weight);
+                        }
+                    }
+                }
+            }
+
+            return searchDict.OrderBy(x => x.Value)
+                             .Select(x => x.Key)
+                             .ToList()
+                             .GetRange(0, Math.Min(numResults, searchDict.Count));
+        }
+    }
 }
