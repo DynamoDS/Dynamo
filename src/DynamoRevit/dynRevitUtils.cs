@@ -148,7 +148,7 @@ namespace Dynamo.Utilities
                 #endregion
 
                 #region Point
-               else if (item.GetType() == typeof(Point))
+                else if (item.GetType() == typeof(Point))
                 {
                     Point a = (Point)item;
 
@@ -183,6 +183,10 @@ namespace Dynamo.Utilities
                     else if (output == typeof(string))
                     {
                         return string.Format("{0},{1},{2}", a.Position.X, a.Position.Y, a.Position.Z);
+                    }
+                    else if (output == typeof(ElementId))
+                    {
+                        return a.Id;
                     }
                 }
                 #endregion
