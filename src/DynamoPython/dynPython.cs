@@ -241,7 +241,7 @@ namespace Dynamo.Nodes
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         //TextBox tb;
-        string script;
+        private string script = "# Write your script here.";
 
         public dynPython()
         {
