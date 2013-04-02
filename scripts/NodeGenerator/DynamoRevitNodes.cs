@@ -13,6 +13,126 @@ using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
+	[NodeName("ReferencePoint_GetVisibility")]
+	[NodeSearchTags("point","reference","pt","coordinate","system")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeDescription("A copy of visibility settings for theReferencePoint.")]
+	public class ReferencePoint_GetVisibility : dynRevitTransactionNodeWithOneOutput
+	{
+		public ReferencePoint_GetVisibility()
+		{
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
+			OutPortData.Add(new PortData("out","A copy of visibility settings for theReferencePoint.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
+			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).GetVisibility();
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	[NodeName("ReferencePoint_GetPointElementReference")]
+	[NodeSearchTags("point","reference","pt","coordinate","system")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeDescription("A PointElementReference object, or")]
+	public class ReferencePoint_GetPointElementReference : dynRevitTransactionNodeWithOneOutput
+	{
+		public ReferencePoint_GetPointElementReference()
+		{
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
+			OutPortData.Add(new PortData("out","A PointElementReference object, or",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
+			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).GetPointElementReference();
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	[NodeName("ReferencePoint_ShowNormalReferencePlaneOnly")]
+	[NodeSearchTags("point","reference","pt","coordinate","system")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeDescription("Whether all three coordinate planes are shown, or only thenormal (XY) plane.")]
+	public class ReferencePoint_ShowNormalReferencePlaneOnly : dynRevitTransactionNodeWithOneOutput
+	{
+		public ReferencePoint_ShowNormalReferencePlaneOnly()
+		{
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
+			OutPortData.Add(new PortData("out","Whether all three coordinate planes are shown, or only thenormal (XY) plane.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
+			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).ShowNormalReferencePlaneOnly;
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	[NodeName("ReferencePoint_CoordinatePlaneVisibility")]
+	[NodeSearchTags("point","reference","pt","coordinate","system")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeDescription("Visibility settings for the coordinate reference planes.")]
+	public class ReferencePoint_CoordinatePlaneVisibility : dynRevitTransactionNodeWithOneOutput
+	{
+		public ReferencePoint_CoordinatePlaneVisibility()
+		{
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
+			OutPortData.Add(new PortData("out","Visibility settings for the coordinate reference planes.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
+			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).CoordinatePlaneVisibility;
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	[NodeName("ReferencePoint_Visible")]
+	[NodeSearchTags("point","reference","pt","coordinate","system")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeDescription("Whether the point is visible when the family is loadedinto a project.")]
+	public class ReferencePoint_Visible : dynRevitTransactionNodeWithOneOutput
+	{
+		public ReferencePoint_Visible()
+		{
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
+			OutPortData.Add(new PortData("out","Whether the point is visible when the family is loadedinto a project.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
+			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).Visible;
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	[NodeName("ReferencePoint_Position")]
+	[NodeSearchTags("point","reference","pt","coordinate","system")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeDescription("The position of the ReferencePoint.")]
+	public class ReferencePoint_Position : dynRevitTransactionNodeWithOneOutput
+	{
+		public ReferencePoint_Position()
+		{
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
+			OutPortData.Add(new PortData("out","The position of the ReferencePoint.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
+			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).Position;
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
 	[NodeName("HermiteFace_MixedDerivs")]
 	[NodeSearchTags("face","hermite")]
 	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITEFACE)]

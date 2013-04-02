@@ -83,6 +83,8 @@ def main():
     'Autodesk.Revit.DB.Profile':['profile'],
     'Autodesk.Revit.DB.Solid':['solid'],
 
+    'Autodesk.Revit.DB.ReferencePoint':['point','reference','pt','coordinate','system'],
+    
     'Autodesk.Revit.DB.Instance':['instance'],
     'Autodesk.Revit.DB.FamilyInstance':['family','instance'],
     'Autodesk.Revit.DB.PointCloudInstance':['point','cloud'],

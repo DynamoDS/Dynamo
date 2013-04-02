@@ -31,6 +31,7 @@ namespace Dynamo.Nodes
 		public const string AUTODESK_REVIT_DB_MATERIAL = "Autodesk.Revit.DB.Material";
 		public const string AUTODESK_REVIT_DB_SWEPTBLEND = "Autodesk.Revit.DB.SweptBlend";
 		public const string AUTODESK_REVIT_DB_WALL = "Autodesk.Revit.DB.Wall";
+		public const string AUTODESK_REVIT_DB_REFERENCEPOINT = "Autodesk.Revit.DB.ReferencePoint";
 		public const string AUTODESK_REVIT_DB_MODELHERMITESPLINE = "Autodesk.Revit.DB.ModelHermiteSpline";
 		public const string AUTODESK_REVIT_DB_INSTANCE = "Autodesk.Revit.DB.Instance";
 		public const string AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY = "Autodesk.Revit.Creation.FamilyItemFactory";
