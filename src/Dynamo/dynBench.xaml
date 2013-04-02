@@ -142,7 +142,7 @@
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
         </MenuItem>
 
-        <MenuItem Header="_Package Manager" IsEnabled="True">
+        <MenuItem Header="_Package Manager" IsEnabled="True" Visibility="Collapsed">
           <MenuItem Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
           <MenuItem Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
           <MenuItem Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
@@ -340,7 +340,7 @@
     </WrapPanel>
     
     <!-- Not the best place for this - PB -->
-    <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
+    <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right" Visibility="Collapsed">
       <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
       <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
     </DockPanel>
