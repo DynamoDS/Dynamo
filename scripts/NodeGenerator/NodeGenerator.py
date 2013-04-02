@@ -194,7 +194,7 @@ class RevitMethod:
 		else:
 			splits = self.name.split('.')
 			self.nickName = 'Revit_' + splits[-2] + '_' + splits[-1]
-
+			
 		#append an index to the method
 		#if a similar method exists
 		methodNameStub = self.nickName

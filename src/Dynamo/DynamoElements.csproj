@@ -121,6 +121,9 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\scripts\NodeGenerator\DynamoRevitCategories.cs">
+      <Link>DynamoRevitCategories.cs</Link>
+    </Compile>
     <Compile Include="Commands.cs" />
     <Compile Include="DynamoController.cs" />
     <Compile Include="DynamoSplash.xaml.cs">
