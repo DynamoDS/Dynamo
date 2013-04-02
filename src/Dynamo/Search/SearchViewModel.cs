@@ -155,12 +155,6 @@ namespace Dynamo.Search
         /// </value>
         public dynBench Bench { get; private set; }
 
-
-
-
-
-
-
         #endregion
 
         /// <summary>
@@ -172,7 +166,7 @@ namespace Dynamo.Search
             SelectedIndex = 0;
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
-            MaxNumSearchResults = 10;
+            MaxNumSearchResults = 30;
             Bench = bench;
             Visible = Visibility.Collapsed;
             _SearchText = "";
@@ -294,6 +288,9 @@ namespace Dynamo.Search
         {
             var searchEle = new PackageManagerSearchElement(packageHeader);
             SearchDictionary.Add(searchEle, searchEle.Name);
+            if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
+                SearchDictionary.Add(searchEle, packageHeader.keywords);
+            SearchDictionary.Add(searchEle, searchEle.Description);
             SearchAndUpdateResults();
         }
 
@@ -345,8 +342,8 @@ namespace Dynamo.Search
             {
                 SearchDictionary.Add(searchEle, dynNode.NodeUI.Tags);
             }
+            SearchDictionary.Add(searchEle, dynNode.NodeUI.Description );
                 
-            
         }
 
         /// <summary>
