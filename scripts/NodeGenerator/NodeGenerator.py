@@ -46,70 +46,70 @@ def main():
 	'Autodesk.Revit.DB.UV.Zero',
 	]
 
-	valid_namespaces = [
-	'Autodesk.Revit.Creation.Application', 
-	'Autodesk.Revit.Creation.FamilyItemFactory', 
-	'Autodesk.Revit.Creation.Document', 
-	'Autodesk.Revit.Creation.ItemFactoryBase',
+	valid_namespaces = {
+	'Autodesk.Revit.Creation.Application':['application','create'], 
+	'Autodesk.Revit.Creation.FamilyItemFactory':['create','factory','family'], 
+	'Autodesk.Revit.Creation.Document':['create','document'], 
+	'Autodesk.Revit.Creation.ItemFactoryBase':['factory','create','item'],
 
-	'Autodesk.Revit.DB.Curve',
-	'Autodesk.Revit.DB.Arc',
-	'Autodesk.Revit.DB.Ellipse',
-	'Autodesk.Revit.DB.HermiteSpline',
-	'Autodesk.Revit.DB.Line',
-	'Autodesk.Revit.DB.NurbSpline',
+	'Autodesk.Revit.DB.Curve':['curve'],
+	'Autodesk.Revit.DB.Arc':['curve','arc'],
+	'Autodesk.Revit.DB.Ellipse':['curve','ellipse'],
+	'Autodesk.Revit.DB.HermiteSpline':['curve','hermite','spline'],
+	'Autodesk.Revit.DB.Line':['curve','line'],
+	'Autodesk.Revit.DB.NurbSpline':['curve','nurbs'],
 
-	'Autodesk.Revit.DB.Face',
-	'Autodesk.Revit.DB.ConicalFace',
-	'Autodesk.Revit.DB.CylindricalFace',
-	'Autodesk.Revit.DB.HermiteFace',
-	'Autodesk.Revit.DB.RevolvedFace',
-	'Autodesk.Revit.DB.RuledFace',
+	'Autodesk.Revit.DB.Face':['face'],
+	'Autodesk.Revit.DB.ConicalFace':['face','conical'],
+	'Autodesk.Revit.DB.CylindricalFace':['face','cylinder','cylindrical'],
+	'Autodesk.Revit.DB.HermiteFace':['face','hermite'],
+	'Autodesk.Revit.DB.RevolvedFace':['face','revolved','revolve'],
+	'Autodesk.Revit.DB.RuledFace':['face','ruled','rule'],
 
-	'Autodesk.Revit.DB.GenericForm',
-    'Autodesk.Revit.DB.Blend',
-    'Autodesk.Revit.DB.Extrusion',
-    'Autodesk.Revit.DB.Form',
-    'Autodesk.Revit.DB.Revolution',
-    'Autodesk.Revit.DB.Sweep',
-    'Autodesk.Revit.DB.SweptBlend',
+	'Autodesk.Revit.DB.GenericForm':['generic','form'],
+    'Autodesk.Revit.DB.Blend':['generic','blend'],
+    'Autodesk.Revit.DB.Extrusion':['generic','extrusion'],
+    'Autodesk.Revit.DB.Form':['generic','form'],
+    'Autodesk.Revit.DB.Revolution':['generic','form','revolution'],
+    'Autodesk.Revit.DB.Sweep':['generic','form','sweep'],
+    'Autodesk.Revit.DB.SweptBlend':['generic','sweep','swept','blend'],
 
-	'Autodesk.Revit.DB.GeometryObject',
-    'Autodesk.Revit.DB.Edge',
-    'Autodesk.Revit.DB.GeometryInstance',
-    'Autodesk.Revit.DB.Mesh',
-    'Autodesk.Revit.DB.Point',
-    'Autodesk.Revit.DB.PolyLine',
-    'Autodesk.Revit.DB.Profile',
-    'Autodesk.Revit.DB.Solid',
+	'Autodesk.Revit.DB.GeometryObject':['geometry','object'],
+    'Autodesk.Revit.DB.Edge':['edge'],
+    'Autodesk.Revit.DB.GeometryInstance':['geometry','instance'],
+    'Autodesk.Revit.DB.Mesh':['mesh'],
+    'Autodesk.Revit.DB.Point':['point','pt'],
+    'Autodesk.Revit.DB.PolyLine':['pline','polyline'],
+    'Autodesk.Revit.DB.Profile':['profile'],
+    'Autodesk.Revit.DB.Solid':['solid'],
 
-    'Autodesk.Revit.DB.Instance',
-    'Autodesk.Revit.DB.FamilyInstance',
-    'Autodesk.Revit.DB.PointCloudInstance',
+    'Autodesk.Revit.DB.Instance':['instance'],
+    'Autodesk.Revit.DB.FamilyInstance':['family','instance'],
+    'Autodesk.Revit.DB.PointCloudInstance':['point','cloud'],
 
-    'Autodesk.Revit.DB.DividedSurface',
+    'Autodesk.Revit.DB.DividedSurface':['divide','divided','surface','adaptive','components'],
 
-    'Autodesk.Revit.DB.AdaptiveComponentFamilyUtils',
-    'Autodesk.Revit.DB.AdaptiveComponentInstanceUtils',
+    'Autodesk.Revit.DB.AdaptiveComponentFamilyUtils':['adaptive','component','family','utils'],
+    'Autodesk.Revit.DB.AdaptiveComponentInstanceUtils':['adpative', 'component','family','utils'],
 
-    'Autodesk.Revit.DB.Transform',
-    'Autodesk.Revit.DB.ModelArc',
-    'Autodesk.Revit.DB.ModelCurve',
-    'Autodesk.Revit.DB.ModelSpline',
-    'Autodesk.Revit.DB.ModelHermiteSpline',
-    'Autodesk.Revit.DB.ModelEllipse',
-    'Autodesk.Revit.DB.ModelLine',
+    'Autodesk.Revit.DB.Transform':['transform'],
+    'Autodesk.Revit.DB.ModelArc':['model','curve','arc'],
+    'Autodesk.Revit.DB.ModelCurve':['model','curve'],
+    'Autodesk.Revit.DB.ModelSpline':['model','curve','spline'],
+    'Autodesk.Revit.DB.ModelHermiteSpline':['model','curve','spline','hermite'],
+    'Autodesk.Revit.DB.ModelEllipse':['model','curve','ellipse'],
+    'Autodesk.Revit.DB.ModelLine':['model','curve','line'],
 
-    'Autodesk.Revit.DB.XYZ',
-    'Autodesk.Revit.DB.UV',
+    'Autodesk.Revit.DB.XYZ':['xyz','point','pt'],
+    'Autodesk.Revit.DB.UV':['uv','point','param'],
 
-    'Autodesk.Revit.DB.Wall',
-    'Autodesk.Revit.DB.Material',
-    'Autodesk.Revit.DB.Level',
-    'Autodesk.Revit.DB.Color',
-    'Autodesk.Revit.DB.BoundingBoxUV',
-    'Autodesk.Revit.DB.BoundingBoxXYZ',
-	]
+    'Autodesk.Revit.DB.Wall':['wall'],
+    'Autodesk.Revit.DB.Material':['material','color'],
+    'Autodesk.Revit.DB.Level':['level'],
+    'Autodesk.Revit.DB.Color':['color'],
+    'Autodesk.Revit.DB.BoundingBoxUV':['bounding','box','bounds','bbox'],
+    'Autodesk.Revit.DB.BoundingBoxXYZ':['bounding','box','bounds','bbox'],
+	}
 
 	revit_types = {}
 	
@@ -122,7 +122,7 @@ def main():
 	read_properties(root, revit_types, valid_namespaces, skip_list)
 
 	for key in revit_types.keys():
-		revit_types[key].write(f);
+		revit_types[key].write(f, valid_namespaces);
 
 	f.write('}\n')
 	f.close()
@@ -168,11 +168,11 @@ class RevitType:
 			string += str(p) + "\n"
 		return string
 
-	def write(self, f):
+	def write(self, f, valid_namespaces):
 		for m in self.methods:
-			m.write(f)
+			m.write(f, valid_namespaces)
 		for p in self.properties:
-			p.write(f)
+			p.write(f, valid_namespaces)
 
 class RevitMethod:
 	def __init__(self, name, returns, summary, node_names):
@@ -225,8 +225,8 @@ class RevitMethod:
 			string += p.key + ":" + p.value +"\n"
 		return string
 
-	def write(self, f):
-		self.write_attributes(f)
+	def write(self, f, valid_namespaces):
+		self.write_attributes(f, valid_namespaces)
 		f.write('\tpublic class ' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
 		f.write('\t{\n')
 		self.write_constructor(f)
@@ -234,8 +234,13 @@ class RevitMethod:
 		f.write('\t}\n')
 		f.write('\n')
 
-	def write_attributes(self, f):
+	def write_attributes(self, f, valid_namespaces):
+		search_tags = []
+		for tag in valid_namespaces[self.type]:
+			search_tags.append('\"' + tag + '\"')
+
 		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
 		'\t[NodeCategory(BuiltinNodeCategories.' + self.type.upper().replace('.','_') + ')]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 		f.writelines(node_attributes)
@@ -349,8 +354,8 @@ class RevitProperty:
 		string += self.summary +"\n"
 		return string
 
-	def write(self, f):
-		self.write_attributes(f)
+	def write(self, f, valid_namespaces):
+		self.write_attributes(f, valid_namespaces)
 		f.write('\tpublic class ' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
 		f.write('\t{\n')
 		self.write_constructor(f)
@@ -358,8 +363,13 @@ class RevitProperty:
 		f.write('\t}\n')
 		f.write('\n')
 
-	def write_attributes(self,f):
+	def write_attributes(self,f, valid_namespaces):
+		search_tags = []
+		for tag in valid_namespaces[self.type]:
+			search_tags.append('\"' + tag + '\"')
+
 		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
 		'\t[NodeCategory(BuiltinNodeCategories.' + self.type.upper().replace('.','_') + ')]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 		f.writelines(node_attributes)
@@ -410,7 +420,7 @@ def check_namespace(name, valid_namespaces):
 	else:
 		check_name = name.rsplit('.',1)[0].split(':')[1]
 
-	for namespace in valid_namespaces:
+	for namespace in valid_namespaces.keys():
 		if namespace == check_name:
 			return True
 	return False
