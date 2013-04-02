@@ -41,6 +41,24 @@ namespace Dynamo.Search
         ///     Specifies whether we are including PackageManagerSearchElements in search - possibly for remote download.
         /// </value>
         public bool _IncludePackageManagerSearchElements;
+        public bool IncludePackageManagerSearchElements
+        {
+            get { return _IncludePackageManagerSearchElements; }
+            set
+            {
+                _IncludePackageManagerSearchElements = value;
+                RaisePropertyChanged("IncludePackageManagerSearchElements");
+                if (value)
+                {
+                    DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+                }
+                else
+                {
+                    SearchDictionary.Remove((element) => element is PackageManagerSearchElement);
+                    this.SearchAndUpdateResults();
+                }
+            }
+        }
 
         /// <summary>
         ///     SearchText property
@@ -49,6 +67,16 @@ namespace Dynamo.Search
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
         public string _SearchText;
+        public string SearchText
+        {
+            get { return _SearchText; }
+            set
+            {
+                _SearchText = value;
+                RaisePropertyChanged("SearchText");
+                DynamoCommands.SearchCmd.Execute(null);
+            }
+        }
 
         /// <summary>
         ///     SelectedIndex property
@@ -57,6 +85,22 @@ namespace Dynamo.Search
         ///     This is the currently selected element in the UI.
         /// </value>
         private int _selectedIndex;
+        public int SelectedIndex
+        {
+            get { return _selectedIndex; }
+            set
+            {
+                if (_selectedIndex != value)
+                {
+                    _selectedIndex = value;
+
+                    //if (i < this.SearchResultsListBox.Items.Count)
+                    //    this.SearchResultsListBox.ScrollIntoView(this.SearchResultsListBox.Items[i]);
+
+                    RaisePropertyChanged("SelectedIndex");
+                }
+            }
+        }
 
         /// <summary>
         ///     Visible property
@@ -65,6 +109,19 @@ namespace Dynamo.Search
         ///     Tells whether the View is visible or not
         /// </value>
         private Visibility _visible;
+
+        public Visibility Visible
+        {
+            get { return _visible; }
+            set
+            {
+                if (_visible != value)
+                {
+                    _visible = value;
+                    RaisePropertyChanged("Visible");
+                }
+            }
+        }
 
         /// <summary>
         ///     SearchDictionary property
@@ -98,64 +155,11 @@ namespace Dynamo.Search
         /// </value>
         public dynBench Bench { get; private set; }
 
-        public int SelectedIndex
-        {
-            get { return _selectedIndex; }
-            set
-            {
-                if (_selectedIndex != value)
-                {
-                    _selectedIndex = value;
 
-                    //if (i < this.SearchResultsListBox.Items.Count)
-                    //    this.SearchResultsListBox.ScrollIntoView(this.SearchResultsListBox.Items[i]);
 
-                    RaisePropertyChanged("SelectedIndex");
-                }
-            }
-        }
 
-        public Visibility Visible
-        {
-            get { return _visible; }
-            set
-            {
-                if (_visible != value)
-                {
-                    _visible = value;
-                    RaisePropertyChanged("Visible");
-                }
-            }
-        }
 
-        public string SearchText
-        {
-            get { return _SearchText; }
-            set
-            {
-                _SearchText = value;
-                RaisePropertyChanged("SearchText");
-                DynamoCommands.SearchCmd.Execute(null);
-            }
-        }
 
-        public bool IncludePackageManagerSearchElements
-        {
-            get { return _IncludePackageManagerSearchElements; }
-            set
-            {
-                _IncludePackageManagerSearchElements = value;
-                RaisePropertyChanged("IncludePackageManagerSearchElements");
-                if (value)
-                {
-                    DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
-                }
-                else
-                {
-                    SearchDictionary.Remove((element) => element is PackageManagerSearchElement);
-                }
-            }
-        }
 
         #endregion
 

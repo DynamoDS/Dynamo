@@ -159,15 +159,18 @@ namespace Dynamo.Search
         {
             var result = new HashSet<V>();
 
-            foreach (string word in query.Split(new[] {' '}).Where(x => x.Length > 0))
+            string pattern = ".*(" + Regex.Escape(query) + ").*";
+            
+            foreach (var pair in _tagDictionary)
             {
-                foreach (var pair in _tagDictionary)
+                MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
+
+                if (matches.Count > 0)
                 {
-                    if (pair.Key.ToLower().StartsWith(word))
-                        result.UnionWith(pair.Value);
+                    result.UnionWith(pair.Value);
                 }
             }
-
+            
             return result;
         }
 
