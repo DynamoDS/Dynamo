@@ -278,7 +278,7 @@ namespace Dynamo.PackageManager
                                                                 this.Description, this.KeywordList, "MIT", "global");
                 if (pkgVersion != null)
                 {
-                    Client.Publish(pkgVersion, this.FunctionDefinition);
+                    Client.Publish(pkgVersion);
                     dynSettings.Controller.PackageManagerClient.ShowPackageControlInformation();
                     this.Visible = Visibility.Collapsed;
                 }

@@ -22,67 +22,96 @@ using Microsoft.Practices.Prism.ViewModel;
 namespace Dynamo.PackageManager
 {
     /// <summary>
-    /// This is the core ViewModel for PackageManager login</summary>
+    ///     This is the core ViewModel for PackageManager login
+    /// </summary>
     public class PackageManagerLoginViewModel : NotificationObject
     {
-
         #region Properties 
 
         /// <summary>
-        /// Client property </summary>
+        ///     BrowserUri property
+        /// </summary>
         /// <value>
-        /// The PackageManagerClient object for performing OAuth calls</value>
+        ///     The current location of the browser, observed by the UI
+        /// </value>
+        private Uri _browserUri;
+
+        /// <summary>
+        ///     BrowserVisible property
+        /// </summary>
+        /// <value>
+        ///     Tells whether the browser is visible
+        /// </value>
+        private Visibility _browserVisible;
+
+        /// <summary>
+        ///     Visible property
+        /// </summary>
+        /// <value>
+        ///     Tells whether the login UI is visible
+        /// </value>
+        private Visibility _visible;
+
+        /// <summary>
+        ///     Client property
+        /// </summary>
+        /// <value>
+        ///     The PackageManagerClient object for performing OAuth calls
+        /// </value>
         public PackageManagerClient Client { get; internal set; }
 
         /// <summary>
-        /// BrowserUri property </summary>
+        ///     BrowserUri property
+        /// </summary>
         /// <value>
-        /// The current location of the browser, observed by the UI </value>
-        private Uri _browserUri;
+        ///     The current uri for the browser
+        /// </value>
         public Uri BrowserUri
         {
             get { return _browserUri; }
             set
             {
-                if (this._browserUri != value)
+                if (_browserUri != value)
                 {
-                    this._browserUri = value;
+                    _browserUri = value;
                     RaisePropertyChanged("BrowserUri");
                 }
             }
         }
 
         /// <summary>
-        /// BrowserVisible property </summary>
+        ///     BrowserVisible property
+        /// </summary>
         /// <value>
-        /// Tells whether the browser is visible</value>
-        private Visibility _browserVisible;
+        ///     Specifies whether the browser is visible, observed by View
+        /// </value>
         public Visibility BrowserVisible
         {
             get { return _browserVisible; }
             set
             {
-                if (this._browserVisible != value)
+                if (_browserVisible != value)
                 {
-                    this._browserVisible = value;
+                    _browserVisible = value;
                     RaisePropertyChanged("BrowserVisible");
                 }
             }
         }
 
         /// <summary>
-        /// Visible property </summary>
+        ///     Visible property
+        /// </summary>
         /// <value>
-        /// Tells whether the login UI is visible</value>
-        private Visibility _visible;
+        ///     Specifies whether the View is visible, observed by View
+        /// </value>
         public Visibility Visible
         {
             get { return _visible; }
             set
             {
-                if (this._visible != value)
+                if (_visible != value)
                 {
-                    this._visible = value;
+                    _visible = value;
                     RaisePropertyChanged("Visible");
                 }
             }
@@ -91,9 +120,10 @@ namespace Dynamo.PackageManager
         #endregion
 
         /// <summary>
-        /// The class constructor. </summary>
+        ///     The class constructor.
+        /// </summary>
         /// <param name="client"> Reference to to the PackageManagerClient object for the app </param>
-        public PackageManagerLoginViewModel( PackageManagerClient client)
+        public PackageManagerLoginViewModel(PackageManagerClient client)
         {
             Client = client;
             BrowserUri = new Uri("http://www.autodesk.com");
@@ -102,41 +132,45 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Shows the browser if hidden and navigates to Oxygen login, using PackageManagerClient's uri data. </summary>
+        ///     Shows the browser if hidden and navigates to Oxygen login, using PackageManagerClient's uri data.
+        /// </summary>
         public void NavigateToLogin()
         {
-            ThreadStart start = () => Client.Client.GetRequestTokenAsync((uri, token) => 
+            ThreadStart start = () => Client.Client.GetRequestTokenAsync((uri, token) =>
                 {
-                    this.BrowserVisible = Visibility.Visible;
-                    this.BrowserUri = uri;
+                    BrowserVisible = Visibility.Visible;
+                    BrowserUri = uri;
                 }, Greg.Client.AuthorizationPageViewMode.Desktop);
             new Thread(start).Start();
         }
 
         /// <summary>
-        /// The method called when the browser changes its url. </summary>
+        ///     The method called when the browser changes its url.
+        /// </summary>
         /// <param name="sender">Originating object for the event </param>
         /// <param name="e">Parameters describing the navigation</param>
         public void WebBrowserNavigatedEvent(object sender, NavigationEventArgs e)
         {
-            if ( e.Uri.AbsoluteUri.IndexOf("Allow", System.StringComparison.Ordinal) > -1)
+            if (e.Uri.AbsoluteUri.IndexOf("Allow", StringComparison.Ordinal) > -1)
             {
-                this.Visible = Visibility.Hidden;
+                Visible = Visibility.Hidden;
                 Client.GetAccessToken();
             }
         }
     }
 
     /// <summary>
-    /// A helper utility class used to help bind the WebBrowser to the ViewModel</summary>
+    ///     A helper utility class used to help bind the WebBrowser to the ViewModel
+    /// </summary>
     public static class WebBrowserUtility
     {
         public static readonly DependencyProperty BindableSourceProperty =
-            DependencyProperty.RegisterAttached("BindableSource", typeof(string), typeof(WebBrowserUtility), new UIPropertyMetadata(null, BindableSourcePropertyChanged));
+            DependencyProperty.RegisterAttached("BindableSource", typeof (string), typeof (WebBrowserUtility),
+                                                new UIPropertyMetadata(null, BindableSourcePropertyChanged));
 
         public static string GetBindableSource(DependencyObject obj)
         {
-            return (string)obj.GetValue(BindableSourceProperty);
+            return (string) obj.GetValue(BindableSourceProperty);
         }
 
         public static void SetBindableSource(DependencyObject obj, string value)
@@ -149,10 +183,9 @@ namespace Dynamo.PackageManager
             var browser = o as WebBrowser;
             if (browser != null)
             {
-                string uri = e.NewValue as string;
+                var uri = e.NewValue as string;
                 browser.Source = uri != null ? new Uri(uri) : null;
             }
         }
-
     }
 }

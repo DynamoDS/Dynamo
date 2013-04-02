@@ -24,6 +24,7 @@ using System.Threading;
 using System.Windows;
 using System.Xml;
 using Dynamo.Utilities;
+using Greg;
 using Greg.Requests;
 using Greg.Responses;
 using RestSharp;
@@ -32,69 +33,127 @@ using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
+    /// <summary>
+    ///     A thin wrapper on the Greg rest client for performing IO with
+    ///     the Package Manager
+    /// </summary>
     public class PackageManagerClient
     {
         #region Properties
-            public Greg.Client Client { get; internal set; }
-            private DynamoController Controller;
-            public bool IsLoggedIn { get; internal set; }
-            public BackgroundWorker Worker { get; internal set; }
-            public Dictionary<FunctionDefinition, PackageHeader> LoadedPackageHeaders { get; internal set; }
+
+        /// <summary>
+        ///     Controller property
+        /// </summary>
+        /// <value>
+        ///     Reference to the main DynamoController
+        /// </value>
+        private readonly DynamoController Controller;
+
+        /// <summary>
+        ///     Client property
+        /// </summary>
+        /// <value>
+        ///     The client for the Package Manager
+        /// </value>
+        public Client Client { get; internal set; }
+
+        /// <summary>
+        ///     IsLoggedIn property
+        /// </summary>
+        /// <value>
+        ///     Specifies whether the user is logged in or not.
+        /// </value>
+        public bool IsLoggedIn { get; internal set; }
+
+        /// <summary>
+        ///     Worker property
+        /// </summary>
+        /// <value>
+        ///     Helps to do asynchronous calls to the server
+        /// </value>
+        public BackgroundWorker Worker { get; internal set; }
+
+        /// <summary>
+        ///     LoadedPackageHeaders property
+        /// </summary>
+        /// <value>
+        ///     Tells which package headers are currently loaded
+        /// </value>
+        public Dictionary<FunctionDefinition, PackageHeader> LoadedPackageHeaders { get; internal set; }
+
         #endregion
 
+        /// <summary>
+        ///     The class constructor.
+        /// </summary>
+        /// <param name="controller"> Reference to to the DynamoController object for the app </param>
         public PackageManagerClient(DynamoController controller)
         {
             Controller = controller;
-          
+
             LoadedPackageHeaders = new Dictionary<FunctionDefinition, PackageHeader>();
-            Client = new Greg.Client("https://accounts-dev.autodesk.com", "http://54.243.225.192:8080");
+            Client = new Client("https://accounts-dev.autodesk.com", "http://54.243.225.192:8080");
             Worker = new BackgroundWorker();
-            
-            this.IsLoggedIn = false;
+
+            IsLoggedIn = false;
         }
 
+        /// <summary>
+        ///     Asynchronously pull the package headers from the server and update search
+        /// </summary>
         public void RefreshAvailable()
         {
             ThreadStart start = () =>
-            {
-                var req = HeaderCollectionDownload.ByEngine("dynamo");
+                {
+                    HeaderCollectionDownload req = HeaderCollectionDownload.ByEngine("dynamo");
 
-                try
-                {
-                    var response = Client.ExecuteAndDeserializeWithContent<List<Greg.Responses.PackageHeader>>(req);
-                    if (response.success)
+                    try
                     {
-                        dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
-                            {
-                                foreach (var header in response.content)
+                        ResponseWithContentBody<List<PackageHeader>> response =
+                            Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(req);
+                        if (response.success)
+                        {
+                            dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                                 {
-                                    dynSettings.Controller.SearchViewModel.Add(header);
-                                }
-                            }));                   
+                                    foreach (PackageHeader header in response.content)
+                                    {
+                                        dynSettings.Controller.SearchViewModel.Add(header);
+                                    }
+                                }));
+                        }
                     }
-                }
-                catch
-                {
-                    dynSettings.Bench.Dispatcher.BeginInvoke(
-                        (Action) (() => dynSettings.Bench.Log("Failed to refresh available nodes from server.")));
-                }
-                
-            };
+                    catch
+                    {
+                        dynSettings.Bench.Dispatcher.BeginInvoke(
+                            (Action) (() => dynSettings.Bench.Log("Failed to refresh available nodes from server.")));
+                    }
+                };
             new Thread(start).Start();
         }
-        
-        public PackageUpload GetPackageUpload( FunctionDefinition funDef, string version, string description, List<string> keywords, string license, string group)
+
+        /// <summary>
+        ///     Create a PackageUpload object from the given data
+        /// </summary>
+        /// <param name="funDef"> The function definition for the user-defined node </param>
+        /// <param name="version"> The version, specified in X.Y.Z form</param>
+        /// <param name="description"> A description of the user-defined node </param>
+        /// <param name="keywords"> Keywords to describe the user-defined node </param>
+        /// <param name="license"> A license string (e.g. "MIT") </param>
+        /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
+        public PackageUpload GetPackageUpload(FunctionDefinition funDef, string version, string description,
+                                              List<string> keywords, string license, string group)
         {
             try
             {
                 // var group = ((FuncWorkspace) funDef.Workspace).Category;
-                var name = funDef.Workspace.Name;
-                var contents = Controller.GetXmlDocumentFromWorkspace(funDef.Workspace).OuterXml;
-                var engineVersion = "0.1.0"; //nope
-                var engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString(); //store the guid here
+                string name = funDef.Workspace.Name;
+                string contents = Controller.GetXmlDocumentFromWorkspace(funDef.Workspace).OuterXml;
+                string engineVersion = "0.1.0"; //nope
+                string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString(); //store the guid here
 
-                var pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license, contents,
-                                                          engineVersion, engineMetadata);
+                PackageUpload pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license,
+                                                                    contents,
+                                                                    engineVersion, engineMetadata);
                 return pkg;
             }
             catch
@@ -103,16 +162,27 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public PackageVersionUpload GetPackageVersionUpload(FunctionDefinition funDef, PackageHeader ph, string version,
-                                                            string description, List<string> keywords, string license, string group )
+        /// <summary>
+        ///     Create a PackageVersionUpload object from the given data
+        /// </summary>
+        /// <param name="funDef"> The function definition for the user-defined node </param>
+        /// <param name="packageHeader"> The PackageHeader object </param>
+        /// <param name="version"> The version, specified in X.Y.Z form</param>
+        /// <param name="description"> A description of the user-defined node </param>
+        /// <param name="keywords"> Keywords to describe the user-defined node </param>
+        /// <param name="license"> A license string (e.g. "MIT") </param>
+        /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
+        public PackageVersionUpload GetPackageVersionUpload(FunctionDefinition funDef, PackageHeader packageHeader, string version,
+                                                            string description, List<string> keywords, string license,
+                                                            string group)
         {
             try
             {
                 // var group = ((FuncWorkspace) funDef.Workspace).Category;
-                var name = funDef.Workspace.Name;
-                var contents = Controller.GetXmlDocumentFromWorkspace(funDef.Workspace).OuterXml;
-                var engineVersion = "0.1.0"; //nope
-                var engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString();
+                string name = funDef.Workspace.Name;
+                string contents = Controller.GetXmlDocumentFromWorkspace(funDef.Workspace).OuterXml;
+                string engineVersion = "0.1.0"; //nope
+                string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString();
 
                 var pkg = new PackageVersionUpload(name, version, description, keywords, contents, "dynamo",
                                                    engineVersion,
@@ -124,62 +194,74 @@ namespace Dynamo.PackageManager
                 return null;
             }
         }
-        
-        public void Publish( PackageUpload newPackage, FunctionDefinition funDef )
+
+        /// <summary>
+        ///     Attempt to upload PackageUpload 
+        /// </summary>
+        /// <param name="packageUpload"> The PackageUpload object - the payload </param>
+        /// <param name="funDef"> The function definition for the user-defined node - necessary to
+        /// update the LoadedPackageHeaders array on load </param>
+        public void Publish(PackageUpload packageUpload, FunctionDefinition funDef)
         {
             ThreadStart start = () =>
-            {
-                try
                 {
-        
-                    var ret = this.Client.ExecuteAndDeserializeWithContent<PackageHeader>(newPackage);
-                    dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                        {
-                            dynSettings.Bench.Log(ret.message);
-                            this.LoadedPackageHeaders.Add(funDef, ret.content);
-                            this.SavePackageHeader(ret.content);
-                        }));
-
-                }
-                catch
-                {
-                    dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() => dynSettings.Bench.Log("Failed to publish package.")));
-                }
-                
-            };
-            new Thread(start).Start();
-        }
-
-        public void Publish( PackageVersionUpload newPackage, FunctionDefinition funDef)
-        {
-            ThreadStart start = () =>
-            {
-                try
-                {
-                    var ret = this.Client.ExecuteAndDeserializeWithContent<PackageHeader>(newPackage);
-                    dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
+                    try
                     {
-                        dynSettings.Bench.Log(ret.message);
-                        this.SavePackageHeader(ret.content);
-                    }));
-
-                }
-                catch
-                {
-                    dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() => dynSettings.Bench.Log("Failed to publish package.")));
-                }
-
-            };
+                        ResponseWithContentBody<PackageHeader> ret =
+                            Client.ExecuteAndDeserializeWithContent<PackageHeader>(packageUpload);
+                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                            {
+                                dynSettings.Bench.Log("Message form server: " + ret.message);
+                                LoadedPackageHeaders.Add(funDef, ret.content);
+                                SavePackageHeader(ret.content);
+                            }));
+                    }
+                    catch
+                    {
+                        dynSettings.Bench.Dispatcher.BeginInvoke(
+                            (Action) (() => dynSettings.Bench.Log("Failed to publish package.")));
+                    }
+                };
             new Thread(start).Start();
         }
 
-        // save package information for a downloaded package
-        public void SavePackageHeader( PackageHeader ph )
+        /// <summary>
+        ///     Attempt to upload PackageVersionUpload 
+        /// </summary>
+        /// <param name="pkgVersUpload"> The PackageUpload object - the payload </param>
+        public void Publish(PackageVersionUpload pkgVersUpload)
+        {
+            ThreadStart start = () =>
+                {
+                    try
+                    {
+                        ResponseWithContentBody<PackageHeader> ret =
+                            Client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgVersUpload);
+                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                            {
+                                dynSettings.Bench.Log(ret.message);
+                                SavePackageHeader(ret.content);
+                            }));
+                    }
+                    catch
+                    {
+                        dynSettings.Bench.Dispatcher.BeginInvoke(
+                            (Action) (() => dynSettings.Bench.Log("Failed to publish package.")));
+                    }
+                };
+            new Thread(start).Start();
+        }
+
+        /// <summary>
+        ///     Serialize and save a PackageHeader to the "Packages" directory
+        /// </summary>
+        /// <param name="pkgHeader"> The PackageHeader object </param>
+        public void SavePackageHeader(PackageHeader pkgHeader)
         {
             try
             {
                 var m2 = new JsonSerializer();
-                var s = m2.Serialize(ph);
+                string s = m2.Serialize(pkgHeader);
 
                 string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string pluginsPath = Path.Combine(directory, "packages");
@@ -188,72 +270,83 @@ namespace Dynamo.PackageManager
                     Directory.CreateDirectory(pluginsPath);
 
                 // now save it
-                string path = Path.Combine(pluginsPath, ph.name + ".json");
+                string path = Path.Combine(pluginsPath, pkgHeader.name + ".json");
                 File.WriteAllText(path, s);
-                
             }
-            catch 
+            catch
             {
-                dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
-                {
-                    dynSettings.Bench.Log("Failed to write package header information, won't be under source control.");
-                }));
+                dynSettings.Bench.Dispatcher.BeginInvoke(
+                    (Action)
+                    (() => dynSettings.Bench.Log(
+                        "Failed to write package header information, won't be under source control.")));
             }
-            
         }
 
+        /// <summary>
+        ///     Asynchronously download a specific user-defined node from the server
+        /// </summary>
+        /// <param name="id"> The id that uniquely defines the package, usually obtained from a PackageHeader </param>
+        /// <param name="version"> A version name for the download </param>
+        /// <param name="callback"> Delegate to execute upon receiving the package </param>
         public void Download(string id, string version, Action<Guid> callback)
         {
             ThreadStart start = () =>
-            {
-                // download the package
-                var m = new HeaderDownload(id);
-                var p = this.Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);
-                
-                // then save it to a file in packages
-                var d = new XmlDocument();
-                d.LoadXml(p.content.versions[0].contents);
-
-                // obtain the funcDefGuid
-                var funcDefGuid = ExtractFunctionDefinitionGuid(p.content, 0);
-                if (Guid.Empty == funcDefGuid)
                 {
-                    return;
-                }
+                    // download the package
+                    var m = new HeaderDownload(id);
+                    ResponseWithContentBody<PackageHeader> p = Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);
 
-                // for which we need to create path
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "definitions");
+                    // then save it to a file in packages
+                    var d = new XmlDocument();
+                    d.LoadXml(p.content.versions[0].contents);
 
-                try
-                {
-                    if (!Directory.Exists(pluginsPath))
-                        Directory.CreateDirectory(pluginsPath);
-
-                    // now save it
-                    string path = Path.Combine(pluginsPath, p.content.name + ".dyf");
-                    d.Save(path);
-
-                    this.SavePackageHeader(p.content);
-
-                    dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                        {
-                            Controller.OpenDefinition(path);
-                            dynSettings.Bench.Log("Successfully imported package " + p.content.name);
-                            callback(funcDefGuid);
-                        }));
-                }
-                catch
-                {
-                    dynSettings.Bench.Dispatcher.BeginInvoke((Action)(() =>
+                    // obtain the funcDefGuid
+                    Guid funcDefGuid = ExtractFunctionDefinitionGuid(p.content, 0);
+                    if (Guid.Empty == funcDefGuid)
                     {
-                        dynSettings.Bench.Log("Failed to load package " + p.content.name);
-                    }));
-                }
-            };
+                        return;
+                    }
+
+                    // for which we need to create path
+                    string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                    if (directory == null)
+                    {
+                        throw new DirectoryNotFoundException();
+                    }
+                    string pluginsPath = Path.Combine(directory, "definitions");
+
+                    try
+                    {
+                        if (!Directory.Exists(pluginsPath))
+                            Directory.CreateDirectory(pluginsPath);
+
+                        // now save it
+                        string path = Path.Combine(pluginsPath, p.content.name + ".dyf");
+                        d.Save(path);
+
+                        SavePackageHeader(p.content);
+
+                        dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
+                            {
+                                Controller.OpenDefinition(path);
+                                dynSettings.Bench.Log("Successfully imported package " + p.content.name);
+                                callback(funcDefGuid);
+                            }));
+                    }
+                    catch
+                    {
+                        dynSettings.Bench.Dispatcher.BeginInvoke(
+                            (Action) (() => dynSettings.Bench.Log("Failed to load package " + p.content.name)));
+                    }
+                };
             new Thread(start).Start();
         }
 
+        /// <summary>
+        ///     Asynchronously obtain an AccessToken from the server, this enables upload.  Assumes
+        ///     you've already obtained a RequestToken.
+        /// </summary>
         internal void GetAccessToken()
         {
             ThreadStart start = () =>
@@ -262,15 +355,17 @@ namespace Dynamo.PackageManager
                     {
                         Client.GetAccessTokenAsync(
                             (s) =>
-                            Client.IsAuthenticatedAsync((auth) => dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
-                                {
-                                    if (auth)
+                            Client.IsAuthenticatedAsync(
+                                (auth) => dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                                     {
-                                        dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                                        dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
-                                        this.IsLoggedIn = true;
-                                    }
-                                }))));
+                                        if (auth)
+                                        {
+                                            // this is bad as this stuff may not be present
+                                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";  
+                                            dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                            IsLoggedIn = true;
+                                        }
+                                    }))));
                     }
                     catch
                     {
@@ -279,11 +374,16 @@ namespace Dynamo.PackageManager
                 };
             new Thread(start).Start();
         }
-        
-        internal static Guid ExtractFunctionDefinitionGuid(string s)
+
+        /// <summary>
+        ///     Extract a guid from the engine-meta data string, usually from a PackageHeader
+        /// </summary>
+        /// <param name="metadataString"> The string itself </param>
+        /// <returns> Returns the guid if the guid was found, otherwise Guid.Empty. </returns>
+        internal static Guid ExtractFunctionDefinitionGuid(string metadataString)
         {
-            var pattern = "FunctionDefinitionGuid:([0-9a-f-]{36})"; // match a FunctionDefinition
-            var matches = Regex.Matches(s, pattern, RegexOptions.IgnoreCase);
+            string pattern = "FunctionDefinitionGuid:([0-9a-f-]{36})"; // match a FunctionDefinition
+            MatchCollection matches = Regex.Matches(metadataString, pattern, RegexOptions.IgnoreCase);
 
             if (matches.Count != 1)
             {
@@ -291,13 +391,27 @@ namespace Dynamo.PackageManager
             }
 
             return new Guid(matches[0].Groups[1].Value);
-        } 
-
-        public static Guid ExtractFunctionDefinitionGuid(PackageHeader header, int versionIndex)
-        {
-            return ExtractFunctionDefinitionGuid( header.versions[versionIndex].engine_metadata );
         }
 
+        /// <summary>
+        ///     Extract a guid from the engine-meta data string from a PackageHeader
+        /// </summary>
+        /// <param name="header"> The package header </param>
+        /// <param name="versionIndex"> The index of the version to obtain </param>
+        /// <returns> Returns the guid if the guid was found, otherwise Guid.Empty. </returns>
+        public static Guid ExtractFunctionDefinitionGuid(PackageHeader header, int versionIndex)
+        {
+            if (versionIndex < 0 || versionIndex >= header.versions.Count)
+                return Guid.Empty;
+            return ExtractFunctionDefinitionGuid(header.versions[versionIndex].engine_metadata);
+        }
+
+        /// <summary>
+        ///     Attempts to load a PackageHeader from the Packages directory, if successful, stores the PackageHeader
+        /// </summary>
+        /// <param name="funcDef"> The FunctionDefinition to which the loaded user-defined node is to be assigned </param>
+        /// <param name="name"> The name of the package, necessary for looking it up in Packages. Note that 
+        /// two package version cannot exist side by side. </param>
         public void LoadPackageHeader(FunctionDefinition funcDef, string name)
         {
             try
@@ -306,7 +420,7 @@ namespace Dynamo.PackageManager
                 string pluginsPath = Path.Combine(directory, "packages");
 
                 // find the file matching the expected name
-                var files = Directory.GetFiles(pluginsPath, name + ".json");
+                string[] files = Directory.GetFiles(pluginsPath, name + ".json");
 
                 if (files.Length == 1) // There can only be one!
                 {
@@ -326,12 +440,15 @@ namespace Dynamo.PackageManager
                 dynSettings.Bench.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
             }
-
         }
 
+        /// <summary>
+        ///     Shows a string in the UI associated with whether the open workspace is package controlled
+        /// </summary>
         public void ShowPackageControlInformation()
         {
-            var f = dynSettings.FunctionDict.First(x => x.Value.Workspace == this.Controller.CurrentSpace).Value;
+            FunctionDefinition f =
+                dynSettings.FunctionDict.First(x => x.Value.Workspace == Controller.CurrentSpace).Value;
 
             if (f != null)
             {
@@ -349,6 +466,9 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        ///     Hides the string in the UI associated with package control for the current workspace
+        /// </summary>
         public void HidePackageControlInformation()
         {
             dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
