@@ -6,6 +6,8 @@ def main():
 	root = tree.getroot()
 
 	wrapperPath = './DynamoRevitNodes.cs'
+	categoriesPath = './DynamoRevitCategories.cs'
+
 	# create a new text file to hold our wrapped classes
 	try:
 	   with open(wrapperPath) as f: pass
@@ -125,6 +127,29 @@ def main():
 	f.write('}\n')
 	f.close()
 
+	# create a new text file to hold our wrapped classes
+	try:
+	   with open(categoriesPath) as f: pass
+	except IOError as e:
+	   print 'Could not find existing categories path .'
+
+	f = open(categoriesPath, 'w')
+	using=[	
+	'using System;\n']
+	f.writelines(using)
+
+	f.write('namespace Dynamo.Nodes\n')
+	f.write('{\n')
+	f.write('\tpublic static partial class BuiltinNodeCategories\n')
+	f.write('\t{\n')
+
+	for namespace in valid_namespaces:
+		f.write('\t\tpublic const string ' + namespace.upper().replace('.','_') + ' = \"' + namespace + '\";\n')
+
+	f.write('\t}\n')
+	f.write('}\n')
+	f.close();
+
 class RevitType:
 	def __init__(self, name, summary):
 	    self.methods = []
@@ -211,7 +236,7 @@ class RevitMethod:
 
 	def write_attributes(self, f):
 		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
-		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.' + self.type.upper().replace('.','_') + ')]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 		f.writelines(node_attributes)
 
@@ -335,7 +360,7 @@ class RevitProperty:
 
 	def write_attributes(self,f):
 		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
-		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.' + self.type.upper().replace('.','_') + ')]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 		f.writelines(node_attributes)
 

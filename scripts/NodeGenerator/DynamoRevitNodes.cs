@@ -14,7 +14,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
 	[NodeName("Revit_HermiteFace_MixedDerivs")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITEFACE)]
 	[NodeDescription("Mixed derivatives of the surface.")]
 	public class Revit_HermiteFace_MixedDerivs : dynRevitTransactionNodeWithOneOutput
 	{
@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_HermiteFace_Points")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITEFACE)]
 	[NodeDescription("Interpolation points of the surface.")]
 	public class Revit_HermiteFace_Points : dynRevitTransactionNodeWithOneOutput
 	{
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Instance_GetTotalTransform")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_INSTANCE)]
 	[NodeDescription("The calculated total transform.")]
 	public class Revit_Instance_GetTotalTransform : dynRevitTransactionNodeWithOneOutput
 	{
@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Instance_GetTransform")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_INSTANCE)]
 	[NodeDescription("The inherent transform.")]
 	public class Revit_Instance_GetTransform : dynRevitTransactionNodeWithOneOutput
 	{
@@ -90,7 +90,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Mesh_MaterialElementId")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MESH)]
 	[NodeDescription("Element ID of the material from which this mesh is composed.")]
 	public class Revit_Mesh_MaterialElementId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -109,7 +109,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Mesh_Vertices")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MESH)]
 	[NodeDescription("Retrieves all vertices used to define this mesh. Intended for indexed access.")]
 	public class Revit_Mesh_Vertices : dynRevitTransactionNodeWithOneOutput
 	{
@@ -128,7 +128,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Mesh_NumTriangles")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MESH)]
 	[NodeDescription("The number of triangles that the mesh contains.")]
 	public class Revit_Mesh_NumTriangles : dynRevitTransactionNodeWithOneOutput
 	{
@@ -147,7 +147,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryInstance_GetInstanceGeometry")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
 	[NodeDescription("An element which contains the computed geometry for the transformed instance.")]
 	public class Revit_GeometryInstance_GetInstanceGeometry : dynRevitTransactionNodeWithOneOutput
 	{
@@ -168,7 +168,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryInstance_GetInstanceGeometry_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
 	[NodeDescription("An element which contains the computed geometry for the instance.")]
 	public class Revit_GeometryInstance_GetInstanceGeometry_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -187,7 +187,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryInstance_GetSymbolGeometry")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
 	[NodeDescription("An element which contains the computed geometry for the transformed symbol.")]
 	public class Revit_GeometryInstance_GetSymbolGeometry : dynRevitTransactionNodeWithOneOutput
 	{
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryInstance_GetSymbolGeometry_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
 	[NodeDescription("An element which contains the computed geometry for the symbol.")]
 	public class Revit_GeometryInstance_GetSymbolGeometry_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -227,7 +227,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryInstance_SymbolGeometry")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
 	[NodeDescription("The geometric representation of the symbol which generates this instance.")]
 	public class Revit_GeometryInstance_SymbolGeometry : dynRevitTransactionNodeWithOneOutput
 	{
@@ -246,7 +246,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryInstance_Symbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
 	[NodeDescription("The symbol element that this object is referring to.")]
 	public class Revit_GeometryInstance_Symbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -265,7 +265,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryInstance_Transform")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
 	[NodeDescription("The affine transformation from the local coordinate space of the symbol into thecoordinate space of the instance.")]
 	public class Revit_GeometryInstance_Transform : dynRevitTransactionNodeWithOneOutput
 	{
@@ -284,7 +284,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewDividedSurface")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("The newly created DividedSurface element.")]
 	public class Revit_FamilyItemFactory_NewDividedSurface : dynRevitTransactionNodeWithOneOutput
 	{
@@ -303,7 +303,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewCurveByPoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("The newly created curve.")]
 	public class Revit_FamilyItemFactory_NewCurveByPoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -322,7 +322,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewSymbolicCurve")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("The newly created symbolic curve.")]
 	public class Revit_FamilyItemFactory_NewSymbolicCurve : dynRevitTransactionNodeWithOneOutput
 	{
@@ -343,7 +343,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewControl")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If successful, the newly created control is returned, otherwise anexception with error information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewControl : dynRevitTransactionNodeWithOneOutput
 	{
@@ -366,7 +366,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewModelText")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If successful, the newly created model text is returned, otherwise anexception with error information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewModelText : dynRevitTransactionNodeWithOneOutput
 	{
@@ -395,7 +395,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewOpening")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If successful, the newly created opening is returned, otherwise anexception with error information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewOpening : dynRevitTransactionNodeWithOneOutput
 	{
@@ -416,7 +416,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewElectricalConnector")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new Electrical Connector is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewElectricalConnector : dynRevitTransactionNodeWithOneOutput
 	{
@@ -437,7 +437,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewPipeConnector")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new pipe connector is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewPipeConnector : dynRevitTransactionNodeWithOneOutput
 	{
@@ -458,7 +458,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewDuctConnector")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new Duct Connector is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewDuctConnector : dynRevitTransactionNodeWithOneOutput
 	{
@@ -479,7 +479,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewRadialDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewRadialDimension : dynRevitTransactionNodeWithOneOutput
 	{
@@ -504,7 +504,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewDiameterDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new diameter dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewDiameterDimension : dynRevitTransactionNodeWithOneOutput
 	{
@@ -527,7 +527,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewRadialDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewRadialDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -550,7 +550,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewArcLengthDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewArcLengthDimension : dynRevitTransactionNodeWithOneOutput
 	{
@@ -579,7 +579,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewArcLengthDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new arc length dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewArcLengthDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -606,7 +606,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewAngularDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new angular dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewAngularDimension : dynRevitTransactionNodeWithOneOutput
 	{
@@ -633,7 +633,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewAngularDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new angular dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewAngularDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -658,7 +658,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewLinearDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new linear dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewLinearDimension : dynRevitTransactionNodeWithOneOutput
 	{
@@ -683,7 +683,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewLinearDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new linear dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewLinearDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -706,7 +706,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewFormByThickenSingleSurface")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("This function will modify the input singleSurfaceForm and return the same element.")]
 	public class Revit_FamilyItemFactory_NewFormByThickenSingleSurface : dynRevitTransactionNodeWithOneOutput
 	{
@@ -729,7 +729,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewFormByCap")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful new form is returned.")]
 	public class Revit_FamilyItemFactory_NewFormByCap : dynRevitTransactionNodeWithOneOutput
 	{
@@ -750,7 +750,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewRevolveForms")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful new forms are returned.")]
 	public class Revit_FamilyItemFactory_NewRevolveForms : dynRevitTransactionNodeWithOneOutput
 	{
@@ -777,7 +777,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewSweptBlendForm")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful new form is returned.")]
 	public class Revit_FamilyItemFactory_NewSweptBlendForm : dynRevitTransactionNodeWithOneOutput
 	{
@@ -800,7 +800,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewExtrusionForm")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful new form is returned.")]
 	public class Revit_FamilyItemFactory_NewExtrusionForm : dynRevitTransactionNodeWithOneOutput
 	{
@@ -823,7 +823,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewLoftForm")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful form is are returned.")]
 	public class Revit_FamilyItemFactory_NewLoftForm : dynRevitTransactionNodeWithOneOutput
 	{
@@ -844,7 +844,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewSweptBlend")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new Swept blend is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewSweptBlend : dynRevitTransactionNodeWithOneOutput
 	{
@@ -869,7 +869,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewSweptBlend_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new Swept blend is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewSweptBlend_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -896,7 +896,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewSweep")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new Sweep is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewSweep : dynRevitTransactionNodeWithOneOutput
 	{
@@ -923,7 +923,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewSweep_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new Sweep is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewSweep_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -952,7 +952,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewRevolution")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new revolution is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewRevolution : dynRevitTransactionNodeWithOneOutput
 	{
@@ -981,7 +981,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewBlend")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new blend is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewBlend : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1006,7 +1006,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyItemFactory_NewExtrusion")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
 	[NodeDescription("If creation was successful the new Extrusion is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_FamilyItemFactory_NewExtrusion : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1031,7 +1031,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewAlignment")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If creation was successful the new locked alignment dimension is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_ItemFactoryBase_NewAlignment : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1062,7 +1062,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_PlaceGroup")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If creation was successful then an instance to the new group is returned, otherwise")]
 	public class Revit_ItemFactoryBase_PlaceGroup : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1091,7 +1091,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewViewSection")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("The newly created section view.")]
 	public class Revit_ItemFactoryBase_NewViewSection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1118,7 +1118,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewView3D")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("The newly created 3D view.")]
 	public class Revit_ItemFactoryBase_NewView3D : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1145,7 +1145,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewTextNotes")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If the creation is successful an ElementSet which contains the TextNotes should be returned, otherwise Autodesk::Revit::Exceptions::InvalidOperationException will be thrown.")]
 	public class Revit_ItemFactoryBase_NewTextNotes : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1172,7 +1172,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewTextNote")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful, a TextNote object is returned.")]
 	public class Revit_ItemFactoryBase_NewTextNote : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1219,7 +1219,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewTextNote_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful, a TextNote object is returned.")]
 	public class Revit_ItemFactoryBase_NewTextNote_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1258,7 +1258,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewSketchPlane")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful a new sketch plane will be returned. Otherwise an exception withfailure information will be thrown.")]
 	public class Revit_ItemFactoryBase_NewSketchPlane : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1285,7 +1285,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewSketchPlane_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful a new sketch plane will be returned. Otherwise an exception withfailure information will be thrown.")]
 	public class Revit_ItemFactoryBase_NewSketchPlane_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1312,7 +1312,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewSketchPlane_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful a new sketch plane will be returned. Otherwise")]
 	public class Revit_ItemFactoryBase_NewSketchPlane_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1339,7 +1339,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewReferencePlane2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("The newly created reference plane.")]
 	public class Revit_ItemFactoryBase_NewReferencePlane2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1372,7 +1372,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewReferencePlane")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("The newly created reference plane.")]
 	public class Revit_ItemFactoryBase_NewReferencePlane : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1405,7 +1405,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewViewPlan")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("if successful, a new plan view object within the project, otherwise")]
 	public class Revit_ItemFactoryBase_NewViewPlan : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1436,7 +1436,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewLevel")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("The newly created level.")]
 	public class Revit_ItemFactoryBase_NewLevel : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1463,7 +1463,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewModelCurve")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful a new model line element. Otherwise")]
 	public class Revit_ItemFactoryBase_NewModelCurve : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1492,7 +1492,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewGroup")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("A new instance of a group containing the elements specified.")]
 	public class Revit_ItemFactoryBase_NewGroup : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1519,7 +1519,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewGroup_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("A new instance of a group containing the elements specified.")]
 	public class Revit_ItemFactoryBase_NewGroup_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1546,7 +1546,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstances2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If the creation is successful, a set of ElementIds which contains the Family instances should be returned, otherwise the exception will be thrown.")]
 	public class Revit_ItemFactoryBase_NewFamilyInstances2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1573,7 +1573,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstances")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If the creation is successful an ElementSet which contains the Family instances should be returned, otherwise the exception will be thrown.")]
 	public class Revit_ItemFactoryBase_NewFamilyInstances : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1600,7 +1600,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstance")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If creation was successful then an instance to the new object is returned.")]
 	public class Revit_ItemFactoryBase_NewFamilyInstance : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1631,7 +1631,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstance_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("An instance of the new object if creation was successful, otherwise")]
 	public class Revit_ItemFactoryBase_NewFamilyInstance_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1662,7 +1662,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstance_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("An instance of the new object if creation was successful, otherwise")]
 	public class Revit_ItemFactoryBase_NewFamilyInstance_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1695,7 +1695,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstance_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("An instance of the new object if creation was successful, otherwise")]
 	public class Revit_ItemFactoryBase_NewFamilyInstance_3 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1726,7 +1726,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstance_4")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("An instance of the new object if creation was successful, otherwise")]
 	public class Revit_ItemFactoryBase_NewFamilyInstance_4 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1759,7 +1759,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstance_5")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If creation was successful then an instance to the new object is returned, otherwise")]
 	public class Revit_ItemFactoryBase_NewFamilyInstance_5 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1790,7 +1790,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstance_6")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If creation was successful then an instance to the new object is returned, otherwise")]
 	public class Revit_ItemFactoryBase_NewFamilyInstance_6 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1823,7 +1823,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewFamilyInstance_7")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If creation was successful then an instance to the new object is returned, otherwise")]
 	public class Revit_ItemFactoryBase_NewFamilyInstance_7 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1858,7 +1858,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewDimension")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful a new dimension object, otherwise")]
 	public class Revit_ItemFactoryBase_NewDimension : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1891,7 +1891,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewDimension_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful a new dimension object, otherwise")]
 	public class Revit_ItemFactoryBase_NewDimension_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1922,7 +1922,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewDetailCurveArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful an array of new detail curve elements. Otherwise")]
 	public class Revit_ItemFactoryBase_NewDetailCurveArray : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1951,7 +1951,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewDetailCurve")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If successful a new detail curve element. Otherwise")]
 	public class Revit_ItemFactoryBase_NewDetailCurve : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1980,7 +1980,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ItemFactoryBase_NewAnnotationSymbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
 	[NodeDescription("If creation was successful then an instance to the new object is returned, otherwise")]
 	public class Revit_ItemFactoryBase_NewAnnotationSymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2011,7 +2011,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_PolyLine_NumberOfCoordinates")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POLYLINE)]
 	[NodeDescription("Gets the number of the coordinate points.")]
 	public class Revit_PolyLine_NumberOfCoordinates : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2030,7 +2030,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_AngleOnPlaneTo")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The real number between 0 and 2*PI equal to the projected angle between the two vectors.")]
 	public class Revit_XYZ_AngleOnPlaneTo : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2053,7 +2053,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_AngleTo")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The real number between 0 and PI equal to the angle between the two vectors in radians..")]
 	public class Revit_XYZ_AngleTo : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2074,7 +2074,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_DistanceTo")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The real number equal to the distance between the two points.")]
 	public class Revit_XYZ_DistanceTo : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2095,7 +2095,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_IsAlmostEqualTo")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("True if the vectors are the same; otherwise, false.")]
 	public class Revit_XYZ_IsAlmostEqualTo : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2118,7 +2118,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_IsAlmostEqualTo_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("True if the vectors are the same; otherwise, false.")]
 	public class Revit_XYZ_IsAlmostEqualTo_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2139,7 +2139,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_Divide")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The divided vector.")]
 	public class Revit_XYZ_Divide : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2160,7 +2160,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_Multiply")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The multiplied vector.")]
 	public class Revit_XYZ_Multiply : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2181,7 +2181,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_Negate")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The vector opposite to this vector.")]
 	public class Revit_XYZ_Negate : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2200,7 +2200,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_Subtract")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The vector equal to the difference between the two vectors.")]
 	public class Revit_XYZ_Subtract : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2221,7 +2221,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_Add")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The vector equal to the sum of the two vectors.")]
 	public class Revit_XYZ_Add : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2242,7 +2242,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_TripleProduct")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The real number equal to the triple product.")]
 	public class Revit_XYZ_TripleProduct : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2265,7 +2265,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_CrossProduct")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The vector equal to the cross product.")]
 	public class Revit_XYZ_CrossProduct : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2286,7 +2286,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_DotProduct")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The real number equal to the dot product.")]
 	public class Revit_XYZ_DotProduct : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2307,7 +2307,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_Normalize")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("The normalized XYZ or zero if the vector is almost Zero.")]
 	public class Revit_XYZ_Normalize : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2326,7 +2326,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_Z")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("Gets the third coordinate.")]
 	public class Revit_XYZ_Z : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2345,7 +2345,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_Y")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("Gets the second coordinate.")]
 	public class Revit_XYZ_Y : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2364,7 +2364,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_XYZ_X")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
 	[NodeDescription("Gets the first coordinate.")]
 	public class Revit_XYZ_X : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2383,7 +2383,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_GetPointConstraintType")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("Constraint type of the Adaptive Shape Handle Point.")]
 	public class Revit_AdaptiveComponentFamilyUtils_GetPointConstraintType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2404,7 +2404,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_GetPointOrientationType")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("Orientation type of Adaptive Placement Point.")]
 	public class Revit_AdaptiveComponentFamilyUtils_GetPointOrientationType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2425,7 +2425,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_GetPlacementNumber")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("Placement number of the Adaptive Placement Point.")]
 	public class Revit_AdaptiveComponentFamilyUtils_GetPlacementNumber : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2446,7 +2446,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_GetNumberOfShapeHandlePoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("Number of Adaptive Shape Handle Point Element References in the Adaptive Component Family.")]
 	public class Revit_AdaptiveComponentFamilyUtils_GetNumberOfShapeHandlePoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2465,7 +2465,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_GetNumberOfPlacementPoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("Number of Adaptive Placement Point Element References in Adaptive Component Family.")]
 	public class Revit_AdaptiveComponentFamilyUtils_GetNumberOfPlacementPoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2484,7 +2484,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_GetNumberOfAdaptivePoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("Number of Adaptive Point Element References in Adaptive Component Family.")]
 	public class Revit_AdaptiveComponentFamilyUtils_GetNumberOfAdaptivePoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2503,7 +2503,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_IsAdaptiveShapeHandlePoint")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("True if the Point is an Adaptive Shape Handle Point.")]
 	public class Revit_AdaptiveComponentFamilyUtils_IsAdaptiveShapeHandlePoint : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2524,7 +2524,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_IsAdaptivePlacementPoint")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("True if the Point is an Adaptive Placement Point.")]
 	public class Revit_AdaptiveComponentFamilyUtils_IsAdaptivePlacementPoint : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2545,7 +2545,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_IsAdaptivePoint")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("True if the Point is an Adaptive Point (Placement Point or Shape Handle Point).")]
 	public class Revit_AdaptiveComponentFamilyUtils_IsAdaptivePoint : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2566,7 +2566,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentFamilyUtils_IsAdaptiveComponentFamily")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
 	[NodeDescription("True if the Family is an Adaptive Component Family.")]
 	public class Revit_AdaptiveComponentFamilyUtils_IsAdaptiveComponentFamily : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2585,7 +2585,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_CylindricalFace_Axis")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CYLINDRICALFACE)]
 	[NodeDescription("Axis of the surface.")]
 	public class Revit_CylindricalFace_Axis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2604,7 +2604,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_CylindricalFace_Origin")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CYLINDRICALFACE)]
 	[NodeDescription("Origin of the surface.")]
 	public class Revit_CylindricalFace_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2623,7 +2623,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ConicalFace_HalfAngle")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CONICALFACE)]
 	[NodeDescription("Half angle of the surface.")]
 	public class Revit_ConicalFace_HalfAngle : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2642,7 +2642,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ConicalFace_Axis")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CONICALFACE)]
 	[NodeDescription("Axis of the surface.")]
 	public class Revit_ConicalFace_Axis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2661,7 +2661,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ConicalFace_Origin")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CONICALFACE)]
 	[NodeDescription("Origin of the surface.")]
 	public class Revit_ConicalFace_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2680,7 +2680,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewTopographySurface")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("The TopographySurface element.")]
 	public class Revit_Document_NewTopographySurface : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2699,7 +2699,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewTakeoffFitting")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an family instance to the new object is returned,otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewTakeoffFitting : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2720,7 +2720,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewUnionFitting")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an family instance to the new object is returned,otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewUnionFitting : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2741,7 +2741,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewCrossFitting")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an family instance to the new object is returned,and the transition fitting will be added at the connectors’ end if necessary, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewCrossFitting : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2766,7 +2766,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewTransitionFitting")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an family instance to the new object is returned,otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewTransitionFitting : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2787,7 +2787,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewTeeFitting")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an family instance to the new object is returned,and the transition fitting will be added at the connectors’ end if necessary, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewTeeFitting : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2810,7 +2810,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewElbowFitting")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an family instance to the new object is returned,otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewElbowFitting : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2831,7 +2831,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFlexPipe")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new flexible pipe is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewFlexPipe : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2854,7 +2854,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFlexPipe_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new flexible pipe is returned,  otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewFlexPipe_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2877,7 +2877,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFlexPipe_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new flexible pipe is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewFlexPipe_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2898,7 +2898,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewPipe")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new pipe is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewPipe : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2921,7 +2921,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewPipe_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new pipe is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewPipe_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2944,7 +2944,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewPipe_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new pipe is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewPipe_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2967,7 +2967,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFlexDuct")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new flexible duct is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewFlexDuct : dynRevitTransactionNodeWithOneOutput
 	{
@@ -2990,7 +2990,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFlexDuct_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new flexible duct is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewFlexDuct_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3013,7 +3013,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFlexDuct_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new flexible duct is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewFlexDuct_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3034,7 +3034,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewDuct")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new duct is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewDuct : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3057,7 +3057,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewDuct_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new duct is returned,  otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewDuct_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3080,7 +3080,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewDuct_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then a new duct is returned, otherwise an exception with failure information will be thrown.")]
 	public class Revit_Document_NewDuct_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3103,7 +3103,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFamilyInstance")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an instance to the new object is returned, otherwise")]
 	public class Revit_Document_NewFamilyInstance : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3128,7 +3128,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFamilyInstance_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an instance to the new object is returned, otherwise")]
 	public class Revit_Document_NewFamilyInstance_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3153,7 +3153,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFamilyInstance_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an instance to the new object is returned, otherwise")]
 	public class Revit_Document_NewFamilyInstance_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3180,7 +3180,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFascia")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new fascia object within the project, otherwise")]
 	public class Revit_Document_NewFascia : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3201,7 +3201,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFascia_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new fascia object within the project, otherwise")]
 	public class Revit_Document_NewFascia_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3222,7 +3222,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewGutter")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new gutter object within the project, otherwise")]
 	public class Revit_Document_NewGutter : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3243,7 +3243,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewGutter_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new gutter object within the project, otherwise")]
 	public class Revit_Document_NewGutter_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3264,7 +3264,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSlabEdge")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new slab edge object within the project, otherwise")]
 	public class Revit_Document_NewSlabEdge : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3285,7 +3285,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSlabEdge_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new slab edge object within the project, otherwise")]
 	public class Revit_Document_NewSlabEdge_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3306,7 +3306,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewCurtainSystem")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("The CurtainSystem created will be returned when the operation succeeds.")]
 	public class Revit_Document_NewCurtainSystem : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3327,7 +3327,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewCurtainSystem2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("A set of ElementIds of CurtainSystems will be returned when the operation succeeds.")]
 	public class Revit_Document_NewCurtainSystem2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3348,7 +3348,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewCurtainSystem_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("A set of CurtainSystems will be returned when the operation succeeds.")]
 	public class Revit_Document_NewCurtainSystem_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3369,7 +3369,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewWire")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new wire element within the project, otherwise")]
 	public class Revit_Document_NewWire : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3398,7 +3398,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewZone")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new Zone element within the project, otherwise")]
 	public class Revit_Document_NewZone : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3419,7 +3419,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSpaceTag")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a SpaceTag object will be returned, otherwise")]
 	public class Revit_Document_NewSpaceTag : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3442,7 +3442,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSpaces2_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, a set of ElementIds which contains the rooms should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewSpaces2_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3465,7 +3465,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSpaces_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful an Element set which contains the rooms should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewSpaces_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3488,7 +3488,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSpace")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new Space element within the project, otherwise")]
 	public class Revit_Document_NewSpace : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3511,7 +3511,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSpace_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful the new space element is returned, otherwise")]
 	public class Revit_Document_NewSpace_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3532,7 +3532,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSpace_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful the new space should be returned, otherwise")]
 	public class Revit_Document_NewSpace_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3551,7 +3551,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewPipingSystem")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an instance of piping system is returned, otherwise an exception with information will be thrown.")]
 	public class Revit_Document_NewPipingSystem : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3574,7 +3574,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewMechanicalSystem")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If creation was successful then an instance of mechanical system is returned, otherwise an exception with information will be thrown.")]
 	public class Revit_Document_NewMechanicalSystem : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3597,7 +3597,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewElectricalSystem")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new MEP Electrical System element within the project, otherwise")]
 	public class Revit_Document_NewElectricalSystem : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3618,7 +3618,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewElectricalSystem_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new MEP Electrical System element within the project, otherwise")]
 	public class Revit_Document_NewElectricalSystem_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3639,7 +3639,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewElectricalSystem_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new MEP Electrical System element within the project, otherwise")]
 	public class Revit_Document_NewElectricalSystem_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3660,7 +3660,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewAreas")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful an Element Set which contains the areas should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewAreas : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3679,7 +3679,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSlab")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new floor object within the project, otherwise")]
 	public class Revit_Document_NewSlab : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3706,7 +3706,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewTag")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, an IndependentTag object is returned.")]
 	public class Revit_Document_NewTag : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3735,7 +3735,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewOpening")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, an Opening object is returned.")]
 	public class Revit_Document_NewOpening : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3758,7 +3758,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewOpening_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, an Opening object is returned.")]
 	public class Revit_Document_NewOpening_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3781,7 +3781,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewOpening_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, an Opening object is returned.")]
 	public class Revit_Document_NewOpening_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3804,7 +3804,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewOpening_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, an Opening object is returned.")]
 	public class Revit_Document_NewOpening_3 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3827,7 +3827,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewAreaBoundaryConditions")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewAreaBoundaryConditions returns an object for the newly created BoundaryConditionswith the BoundaryType = 2 - \"Area\".")]
 	public class Revit_Document_NewAreaBoundaryConditions : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3858,7 +3858,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLineBoundaryConditions")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewLineBoundaryConditions returns an object for the newly created BoundaryConditionswith the BoundaryType = 1 - \"Line\".")]
 	public class Revit_Document_NewLineBoundaryConditions : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3893,7 +3893,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewAreaBoundaryConditions_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewAreaBoundaryConditions returns an object for the newly created BoundaryConditionswith the BoundaryType = 2 - \"Area\".")]
 	public class Revit_Document_NewAreaBoundaryConditions_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3924,7 +3924,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLineBoundaryConditions_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewLineBoundaryConditions returns an object for the newly created BoundaryConditionswith the BoundaryType = 1 - \"Line\".")]
 	public class Revit_Document_NewLineBoundaryConditions_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3959,7 +3959,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewPointBoundaryConditions")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewPointBoundaryConditions returns an object for the newly created BoundaryConditionswith the BoundaryType = 0 - \"Point\".")]
 	public class Revit_Document_NewPointBoundaryConditions : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4002,7 +4002,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewBeamSystem")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new BeamSystem object will be returned, otherwise")]
 	public class Revit_Document_NewBeamSystem : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4027,7 +4027,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewBeamSystem_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new BeamSystem object will be returned, otherwise")]
 	public class Revit_Document_NewBeamSystem_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4048,7 +4048,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewBeamSystem_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new BeamSystem object will be returned, otherwise")]
 	public class Revit_Document_NewBeamSystem_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4073,7 +4073,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewBeamSystem_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new BeamSystem object will be returned, otherwise")]
 	public class Revit_Document_NewBeamSystem_3 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4094,7 +4094,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRoomTag")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a RoomTag object will be returned, otherwise")]
 	public class Revit_Document_NewRoomTag : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4117,7 +4117,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRooms2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, a set of ElementIds which contains the rooms should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewRooms2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4138,7 +4138,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRooms2_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, a set of ElementIds which contains the rooms should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewRooms2_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4159,7 +4159,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRooms2_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, a set of ElementIds which contains the rooms created should be returned, otherwise")]
 	public class Revit_Document_NewRooms2_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4178,7 +4178,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRooms")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful an Element set which contain the rooms should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewRooms : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4199,7 +4199,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRooms_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful an Element set which contains the rooms should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewRooms_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4220,7 +4220,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRooms_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful an Element set which contain the rooms created should be returned, otherwise")]
 	public class Revit_Document_NewRooms_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4239,7 +4239,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRooms_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful an ElementSet contains the rooms should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewRooms_3 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4258,7 +4258,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRoom")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful the room is returned, otherwise")]
 	public class Revit_Document_NewRoom : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4279,7 +4279,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRoom_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful the new room , otherwise")]
 	public class Revit_Document_NewRoom_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4298,7 +4298,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewRoom_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful the new room will be returned, otherwise")]
 	public class Revit_Document_NewRoom_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4319,7 +4319,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewGrids")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("An Element set that contains the Grids.")]
 	public class Revit_Document_NewGrids : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4338,7 +4338,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewGrid")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("The newly created grid line.")]
 	public class Revit_Document_NewGrid : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4357,7 +4357,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewGrid_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("The newly created grid line.")]
 	public class Revit_Document_NewGrid_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4376,7 +4376,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewViewSheet")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("The newly created sheet view.")]
 	public class Revit_Document_NewViewSheet : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4395,7 +4395,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewViewDrafting")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("The newly created drafting view.")]
 	public class Revit_Document_NewViewDrafting : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4412,7 +4412,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFoundationSlab")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("if successful, a new foundation slab object within the project, otherwise")]
 	public class Revit_Document_NewFoundationSlab : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4439,7 +4439,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFloor")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("if successful, a new floor object within the project, otherwise")]
 	public class Revit_Document_NewFloor : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4466,7 +4466,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFloor_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("if successful, a new floor object within the project, otherwise")]
 	public class Revit_Document_NewFloor_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4491,7 +4491,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewFloor_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new floor object within the project, otherwise")]
 	public class Revit_Document_NewFloor_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4512,7 +4512,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewWalls")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If the creation is successful an ElementSet which contains the walls should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewWalls : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4531,7 +4531,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewWalls_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If the creation is successful an ElementSet which contains the walls should be returned, otherwise the exception will be thrown.")]
 	public class Revit_Document_NewWalls_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4550,7 +4550,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewWall")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new wall object within the project, otherwise")]
 	public class Revit_Document_NewWall : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4577,7 +4577,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewWall_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new wall object within the project, otherwise")]
 	public class Revit_Document_NewWall_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4602,7 +4602,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewWall_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new wall object within the project, otherwise")]
 	public class Revit_Document_NewWall_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4623,7 +4623,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewWall_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new wall object within the project, otherwise")]
 	public class Revit_Document_NewWall_3 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4654,7 +4654,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewWall_4")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new wall object within the project, otherwise")]
 	public class Revit_Document_NewWall_4 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4677,7 +4677,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSpotElevation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new spot dimension object, otherwise")]
 	public class Revit_Document_NewSpotElevation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4708,7 +4708,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewSpotCoordinate")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful a new spot dimension object, otherwise")]
 	public class Revit_Document_NewSpotCoordinate : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4739,7 +4739,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLoadCombination")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewLoadCombination and there isn't the Load Combination Element     with the same name returns an object for the newly created LoadCombination.     If such element exist and match desired one (has the same formula and the same    usages set), returns existing element. Otherwise")]
 	public class Revit_Document_NewLoadCombination : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4770,7 +4770,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLoadCase")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewLoadCase and there isn't the Load Case Element     with the same name returns an object for the newly created LoadCase.     If such element exist and match desired one (has the same nature and number),     returns existing element. Otherwise")]
 	public class Revit_Document_NewLoadCase : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4793,7 +4793,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLoadUsage")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful and there isn't the Load Usage Element with the    same name NewLoadUsage returns an object for the newly created LoadUsage.     If such element exist it returns existing element.")]
 	public class Revit_Document_NewLoadUsage : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4812,7 +4812,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLoadNature")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful and there isn't the Load Nature Element with the    same name NewLoadNature returns an object for the newly created LoadNature.     If such element exist it returns existing element.")]
 	public class Revit_Document_NewLoadNature : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4831,7 +4831,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewAreaLoad")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewAreaLoad returns an object for the newly created AreaLoad.")]
 	public class Revit_Document_NewAreaLoad : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4856,7 +4856,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewAreaLoad_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewAreaLoad returns an object for the newly created AreaLoad.")]
 	public class Revit_Document_NewAreaLoad_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4889,7 +4889,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewAreaLoad_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewAreaLoad returns an object for the newly created AreaLoad.")]
 	public class Revit_Document_NewAreaLoad_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4918,7 +4918,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewAreaLoad_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewAreaLoad returns an object for the newly created AreaLoad.")]
 	public class Revit_Document_NewAreaLoad_3 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4943,7 +4943,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLineLoad")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewLineLoad returns an object for the newly created LineLoad.")]
 	public class Revit_Document_NewLineLoad : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4976,7 +4976,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLineLoad_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewLineLoad returns an object for the newly created LineLoad.")]
 	public class Revit_Document_NewLineLoad_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5009,7 +5009,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLineLoad_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewLineLoad returns an object for the newly created LineLoad.")]
 	public class Revit_Document_NewLineLoad_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5042,7 +5042,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewLineLoad_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewLineLoad returns the newly created LineLoad.")]
 	public class Revit_Document_NewLineLoad_3 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5081,7 +5081,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewPointLoad")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewPointLoad returns an object for the newly created PointLoad.")]
 	public class Revit_Document_NewPointLoad : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5110,7 +5110,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewPointLoad_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewPointLoad returns an object for the newly created PointLoad.")]
 	public class Revit_Document_NewPointLoad_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5139,7 +5139,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Document_NewPathReinforcement")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
 	[NodeDescription("If successful, NewPathReinforcement returns an object for the newly created Rebar.")]
 	public class Revit_Document_NewPathReinforcement : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5162,7 +5162,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryObject_IsElementGeometry")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYOBJECT)]
 	[NodeDescription("Indicates whether this geometry is obtained directly from an Element.")]
 	public class Revit_GeometryObject_IsElementGeometry : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5181,7 +5181,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryObject_GraphicsStyleId")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYOBJECT)]
 	[NodeDescription("The ElementId of the GeometryObject's GraphicsStyle")]
 	public class Revit_GeometryObject_GraphicsStyleId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5200,7 +5200,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GeometryObject_Visibility")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYOBJECT)]
 	[NodeDescription("The visibility.")]
 	public class Revit_GeometryObject_Visibility : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5219,7 +5219,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_HermiteSpline_Parameters")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITESPLINE)]
 	[NodeDescription("Returns the params of the Hermite spline.")]
 	public class Revit_HermiteSpline_Parameters : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5238,7 +5238,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_HermiteSpline_Tangents")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITESPLINE)]
 	[NodeDescription("Returns the tangents of the Hermite spline.")]
 	public class Revit_HermiteSpline_Tangents : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5257,7 +5257,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_HermiteSpline_ControlPoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITESPLINE)]
 	[NodeDescription("The control points of the Hermite spline.")]
 	public class Revit_HermiteSpline_ControlPoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5276,7 +5276,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_HermiteSpline_IsPeriodic")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITESPLINE)]
 	[NodeDescription("Returns whether the Hermite spline is periodic or not.")]
 	public class Revit_HermiteSpline_IsPeriodic : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5295,7 +5295,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Profile_Curves")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_PROFILE)]
 	[NodeDescription("Retrieve the curves that make up the boundary of the profile.")]
 	public class Revit_Profile_Curves : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5314,7 +5314,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Profile_Filled")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_PROFILE)]
 	[NodeDescription("Get or set whether the profile is filled.")]
 	public class Revit_Profile_Filled : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5333,7 +5333,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Sweep_MaxSegmentAngle")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
 	[NodeDescription("The maximum segment angle of the sweep in radians.")]
 	public class Revit_Sweep_MaxSegmentAngle : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5352,7 +5352,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Sweep_IsTrajectorySegmentationEnabled")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
 	[NodeDescription("The trajectory segmentation option for the sweep.")]
 	public class Revit_Sweep_IsTrajectorySegmentationEnabled : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5371,7 +5371,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Sweep_Path3d")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
 	[NodeDescription("The selected curves used for the sweep path.")]
 	public class Revit_Sweep_Path3d : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5390,7 +5390,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Sweep_PathSketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
 	[NodeDescription("The sketched path for the sweep.")]
 	public class Revit_Sweep_PathSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5409,7 +5409,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Sweep_ProfileSymbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
 	[NodeDescription("The family symbol profile details for the sweep.")]
 	public class Revit_Sweep_ProfileSymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5428,7 +5428,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Sweep_ProfileSketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
 	[NodeDescription("The profile sketch of the sweep.")]
 	public class Revit_Sweep_ProfileSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5447,7 +5447,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentInstanceUtils_IsInstanceFlipped")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
 	[NodeDescription("True if the instance is flipped.")]
 	public class Revit_AdaptiveComponentInstanceUtils_IsInstanceFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5466,7 +5466,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentInstanceUtils_GetInstanceShapeHandlePointElementRefIds")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
 	[NodeDescription("The Shape Handle Adaptive Point Element Ref ids to which the instance geometry adapts.")]
 	public class Revit_AdaptiveComponentInstanceUtils_GetInstanceShapeHandlePointElementRefIds : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5485,7 +5485,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentInstanceUtils_GetInstancePlacementPointElementRefIds")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
 	[NodeDescription("The Placement Adaptive Point Element Ref ids to which the instance geometry adapts.")]
 	public class Revit_AdaptiveComponentInstanceUtils_GetInstancePlacementPointElementRefIds : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5504,7 +5504,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentInstanceUtils_GetInstancePointElementRefIds")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
 	[NodeDescription("The Adaptive Point Element Ref ids to which the instance geometry adapts.")]
 	public class Revit_AdaptiveComponentInstanceUtils_GetInstancePointElementRefIds : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5523,7 +5523,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentInstanceUtils_CreateAdaptiveComponentInstance")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
 	[NodeDescription("The Family Instance")]
 	public class Revit_AdaptiveComponentInstanceUtils_CreateAdaptiveComponentInstance : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5544,7 +5544,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentInstanceUtils_IsAdaptiveComponentInstance")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
 	[NodeDescription("True if the FamilyInstance has an Adaptive Component Instances.")]
 	public class Revit_AdaptiveComponentInstanceUtils_IsAdaptiveComponentInstance : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5563,7 +5563,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentInstanceUtils_HasAdaptiveFamilySymbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
 	[NodeDescription("True if the FamilyInstance has an Adaptive Family Symbol.")]
 	public class Revit_AdaptiveComponentInstanceUtils_HasAdaptiveFamilySymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5582,7 +5582,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_AdaptiveComponentInstanceUtils_IsAdaptiveFamilySymbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
 	[NodeDescription("True if the FamilySymbol is a valid Adaptive Family Symbol.")]
 	public class Revit_AdaptiveComponentInstanceUtils_IsAdaptiveFamilySymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5601,7 +5601,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_Project")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("Geometric information if projection is successful.")]
 	public class Revit_Curve_Project : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5622,7 +5622,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_Intersect")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("")]
 	public class Revit_Curve_Intersect : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5645,7 +5645,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_Intersect_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("")]
 	public class Revit_Curve_Intersect_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5666,7 +5666,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_IsInside")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("True if the parameter is within the curve's bounds, otherwise false.")]
 	public class Revit_Curve_IsInside : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5689,7 +5689,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_IsInside_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("True if the parameter is within the bounds, otherwise false.")]
 	public class Revit_Curve_IsInside_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5710,7 +5710,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_ComputeDerivatives")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("The transformation containing a tangent vector, derivative of tangent vector, and bi-normal vector.")]
 	public class Revit_Curve_ComputeDerivatives : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5733,7 +5733,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_Distance")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("The real number equal to the shortest distance.")]
 	public class Revit_Curve_Distance : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5754,7 +5754,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_ComputeRawParameter")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("The real number equal to the raw curve parameter.")]
 	public class Revit_Curve_ComputeRawParameter : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5775,7 +5775,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_ComputeNormalizedParameter")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("The real number equal to the normalized curve parameter.")]
 	public class Revit_Curve_ComputeNormalizedParameter : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5796,7 +5796,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_Period")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("The period of this curve.")]
 	public class Revit_Curve_Period : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5815,7 +5815,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_IsCyclic")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("The boolean value that indicates whether this curve is cyclic.")]
 	public class Revit_Curve_IsCyclic : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5834,7 +5834,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_Length")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("The exact length of the curve.")]
 	public class Revit_Curve_Length : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5853,7 +5853,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_ApproximateLength")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("The approximate length of the curve.")]
 	public class Revit_Curve_ApproximateLength : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5872,7 +5872,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_Reference")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("Returns a stable reference to the curve.")]
 	public class Revit_Curve_Reference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5891,7 +5891,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Curve_IsBound")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
 	[NodeDescription("Describes whether the parameter of the curve is restricted to a particular interval.")]
 	public class Revit_Curve_IsBound : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5910,7 +5910,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_SweptBlend_TopProfile")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
 	[NodeDescription("The curves which make up the top profile of the sketch.")]
 	public class Revit_SweptBlend_TopProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5929,7 +5929,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_SweptBlend_BottomProfile")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
 	[NodeDescription("The curves which make up the bottom profile of the sketch.")]
 	public class Revit_SweptBlend_BottomProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5948,7 +5948,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_SweptBlend_SelectedPath")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
 	[NodeDescription("The selected curve used for the swept blend path.")]
 	public class Revit_SweptBlend_SelectedPath : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5967,7 +5967,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_SweptBlend_PathSketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
 	[NodeDescription("The sketched path for the swept blend.")]
 	public class Revit_SweptBlend_PathSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -5986,7 +5986,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_SweptBlend_BottomProfileSymbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
 	[NodeDescription("The bottom family symbol profile of the swept blend.")]
 	public class Revit_SweptBlend_BottomProfileSymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6005,7 +6005,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_SweptBlend_BottomSketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
 	[NodeDescription("The bottom profile sketch of the swept blend.")]
 	public class Revit_SweptBlend_BottomSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6024,7 +6024,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_SweptBlend_TopProfileSymbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
 	[NodeDescription("The top family symbol profile of the swept blend.")]
 	public class Revit_SweptBlend_TopProfileSymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6043,7 +6043,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_SweptBlend_TopSketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
 	[NodeDescription("The top profile sketch of the swept blend.")]
 	public class Revit_SweptBlend_TopSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6062,7 +6062,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_AddProfile")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Index of newly created profile.")]
 	public class Revit_Form_AddProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6085,7 +6085,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_GetCurvesAndEdgesReference")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Reference array containing all edges and curves that the point is lying on.")]
 	public class Revit_Form_GetCurvesAndEdgesReference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6106,7 +6106,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_GetControlPoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Reference array containing all control points lying on it.")]
 	public class Revit_Form_GetControlPoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6127,7 +6127,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_BaseOffset")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Retrieve/set the base offset of the form object. It is only valid for locked form.")]
 	public class Revit_Form_BaseOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6146,7 +6146,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_TopOffset")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Retrieve/set the top offset of the form object. It is only valid for locked form.")]
 	public class Revit_Form_TopOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6165,7 +6165,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_HasOpenGeometry")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Tell if the form has an open geometry.")]
 	public class Revit_Form_HasOpenGeometry : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6184,7 +6184,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_AreProfilesConstrained")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Get/set if the form's profiles are constrained.")]
 	public class Revit_Form_AreProfilesConstrained : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6203,7 +6203,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_IsInXRayMode")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Get/set if the form is in X-Ray mode.")]
 	public class Revit_Form_IsInXRayMode : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6222,7 +6222,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_HasOneOrMoreReferenceProfiles")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("Tell if the form has any reference profile.")]
 	public class Revit_Form_HasOneOrMoreReferenceProfiles : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6241,7 +6241,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_PathCurveCount")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("The number of curves in the form path.")]
 	public class Revit_Form_PathCurveCount : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6260,7 +6260,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Form_ProfileCount")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
 	[NodeDescription("The number of profiles in the form.")]
 	public class Revit_Form_ProfileCount : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6279,7 +6279,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_BoundingBoxUV_Max")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXUV)]
 	[NodeDescription("Maximum coordinates (upper-right corner of the box).")]
 	public class Revit_BoundingBoxUV_Max : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6298,7 +6298,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_BoundingBoxUV_Min")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXUV)]
 	[NodeDescription("Minimum coordinates (lower-left corner of the box).")]
 	public class Revit_BoundingBoxUV_Min : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6317,7 +6317,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_AlmostEqual")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("True if the two transformations are equal; otherwise, false.")]
 	public class Revit_Transform_AlmostEqual : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6338,7 +6338,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_ScaleBasisAndOrigin")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The transformation equal to the composition of the two transformations.")]
 	public class Revit_Transform_ScaleBasisAndOrigin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6359,7 +6359,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_ScaleBasis")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The transformation equal to the composition of the two transformations.")]
 	public class Revit_Transform_ScaleBasis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6380,7 +6380,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_Multiply")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The transformation equal to the composition of the two transformations.")]
 	public class Revit_Transform_Multiply : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6401,7 +6401,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_OfVector")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The new vector after transform")]
 	public class Revit_Transform_OfVector : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6422,7 +6422,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_OfPoint")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The transformed point.")]
 	public class Revit_Transform_OfPoint : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6443,7 +6443,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_Inverse")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The inverse transformation of this transformation.")]
 	public class Revit_Transform_Inverse : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6462,7 +6462,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_Determinant")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The determinant of this transformation.")]
 	public class Revit_Transform_Determinant : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6481,7 +6481,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_IsConformal")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The boolean value that indicates whether this transformation is conformal.")]
 	public class Revit_Transform_IsConformal : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6500,7 +6500,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_HasReflection")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The boolean value that indicates whether this transformation produces reflection.")]
 	public class Revit_Transform_HasReflection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6519,7 +6519,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_Scale")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The real number that represents the scale of the transformation.")]
 	public class Revit_Transform_Scale : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6538,7 +6538,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_IsTranslation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The boolean value that indicates whether this transformation is a translation.")]
 	public class Revit_Transform_IsTranslation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6557,7 +6557,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_IsIdentity")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The boolean value that indicates whether this transformation is an identity.")]
 	public class Revit_Transform_IsIdentity : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6576,7 +6576,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_Origin")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("Defines the origin of the old coordinate system in the new coordinate system.")]
 	public class Revit_Transform_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6595,7 +6595,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_BasisZ")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The basis of the Z axis of this transformation.")]
 	public class Revit_Transform_BasisZ : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6614,7 +6614,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_BasisY")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The basis of the Y axis of this transformation.")]
 	public class Revit_Transform_BasisY : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6633,7 +6633,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Transform_BasisX")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
 	[NodeDescription("The basis of the X axis of this transformation.")]
 	public class Revit_Transform_BasisX : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6652,7 +6652,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_Project")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("Geometric information if projection is successful;if projection fails or the nearest point is outside of this face, returns")]
 	public class Revit_Face_Project : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6673,7 +6673,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_Intersect")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("")]
 	public class Revit_Face_Intersect : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6696,7 +6696,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_Intersect_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("")]
 	public class Revit_Face_Intersect_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6717,7 +6717,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_IsInside")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("True if within this face, otherwise False.")]
 	public class Revit_Face_IsInside : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6740,7 +6740,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_IsInside_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("True if point is within this face, otherwise false.")]
 	public class Revit_Face_IsInside_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6761,7 +6761,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_ComputeNormal")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("The normal vector. This vector will be normalized.")]
 	public class Revit_Face_ComputeNormal : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6782,7 +6782,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_ComputeDerivatives")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("The transformation containing tangent vectors and a normal vector.")]
 	public class Revit_Face_ComputeDerivatives : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6803,7 +6803,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_GetBoundingBox")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("A BoundingBoxUV with the extents of the parameterization of the face.")]
 	public class Revit_Face_GetBoundingBox : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6822,7 +6822,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_GetRegions")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("A list of faces, one for the main face of the object hosting the Split Face (such as wall of floor) and one face for each Split Face regions.")]
 	public class Revit_Face_GetRegions : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6841,7 +6841,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_Area")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("The area of this face.")]
 	public class Revit_Face_Area : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6860,7 +6860,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_Reference")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("Returns a stable reference to the face.")]
 	public class Revit_Face_Reference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6879,7 +6879,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_IsTwoSided")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("Determines if a face is two-sided (degenerate)")]
 	public class Revit_Face_IsTwoSided : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6898,7 +6898,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_MaterialElementId")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("Element ID of the material from which this face is composed.")]
 	public class Revit_Face_MaterialElementId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6917,7 +6917,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_EdgeLoops")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("Each edge loop is a closed boundary of the face.")]
 	public class Revit_Face_EdgeLoops : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6936,7 +6936,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Face_HasRegions")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
 	[NodeDescription("Reports if the face contains regions created with the Split Face command.")]
 	public class Revit_Face_HasRegions : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6955,7 +6955,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_BoundingBoxXYZ_Enabled")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXXYZ)]
 	[NodeDescription("Defines whether bounding box is turned on.")]
 	public class Revit_BoundingBoxXYZ_Enabled : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6974,7 +6974,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_BoundingBoxXYZ_Max")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXXYZ)]
 	[NodeDescription("Maximum coordinates (upper-right-front corner of the box).")]
 	public class Revit_BoundingBoxXYZ_Max : dynRevitTransactionNodeWithOneOutput
 	{
@@ -6993,7 +6993,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_BoundingBoxXYZ_Min")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXXYZ)]
 	[NodeDescription("Minimum coordinates (lower-left-rear corner of the box).")]
 	public class Revit_BoundingBoxXYZ_Min : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7012,7 +7012,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_BoundingBoxXYZ_Transform")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXXYZ)]
 	[NodeDescription("The transform FROM the coordinate space of the box TO the model space.")]
 	public class Revit_BoundingBoxXYZ_Transform : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7031,7 +7031,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_GetCopingIds")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("The coping ElementIds")]
 	public class Revit_FamilyInstance_GetCopingIds : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7050,7 +7050,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_GetCopings")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("The coping elements")]
 	public class Revit_FamilyInstance_GetCopings : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7069,7 +7069,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_GetSubComponentIds")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("The subcomponent ElementIDs")]
 	public class Revit_FamilyInstance_GetSubComponentIds : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7088,7 +7088,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_IsWorkPlaneFlipped")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Identifies if the instance's work plane is flipped.")]
 	public class Revit_FamilyInstance_IsWorkPlaneFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7107,7 +7107,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_CanFlipWorkPlane")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Identifies if the instance can flip its work plane.")]
 	public class Revit_FamilyInstance_CanFlipWorkPlane : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7126,7 +7126,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_IsSlantedColumn")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Indicates if the family instance is a slanted column.")]
 	public class Revit_FamilyInstance_IsSlantedColumn : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7145,7 +7145,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_ExtensionUtility")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to check whether the instance can be extended and return the interface for extension operation.")]
 	public class Revit_FamilyInstance_ExtensionUtility : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7164,7 +7164,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_SuperComponent")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to get the super component of current family instance.")]
 	public class Revit_FamilyInstance_SuperComponent : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7183,7 +7183,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_SubComponents")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to get the sub components of current family instance.")]
 	public class Revit_FamilyInstance_SubComponents : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7202,7 +7202,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_ToRoom")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("The \"To Room\" set for the door or window in the last phase of the project.")]
 	public class Revit_FamilyInstance_ToRoom : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7221,7 +7221,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_FromRoom")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("The \"From Room\" set for the door or window in the last phase of the project.")]
 	public class Revit_FamilyInstance_FromRoom : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7240,7 +7240,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_CanRotate")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to test whether the family instance can be rotated by 180 degrees.")]
 	public class Revit_FamilyInstance_CanRotate : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7259,7 +7259,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_CanFlipFacing")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to test whether the orientation of family instance facing can be flipped.")]
 	public class Revit_FamilyInstance_CanFlipFacing : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7278,7 +7278,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_CanFlipHand")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to test whether the orientation of family instance hand can be flipped.")]
 	public class Revit_FamilyInstance_CanFlipHand : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7297,7 +7297,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_Mirrored")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to test whether the family instance is mirrored. (only one axis is flipped)")]
 	public class Revit_FamilyInstance_Mirrored : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7316,7 +7316,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_Invisible")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to test whether the family instance is invisible.")]
 	public class Revit_FamilyInstance_Invisible : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7335,7 +7335,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_FacingFlipped")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to test whether the orientation of family instance facing is flipped.")]
 	public class Revit_FamilyInstance_FacingFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7354,7 +7354,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_HandFlipped")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to test whether the orientation of family instance hand is flipped.")]
 	public class Revit_FamilyInstance_HandFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7373,7 +7373,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_FacingOrientation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to get the orientation of family instance facing.")]
 	public class Revit_FamilyInstance_FacingOrientation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7392,7 +7392,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_HandOrientation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to get the orientation of family instance hand.")]
 	public class Revit_FamilyInstance_HandOrientation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7411,7 +7411,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_HostFace")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Property to get the reference to the host face of family instance.")]
 	public class Revit_FamilyInstance_HostFace : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7430,7 +7430,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_Host")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("If the instance is contained within another element, this property returns the containingelement. An instance that is face hosted will return the element containing the face.")]
 	public class Revit_FamilyInstance_Host : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7449,7 +7449,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_Location")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("This property is used to find the physical location of an instance within project.")]
 	public class Revit_FamilyInstance_Location : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7468,7 +7468,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_Space")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("The space in which the instance is located (during the last phase of the project).")]
 	public class Revit_FamilyInstance_Space : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7487,7 +7487,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_Room")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("The room in which the instance is located (during the last phase of the project).")]
 	public class Revit_FamilyInstance_Room : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7506,7 +7506,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_StructuralType")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Provides the primary structural type of the instance, such as beam or column etc.")]
 	public class Revit_FamilyInstance_StructuralType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7525,7 +7525,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_StructuralUsage")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Provides the primary structural usage of the instance, such as brace, girder etc.")]
 	public class Revit_FamilyInstance_StructuralUsage : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7544,7 +7544,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_StructuralMaterialId")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Identifies the material that defines the instance's structural analysis properties.")]
 	public class Revit_FamilyInstance_StructuralMaterialId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7563,7 +7563,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_StructuralMaterialType")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("This property returns the physical material from which the instance is made.")]
 	public class Revit_FamilyInstance_StructuralMaterialType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7582,7 +7582,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_MEPModel")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Retrieves the MEP model for the family instance.")]
 	public class Revit_FamilyInstance_MEPModel : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7601,7 +7601,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_FamilyInstance_Symbol")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
 	[NodeDescription("Returns or changes the FamilySymbol object that represents the type of the instance.")]
 	public class Revit_FamilyInstance_Symbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7620,7 +7620,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Color_IsValid")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
 	[NodeDescription("Identifies if the color represents a valid color, or an uninitialized/invalid value.")]
 	public class Revit_Color_IsValid : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7639,7 +7639,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Color_Blue")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
 	[NodeDescription("Get or set the blue channel of the color.")]
 	public class Revit_Color_Blue : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7658,7 +7658,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Color_Green")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
 	[NodeDescription("Get or set the green channel of the color.")]
 	public class Revit_Color_Green : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7677,7 +7677,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Color_Red")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
 	[NodeDescription("Get or set the red channel of the color.")]
 	public class Revit_Color_Red : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7696,7 +7696,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GenericForm_GetVisibility")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
 	[NodeDescription("A copy of visibility settings for the generic form.")]
 	public class Revit_GenericForm_GetVisibility : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7715,7 +7715,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GenericForm_Subcategory")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
 	[NodeDescription("The subcategory.")]
 	public class Revit_GenericForm_Subcategory : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7734,7 +7734,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GenericForm_Name")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
 	[NodeDescription("Get and Set the Name property")]
 	public class Revit_GenericForm_Name : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7753,7 +7753,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GenericForm_IsSolid")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
 	[NodeDescription("Identifies if the GenericForm is a solid or a void element.")]
 	public class Revit_GenericForm_IsSolid : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7772,7 +7772,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_GenericForm_Visible")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
 	[NodeDescription("The visibility of the GenericForm.")]
 	public class Revit_GenericForm_Visible : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7791,7 +7791,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Point_Reference")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINT)]
 	[NodeDescription("Returns a stable reference to the point.")]
 	public class Revit_Point_Reference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7810,7 +7810,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Point_Coord")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINT)]
 	[NodeDescription("Returns the coordinates of the point.")]
 	public class Revit_Point_Coord : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7829,7 +7829,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_CanBeIntersectionElement")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("True if the element can be an intersection reference., false otherwise.")]
 	public class Revit_DividedSurface_CanBeIntersectionElement : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7850,7 +7850,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_GetAllIntersectionElements")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("The intersection elements.")]
 	public class Revit_DividedSurface_GetAllIntersectionElements : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7869,7 +7869,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_NumberOfVGridlines")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("Get the number of V-gridlines used on thesurface.")]
 	public class Revit_DividedSurface_NumberOfVGridlines : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7888,7 +7888,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_NumberOfUGridlines")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("Get the number of U-gridlines used on thesurface.")]
 	public class Revit_DividedSurface_NumberOfUGridlines : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7907,7 +7907,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_IsComponentFlipped")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("Whether the pattern is flipped.")]
 	public class Revit_DividedSurface_IsComponentFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7926,7 +7926,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_IsComponentMirrored")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("Whether the pattern is mirror-imaged.")]
 	public class Revit_DividedSurface_IsComponentMirrored : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7945,7 +7945,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_ComponentRotation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("The rotation of the pattern by a multipleof 90 degrees.")]
 	public class Revit_DividedSurface_ComponentRotation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7964,7 +7964,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_VPatternIndent")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("The offset applied to the pattern by an integral number of grid nodes in the V-direction.")]
 	public class Revit_DividedSurface_VPatternIndent : dynRevitTransactionNodeWithOneOutput
 	{
@@ -7983,7 +7983,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_UPatternIndent")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("The offset applied to the pattern by anintegral number of grid nodes in the U-direction.")]
 	public class Revit_DividedSurface_UPatternIndent : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8002,7 +8002,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_BorderTile")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("Determines the handling of tiles that overlap the surface'sboundary.")]
 	public class Revit_DividedSurface_BorderTile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8021,7 +8021,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_AllGridRotation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("Angle of rotation applied to the U- and V- directions together.")]
 	public class Revit_DividedSurface_AllGridRotation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8040,7 +8040,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_VSpacingRule")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("Access to the rule for laying out the second series of equidistantparallel lines on the surface.")]
 	public class Revit_DividedSurface_VSpacingRule : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8059,7 +8059,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_USpacingRule")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("Access to the rule for laying out the first series of equidistantparallel lines on the surface.")]
 	public class Revit_DividedSurface_USpacingRule : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8078,7 +8078,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_HostReference")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("A reference to the divided face on the host.")]
 	public class Revit_DividedSurface_HostReference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8097,7 +8097,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_DividedSurface_Host")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
 	[NodeDescription("The element whose surface has been divided.")]
 	public class Revit_DividedSurface_Host : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8116,7 +8116,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_PointCloudInstance_GetPoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
 	[NodeDescription("A collection object containing points that pass the filter, but no more than the maximum number requested.")]
 	public class Revit_PointCloudInstance_GetPoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8139,7 +8139,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_PointCloudInstance_Create")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
 	[NodeDescription("The newly created point cloud instance.")]
 	public class Revit_PointCloudInstance_Create : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8162,7 +8162,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_PointCloudInstance_GetSelectionFilter")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
 	[NodeDescription("Currently active selection filter or")]
 	public class Revit_PointCloudInstance_GetSelectionFilter : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8181,7 +8181,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_PointCloudInstance_FilterAction")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
 	[NodeDescription("The action taken based on the results of the selection filter applied to this point cloud.")]
 	public class Revit_PointCloudInstance_FilterAction : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8200,7 +8200,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Ellipse_RadiusY")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
 	[NodeDescription("Returns the Y vector radius of the ellipse.")]
 	public class Revit_Ellipse_RadiusY : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8219,7 +8219,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Ellipse_RadiusX")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
 	[NodeDescription("Returns the X vector radius of the ellipse.")]
 	public class Revit_Ellipse_RadiusX : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8238,7 +8238,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Ellipse_YDirection")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
 	[NodeDescription("The Y direction.")]
 	public class Revit_Ellipse_YDirection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8257,7 +8257,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Ellipse_XDirection")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
 	[NodeDescription("The X direction.")]
 	public class Revit_Ellipse_XDirection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8276,7 +8276,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Ellipse_Normal")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
 	[NodeDescription("Returns the normal to the plane in which the ellipse is defined.")]
 	public class Revit_Ellipse_Normal : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8295,7 +8295,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Ellipse_Center")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
 	[NodeDescription("Returns the center of the ellipse.")]
 	public class Revit_Ellipse_Center : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8314,7 +8314,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Extrusion_EndOffset")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EXTRUSION)]
 	[NodeDescription("The offset of the end of the extrusion relative to the sketch plane.")]
 	public class Revit_Extrusion_EndOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8333,7 +8333,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Extrusion_StartOffset")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EXTRUSION)]
 	[NodeDescription("The offset of the start of the extrusion relative to the sketch plane.")]
 	public class Revit_Extrusion_StartOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8352,7 +8352,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Extrusion_Sketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EXTRUSION)]
 	[NodeDescription("Returns the Sketch of the Extrusion.")]
 	public class Revit_Extrusion_Sketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8371,7 +8371,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewReferencePointArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("An empty array that can hold ReferencePoint objects.")]
 	public class Revit_Application_NewReferencePointArray : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8388,7 +8388,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewPointRelativeToPoint")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("If creation is successful then a new PointRelativeToPoint object is returned,otherwise an exception with failure information will be thrown.")]
 	public class Revit_Application_NewPointRelativeToPoint : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8407,7 +8407,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewPointOnEdgeEdgeIntersection")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new PointOnEdgeEdgeIntersection object.")]
 	public class Revit_Application_NewPointOnEdgeEdgeIntersection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8428,7 +8428,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewPointOnFace")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new PointOnFace object.")]
 	public class Revit_Application_NewPointOnFace : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8449,7 +8449,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewPointOnPlane")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new PointOnPlane object with 2-dimensional Position, XVec, and Offsetproperties set to match the given 3-dimensional arguments.")]
 	public class Revit_Application_NewPointOnPlane : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8474,7 +8474,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewPointOnEdge")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("If creation was successful then a new object is returned,otherwise an exception with failure information will be thrown.")]
 	public class Revit_Application_NewPointOnEdge : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8495,7 +8495,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewFamilySymbolProfile")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The new FamilySymbolProfile object.")]
 	public class Revit_Application_NewFamilySymbolProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8514,7 +8514,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewCurveLoopsProfile")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The new CurveLoopsProfile object.")]
 	public class Revit_Application_NewCurveLoopsProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8533,7 +8533,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewElementId")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The new Autodesk::Revit::DB::ElementId^ object.")]
 	public class Revit_Application_NewElementId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8550,7 +8550,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewAreaCreationData")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The object containing the data needed for area creation.")]
 	public class Revit_Application_NewAreaCreationData : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8571,7 +8571,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewPlane")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("If successful a new geometric plane will be returned. Otherwise")]
 	public class Revit_Application_NewPlane : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8590,7 +8590,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewPlane_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new plane object.")]
 	public class Revit_Application_NewPlane_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8611,7 +8611,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewPlane_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new plane object.")]
 	public class Revit_Application_NewPlane_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8634,7 +8634,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewColor")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The new color object.")]
 	public class Revit_Application_NewColor : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8651,7 +8651,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewCombinableElementArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("An empty array that can contain any CombinableElement derived objects.")]
 	public class Revit_Application_NewCombinableElementArray : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8668,7 +8668,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewVertexIndexPairArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The new VertexIndexPairArray objects.")]
 	public class Revit_Application_NewVertexIndexPairArray : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8685,7 +8685,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewVertexIndexPair")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The new VertexIndexPair object.")]
 	public class Revit_Application_NewVertexIndexPair : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8706,7 +8706,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewElementArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("An empty array that can contain any Autodesk Revit element derived objects.")]
 	public class Revit_Application_NewElementArray : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8723,7 +8723,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewCurveArrArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The empty array of curve loops.")]
 	public class Revit_Application_NewCurveArrArray : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8740,7 +8740,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewCurveArray")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("An empty array that can hold geometric curves.")]
 	public class Revit_Application_NewCurveArray : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8757,7 +8757,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewStringStringMap")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A map that maps one string to another.")]
 	public class Revit_Application_NewStringStringMap : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8774,7 +8774,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewLineUnbound")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new unbounded line object.")]
 	public class Revit_Application_NewLineUnbound : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8795,7 +8795,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewLineBound")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new bounded line object.")]
 	public class Revit_Application_NewLineBound : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8816,7 +8816,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewLine")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new bounded or unbounded line object.")]
 	public class Revit_Application_NewLine : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8839,7 +8839,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewMaterialSet")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("The newly created MaterialSet instance.")]
 	public class Revit_Application_NewMaterialSet : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8856,7 +8856,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewElementSet")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new Element Set.")]
 	public class Revit_Application_NewElementSet : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8873,7 +8873,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewTypeBinding")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new type binding object.")]
 	public class Revit_Application_NewTypeBinding : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8892,7 +8892,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewTypeBinding_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new type binding object.")]
 	public class Revit_Application_NewTypeBinding_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8909,7 +8909,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewInstanceBinding")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new instance binding object.")]
 	public class Revit_Application_NewInstanceBinding : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8928,7 +8928,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewInstanceBinding_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new instance binding object.")]
 	public class Revit_Application_NewInstanceBinding_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8945,7 +8945,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Application_NewCategorySet")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
 	[NodeDescription("A new instance of a Category Set.")]
 	public class Revit_Application_NewCategorySet : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8962,7 +8962,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Revolution_Axis")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLUTION)]
 	[NodeDescription("Returns the Axis of the Revolution.")]
 	public class Revit_Revolution_Axis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8981,7 +8981,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Revolution_EndAngle")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLUTION)]
 	[NodeDescription("The end angle of the revolution relative to the sketch plane.")]
 	public class Revit_Revolution_EndAngle : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9000,7 +9000,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Revolution_StartAngle")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLUTION)]
 	[NodeDescription("The start angle of the revolution relative to the sketch plane.")]
 	public class Revit_Revolution_StartAngle : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9019,7 +9019,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Revolution_Sketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLUTION)]
 	[NodeDescription("Returns the Sketch of the Revolution.")]
 	public class Revit_Revolution_Sketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9038,7 +9038,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_RevolvedFace_Curve")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLVEDFACE)]
 	[NodeDescription("Profile curve of the surface.")]
 	public class Revit_RevolvedFace_Curve : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9057,7 +9057,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_RevolvedFace_Axis")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLVEDFACE)]
 	[NodeDescription("Axis of the surface.")]
 	public class Revit_RevolvedFace_Axis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9076,7 +9076,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_RevolvedFace_Origin")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLVEDFACE)]
 	[NodeDescription("Origin of the surface.")]
 	public class Revit_RevolvedFace_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9095,7 +9095,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Edge_ComputeDerivatives")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
 	[NodeDescription("The transformation containing a tangent vector, derivative of tangent vector, and bi-normal vector.")]
 	public class Revit_Edge_ComputeDerivatives : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9116,7 +9116,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Edge_AsCurveFollowingFace")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
 	[NodeDescription("It can be an Arc, Line, or HermiteSpline.")]
 	public class Revit_Edge_AsCurveFollowingFace : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9137,7 +9137,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Edge_AsCurve")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
 	[NodeDescription("It can be an Arc, Line, or HermiteSpline.")]
 	public class Revit_Edge_AsCurve : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9156,7 +9156,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Edge_ApproximateLength")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
 	[NodeDescription("Returns the approximate length of the edge.")]
 	public class Revit_Edge_ApproximateLength : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9175,7 +9175,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Edge_Reference")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
 	[NodeDescription("Returns a stable reference to the edge.")]
 	public class Revit_Edge_Reference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9194,7 +9194,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_AngleTo")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The real number between 0 and 2*PI equal to the angle between the two vectors in radians.")]
 	public class Revit_UV_AngleTo : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9215,7 +9215,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_DistanceTo")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The real number equal to the distance between the two points.")]
 	public class Revit_UV_DistanceTo : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9236,7 +9236,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_IsAlmostEqualTo")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("True if the vectors are the same; otherwise, false.")]
 	public class Revit_UV_IsAlmostEqualTo : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9259,7 +9259,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_IsAlmostEqualTo_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("True if the vectors are the same; otherwise, false.")]
 	public class Revit_UV_IsAlmostEqualTo_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9280,7 +9280,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_Divide")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The divided 2-D vector.")]
 	public class Revit_UV_Divide : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9301,7 +9301,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_Multiply")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The multiplied 2-D vector.")]
 	public class Revit_UV_Multiply : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9322,7 +9322,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_Negate")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The 2-D vector opposite to this vector.")]
 	public class Revit_UV_Negate : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9341,7 +9341,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_Subtract")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The 2-D vector equal to the difference between the two vectors.")]
 	public class Revit_UV_Subtract : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9362,7 +9362,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_Add")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The 2-D vector equal to the sum of the two vectors.")]
 	public class Revit_UV_Add : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9383,7 +9383,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_CrossProduct")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The real number equal to the cross product.")]
 	public class Revit_UV_CrossProduct : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9404,7 +9404,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_DotProduct")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The real number equal to the dot product.")]
 	public class Revit_UV_DotProduct : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9425,7 +9425,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_Normalize")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("The normalized UV or zero if the vector is almost Zero.")]
 	public class Revit_UV_Normalize : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9444,7 +9444,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_V")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("Gets the second coordinate.")]
 	public class Revit_UV_V : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9463,7 +9463,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_UV_U")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
 	[NodeDescription("Gets the first coordinate.")]
 	public class Revit_UV_U : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9482,7 +9482,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Line_Direction")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LINE)]
 	[NodeDescription("Returns the direction of the line.")]
 	public class Revit_Line_Direction : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9501,7 +9501,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Line_Origin")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LINE)]
 	[NodeDescription("Returns the origin of the line.")]
 	public class Revit_Line_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9520,7 +9520,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_GetMaterialAspectPropertySet")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("Identifier of the shared property set, or invalidElementId if independent (i.e. owned by the material).")]
 	public class Revit_Material_GetMaterialAspectPropertySet : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9541,7 +9541,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_GetCutPatternColor")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The color.")]
 	public class Revit_Material_GetCutPatternColor : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9560,7 +9560,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_GetCutPatternId")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The cut pattern id.")]
 	public class Revit_Material_GetCutPatternId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9579,7 +9579,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_GetSmoothness")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The smoothness value.")]
 	public class Revit_Material_GetSmoothness : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9598,7 +9598,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_Create")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("Identifier of the new material.")]
 	public class Revit_Material_Create : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9619,7 +9619,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_Duplicate")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The new material.")]
 	public class Revit_Material_Duplicate : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9640,7 +9640,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_MaterialClass")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The name of the general material type, e.g. 'Wood.'")]
 	public class Revit_Material_MaterialClass : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9659,7 +9659,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_ThermalAssetId")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The ElementId of the thermal PropertySetElement.")]
 	public class Revit_Material_ThermalAssetId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9678,7 +9678,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_StructuralAssetId")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The ElementId of the structural PropertySetElement.")]
 	public class Revit_Material_StructuralAssetId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9697,7 +9697,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_Shininess")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The shininess of the material.")]
 	public class Revit_Material_Shininess : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9716,7 +9716,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_Glow")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("Whether the material can glow.")]
 	public class Revit_Material_Glow : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9735,7 +9735,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_RenderAppearance")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The rendering appearance property of the material.")]
 	public class Revit_Material_RenderAppearance : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9754,7 +9754,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_SurfacePatternColor")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The surface pattern color of the material.")]
 	public class Revit_Material_SurfacePatternColor : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9773,7 +9773,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_SurfacePattern")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The surface pattern of the material.")]
 	public class Revit_Material_SurfacePattern : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9792,7 +9792,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_CutPatternColor")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The cut pattern color of the material.")]
 	public class Revit_Material_CutPatternColor : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9811,7 +9811,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_CutPattern")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The cut pattern of the material.")]
 	public class Revit_Material_CutPattern : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9830,7 +9830,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_Smoothness")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The smoothness of the material.")]
 	public class Revit_Material_Smoothness : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9849,7 +9849,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_Transparency")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The transparency of the material.")]
 	public class Revit_Material_Transparency : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9868,7 +9868,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Material_Color")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
 	[NodeDescription("The color of the material.")]
 	public class Revit_Material_Color : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9887,7 +9887,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Solid_ComputeCentroid")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
 	[NodeDescription("The XYZ point of the Centroid of this solid.")]
 	public class Revit_Solid_ComputeCentroid : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9906,7 +9906,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Solid_Volume")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
 	[NodeDescription("Returns the signed volume of this solid.")]
 	public class Revit_Solid_Volume : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9925,7 +9925,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Solid_SurfaceArea")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
 	[NodeDescription("Returns the total surface area of this solid.")]
 	public class Revit_Solid_SurfaceArea : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9944,7 +9944,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Solid_Faces")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
 	[NodeDescription("The faces that belong to the solid.")]
 	public class Revit_Solid_Faces : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9963,7 +9963,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Solid_Edges")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
 	[NodeDescription("The edges that belong to the solid.")]
 	public class Revit_Solid_Edges : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9982,7 +9982,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Arc_Radius")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
 	[NodeDescription("Returns the radius of the arc.")]
 	public class Revit_Arc_Radius : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10001,7 +10001,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Arc_YDirection")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
 	[NodeDescription("Returns the Y direction.")]
 	public class Revit_Arc_YDirection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10020,7 +10020,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Arc_XDirection")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
 	[NodeDescription("Returns the X direction.")]
 	public class Revit_Arc_XDirection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10039,7 +10039,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Arc_Normal")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
 	[NodeDescription("Returns the normal to the plane in which the arc is defined.")]
 	public class Revit_Arc_Normal : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10058,7 +10058,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Arc_Center")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
 	[NodeDescription("Returns the center of the arc.")]
 	public class Revit_Arc_Center : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10077,7 +10077,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Blend_TopProfile")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
 	[NodeDescription("The curves which make up the top profile of the sketch.")]
 	public class Revit_Blend_TopProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10096,7 +10096,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Blend_BottomProfile")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
 	[NodeDescription("The curves which make up the bottom profile of the sketch.")]
 	public class Revit_Blend_BottomProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10115,7 +10115,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Blend_TopOffset")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
 	[NodeDescription("The offset of the top end of the blend relative to the sketch plane.")]
 	public class Revit_Blend_TopOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10134,7 +10134,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Blend_BottomOffset")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
 	[NodeDescription("The offset of the bottom end of the blend relative to the sketch plane.")]
 	public class Revit_Blend_BottomOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10153,7 +10153,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Blend_BottomSketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
 	[NodeDescription("Returns the Bottom Sketch of the Blend.")]
 	public class Revit_Blend_BottomSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10172,7 +10172,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Blend_TopSketch")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
 	[NodeDescription("Returns the Top Sketch of the Blend.")]
 	public class Revit_Blend_TopSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10191,7 +10191,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ModelCurve_GetVisibility")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
 	[NodeDescription("A copy of visibility settings for the model curve in a family document.")]
 	public class Revit_ModelCurve_GetVisibility : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10210,7 +10210,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ModelCurve_IsReferenceLine")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
 	[NodeDescription("Indicates if this curve is a reference curve.")]
 	public class Revit_ModelCurve_IsReferenceLine : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10229,7 +10229,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ModelCurve_TrussCurveType")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
 	[NodeDescription("The truss curve type of this model curve.")]
 	public class Revit_ModelCurve_TrussCurveType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10248,7 +10248,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_ModelCurve_Subcategory")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
 	[NodeDescription("The subcategory.")]
 	public class Revit_ModelCurve_Subcategory : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10267,7 +10267,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Level_PlaneReference")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LEVEL)]
 	[NodeDescription("Returns a reference to this element as a plane.")]
 	public class Revit_Level_PlaneReference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10286,7 +10286,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Level_LevelType")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LEVEL)]
 	[NodeDescription("The level style of this level.")]
 	public class Revit_Level_LevelType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10305,7 +10305,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Level_ProjectElevation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LEVEL)]
 	[NodeDescription("Retrieve the elevation relative to project origin, no matter what values of the Elevation Base parameter is set.")]
 	public class Revit_Level_ProjectElevation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10324,7 +10324,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Level_Elevation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LEVEL)]
 	[NodeDescription("Retrieves or changes the elevation above or below the ground level.")]
 	public class Revit_Level_Elevation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10343,7 +10343,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_NurbSpline_Knots")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
 	[NodeDescription("Return/set the knots of the nurb spline.")]
 	public class Revit_NurbSpline_Knots : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10362,7 +10362,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_NurbSpline_Weights")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
 	[NodeDescription("Returns the weights of the nurb spline.")]
 	public class Revit_NurbSpline_Weights : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10381,7 +10381,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_NurbSpline_CtrlPoints")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
 	[NodeDescription("Returns the control points of the nurb spline.")]
 	public class Revit_NurbSpline_CtrlPoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10400,7 +10400,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_NurbSpline_Degree")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
 	[NodeDescription("Returns the degree of the nurb spline.")]
 	public class Revit_NurbSpline_Degree : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10419,7 +10419,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_NurbSpline_isRational")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
 	[NodeDescription("Returns whether the nurb spline is rational or not.")]
 	public class Revit_NurbSpline_isRational : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10438,7 +10438,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_NurbSpline_isClosed")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
 	[NodeDescription("Return/set the nurb spline's isClosed property.")]
 	public class Revit_NurbSpline_isClosed : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10457,7 +10457,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_Create")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("If successful a new wall object within the project.")]
 	public class Revit_Wall_Create : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10486,7 +10486,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_Create_1")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("If successful a new wall object within the project.")]
 	public class Revit_Wall_Create_1 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10513,7 +10513,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_Create_2")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("If successful a new wall object within the project.")]
 	public class Revit_Wall_Create_2 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10536,7 +10536,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_Create_3")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("If successful a new wall object within the project.")]
 	public class Revit_Wall_Create_3 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10569,7 +10569,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_Create_4")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("If successful a new wall object within the project.")]
 	public class Revit_Wall_Create_4 : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10594,7 +10594,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_Orientation")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("The normal vector projected from the exterior side of the wall.")]
 	public class Revit_Wall_Orientation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10613,7 +10613,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_Flipped")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("Property to test whether the wall orientation is flipped.")]
 	public class Revit_Wall_Flipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10632,7 +10632,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_StructuralUsage")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("Retrieves or changes  the wall's designated structural usage.")]
 	public class Revit_Wall_StructuralUsage : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10651,7 +10651,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_Width")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("Get the overall thickness of the wall.")]
 	public class Revit_Wall_Width : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10670,7 +10670,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_CurtainGrid")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("Get the grid object of a curtain wall")]
 	public class Revit_Wall_CurtainGrid : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10689,7 +10689,7 @@ namespace Dynamo.Nodes
 	}
 
 	[NodeName("Revit_Wall_WallType")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
 	[NodeDescription("Retrieves or changes the type of the wall.")]
 	public class Revit_Wall_WallType : dynRevitTransactionNodeWithOneOutput
 	{
