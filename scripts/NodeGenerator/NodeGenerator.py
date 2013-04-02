@@ -1,26 +1,5 @@
-# Node generator generates Dynamo nodes from the Revit API help documentation
-# Classes take the form
-# [ElementName("<name from xml>")]
-# [ElementCategory(BuiltinElementCategories.REVIT_GEOMETRY)]
-# [ElementDescription("<description from xml")]
-# [RequiresTransaction(false)]
-# public Class <node name> : dynNode
-# {
-#	public <node name>()
-#	{
-#		InPortData.Add(new PortData("xyz", "The point(s) from which to create reference points.", typeof(XYZ)));
-#       OutPortData = new PortData("pt", "The Reference Point(s) created from this operation.", typeof(ReferencePoint));
-#
-#       base.RegisterInputsAndOutputs();
-#	}
-#	
-#	public override Expression Evaluate(FSharpList<Expression> args)
-#   {
-#		return Express.NewContainer(result)
-#	}
-# }
-
 import xml.etree.ElementTree as ET
+import pprint
 
 def main():
 	tree = ET.parse('RevitAPI.xml')
@@ -69,7 +48,45 @@ def main():
 	f.write('namespace Dynamo.Nodes\n')
 	f.write('{\n')
 
-	read_types(root)
+	valid_namespaces = [
+	'Autodesk.Revit.Creation.Application', 
+	'Autodesk.Revit.Creation.FamilyItemFactory', 
+	'Autodesk.Revit.Creation.Document', 
+	'Autodesk.Revit.Creation.ItemFactoryBase',
+	'Autodesk.Revit.DB.Curve',
+	'Autodesk.Revit.DB.Arc',
+	'Autodesk.Revit.DB.CylindricalHelix',
+	'Autodesk.Revit.DB.Ellipse',
+	'Autodesk.Revit.DB.HermiteSpline',
+	'Autodesk.Revit.DB.Line',
+	'Autodesk.Revit.DB.NurbSpline',
+	'Autodesk.Revit.DB.Face',
+	'Autodesk.Revit.DB.ConicalFace',
+	'Autodesk.Revit.DB.CylindricalFace',
+	'Autodesk.Revit.DB.HermiteFace',
+	'Autodesk.Revit.DB.RevolvedFace',
+	'Autodesk.Revit.DB.RuledFace',
+	'Autodesk.Revit.DB.GeometryObject',
+    'Autodesk.Revit.DB.Edge',
+    'Autodesk.Revit.DB.GeometryElement',
+    'Autodesk.Revit.DB.GeometryInstance',
+    'Autodesk.Revit.DB.Mesh',
+    'Autodesk.Revit.DB.Point',
+    'Autodesk.Revit.DB.PolyLine',
+    'Autodesk.Revit.DB.Profile',
+    'Autodesk.Revit.DB.Solid',
+    'Autodesk.Revit.DB.Instance',
+    'Autodesk.Revit.DB.FamilyInstance',
+    'Autodesk.Revit.DB.PointCloudInstance'
+	]
+
+	revit_types = {}
+	read_types(root, revit_types, valid_namespaces)
+	read_methods(root, revit_types, valid_namespaces)
+	read_properties(root, revit_types, valid_namespaces)
+
+	for key in revit_types.keys():
+		revit_types[key].write(f);
 
 	# cureNameSpaces = []
 	# for member in root.iter('members'):
@@ -202,31 +219,278 @@ def main():
 	f.write('\t}\n')
 	f.close()
 
-	# print node_names
-	#print required_types
+class RevitType:
+	def __init__(self, name, summary):
+	    self.methods = []
+	    self.properties = []
+	    self.name = name
+	    self.summary = summary
 
-def read_members(root):
+	def __str__(self):
+		string = self.name + "\n"
+		string += self.summary + "\n"
+		string += "Methods:\n"
+		for m in self.methods:
+			string += str(m) + "\n"
+		string += "Properties:\n"
+		for p in self.properties:
+			string += str(p) + "\n"
+		return string
+
+	def write(self, f):
+		for m in self.methods:
+			m.write(f)
+		# for p in t.properties:
+		# 	write_property(p,f)
+
+class RevitMethod:
+	def __init__(self, name, returns, summary):
+		self.name = name
+		self.returns = returns
+		self.summary = summary
+		self.parameters=[]
+		if '#ctor' in self.name:
+			self.nickName = 'Revit_' + self.name.split('.')[-2]
+		else:
+			splits = self.name.split('.')
+			self.nickName = 'Revit_' + splits[-2] + '_' + splits[-1]
+
+	def __str__(self):
+		string = "name:" + self.name + "\n"
+		string += "returns:" + self.returns + "\n"
+		string += "summary:" + self.summary + "\n"
+		string += "parameters:\n"
+		for p in self.parameters:
+			string += p.key + ":" + p.value +"\n"
+		return string
+
+	def write(self, f):
+		self.write_attributes(f)
+		f.write('\tpublic class ' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
+		f.write('\t{\n')
+		self.write_constructor(f)
+		self.write_evaluate(f)
+		f.write('\t}\n')
+
+	def write_attributes(self, f):
+		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
+		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
+		f.writelines(node_attributes)
+
+	def write_constructor(self, f):
+		f.write('\t\tpublic ' + self.nickName + '()\n')
+		f.write('\t\t{\n')
+
+		for param in self.parameters:
+			param_description = param.description.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
+			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param.param_type)+'\", \"' + param_description + '\",typeof(object)));\n')
+
+		f.write('\t\t\tOutPortData.Add(new PortData(\"out\",\"'+self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"')+'\",typeof(object)));\n')
+		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
+		f.write('\t\t}\n')
+
+	def write_evaluate(self, f):
+		f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
+		f.write('\t\t{\n')
+
+		# for each incoming arg, cast it to the matching param
+		i = 0
+		argList = []
+
+		outMember = ''
+
+		for param in self.parameters:
+			param.write(i, argList, f)
+			i+=1
+
+		if len(self.parameters) > 0:
+			paramsStr = '(' +  ",".join(argList) + ")"
+		else:
+			paramsStr = ''
+
+		if '(' in self.name:
+			methodCall = self.name.split('(')[0].split('.')[-1]  	
+		else:
+			methodCall = self.name.split('.')[-1] 
+
+		method_call_prefix = match_method_call(self.name)
+
+		# # logic for testing if we're in a family document
+		# if method_call_prefix == 'dynRevitSettings.Doc.Document.':
+		# 	f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
+		# 	f.write('\t\t\t{\n')
+		# 	f.write('\t\t\t\tvar result = ' + method_call_prefix + 'FamilyCreate.' + methodCall + paramsStr + ';\n')
+		# 	if outMember != '':
+		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		# 	else:
+		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		# 	f.write('\t\t\t}\n')
+		# 	f.write('\t\t\telse\n')
+		# 	f.write('\t\t\t{\n')
+		# 	f.write('\t\t\t\tvar result = ' + method_call_prefix + 'Create.' + methodCall + paramsStr + ';\n')
+		# 	if outMember != '':
+		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		# 	else:
+		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		# 	f.write('\t\t\t}\n')
+		# else:
+		# 	f.write('\t\t\tvar result = ' + method_call_prefix + methodCall + paramsStr + ';\n')
+		# 	if outMember != '':
+		# 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		# 	else:
+		# 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+
+
+		f.write('\t\t}\n')
+
+class RevitProperty:
+	def __init__(self, name, summary):
+		self.name = name
+		self.summary = summary
+		self.nickName = 'Revit_' + self.name.split('.')[-1]
+
+	def __str__(self):
+		string = self.name +"\n"
+		string += self.summary +"\n"
+		return string
+
+class RevitParameter:
+	def __init__(self, name, param_type, description ):
+		self.name = name
+		self.param_type = param_type
+		self.description = description
+
+	def write(self, index, argList, f):
+		f.write('\t\t\tvar arg' + str(index) + '=(' + convert_param(self.param_type).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(index) +'],typeof(' + convert_param(self.param_type).replace('@','') +'));\n')
+
+		if '@' in self.name:
+			argList.append('out arg' + str(index))
+			outMember = 'arg' + str(index) #flag this out value so we can return it instead of the result
+		else:
+			argList.append('arg' + str(index))
+
+def check_namespace(name, valid_namespaces):
+	if '(' in name:
+		check_name = name.split('(')[0].rsplit('.',1)[0].split(':')[1] 
+	else:
+		check_name = name.rsplit('.',1)[0].split(':')[1]
+		
+	for namespace in valid_namespaces:
+		if namespace == check_name:
+			return True
+	return False
+
+def read_types(root, revit_types, valid_namespaces):
 	for member in root.iter('members'):
 		for member_data in member.findall('member'):
 			member_name = member_data.get('name')
 			if "T:" in member_name:
-				read_type(member_name)
+				if check_namespace(member_name, valid_namespaces):
+					read_type(member_data, revit_types)
 
-def read_type(member_name):
+def read_type(member_data, revit_types):
+	name = member_data.get('name').split(':')[1]
+	try:
+		summary = member_data.find('summary').text.replace('\n','')
+	except:
+		summary = ''
+
+	newType = RevitType(name, summary)
+	revit_types[name] = newType
+
+def read_methods(root, revit_types, valid_namespaces):
 	for member in root.iter('members'):
 		for member_data in member.findall('member'):
 			member_name = member_data.get('name')
-			if type_name.split(':')[1] in member_name:
-				if "M:" in member_name:
-					read_method(member_data)
-				elif "P:" in member_name:
-					read_property(member_data) 
+			if "M:" in member_name:
+				if check_namespace(member_name, valid_namespaces):
+					read_method(member_data, revit_types)
 
-def read_method(data):
-	print data
+def read_properties(root, revit_types, valid_namespaces):
+	for member in root.iter('members'):
+		for member_data in member.findall('member'):
+			member_name = member_data.get('name')
+			if "P:" in member_name:
+				if check_namespace(member_name, valid_namespaces):
+					read_property(member_data, revit_types)
 
-def read_propert(data):
-	print data
+def read_method(member_data, revit_types):
+
+	method_name = member_data.get('name').split(':')[1] #take off the M:
+	print method_name
+
+	param_types = []
+	if '(' in method_name:
+		param_types = method_name.split('(')[1][:-1].split(',')
+		method_name = method_name.split('(')[0]
+		#print len(param_types)
+
+	try:
+		summary = member_data.find('summary').text.replace('\n','')
+	except:
+		summary = ''
+
+	try:
+		returns = member_data.find('returns').text.replace('\n','')
+	except:
+		returns = ''
+
+	newMethod = RevitMethod(method_name, summary, returns)
+
+	params = member_data.findall('param')
+
+	#the Revit API xml has methods where there are
+	#more parameter descriptions than there are parameters
+	#in this case, just return
+	if len(param_types) != len(params):
+		return
+	
+	paramCount = 0
+	for param in params:
+		param_name = param.get('name').replace('\n','')
+		if param.text is None:
+			param_description = ''
+		else:
+			param_description = param.text
+		newParameter = RevitParameter(param_name, param_types[paramCount],param_description)
+		newMethod.parameters.append(newParameter)
+		paramCount += 1
+
+
+	#the type name is the method name minus the
+	#last segment after the '.'
+	#for static methods, no type will exist in the
+	#types dictionary yet, so you need to add one
+	type_name = method_name.rsplit('.',1)[0]
+	if type_name not in revit_types:
+		revit_types[type_name] = RevitType(type_name, '')
+	revit_types[type_name].methods.append(newMethod)
+
+def read_property(member_data, revit_types):
+	property_name = member_data.get('name').split(':')[1] #take off the M:
+	try:
+		summary = member_data.find('summary').text.replace('\n','')
+	except:
+		summary = ''
+
+	newProperty = RevitProperty(property_name, summary)
+
+	#the type name is the method name minus the
+	#last segment after the '.'
+	type_name = property_name.rsplit('.',1)[0]
+	if type_name not in revit_types:
+		revit_types[type_name] = RevitType(type_name, '')
+	revit_types[type_name].properties.append(newProperty)
+
+def match_method_call(x):
+	return {
+		"Autodesk.Revit.Creation.Application":'dynRevitSettings.Revit.Application.Create.',
+		"Autodesk.Revit.Creation.FamilyItemFactory":'dynRevitSettings.Doc.Document.FamilyCreate.',
+		"Autodesk.Revit.Creation.Document":'dynRevitSettings.Doc.Document.Create.',
+		"Autodesk.Revit.Creation.ItemFactoryBase":'dynRevitSettings.Doc.Document.',
+		"Autodesk.Revit.DB":'new '
+	}.get(x,x)
 
 def match_param(x):
     return {
@@ -314,7 +578,7 @@ def conversion_method(x):
 	}.get(x,'')
 
 def write_node_attributes(node_name, summary, f):
-	node_attributes = ['\t[NodeName("Revit ' + node_name + '")]\n',
+	node_attributes = ['\t[NodeName("' + node_name + '")]\n',
 		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
 		'\t[NodeDescription("' + summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 	f.writelines(node_attributes)
