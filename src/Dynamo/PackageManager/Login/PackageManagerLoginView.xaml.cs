@@ -32,10 +32,7 @@ namespace Dynamo.PackageManager
             InitializeComponent();
             this.DataContext = this.viewModel = viewModel;
             this.webBrowser.LoadCompleted += viewModel.WebBrowserNavigatedEvent;
-
-
-
-
+            
             this.LoginContainerStackPanel.IsVisibleChanged += delegate { if (this.LoginContainerStackPanel.Visibility == Visibility.Visible) viewModel.NavigateToLogin(); };
         }
 

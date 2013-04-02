@@ -341,6 +341,12 @@ namespace Dynamo.Search
 
             var searchEle = new LocalSearchElement(dynNode);
             SearchDictionary.Add(searchEle, searchEle.Name);
+            if (dynNode.NodeUI.Tags.Count > 0)
+            {
+                SearchDictionary.Add(searchEle, dynNode.NodeUI.Tags);
+            }
+                
+            
         }
 
         /// <summary>

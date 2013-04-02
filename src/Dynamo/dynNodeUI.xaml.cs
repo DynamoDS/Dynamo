@@ -710,6 +710,21 @@ namespace Dynamo.Controls
             return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription; 
         }}
 
+        public List<string> Tags
+        {
+            get
+            {
+                Type t = NodeLogic.GetType();
+                object[] rtAttribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), true);
+
+                if ( rtAttribs.Length > 0 )
+                    return ((NodeSearchTagsAttribute)rtAttribs[0]).Tags;
+                else 
+                    return new List<string>();
+
+            }
+        }
+
         void SetTooltip()
         {
             Type t = NodeLogic.GetType();
