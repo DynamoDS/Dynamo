@@ -172,7 +172,8 @@ namespace Dynamo.PackageManager
         /// <param name="keywords"> Keywords to describe the user-defined node </param>
         /// <param name="license"> A license string (e.g. "MIT") </param>
         /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
-        public PackageVersionUpload GetPackageVersionUpload(FunctionDefinition funDef, PackageHeader packageHeader, string version,
+        public PackageVersionUpload GetPackageVersionUpload(FunctionDefinition funDef, PackageHeader packageHeader,
+                                                            string version,
                                                             string description, List<string> keywords, string license,
                                                             string group)
         {
@@ -196,11 +197,13 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Attempt to upload PackageUpload 
+        ///     Attempt to upload PackageUpload
         /// </summary>
         /// <param name="packageUpload"> The PackageUpload object - the payload </param>
-        /// <param name="funDef"> The function definition for the user-defined node - necessary to
-        /// update the LoadedPackageHeaders array on load </param>
+        /// <param name="funDef">
+        ///     The function definition for the user-defined node - necessary to
+        ///     update the LoadedPackageHeaders array on load
+        /// </param>
         public void Publish(PackageUpload packageUpload, FunctionDefinition funDef)
         {
             ThreadStart start = () =>
@@ -226,7 +229,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Attempt to upload PackageVersionUpload 
+        ///     Attempt to upload PackageVersionUpload
         /// </summary>
         /// <param name="pkgVersUpload"> The PackageUpload object - the payload </param>
         public void Publish(PackageVersionUpload pkgVersUpload)
@@ -361,7 +364,7 @@ namespace Dynamo.PackageManager
                                         if (auth)
                                         {
                                             // this is bad as this stuff may not be present
-                                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";  
+                                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
                                             dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
                                             IsLoggedIn = true;
                                         }
@@ -410,8 +413,10 @@ namespace Dynamo.PackageManager
         ///     Attempts to load a PackageHeader from the Packages directory, if successful, stores the PackageHeader
         /// </summary>
         /// <param name="funcDef"> The FunctionDefinition to which the loaded user-defined node is to be assigned </param>
-        /// <param name="name"> The name of the package, necessary for looking it up in Packages. Note that 
-        /// two package version cannot exist side by side. </param>
+        /// <param name="name">
+        ///     The name of the package, necessary for looking it up in Packages. Note that
+        ///     two package version cannot exist side by side.
+        /// </param>
         public void LoadPackageHeader(FunctionDefinition funcDef, string name)
         {
             try
