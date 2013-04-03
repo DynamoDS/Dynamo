@@ -179,7 +179,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(dynSettings.Controller.Nodes.Count, 3);
         }
 
-        // Splash screen
+    // Splash screen
 
         [Test]
         public void CanShowSplashScreenFromDefaultState()
@@ -223,7 +223,7 @@ namespace Dynamo.Tests
             
         }
 
-        // Log
+    // Log
 
         [Test]
         public void CanClearLog()
@@ -236,7 +236,7 @@ namespace Dynamo.Tests
             
         }
 
-        // Clearworkspace 
+    // Clearworkspace 
 
         [Test]
         public void CanClearWorkspaceWithNodes()
@@ -292,7 +292,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(0, dynSettings.Controller.Nodes.Count());
         }
 
-        // SaveImage
+    // SaveImage
 
         [Test]
         public void CanSaveImage()
@@ -325,24 +325,27 @@ namespace Dynamo.Tests
 
         }
 
-        // HomeCommand
+    // HomeCommand
 
         [Test]
         public void CanGoHomeWhenInDifferentWorkspace()
         {
             // move to different workspace
             // go home
+            // need to create new function via command
+
         }
 
 
         [Test]
         public void CanStayHomeWhenInHomeWorkspace()
         {
-
-
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.HomeCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.AreEqual( "Home", dynSettings.Controller.CurrentSpace.Name);
         }
 
-        // OpenCommand
+    // OpenCommand
 
         [Test]
         public void CanHandleBadFileWhenOpening()
@@ -353,8 +356,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenGoodFile()
         {
-
-
+            
         }
 
         // SaveCommand

@@ -151,16 +151,15 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Filter the elements in the SearchDictionary, based on whether there is a word
-        ///     in tag that starts with the given query
+        ///     Filter the elements in the SearchDictionary, based on whether there is a string
+        ///     in the tag matching the query
         /// </summary>
         /// <param name="query"> The query </param>
         public HashSet<V> Filter(string query)
         {
             var result = new HashSet<V>();
 
-            string pattern = ".*(" + Regex.Escape(query) + ").*";
-            
+            string pattern = ".*(" + query + ").*";
             foreach (var pair in _tagDictionary)
             {
                 MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
@@ -185,13 +184,14 @@ namespace Dynamo.Search
 
             foreach (var pair in _tagDictionary)
             {
-                // does the key have an internal match with the search?
-                string pattern = ".*(" + Regex.Escape(query) + ").*";
+                // allow internal characters
+                string pattern = ".*(" + query + ").*";
                 MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
                 if (matches.Count > 0)
                 {
                     // it has a match, how close is it to matching the entire string?
-                    double matchCloseness = Math.Max(((double) (pair.Key.Length - query.Length))/pair.Key.Length, 0);
+                    double matchCloseness = ((double) query.Length) / pair.Key.Length;
+
                     foreach (V ele in pair.Value)
                     {
                         double weight = matchCloseness;
@@ -216,6 +216,7 @@ namespace Dynamo.Search
             }
 
             return searchDict.OrderBy(x => x.Value)
+                             .Reverse()
                              .Select(x => x.Key)
                              .ToList()
                              .GetRange(0, Math.Min(numResults, searchDict.Count));

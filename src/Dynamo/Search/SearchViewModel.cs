@@ -94,9 +94,6 @@ namespace Dynamo.Search
                 {
                     _selectedIndex = value;
 
-                    //if (i < this.SearchResultsListBox.Items.Count)
-                    //    this.SearchResultsListBox.ScrollIntoView(this.SearchResultsListBox.Items[i]);
-
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
@@ -336,7 +333,9 @@ namespace Dynamo.Search
                 return;
             }
 
+            
             var searchEle = new LocalSearchElement(dynNode);
+
             SearchDictionary.Add(searchEle, searchEle.Name);
             if (dynNode.NodeUI.Tags.Count > 0)
             {
