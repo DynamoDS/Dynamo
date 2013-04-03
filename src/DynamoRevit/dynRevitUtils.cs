@@ -243,6 +243,22 @@ namespace Dynamo.Utilities
                 }
                 #endregion
 
+                #region reference
+                else if (item.GetType() == typeof(Reference))
+                {
+                    Reference a = (Reference)item;
+                    if(output.IsAssignableFrom(typeof(Element)))
+                    {
+                        Element e = dynRevitSettings.Doc.Document.GetElement(a);
+                    }
+                    else if (output == typeof(Face))
+                    {
+                        Face f = (Face)dynRevitSettings.Doc.Document.GetElement(a.ElementId).GetGeometryObjectFromReference(a);
+                        return f;
+                    }
+                }
+                #endregion
+
                 return item;
             }
             else if (input.IsNumber)

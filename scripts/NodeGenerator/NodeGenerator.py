@@ -319,7 +319,7 @@ class RevitMethod:
         '\t\t\t\t}\n', 
         '\t\t\t});\n',
         '\t\t\tElements.Clear();\n',
-        '\n'
+        ''
 		]
 		f.writelines(cleanup)
 
@@ -388,7 +388,11 @@ class RevitMethod:
 	
 	def match_method_call(self):
 
-		def_prefix = '((' + self.type + ')(args[0] as Value.Container).Item)'
+		# def_prefix = '((' + self.type + ')(args[0] as Value.Container).Item)'
+		# the default prefix will be the first argument
+		# any non-static, non constructor methods will have
+		# an instance passed in that gets slotted into the 0th argument
+		def_prefix = 'arg0'
 
 		self.method_call_prefix = {
 			"Autodesk.Revit.Creation.Application":'dynRevitSettings.Revit.Application.Create',
