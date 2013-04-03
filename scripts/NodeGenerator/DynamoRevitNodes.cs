@@ -14817,4 +14817,234 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	[NodeName("ElementTransformUtils_RotateElement")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Rotates an element about the given axis and angle.")]
+	public class API_ElementTransformUtils_RotateElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_RotateElement()
+		{
+			InPortData.Add(new PortData("val", "The element to rotate.",typeof(Autodesk.Revit.DB.ElementId)));
+			InPortData.Add(new PortData("crv", "The axis of rotation.",typeof(Autodesk.Revit.DB.Line)));
+			InPortData.Add(new PortData("n", "The angle of rotation in radians.",typeof(System.Double)));
+			OutPortData.Add(new PortData("out","Rotates an element about the given axis and angle.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.ElementId));
+			var arg2=(Autodesk.Revit.DB.Line)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.Line));
+			var arg3=(System.Double)DynamoTypeConverter.ConvertInput(args[2],typeof(System.Double));
+			Autodesk.Revit.DB.ElementTransformUtils.RotateElement(arg0,arg1,arg2,arg3);
+			return Value.NewList(FSharpList<Value>.Empty);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_RotateElements")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Rotates a set of elements about the given axis and angle.")]
+	public class API_ElementTransformUtils_RotateElements : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_RotateElements()
+		{
+			InPortData.Add(new PortData("val", "The set of elements to rotate.",typeof(List<Autodesk.Revit.DB.ElementId>)));
+			InPortData.Add(new PortData("crv", "The axis of rotation.",typeof(Autodesk.Revit.DB.Line)));
+			InPortData.Add(new PortData("n", "The angle of rotation in radians.",typeof(System.Double)));
+			OutPortData.Add(new PortData("out","Rotates a set of elements about the given axis and angle.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(List<Autodesk.Revit.DB.ElementId>)DynamoTypeConverter.ConvertInput(args[0],typeof(List<Autodesk.Revit.DB.ElementId>));
+			var arg2=(Autodesk.Revit.DB.Line)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.Line));
+			var arg3=(System.Double)DynamoTypeConverter.ConvertInput(args[2],typeof(System.Double));
+			Autodesk.Revit.DB.ElementTransformUtils.RotateElements(arg0,arg1,arg2,arg3);
+			return Value.NewList(FSharpList<Value>.Empty);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_MirrorElement")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Creates a mirrored copy of an element about a given plane.")]
+	public class API_ElementTransformUtils_MirrorElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_MirrorElement()
+		{
+			InPortData.Add(new PortData("val", "The element to mirror.",typeof(Autodesk.Revit.DB.ElementId)));
+			InPortData.Add(new PortData("p", "The mirror plane.",typeof(Autodesk.Revit.DB.Plane)));
+			OutPortData.Add(new PortData("out","Creates a mirrored copy of an element about a given plane.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.ElementId));
+			var arg2=(Autodesk.Revit.DB.Plane)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.Plane));
+			Autodesk.Revit.DB.ElementTransformUtils.MirrorElement(arg0,arg1,arg2);
+			return Value.NewList(FSharpList<Value>.Empty);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_MirrorElements")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Creates a mirrored copy of a set of elements about a given plane.")]
+	public class API_ElementTransformUtils_MirrorElements : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_MirrorElements()
+		{
+			InPortData.Add(new PortData("val", "The set of elements to mirror.",typeof(List<Autodesk.Revit.DB.ElementId>)));
+			InPortData.Add(new PortData("p", "The mirror plane.",typeof(Autodesk.Revit.DB.Plane)));
+			OutPortData.Add(new PortData("out","Creates a mirrored copy of a set of elements about a given plane.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(List<Autodesk.Revit.DB.ElementId>)DynamoTypeConverter.ConvertInput(args[0],typeof(List<Autodesk.Revit.DB.ElementId>));
+			var arg2=(Autodesk.Revit.DB.Plane)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.Plane));
+			Autodesk.Revit.DB.ElementTransformUtils.MirrorElements(arg0,arg1,arg2);
+			return Value.NewList(FSharpList<Value>.Empty);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_CopyElement")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Copies an element and places the copy at a location indicated by a given transformation.")]
+	public class API_ElementTransformUtils_CopyElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_CopyElement()
+		{
+			InPortData.Add(new PortData("val", "The id of the element to copy.",typeof(Autodesk.Revit.DB.ElementId)));
+			InPortData.Add(new PortData("xyz", "The translation vector for the new element.",typeof(Autodesk.Revit.DB.XYZ)));
+			OutPortData.Add(new PortData("out","Copies an element and places the copy at a location indicated by a given transformation.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.ElementId));
+			var arg2=(Autodesk.Revit.DB.XYZ)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.XYZ));
+			var result = Autodesk.Revit.DB.ElementTransformUtils.CopyElement(arg0,arg1,arg2);
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_CopyElements")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Copies a set of elements and places the copies at a location indicated by a given translation.")]
+	public class API_ElementTransformUtils_CopyElements : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_CopyElements()
+		{
+			InPortData.Add(new PortData("val", "The set of elements to copy.",typeof(List<Autodesk.Revit.DB.ElementId>)));
+			InPortData.Add(new PortData("xyz", "The translation vector for the new elements.",typeof(Autodesk.Revit.DB.XYZ)));
+			OutPortData.Add(new PortData("out","Copies a set of elements and places the copies at a location indicated by a given translation.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(List<Autodesk.Revit.DB.ElementId>)DynamoTypeConverter.ConvertInput(args[0],typeof(List<Autodesk.Revit.DB.ElementId>));
+			var arg2=(Autodesk.Revit.DB.XYZ)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.XYZ));
+			var result = Autodesk.Revit.DB.ElementTransformUtils.CopyElements(arg0,arg1,arg2);
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_MoveElement")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Moves one element by a given transformation.")]
+	public class API_ElementTransformUtils_MoveElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_MoveElement()
+		{
+			InPortData.Add(new PortData("val", "The id of the element to move.",typeof(Autodesk.Revit.DB.ElementId)));
+			InPortData.Add(new PortData("xyz", "The translation vector for the elements.",typeof(Autodesk.Revit.DB.XYZ)));
+			OutPortData.Add(new PortData("out","Moves one element by a given transformation.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.ElementId));
+			var arg2=(Autodesk.Revit.DB.XYZ)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.XYZ));
+			Autodesk.Revit.DB.ElementTransformUtils.MoveElement(arg0,arg1,arg2);
+			return Value.NewList(FSharpList<Value>.Empty);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_MoveElements")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Moves a set of elements by a given transformation.")]
+	public class API_ElementTransformUtils_MoveElements : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_MoveElements()
+		{
+			InPortData.Add(new PortData("val", "The set of elements to move.",typeof(List<Autodesk.Revit.DB.ElementId>)));
+			InPortData.Add(new PortData("xyz", "The translation vector for the elements.",typeof(Autodesk.Revit.DB.XYZ)));
+			OutPortData.Add(new PortData("out","Moves a set of elements by a given transformation.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(List<Autodesk.Revit.DB.ElementId>)DynamoTypeConverter.ConvertInput(args[0],typeof(List<Autodesk.Revit.DB.ElementId>));
+			var arg2=(Autodesk.Revit.DB.XYZ)DynamoTypeConverter.ConvertInput(args[1],typeof(Autodesk.Revit.DB.XYZ));
+			Autodesk.Revit.DB.ElementTransformUtils.MoveElements(arg0,arg1,arg2);
+			return Value.NewList(FSharpList<Value>.Empty);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_CanMirrorElement")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Determines whether element can be mirrored.")]
+	public class API_ElementTransformUtils_CanMirrorElement : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_CanMirrorElement()
+		{
+			InPortData.Add(new PortData("val", "The element identified by id.",typeof(Autodesk.Revit.DB.ElementId)));
+			OutPortData.Add(new PortData("out","Determines whether element can be mirrored.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(Autodesk.Revit.DB.ElementId)DynamoTypeConverter.ConvertInput(args[0],typeof(Autodesk.Revit.DB.ElementId));
+			var result = Autodesk.Revit.DB.ElementTransformUtils.CanMirrorElement(arg0,arg1);
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	[NodeName("ElementTransformUtils_CanMirrorElements")]
+	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeDescription("Determines whether elements can be mirrored.")]
+	public class API_ElementTransformUtils_CanMirrorElements : dynRevitTransactionNodeWithOneOutput
+	{
+		public API_ElementTransformUtils_CanMirrorElements()
+		{
+			InPortData.Add(new PortData("val", "The elements identified by id.",typeof(List<Autodesk.Revit.DB.ElementId>)));
+			OutPortData.Add(new PortData("out","Determines whether elements can be mirrored.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+		public override Value Evaluate(FSharpList<Value> args)
+		{
+			var arg0=dynRevitSettings.Doc.Document;
+			var arg1=(List<Autodesk.Revit.DB.ElementId>)DynamoTypeConverter.ConvertInput(args[0],typeof(List<Autodesk.Revit.DB.ElementId>));
+			var result = Autodesk.Revit.DB.ElementTransformUtils.CanMirrorElements(arg0,arg1);
+			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
 }

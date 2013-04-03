@@ -113,7 +113,9 @@ def main():
     'Autodesk.Revit.DB.BoundingBoxUV':['bounding','box','bounds','bbox'],
     'Autodesk.Revit.DB.BoundingBoxXYZ':['bounding','box','bounds','bbox'],
 
-    'Autodesk.Revit.DB.AdaptivePointType':['adaptive','point','type']
+    'Autodesk.Revit.DB.AdaptivePointType':['adaptive','point','type'],
+
+    'Autodesk.Revit.DB.ElementTransformUtils':['element','transform','utils','move','rotate','scale','mirror','reflect']
 	}
 
 	revit_types = {}
@@ -351,6 +353,7 @@ class RevitMethod:
 			"Autodesk.Revit.Creation.ItemFactoryBase":'dynRevitSettings.Doc.Document',
 			"Autodesk.Revit.DB.AdaptiveComponentFamilyUtils":'Autodesk.Revit.DB.AdaptiveComponentFamilyUtils',
 			"Autodesk.Revit.DB.AdaptiveComponentInstanceUtils":'Autodesk.Revit.DB.AdaptiveComponentInstanceUtils',
+			"Autodesk.Revit.DB.ElementTransformUtils":'Autodesk.Revit.DB.ElementTransformUtils'
 		}.get(self.type, def_prefix)
 
 		if self.method_call_prefix is not def_prefix:
