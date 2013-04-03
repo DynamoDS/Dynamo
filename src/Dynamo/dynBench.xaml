@@ -48,10 +48,10 @@
                                 Command="{Binding Source={x:Static commands:DynamoCommands.SaveCmd}}"/>
     <KeyBinding Key="S"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.SaveAsCmd}}"/>
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}"/>
     <KeyBinding Key="O"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.SaveAsCmd}}"/>
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}"/>
     <KeyBinding Key="H"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}"/>
@@ -92,7 +92,7 @@
       
       <MenuItem Header="_File" Name="fileMenu">
       
-        <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.OpenCmd}}" Name="openButton" InputGestureText="Ctrl+O">
+        <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}" Name="openButton" InputGestureText="Ctrl+O">
           <MenuItem.Icon>
             <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
           </MenuItem.Icon>
@@ -103,12 +103,12 @@
             <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
           </MenuItem.Icon>
         </MenuItem>
-        <MenuItem Header="_Save As..." Command="{Binding Source={x:Static commands:DynamoCommands.SaveAsCmd}}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
+        <MenuItem Header="_Save As..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
           <MenuItem.Icon>
             <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
           </MenuItem.Icon>
         </MenuItem>
-        <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.SaveImageCmd}}" Name="saveImage"/>
+        <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveImageDialogAndSaveResultCmd}}" Name="saveImage"/>
           <Separator />
         <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
           <MenuItem.Icon>

@@ -948,78 +948,24 @@ namespace Dynamo
 
         #region Saving and Opening Workspaces
 
-        internal void SaveAs()
+        internal void SaveAs(string path)
         {
-            save(string.Empty);
-        }
-
-        internal void Save()
-        {
-            save(CurrentSpace.FilePath);
-        }
-
-        private void save(string xmlPath)
-        {
-            //string xmlPath = "C:\\test\\myWorkbench.xml";
-            //string xmlPath = "";
-
-            //if the incoming path is empty
-            //present the user with save options
-            if (string.IsNullOrEmpty(xmlPath))
+            if (!string.IsNullOrEmpty(path))
             {
-                string ext, fltr;
-                if (ViewingHomespace)
+                CurrentSpace.FilePath = path;
+                if (!SaveWorkspace(path, CurrentSpace))
                 {
-                    ext = ".dyn";
-                    fltr = "Dynamo Workspace (*.dyn)|*.dyn";
-                }
-                else
-                {
-                    ext = ".dyf";
-                    fltr = "Dynamo Function (*.dyf)|*.dyf";
-                }
-                fltr += "|All files (*.*)|*.*";
-
-                var saveDialog = new SaveFileDialog
-                    {
-                        AddExtension = true,
-                        DefaultExt = ext,
-                        Filter = fltr,
-                    };
-
-                //if the xmlPath is not empty set the default directory
-                if (!string.IsNullOrEmpty(xmlPath))
-                {
-                    var fi = new FileInfo(xmlPath);
-                    saveDialog.InitialDirectory = fi.DirectoryName;
-                }
-                else if (!string.IsNullOrEmpty(CurrentSpace.FilePath))
-                {
-                    //if you've got the file location of the current
-                    //space cached then use its directory 
-                    var fi = new FileInfo(CurrentSpace.FilePath);
-                    saveDialog.InitialDirectory = fi.DirectoryName;
-                }
-
-                if (saveDialog.ShowDialog() == DialogResult.OK)
-                {
-                    xmlPath = saveDialog.FileName;
-                    CurrentSpace.FilePath = xmlPath;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(xmlPath))
-            {
-                if (!SaveWorkspace(xmlPath, CurrentSpace))
-                {
-                    //MessageBox.Show("Workbench could not be saved.");
                     Bench.Log("Workbench could not be saved.");
                 }
             }
         }
 
-        // PB: this will be moved elsewhere, useful for early package manager work
-        public XmlDocument GetXmlDocumentFromWorkspace(dynWorkspace workSpace)
+        internal void Save()
+        {
+            SaveAs(CurrentSpace.FilePath);
+        }
+
+        public XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace)
         {
             try
             {
@@ -1111,83 +1057,7 @@ namespace Dynamo
             Bench.Log("Saving " + xmlPath + "...");
             try
             {
-                //create the xml document
-                var xmlDoc = new XmlDocument();
-                xmlDoc.CreateXmlDeclaration("1.0", null, null);
-
-                XmlElement root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
-                root.SetAttribute("X", workSpace.PositionX.ToString());
-                root.SetAttribute("Y", workSpace.PositionY.ToString());
-
-                if (workSpace != HomeSpace) //If we are not saving the home space
-                {
-                    root.SetAttribute("Name", workSpace.Name);
-                    root.SetAttribute("Category", ((FuncWorkspace) workSpace).Category);
-                    root.SetAttribute(
-                        "ID",
-                        dynSettings.FunctionDict.Values
-                                   .First(x => x.Workspace == workSpace).FunctionId.ToString());
-                }
-
-                xmlDoc.AppendChild(root);
-
-                XmlElement elementList = xmlDoc.CreateElement("dynElements"); //write the root element
-                root.AppendChild(elementList);
-
-                foreach (dynNode el in workSpace.Nodes)
-                {
-                    Point relPoint = el.NodeUI
-                                       .TransformToAncestor(Bench.WorkBench)
-                                       .Transform(new Point(0, 0));
-
-                    XmlElement dynEl = xmlDoc.CreateElement(el.GetType().ToString());
-                    elementList.AppendChild(dynEl);
-
-                    //set the type attribute
-                    dynEl.SetAttribute("type", el.GetType().ToString());
-                    dynEl.SetAttribute("guid", el.NodeUI.GUID.ToString());
-                    dynEl.SetAttribute("nickname", el.NodeUI.NickName);
-                    dynEl.SetAttribute("x", Canvas.GetLeft(el.NodeUI).ToString());
-                    dynEl.SetAttribute("y", Canvas.GetTop(el.NodeUI).ToString());
-
-                    el.SaveElement(xmlDoc, dynEl);
-                }
-
-                //write only the output connectors
-                XmlElement connectorList = xmlDoc.CreateElement("dynConnectors"); //write the root element
-                root.AppendChild(connectorList);
-
-                foreach (dynNode el in workSpace.Nodes)
-                {
-                    foreach (dynPort port in el.NodeUI.OutPorts)
-                    {
-                        foreach (dynConnector c in port.Connectors.Where(c => c.Start != null && c.End != null))
-                        {
-                            XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
-                            connectorList.AppendChild(connector);
-                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
-                            connector.SetAttribute("start_index", c.Start.Index.ToString());
-                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
-                            connector.SetAttribute("end_index", c.End.Index.ToString());
-
-                            if (c.End.PortType == PortType.INPUT)
-                                connector.SetAttribute("portType", "0");
-                        }
-                    }
-                }
-
-                //save the notes
-                XmlElement noteList = xmlDoc.CreateElement("dynNotes"); //write the root element
-                root.AppendChild(noteList);
-                foreach (dynNote n in workSpace.Notes)
-                {
-                    XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
-                    noteList.AppendChild(note);
-                    note.SetAttribute("text", n.noteText.Text);
-                    note.SetAttribute("x", Canvas.GetLeft(n).ToString());
-                    note.SetAttribute("y", Canvas.GetTop(n).ToString());
-                }
-
+                var xmlDoc = GetXmlDocFromWorkspace(workSpace);
                 xmlDoc.Save(xmlPath);
 
                 //cache the file path for future save operations
@@ -1205,6 +1075,9 @@ namespace Dynamo
 
         public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true)
         {
+            if (definition == null)
+                return;
+
             dynWorkspace functionWorkspace = definition.Workspace;
 
             // must create a guid for the definition, save it to xml, 
@@ -2253,7 +2126,7 @@ namespace Dynamo
             //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
             //Step 3: Save function
-            SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
+            SaveFunction( dynSettings.FunctionDict.Values.FirstOrDefault(x => x.Workspace == CurrentSpace) );
 
             //Step 4: Make home workspace visible
             //this.elements = this.homeSpace.elements;

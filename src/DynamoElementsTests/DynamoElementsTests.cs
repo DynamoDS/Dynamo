@@ -289,7 +289,7 @@ namespace Dynamo.Tests
         {
             dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.LayoutAllCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
-            Assert.AreNotEqual(0, dynSettings.Controller.Nodes.Count());
+            Assert.AreNotEqual(0, dynSettings.Controller.Nodes.Count() );
         }
 
     // SaveImage
@@ -297,11 +297,9 @@ namespace Dynamo.Tests
         [Test]
         public void CanSaveImage()
         {
-            Dictionary<string, object> saveData = new Dictionary<string, object>();
             var path = Path.Combine(TempFolder, "output.png");
-            saveData.Add("path", path);
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, saveData));
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, path));
             dynSettings.Controller.ProcessCommandQueue();
             
             Assert.AreEqual( true, File.Exists(path) );
@@ -313,12 +311,9 @@ namespace Dynamo.Tests
         [Test]
         public void CannotSaveImageWithBadPath()
         {
-            Dictionary<string, object> saveData = new Dictionary<string, object>();
             var path = "W;\aelout put.png";
-            saveData.Add("path", path);
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, saveData));
-            Assert.Throws<UriFormatException>( () => dynSettings.Controller.ProcessCommandQueue() );
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, path));
 
             DirectoryInfo tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(0, tempFldrInfo.GetFiles().Length );
@@ -328,154 +323,205 @@ namespace Dynamo.Tests
     // HomeCommand
 
         [Test]
-        public void CanGoHomeWhenInDifferentWorkspace()
-        {
-            // move to different workspace
-            // go home
-            // need to create new function via command
-
-        }
-
-
-        [Test]
         public void CanStayHomeWhenInHomeWorkspace()
         {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.HomeCmd, null));
-            dynSettings.Controller.ProcessCommandQueue();
-            Assert.AreEqual( "Home", dynSettings.Controller.CurrentSpace.Name);
+            for (int i = 0; i < 20; i++)
+            {
+                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.HomeCmd, null));
+                Assert.AreEqual(true, dynSettings.Controller.ViewingHomespace);
+            }
         }
+
+        //[Test]
+        //public void CanGoHomeWhenInDifferentWorkspace()
+        //{
+        //    // move to different workspace
+        //    // go home
+        //    // need to create new function via command
+        //    //TODO: loadWorkspaceFromFileCommand
+        //}
+
 
     // OpenCommand
 
         [Test]
-        public void CanHandleBadFileWhenOpening()
+        public void CanOpenGoodFile()
         {
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
+            
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.OpenCmd, openPath));
+            dynSettings.Controller.ProcessCommandQueue();
 
+            Assert.AreEqual(5, dynSettings.Controller.Nodes.Count());
+        }
+
+        //[Test]
+        //public void CanHandleBadFileWhenOpening()
+        //{
+        // TODO: create bad file for opening
+        //}
+
+    // SaveAsCommand
+
+        [Test]
+        public void CanSaveAsEmptyFile()
+        {
+            var fn = "ruthlessTurtles.dyn";
+            var path = Path.Combine(TempFolder, fn);
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveAsCmd, path ));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            DirectoryInfo tempFldrInfo = new DirectoryInfo(TempFolder);
+            Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
+            Assert.AreEqual(fn, tempFldrInfo.GetFiles()[0].Name);
         }
 
         [Test]
-        public void CanOpenGoodFile()
+        public void CanSaveAsFileWithNodesInIt()
         {
-            
+            var numNodes = 100;
+
+            for (var i = 0; i < numNodes; i++)
+            {
+                Dictionary<string, object> sumData = new Dictionary<string, object>();
+                sumData.Add("name", "+");
+                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
+                dynSettings.Controller.ProcessCommandQueue();
+
+                Assert.AreEqual( i+1, dynSettings.Controller.CurrentSpace.Nodes.Count );
+            }
+
+            var fn = "ruthlessTurtles.dyn";
+            var path = Path.Combine(TempFolder, fn);
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveAsCmd, path));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            DirectoryInfo tempFldrInfo = new DirectoryInfo(TempFolder);
+            Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
+            Assert.AreEqual(fn, tempFldrInfo.GetFiles()[0].Name);
+
         }
 
-        // SaveCommand
+    // SaveCommand
 
         [Test]
         public void CanSaveEmptyFile()
         {
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
 
+            Assert.AreEqual( true, File.Exists(dynSettings.Controller.CurrentSpace.FilePath) );
 
         }
 
         [Test]
         public void CanSaveFileWithNodesInIt()
         {
+            var numNodes = 100;
 
+            for (var i = 0; i < numNodes; i++)
+            {
+                Dictionary<string, object> sumData = new Dictionary<string, object>();
+                sumData.Add("name", "+");
+                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
+                dynSettings.Controller.ProcessCommandQueue();
 
+                Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
+            }
+
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            Assert.AreEqual(true, File.Exists(dynSettings.Controller.CurrentSpace.FilePath));
+            File.Delete(dynSettings.Controller.CurrentSpace.FilePath);
+            Assert.AreEqual(false, File.Exists(dynSettings.Controller.CurrentSpace.FilePath));
         }
 
-        // SaveAsCommand
+        //// CancelRunCommand
 
-        [Test]
-        public void CanSaveAsEmptyFile()
-        {
-
-
-        }
-
-        [Test]
-        public void CanSaveAsFileWithNodesInIt()
-        {
+        //[Test]
+        //public void CanCancelRun()
+        //{
 
 
-        }
-
-        // CancelRunCommand
-
-        [Test]
-        public void CanCancelRun()
-        {
-
-
-        }
+        //}
 
         // ToggleConsoleShowingCommand
 
-        [Test]
-        public void CanShowConsoleWhenHidden()
-        {
-
-
-        }
-
-        [Test]
-        public void CanHideConsoleWhenShown()
-        {
-
-
-        }
-
-        // AddToSelectionCommand
-
-        [Test]
-        public void CanAddToSelectionCommand()
-        {
-
-
-        }
-
-        [Test]
-        public void CanMaintainSelectionWhenNodesAlreadySelected()
-        {
-
-
-        }
-
-        // SelectCommand
-
-        [Test]
-        public void CanSelectNodes()
-        {
+        //[Test]
+        //public void CanShowConsoleWhenHidden()
+        //{
             
-        }
+        //}
 
-        [Test]
-        public void CanSelectNothingWhenNoNodesPresent()
-        {
+        //[Test]
+        //public void CanHideConsoleWhenShown()
+        //{
+
+
+        //}
+
+        //// AddToSelectionCommand
+
+        //[Test]
+        //public void CanAddToSelectionCommand()
+        //{
+
+
+        //}
+
+        //[Test]
+        //public void CanMaintainSelectionWhenNodesAlreadySelected()
+        //{
+
+
+        //}
+
+        //// SelectCommand
+
+        //[Test]
+        //public void CanSelectNodes()
+        //{
             
-        }
+        //}
 
-        // CopyCommand
-        // PasteCommand
+        //[Test]
+        //public void CanSelectNothingWhenNoNodesPresent()
+        //{
+            
+        //}
 
-        [Test]
-        public void CanCopyNodes()
-        {
+        //// CopyCommand
+        //// PasteCommand
 
-        }
+        //[Test]
+        //public void CanCopyNodes()
+        //{
 
-        [Test]
-        public void CanCopyAndPasteNodes()
-        {
+        //}
 
-        }
+        //[Test]
+        //public void CanCopyAndPasteNodes()
+        //{
 
-        // RunExpressionCommand
+        //}
 
-        [Test]
-        public void CanRunExpression()
-        {
+        //// RunExpressionCommand
 
-        }
+        //[Test]
+        //public void CanRunExpression()
+        //{
 
-        // CreateConnectionCommand
+        //}
 
-        [Test]
-        public void CanCreateConnection()
-        {
+        //// CreateConnectionCommand
 
-        }
+        //[Test]
+        //public void CanCreateConnection()
+        //{
+
+        //}
 
         
     }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows;
@@ -10,23 +8,50 @@ using System.Collections;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using System.Reflection;
 using System.IO;
-
 using Dynamo.Controls;
-using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Connectors;
-
-//http://msdn.microsoft.com/en-us/library/ms752308.aspx
 
 namespace Dynamo.Commands
 {
 
     public static partial class DynamoCommands
     {
+        private static ShowSaveImageDialogAndSaveResultCommand showSaveImageDialogAndSaveResultCmd;
+        public static ShowSaveImageDialogAndSaveResultCommand ShowSaveImageDialogAndSaveResultCmd
+        {
+            get
+            {
+                if (showSaveImageDialogAndSaveResultCmd == null)
+                    showSaveImageDialogAndSaveResultCmd = new ShowSaveImageDialogAndSaveResultCommand();
+                return showSaveImageDialogAndSaveResultCmd;
+            }
+        }
+
+        private static ShowOpenDialogAndOpenResultCommand showOpenDialogAndOpenResultCmd;
+        public static ShowOpenDialogAndOpenResultCommand ShowOpenDialogAndOpenResultCmd
+        {
+            get
+            {
+                if (showOpenDialogAndOpenResultCmd == null)
+                    showOpenDialogAndOpenResultCmd = new ShowOpenDialogAndOpenResultCommand();
+                return showOpenDialogAndOpenResultCmd;
+            }
+        }
         
+        private static ShowSaveDialogAndSaveResultCommand showSaveDialogAndSaveResultCmd;
+        public static ShowSaveDialogAndSaveResultCommand ShowSaveDialogAndSaveResultCmd
+        {
+            get
+            {
+                if (showSaveDialogAndSaveResultCmd == null)
+                    showSaveDialogAndSaveResultCmd = new ShowSaveDialogAndSaveResultCommand();
+                return showSaveDialogAndSaveResultCmd;
+            }
+        }
+
         private static GoToWorkspaceCommand goToWorkspaceCmd;
         public static GoToWorkspaceCommand GoToWorkspaceCmd
         {
@@ -361,6 +386,148 @@ namespace Dynamo.Commands
 
     }
 
+    public class ShowSaveImageDialogAndSaveResultCommand : ICommand
+    {
+        private FileDialog _fileDialog;
+
+        public void Execute(object parameters)
+        {
+            if (_fileDialog == null)
+            {
+                _fileDialog = new SaveFileDialog()
+                {
+                    AddExtension = true,
+                    DefaultExt = ".png",
+                    FileName = "Capture.png",
+                    Filter = "PNG Image|*.png",
+                    Title = "Save your Workbench to an Image",
+                };
+            }
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(dynSettings.Controller.CurrentSpace.FilePath))
+            {
+                var fi = new FileInfo(dynSettings.Controller.CurrentSpace.FilePath);
+                _fileDialog.InitialDirectory = fi.DirectoryName;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                DynamoCommands.SaveImageCmd.Execute(_fileDialog.FileName);
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ShowOpenDialogAndOpenResultCommand : ICommand
+    {
+        private FileDialog _fileDialog;
+
+        public void Execute(object parameters)
+        {
+            if (_fileDialog == null)
+            {
+                _fileDialog = new OpenFileDialog()
+                {
+                    Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*",
+                    Title = "Open Dynamo Definition..."
+                };
+            }
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(dynSettings.Controller.CurrentSpace.FilePath))
+            {
+                var fi = new FileInfo(dynSettings.Controller.CurrentSpace.FilePath);
+                _fileDialog.InitialDirectory = fi.DirectoryName;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                DynamoCommands.OpenCmd.Execute(_fileDialog.FileName);
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ShowSaveDialogAndSaveResultCommand : ICommand
+    {
+
+        private FileDialog _fileDialog;
+
+        public void Execute(object parameters)
+        {
+            if (_fileDialog == null)
+            {
+                _fileDialog = new SaveFileDialog
+                {
+                    AddExtension = true,
+                };
+            }
+
+            string ext, fltr;
+            if ( dynSettings.Controller.ViewingHomespace )
+            {
+                ext = ".dyn";
+                fltr = "Dynamo Workspace (*.dyn)|*.dyn";
+            }
+            else
+            {
+                ext = ".dyf";
+                fltr = "Dynamo Function (*.dyf)|*.dyf";
+            }
+            fltr += "|All files (*.*)|*.*"; 
+          
+            _fileDialog.FileName = dynSettings.Controller.CurrentSpace.Name + ext;
+            _fileDialog.AddExtension = true;
+            _fileDialog.DefaultExt = ext;
+            _fileDialog.Filter = fltr;
+
+            //if the xmlPath is not empty set the default directory
+            if (!string.IsNullOrEmpty(dynSettings.Controller.CurrentSpace.FilePath))
+            {
+                var fi = new FileInfo(dynSettings.Controller.CurrentSpace.FilePath);
+                _fileDialog.InitialDirectory = fi.DirectoryName;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                dynSettings.Controller.SaveAs(_fileDialog.FileName);
+            }
+            
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
     public class GoToWikiCommand : ICommand
     {
 
@@ -516,11 +683,6 @@ namespace Dynamo.Commands
 
     public class DeleteCommand : ICommand
     {
-        public DeleteCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             //if you get an object in the parameters, just delete that object
@@ -600,7 +762,7 @@ namespace Dynamo.Commands
         }
     }
 
-  public class ShowSplashScreenCommand : ICommand
+    public class ShowSplashScreenCommand : ICommand
     {
         public ShowSplashScreenCommand()
         {
@@ -656,11 +818,6 @@ namespace Dynamo.Commands
 
     public class WriteToLogCommand : ICommand
     {
-        public WriteToLogCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             if (parameters == null) return;
@@ -1151,7 +1308,8 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            dynSettings.Controller.SaveAs();
+            if (parameters is string)
+                dynSettings.Controller.SaveAs( (string) parameters );
         }
 
         public event EventHandler CanExecuteChanged
@@ -1189,18 +1347,7 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            //string xmlPath = "C:\\test\\myWorkbench.xml";
-            string xmlPath = "";
-
-            System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
-            {
-                Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
-            };
-
-            if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                xmlPath = openDialog.FileName;
-            }
+            string xmlPath = parameters as string;
 
             if (!string.IsNullOrEmpty(xmlPath))
             {
@@ -1265,29 +1412,10 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
+            string imagePath = parameters as string;
 
-            Dictionary<string, object> data = parameters as Dictionary<string, object>;
-            string imagePath = null;
-
-            if (data != null)
+            if (!string.IsNullOrEmpty(imagePath))
             {
-                imagePath = data["path"] as string;
-
-                var uri = new Uri(imagePath);
-                var converted = uri.AbsoluteUri;
-                if (!Uri.IsWellFormedUriString(converted, UriKind.Absolute))
-                    throw new UriFormatException();
-            }
-
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "PNG Image|*.png";
-            sfd.Title = "Save your Workbench to an Image";
-
-            if ( imagePath != null || sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK )
-            {
-                if (imagePath == null)
-                    imagePath = sfd.FileName;
-
                 Transform trans = dynSettings.Workbench.LayoutTransform;
                 dynSettings.Workbench.LayoutTransform = null;
                 Size size = new Size(dynSettings.Workbench.Width, dynSettings.Workbench.Height);
@@ -1403,6 +1531,8 @@ namespace Dynamo.Commands
                            t, elNameAttrib.Name, Guid.NewGuid(), x, y,
                            dynSettings.Controller.CurrentSpace
                         );
+
+                    if (el == null) continue;
 
                     el.DisableReporting();
 

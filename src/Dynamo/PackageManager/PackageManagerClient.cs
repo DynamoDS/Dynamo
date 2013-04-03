@@ -140,26 +140,22 @@ namespace Dynamo.PackageManager
         /// <param name="keywords"> Keywords to describe the user-defined node </param>
         /// <param name="license"> A license string (e.g. "MIT") </param>
         /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
+        /// <returns> Returns null if it fails to get the xmlDoc, otherwise a valid PackageUpload </returns>
         public PackageUpload GetPackageUpload(FunctionDefinition funDef, string version, string description,
                                               List<string> keywords, string license, string group)
         {
-            try
-            {
-                // var group = ((FuncWorkspace) funDef.Workspace).Category;
-                string name = funDef.Workspace.Name;
-                string contents = Controller.GetXmlDocumentFromWorkspace(funDef.Workspace).OuterXml;
-                string engineVersion = "0.1.0"; //nope
-                string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString(); //store the guid here
+            // var group = ((FuncWorkspace) funDef.Workspace).Category;
+            string name = funDef.Workspace.Name;
+            var xml = Controller.GetXmlDocFromWorkspace(funDef.Workspace);
+            if (xml == null) return null;
+            var contents = xml.OuterXml;
+            string engineVersion = "0.1.0"; //nope
+            string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString(); //store the guid here
 
-                PackageUpload pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license,
-                                                                    contents,
-                                                                    engineVersion, engineMetadata);
-                return pkg;
-            }
-            catch
-            {
-                return null;
-            }
+            PackageUpload pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license,
+                                                                contents,
+                                                                engineVersion, engineMetadata);
+            return pkg;
         }
 
         /// <summary>
@@ -172,28 +168,24 @@ namespace Dynamo.PackageManager
         /// <param name="keywords"> Keywords to describe the user-defined node </param>
         /// <param name="license"> A license string (e.g. "MIT") </param>
         /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
+        /// <returns>Returns null if it fails to get the xmlDoc, otherwise a valid PackageVersionUpload  </returns>
         public PackageVersionUpload GetPackageVersionUpload(FunctionDefinition funDef, PackageHeader packageHeader,
                                                             string version,
                                                             string description, List<string> keywords, string license,
                                                             string group)
         {
-            try
-            {
-                // var group = ((FuncWorkspace) funDef.Workspace).Category;
-                string name = funDef.Workspace.Name;
-                string contents = Controller.GetXmlDocumentFromWorkspace(funDef.Workspace).OuterXml;
-                string engineVersion = "0.1.0"; //nope
-                string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString();
+            // var group = ((FuncWorkspace) funDef.Workspace).Category;
+            string name = funDef.Workspace.Name;
+            var xml = Controller.GetXmlDocFromWorkspace(funDef.Workspace);
+            if (xml == null) return null;
+            var contents = xml.OuterXml;
+            string engineVersion = "0.1.0"; //nope
+            string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString();
 
-                var pkg = new PackageVersionUpload(name, version, description, keywords, contents, "dynamo",
-                                                   engineVersion,
-                                                   engineMetadata);
-                return pkg;
-            }
-            catch
-            {
-                return null;
-            }
+            var pkg = new PackageVersionUpload(name, version, description, keywords, contents, "dynamo",
+                                                engineVersion,
+                                                engineMetadata);
+            return pkg;
         }
 
         /// <summary>
