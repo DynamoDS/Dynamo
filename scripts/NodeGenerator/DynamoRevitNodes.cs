@@ -210,7 +210,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
-			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).ShowNormalReferencePlaneOnly;
+			var result = arg0.ShowNormalReferencePlaneOnly;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -230,7 +230,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
-			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).CoordinatePlaneVisibility;
+			var result = arg0.CoordinatePlaneVisibility;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -250,7 +250,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
-			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).Visible;
+			var result = arg0.Visible;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -270,7 +270,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ReferencePoint)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ReferencePoint));
-			var result = ((Autodesk.Revit.DB.ReferencePoint)(args[0] as Value.Container).Item).Position;
+			var result = arg0.Position;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -290,7 +290,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.HermiteFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteFace));
-			var result = ((Autodesk.Revit.DB.HermiteFace)(args[0] as Value.Container).Item).MixedDerivs;
+			var result = arg0.MixedDerivs;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -310,7 +310,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.HermiteFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteFace));
-			var result = ((Autodesk.Revit.DB.HermiteFace)(args[0] as Value.Container).Item).Points;
+			var result = arg0.Points;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -462,7 +462,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).Inverse;
+			var result = arg0.Inverse;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -482,7 +482,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).Determinant;
+			var result = arg0.Determinant;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -502,7 +502,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).IsConformal;
+			var result = arg0.IsConformal;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -522,7 +522,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).HasReflection;
+			var result = arg0.HasReflection;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -542,7 +542,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).Scale;
+			var result = arg0.Scale;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -562,7 +562,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).IsTranslation;
+			var result = arg0.IsTranslation;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -582,7 +582,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).IsIdentity;
+			var result = arg0.IsIdentity;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -602,7 +602,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).Origin;
+			var result = arg0.Origin;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -622,7 +622,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).BasisZ;
+			var result = arg0.BasisZ;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -642,7 +642,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).BasisY;
+			var result = arg0.BasisY;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -662,7 +662,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Transform)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Transform));
-			var result = ((Autodesk.Revit.DB.Transform)(args[0] as Value.Container).Item).BasisX;
+			var result = arg0.BasisX;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -682,7 +682,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Mesh)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Mesh));
-			var result = ((Autodesk.Revit.DB.Mesh)(args[0] as Value.Container).Item).MaterialElementId;
+			var result = arg0.MaterialElementId;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -702,7 +702,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Mesh)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Mesh));
-			var result = ((Autodesk.Revit.DB.Mesh)(args[0] as Value.Container).Item).Vertices;
+			var result = arg0.Vertices;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -722,7 +722,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Mesh)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Mesh));
-			var result = ((Autodesk.Revit.DB.Mesh)(args[0] as Value.Container).Item).NumTriangles;
+			var result = arg0.NumTriangles;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -826,7 +826,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.GeometryInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.GeometryInstance));
-			var result = ((Autodesk.Revit.DB.GeometryInstance)(args[0] as Value.Container).Item).SymbolGeometry;
+			var result = arg0.SymbolGeometry;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -846,7 +846,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.GeometryInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.GeometryInstance));
-			var result = ((Autodesk.Revit.DB.GeometryInstance)(args[0] as Value.Container).Item).Symbol;
+			var result = arg0.Symbol;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -866,7 +866,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.GeometryInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.GeometryInstance));
-			var result = ((Autodesk.Revit.DB.GeometryInstance)(args[0] as Value.Container).Item).Transform;
+			var result = arg0.Transform;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -2812,7 +2812,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.PolyLine)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.PolyLine));
-			var result = ((Autodesk.Revit.DB.PolyLine)(args[0] as Value.Container).Item).NumberOfCoordinates;
+			var result = arg0.NumberOfCoordinates;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -3264,7 +3264,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.XYZ)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.XYZ));
-			var result = ((Autodesk.Revit.DB.XYZ)(args[0] as Value.Container).Item).Z;
+			var result = arg0.Z;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -3284,7 +3284,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.XYZ)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.XYZ));
-			var result = ((Autodesk.Revit.DB.XYZ)(args[0] as Value.Container).Item).Y;
+			var result = arg0.Y;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -3304,7 +3304,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.XYZ)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.XYZ));
-			var result = ((Autodesk.Revit.DB.XYZ)(args[0] as Value.Container).Item).X;
+			var result = arg0.X;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -3622,7 +3622,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.CylindricalFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.CylindricalFace));
-			var result = ((Autodesk.Revit.DB.CylindricalFace)(args[0] as Value.Container).Item).Axis;
+			var result = arg0.Axis;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -3642,7 +3642,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.CylindricalFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.CylindricalFace));
-			var result = ((Autodesk.Revit.DB.CylindricalFace)(args[0] as Value.Container).Item).Origin;
+			var result = arg0.Origin;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -3662,7 +3662,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ConicalFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ConicalFace));
-			var result = ((Autodesk.Revit.DB.ConicalFace)(args[0] as Value.Container).Item).HalfAngle;
+			var result = arg0.HalfAngle;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -3682,7 +3682,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ConicalFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ConicalFace));
-			var result = ((Autodesk.Revit.DB.ConicalFace)(args[0] as Value.Container).Item).Axis;
+			var result = arg0.Axis;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -3702,7 +3702,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ConicalFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ConicalFace));
-			var result = ((Autodesk.Revit.DB.ConicalFace)(args[0] as Value.Container).Item).Origin;
+			var result = arg0.Origin;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6522,7 +6522,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.HermiteSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteSpline));
-			var result = ((Autodesk.Revit.DB.HermiteSpline)(args[0] as Value.Container).Item).Parameters;
+			var result = arg0.Parameters;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6542,7 +6542,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.HermiteSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteSpline));
-			var result = ((Autodesk.Revit.DB.HermiteSpline)(args[0] as Value.Container).Item).Tangents;
+			var result = arg0.Tangents;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6562,7 +6562,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.HermiteSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteSpline));
-			var result = ((Autodesk.Revit.DB.HermiteSpline)(args[0] as Value.Container).Item).ControlPoints;
+			var result = arg0.ControlPoints;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6582,7 +6582,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.HermiteSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteSpline));
-			var result = ((Autodesk.Revit.DB.HermiteSpline)(args[0] as Value.Container).Item).IsPeriodic;
+			var result = arg0.IsPeriodic;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6622,7 +6622,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Profile)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Profile));
-			var result = ((Autodesk.Revit.DB.Profile)(args[0] as Value.Container).Item).Curves;
+			var result = arg0.Curves;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6642,7 +6642,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Profile)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Profile));
-			var result = ((Autodesk.Revit.DB.Profile)(args[0] as Value.Container).Item).Filled;
+			var result = arg0.Filled;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6662,7 +6662,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Sweep)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Sweep));
-			var result = ((Autodesk.Revit.DB.Sweep)(args[0] as Value.Container).Item).MaxSegmentAngle;
+			var result = arg0.MaxSegmentAngle;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6682,7 +6682,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Sweep)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Sweep));
-			var result = ((Autodesk.Revit.DB.Sweep)(args[0] as Value.Container).Item).IsTrajectorySegmentationEnabled;
+			var result = arg0.IsTrajectorySegmentationEnabled;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6702,7 +6702,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Sweep)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Sweep));
-			var result = ((Autodesk.Revit.DB.Sweep)(args[0] as Value.Container).Item).Path3d;
+			var result = arg0.Path3d;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6722,7 +6722,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Sweep)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Sweep));
-			var result = ((Autodesk.Revit.DB.Sweep)(args[0] as Value.Container).Item).PathSketch;
+			var result = arg0.PathSketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6742,7 +6742,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Sweep)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Sweep));
-			var result = ((Autodesk.Revit.DB.Sweep)(args[0] as Value.Container).Item).ProfileSymbol;
+			var result = arg0.ProfileSymbol;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -6762,7 +6762,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Sweep)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Sweep));
-			var result = ((Autodesk.Revit.DB.Sweep)(args[0] as Value.Container).Item).ProfileSketch;
+			var result = arg0.ProfileSketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7301,7 +7301,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Curve));
-			var result = ((Autodesk.Revit.DB.Curve)(args[0] as Value.Container).Item).Period;
+			var result = arg0.Period;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7321,7 +7321,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Curve));
-			var result = ((Autodesk.Revit.DB.Curve)(args[0] as Value.Container).Item).IsCyclic;
+			var result = arg0.IsCyclic;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7341,7 +7341,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Curve));
-			var result = ((Autodesk.Revit.DB.Curve)(args[0] as Value.Container).Item).Length;
+			var result = arg0.Length;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7361,7 +7361,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Curve));
-			var result = ((Autodesk.Revit.DB.Curve)(args[0] as Value.Container).Item).ApproximateLength;
+			var result = arg0.ApproximateLength;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7381,7 +7381,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Curve));
-			var result = ((Autodesk.Revit.DB.Curve)(args[0] as Value.Container).Item).Reference;
+			var result = arg0.Reference;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7401,7 +7401,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Curve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Curve));
-			var result = ((Autodesk.Revit.DB.Curve)(args[0] as Value.Container).Item).IsBound;
+			var result = arg0.IsBound;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7461,7 +7461,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ModelCurve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ModelCurve));
-			var result = ((Autodesk.Revit.DB.ModelCurve)(args[0] as Value.Container).Item).IsReferenceLine;
+			var result = arg0.IsReferenceLine;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7481,7 +7481,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ModelCurve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ModelCurve));
-			var result = ((Autodesk.Revit.DB.ModelCurve)(args[0] as Value.Container).Item).TrussCurveType;
+			var result = arg0.TrussCurveType;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -7501,7 +7501,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.ModelCurve)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.ModelCurve));
-			var result = ((Autodesk.Revit.DB.ModelCurve)(args[0] as Value.Container).Item).Subcategory;
+			var result = arg0.Subcategory;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8239,7 +8239,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Form)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Form));
-			var result = ((Autodesk.Revit.DB.Form)(args[0] as Value.Container).Item).BaseOffset;
+			var result = arg0.BaseOffset;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8259,7 +8259,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Form)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Form));
-			var result = ((Autodesk.Revit.DB.Form)(args[0] as Value.Container).Item).TopOffset;
+			var result = arg0.TopOffset;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8279,7 +8279,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Form)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Form));
-			var result = ((Autodesk.Revit.DB.Form)(args[0] as Value.Container).Item).HasOpenGeometry;
+			var result = arg0.HasOpenGeometry;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8299,7 +8299,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Form)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Form));
-			var result = ((Autodesk.Revit.DB.Form)(args[0] as Value.Container).Item).AreProfilesConstrained;
+			var result = arg0.AreProfilesConstrained;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8319,7 +8319,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Form)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Form));
-			var result = ((Autodesk.Revit.DB.Form)(args[0] as Value.Container).Item).IsInXRayMode;
+			var result = arg0.IsInXRayMode;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8339,7 +8339,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Form)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Form));
-			var result = ((Autodesk.Revit.DB.Form)(args[0] as Value.Container).Item).HasOneOrMoreReferenceProfiles;
+			var result = arg0.HasOneOrMoreReferenceProfiles;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8359,7 +8359,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Form)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Form));
-			var result = ((Autodesk.Revit.DB.Form)(args[0] as Value.Container).Item).PathCurveCount;
+			var result = arg0.PathCurveCount;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8379,7 +8379,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Form)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Form));
-			var result = ((Autodesk.Revit.DB.Form)(args[0] as Value.Container).Item).ProfileCount;
+			var result = arg0.ProfileCount;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8443,7 +8443,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.BoundingBoxUV)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.BoundingBoxUV));
-			var result = ((Autodesk.Revit.DB.BoundingBoxUV)(args[0] as Value.Container).Item).Max;
+			var result = arg0.Max;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8463,7 +8463,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.BoundingBoxUV)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.BoundingBoxUV));
-			var result = ((Autodesk.Revit.DB.BoundingBoxUV)(args[0] as Value.Container).Item).Min;
+			var result = arg0.Min;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8785,7 +8785,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Face)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Face));
-			var result = ((Autodesk.Revit.DB.Face)(args[0] as Value.Container).Item).Area;
+			var result = arg0.Area;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8805,7 +8805,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Face)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Face));
-			var result = ((Autodesk.Revit.DB.Face)(args[0] as Value.Container).Item).Reference;
+			var result = arg0.Reference;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8825,7 +8825,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Face)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Face));
-			var result = ((Autodesk.Revit.DB.Face)(args[0] as Value.Container).Item).IsTwoSided;
+			var result = arg0.IsTwoSided;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8845,7 +8845,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Face)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Face));
-			var result = ((Autodesk.Revit.DB.Face)(args[0] as Value.Container).Item).MaterialElementId;
+			var result = arg0.MaterialElementId;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8865,7 +8865,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Face)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Face));
-			var result = ((Autodesk.Revit.DB.Face)(args[0] as Value.Container).Item).EdgeLoops;
+			var result = arg0.EdgeLoops;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8885,7 +8885,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Face)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Face));
-			var result = ((Autodesk.Revit.DB.Face)(args[0] as Value.Container).Item).HasRegions;
+			var result = arg0.HasRegions;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8905,7 +8905,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.BoundingBoxXYZ)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.BoundingBoxXYZ));
-			var result = ((Autodesk.Revit.DB.BoundingBoxXYZ)(args[0] as Value.Container).Item).Enabled;
+			var result = arg0.Enabled;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8925,7 +8925,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.BoundingBoxXYZ)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.BoundingBoxXYZ));
-			var result = ((Autodesk.Revit.DB.BoundingBoxXYZ)(args[0] as Value.Container).Item).Max;
+			var result = arg0.Max;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8945,7 +8945,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.BoundingBoxXYZ)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.BoundingBoxXYZ));
-			var result = ((Autodesk.Revit.DB.BoundingBoxXYZ)(args[0] as Value.Container).Item).Min;
+			var result = arg0.Min;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -8965,7 +8965,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.BoundingBoxXYZ)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.BoundingBoxXYZ));
-			var result = ((Autodesk.Revit.DB.BoundingBoxXYZ)(args[0] as Value.Container).Item).Transform;
+			var result = arg0.Transform;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9255,7 +9255,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).IsWorkPlaneFlipped;
+			var result = arg0.IsWorkPlaneFlipped;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9275,7 +9275,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).CanFlipWorkPlane;
+			var result = arg0.CanFlipWorkPlane;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9295,7 +9295,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).IsSlantedColumn;
+			var result = arg0.IsSlantedColumn;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9315,7 +9315,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).ExtensionUtility;
+			var result = arg0.ExtensionUtility;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9335,7 +9335,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).SuperComponent;
+			var result = arg0.SuperComponent;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9355,7 +9355,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).SubComponents;
+			var result = arg0.SubComponents;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9375,7 +9375,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).ToRoom;
+			var result = arg0.ToRoom;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9395,7 +9395,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).FromRoom;
+			var result = arg0.FromRoom;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9415,7 +9415,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).CanRotate;
+			var result = arg0.CanRotate;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9435,7 +9435,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).CanFlipFacing;
+			var result = arg0.CanFlipFacing;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9455,7 +9455,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).CanFlipHand;
+			var result = arg0.CanFlipHand;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9475,7 +9475,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).Mirrored;
+			var result = arg0.Mirrored;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9495,7 +9495,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).Invisible;
+			var result = arg0.Invisible;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9515,7 +9515,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).FacingFlipped;
+			var result = arg0.FacingFlipped;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9535,7 +9535,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).HandFlipped;
+			var result = arg0.HandFlipped;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9555,7 +9555,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).FacingOrientation;
+			var result = arg0.FacingOrientation;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9575,7 +9575,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).HandOrientation;
+			var result = arg0.HandOrientation;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9595,7 +9595,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).HostFace;
+			var result = arg0.HostFace;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9615,7 +9615,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).Host;
+			var result = arg0.Host;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9635,7 +9635,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).Location;
+			var result = arg0.Location;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9655,7 +9655,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).Space;
+			var result = arg0.Space;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9675,7 +9675,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).Room;
+			var result = arg0.Room;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9695,7 +9695,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).StructuralType;
+			var result = arg0.StructuralType;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9715,7 +9715,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).StructuralUsage;
+			var result = arg0.StructuralUsage;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9735,7 +9735,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).StructuralMaterialId;
+			var result = arg0.StructuralMaterialId;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9755,7 +9755,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).StructuralMaterialType;
+			var result = arg0.StructuralMaterialType;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9775,7 +9775,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).MEPModel;
+			var result = arg0.MEPModel;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9795,7 +9795,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.FamilyInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.FamilyInstance));
-			var result = ((Autodesk.Revit.DB.FamilyInstance)(args[0] as Value.Container).Item).Symbol;
+			var result = arg0.Symbol;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9839,7 +9839,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Color)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Color));
-			var result = ((Autodesk.Revit.DB.Color)(args[0] as Value.Container).Item).IsValid;
+			var result = arg0.IsValid;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9859,7 +9859,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Color)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Color));
-			var result = ((Autodesk.Revit.DB.Color)(args[0] as Value.Container).Item).Blue;
+			var result = arg0.Blue;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9879,7 +9879,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Color)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Color));
-			var result = ((Autodesk.Revit.DB.Color)(args[0] as Value.Container).Item).Green;
+			var result = arg0.Green;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9899,7 +9899,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Color)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Color));
-			var result = ((Autodesk.Revit.DB.Color)(args[0] as Value.Container).Item).Red;
+			var result = arg0.Red;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9939,7 +9939,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.GenericForm)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.GenericForm));
-			var result = ((Autodesk.Revit.DB.GenericForm)(args[0] as Value.Container).Item).Subcategory;
+			var result = arg0.Subcategory;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9959,7 +9959,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.GenericForm)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.GenericForm));
-			var result = ((Autodesk.Revit.DB.GenericForm)(args[0] as Value.Container).Item).Name;
+			var result = arg0.Name;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9979,7 +9979,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.GenericForm)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.GenericForm));
-			var result = ((Autodesk.Revit.DB.GenericForm)(args[0] as Value.Container).Item).IsSolid;
+			var result = arg0.IsSolid;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -9999,7 +9999,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.GenericForm)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.GenericForm));
-			var result = ((Autodesk.Revit.DB.GenericForm)(args[0] as Value.Container).Item).Visible;
+			var result = arg0.Visible;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10019,7 +10019,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Point)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Point));
-			var result = ((Autodesk.Revit.DB.Point)(args[0] as Value.Container).Item).Reference;
+			var result = arg0.Reference;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10039,7 +10039,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Point)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Point));
-			var result = ((Autodesk.Revit.DB.Point)(args[0] as Value.Container).Item).Coord;
+			var result = arg0.Coord;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10165,7 +10165,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).NumberOfVGridlines;
+			var result = arg0.NumberOfVGridlines;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10185,7 +10185,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).NumberOfUGridlines;
+			var result = arg0.NumberOfUGridlines;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10205,7 +10205,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).IsComponentFlipped;
+			var result = arg0.IsComponentFlipped;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10225,7 +10225,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).IsComponentMirrored;
+			var result = arg0.IsComponentMirrored;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10245,7 +10245,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).ComponentRotation;
+			var result = arg0.ComponentRotation;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10265,7 +10265,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).VPatternIndent;
+			var result = arg0.VPatternIndent;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10285,7 +10285,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).UPatternIndent;
+			var result = arg0.UPatternIndent;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10305,7 +10305,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).BorderTile;
+			var result = arg0.BorderTile;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10325,7 +10325,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).AllGridRotation;
+			var result = arg0.AllGridRotation;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10345,7 +10345,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).VSpacingRule;
+			var result = arg0.VSpacingRule;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10365,7 +10365,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).USpacingRule;
+			var result = arg0.USpacingRule;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10385,7 +10385,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).HostReference;
+			var result = arg0.HostReference;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10405,7 +10405,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.DividedSurface)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.DividedSurface));
-			var result = ((Autodesk.Revit.DB.DividedSurface)(args[0] as Value.Container).Item).Host;
+			var result = arg0.Host;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10514,7 +10514,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.PointCloudInstance)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.PointCloudInstance));
-			var result = ((Autodesk.Revit.DB.PointCloudInstance)(args[0] as Value.Container).Item).FilterAction;
+			var result = arg0.FilterAction;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10534,7 +10534,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Ellipse)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Ellipse));
-			var result = ((Autodesk.Revit.DB.Ellipse)(args[0] as Value.Container).Item).RadiusY;
+			var result = arg0.RadiusY;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10554,7 +10554,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Ellipse)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Ellipse));
-			var result = ((Autodesk.Revit.DB.Ellipse)(args[0] as Value.Container).Item).RadiusX;
+			var result = arg0.RadiusX;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10574,7 +10574,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Ellipse)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Ellipse));
-			var result = ((Autodesk.Revit.DB.Ellipse)(args[0] as Value.Container).Item).YDirection;
+			var result = arg0.YDirection;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10594,7 +10594,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Ellipse)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Ellipse));
-			var result = ((Autodesk.Revit.DB.Ellipse)(args[0] as Value.Container).Item).XDirection;
+			var result = arg0.XDirection;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10614,7 +10614,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Ellipse)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Ellipse));
-			var result = ((Autodesk.Revit.DB.Ellipse)(args[0] as Value.Container).Item).Normal;
+			var result = arg0.Normal;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10634,7 +10634,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Ellipse)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Ellipse));
-			var result = ((Autodesk.Revit.DB.Ellipse)(args[0] as Value.Container).Item).Center;
+			var result = arg0.Center;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10654,7 +10654,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Extrusion)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Extrusion));
-			var result = ((Autodesk.Revit.DB.Extrusion)(args[0] as Value.Container).Item).EndOffset;
+			var result = arg0.EndOffset;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10674,7 +10674,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Extrusion)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Extrusion));
-			var result = ((Autodesk.Revit.DB.Extrusion)(args[0] as Value.Container).Item).StartOffset;
+			var result = arg0.StartOffset;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -10694,7 +10694,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Extrusion)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Extrusion));
-			var result = ((Autodesk.Revit.DB.Extrusion)(args[0] as Value.Container).Item).Sketch;
+			var result = arg0.Sketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12528,7 +12528,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Revolution)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Revolution));
-			var result = ((Autodesk.Revit.DB.Revolution)(args[0] as Value.Container).Item).Axis;
+			var result = arg0.Axis;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12548,7 +12548,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Revolution)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Revolution));
-			var result = ((Autodesk.Revit.DB.Revolution)(args[0] as Value.Container).Item).EndAngle;
+			var result = arg0.EndAngle;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12568,7 +12568,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Revolution)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Revolution));
-			var result = ((Autodesk.Revit.DB.Revolution)(args[0] as Value.Container).Item).StartAngle;
+			var result = arg0.StartAngle;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12588,7 +12588,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Revolution)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Revolution));
-			var result = ((Autodesk.Revit.DB.Revolution)(args[0] as Value.Container).Item).Sketch;
+			var result = arg0.Sketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12608,7 +12608,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.RevolvedFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.RevolvedFace));
-			var result = ((Autodesk.Revit.DB.RevolvedFace)(args[0] as Value.Container).Item).Curve;
+			var result = arg0.Curve;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12628,7 +12628,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.RevolvedFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.RevolvedFace));
-			var result = ((Autodesk.Revit.DB.RevolvedFace)(args[0] as Value.Container).Item).Axis;
+			var result = arg0.Axis;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12648,7 +12648,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.RevolvedFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.RevolvedFace));
-			var result = ((Autodesk.Revit.DB.RevolvedFace)(args[0] as Value.Container).Item).Origin;
+			var result = arg0.Origin;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12820,7 +12820,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Edge)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Edge));
-			var result = ((Autodesk.Revit.DB.Edge)(args[0] as Value.Container).Item).ApproximateLength;
+			var result = arg0.ApproximateLength;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -12840,7 +12840,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Edge)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Edge));
-			var result = ((Autodesk.Revit.DB.Edge)(args[0] as Value.Container).Item).Reference;
+			var result = arg0.Reference;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13242,7 +13242,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.UV)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.UV));
-			var result = ((Autodesk.Revit.DB.UV)(args[0] as Value.Container).Item).V;
+			var result = arg0.V;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13262,7 +13262,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.UV)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.UV));
-			var result = ((Autodesk.Revit.DB.UV)(args[0] as Value.Container).Item).U;
+			var result = arg0.U;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13282,7 +13282,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Line)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Line));
-			var result = ((Autodesk.Revit.DB.Line)(args[0] as Value.Container).Item).Direction;
+			var result = arg0.Direction;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13302,7 +13302,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Line)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Line));
-			var result = ((Autodesk.Revit.DB.Line)(args[0] as Value.Container).Item).Origin;
+			var result = arg0.Origin;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13563,7 +13563,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).MaterialClass;
+			var result = arg0.MaterialClass;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13583,7 +13583,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).ThermalAssetId;
+			var result = arg0.ThermalAssetId;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13603,7 +13603,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).StructuralAssetId;
+			var result = arg0.StructuralAssetId;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13623,7 +13623,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).Shininess;
+			var result = arg0.Shininess;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13643,7 +13643,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).Glow;
+			var result = arg0.Glow;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13663,7 +13663,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).RenderAppearance;
+			var result = arg0.RenderAppearance;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13683,7 +13683,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).SurfacePatternColor;
+			var result = arg0.SurfacePatternColor;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13703,7 +13703,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).SurfacePattern;
+			var result = arg0.SurfacePattern;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13723,7 +13723,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).CutPatternColor;
+			var result = arg0.CutPatternColor;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13743,7 +13743,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).CutPattern;
+			var result = arg0.CutPattern;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13763,7 +13763,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).Smoothness;
+			var result = arg0.Smoothness;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13783,7 +13783,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).Transparency;
+			var result = arg0.Transparency;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13803,7 +13803,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
-			var result = ((Autodesk.Revit.DB.Material)(args[0] as Value.Container).Item).Color;
+			var result = arg0.Color;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13843,7 +13843,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Solid)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Solid));
-			var result = ((Autodesk.Revit.DB.Solid)(args[0] as Value.Container).Item).Volume;
+			var result = arg0.Volume;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13863,7 +13863,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Solid)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Solid));
-			var result = ((Autodesk.Revit.DB.Solid)(args[0] as Value.Container).Item).SurfaceArea;
+			var result = arg0.SurfaceArea;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13883,7 +13883,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Solid)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Solid));
-			var result = ((Autodesk.Revit.DB.Solid)(args[0] as Value.Container).Item).Faces;
+			var result = arg0.Faces;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13903,7 +13903,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Solid)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Solid));
-			var result = ((Autodesk.Revit.DB.Solid)(args[0] as Value.Container).Item).Edges;
+			var result = arg0.Edges;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13923,7 +13923,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Arc)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Arc));
-			var result = ((Autodesk.Revit.DB.Arc)(args[0] as Value.Container).Item).Radius;
+			var result = arg0.Radius;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13943,7 +13943,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Arc)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Arc));
-			var result = ((Autodesk.Revit.DB.Arc)(args[0] as Value.Container).Item).YDirection;
+			var result = arg0.YDirection;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13963,7 +13963,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Arc)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Arc));
-			var result = ((Autodesk.Revit.DB.Arc)(args[0] as Value.Container).Item).XDirection;
+			var result = arg0.XDirection;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -13983,7 +13983,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Arc)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Arc));
-			var result = ((Autodesk.Revit.DB.Arc)(args[0] as Value.Container).Item).Normal;
+			var result = arg0.Normal;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14003,7 +14003,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Arc)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Arc));
-			var result = ((Autodesk.Revit.DB.Arc)(args[0] as Value.Container).Item).Center;
+			var result = arg0.Center;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14043,7 +14043,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Blend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Blend));
-			var result = ((Autodesk.Revit.DB.Blend)(args[0] as Value.Container).Item).TopProfile;
+			var result = arg0.TopProfile;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14063,7 +14063,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Blend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Blend));
-			var result = ((Autodesk.Revit.DB.Blend)(args[0] as Value.Container).Item).BottomProfile;
+			var result = arg0.BottomProfile;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14083,7 +14083,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Blend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Blend));
-			var result = ((Autodesk.Revit.DB.Blend)(args[0] as Value.Container).Item).TopOffset;
+			var result = arg0.TopOffset;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14103,7 +14103,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Blend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Blend));
-			var result = ((Autodesk.Revit.DB.Blend)(args[0] as Value.Container).Item).BottomOffset;
+			var result = arg0.BottomOffset;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14123,7 +14123,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Blend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Blend));
-			var result = ((Autodesk.Revit.DB.Blend)(args[0] as Value.Container).Item).BottomSketch;
+			var result = arg0.BottomSketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14143,7 +14143,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Blend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Blend));
-			var result = ((Autodesk.Revit.DB.Blend)(args[0] as Value.Container).Item).TopSketch;
+			var result = arg0.TopSketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14183,7 +14183,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SweptBlend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.SweptBlend));
-			var result = ((Autodesk.Revit.DB.SweptBlend)(args[0] as Value.Container).Item).TopProfile;
+			var result = arg0.TopProfile;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14203,7 +14203,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SweptBlend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.SweptBlend));
-			var result = ((Autodesk.Revit.DB.SweptBlend)(args[0] as Value.Container).Item).BottomProfile;
+			var result = arg0.BottomProfile;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14223,7 +14223,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SweptBlend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.SweptBlend));
-			var result = ((Autodesk.Revit.DB.SweptBlend)(args[0] as Value.Container).Item).SelectedPath;
+			var result = arg0.SelectedPath;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14243,7 +14243,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SweptBlend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.SweptBlend));
-			var result = ((Autodesk.Revit.DB.SweptBlend)(args[0] as Value.Container).Item).PathSketch;
+			var result = arg0.PathSketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14263,7 +14263,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SweptBlend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.SweptBlend));
-			var result = ((Autodesk.Revit.DB.SweptBlend)(args[0] as Value.Container).Item).BottomProfileSymbol;
+			var result = arg0.BottomProfileSymbol;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14283,7 +14283,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SweptBlend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.SweptBlend));
-			var result = ((Autodesk.Revit.DB.SweptBlend)(args[0] as Value.Container).Item).BottomSketch;
+			var result = arg0.BottomSketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14303,7 +14303,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SweptBlend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.SweptBlend));
-			var result = ((Autodesk.Revit.DB.SweptBlend)(args[0] as Value.Container).Item).TopProfileSymbol;
+			var result = arg0.TopProfileSymbol;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14323,7 +14323,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.SweptBlend)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.SweptBlend));
-			var result = ((Autodesk.Revit.DB.SweptBlend)(args[0] as Value.Container).Item).TopSketch;
+			var result = arg0.TopSketch;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14343,7 +14343,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Level)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Level));
-			var result = ((Autodesk.Revit.DB.Level)(args[0] as Value.Container).Item).PlaneReference;
+			var result = arg0.PlaneReference;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14363,7 +14363,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Level)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Level));
-			var result = ((Autodesk.Revit.DB.Level)(args[0] as Value.Container).Item).LevelType;
+			var result = arg0.LevelType;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14383,7 +14383,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Level)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Level));
-			var result = ((Autodesk.Revit.DB.Level)(args[0] as Value.Container).Item).ProjectElevation;
+			var result = arg0.ProjectElevation;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14403,7 +14403,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Level)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Level));
-			var result = ((Autodesk.Revit.DB.Level)(args[0] as Value.Container).Item).Elevation;
+			var result = arg0.Elevation;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14423,7 +14423,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.NurbSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.NurbSpline));
-			var result = ((Autodesk.Revit.DB.NurbSpline)(args[0] as Value.Container).Item).Knots;
+			var result = arg0.Knots;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14443,7 +14443,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.NurbSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.NurbSpline));
-			var result = ((Autodesk.Revit.DB.NurbSpline)(args[0] as Value.Container).Item).Weights;
+			var result = arg0.Weights;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14463,7 +14463,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.NurbSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.NurbSpline));
-			var result = ((Autodesk.Revit.DB.NurbSpline)(args[0] as Value.Container).Item).CtrlPoints;
+			var result = arg0.CtrlPoints;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14483,7 +14483,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.NurbSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.NurbSpline));
-			var result = ((Autodesk.Revit.DB.NurbSpline)(args[0] as Value.Container).Item).Degree;
+			var result = arg0.Degree;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14503,7 +14503,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.NurbSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.NurbSpline));
-			var result = ((Autodesk.Revit.DB.NurbSpline)(args[0] as Value.Container).Item).isRational;
+			var result = arg0.isRational;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14523,7 +14523,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.NurbSpline)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.NurbSpline));
-			var result = ((Autodesk.Revit.DB.NurbSpline)(args[0] as Value.Container).Item).isClosed;
+			var result = arg0.isClosed;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14712,7 +14712,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Wall)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Wall));
-			var result = ((Autodesk.Revit.DB.Wall)(args[0] as Value.Container).Item).Orientation;
+			var result = arg0.Orientation;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14732,7 +14732,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Wall)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Wall));
-			var result = ((Autodesk.Revit.DB.Wall)(args[0] as Value.Container).Item).Flipped;
+			var result = arg0.Flipped;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14752,7 +14752,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Wall)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Wall));
-			var result = ((Autodesk.Revit.DB.Wall)(args[0] as Value.Container).Item).StructuralUsage;
+			var result = arg0.StructuralUsage;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14772,7 +14772,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Wall)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Wall));
-			var result = ((Autodesk.Revit.DB.Wall)(args[0] as Value.Container).Item).Width;
+			var result = arg0.Width;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14792,7 +14792,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Wall)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Wall));
-			var result = ((Autodesk.Revit.DB.Wall)(args[0] as Value.Container).Item).CurtainGrid;
+			var result = arg0.CurtainGrid;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}
@@ -14812,7 +14812,7 @@ namespace Dynamo.Nodes
 		public override Value Evaluate(FSharpList<Value> args)
 		{
 			var arg0=(Autodesk.Revit.DB.Wall)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Wall));
-			var result = ((Autodesk.Revit.DB.Wall)(args[0] as Value.Container).Item).WallType;
+			var result = arg0.WallType;
 			return DynamoTypeConverter.ConvertToValue(result);
 		}
 	}

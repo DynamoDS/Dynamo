@@ -420,10 +420,8 @@ class RevitProperty:
 		f.write('\t\t{\n')
 
 		# for each incoming arg, cast it to the matching param
-		i = 0
-		f.write('\t\t\tvar arg' + str(i) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(i)+'], typeof(' + self.type + '));\n')
-		i+=1
-		f.write('\t\t\tvar result = ((' + self.type + ')(args[0] as Value.Container).Item).' + self.method_call +  ';\n')
+		f.write('\t\t\tvar arg0=(' + self.type + ')DynamoTypeConverter.ConvertInput(args[0], typeof(' + self.type + '));\n')
+		f.write('\t\t\tvar result = arg0.' + self.method_call +  ';\n')
 
 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
 		f.write('\t\t}\n')

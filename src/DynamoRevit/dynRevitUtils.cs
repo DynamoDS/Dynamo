@@ -197,7 +197,8 @@ namespace Dynamo.Utilities
                     if (output == typeof(ReferencePoint))
                     {
                         ElementId a = (ElementId)item;
-                        ReferencePoint rp = (ReferencePoint)dynRevitSettings.Doc.Document.GetElement(a);
+                        Element el = dynRevitSettings.Doc.Document.GetElement(a);
+                        ReferencePoint rp = (ReferencePoint)el;
                         return rp;
                     }
                 }
