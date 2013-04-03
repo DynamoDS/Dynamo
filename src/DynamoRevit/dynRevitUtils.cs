@@ -243,7 +243,7 @@ namespace Dynamo.Utilities
                 }
                 #endregion
 
-                #region reference
+                #region Reference
                 else if (item.GetType() == typeof(Reference))
                 {
                     Reference a = (Reference)item;
@@ -255,6 +255,18 @@ namespace Dynamo.Utilities
                     {
                         Face f = (Face)dynRevitSettings.Doc.Document.GetElement(a.ElementId).GetGeometryObjectFromReference(a);
                         return f;
+                    }
+                }
+                #endregion
+
+                #region XYZ
+                if (item.GetType() == typeof(XYZ))
+                {
+                    XYZ a = (XYZ)item;
+                    if (output == typeof(Transform))
+                    {
+                        Transform t = Transform.get_Translation(a);
+                        return t;
                     }
                 }
                 #endregion
