@@ -25,25 +25,21 @@ namespace Dynamo.Utilities
         /// <param name="result"></param>
         public static void StoreElements(dynRevitTransactionNode node, object result)
         {
-            if (result.GetType().IsAssignableFrom(typeof(Element)))
+            if (typeof(Element).IsAssignableFrom(result.GetType()))
             {
                 node.Elements.Add(((Element)result).Id);
             }
-            else if (result.GetType().IsAssignableFrom(typeof(ElementId)))
+            else if (typeof(ElementId).IsAssignableFrom(result.GetType()))
             {
                 node.Elements.Add((ElementId)result);
             }
-            else if (result.GetType().IsAssignableFrom(typeof(List<Element>)))
+            else if (typeof(List<Element>).IsAssignableFrom(result.GetType()))
             {
                 ((List<Element>)result).ForEach(x => node.Elements.Add(((Element)x).Id));
             }
-            else if (result.GetType().IsAssignableFrom(typeof(List<ElementId>)))
+            else if (typeof(List<ElementId>).IsAssignableFrom(result.GetType()))
             {
                 ((List<ElementId>)result).ForEach(x => node.Elements.Add((ElementId)x));
-            }
-            else
-            {
-                throw new Exception("Element Ids could not be stored for this node.");
             }
         }
     }

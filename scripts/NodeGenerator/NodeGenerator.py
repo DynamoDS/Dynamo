@@ -309,8 +309,18 @@ class RevitMethod:
 		# cleanup existing elements created by this
 		# node in previous runs
 		cleanup=[
-		'\t\t\tElements.ForEach(delegate(ElementId el){Element e; if(dynUtils.TryGetElement(el, out e)){DeleteElement(e.Id);}});\n',
-		'\n']
+		'\t\t\tElements.ForEach(\n',
+        '\t\t\tdelegate(ElementId el)\n', 
+        '\t\t\t{\n', 
+        '\t\t\t\tElement e;\n', 
+        '\t\t\t\tif (dynUtils.TryGetElement(el, out e))\n', 
+        '\t\t\t\t{\n', 
+        '\t\t\t\t\tDeleteElement(e.Id);\n', 
+        '\t\t\t\t}\n', 
+        '\t\t\t});\n',
+        '\t\t\tElements.Clear();\n',
+        '\n'
+		]
 		f.writelines(cleanup)
 
 		# for each incoming arg, cast it to the matching param
