@@ -306,6 +306,13 @@ class RevitMethod:
 		f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
 		f.write('\t\t{\n')
 
+		# cleanup existing elements created by this
+		# node in previous runs
+		cleanup=[
+		'\t\t\tElements.ForEach(delegate(ElementId el){Element e; if(dynUtils.TryGetElement(el, out e)){DeleteElement(e.Id);}});\n',
+		'\n']
+		f.writelines(cleanup)
+
 		# for each incoming arg, cast it to the matching param
 		arg_index = 0
 		input_index = 0
@@ -339,6 +346,7 @@ class RevitMethod:
 			f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
 			f.write('\t\t\t{\n')
 			f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.FamilyCreate.' + self.methodCall + paramsStr + ';\n')
+			f.write('\t\t\t\tdynRevitUtils.StoreElements(this, result);\n')
 			if outMember != '':
 				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
 			else:
@@ -347,6 +355,7 @@ class RevitMethod:
 			f.write('\t\t\telse\n')
 			f.write('\t\t\t{\n')
 			f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.Create.' + self.methodCall + paramsStr + ';\n')
+			f.write('\t\t\t\tdynRevitUtils.StoreElements(this, result);\n')
 			if outMember != '':
 				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
 			else:
@@ -359,6 +368,7 @@ class RevitMethod:
 				f.write('\t\t\treturn Value.NewList(FSharpList<Value>.Empty);\n')
 			else:
 				f.write('\t\t\tvar result = ' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
+				f.write('\t\t\tdynRevitUtils.StoreElements(this, result);\n')
 				if outMember != '':
 					f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
 				else:

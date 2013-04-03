@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Dynamo.Revit;
+
 using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;
 
@@ -12,6 +14,39 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Utilities
 {
+    public static class dynRevitUtils
+    {
+
+        /// <summary>
+        /// Utility method used with auto-generated assets for storing ElementIds generated during evaluate.
+        /// Handles conversion of el
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="result"></param>
+        public static void StoreElements(dynRevitTransactionNode node, object result)
+        {
+            if (result.GetType().IsAssignableFrom(typeof(Element)))
+            {
+                node.Elements.Add(((Element)result).Id);
+            }
+            else if (result.GetType().IsAssignableFrom(typeof(ElementId)))
+            {
+                node.Elements.Add((ElementId)result);
+            }
+            else if (result.GetType().IsAssignableFrom(typeof(List<Element>)))
+            {
+                ((List<Element>)result).ForEach(x => node.Elements.Add(((Element)x).Id));
+            }
+            else if (result.GetType().IsAssignableFrom(typeof(List<ElementId>)))
+            {
+                ((List<ElementId>)result).ForEach(x => node.Elements.Add((ElementId)x));
+            }
+            else
+            {
+                throw new Exception("Element Ids could not be stored for this node.");
+            }
+        }
+    }
 
     /// <summary>
     /// Used with the Auto-generator. Allows automatic conversion of inputs and outputs
@@ -108,6 +143,14 @@ namespace Dynamo.Utilities
 
         }
         
+        /// <summary>
+        /// Convert an input Value into and expected type if possible.
+        /// Ex. If a node expects an XYZ, a user can pass in a ReferencePoint object
+        /// and the position (XYZ) of that object will be returned.
+        /// </summary>
+        /// <param name="input">The value of the input.</param>
+        /// <param name="output">The desired output type.</param>
+        /// <returns></returns>
         public static object ConvertInput(Value input, Type output)
         {
             if (input.IsContainer)
@@ -254,6 +297,11 @@ namespace Dynamo.Utilities
             return input;
         }
 
+        /// <summary>
+        /// Convert the result of a wrapped Revit API method or property to it's correct Dynamo Value type.
+        /// </summary>
+        /// <param name="input">The result of the Revit API method.</param>
+        /// <returns></returns>
         public static Value ConvertToValue(object input)
         {
             if (input.GetType() == typeof(double))
