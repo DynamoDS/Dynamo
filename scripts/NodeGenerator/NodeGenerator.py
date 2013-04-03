@@ -237,6 +237,14 @@ class RevitMethod:
 		return string
 
 	def write(self, f, valid_namespaces):
+
+		# write comments for the constructor
+		class_notes=[
+		'\t///<summary>\n',
+		'\t///' + 'Auto-generated Dynamo node wrapping ' + self.name + '\n',
+		'\t///</summary>\n']
+		f.writelines(class_notes)
+
 		self.write_attributes(f, valid_namespaces)
 		f.write('\tpublic class API_' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
 		f.write('\t{\n')
@@ -257,6 +265,14 @@ class RevitMethod:
 		f.writelines(node_attributes)
 
 	def write_constructor(self, f):
+
+		# write comments for the constructor
+		constructor_notes=[
+		'\t\t///<summary>\n',
+		'\t\t///' + 'Auto-generated constructor for Dynamo node wrapping ' + self.name + '\n',
+		'\t\t///</summary>\n']
+		f.writelines(constructor_notes)
+
 		f.write('\t\tpublic API_' + self.nickName + '()\n')
 		f.write('\t\t{\n')
 
@@ -279,6 +295,14 @@ class RevitMethod:
 		f.write('\t\t}\n')
 
 	def write_evaluate(self, f):
+
+		# write comments for the constructor
+		evaulate_notes=[
+		'\t\t///<summary>\n',
+		'\t\t///' + 'Auto-generated evaulate method for Dynamo node wrapping ' + self.name + '\n',
+		'\t\t///</summary>\n']
+		f.writelines(evaulate_notes)
+
 		f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
 		f.write('\t\t{\n')
 
