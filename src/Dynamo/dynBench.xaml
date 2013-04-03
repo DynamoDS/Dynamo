@@ -57,7 +57,7 @@
                                 Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}"/>
     <KeyBinding Key="Up"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}"/>
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}"/>
     <KeyBinding Key="F4"
                 Modifiers="Alt"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"/>
@@ -131,7 +131,7 @@
           </MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}" InputGestureText="Ctrl+Shift+Up"/>
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
       </MenuItem>
       <MenuItem Header="Settings">
         
@@ -210,14 +210,17 @@
                         <GradientStop Color="#FF7A7A7A" Offset="0" />
                     </LinearGradientBrush>-->
         </Canvas.Background>
+        
         <Canvas.ContextMenu>
           <ContextMenu>
             <MenuItem 
-                            Header="_New Node From Selection" 
-                            Name="NodeFromSelection"
-                            Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
+                Header="_New Node From Selection" 
+                Name="NodeFromSelection"
+                Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
+            
           </ContextMenu>
         </Canvas.ContextMenu>
+        
       </Canvas>
     </Border>
     <ScrollViewer Name="LogScroller" 

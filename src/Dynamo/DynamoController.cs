@@ -71,7 +71,6 @@ namespace Dynamo
             get { return commandQueue; }
         }
 
-        //TODO: Remove this?
         public dynBench Bench { get; private set; }
 
         public IEnumerable<dynNode> AllNodes

@@ -18,6 +18,7 @@ namespace Dynamo.Search
     /// A base class for elements found in search </summary>
     public abstract class SearchElementBase
     {
+
         /// <summary>
         /// Type property </summary>
         /// <value>
@@ -35,6 +36,12 @@ namespace Dynamo.Search
         /// <value>
         /// A string describing what the node does</value>
         public abstract string Description { get; }
+
+        /// <summary>
+        /// Keywords property</summary>
+        /// <value>
+        /// A set of keywords for the object, joined by spaces</value>
+        public abstract string Keywords { get; set; }
 
         /// <summary>
         /// Weight property </summary>

@@ -274,6 +274,7 @@ namespace Dynamo.Controls
               NotifyPropertyChanged("Selection");
           }
       }
+
       #endregion // ElementBeingDragged
 
       #region FindCanvasChild

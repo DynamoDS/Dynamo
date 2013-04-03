@@ -76,7 +76,7 @@ namespace Dynamo.Commands
             return true;
         }
     }
-
+    
     public class HideSearchCommand : ICommand {
 
         public void Execute(object parameters)

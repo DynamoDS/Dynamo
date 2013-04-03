@@ -34,6 +34,14 @@ namespace Dynamo.Search
             this.Header = header;
             this.Guid = PackageManagerClient.ExtractFunctionDefinitionGuid(header, 0);
             this.Weight = 1;
+            if (header.keywords.Count > 0)
+            {
+                this.Keywords = String.Join(" ", header.keywords);
+            } 
+            else
+            {
+                this.Keywords = "";
+            }
         }
 
         /// <summary>
@@ -113,7 +121,8 @@ namespace Dynamo.Search
             public string Id { get { return Header._id; } }
 
         #endregion
-
+        
+            public override string Keywords { get; set; }
     }
 
 }

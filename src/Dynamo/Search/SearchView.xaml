@@ -39,7 +39,8 @@
                             Stroke="#111" Y1="0" Y2="0" VerticalAlignment="Top"/>
                   <TextBlock FontSize="24" Name="name" Text="{Binding Path=Name}" Foreground="AliceBlue" Padding="10,5,0,0"/>
                   <TextBlock FontSize="12" Name="description" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 39, 0, 10"/>
-                  <TextBlock FontSize="12" Name="type" Text="{Binding Path=Type}" Foreground="Gray" HorizontalAlignment="Right" Padding="10, 5, 10, 10"/>
+                  <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 10"/>
+                  <TextBlock FontSize="12" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 10"/>
 
                 <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="DimGray" Y1="0" Y2="0" VerticalAlignment="Bottom"/>

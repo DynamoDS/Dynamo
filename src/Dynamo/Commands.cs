@@ -26,6 +26,7 @@ namespace Dynamo.Commands
 
     public static partial class DynamoCommands
     {
+        
         private static GoToWorkspaceCommand goToWorkspaceCmd;
         public static GoToWorkspaceCommand GoToWorkspaceCmd
         {
@@ -238,15 +239,15 @@ namespace Dynamo.Commands
             }
         }
 
-        private static ShowConsoleCommand showConsoleCmd;
-        public static ShowConsoleCommand ShowConsoleCmd
+        private static ToggleConsoleShowingCommand _toggleConsoleShowingCmd;
+        public static ToggleConsoleShowingCommand ToggleConsoleShowingCmd
         {
             get
             {
-                if (showConsoleCmd == null)
-                    showConsoleCmd = new ShowConsoleCommand();
+                if (_toggleConsoleShowingCmd == null)
+                    _toggleConsoleShowingCmd = new ToggleConsoleShowingCommand();
 
-                return showConsoleCmd;
+                return _toggleConsoleShowingCmd;
             }
         }
 
@@ -362,9 +363,6 @@ namespace Dynamo.Commands
 
     public class GoToWikiCommand : ICommand
     {
-        public GoToWikiCommand()
-        {
-        }
 
         public void Execute(object parameters)
         {
@@ -385,10 +383,6 @@ namespace Dynamo.Commands
 
     public class GoToSourceCodeCommand : ICommand
     {
-        public GoToSourceCodeCommand()
-        {
-        }
-
         public void Execute(object parameters)
         {
             System.Diagnostics.Process.Start("https://github.com/ikeough/Dynamo");
@@ -408,13 +402,8 @@ namespace Dynamo.Commands
 
     public class ExitCommand : ICommand
     {
-        public ExitCommand()
-        {
-        }
-
         public void Execute(object parameters)
         {
-            // TODO: ask for save
             dynSettings.Bench.Close();
         }
 
@@ -469,10 +458,6 @@ namespace Dynamo.Commands
 
     public class SelectNeighborsCommand : ICommand
     {
-        public SelectNeighborsCommand()
-        {
-
-        }
 
         public void Execute(object parameters)
         {
@@ -498,11 +483,6 @@ namespace Dynamo.Commands
 
     public class AddNoteCommand : ICommand
     {
-        public AddNoteCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             Dictionary<string,object> inputs = (Dictionary<string,object>) parameters;
@@ -652,11 +632,6 @@ namespace Dynamo.Commands
 
     public class CloseSplashScreenCommand : ICommand
     {
-        public CloseSplashScreenCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Controller.SplashScreen.Close();
@@ -713,11 +688,6 @@ namespace Dynamo.Commands
 
     public class GoToWorkspaceCommand : ICommand
     {
-        public GoToWorkspaceCommand()
-        {
-
-        }
-
         public void Execute(object parameter)
         {
            if (parameter is Guid && dynSettings.FunctionDict.ContainsKey( (Guid)parameter ) )
@@ -740,11 +710,6 @@ namespace Dynamo.Commands
 
     public class CreateNodeCommand : ICommand
     {
-        public CreateNodeCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
 
@@ -845,11 +810,6 @@ namespace Dynamo.Commands
 
     public class CreateConnectionCommand : ICommand
     {
-        public CreateConnectionCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             Dictionary<string,object> connectionData = parameters as Dictionary<string,object>;
@@ -883,11 +843,6 @@ namespace Dynamo.Commands
 
     public class RunExpressionCommand : ICommand
     {
-        public RunExpressionCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Controller.RunExpression(Convert.ToBoolean(parameters));
@@ -912,11 +867,6 @@ namespace Dynamo.Commands
 
     public class CopyCommand : ICommand
     {
-        public CopyCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Controller.ClipBoard.Clear();
@@ -965,11 +915,6 @@ namespace Dynamo.Commands
 
     public class PasteCommand : ICommand
     {
-        public PasteCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             //make a lookup table to store the guids of the
@@ -1083,11 +1028,6 @@ namespace Dynamo.Commands
 
     public class SelectCommand : ICommand
     {
-        public SelectCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynNodeUI node = parameters as dynNodeUI;
@@ -1131,11 +1071,6 @@ namespace Dynamo.Commands
 
     public class AddToSelectionCommand : ICommand
     {
-        public AddToSelectionCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynNodeUI node = parameters as dynNodeUI;
@@ -1165,13 +1100,8 @@ namespace Dynamo.Commands
         }
     }
 
-    public class ShowConsoleCommand : ICommand
+    public class ToggleConsoleShowingCommand : ICommand
     {
-        public ShowConsoleCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             if (dynSettings.Bench.ConsoleShowing)
@@ -1200,11 +1130,6 @@ namespace Dynamo.Commands
 
     public class CancelRunCommand : ICommand
     {
-        public CancelRunCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Controller.RunCancelled = true;
@@ -1224,11 +1149,6 @@ namespace Dynamo.Commands
 
     public class SaveAsCommand : ICommand
     {
-        public SaveAsCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Controller.SaveAs();
@@ -1248,11 +1168,6 @@ namespace Dynamo.Commands
 
     public class SaveCommand : ICommand
     {
-        public SaveCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Controller.Save();
@@ -1272,11 +1187,6 @@ namespace Dynamo.Commands
 
     public class OpenCommand : ICommand
     {
-        public OpenCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             //string xmlPath = "C:\\test\\myWorkbench.xml";
@@ -1334,11 +1244,6 @@ namespace Dynamo.Commands
 
     public class HomeCommand : ICommand
     {
-        public HomeCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Controller.ViewHomeWorkspace();
@@ -1358,19 +1263,30 @@ namespace Dynamo.Commands
 
     public class SaveImageCommand : ICommand
     {
-        public SaveImageCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
+
+            Dictionary<string, object> data = parameters as Dictionary<string, object>;
+            string imagePath = null;
+
+            if (data != null)
+            {
+                imagePath = data["path"] as string;
+
+                var uri = new Uri(imagePath);
+                var converted = uri.AbsoluteUri;
+                if (!Uri.IsWellFormedUriString(converted, UriKind.Absolute))
+                    throw new UriFormatException();
+            }
+
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "PNG Image|*.png";
             sfd.Title = "Save your Workbench to an Image";
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            if ( imagePath != null || sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK )
             {
-                string imagePath = sfd.FileName;
+                if (imagePath == null)
+                    imagePath = sfd.FileName;
 
                 Transform trans = dynSettings.Workbench.LayoutTransform;
                 dynSettings.Workbench.LayoutTransform = null;
@@ -1399,7 +1315,7 @@ namespace Dynamo.Commands
                 BitmapEncoder pngEncoder = new PngBitmapEncoder();
                 pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
 
-                using (var stm = System.IO.File.Create(sfd.FileName))
+                using (var stm = File.Create(imagePath))
                 {
                     pngEncoder.Save(stm);
                 }
@@ -1420,11 +1336,6 @@ namespace Dynamo.Commands
 
     public class LayoutAllCommand : ICommand
     {
-        public LayoutAllCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Bench.LockUI();
@@ -1534,11 +1445,6 @@ namespace Dynamo.Commands
 
     public class ClearCommand : ICommand
     {
-        public ClearCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Bench.LockUI();
@@ -1564,11 +1470,6 @@ namespace Dynamo.Commands
 
     public class ClearLogCommand : ICommand
     {
-        public ClearLogCommand()
-        {
-
-        }
-
         public void Execute(object parameters)
         {
             dynSettings.Bench.sw.Flush();

@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Dynamo.Commands;
 
 namespace Dynamo.Search
@@ -31,6 +32,7 @@ namespace Dynamo.Search
             this._name = symbol;
             this._description = description;
             this.Weight = 1;
+            this.Keywords = "";
         }
 
         /// <summary>
@@ -85,6 +87,14 @@ namespace Dynamo.Search
             /// Number defining the relative importance of the element in search.  Higher the better </value>
             public override double Weight { get; set; }
 
+            /// <summary>
+            /// Keywords property </summary>
+            /// <value>
+            /// Empty for workspaces</value>
+            public override string Keywords { get; set; }
+
         #endregion
+
+            
     }
 }

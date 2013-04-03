@@ -55,6 +55,12 @@ namespace Dynamo.Search
         /// Number defining the relative importance of the element in search.  Higher the better </value>
         public override double Weight { get; set; }
 
+        /// <summary>
+        /// Keywords property </summary>
+        /// <value>
+        /// Joined set of keywords </value>
+        public override string Keywords { get; set; }
+
         #endregion
 
         /// <summary>
@@ -64,6 +70,7 @@ namespace Dynamo.Search
         {
             this.Node = node;
             this.Weight = 1;
+            this.Keywords = String.Join(" ", node.NodeUI.Tags);
         }
 
         /// <summary>

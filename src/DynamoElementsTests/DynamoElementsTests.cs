@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Windows.Input;
@@ -27,10 +29,23 @@ namespace Dynamo.Tests
             StartDynamo();
         }
 
+        private static string TempFolder;
+
         private static void StartDynamo()
         {
             string tempPath = Path.GetTempPath();
             string logPath = Path.Combine(tempPath, "dynamoLog.txt");
+
+            TempFolder = Path.Combine(tempPath, "dynamoTmp");
+
+            if (!Directory.Exists(TempFolder))
+            {
+                Directory.CreateDirectory(TempFolder);
+            }
+            else
+            {
+                EmptyTempFolder();
+            }
 
             TextWriter tw = new StreamWriter(logPath);
             tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
@@ -41,10 +56,26 @@ namespace Dynamo.Tests
             controller.Bench.Show();
         }
 
+        public static void EmptyTempFolder()
+        {
+            var directory = new DirectoryInfo(TempFolder);
+            foreach (System.IO.FileInfo file in directory.GetFiles()) file.Delete();
+            foreach (System.IO.DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+        }
+
         [TearDown]
         public void Cleanup()
         {
+            EmptyTempFolder();
             dynSettings.Controller.Bench.Close();
+        }
+
+        [TestFixtureTearDown]
+        public void FinalTearDown()
+        {
+            // Fix for COM exception on close
+            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         [Test]
@@ -148,10 +179,302 @@ namespace Dynamo.Tests
             Assert.AreEqual(dynSettings.Controller.Nodes.Count, 3);
         }
 
-        //[Test]
-        //public void CanCreateACustomFunctionEnterItAndLeave()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        // Splash screen
+
+        [Test]
+        public void CanShowSplashScreenFromDefaultState()
+        {
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ShowSplashScreenCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
+                (Action)(() =>
+                {
+                    Assert.AreEqual(true, dynSettings.Controller.SplashScreen.IsVisible);
+                }));
+
+        }
+
+        [Test]
+        public void CanCloseSplashScreenFromDefaultState()
+        {
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CloseSplashScreenCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
+                (Action)(() =>
+                {
+                    Assert.AreEqual(false, dynSettings.Controller.SplashScreen.IsVisible);
+                }));
+
+        }
+
+        [Test]
+        public void CanShowAndCloseSplashScreen()
+        {
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ShowSplashScreenCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
+                (Action) (() =>
+                    {
+                        Assert.AreEqual(true, dynSettings.Controller.SplashScreen.IsVisible);
+                        dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CloseSplashScreenCmd, null));
+                        dynSettings.Controller.ProcessCommandQueue();
+                        Assert.AreEqual(false, dynSettings.Controller.SplashScreen.IsVisible);
+                    }));
+            
+        }
+
+        // Log
+
+        [Test]
+        public void CanClearLog()
+        {
+            
+            Assert.AreNotEqual( 0, dynSettings.Bench.LogText.Length );
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ClearLogCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.AreEqual(0, dynSettings.Bench.LogText.Length);
+            
+        }
+
+        // Clearworkspace 
+
+        [Test]
+        public void CanClearWorkspaceWithNodes()
+        {
+
+            Dictionary<string, object> sumData = new Dictionary<string, object>();
+            Dictionary<string, object> numData1 = new Dictionary<string, object>();
+            Dictionary<string, object> numData2 = new Dictionary<string, object>();
+
+            sumData.Add("x", 400.0);
+            sumData.Add("y", 100.0);
+            sumData.Add("name", "+");
+
+            numData1.Add("x", 100.0);
+            numData1.Add("y", 100.0);
+            numData1.Add("name", "Number");
+
+            numData2.Add("x", 100.0);
+            numData2.Add("y", 300.0);
+            numData2.Add("name", "Number");
+
+            Assert.AreEqual(0, dynSettings.Controller.Nodes.Count());
+
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData1));
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData2));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            Assert.AreEqual(3, dynSettings.Controller.Nodes.Count());
+
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ClearCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.AreEqual(0, dynSettings.Controller.Nodes.Count());
+
+        }
+
+        [Test]
+        public void CanClearWorkspaceWithEmptyWorkspace()
+        {
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ClearCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.AreEqual(0, dynSettings.Controller.Nodes.Count());
+            
+        }
+
+        // LayoutAll
+
+        [Test]
+        public void CanLayoutAll()
+        {
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.LayoutAllCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.AreNotEqual(0, dynSettings.Controller.Nodes.Count());
+        }
+
+        // SaveImage
+
+        [Test]
+        public void CanSaveImage()
+        {
+            Dictionary<string, object> saveData = new Dictionary<string, object>();
+            var path = Path.Combine(TempFolder, "output.png");
+            saveData.Add("path", path);
+
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, saveData));
+            dynSettings.Controller.ProcessCommandQueue();
+            
+            Assert.AreEqual( true, File.Exists(path) );
+            File.Delete(path); 
+            Assert.AreEqual( false, File.Exists(path) );
+            
+        }
+
+        [Test]
+        public void CannotSaveImageWithBadPath()
+        {
+            Dictionary<string, object> saveData = new Dictionary<string, object>();
+            var path = "W;\aelout put.png";
+            saveData.Add("path", path);
+
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, saveData));
+            Assert.Throws<UriFormatException>( () => dynSettings.Controller.ProcessCommandQueue() );
+
+            DirectoryInfo tempFldrInfo = new DirectoryInfo(TempFolder);
+            Assert.AreEqual(0, tempFldrInfo.GetFiles().Length );
+
+        }
+
+        // HomeCommand
+
+        [Test]
+        public void CanGoHomeWhenInDifferentWorkspace()
+        {
+            // move to different workspace
+            // go home
+        }
+
+
+        [Test]
+        public void CanStayHomeWhenInHomeWorkspace()
+        {
+
+
+        }
+
+        // OpenCommand
+
+        [Test]
+        public void CanHandleBadFileWhenOpening()
+        {
+
+        }
+
+        [Test]
+        public void CanOpenGoodFile()
+        {
+
+
+        }
+
+        // SaveCommand
+
+        [Test]
+        public void CanSaveEmptyFile()
+        {
+
+
+        }
+
+        [Test]
+        public void CanSaveFileWithNodesInIt()
+        {
+
+
+        }
+
+        // SaveAsCommand
+
+        [Test]
+        public void CanSaveAsEmptyFile()
+        {
+
+
+        }
+
+        [Test]
+        public void CanSaveAsFileWithNodesInIt()
+        {
+
+
+        }
+
+        // CancelRunCommand
+
+        [Test]
+        public void CanCancelRun()
+        {
+
+
+        }
+
+        // ToggleConsoleShowingCommand
+
+        [Test]
+        public void CanShowConsoleWhenHidden()
+        {
+
+
+        }
+
+        [Test]
+        public void CanHideConsoleWhenShown()
+        {
+
+
+        }
+
+        // AddToSelectionCommand
+
+        [Test]
+        public void CanAddToSelectionCommand()
+        {
+
+
+        }
+
+        [Test]
+        public void CanMaintainSelectionWhenNodesAlreadySelected()
+        {
+
+
+        }
+
+        // SelectCommand
+
+        [Test]
+        public void CanSelectNodes()
+        {
+            
+        }
+
+        [Test]
+        public void CanSelectNothingWhenNoNodesPresent()
+        {
+            
+        }
+
+        // CopyCommand
+        // PasteCommand
+
+        [Test]
+        public void CanCopyNodes()
+        {
+
+        }
+
+        [Test]
+        public void CanCopyAndPasteNodes()
+        {
+
+        }
+
+        // RunExpressionCommand
+
+        [Test]
+        public void CanRunExpression()
+        {
+
+        }
+
+        // CreateConnectionCommand
+
+        [Test]
+        public void CanCreateConnection()
+        {
+
+        }
+
+        
     }
 }
