@@ -159,7 +159,7 @@ namespace Dynamo.Search
         {
             var result = new HashSet<V>();
 
-            string pattern = ".*(" + query + ").*";
+            string pattern = ".*(" + Regex.Escape(query) + ").*";
             foreach (var pair in _tagDictionary)
             {
                 MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
@@ -185,7 +185,7 @@ namespace Dynamo.Search
             foreach (var pair in _tagDictionary)
             {
                 // allow internal characters
-                string pattern = ".*(" + query + ").*";
+                string pattern = ".*(" + Regex.Escape(query) + ").*";
                 MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
                 if (matches.Count > 0)
                 {
