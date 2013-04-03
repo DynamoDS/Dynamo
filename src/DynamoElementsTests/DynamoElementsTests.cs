@@ -443,24 +443,36 @@ namespace Dynamo.Tests
         //[Test]
         //public void CanCancelRun()
         //{
-
+        //    // TODO: need an expensive operation to run
+        //    DynamoCommands.RunExpressionCmd.Execute();
+        //    DynamoCommands.CancelRunCmd.Execute(null);
 
         //}
 
         // ToggleConsoleShowingCommand
 
-        //[Test]
-        //public void CanShowConsoleWhenHidden()
-        //{
-            
-        //}
+        [Test]
+        public void ConsoleIsHiddenOnOpen()
+        {
+            Assert.False(dynSettings.Bench.ConsoleShowing); 
+        }
 
-        //[Test]
-        //public void CanHideConsoleWhenShown()
-        //{
+        [Test]
+        public void CanShowConsoleWhenHidden()
+        {
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ToggleConsoleShowingCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.True(dynSettings.Bench.ConsoleShowing); 
+        }
 
-
-        //}
+        [Test]
+        public void CanHideConsoleWhenShown()
+        {
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ToggleConsoleShowingCmd, null));
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ToggleConsoleShowingCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+            Assert.False(dynSettings.Bench.ConsoleShowing); 
+        }
 
         //// AddToSelectionCommand
 
