@@ -191,6 +191,18 @@ namespace Dynamo.Utilities
                 }
                 #endregion
 
+                #region ElementId
+                else if (item.GetType() == typeof(ElementId))
+                {
+                    if (output == typeof(ReferencePoint))
+                    {
+                        ElementId a = (ElementId)item;
+                        ReferencePoint rp = (ReferencePoint)dynRevitSettings.Doc.Document.GetElement(a);
+                        return rp;
+                    }
+                }
+                #endregion
+
                 return item;
             }
             else if (input.IsNumber)
@@ -258,6 +270,16 @@ namespace Dynamo.Utilities
             else if (input.GetType() == typeof(bool))
             {
                 return Value.NewNumber(System.Convert.ToInt16(input));
+            }
+            else if (input.GetType() == typeof(List<ElementId>))
+            {
+                List<Value> vals = new List<Value>();
+                foreach (ElementId id in (List<ElementId>)input)
+                {
+                    vals.Add(Value.NewContainer(id));
+                }
+
+                return Value.NewList(Utils.SequenceToFSharpList(vals));
             }
             else if (input.GetType() == typeof(IntersectionResultArray))
             {
