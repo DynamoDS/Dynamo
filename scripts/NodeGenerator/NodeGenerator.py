@@ -20,6 +20,7 @@ def main():
 	'using System;\n',
 	'using System.Collections.Generic;\n',
 	'using System.Linq;\n',
+	'using Microsoft.FSharp.Core;\n'
 	'using System.Reflection;\n',
 	'using Autodesk.Revit.DB;\n',
 	'using Autodesk.Revit;\n',
@@ -247,17 +248,10 @@ class RevitMethod:
 		f.writelines(class_notes)
 
 		self.write_attributes(f, valid_namespaces)
-		f.write('\tpublic class API_' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
+		f.write('\tpublic class API_' + self.nickName + ' : dynRevitAPINode\n')
 		f.write('\t{\n')
 
-		# write some information for reflection
-		f.write('\t\tType t;\n')
-		f.write('\t\tMethodInfo mi;\n')
-		f.write('\t\tParameterInfo[] pi;\n')
-		f.write('\n')
-
 		self.write_constructor(f)
-		self.write_evaluate(f)
 		f.write('\t}\n')
 		f.write('\n')
 
@@ -284,30 +278,30 @@ class RevitMethod:
 		f.write('\t\tpublic API_' + self.nickName + '()\n')
 		f.write('\t\t{\n')
 
-		#if the method is static or is the constructor,
-		#do not write the type as an input
-		# if not self.isStatic and not self.isConstructor:
-		# 	f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(' + self.type + ')));\n')
-
 		# write some information for reflection
-		f.write('\t\t\tt = typeof(' + self.type + ');\n')
-		f.write('\t\t\tmi = t.GetMethod(\"' + self.methodCall + '\");\n')
+		f.write('\t\t\tbase_type = typeof(' + self.type + ');\n')
+
+		params = []
+		for p in self.parameters:
+			params.append('typeof(' + convert_param(p.param_type) + ')')
+
+		if self.isConstructor:
+			f.write('\t\t\tmi = dynRevitUtils.GetAPIMethodInfo(base_type, \"' + self.methodCall + '\", true, new Type[]{' + ','.join(params) + '}, out return_type);\n')
+		else:
+			f.write('\t\t\tmi = dynRevitUtils.GetAPIMethodInfo(base_type, \"' + self.methodCall + '\", false, new Type[]{' + ','.join(params) + '}, out return_type);\n')
+
 		f.write('\t\t\tpi = mi.GetParameters();\n')
 
 		# use reflection to build an input port if the method is not
 		# static and is not the constructor
 		inport_add_condition =[
-		'\t\t\tif (mi.IsStatic && !mi.IsConstructor)\n',
+		'\t\t\tif (!mi.IsStatic && !mi.IsConstructor)\n',
 		'\t\t\t{\n',
 		'\t\t\t\tInPortData.Add(new PortData(\"' + match_inport_type(self.type) + '\", \"' + self.type + '\", typeof(object)));\n',
 		'\t\t\t}\n']
 		f.writelines(inport_add_condition)
 
 		for param in self.parameters:
-			#we already store a reference to the document on the 
-			#dynRevitSettings. don't take it as an input
-			if param.param_type == 'Autodesk.Revit.DB.Document':
-				continue
 			param_description = param.description.encode('utf-8').strip().replace('\n','').replace('\"','\\"')
 			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(param.param_type)+'\", \"' + param_description + '\",typeof(' + convert_param(param.param_type) + ')));\n')
 
@@ -316,138 +310,38 @@ class RevitMethod:
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
 
-	def write_evaluate(self, f):
+	# def write_evaluate(self, f):
 
-		# write comments for the constructor
-		evaulate_notes=[
-		'\t\t///<summary>\n',
-		'\t\t///' + 'Auto-generated evaulate method for Dynamo node wrapping ' + self.name + '\n',
-		'\t\t///</summary>\n']
-		f.writelines(evaulate_notes)
+	# 	# write comments for the constructor
+	# 	evaulate_notes=[
+	# 	'\t\t///<summary>\n',
+	# 	'\t\t///' + 'Auto-generated evaulate method for Dynamo node wrapping ' + self.name + '\n',
+	# 	'\t\t///</summary>\n']
+	# 	f.writelines(evaulate_notes)
 
-		f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
-		f.write('\t\t{\n')
+	# 	f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
+	# 	f.write('\t\t{\n')
 
-		# cleanup existing elements created by this
-		# node in previous runs
-		cleanup=[
-		'\t\t\tElements.ForEach(\n',
-        '\t\t\tdelegate(ElementId el)\n', 
-        '\t\t\t{\n', 
-        '\t\t\t\tElement e;\n', 
-        '\t\t\t\tif (dynUtils.TryGetElement(el, out e))\n', 
-        '\t\t\t\t{\n', 
-        '\t\t\t\t\tDeleteElement(e.Id);\n', 
-        '\t\t\t\t}\n', 
-        '\t\t\t});\n',
-        '\t\t\tElements.Clear();\n',
-        '\n'
-		]
-		f.writelines(cleanup)
+	# 	# cleanup existing elements created by this
+	# 	# node in previous runs
+	# 	cleanup=[
+	# 	'\t\t\tElements.ForEach(\n',
+ #        '\t\t\tdelegate(ElementId el)\n', 
+ #        '\t\t\t{\n', 
+ #        '\t\t\t\tElement e;\n', 
+ #        '\t\t\t\tif (dynUtils.TryGetElement(el, out e))\n', 
+ #        '\t\t\t\t{\n', 
+ #        '\t\t\t\t\tDeleteElement(e.Id);\n', 
+ #        '\t\t\t\t}\n', 
+ #        '\t\t\t});\n',
+ #        '\t\t\tElements.Clear();\n',
+ #        '\n'
+	# 	]
+	# 	f.writelines(cleanup)
 
-		parameter_block=[
-		'\t\t\tobject[] parameters = new object[pi.Count()];\n',
-		'\t\t\tif(args.Count() == pi.Count())\n',
-		'\t\t\t{\n',
-		'\t\t\t\tfor(int i=0; i<pi.Count(); i++)\n',
-		'\t\t\t\t{\n',
-		'\t\t\t\t\tparameters[i] = DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType);\n',
-		'\t\t\t\t}\n',
-		'\t\t\t}\n',
-		'\t\t\telse\n',
-		'\t\t\t{\n',
-		'\t\t\t\tfor (int i = 0; i < pi.Count(); i++)\n',
-		'\t\t\t\t{\n',
-		'\t\t\t\t\tparameters[i] = DynamoTypeConverter.ConvertInput(args[i+1], pi[i].ParameterType);\n',
-		'\t\t\t\t}\n',
-		'\t\t\t}\n'
-		]
-		f.writelines(parameter_block)
+	# 	f.write('\t\t\treturn dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi);')
 
-		# for each incoming arg, cast it to the matching param
-		# arg_index = 0
-		# input_index = 0
-		# argList = []
-
-		#if the method is static or is the constructor,
-		#do not write the type as an input
-		# if not self.isStatic and not self.isConstructor:
-		# 	f.write('\t\t\tvar arg' + str(arg_index) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(input_index)+'], typeof(' + self.type + '));\n')
-		# 	arg_index+=1
-		# 	input_index += 1
-
-		outMember = ''
-
-		# for param in self.parameters:
-		# 	param.write(arg_index, input_index, outMember, argList, f)
-		# 	arg_index+=1
-		# 	#we store a reference to the document and don't want to 
-		# 	#increment the input counter if we're using our local copy
-		# 	#and not that from the args list
-		# 	if param.param_type != 'Autodesk.Revit.DB.Document':
-		# 		input_index += 1
-
-		# if len(self.parameters) > 0:
-		# 	paramsStr = '(' +  ",".join(argList) + ")"
-		# else:
-		# 	paramsStr = '()'
-
-		# # logic for testing if we're in a family document
-		# if self.method_call_prefix == 'dynRevitSettings.Doc.Document':
-		# 	f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
-		# 	f.write('\t\t\t{\n')
-		# 	f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.FamilyCreate.' + self.methodCall + paramsStr + ';\n')
-		# 	f.write('\t\t\t\tdynRevitUtils.StoreElements(this, result);\n')
-		# 	if outMember != '':
-		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-		# 	else:
-		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-		# 	f.write('\t\t\t}\n')
-		# 	f.write('\t\t\telse\n')
-		# 	f.write('\t\t\t{\n')
-		# 	f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.Create.' + self.methodCall + paramsStr + ';\n')
-		# 	f.write('\t\t\t\tdynRevitUtils.StoreElements(this, result);\n')
-		# 	if outMember != '':
-		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-		# 	else:
-		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-		# 	f.write('\t\t\t}\n')
-
-		# else:
-			# if the node returns void and it is not a constructor we'll send out an empty list
-			# if self.returns is '' and not self.isConstructor:
-			# if not self.isStatic and not self.isConstructor:
-		evaluate_block=[
-		'\n',
-		'\t\t\tobject result = null;\n',
-		'\t\t\tif (mi.IsStatic && !mi.IsConstructor)\n',
-		'\t\t\t{\n',
-		'\t\t\t\tresult = mi.Invoke(DynamoTypeConverter.ConvertInput(args[0],t), parameters);\n',
-		'\t\t\t}\n',
-		'\t\t\telse\n',
-		'\t\t\t{\n',
-		'\t\t\t\tresult = mi.Invoke(null, parameters);\n',
-		'\t\t\t}\n',
-		'\t\t\tif (result != null)\n',
-		'\t\t\t{\n',
-		'\t\t\t\tdynRevitUtils.StoreElements(this, result);\n',
-		'\t\t\t}\n',
-		'\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n']
-		f.writelines(evaluate_block)
-
-			# 	f.write('\t\t\t' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
-			# 	f.write('\t\t\treturn Value.NewList(FSharpList<Value>.Empty);\n')
-			# else:
-			# 	f.write('\t\t\tvar result = ' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
-			# 	f.write('\t\t\tdynRevitUtils.StoreElements(this, result);\n')
-			# 	if outMember != '':
-			# 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-			# 	else:
-			# 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-
-			
-				
-		f.write('\t\t}\n')
+	# 	f.write('\t\t}\n')
 	
 	def match_method_call(self):
 
@@ -555,10 +449,6 @@ class RevitParameter:
 		else:
 			f.write('\t\t\tvar arg' + str(index) + '=(' + convert_param(self.param_type).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(input_index) +'],typeof(' + convert_param(self.param_type).replace('@','') +'));\n')
 
-		# if self.isOut:
-		# 	argList.append('out arg' + str(index))
-		# 	outMember = 'arg' + str(index) #flag this out value so we can return it instead of the result
-		# else:
 		argList.append('arg' + str(index))
 
 class RevitField:
@@ -572,7 +462,6 @@ class RevitField:
 		f.write('\tpublic class API_' + self.nickName + ' : dynEnum\n')
 		f.write('\t{\n')
 		self.write_constructor(f)
-		# self.write_evaluate(f)
 		f.write('\t}\n')
 		f.write('\n')
 
@@ -697,6 +586,7 @@ def read_method(member_data, revit_types, node_names, skip_list):
 		newParameter = RevitParameter(param_name, param_types[paramCount],param_description)
 		newMethod.parameters.append(newParameter)
 		paramCount += 1
+
 
 
 	#the type name is the method name minus the
@@ -841,20 +731,21 @@ def match_inport_type(x):
 	}.get(x,'val')
 
 def convert_param(x):
-	return{
-		'System.Collections.Generic.IList{Autodesk.Revit.DB.XYZ}':'List<Autodesk.Revit.DB.XYZ>',
-		'System.Collections.Generic.ICollection{Autodesk.Revit.DB.ElementId}':'List<Autodesk.Revit.DB.ElementId>',
-		'System.Collections.Generic.IList{System.Double}':'List<double>',
-		'System.Collections.Generic.List{Autodesk.Revit.Creation.AreaCreationData}':'List<Autodesk.Revit.Creation.AreaCreationData>',
-		'System.Collections.Generic.List{Autodesk.Revit.Creation.RoomCreationData}':'List<Autodesk.Revit.Creation.RoomCreationData>',
-		'System.Collections.Generic.List{Autodesk.Revit.Creation.ProfiledWallCreationData}':'List<Autodesk.Revit.Creation.ProfiledWallCreationData>',
-		'System.Collections.Generic.List{Autodesk.Revit.Creation.RectangularWallCreationData}':'List<Autodesk.Revit.Creation.RectangularWallCreationData>',
-		'System.Collections.Generic.List{Autodesk.Revit.Creation.TextNoteCreationData}':'List<Autodesk.Revit.Creation.TextNoteCreationData>',
-		'System.Collections.Generic.List{Autodesk.Revit.Creation.FamilyInstanceCreationData}':'List<Autodesk.Revit.Creation.FamilyInstanceCreationData>',
-		'System.Collections.Generic.IList{Autodesk.Revit.DB.Curve}':'List<Autodesk.Revit.DB.Curve>',
-		'System.Collections.Generic.IList{Autodesk.Revit.DB.Reference}':'List<Autodesk.Revit.DB.Reference>',
-		'Autodesk.Revit.DB.Phase!System.Runtime.CompilerServices.IsByValue':'Autodesk.Revit.DB.Phase'
-	}.get(x,x).replace('@','')
+	return x.replace('{','<').replace('}','>').replace('@','')
+	# return{
+	# 	'System.Collections.Generic.IList{Autodesk.Revit.DB.XYZ}':'IList<Autodesk.Revit.DB.XYZ>',
+	# 	'System.Collections.Generic.ICollection{Autodesk.Revit.DB.ElementId}':'IList<Autodesk.Revit.DB.ElementId>',
+	# 	'System.Collections.Generic.IList{System.Double}':'IList<double>',
+	# 	'System.Collections.Generic.List{Autodesk.Revit.Creation.AreaCreationData}':'IList<Autodesk.Revit.Creation.AreaCreationData>',
+	# 	'System.Collections.Generic.List{Autodesk.Revit.Creation.RoomCreationData}':'List<Autodesk.Revit.Creation.RoomCreationData>',
+	# 	'System.Collections.Generic.List{Autodesk.Revit.Creation.ProfiledWallCreationData}':'List<Autodesk.Revit.Creation.ProfiledWallCreationData>',
+	# 	'System.Collections.Generic.List{Autodesk.Revit.Creation.RectangularWallCreationData}':'List<Autodesk.Revit.Creation.RectangularWallCreationData>',
+	# 	'System.Collections.Generic.List{Autodesk.Revit.Creation.TextNoteCreationData}':'List<Autodesk.Revit.Creation.TextNoteCreationData>',
+	# 	'System.Collections.Generic.List{Autodesk.Revit.Creation.FamilyInstanceCreationData}':'List<Autodesk.Revit.Creation.FamilyInstanceCreationData>',
+	# 	'System.Collections.Generic.IList{Autodesk.Revit.DB.Curve}':'List<Autodesk.Revit.DB.Curve>',
+	# 	'System.Collections.Generic.IList{Autodesk.Revit.DB.Reference}':'List<Autodesk.Revit.DB.Reference>',
+	# 	'Autodesk.Revit.DB.Phase!System.Runtime.CompilerServices.IsByValue':'Autodesk.Revit.DB.Phase'
+	# }.get(x,x).replace('@','')
 
 def conversion_method(x):
 	return{

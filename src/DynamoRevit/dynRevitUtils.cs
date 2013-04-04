@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
+using System.Diagnostics;
 
 using Dynamo.Revit;
 
@@ -41,6 +43,94 @@ namespace Dynamo.Utilities
             {
                 ((List<ElementId>)result).ForEach(x => node.Elements.Add((ElementId)x));
             }
+        }
+
+        public static MethodBase GetAPIMethodInfo(Type base_type, string methodName, bool isConstructor, Type[] types, out Type returnType)
+        {
+            MethodBase result = null;
+            if (isConstructor)
+            {
+                result = base_type.GetConstructor(types); 
+                returnType = base_type;
+            }
+            else
+            {
+                //http://stackoverflow.com/questions/11443707/getproperty-reflection-results-in-ambiguous-match-found-on-new-property
+                result = base_type.
+                        GetMethods().
+                        Where(x => x.Name == methodName && x.GetParameters().
+                            Select(y => y.ParameterType).
+                            Except(types).Count() == 0).
+                            First();
+
+                returnType = ((MethodInfo)result).ReturnType;
+            }
+
+            return result;
+        }
+
+        public static Value InvokeAPIMethod(dynRevitTransactionNode node, FSharpList<Value> args, Type api_base_type, ParameterInfo[] pi, MethodBase mi, Type return_type)
+        {
+            object invocation_target = null;
+
+            if (api_base_type == typeof(Autodesk.Revit.Creation.Document) ||
+                api_base_type == typeof(Autodesk.Revit.Creation.FamilyItemFactory) ||
+                api_base_type == typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+            {
+                if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+                {
+                    invocation_target = dynRevitSettings.Doc.Document.FamilyCreate;
+                }
+                else
+                {
+                    invocation_target = dynRevitSettings.Doc.Document.Create;
+                }
+            }
+            else if (api_base_type == typeof(Autodesk.Revit.Creation.Application))
+            {
+                invocation_target = dynRevitSettings.Revit.Application.Create;
+            }
+
+            if (!mi.IsStatic && !mi.IsConstructor)
+            {
+                //the first input will always hold the instance
+                //whose methods you want to invoke
+                invocation_target = DynamoTypeConverter.ConvertInput(args[0],api_base_type);
+            }
+
+            object[] parameters = new object[pi.Count()];
+            if (args.Count() == pi.Count())
+            {
+                for (int i = 0; i < pi.Count(); i++)
+                {
+                    parameters[i] = DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < pi.Count(); i++)
+                {
+                    parameters[i] = DynamoTypeConverter.ConvertInput(args[i + 1], pi[i].ParameterType);
+                }
+            }
+
+            object result = null;
+
+            if (mi.IsConstructor)
+            {
+                result = ((ConstructorInfo)mi).Invoke(parameters);
+            }
+            else
+            {
+                result = mi.Invoke(invocation_target, parameters);
+            }
+            
+            if (result != null)
+            {
+                dynRevitUtils.StoreElements(node, result);
+            }
+
+            return DynamoTypeConverter.ConvertToValue(result);
         }
     }
 
