@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Dynamo For Revit</Name>
+    <Assembly>C:\dev\nextgen\Dynamo\bin\Release\DynamoDesignScript.dll</Assembly>
+    <AddInId>188B9080-1111-40C3-877A-8FC31DEEC12F</AddInId>
+    <FullClassName>Dynamo.Applications.DesignScriptNodeHelper</FullClassName>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk</VendorDescription>
+  </AddIn>
+</RevitAddIns>
