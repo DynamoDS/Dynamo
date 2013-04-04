@@ -46,8 +46,6 @@ def main():
 	'Autodesk.Revit.DB.UV.BasisU',
 	'Autodesk.Revit.DB.UV.BasisV',
 	'Autodesk.Revit.DB.UV.Zero',
-	'Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference',
-	'Autodesk.Revit.DB.Solid.getGeometry'
 	]
 
 	valid_namespaces = {
