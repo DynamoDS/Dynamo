@@ -20,6 +20,7 @@ def main():
 	'using System;\n',
 	'using System.Collections.Generic;\n',
 	'using System.Linq;\n',
+	'using System.Reflection;\n',
 	'using Autodesk.Revit.DB;\n',
 	'using Autodesk.Revit;\n',
 	'using Dynamo.Controls;\n',
@@ -248,6 +249,13 @@ class RevitMethod:
 		self.write_attributes(f, valid_namespaces)
 		f.write('\tpublic class API_' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
 		f.write('\t{\n')
+
+		# write some information for reflection
+		f.write('\t\tType t;\n')
+		f.write('\t\tMethodInfo mi;\n')
+		f.write('\t\tParameterInfo[] pi;\n')
+		f.write('\n')
+
 		self.write_constructor(f)
 		self.write_evaluate(f)
 		f.write('\t}\n')
@@ -278,8 +286,22 @@ class RevitMethod:
 
 		#if the method is static or is the constructor,
 		#do not write the type as an input
-		if not self.isStatic and not self.isConstructor:
-			f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(' + self.type + ')));\n')
+		# if not self.isStatic and not self.isConstructor:
+		# 	f.write('\t\t\tInPortData.Add(new PortData(\"'+match_inport_type(self.type)+'\", \"' + self.type + '\",typeof(' + self.type + ')));\n')
+
+		# write some information for reflection
+		f.write('\t\t\tt = typeof(' + self.type + ');\n')
+		f.write('\t\t\tmi = t.GetMethod(\"' + self.methodCall + '\");\n')
+		f.write('\t\t\tpi = mi.GetParameters();\n')
+
+		# use reflection to build an input port if the method is not
+		# static and is not the constructor
+		inport_add_condition =[
+		'\t\t\tif (mi.IsStatic && !mi.IsConstructor)\n',
+		'\t\t\t{\n',
+		'\t\t\t\tInPortData.Add(new PortData(\"' + match_inport_type(self.type) + '\", \"' + self.type + '\", typeof(object)));\n',
+		'\t\t\t}\n']
+		f.writelines(inport_add_condition)
 
 		for param in self.parameters:
 			#we already store a reference to the document on the 
@@ -319,70 +341,111 @@ class RevitMethod:
         '\t\t\t\t}\n', 
         '\t\t\t});\n',
         '\t\t\tElements.Clear();\n',
-        ''
+        '\n'
 		]
 		f.writelines(cleanup)
 
+		parameter_block=[
+		'\t\t\tobject[] parameters = new object[pi.Count()];\n',
+		'\t\t\tif(args.Count() == pi.Count())\n',
+		'\t\t\t{\n',
+		'\t\t\t\tfor(int i=0; i<pi.Count(); i++)\n',
+		'\t\t\t\t{\n',
+		'\t\t\t\t\tparameters[i] = DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType);\n',
+		'\t\t\t\t}\n',
+		'\t\t\t}\n',
+		'\t\t\telse\n',
+		'\t\t\t{\n',
+		'\t\t\t\tfor (int i = 0; i < pi.Count(); i++)\n',
+		'\t\t\t\t{\n',
+		'\t\t\t\t\tparameters[i] = DynamoTypeConverter.ConvertInput(args[i+1], pi[i].ParameterType);\n',
+		'\t\t\t\t}\n',
+		'\t\t\t}\n'
+		]
+		f.writelines(parameter_block)
+
 		# for each incoming arg, cast it to the matching param
-		arg_index = 0
-		input_index = 0
-		argList = []
+		# arg_index = 0
+		# input_index = 0
+		# argList = []
 
 		#if the method is static or is the constructor,
 		#do not write the type as an input
-		if not self.isStatic and not self.isConstructor:
-			f.write('\t\t\tvar arg' + str(arg_index) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(input_index)+'], typeof(' + self.type + '));\n')
-			arg_index+=1
-			input_index += 1
+		# if not self.isStatic and not self.isConstructor:
+		# 	f.write('\t\t\tvar arg' + str(arg_index) + '=(' + self.type + ')DynamoTypeConverter.ConvertInput(args['+str(input_index)+'], typeof(' + self.type + '));\n')
+		# 	arg_index+=1
+		# 	input_index += 1
 
 		outMember = ''
 
-		for param in self.parameters:
-			param.write(arg_index, input_index, outMember, argList, f)
-			arg_index+=1
-			#we store a reference to the document and don't want to 
-			#increment the input counter if we're using our local copy
-			#and not that from the args list
-			if param.param_type != 'Autodesk.Revit.DB.Document':
-				input_index += 1
+		# for param in self.parameters:
+		# 	param.write(arg_index, input_index, outMember, argList, f)
+		# 	arg_index+=1
+		# 	#we store a reference to the document and don't want to 
+		# 	#increment the input counter if we're using our local copy
+		# 	#and not that from the args list
+		# 	if param.param_type != 'Autodesk.Revit.DB.Document':
+		# 		input_index += 1
 
-		if len(self.parameters) > 0:
-			paramsStr = '(' +  ",".join(argList) + ")"
-		else:
-			paramsStr = '()'
+		# if len(self.parameters) > 0:
+		# 	paramsStr = '(' +  ",".join(argList) + ")"
+		# else:
+		# 	paramsStr = '()'
 
-		# logic for testing if we're in a family document
-		if self.method_call_prefix == 'dynRevitSettings.Doc.Document':
-			f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
-			f.write('\t\t\t{\n')
-			f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.FamilyCreate.' + self.methodCall + paramsStr + ';\n')
-			f.write('\t\t\t\tdynRevitUtils.StoreElements(this, result);\n')
-			if outMember != '':
-				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-			else:
-				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-			f.write('\t\t\t}\n')
-			f.write('\t\t\telse\n')
-			f.write('\t\t\t{\n')
-			f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.Create.' + self.methodCall + paramsStr + ';\n')
-			f.write('\t\t\t\tdynRevitUtils.StoreElements(this, result);\n')
-			if outMember != '':
-				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-			else:
-				f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
-			f.write('\t\t\t}\n')
-		else:
-			#if the node returns void and it is not a constructor we'll send out an empty list
-			if self.returns is '' and not self.isConstructor:
-				f.write('\t\t\t' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
-				f.write('\t\t\treturn Value.NewList(FSharpList<Value>.Empty);\n')
-			else:
-				f.write('\t\t\tvar result = ' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
-				f.write('\t\t\tdynRevitUtils.StoreElements(this, result);\n')
-				if outMember != '':
-					f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
-				else:
-					f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		# # logic for testing if we're in a family document
+		# if self.method_call_prefix == 'dynRevitSettings.Doc.Document':
+		# 	f.write('\t\t\tif (dynRevitSettings.Doc.Document.IsFamilyDocument)\n')
+		# 	f.write('\t\t\t{\n')
+		# 	f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.FamilyCreate.' + self.methodCall + paramsStr + ';\n')
+		# 	f.write('\t\t\t\tdynRevitUtils.StoreElements(this, result);\n')
+		# 	if outMember != '':
+		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		# 	else:
+		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		# 	f.write('\t\t\t}\n')
+		# 	f.write('\t\t\telse\n')
+		# 	f.write('\t\t\t{\n')
+		# 	f.write('\t\t\t\tvar result = ' + self.method_call_prefix + '.Create.' + self.methodCall + paramsStr + ';\n')
+		# 	f.write('\t\t\t\tdynRevitUtils.StoreElements(this, result);\n')
+		# 	if outMember != '':
+		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+		# 	else:
+		# 		f.write('\t\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+		# 	f.write('\t\t\t}\n')
+
+		# else:
+			# if the node returns void and it is not a constructor we'll send out an empty list
+			# if self.returns is '' and not self.isConstructor:
+			# if not self.isStatic and not self.isConstructor:
+		evaluate_block=[
+		'\n',
+		'\t\t\tobject result = null;\n',
+		'\t\t\tif (mi.IsStatic && !mi.IsConstructor)\n',
+		'\t\t\t{\n',
+		'\t\t\t\tresult = mi.Invoke(DynamoTypeConverter.ConvertInput(args[0],t), parameters);\n',
+		'\t\t\t}\n',
+		'\t\t\telse\n',
+		'\t\t\t{\n',
+		'\t\t\t\tresult = mi.Invoke(null, parameters);\n',
+		'\t\t\t}\n',
+		'\t\t\tif (result != null)\n',
+		'\t\t\t{\n',
+		'\t\t\t\tdynRevitUtils.StoreElements(this, result);\n',
+		'\t\t\t}\n',
+		'\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n']
+		f.writelines(evaluate_block)
+
+			# 	f.write('\t\t\t' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
+			# 	f.write('\t\t\treturn Value.NewList(FSharpList<Value>.Empty);\n')
+			# else:
+			# 	f.write('\t\t\tvar result = ' + self.method_call_prefix + '.' + self.methodCall + paramsStr + ';\n')
+			# 	f.write('\t\t\tdynRevitUtils.StoreElements(this, result);\n')
+			# 	if outMember != '':
+			# 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(' + outMember + ');\n')
+			# 	else:
+			# 		f.write('\t\t\treturn DynamoTypeConverter.ConvertToValue(result);\n')
+
+			
 				
 		f.write('\t\t}\n')
 	
@@ -492,11 +555,11 @@ class RevitParameter:
 		else:
 			f.write('\t\t\tvar arg' + str(index) + '=(' + convert_param(self.param_type).replace('@','') +')DynamoTypeConverter.ConvertInput(args[' + str(input_index) +'],typeof(' + convert_param(self.param_type).replace('@','') +'));\n')
 
-		if self.isOut:
-			argList.append('out arg' + str(index))
-			outMember = 'arg' + str(index) #flag this out value so we can return it instead of the result
-		else:
-			argList.append('arg' + str(index))
+		# if self.isOut:
+		# 	argList.append('out arg' + str(index))
+		# 	outMember = 'arg' + str(index) #flag this out value so we can return it instead of the result
+		# else:
+		argList.append('arg' + str(index))
 
 class RevitField:
 	def __init__(self, name, summary):

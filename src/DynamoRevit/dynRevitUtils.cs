@@ -328,6 +328,11 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         public static Value ConvertToValue(object input)
         {
+            if (input == null)
+            {
+                return Value.NewNumber(0);
+            }
+
             if (input.GetType() == typeof(double))
             {
                 return Value.NewNumber(System.Convert.ToDouble(input));
