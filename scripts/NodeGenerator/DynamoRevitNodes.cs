@@ -9415,6 +9415,35 @@ namespace Dynamo.Nodes
 		}
 	}
 
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference
+	///</summary>
+	[NodeName("Form_GetProfileAndCurveLoopIndexFromReference")]
+	[NodeSearchTags("generic","form")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeDescription("Given a reference to certain curve or edge, get the index of its profile and curve loop respectively.")]
+	public class API_Form_GetProfileAndCurveLoopIndexFromReference : dynRevitAPINode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference
+		///</summary>
+		public API_Form_GetProfileAndCurveLoopIndexFromReference()
+		{
+			base_type = typeof(Autodesk.Revit.DB.Form);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetProfileAndCurveLoopIndexFromReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(System.Int32),typeof(System.Int32)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic && !mi.IsConstructor)
+			{
+				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
+			}
+			InPortData.Add(new PortData("ref", "Reference to a curve/edge that is part of one profile",typeof(Autodesk.Revit.DB.Reference)));
+			InPortData.Add(new PortData("val", "Profile index for output",typeof(System.Int32)));
+			InPortData.Add(new PortData("val", "Curve loop index for output",typeof(System.Int32)));
+			OutPortData.Add(new PortData("out","Given a reference to certain curve or edge, get the index of its profile and curve loop respectively.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
 	[NodeName("Form_BaseOffset")]
 	[NodeSearchTags("generic","form")]
 	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
@@ -15926,6 +15955,32 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
 			var result = arg0.Color;
 			return DynamoTypeConverter.ConvertToValue(result);
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.Solid.getGeometry
+	///</summary>
+	[NodeName("Solid_getGeometry")]
+	[NodeSearchTags("solid")]
+	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
+	[NodeDescription("Returns the Geometry object for this solid.")]
+	public class API_Solid_getGeometry : dynRevitAPINode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.Solid.getGeometry
+		///</summary>
+		public API_Solid_getGeometry()
+		{
+			base_type = typeof(Autodesk.Revit.DB.Solid);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "getGeometry", false, new Type[]{}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic && !mi.IsConstructor)
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid", typeof(object)));
+			}
+			OutPortData.Add(new PortData("out","Returns the Geometry object for this solid.",typeof(object)));
+			NodeUI.RegisterAllPorts();
 		}
 	}
 
