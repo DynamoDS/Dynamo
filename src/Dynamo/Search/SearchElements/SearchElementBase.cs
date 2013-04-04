@@ -12,7 +12,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-namespace Dynamo.Search
+namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A base class for elements found in search </summary>

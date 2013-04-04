@@ -21,6 +21,7 @@ using System.Windows.Input;
 using Dynamo.Commands;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
@@ -100,13 +101,20 @@ namespace Dynamo.Search
         }
 
         /// <summary>
+        ///     NodeCategories property
+        /// </summary>
+        /// <value>
+        ///     A set of categories
+        /// </value>
+        private HashSet<string> NodeCategories { get; set; }
+
+        /// <summary>
         ///     Visible property
         /// </summary>
         /// <value>
         ///     Tells whether the View is visible or not
         /// </value>
         private Visibility _visible;
-
         public Visibility Visible
         {
             get { return _visible; }
@@ -161,6 +169,7 @@ namespace Dynamo.Search
         public SearchViewModel(dynBench bench)
         {
             SelectedIndex = 0;
+            NodeCategories = new HashSet<string>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
             MaxNumSearchResults = 30;
@@ -251,14 +260,33 @@ namespace Dynamo.Search
             {
                 ExecuteSelected();
             }
+            else if (e.Key == Key.Tab)
+            {
+                PopulateSearchTextWithSelectedResult();
+            }
             else if (e.Key == Key.Down)
             {
-                SelectNext(); // nope
+                SelectNext(); 
             }
             else if (e.Key == Key.Up)
             {
-                SelectPrevious(); // nope
+                SelectPrevious(); 
             }
+        }
+
+        /// <summary>
+        ///     If there are results, fill the search field with the text from the
+        ///     name property of the first search result.
+        /// </summary>
+        public void PopulateSearchTextWithSelectedResult()
+        {
+            if (SearchResults.Count == 0) return;
+
+            // none of the elems are selected, return 
+            if (SelectedIndex == -1)
+                return;
+
+            SearchText = SearchResults[SelectedIndex].Name;
         }
 
         /// <summary>
@@ -273,7 +301,6 @@ namespace Dynamo.Search
             if (SelectedIndex == -1)
                 return;
 
-            Visible = Visibility.Collapsed;
             SearchResults[SelectedIndex].Execute();
         }
 
@@ -333,8 +360,20 @@ namespace Dynamo.Search
                 return;
             }
 
-            
             var searchEle = new LocalSearchElement(dynNode);
+
+            var cat = dynNode.Category;
+            if (!string.IsNullOrEmpty(cat))
+            {
+                SearchDictionary.Add(searchEle, cat + "." + searchEle.Name );
+
+                if (!NodeCategories.Contains(cat))
+                {
+                    NodeCategories.Add(cat);
+                    var nameEle = new NamespaceSearchElement(cat);
+                    SearchDictionary.Add(nameEle, cat);
+                }
+            }
 
             SearchDictionary.Add(searchEle, searchEle.Name);
             if (dynNode.NodeUI.Tags.Count > 0)

@@ -14,12 +14,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using Dynamo.Commands;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Greg.Responses;
 
-namespace Dynamo.Search
+namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing an element from the package manager </summary>
@@ -52,6 +53,8 @@ namespace Dynamo.Search
         {
             Guid guid = this.Guid;
 
+            dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+
             if (!dynSettings.FunctionDict.ContainsKey(this.Guid))
             {
                 // go get the node from online, place it in view asynchronously
@@ -66,6 +69,7 @@ namespace Dynamo.Search
             }
             else
             {
+     
                 // get the node from here
                 DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                     {

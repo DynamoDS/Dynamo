@@ -5,9 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             Visibility="{Binding Path=Visible}" d:DesignWidth="447" x:Name="SearchControl">
+             Visibility="{Binding Path=Visible}" d:DesignWidth="447" x:Name="SearchControl" MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=ActualHeight}">
     
-  <Grid Background="Black" MaxHeight="342">
+  <Grid Background="Black">
 
     <StackPanel x:Name="RSearchContainerStackPanel"  Margin="0">
       
@@ -22,18 +22,29 @@
       </StackPanel>
 
       <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" 
-                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" MaxHeight="300" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" MaxHeight="{Binding ElementName=SearchControl, Path=MaxHeight}" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
 
           <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" 
                    BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
 
+          <ListBox.ItemContainerStyle>
+            <Style TargetType="ListBoxItem">
+              <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                     Color="#FFF"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                     Color="#FFF" />
+              </Style.Resources>
+            </Style>
+          </ListBox.ItemContainerStyle>
+                       
           <ListBox.ItemTemplate >
 
             <DataTemplate>
 
               <Grid Name="SearchEle" VerticalAlignment="Stretch"
                       Width="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
-                      HorizontalAlignment="Left" Background="Black">
+                      HorizontalAlignment="Left" Background="#CC000000">
 
                   <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="#111" Y1="0" Y2="0" VerticalAlignment="Top"/>
@@ -51,13 +62,22 @@
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Workspace">
                     <DataTrigger.Setters>
-                      <Setter Property="Foreground" Value="Gold" TargetName="type" />
-                    </DataTrigger.Setters>
+                    <Setter Property="Background" Value="#EE1A1600" TargetName="SearchEle" />
+                    <Setter Property="Foreground" Value="Gold" TargetName="type" />
+                  </DataTrigger.Setters>
                 </DataTrigger>
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Community Node">
                   <DataTrigger.Setters>
-                    <Setter Property="Foreground" Value="LightBlue" TargetName="type" />
+                    <Setter Property="Background" Value="#EE111617" TargetName="SearchEle" />
+                    <Setter Property="Foreground" Value="#FFADD8E6" TargetName="type" />
+                  </DataTrigger.Setters>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Namespace">
+                  <DataTrigger.Setters>
+                    <Setter Property="Background" Value="#EE0C1900" TargetName="SearchEle" />
+                    <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />
                   </DataTrigger.Setters>
                 </DataTrigger>
 

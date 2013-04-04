@@ -5,6 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using Dynamo.Search;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Controls;
@@ -53,7 +54,30 @@ namespace Dynamo.Nodes
             new Dictionary<int, Tuple<int, dynNode>>();
         private Dictionary<int, HashSet<Tuple<int, dynNode>>> previousOutputPortMappings =
             new Dictionary<int, HashSet<Tuple<int, dynNode>>>();
-        
+
+        /// <summary>
+        ///     Category property
+        /// </summary>
+        /// <value>
+        ///     If the node has a category, return it.  Other wise return empty string.
+        /// </value>
+        public string Category { 
+            get
+            {
+                var type = GetType();
+                object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+                if (type.Namespace == "Dynamo.Nodes" &&
+                    !type.IsAbstract &&
+                    attribs.Length > 0 &&
+                    type.IsSubclassOf(typeof (dynNode)))
+                {
+                    NodeCategoryAttribute elCatAttrib = attribs[0] as NodeCategoryAttribute;
+                    return elCatAttrib.ElementCategory;
+                }                    
+                return "";
+            }
+        }
+
         /// <summary>
         /// Should changes be reported to the containing workspace?
         /// </summary>

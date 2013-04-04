@@ -44,6 +44,7 @@ namespace Dynamo.Search
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            ((TextBox)sender).Select(((TextBox)sender).Text.Length, 0);
             var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
                 binding.UpdateSource();

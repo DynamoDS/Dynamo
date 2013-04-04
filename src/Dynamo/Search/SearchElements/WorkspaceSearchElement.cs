@@ -14,9 +14,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using Dynamo.Commands;
+using Dynamo.Utilities;
 
-namespace Dynamo.Search
+namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing a workspace that can be navigated to </summary>
@@ -40,6 +42,8 @@ namespace Dynamo.Search
         /// hits enter in the SearchView.  Navigates to the selected workspace </summary>
         public override void Execute()
         {
+            dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+
             var name = this.Name;
             if (name == "Home")
             {

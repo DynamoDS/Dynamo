@@ -906,7 +906,11 @@ namespace Dynamo.Commands
             //for connection lookup
             if (data.ContainsKey("guid"))
             {
-                node.NodeUI.GUID = (Guid)data["guid"];
+                node.NodeUI.GUID = (Guid) data["guid"];
+            }
+            else
+            {
+                node.NodeUI.GUID = Guid.NewGuid();
             }
 
             // by default place node at center

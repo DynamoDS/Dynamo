@@ -14,10 +14,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using Dynamo.Commands;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 
-namespace Dynamo.Search
+namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing a local node </summary>
@@ -52,7 +54,7 @@ namespace Dynamo.Search
         /// <summary>
         /// Weight property </summary>
         /// <value>
-        /// Number defining the relative importance of the element in search.  Higher the better </value>
+        /// Number defining the relative importance of the element in search.  Higher weight means closer to the top. </value>
         public override double Weight { get; set; }
 
         /// <summary>
@@ -78,6 +80,7 @@ namespace Dynamo.Search
         /// hits enter in the SearchView.</summary>
         public override void Execute()
         {
+            dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
             DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {
                     {"name", this.Name},
