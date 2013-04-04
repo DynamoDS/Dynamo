@@ -2,7 +2,7 @@
 
 namespace Dynamo.Search.SearchElements
 {
-    class NamespaceSearchElement : SearchElementBase
+    class CategorySearchElement : SearchElementBase
     {
         #region Properties
         /// <summary>
@@ -11,7 +11,7 @@ namespace Dynamo.Search.SearchElements
         /// A string describing the type of object </value>
         public override string Type
         {
-            get { return "Namespace"; }
+            get { return "Category"; }
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Dynamo.Search.SearchElements
         /// A string describing what the node does</value>
         public override string Description
         {
-            get { return "Namespace"; }
+            get { return "Category"; }
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="name">The name of the namespace (e.g. BestTeamsAtAutodesk.Magneto ) </param>
-        public NamespaceSearchElement(string name)
+        public CategorySearchElement(string name)
         {
             _name = name + ".";
             Weight = 1.2;

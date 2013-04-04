@@ -948,21 +948,34 @@ namespace Dynamo
 
         #region Saving and Opening Workspaces
 
+        /// <summary>
+        ///     Attempts to save the current workspace
+        ///     to a given path.  If successful, the CurrentSpace.FilePath
+        ///     field is updated as a side effect
+        /// </summary>
         internal void SaveAs(string path)
         {
             if (!string.IsNullOrEmpty(path))
             {
-                CurrentSpace.FilePath = path;
                 if (!SaveWorkspace(path, CurrentSpace))
                 {
                     Bench.Log("Workbench could not be saved.");
                 }
+                else
+                {
+                    CurrentSpace.FilePath = path;
+                }
             }
         }
 
+        /// <summary>
+        ///     Attempts to save an element, assuming that the CurrentSpace.FilePath 
+        ///     field is already  populated with a path has a filename associated with it. 
+        /// </summary>
         internal void Save()
         {
-            SaveAs(CurrentSpace.FilePath);
+            if (!string.IsNullOrEmpty(CurrentSpace.FilePath))
+                SaveAs(CurrentSpace.FilePath);
         }
 
         public XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace)

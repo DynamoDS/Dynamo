@@ -40,7 +40,18 @@ namespace Dynamo.Commands
                 return showOpenDialogAndOpenResultCmd;
             }
         }
-        
+
+        private static ShowSaveDialogIfNeededAndSaveResultCommand showSaveDialogIfNeededAndSaveResultCmd;
+        public static ShowSaveDialogIfNeededAndSaveResultCommand ShowSaveDialogIfNeededAndSaveResultCmd
+        {
+            get
+            {
+                if (showSaveDialogIfNeededAndSaveResultCmd == null)
+                    showSaveDialogIfNeededAndSaveResultCmd = new ShowSaveDialogIfNeededAndSaveResultCommand();
+                return showSaveDialogIfNeededAndSaveResultCmd;
+            }
+        }
+
         private static ShowSaveDialogAndSaveResultCommand showSaveDialogAndSaveResultCmd;
         public static ShowSaveDialogAndSaveResultCommand ShowSaveDialogAndSaveResultCmd
         {
@@ -454,6 +465,32 @@ namespace Dynamo.Commands
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 DynamoCommands.OpenCmd.Execute(_fileDialog.FileName);
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ShowSaveDialogIfNeededAndSaveResultCommand : ICommand
+    {
+        public void Execute(object parameters)
+        {
+            if (dynSettings.Controller.CurrentSpace.FilePath != null)
+            {
+                DynamoCommands.SaveCmd.Execute(null);
+            }
+            else
+            {
+                DynamoCommands.ShowSaveDialogAndSaveResultCmd.Execute(null);
             }
         }
 
@@ -907,10 +944,6 @@ namespace Dynamo.Commands
             if (data.ContainsKey("guid"))
             {
                 node.NodeUI.GUID = (Guid) data["guid"];
-            }
-            else
-            {
-                node.NodeUI.GUID = Guid.NewGuid();
             }
 
             // by default place node at center

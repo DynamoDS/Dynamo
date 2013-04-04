@@ -74,7 +74,7 @@
                   </DataTrigger.Setters>
                 </DataTrigger>
 
-                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Namespace">
+                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Category">
                   <DataTrigger.Setters>
                     <Setter Property="Background" Value="#EE0C1900" TargetName="SearchEle" />
                     <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />

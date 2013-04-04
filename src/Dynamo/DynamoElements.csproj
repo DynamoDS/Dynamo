@@ -137,7 +137,7 @@ limitations under the License.
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchCommands.cs" />
-    <Compile Include="Search\SearchElements\NamespaceSearchElement.cs" />
+    <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\LocalSearchElement.cs" />
     <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />

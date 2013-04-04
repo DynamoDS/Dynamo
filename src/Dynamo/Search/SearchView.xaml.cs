@@ -37,7 +37,6 @@ namespace Dynamo.Search
             SearchTextBox.IsVisibleChanged += delegate
                 {
                     SearchTextBox.Focus();
-                    SearchTextBox.SelectAll();
                     DynamoCommands.SearchCmd.Execute(null);
                 };
         }

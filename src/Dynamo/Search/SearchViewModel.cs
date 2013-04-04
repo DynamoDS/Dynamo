@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Commands;
@@ -106,7 +107,7 @@ namespace Dynamo.Search
         /// <value>
         ///     A set of categories
         /// </value>
-        private HashSet<string> NodeCategories { get; set; }
+        private Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
 
         /// <summary>
         ///     Visible property
@@ -169,7 +170,7 @@ namespace Dynamo.Search
         public SearchViewModel(dynBench bench)
         {
             SelectedIndex = 0;
-            NodeCategories = new HashSet<string>();
+            NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
             MaxNumSearchResults = 30;
@@ -246,6 +247,11 @@ namespace Dynamo.Search
         /// <param name="search"> The search query </param>
         internal List<SearchElementBase> Search(string search)
         {
+            if (string.IsNullOrEmpty(search))
+            {
+                return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).ToList();
+            }
+
             return SearchDictionary.Search(search, MaxNumSearchResults);
         }
 
@@ -264,6 +270,10 @@ namespace Dynamo.Search
             {
                 PopulateSearchTextWithSelectedResult();
             }
+            else if (e.Key == Key.Back)
+            {
+                SearchText = RemoveLastPartOfSearchText(SearchText);
+            }
             else if (e.Key == Key.Down)
             {
                 SelectNext(); 
@@ -272,6 +282,36 @@ namespace Dynamo.Search
             {
                 SelectPrevious(); 
             }
+        }
+
+        /// <summary>
+        ///     If there's a period in the SearchText property, remove text 
+        ///     to the end until you hit a period.  Otherwise, remove the 
+        ///     last character.  If the SearchText property is empty or null
+        ///     return doing nothing.
+        /// </summary>
+        /// <returns>The string cleaved of everything </returns>
+        public static string RemoveLastPartOfSearchText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            var matches = Regex.Matches(text, Regex.Escape("."));
+
+            // no period
+            if (matches.Count == 0)
+            {
+                return "";
+            }
+
+            // if period is in last position, remove that period and recurse
+            if ( matches[matches.Count - 1].Index + 1 == text.Length )
+            {
+                return RemoveLastPartOfSearchText(text.Substring(0, text.Length - 1));
+            }
+
+            // remove to the last period
+            return text.Substring(0, matches[matches.Count-1].Index + 2);
         }
 
         /// <summary>
@@ -367,10 +407,10 @@ namespace Dynamo.Search
             {
                 SearchDictionary.Add(searchEle, cat + "." + searchEle.Name );
 
-                if (!NodeCategories.Contains(cat))
+                if (!NodeCategories.ContainsKey(cat))
                 {
-                    NodeCategories.Add(cat);
-                    var nameEle = new NamespaceSearchElement(cat);
+                    var nameEle = new CategorySearchElement(cat);
+                    NodeCategories.Add(cat, nameEle);
                     SearchDictionary.Add(nameEle, cat);
                 }
             }

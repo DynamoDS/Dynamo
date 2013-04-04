@@ -399,7 +399,7 @@ namespace Dynamo.Tests
         // TODO: create bad file for opening
         //}
 
-        // SaveAsCommand
+    // SaveAsCommand
 
         [Test]
         public void CanSaveAsEmptyFile()
@@ -440,20 +440,19 @@ namespace Dynamo.Tests
             Assert.AreEqual(fn, tempFldrInfo.GetFiles()[0].Name);
         }
 
-        // SaveCommand
+    // SaveCommand
 
         [Test]
-        public void
-            CanSaveEmptyFile()
+        public void CannotSaveEmptyWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
             dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
 
-            Assert.True(File.Exists(dynSettings.Controller.CurrentSpace.FilePath));
+            Assert.IsNull(dynSettings.Controller.CurrentSpace.FilePath);
         }
 
         [Test]
-        public void CanSaveFileWithNodesInIt()
+        public void CannotSavePopulatedWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
             int numNodes = 100;
 
@@ -471,10 +470,10 @@ namespace Dynamo.Tests
             dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
 
-            Assert.True(File.Exists(dynSettings.Controller.CurrentSpace.FilePath));
-            File.Delete(dynSettings.Controller.CurrentSpace.FilePath);
-            Assert.False(File.Exists(dynSettings.Controller.CurrentSpace.FilePath));
+            Assert.IsNull(dynSettings.Controller.CurrentSpace.FilePath);
         }
+
+    // SaveImageCommand
 
         [Test]
         public void CanSaveImage()

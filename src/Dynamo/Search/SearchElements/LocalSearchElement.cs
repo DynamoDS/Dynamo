@@ -81,12 +81,25 @@ namespace Dynamo.Search.SearchElements
         public override void Execute()
         {
             dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
-            DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+
+            // create node
+            var guid = Guid.NewGuid();
+            var nodeParams = new Dictionary<string, object>()
                 {
                     {"name", this.Name},
                     {"transformFromOuterCanvasCoordinates", true},
-                    {"guid", Guid.NewGuid() }
-                });
+                    {"guid", guid}
+                };
+            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            // select node
+            var placedNode = dynSettings.Controller.Nodes.Find((node) => node.NodeUI.GUID == guid);
+            if (placedNode != null)
+            {
+                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
+                dynSettings.Controller.ProcessCommandQueue();
+            }
         }
 
     }

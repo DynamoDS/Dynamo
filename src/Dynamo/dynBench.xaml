@@ -45,7 +45,7 @@
                                 Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
     <KeyBinding Key="S"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.SaveCmd}}"/>
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}"/>
     <KeyBinding Key="S"
                                 Modifiers="Control+Shift"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}"/>
@@ -98,7 +98,7 @@
           </MenuItem.Icon>
         </MenuItem>
         <Separator />
-        <MenuItem Header="_Save" Command="{Binding Source={x:Static commands:DynamoCommands.SaveCmd}}" Name="saveThisButton" InputGestureText="Ctrl+S">
+        <MenuItem Header="_Save" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}" Name="saveThisButton" InputGestureText="Ctrl+S">
           <MenuItem.Icon>
             <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
           </MenuItem.Icon>
