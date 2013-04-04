@@ -15,6 +15,9 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
+    /// <summary>
+    /// Base class for all auto-generated Revit API nodes.
+    /// </summary>
     public abstract class dynRevitAPINode : dynRevitTransactionNodeWithOneOutput
     {
         protected Type base_type;
@@ -23,7 +26,7 @@ namespace Dynamo.Nodes
         protected ParameterInfo[] pi;
 
         ///<summary>
-        ///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewRadialDimension
+        ///Default constructor
         ///</summary>
         public dynRevitAPINode()
         {
@@ -50,6 +53,9 @@ namespace Dynamo.Nodes
         }
     }
 
+    /// <summary>
+    /// Revit Document node. Returns the active Revit Document.
+    /// </summary>
     [NodeName("Revit Document")]
     [NodeSearchTags("document", "active")]
     [NodeCategory(BuiltinNodeCategories.REVIT)]
