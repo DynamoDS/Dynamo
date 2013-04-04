@@ -24,8 +24,8 @@ namespace Dynamo.Tests
         [TearDown]
         public void Cleanup()
         {
+            dynSettings.Writer.Close();
             EmptyTempFolder();
-            dynSettings.Controller.Bench.Close();
         }
 
         private static string TempFolder;
@@ -33,7 +33,8 @@ namespace Dynamo.Tests
         private static void StartDynamo()
         {
             string tempPath = Path.GetTempPath();
-            string logPath = Path.Combine(tempPath, "dynamoLog.txt");
+            var random = new Random();
+            string logPath = Path.Combine(tempPath, "dynamoLog" + random.Next() + ".txt");
 
             TempFolder = Path.Combine(tempPath, "dynamoTmp");
 
@@ -52,7 +53,6 @@ namespace Dynamo.Tests
 
             //create a new instance of the ViewModel
             var controller = new DynamoController();
-            controller.Bench.Show();
         }
 
         public static void EmptyTempFolder()

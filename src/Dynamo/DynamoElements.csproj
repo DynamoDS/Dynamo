@@ -140,6 +140,7 @@ limitations under the License.
     <Compile Include="PackageManager\Publish\PackageManagerPublishView.xaml.cs">
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Search\RecursiveSearchDictionary.cs" />
     <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\LocalSearchElement.cs" />
