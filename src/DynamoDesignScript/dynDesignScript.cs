@@ -37,8 +37,13 @@ using System.Windows;
 using System.Xml;
 using Microsoft.FSharp.Core;
 
+using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit;
+using Autodesk.Revit.UI;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI.Events;
+using Autodesk.Revit.DB.Events;
+using Autodesk.Revit.DB.Analysis;//MDJ needed for spatialfeildmanager
 
 using Dynamo.Revit;
 
@@ -49,12 +54,35 @@ using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
 using ProtoFFI;
 
+namespace Dynamo.Applications
+{
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
+    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
+    public class DesignScriptNodeHelper : Autodesk.Revit.UI.IExternalApplication
+    {
+        public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
+        {
+            Autodesk.ASM.State.Start();
+            Autodesk.ASM.State.StartViewer();
+
+            return Result.Succeeded;
+        }
+
+        public Result OnShutdown(UIControlledApplication application)
+        {
+            Autodesk.ASM.State.StopViewer();
+            Autodesk.ASM.State.Stop();
+
+            return Result.Succeeded;
+        }
+    }
+}
+
 namespace Dynamo.Nodes
 {
     [NodeName("DesignScript Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
     [NodeDescription("Runs an embedded DesignScript script")]
-    //[Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
     public class dynDesignScript : dynRevitTransactionNodeWithOneOutput
     {
         bool dirty = false;
@@ -65,8 +93,6 @@ namespace Dynamo.Nodes
 
         ProtoCore.Core core;
         bool coreSet = false;
-
-        private static bool asm_started = false;
 
         List<Autodesk.Revit.DB.Element> created_elements = new List<Element>();
 
@@ -86,18 +112,6 @@ namespace Dynamo.Nodes
             NodeUI.RegisterAllPorts();
 
             NodeUI.UpdateLayout();
-        }
-
-        internal void start_asm()
-        {
-            if (asm_started)
-                return;
-
-            //Autodesk.ASM.State.UseExternalASM();
-            Autodesk.ASM.State.Start();
-            Autodesk.ASM.State.StartViewer();
-
-            asm_started = true;
         }
 
         public override bool RequiresRecalc
@@ -129,11 +143,22 @@ namespace Dynamo.Nodes
 
         private void ClearCreatedElements()
         {
+            var controller = dynRevitSettings.Controller;
+
+            bool initiated_transaction = false;
+
+            if (!controller.IsTransactionActive())
+            {
+                controller.InitTransaction();
+                initiated_transaction = true;
+            }
+
             foreach (Autodesk.Revit.DB.Element elem in created_elements)
             {
                 try
                 {
-                    Dynamo.Utilities.dynRevitSettings.Doc.Document.Delete(elem.Id);
+                    DeleteElement(elem.Id);
+                    //Dynamo.Utilities.dynRevitSettings.Doc.Document.Delete(elem.Id);
                 }
                 catch (System.Exception)
                 {
@@ -141,22 +166,34 @@ namespace Dynamo.Nodes
             }
 
             created_elements.Clear();
+
+            if (initiated_transaction)
+                controller.EndTransaction();
+        }
+
+        ~dynDesignScript()
+        {
+            //Cleanup();
+        }
+
+        public override void Cleanup()
+        {
+            if (coreSet)
+                core.Cleanup();
+
+            Autodesk.ASM.State.ClearPersistedObjects();
+            Autodesk.ASM.DynamoOutput.Reset();
+
+            ClearCreatedElements();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (coreSet)
-            {
-                core.Cleanup();
-                Autodesk.ASM.State.ClearPersistedObjects();
-                Autodesk.ASM.DynamoOutput.Reset();
-                ClearCreatedElements();
-            }
+                Cleanup();
             else
-            {
-                start_asm();
                 coreSet = true;
-            }
+
 
             Dictionary<string, object> context = new Dictionary<string, object>();
 
