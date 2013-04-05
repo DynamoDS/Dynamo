@@ -48,21 +48,36 @@ namespace Dynamo.Utilities
         public static MethodBase GetAPIMethodInfo(Type base_type, string methodName, bool isConstructor, Type[] types, out Type returnType)
         {
             MethodBase result = null;
+            returnType = base_type;
+
             if (isConstructor)
             {
                 result = base_type.GetConstructor(types); 
-                returnType = base_type;
             }
             else
             {
-                //http://stackoverflow.com/questions/11443707/getproperty-reflection-results-in-ambiguous-match-found-on-new-property
-                result = base_type.
-                        GetMethods().
-                        Where(x => x.Name == methodName && x.GetParameters().
-                            Select(y => y.ParameterType).
-                            Except(types).Count() == 0).
-                            First();
+                try
+                {
+                    
+                    //http://stackoverflow.com/questions/11443707/getproperty-reflection-results-in-ambiguous-match-found-on-new-property
+                    result = base_type.
+                            GetMethods().
+                            Where(x => x.Name == methodName && x.GetParameters().
+                                Select(y => y.ParameterType).
+                                Except(types).Count() == 0).
+                                First();
+                    
+                }
+                catch (Exception e)
+                {
+                    var test = base_type.GetMethods().Where(x => x.Name == methodName).SelectMany(y=>y.GetParameters());
 
+                    Debug.WriteLine(e.Message);
+                }
+            }
+
+            if (result == typeof(MethodInfo))
+            {
                 returnType = ((MethodInfo)result).ReturnType;
             }
 
