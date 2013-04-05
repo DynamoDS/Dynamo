@@ -1027,6 +1027,8 @@ namespace Dynamo.Commands
             int endIndex = (int)connectionData["port_end"];
 
             dynConnector c = new dynConnector(start, end, startIndex, endIndex, 0);
+
+            dynSettings.Controller.CurrentSpace.Connectors.Add(c);
         }
 
         public event EventHandler CanExecuteChanged
