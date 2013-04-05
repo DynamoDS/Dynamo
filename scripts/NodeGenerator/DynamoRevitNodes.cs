@@ -32,7 +32,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetHubId", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -58,7 +62,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetVisibility", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -84,7 +92,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCoordinatePlaneReferenceXZ", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -110,7 +122,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCoordinatePlaneReferenceYZ", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -136,7 +152,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCoordinatePlaneReferenceXY", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -162,7 +182,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetInterpolatingCurves", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -188,7 +212,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCoordinateSystem", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -214,7 +242,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetPointElementReference", false, new Type[]{typeof(Autodesk.Revit.DB.PointElementReference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -241,7 +273,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetPointElementReference", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
@@ -387,7 +423,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Transform);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AlmostEqual", false, new Type[]{typeof(Autodesk.Revit.DB.Transform)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform", typeof(object)));
 			}
@@ -414,7 +454,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Transform);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ScaleBasisAndOrigin", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform", typeof(object)));
 			}
@@ -441,7 +485,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Transform);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ScaleBasis", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform", typeof(object)));
 			}
@@ -468,7 +516,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Transform);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Multiply", false, new Type[]{typeof(Autodesk.Revit.DB.Transform)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform", typeof(object)));
 			}
@@ -495,7 +547,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Transform);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "OfVector", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform", typeof(object)));
 			}
@@ -522,7 +578,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Transform);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "OfPoint", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform", typeof(object)));
 			}
@@ -829,7 +889,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.GeometryInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetInstanceGeometry", false, new Type[]{typeof(Autodesk.Revit.DB.Transform)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance", typeof(object)));
 			}
@@ -856,7 +920,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.GeometryInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetInstanceGeometry", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance", typeof(object)));
 			}
@@ -882,7 +950,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.GeometryInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetSymbolGeometry", false, new Type[]{typeof(Autodesk.Revit.DB.Transform)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance", typeof(object)));
 			}
@@ -909,7 +981,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.GeometryInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetSymbolGeometry", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance", typeof(object)));
 			}
@@ -995,7 +1071,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDividedSurface", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1022,7 +1102,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCurveByPoints", false, new Type[]{typeof(Autodesk.Revit.DB.ReferencePointArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1049,7 +1133,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSymbolicCurve", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1077,7 +1165,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewControl", false, new Type[]{typeof(Autodesk.Revit.DB.ControlShape),typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1106,7 +1198,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewModelText", false, new Type[]{typeof(System.String),typeof(Autodesk.Revit.DB.ModelTextType),typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.HorizontalAlign),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1138,7 +1234,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewOpening", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.CurveArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1166,7 +1266,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewElectricalConnector", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Electrical.ElectricalSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1194,7 +1298,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPipeConnector", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Plumbing.PipeSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1222,7 +1330,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDuctConnector", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Mechanical.DuctSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1250,7 +1362,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRadialDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.DimensionType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1280,7 +1396,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDiameterDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1309,7 +1429,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRadialDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1338,7 +1462,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewArcLengthDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Arc),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.DimensionType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1370,7 +1498,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewArcLengthDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Arc),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1401,7 +1533,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAngularDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Arc),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.DimensionType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1432,7 +1568,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAngularDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Arc),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1462,7 +1602,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLinearDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Line),typeof(Autodesk.Revit.DB.ReferenceArray),typeof(Autodesk.Revit.DB.DimensionType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1492,7 +1636,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLinearDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Line),typeof(Autodesk.Revit.DB.ReferenceArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1521,7 +1669,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFormByThickenSingleSurface", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.Form),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1550,7 +1702,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFormByCap", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.ReferenceArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1578,7 +1734,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRevolveForms", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.ReferenceArray),typeof(Autodesk.Revit.DB.Reference),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1609,7 +1769,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSweptBlendForm", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.ReferenceArray),typeof(Autodesk.Revit.DB.ReferenceArrayArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1638,7 +1802,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewExtrusionForm", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.ReferenceArray),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1667,7 +1835,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLoftForm", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.ReferenceArrayArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1695,7 +1867,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSweptBlend", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.SweepProfile),typeof(Autodesk.Revit.DB.SweepProfile)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1725,7 +1901,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSweptBlend", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.SweepProfile),typeof(Autodesk.Revit.DB.SweepProfile)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1756,7 +1936,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSweep", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.ReferenceArray),typeof(Autodesk.Revit.DB.SweepProfile),typeof(System.Int32),typeof(Autodesk.Revit.DB.ProfilePlaneLocation)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1787,7 +1971,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSweep", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.SweepProfile),typeof(System.Int32),typeof(Autodesk.Revit.DB.ProfilePlaneLocation)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1819,7 +2007,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRevolution", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.CurveArrArray),typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.Line),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1851,7 +2043,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBlend", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1881,7 +2077,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewExtrusion", false, new Type[]{typeof(System.Boolean),typeof(Autodesk.Revit.DB.CurveArrArray),typeof(Autodesk.Revit.DB.SketchPlane),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
 			}
@@ -1911,7 +2111,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAlignment", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -1940,7 +2144,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "PlaceGroup", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.GroupType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -1968,7 +2176,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewViewSection", false, new Type[]{typeof(Autodesk.Revit.DB.BoundingBoxXYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -1995,7 +2207,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewView3D", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2022,7 +2238,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTextNotes", false, new Type[]{typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.TextNoteCreationData>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2049,7 +2269,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTextNote", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Double),typeof(Autodesk.Revit.DB.TextAlignFlags),typeof(Autodesk.Revit.DB.TextNoteLeaderTypes),typeof(Autodesk.Revit.DB.TextNoteLeaderStyles),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.String)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2086,7 +2310,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTextNote", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Double),typeof(Autodesk.Revit.DB.TextAlignFlags),typeof(System.String)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2119,7 +2347,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSketchPlane", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2146,7 +2378,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSketchPlane", false, new Type[]{typeof(Autodesk.Revit.DB.PlanarFace)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2173,7 +2409,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSketchPlane", false, new Type[]{typeof(Autodesk.Revit.DB.Plane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2200,7 +2440,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewReferencePlane2", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2230,7 +2474,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewReferencePlane", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2260,7 +2508,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewViewPlan", false, new Type[]{typeof(System.String),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.ViewPlanType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2289,7 +2541,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLevel", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2316,7 +2572,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewModelCurve", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2344,7 +2604,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGroup", false, new Type[]{typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2371,7 +2635,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGroup", false, new Type[]{typeof(Autodesk.Revit.DB.ElementSet)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2398,7 +2666,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstances2", false, new Type[]{typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.FamilyInstanceCreationData>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2425,7 +2697,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstances", false, new Type[]{typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.FamilyInstanceCreationData>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2452,7 +2728,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.Line),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2481,7 +2761,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2510,7 +2794,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Line),typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2539,7 +2827,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2569,7 +2861,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.Face),typeof(Autodesk.Revit.DB.Line),typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2598,7 +2894,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.Face),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2628,7 +2928,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2657,7 +2961,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2687,7 +2995,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2718,7 +3030,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Line),typeof(Autodesk.Revit.DB.ReferenceArray),typeof(Autodesk.Revit.DB.DimensionType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2748,7 +3064,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDimension", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Line),typeof(Autodesk.Revit.DB.ReferenceArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2777,7 +3097,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDetailCurveArray", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.CurveArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2805,7 +3129,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDetailCurve", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Curve)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2833,7 +3161,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAnnotationSymbol", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.AnnotationSymbolType),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
 			}
@@ -2862,7 +3194,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PolyLine);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Clone", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
@@ -2888,7 +3224,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PolyLine);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetOutline", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
@@ -2914,7 +3254,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PolyLine);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCoordinates", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
@@ -2940,7 +3284,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PolyLine);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCoordinate", false, new Type[]{typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
@@ -2967,7 +3315,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PolyLine);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Evaluate", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
@@ -3014,7 +3366,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ToString", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3040,7 +3396,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AngleOnPlaneTo", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3068,7 +3428,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AngleTo", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3095,7 +3459,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "DistanceTo", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3122,7 +3490,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAlmostEqualTo", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3150,7 +3522,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAlmostEqualTo", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3177,7 +3553,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Divide", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3204,7 +3584,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Multiply", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3231,7 +3615,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Negate", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3257,7 +3645,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Subtract", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3284,7 +3676,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Add", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3311,7 +3707,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "TripleProduct", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3339,7 +3739,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CrossProduct", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3366,7 +3770,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "DotProduct", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3393,7 +3801,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetLength", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3419,7 +3831,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Normalize", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3445,7 +3861,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsUnitLength", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3471,7 +3891,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsZeroLength", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3497,7 +3921,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "XYZ", true, new Type[]{typeof(System.Double),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3526,7 +3954,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.XYZ);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "XYZ", true, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
@@ -3612,7 +4044,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetPointConstraintType", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.AdaptivePointConstraintType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3641,7 +4077,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetPointConstraintType", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3669,7 +4109,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetPointOrientationType", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.AdaptivePointOrientationType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3698,7 +4142,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetPointOrientationType", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3726,7 +4174,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetPlacementNumber", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3755,7 +4207,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetPlacementNumber", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3783,7 +4239,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MakeAdaptivePoint", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.AdaptivePointType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3812,7 +4272,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetNumberOfShapeHandlePoints", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyBase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3839,7 +4303,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetNumberOfPlacementPoints", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyBase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3866,7 +4334,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetNumberOfAdaptivePoints", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyBase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3893,7 +4365,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAdaptiveShapeHandlePoint", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3921,7 +4397,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAdaptivePlacementPoint", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3949,7 +4429,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAdaptivePoint", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -3977,7 +4461,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentFamilyUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAdaptiveComponentFamily", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyBase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentFamilyUtils", typeof(object)));
 			}
@@ -4104,7 +4592,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTopographySurface", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4131,7 +4623,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTakeoffFitting", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.MEPCurve)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4159,7 +4655,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewUnionFitting", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4187,7 +4687,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCrossFitting", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4217,7 +4721,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTransitionFitting", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4245,7 +4753,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTeeFitting", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4274,7 +4786,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewElbowFitting", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4302,7 +4818,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFlexPipe", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Plumbing.FlexPipeType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4331,7 +4851,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFlexPipe", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(Autodesk.Revit.DB.Plumbing.FlexPipeType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4360,7 +4884,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFlexPipe", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(Autodesk.Revit.DB.Plumbing.FlexPipeType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4388,7 +4916,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPipe", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Plumbing.PipeType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4417,7 +4949,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPipe", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Plumbing.PipeType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4446,7 +4982,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPipe", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.Plumbing.PipeType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4475,7 +5015,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFlexDuct", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Mechanical.FlexDuctType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4504,7 +5048,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFlexDuct", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(Autodesk.Revit.DB.Mechanical.FlexDuctType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4533,7 +5081,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFlexDuct", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(Autodesk.Revit.DB.Mechanical.FlexDuctType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4561,7 +5113,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDuct", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Mechanical.DuctType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4590,7 +5146,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDuct", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Mechanical.DuctType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4619,7 +5179,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDuct", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.Mechanical.DuctType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4648,7 +5212,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4678,7 +5246,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4708,7 +5280,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4739,7 +5315,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFascia", false, new Type[]{typeof(Autodesk.Revit.DB.Architecture.FasciaType),typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4767,7 +5347,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFascia", false, new Type[]{typeof(Autodesk.Revit.DB.Architecture.FasciaType),typeof(Autodesk.Revit.DB.ReferenceArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4795,7 +5379,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGutter", false, new Type[]{typeof(Autodesk.Revit.DB.Architecture.GutterType),typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4823,7 +5411,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGutter", false, new Type[]{typeof(Autodesk.Revit.DB.Architecture.GutterType),typeof(Autodesk.Revit.DB.ReferenceArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4851,7 +5443,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSlabEdge", false, new Type[]{typeof(Autodesk.Revit.DB.SlabEdgeType),typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4879,7 +5475,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSlabEdge", false, new Type[]{typeof(Autodesk.Revit.DB.SlabEdgeType),typeof(Autodesk.Revit.DB.ReferenceArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4907,7 +5507,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCurtainSystem", false, new Type[]{typeof(Autodesk.Revit.DB.FaceArray),typeof(Autodesk.Revit.DB.CurtainSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4935,7 +5539,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCurtainSystem2", false, new Type[]{typeof(Autodesk.Revit.DB.ReferenceArray),typeof(Autodesk.Revit.DB.CurtainSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4963,7 +5571,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCurtainSystem", false, new Type[]{typeof(Autodesk.Revit.DB.ReferenceArray),typeof(Autodesk.Revit.DB.CurtainSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -4991,7 +5603,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewWire", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Electrical.WireType),typeof(Autodesk.Revit.DB.Electrical.WiringType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5023,7 +5639,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewZone", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Phase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5051,7 +5671,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRoomBoundaryLines", false, new Type[]{typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5080,7 +5704,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpaceBoundaryLines", false, new Type[]{typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5109,7 +5737,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpaceTag", false, new Type[]{typeof(Autodesk.Revit.DB.Mechanical.Space),typeof(Autodesk.Revit.DB.UV),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5138,7 +5770,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpaces2", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Phase),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5167,7 +5803,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpaces", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Phase),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5196,7 +5836,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpace", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Phase),typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5225,7 +5869,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpace", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5253,7 +5901,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpace", false, new Type[]{typeof(Autodesk.Revit.DB.Phase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5280,7 +5932,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPipingSystem", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.ConnectorSet),typeof(Autodesk.Revit.DB.Plumbing.PipeSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5309,7 +5965,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewMechanicalSystem", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.ConnectorSet),typeof(Autodesk.Revit.DB.Mechanical.DuctSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5338,7 +5998,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewElectricalSystem", false, new Type[]{typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>),typeof(Autodesk.Revit.DB.Electrical.ElectricalSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5366,7 +6030,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewElectricalSystem", false, new Type[]{typeof(Autodesk.Revit.DB.ElementSet),typeof(Autodesk.Revit.DB.Electrical.ElectricalSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5394,7 +6062,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewElectricalSystem", false, new Type[]{typeof(Autodesk.Revit.DB.Connector),typeof(Autodesk.Revit.DB.Electrical.ElectricalSystemType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5422,7 +6094,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewExtrusionRoof", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.ReferencePlane),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.RoofType),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5454,7 +6130,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFootPrintRoof", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.RoofType),typeof(Autodesk.Revit.DB.ModelCurveArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5484,7 +6164,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTruss", false, new Type[]{typeof(Autodesk.Revit.DB.Structure.TrussType),typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.Curve)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5513,7 +6197,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreas", false, new Type[]{typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.AreaCreationData>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5540,7 +6228,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewArea", false, new Type[]{typeof(Autodesk.Revit.DB.ViewPlan),typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5568,7 +6260,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaBoundaryLine", false, new Type[]{typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.ViewPlan)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5597,7 +6293,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFoundationWall", false, new Type[]{typeof(Autodesk.Revit.DB.ContFootingType),typeof(Autodesk.Revit.DB.Wall)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5625,7 +6325,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSlab", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Line),typeof(System.Double),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5656,7 +6360,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTag", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Element),typeof(System.Boolean),typeof(Autodesk.Revit.DB.TagMode),typeof(Autodesk.Revit.DB.TagOrientation),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5688,7 +6396,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewOpening", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.CurveArray),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5717,7 +6429,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewOpening", false, new Type[]{typeof(Autodesk.Revit.DB.Wall),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5746,7 +6462,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewOpening", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.CurveArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5775,7 +6495,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewOpening", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.Creation.eRefFace)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5804,7 +6528,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaBoundaryConditions", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5837,7 +6565,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLineBoundaryConditions", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5872,7 +6604,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaBoundaryConditions", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5905,7 +6641,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLineBoundaryConditions", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5940,7 +6680,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointBoundaryConditions", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double),typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -5979,7 +6723,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBeamSystem", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6009,7 +6757,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBeamSystem", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.Level)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6037,7 +6789,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBeamSystem", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6067,7 +6823,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBeamSystem", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6095,7 +6855,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRoomTag", false, new Type[]{typeof(Autodesk.Revit.DB.Architecture.Room),typeof(Autodesk.Revit.DB.UV),typeof(Autodesk.Revit.DB.View)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6124,7 +6888,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRooms2", false, new Type[]{typeof(Autodesk.Revit.DB.Phase),typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6152,7 +6920,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRooms2", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Phase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6180,7 +6952,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRooms2", false, new Type[]{typeof(Autodesk.Revit.DB.Level)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6207,7 +6983,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRooms", false, new Type[]{typeof(Autodesk.Revit.DB.Phase),typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6235,7 +7015,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRooms", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Phase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6263,7 +7047,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRooms", false, new Type[]{typeof(Autodesk.Revit.DB.Level)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6290,7 +7078,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRooms", false, new Type[]{typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.RoomCreationData>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6317,7 +7109,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRoom", false, new Type[]{typeof(Autodesk.Revit.DB.Architecture.Room),typeof(Autodesk.Revit.DB.PlanCircuit)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6345,7 +7141,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRoom", false, new Type[]{typeof(Autodesk.Revit.DB.Phase)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6372,7 +7172,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRoom", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6400,7 +7204,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGrids", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6427,7 +7235,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGrid", false, new Type[]{typeof(Autodesk.Revit.DB.Arc)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6454,7 +7266,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGrid", false, new Type[]{typeof(Autodesk.Revit.DB.Line)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6481,7 +7297,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewViewSheet", false, new Type[]{typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6508,7 +7328,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewViewDrafting", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6534,7 +7358,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFoundationSlab", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.FloorType),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6565,7 +7393,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFloor", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.FloorType),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6596,7 +7428,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFloor", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.FloorType),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6626,7 +7462,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFloor", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6654,7 +7494,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewWalls", false, new Type[]{typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.ProfiledWallCreationData>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6681,7 +7525,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewWalls", false, new Type[]{typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.RectangularWallCreationData>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6708,7 +7556,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewWall", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.WallType),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6739,7 +7591,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewWall", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.WallType),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6769,7 +7625,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewWall", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6797,7 +7657,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewWall", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.WallType),typeof(Autodesk.Revit.DB.Level),typeof(System.Double),typeof(System.Double),typeof(System.Boolean),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6830,7 +7694,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewWall", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6859,7 +7727,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpotElevation", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6892,7 +7764,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpotCoordinate", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6925,7 +7801,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLoadCombination", false, new Type[]{typeof(System.String),typeof(System.Int32),typeof(System.Int32),typeof(System.Double[]),typeof(Autodesk.Revit.DB.Structure.LoadCaseArray),typeof(Autodesk.Revit.DB.Structure.LoadCombinationArray),typeof(Autodesk.Revit.DB.Structure.LoadUsageArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6958,7 +7838,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLoadCase", false, new Type[]{typeof(System.String),typeof(Autodesk.Revit.DB.Structure.LoadNature),typeof(Autodesk.Revit.DB.Category)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -6987,7 +7871,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLoadUsage", false, new Type[]{typeof(System.String)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7014,7 +7902,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLoadNature", false, new Type[]{typeof(System.String)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7041,7 +7933,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaLoad", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.AreaLoadType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7071,7 +7967,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaLoad", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(System.Int32[]),typeof(System.Int32[]),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.AreaLoadType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7105,7 +8005,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaLoad", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(System.Int32[]),typeof(System.Int32[]),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.AreaLoadType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7137,7 +8041,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaLoad", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.AreaLoadType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7167,7 +8075,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLineLoad", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Boolean),typeof(System.Boolean),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.LineLoadType),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7201,7 +8113,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLineLoad", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Boolean),typeof(System.Boolean),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.LineLoadType),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7235,7 +8151,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLineLoad", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Boolean),typeof(System.Boolean),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.LineLoadType),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7269,7 +8189,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLineLoad", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean),typeof(System.Boolean),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.LineLoadType),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7306,7 +8230,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointLoad", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.PointLoadType),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7338,7 +8266,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointLoad", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean),typeof(Autodesk.Revit.DB.Structure.PointLoadType),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7370,7 +8302,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPathReinforcement", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.CurveArray),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7399,7 +8335,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Document);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRebarBarType", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
@@ -7505,7 +8445,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Profile);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Clone", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Profile", typeof(object)));
 			}
@@ -7691,7 +8635,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetInstanceFlipped", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7719,7 +8667,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsInstanceFlipped", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7746,7 +8698,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetInstanceShapeHandlePointElementRefIds", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7773,7 +8729,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetInstancePlacementPointElementRefIds", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7800,7 +8760,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetInstancePointElementRefIds", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7827,7 +8791,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MoveAdaptiveComponentInstance", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance),typeof(Autodesk.Revit.DB.Transform),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7856,7 +8824,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CreateAdaptiveComponentInstance", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7884,7 +8856,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAdaptiveComponentInstance", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7911,7 +8887,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "HasAdaptiveFamilySymbol", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7938,7 +8918,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.AdaptiveComponentInstanceUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAdaptiveFamilySymbol", false, new Type[]{typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AdaptiveComponentInstanceUtils", typeof(object)));
 			}
@@ -7965,7 +8949,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Clone", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -7991,7 +8979,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Project", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8018,7 +9010,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Intersect", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.IntersectionResultArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8046,7 +9042,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Intersect", false, new Type[]{typeof(Autodesk.Revit.DB.Curve)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8073,7 +9073,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsInside", false, new Type[]{typeof(System.Double),typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8101,7 +9105,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsInside", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8128,7 +9136,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ComputeDerivatives", false, new Type[]{typeof(System.Double),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8156,7 +9168,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Distance", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8183,7 +9199,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ComputeRawParameter", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8210,7 +9230,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ComputeNormalizedParameter", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8237,7 +9261,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MakeUnbound", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8263,7 +9291,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MakeBound", false, new Type[]{typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8291,7 +9323,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Evaluate", false, new Type[]{typeof(System.Double),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8319,7 +9355,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Curve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Tessellate", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
@@ -8465,7 +9505,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ModelCurve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ChangeToReferenceLine", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve", typeof(object)));
 			}
@@ -8491,7 +9535,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ModelCurve);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetVisibility", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve", typeof(object)));
 			}
@@ -8577,7 +9625,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Rehost", false, new Type[]{typeof(Autodesk.Revit.DB.SketchPlane),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8605,7 +9657,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Rehost", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8633,7 +9689,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AddProfile", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8661,7 +9721,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AddEdge", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8689,7 +9753,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AddEdge", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(System.Double),typeof(Autodesk.Revit.DB.Reference),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8719,7 +9787,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AddEdge", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8747,7 +9819,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ScaleProfile", false, new Type[]{typeof(System.Int32),typeof(System.Double),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8776,7 +9852,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ScaleSubElement", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(System.Double),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8805,7 +9885,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "RotateProfile", false, new Type[]{typeof(System.Int32),typeof(Autodesk.Revit.DB.Line),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8834,7 +9918,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "RotateSubElement", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Line),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8863,7 +9951,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MoveProfile", false, new Type[]{typeof(System.Int32),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8891,7 +9983,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MoveSubElement", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8919,7 +10015,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "DeleteProfile", false, new Type[]{typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8946,7 +10046,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "DeleteSubElement", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -8973,7 +10077,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CanManipulateProfile", false, new Type[]{typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9000,7 +10108,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CanManipulateSubElement", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9027,7 +10139,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCurvesAndEdgesReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9054,7 +10170,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetControlPoints", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9081,7 +10201,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsConnectingEdge", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9108,7 +10232,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsProfileEdge", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9135,7 +10263,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAutoCreaseEdge", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9162,7 +10294,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsSideFace", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9189,7 +10325,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsEndFace", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9216,7 +10356,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsBeginningFace", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9243,7 +10387,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsReferenceOnlyProfile", false, new Type[]{typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9270,7 +10418,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsFaceReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9297,7 +10449,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsCurveReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9324,7 +10480,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsEdgeReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9351,7 +10511,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsVertexReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9378,7 +10542,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ConstrainProfiles", false, new Type[]{typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9405,7 +10573,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetPathCurveIndexByCurveReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9432,7 +10604,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Form);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetProfileAndCurveLoopIndexFromReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(System.Int32),typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
 			}
@@ -9621,7 +10797,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.BoundingBoxUV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "BoundingBoxUV", true, new Type[]{typeof(System.Double),typeof(System.Double),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxUV", typeof(object)));
 			}
@@ -9651,7 +10831,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.BoundingBoxUV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "BoundingBoxUV", true, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxUV", typeof(object)));
 			}
@@ -9717,7 +10901,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Instance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetTotalTransform", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Instance", typeof(object)));
 			}
@@ -9743,7 +10931,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Instance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetTransform", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Instance", typeof(object)));
 			}
@@ -9769,7 +10961,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Project", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -9796,7 +10992,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Intersect", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.IntersectionResultArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -9824,7 +11024,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Intersect", false, new Type[]{typeof(Autodesk.Revit.DB.Curve)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -9851,7 +11055,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsInside", false, new Type[]{typeof(Autodesk.Revit.DB.UV),typeof(Autodesk.Revit.DB.IntersectionResult)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -9879,7 +11087,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsInside", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -9906,7 +11118,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ComputeNormal", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -9933,7 +11149,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ComputeDerivatives", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -9960,7 +11180,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetBoundingBox", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -9986,7 +11210,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Evaluate", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -10013,7 +11241,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Triangulate", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -10040,7 +11272,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Triangulate", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -10066,7 +11302,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Face);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetRegions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
@@ -10292,7 +11532,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetOriginalGeometry", false, new Type[]{typeof(Autodesk.Revit.DB.Options)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10319,7 +11563,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetFamilyPointPlacementReferences", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10345,7 +11593,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "RemoveCoping", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10372,7 +11624,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AddCoping", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyInstance)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10399,7 +11655,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetCopingIds", false, new Type[]{typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10426,7 +11686,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCopingIds", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10452,7 +11716,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetCopings", false, new Type[]{typeof(Autodesk.Revit.DB.ElementSet)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10479,7 +11747,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCopings", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10505,7 +11777,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetSubComponentIds", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10531,7 +11807,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "FlipFromToRoom", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10557,7 +11837,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "rotate", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10583,7 +11867,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "flipFacing", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -10609,7 +11897,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.FamilyInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "flipHand", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
@@ -11195,7 +12487,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Color);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Color", true, new Type[]{typeof(System.Byte),typeof(System.Byte),typeof(System.Byte)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Color", typeof(object)));
 			}
@@ -11304,7 +12600,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.GenericForm);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetVisibility", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GenericForm", typeof(object)));
 			}
@@ -11450,7 +12750,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CanBeIntersectionElement", false, new Type[]{typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
 			}
@@ -11477,7 +12781,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "RemoveAllIntersectionElements", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
 			}
@@ -11503,7 +12811,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "RemoveIntersectionElement", false, new Type[]{typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
 			}
@@ -11530,7 +12842,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AddIntersectionElement", false, new Type[]{typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
 			}
@@ -11557,7 +12873,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetAllIntersectionElements", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
 			}
@@ -11843,7 +13163,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PointCloudInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetPoints", false, new Type[]{typeof(Autodesk.Revit.DB.PointClouds.PointCloudFilter),typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PointCloudInstance", typeof(object)));
 			}
@@ -11871,7 +13195,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PointCloudInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Create", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.Transform)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PointCloudInstance", typeof(object)));
 			}
@@ -11900,7 +13228,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PointCloudInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetSelectionFilter", false, new Type[]{typeof(Autodesk.Revit.DB.PointClouds.PointCloudFilter)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PointCloudInstance", typeof(object)));
 			}
@@ -11927,7 +13259,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.PointCloudInstance);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetSelectionFilter", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PointCloudInstance", typeof(object)));
 			}
@@ -12153,7 +13489,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewReferencePointArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12179,7 +13519,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointRelativeToPoint", false, new Type[]{typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12206,7 +13550,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointOnEdgeEdgeIntersection", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12234,7 +13582,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointOnFace", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12262,7 +13614,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointOnPlane", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.UV),typeof(Autodesk.Revit.DB.UV),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12292,7 +13648,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointOnEdge", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.PointLocationOnCurve)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12320,7 +13680,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilySymbolProfile", false, new Type[]{typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12347,7 +13711,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCurveLoopsProfile", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArrArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12374,7 +13742,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewElementId", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12400,7 +13772,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.ViewPlan),typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12428,7 +13804,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTextNoteCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Double),typeof(Autodesk.Revit.DB.TextAlignFlags),typeof(Autodesk.Revit.DB.TextNoteLeaderTypes),typeof(Autodesk.Revit.DB.TextNoteLeaderStyles),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.String)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12465,7 +13845,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTextNoteCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.View),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Double),typeof(Autodesk.Revit.DB.TextAlignFlags),typeof(System.String)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12498,7 +13882,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewProfiledWallCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.WallType),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12529,7 +13917,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewProfiledWallCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.WallType),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12559,7 +13951,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewProfiledWallCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12587,7 +13983,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRectangularWallCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.Level),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12616,7 +14016,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRectangularWallCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.WallType),typeof(Autodesk.Revit.DB.Level),typeof(System.Double),typeof(System.Double),typeof(System.Boolean),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12649,7 +14053,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewRoomCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12677,7 +14085,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstanceCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.Face),typeof(Autodesk.Revit.DB.Line),typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12706,7 +14118,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstanceCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.Face),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12736,7 +14152,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstanceCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12767,7 +14187,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstanceCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12798,7 +14222,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstanceCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12828,7 +14256,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstanceCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12858,7 +14290,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstanceCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12888,7 +14324,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFamilyInstanceCreationData", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.FamilySymbol),typeof(Autodesk.Revit.DB.Structure.StructuralType)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12917,7 +14357,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpaceSet", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12943,7 +14387,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLoadCombinationArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12969,7 +14417,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLoadUsageArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -12995,7 +14447,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLoadCaseArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13021,7 +14477,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewViewSet", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13047,7 +14507,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewIntersectionResultArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13073,7 +14537,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFaceArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13099,7 +14567,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewReferenceArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13125,7 +14597,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDoubleArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13151,7 +14627,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewVolumeCalculationOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13177,7 +14657,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGBXMLImportOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13203,7 +14687,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewImageImportOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13229,7 +14717,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBuildingSiteExportOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13255,7 +14747,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFBXExportOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13281,7 +14777,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGBXMLExportOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13307,7 +14807,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDWFXExportOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13333,7 +14837,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewDWFExportOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13359,7 +14867,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSATExportOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13385,7 +14897,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewUV", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13412,7 +14928,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewUV", false, new Type[]{typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13440,7 +14960,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewUV", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13466,7 +14990,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewXYZ", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13493,7 +15021,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewXYZ", false, new Type[]{typeof(System.Double),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13522,7 +15054,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewXYZ", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13548,7 +15084,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBoundingBoxUV", false, new Type[]{typeof(System.Double),typeof(System.Double),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13578,7 +15118,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBoundingBoxUV", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13604,7 +15148,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewBoundingBoxXYZ", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13630,7 +15178,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewHermiteSpline", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Boolean),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13660,7 +15212,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewHermiteSpline", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13688,7 +15244,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewNurbSpline", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(System.Collections.Generic.IList<System.Double>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13716,7 +15276,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewNurbSpline", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(Autodesk.Revit.DB.DoubleArray),typeof(Autodesk.Revit.DB.DoubleArray),typeof(System.Int32),typeof(System.Boolean),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13748,7 +15312,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewEllipse", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(System.Double),typeof(System.Double),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13781,7 +15349,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewProjectPosition", false, new Type[]{typeof(System.Double),typeof(System.Double),typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13811,7 +15383,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewArc", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13840,7 +15416,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewArc", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(System.Double),typeof(System.Double),typeof(System.Double),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13872,7 +15452,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPoint", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13899,7 +15483,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPlane", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13926,7 +15514,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPlane", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13954,7 +15546,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPlane", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -13983,7 +15579,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewColor", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14009,7 +15609,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCombinableElementArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14035,7 +15639,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewVertexIndexPairArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14061,7 +15669,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewVertexIndexPair", false, new Type[]{typeof(System.Int32),typeof(System.Int32)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14089,7 +15701,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewElementArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14115,7 +15731,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCurveArrArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14141,7 +15761,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCurveArray", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14167,7 +15791,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewStringStringMap", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14193,7 +15821,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewGeometryOptions", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14219,7 +15851,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLineUnbound", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14247,7 +15883,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLineBound", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14275,7 +15915,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewLine", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ),typeof(Autodesk.Revit.DB.XYZ),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14304,7 +15948,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewMaterialSet", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14330,7 +15978,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewElementSet", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14356,7 +16008,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTypeBinding", false, new Type[]{typeof(Autodesk.Revit.DB.CategorySet)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14383,7 +16039,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewTypeBinding", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14409,7 +16069,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewInstanceBinding", false, new Type[]{typeof(Autodesk.Revit.DB.CategorySet)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14436,7 +16100,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewInstanceBinding", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14462,7 +16130,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.Creation.Application);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewCategorySet", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
@@ -14628,7 +16300,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Edge);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ComputeDerivatives", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
@@ -14655,7 +16331,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Edge);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AsCurveFollowingFace", false, new Type[]{typeof(Autodesk.Revit.DB.Face)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
@@ -14682,7 +16362,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Edge);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AsCurve", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
@@ -14708,7 +16392,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Edge);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "EvaluateOnFace", false, new Type[]{typeof(System.Double),typeof(Autodesk.Revit.DB.Face)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
@@ -14736,7 +16424,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Edge);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Evaluate", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
@@ -14763,7 +16455,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Edge);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "TessellateOnFace", false, new Type[]{typeof(Autodesk.Revit.DB.Face)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
@@ -14790,7 +16486,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Edge);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Tessellate", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
@@ -14856,7 +16556,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ToString", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -14882,7 +16586,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "AngleTo", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -14909,7 +16617,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "DistanceTo", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -14936,7 +16648,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAlmostEqualTo", false, new Type[]{typeof(Autodesk.Revit.DB.UV),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -14964,7 +16680,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsAlmostEqualTo", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -14991,7 +16711,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Divide", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15018,7 +16742,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Multiply", false, new Type[]{typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15045,7 +16773,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Negate", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15071,7 +16803,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Subtract", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15098,7 +16834,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Add", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15125,7 +16865,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CrossProduct", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15152,7 +16896,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "DotProduct", false, new Type[]{typeof(Autodesk.Revit.DB.UV)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15179,7 +16927,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsUnitLength", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15205,7 +16957,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsZeroLength", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15231,7 +16987,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetLength", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15257,7 +17017,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Normalize", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15283,7 +17047,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "UV", true, new Type[]{typeof(System.Double),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15311,7 +17079,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.UV);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "UV", true, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
@@ -15417,7 +17189,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ClearMaterialAspect", false, new Type[]{typeof(Autodesk.Revit.DB.MaterialAspect)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15444,7 +17220,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetMaterialAspectToIndependent", false, new Type[]{typeof(Autodesk.Revit.DB.MaterialAspect)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15471,7 +17251,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetMaterialAspectByPropertySet", false, new Type[]{typeof(Autodesk.Revit.DB.MaterialAspect),typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15499,7 +17283,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetMaterialAspect", false, new Type[]{typeof(Autodesk.Revit.DB.MaterialAspect),typeof(Autodesk.Revit.DB.ElementId),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15528,7 +17316,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetMaterialAspectPropertySet", false, new Type[]{typeof(Autodesk.Revit.DB.MaterialAspect)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15555,7 +17347,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCutPatternColor", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15581,7 +17377,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetCutPatternId", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15607,7 +17407,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetSmoothness", false, new Type[]{typeof(System.Single)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15634,7 +17438,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetSmoothness", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15660,7 +17468,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Create", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.String)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15688,7 +17500,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Material);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Duplicate", false, new Type[]{typeof(System.String)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
@@ -15975,7 +17791,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Solid);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "getGeometry", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid", typeof(object)));
 			}
@@ -16001,7 +17821,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Solid);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "ComputeCentroid", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid", typeof(object)));
 			}
@@ -16207,7 +18031,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Blend);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetVertexConnectionMap", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend", typeof(object)));
 			}
@@ -16353,7 +18181,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.SweptBlend);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetVertexConnectionMap", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend", typeof(object)));
 			}
@@ -16751,7 +18583,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Wall);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Create", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.Curve>),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.ElementId),typeof(System.Boolean),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall", typeof(object)));
 			}
@@ -16783,7 +18619,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Wall);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Create", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.Curve>),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.ElementId),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall", typeof(object)));
 			}
@@ -16814,7 +18654,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Wall);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Create", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.Curve>),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall", typeof(object)));
 			}
@@ -16843,7 +18687,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Wall);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Create", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.ElementId),typeof(System.Double),typeof(System.Double),typeof(System.Boolean),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall", typeof(object)));
 			}
@@ -16877,7 +18725,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Wall);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Create", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.Curve),typeof(Autodesk.Revit.DB.ElementId),typeof(System.Boolean)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall", typeof(object)));
 			}
@@ -16907,7 +18759,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.Wall);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Flip", false, new Type[]{}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall", typeof(object)));
 			}
@@ -17053,7 +18909,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "RotateElement", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.Line),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17083,7 +18943,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "RotateElements", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>),typeof(Autodesk.Revit.DB.Line),typeof(System.Double)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17113,7 +18977,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MirrorElement", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.Plane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17142,7 +19010,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MirrorElements", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>),typeof(Autodesk.Revit.DB.Plane)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17171,7 +19043,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CopyElement", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17200,7 +19076,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CopyElements", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17229,7 +19109,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MoveElement", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17258,7 +19142,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "MoveElements", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17287,7 +19175,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CanMirrorElement", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(Autodesk.Revit.DB.ElementId)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}
@@ -17315,7 +19207,11 @@ namespace Dynamo.Nodes
 			base_type = typeof(Autodesk.Revit.DB.ElementTransformUtils);
 			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "CanMirrorElements", false, new Type[]{typeof(Autodesk.Revit.DB.Document),typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)}, out return_type);
 			pi = mi.GetParameters();
-			if (!mi.IsStatic && !mi.IsConstructor)
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
 			{
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ElementTransformUtils", typeof(object)));
 			}

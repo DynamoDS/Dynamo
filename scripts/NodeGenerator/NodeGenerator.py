@@ -293,7 +293,11 @@ class RevitMethod:
 		# use reflection to build an input port if the method is not
 		# static and is not the constructor
 		inport_add_condition =[
-		'\t\t\tif (!mi.IsStatic && !mi.IsConstructor)\n',
+		'\t\t\tif (!mi.IsStatic &&\n',
+		'\t\t\t\t!mi.IsConstructor &&\n',
+		'\t\t\t\tbase_type != typeof(Autodesk.Revit.Creation.Document) &&\n',
+        '\t\t\t\tbase_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&\n',
+        '\t\t\t\tbase_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))\n',
 		'\t\t\t{\n',
 		'\t\t\t\tInPortData.Add(new PortData(\"' + match_inport_type(self.type) + '\", \"' + self.type + '\", typeof(object)));\n',
 		'\t\t\t}\n']
