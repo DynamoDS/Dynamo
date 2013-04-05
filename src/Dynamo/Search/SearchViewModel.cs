@@ -190,7 +190,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Performs a search given a search query and updates the observable SearchResults property.
+        ///     Asyncrhonously erforms a search and updates the observable SearchResults property.
         /// </summary>
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
@@ -208,6 +208,25 @@ namespace Dynamo.Search
                                                                 }
                                                                 SelectedIndex = 0;
                                                            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        /// <summary>
+        ///     Synchronously Performs a search and updates the observable SearchResults property
+        ///     on the current thread.
+        /// </summary>
+        /// <param name="query"> The search query </param>
+        internal void SearchAndUpdateResultsSync(string query)
+        {
+            if (Visible != Visibility.Visible)
+                return;
+
+            var result = Search(query)
+            SearchResults.Clear();
+            foreach (SearchElementBase node in result)
+            {
+                SearchResults.Add(node);
+            }
+            SelectedIndex = 0;
         }
 
         /// <summary>
