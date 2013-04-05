@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Commands;
@@ -191,20 +192,23 @@ namespace Dynamo.Search
         /// <summary>
         ///     Performs a search given a search query and updates the observable SearchResults property.
         /// </summary>
-        /// <param name="search"> The search query </param>
-        internal void SearchAndUpdateResults(string search)
+        /// <param name="query"> The search query </param>
+        internal void SearchAndUpdateResults(string query)
         {
             if (Visible != Visibility.Visible)
                 return;
 
             SearchResults.Clear();
 
-            foreach (SearchElementBase node in Search(search))
-            {
-                SearchResults.Add(node);
-            }
-
-            SelectedIndex = 0;
+            Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>Search(query) )
+                                                        .ContinueWith((t) =>
+                                                            {
+                                                                foreach (SearchElementBase node in t.Result)
+                                                                {
+                                                                    SearchResults.Add(node);
+                                                                }
+                                                                SelectedIndex = 0;
+                                                           }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         /// <summary>
