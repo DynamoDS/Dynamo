@@ -405,7 +405,7 @@ namespace Dynamo
                             nodeUI.Visibility = Visibility.Hidden;
                         };
 
-                    nodeUI.GUID = new Guid();
+                    nodeUI.GUID = Guid.NewGuid();
                     nodeUI.Margin = new Thickness(5, 30, 5, 5);
 
                     double target = Bench.sidebarGrid.Width - 30;
