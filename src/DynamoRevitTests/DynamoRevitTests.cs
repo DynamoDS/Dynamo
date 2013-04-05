@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Dynamo.Commands;
 using Dynamo.Utilities;
@@ -8,12 +9,12 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class DynamoElementsTests
+    internal class DynamoRevitTests
     {
         [SetUp]
         public void Init()
         {
-            StartDynamo();
+            StartRevit();
         }
 
         [TearDown]
@@ -23,15 +24,16 @@ namespace Dynamo.Tests
         }
 
         private static string TempFolder;
+        private static Process revitProcess;
 
         private static void StartRevit()
         {
-
+            revitProcess = Process.Start(@"C:\Program Files\Autodesk\Revit Architecture 2013\Program\Revit.exe");
         }
 
         private static void StartDynamo()
         {
-
+            
         }
 
         public static void EmptyTempFolder()

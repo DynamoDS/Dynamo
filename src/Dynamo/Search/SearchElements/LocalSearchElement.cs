@@ -90,14 +90,14 @@ namespace Dynamo.Search.SearchElements
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
             dynSettings.Controller.ProcessCommandQueue();
 
             // select node
             var placedNode = dynSettings.Controller.Nodes.Find((node) => node.NodeUI.GUID == guid);
             if (placedNode != null)
             {
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
             }
         }

@@ -35,7 +35,7 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private readonly List<Tuple<object, object>> commandQueue = new List<Tuple<object, object>>();
+        private readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
         private string UnlockLoadPath;
         private dynWorkspace _cspace;
         private bool isProcessingCommandQueue = false;
@@ -68,7 +68,7 @@ namespace Dynamo
             get { return isProcessingCommandQueue; }
         }
 
-        public List<Tuple<object, object>> CommandQueue
+        public Queue<Tuple<object, object>> CommandQueue
         {
             get { return commandQueue; }
         }
@@ -189,8 +189,9 @@ namespace Dynamo
 
         public void ProcessCommandQueue()
         {
-            foreach (var cmdData in commandQueue)
+            while (commandQueue.Count > 0)
             {
+                var cmdData = commandQueue.Dequeue();
                 var cmd = cmdData.Item1 as ICommand;
                 if (cmd != null)
                 {

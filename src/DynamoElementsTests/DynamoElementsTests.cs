@@ -70,6 +70,22 @@ namespace Dynamo.Tests
             Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
+        // OpenCommand
+
+        [Test]
+        public void CanOpenGoodFile()
+        {
+            // NOTE rom PB: this test fails due to the fact that Bench is locked as it was never shown in these tests
+            //              The same test is present in DynamoElementsUITests.cs, where it succeeds
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.OpenCmd, openPath));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            Assert.AreEqual(5, dynSettings.Controller.CurrentSpace.Nodes.Count);
+        }
+
+
         [Test]
         public void CanAddANodeByName()
         {
@@ -77,7 +93,7 @@ namespace Dynamo.Tests
             sumData.Add("x", 400.0);
             sumData.Add("y", 100.0);
             sumData.Add("name", "+");
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
             dynSettings.Controller.ProcessCommandQueue();
 
             Assert.AreEqual(dynSettings.Controller.CurrentSpace.Nodes.Count, 1);
@@ -93,7 +109,7 @@ namespace Dynamo.Tests
             inputs.Add("text", "This is a test note.");
             inputs.Add("workspace", dynSettings.Controller.CurrentSpace);
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddNoteCmd, inputs));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddNoteCmd, inputs));
             dynSettings.Controller.ProcessCommandQueue();
 
             Assert.AreEqual(dynSettings.Controller.CurrentSpace.Notes.Count, 1);
@@ -107,18 +123,18 @@ namespace Dynamo.Tests
             // select all of them one by one
             for (int i = 0; i < numNodes; i++)
             {
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                                                                                      null));
                 Assert.DoesNotThrow(() => dynSettings.Controller.ProcessCommandQueue());
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd, 5));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd, 5));
                 Assert.DoesNotThrow(() => dynSettings.Controller.ProcessCommandQueue());
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                                                                                      "noodle"));
                 Assert.DoesNotThrow(() => dynSettings.Controller.ProcessCommandQueue());
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                                                                                      new StringBuilder()));
                 Assert.DoesNotThrow(() => dynSettings.Controller.ProcessCommandQueue());
             }
@@ -134,13 +150,13 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "+");
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                                                                                      dynSettings.Controller.Nodes[i]
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -155,7 +171,7 @@ namespace Dynamo.Tests
         public void CanClearLog()
         {
             Assert.AreNotEqual(0, dynSettings.Bench.LogText.Length);
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ClearLogCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearLogCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
             Assert.AreEqual(0, dynSettings.Bench.LogText.Length);
         }
@@ -165,7 +181,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanClearWorkspaceWithEmptyWorkspace()
         {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ClearCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
             Assert.AreEqual(0, dynSettings.Controller.Nodes.Count());
         }
@@ -191,26 +207,16 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(0, dynSettings.Controller.Nodes.Count());
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData1));
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData2));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData1));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData2));
             dynSettings.Controller.ProcessCommandQueue();
 
             Assert.AreEqual(3, dynSettings.Controller.Nodes.Count());
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ClearCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
             Assert.AreEqual(0, dynSettings.Controller.Nodes.Count());
-        }
-
-        [Test]
-        public void CanCloseSplashScreenFromDefaultState()
-        {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CloseSplashScreenCmd,
-                                                                                 null));
-            dynSettings.Controller.ProcessCommandQueue();
-            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
-                (Action) (() => { Assert.AreEqual(false, dynSettings.Controller.SplashScreen.IsVisible); }));
         }
 
         [Test]
@@ -223,13 +229,13 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "+");
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                                                                                      dynSettings.Controller.Nodes[i]
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -237,84 +243,122 @@ namespace Dynamo.Tests
                 Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
             }
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
         }
 
-        //[Test]
-        //public void CanAdd100NodesToClipboardAndPaste()
-        //{
-        //    int numNodes = 100;
+        [Test]
+        public void CanAdd1NodeToClipboardAndPaste()
+        {
+            int numNodes = 1;
 
-        //    // create 100 nodes, and select them as you go
-        //    for (int i = 0; i < numNodes; i++)
-        //    {
-        //        var sumData = new Dictionary<string, object>();
-        //        sumData.Add("name", "+");
-        //        dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
-        //                                                                             sumData));
-        //        dynSettings.Controller.ProcessCommandQueue();
+            // create 100 nodes, and select them as you go
+            for (int i = 0; i < numNodes; i++)
+            {
+                var sumData = new Dictionary<string, object>();
+                sumData.Add("name", "+");
+                sumData.Add("guid", Guid.NewGuid());
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                                                                                     sumData));
+                dynSettings.Controller.ProcessCommandQueue();
 
-        //        Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
 
-        //        dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
-        //                                                                             dynSettings.Controller.Nodes[i]
-        //                                                                                 .NodeUI));
-        //        dynSettings.Controller.ProcessCommandQueue();
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                                                                                     dynSettings.Controller.Nodes[i]
+                                                                                         .NodeUI));
+                dynSettings.Controller.ProcessCommandQueue();
 
-        //        Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
-        //    }
+                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+            }
 
-        //    dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
-        //    dynSettings.Controller.ProcessCommandQueue();
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
 
-        //    Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
+            Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
 
-        //    dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.PasteCmd, null));
-        //    dynSettings.Controller.ProcessCommandQueue();
-        //}
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
 
-        //[Test]
-        //public void CanAdd100NodesToClipboardAndPaste3Times()
-        //{
-        //    int numNodes = 100;
+            Assert.AreEqual(numNodes * 2, dynSettings.Controller.CurrentSpace.Nodes.Count);
+        }
 
-        //    // create 100 nodes, and select them as you go
-        //    for (int i = 0; i < numNodes; i++)
-        //    {
-        //        var sumData = new Dictionary<string, object>();
-        //        sumData.Add("name", "+");
-        //        dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
-        //                                                                             sumData));
-        //        dynSettings.Controller.ProcessCommandQueue();
+        [Test]
+        public void CanAdd100NodesToClipboardAndPaste()
+        {
+            int numNodes = 100;
 
-        //        Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
+            // create 100 nodes, and select them as you go
+            for (int i = 0; i < numNodes; i++)
+            {
+                var sumData = new Dictionary<string, object>();
+                sumData.Add("name", "+");
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                                                                                     sumData));
+                dynSettings.Controller.ProcessCommandQueue();
 
-        //        dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
-        //                                                                             dynSettings.Controller.Nodes[i]
-        //                                                                                 .NodeUI));
-        //        dynSettings.Controller.ProcessCommandQueue();
+                Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
 
-        //        Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
-        //    }
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                                                                                     dynSettings.Controller.Nodes[i]
+                                                                                         .NodeUI));
+                dynSettings.Controller.ProcessCommandQueue();
 
-        //    dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
-        //    dynSettings.Controller.ProcessCommandQueue();
+                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+            }
 
-        //    Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
 
-        //    int numPastes = 3;
-        //    for (int i = 0; i < numPastes; i++)
-        //    {
-        //        dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.PasteCmd, null));
-        //        dynSettings.Controller.ProcessCommandQueue();
+            Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
 
-        //        Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
-        //        Assert.AreEqual(numNodes*2, dynSettings.Controller.CurrentSpace.Nodes.Count);
-        //    }
-        //}
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            Assert.AreEqual(numNodes * 2, dynSettings.Controller.CurrentSpace.Nodes.Count);
+        }
+
+        [Test]
+        public void CanAdd100NodesToClipboardAndPaste3Times()
+        {
+            int numNodes = 100;
+
+            // create 100 nodes, and select them as you go
+            for (int i = 0; i < numNodes; i++)
+            {
+                var sumData = new Dictionary<string, object>();
+                sumData.Add("name", "+");
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                                                                                     sumData));
+                dynSettings.Controller.ProcessCommandQueue();
+
+                Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
+
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                                                                                     dynSettings.Controller.Nodes[i]
+                                                                                         .NodeUI));
+                dynSettings.Controller.ProcessCommandQueue();
+
+                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+            }
+
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
+
+            int numPastes = 3;
+            for (int i = 1; i <= numPastes; i++)
+            {
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.PasteCmd, null));
+                dynSettings.Controller.ProcessCommandQueue();
+
+                Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
+                Assert.AreEqual(numNodes * (i+1) , dynSettings.Controller.CurrentSpace.Nodes.Count);
+            }
+        }
 
         [Test]
         public void CanAddOneNodeToClipboard()
@@ -326,13 +370,13 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "+");
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                                                                                      dynSettings.Controller.Nodes[i]
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -340,29 +384,19 @@ namespace Dynamo.Tests
                 Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
             }
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
 
             Assert.AreEqual(numNodes, dynSettings.Controller.ClipBoard.Count);
         }
 
-        [Test]
-        public void CanHideConsoleWhenShown()
-        {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(
-                DynamoCommands.ToggleConsoleShowingCmd, null));
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(
-                DynamoCommands.ToggleConsoleShowingCmd, null));
-            dynSettings.Controller.ProcessCommandQueue();
-            Assert.False(dynSettings.Bench.ConsoleShowing);
-        }
 
         // LayoutAll
 
         [Test]
         public void CanLayoutAll()
         {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.LayoutAllCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.LayoutAllCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
             Assert.AreNotEqual(0, dynSettings.Controller.Nodes.Count());
         }
@@ -378,27 +412,6 @@ namespace Dynamo.Tests
         //    //TODO: loadWorkspaceFromFileCommand
         //}
 
-
-        // OpenCommand
-
-        [Test]
-        public void CanOpenGoodFile()
-        {
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string openPath = Path.Combine(directory, @"..\..\test\good_dyns\multiplicationAndAdd.dyn");
-
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.OpenCmd, openPath));
-            dynSettings.Controller.ProcessCommandQueue();
-
-            Assert.AreEqual(5, dynSettings.Controller.Nodes.Count());
-        }
-
-        //[Test]
-        //public void CanHandleBadFileWhenOpening()
-        //{
-        // TODO: create bad file for opening
-        //}
-
     // SaveAsCommand
 
         [Test]
@@ -406,7 +419,7 @@ namespace Dynamo.Tests
         {
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveAsCmd, path));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveAsCmd, path));
             dynSettings.Controller.ProcessCommandQueue();
 
             var tempFldrInfo = new DirectoryInfo(TempFolder);
@@ -423,7 +436,7 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "+");
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
 
@@ -432,7 +445,7 @@ namespace Dynamo.Tests
 
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveAsCmd, path));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveAsCmd, path));
             dynSettings.Controller.ProcessCommandQueue();
 
             var tempFldrInfo = new DirectoryInfo(TempFolder);
@@ -445,7 +458,7 @@ namespace Dynamo.Tests
         [Test]
         public void CannotSaveEmptyWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
 
             Assert.IsNull(dynSettings.Controller.CurrentSpace.FilePath);
@@ -460,33 +473,20 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "+");
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
             }
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SaveCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
 
             Assert.IsNull(dynSettings.Controller.CurrentSpace.FilePath);
         }
 
-    // SaveImageCommand
 
-        [Test]
-        public void CanSaveImage()
-        {
-            string path = Path.Combine(TempFolder, "output.png");
-
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, path));
-            dynSettings.Controller.ProcessCommandQueue();
-
-            Assert.True(File.Exists(path));
-            File.Delete(path);
-            Assert.False(File.Exists(path));
-        }
 
         [Test]
         public void CanSelectAndNotThrowExceptionWhenPassedIncorrectType()
@@ -496,16 +496,16 @@ namespace Dynamo.Tests
             // select all of them one by one
             for (int i = 0; i < numNodes; i++)
             {
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, null));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, null));
                 Assert.DoesNotThrow(() => dynSettings.Controller.ProcessCommandQueue());
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, 5));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, 5));
                 Assert.DoesNotThrow(() => dynSettings.Controller.ProcessCommandQueue());
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, "noodle"));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, "noodle"));
                 Assert.DoesNotThrow(() => dynSettings.Controller.ProcessCommandQueue());
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd,
                                                                                      new StringBuilder()));
                 Assert.DoesNotThrow(() => dynSettings.Controller.ProcessCommandQueue());
             }
@@ -521,13 +521,13 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "+");
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd,
                                                                                      dynSettings.Controller.Nodes[i]
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -537,49 +537,11 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanShowAndCloseSplashScreen()
-        {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ShowSplashScreenCmd,
-                                                                                 null));
-            dynSettings.Controller.ProcessCommandQueue();
-            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
-                (Action) (() =>
-                    {
-                        Assert.AreEqual(true, dynSettings.Controller.SplashScreen.IsVisible);
-                        dynSettings.Controller.CommandQueue.Add(
-                            Tuple.Create<object, object>(DynamoCommands.CloseSplashScreenCmd, null));
-                        dynSettings.Controller.ProcessCommandQueue();
-                        Assert.AreEqual(false, dynSettings.Controller.SplashScreen.IsVisible);
-                    }));
-        }
-
-        // ToggleConsoleShowingCommand
-
-        [Test]
-        public void CanShowConsoleWhenHidden()
-        {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(
-                DynamoCommands.ToggleConsoleShowingCmd, null));
-            dynSettings.Controller.ProcessCommandQueue();
-            Assert.True(dynSettings.Bench.ConsoleShowing);
-        }
-
-        [Test]
-        public void CanShowSplashScreenFromDefaultState()
-        {
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.ShowSplashScreenCmd,
-                                                                                 null));
-            dynSettings.Controller.ProcessCommandQueue();
-            dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
-                (Action) (() => { Assert.AreEqual(true, dynSettings.Controller.SplashScreen.IsVisible); }));
-        }
-
-        [Test]
         public void CanStayHomeWhenInHomeWorkspace()
         {
             for (int i = 0; i < 20; i++)
             {
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.HomeCmd, null));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.HomeCmd, null));
                 Assert.AreEqual(true, dynSettings.Controller.ViewingHomespace);
             }
         }
@@ -603,9 +565,9 @@ namespace Dynamo.Tests
             numData2.Add("y", 300.0);
             numData2.Add("name", "Number");
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData1));
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData2));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData1));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, numData2));
             dynSettings.Controller.ProcessCommandQueue();
 
             //update the layout so the following
@@ -627,7 +589,7 @@ namespace Dynamo.Tests
             cd1.Add("port_start", 0);
             cd1.Add("port_end", 0);
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, cd1));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, cd1));
             var cd2 = new Dictionary<string, object>();
             cd2.Add("start", dynSettings.Controller.Nodes[2].NodeUI); //first number node
             cd2.Add("end", dynSettings.Controller.Nodes[0].NodeUI); //+ node
@@ -636,8 +598,8 @@ namespace Dynamo.Tests
 
             dynSettings.Bench.LogText = "";
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, cd2));
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.RunExpressionCmd, null));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, cd2));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.RunExpressionCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
 
             //validate that the expression for addition is as expected
@@ -649,22 +611,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(dynSettings.Controller.Nodes.Count, 3);
         }
 
-        [Test]
-        public void CannotSaveImageWithBadPath()
-        {
-            string path = "W;\aelout put.png";
 
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SaveImageCmd, path));
-
-            var tempFldrInfo = new DirectoryInfo(TempFolder);
-            Assert.AreEqual(0, tempFldrInfo.GetFiles().Length);
-        }
-
-        [Test]
-        public void ConsoleIsHiddenOnOpen()
-        {
-            Assert.False(dynSettings.Bench.ConsoleShowing);
-        }
 
         [Test]
         public void SelectionDoesNotChangeWhenAddingAlreadySelectedNode()
@@ -676,13 +623,13 @@ namespace Dynamo.Tests
             {
                 var sumData = new Dictionary<string, object>();
                 sumData.Add("name", "+");
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
 
                 Assert.AreEqual(i + 1, dynSettings.Controller.CurrentSpace.Nodes.Count);
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                                                                                      dynSettings.Controller.Nodes[i]
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -693,7 +640,7 @@ namespace Dynamo.Tests
             // the number selected stays the same
             for (int i = 0; i < numNodes; i++)
             {
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                                                                                      dynSettings.Controller.Nodes[i]
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();

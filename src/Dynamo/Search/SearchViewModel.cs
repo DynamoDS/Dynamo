@@ -198,16 +198,24 @@ namespace Dynamo.Search
             if (Visible != Visibility.Visible)
                 return;
             
-            Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>Search(query) )
-                                                        .ContinueWith((t) =>
-                                                            {
-                                                                SearchResults.Clear();
-                                                                foreach (SearchElementBase node in t.Result)
-                                                                {
-                                                                    SearchResults.Add(node);
-                                                                }
-                                                                SelectedIndex = 0;
-                                                           }, TaskScheduler.FromCurrentSynchronizationContext());
+            Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
+                {
+                    lock (SearchDictionary) 
+                    {
+                        return Search(query);
+                    }
+                }).ContinueWith((t) => {    
+                                            lock (SearchResults)
+                                            {
+                                                SearchResults.Clear();
+                                                foreach (SearchElementBase node in t.Result)
+                                                {
+                                                    SearchResults.Add(node);
+                                                }
+                                                SelectedIndex = 0;
+                                            }
+                                        }
+                                , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
 
         /// <summary>

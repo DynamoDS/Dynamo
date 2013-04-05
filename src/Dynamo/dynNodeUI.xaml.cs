@@ -821,7 +821,7 @@ namespace Dynamo.Controls
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             dynSettings.Bench.mainGrid.Focus();
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
             dynSettings.Controller.ProcessCommandQueue();
         }
 

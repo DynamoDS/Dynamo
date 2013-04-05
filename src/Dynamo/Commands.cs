@@ -954,6 +954,10 @@ namespace Dynamo.Commands
             {
                 node.NodeUI.GUID = (Guid) data["guid"];
             }
+            else
+            {
+                node.NodeUI.GUID = Guid.NewGuid();
+            }
 
             // by default place node at center
             var x = dynSettings.Bench.outerCanvas.ActualWidth/2.0;
@@ -1128,8 +1132,8 @@ namespace Dynamo.Commands
             //paste contents in
             dynSettings.Bench.WorkBench.Selection.RemoveAll();
 
-            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x.GetType().IsAssignableFrom(typeof(dynNodeUI)));
-            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x.GetType() == typeof(dynConnector));
+            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x is dynNodeUI);
+            var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
 
             foreach (dynNodeUI node in nodes)
             {
@@ -1163,7 +1167,7 @@ namespace Dynamo.Commands
                     nodeData.Add("value", node.InPorts.Count);
                 }
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeData));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeData));
             }
 
             //process the command queue so we have 
@@ -1200,7 +1204,7 @@ namespace Dynamo.Commands
                 connectionData.Add("port_start", c.Start.Index);
                 connectionData.Add("port_end", c.End.Index);
 
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, connectionData));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, connectionData));
             }
             
             //process the queue again to create the connectors
@@ -1208,7 +1212,7 @@ namespace Dynamo.Commands
 
             foreach (DictionaryEntry de in nodeLookup)
             {
-                dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd, 
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd, 
                     dynSettings.Controller.CurrentSpace.Nodes
                     .Select(x => x.NodeUI)
                     .Where(x => x.GUID == (Guid)de.Value).FirstOrDefault()));
