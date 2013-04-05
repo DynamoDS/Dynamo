@@ -220,7 +220,7 @@ namespace Dynamo.Search
             if (Visible != Visibility.Visible)
                 return;
 
-            var result = Search(query)
+            var result = Search(query);
             SearchResults.Clear();
             foreach (SearchElementBase node in result)
             {
