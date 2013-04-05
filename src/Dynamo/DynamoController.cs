@@ -1462,15 +1462,22 @@ namespace Dynamo
                     //    continue;
                     //}
 
-                    if (start != null && end != null && start != end)
+                    try
                     {
-                        var newConnector = new dynConnector(
-                            start.NodeUI, end.NodeUI,
-                            startIndex, endIndex,
-                            portType, false
-                            );
+                        if (start != null && end != null && start != end)
+                        {
+                            var newConnector = new dynConnector(
+                                start.NodeUI, end.NodeUI,
+                                startIndex, endIndex,
+                                portType, false
+                                );
 
-                        ws.Connectors.Add(newConnector);
+                            ws.Connectors.Add(newConnector);
+                        }
+                    }
+                    catch
+                    {
+                        Bench.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NodeUI.GUID, end.NodeUI.GUID));
                     }
                 }
 
