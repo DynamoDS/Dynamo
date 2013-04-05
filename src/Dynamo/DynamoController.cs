@@ -1370,7 +1370,16 @@ namespace Dynamo
                     if (typeName.StartsWith(oldNamespace))
                         typeName = "Dynamo.Nodes." + typeName.Remove(0, oldNamespace.Length);
 
+                    //test the GUID to confirm that it is non-zero
+                    //if it is zero, then we have to fix it
+                    //this will break the connectors, but it won't keep
+                    //propagating bad GUIDs
                     var guid = new Guid(guidAttrib.Value);
+                    if (guid == Guid.Empty)
+                    {
+                        guid = Guid.NewGuid();
+                    }
+
                     string nickname = nicknameAttrib.Value;
 
                     double x = Convert.ToDouble(xAttrib.Value);
@@ -1640,7 +1649,17 @@ namespace Dynamo
                     XmlAttribute yAttrib = elNode.Attributes[4];
 
                     string typeName = typeAttrib.Value;
+
+                    //test the GUID to confirm that it is non-zero
+                    //if it is zero, then we have to fix it
+                    //this will break the connectors, but it won't keep
+                    //propagating bad GUIDs
                     var guid = new Guid(guidAttrib.Value);
+                    if (guid == Guid.Empty)
+                    {
+                        guid = Guid.NewGuid();
+                    }
+
                     string nickname = nicknameAttrib.Value;
 
                     double x = Convert.ToDouble(xAttrib.Value);
