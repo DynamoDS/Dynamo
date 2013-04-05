@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_GetHubId")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Id of associated Hub.")]
 	public class API_ReferencePoint_GetHubId : dynRevitAPINode
 	{
@@ -50,7 +50,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_GetVisibility")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the visibility for the point.")]
 	public class API_ReferencePoint_GetVisibility : dynRevitAPINode
 	{
@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_GetCoordinatePlaneReferenceXZ")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("A reference for the XZ plane of the coordinatesystem.")]
 	public class API_ReferencePoint_GetCoordinatePlaneReferenceXZ : dynRevitAPINode
 	{
@@ -110,7 +110,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_GetCoordinatePlaneReferenceYZ")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("A reference for the YZ plane of the coordinatesystem.")]
 	public class API_ReferencePoint_GetCoordinatePlaneReferenceYZ : dynRevitAPINode
 	{
@@ -140,7 +140,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_GetCoordinatePlaneReferenceXY")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("A reference for the XY plane of the coordinatesystem.")]
 	public class API_ReferencePoint_GetCoordinatePlaneReferenceXY : dynRevitAPINode
 	{
@@ -170,7 +170,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_GetInterpolatingCurves")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The set of CurveByPoints elements that interpolatea ReferencePoint.")]
 	public class API_ReferencePoint_GetInterpolatingCurves : dynRevitAPINode
 	{
@@ -200,7 +200,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_GetCoordinateSystem")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The position and orientation of the ReferencePoint.")]
 	public class API_ReferencePoint_GetCoordinateSystem : dynRevitAPINode
 	{
@@ -230,7 +230,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_SetPointElementReference")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Change the rule for computing the location of the ReferencePoint relative to other elements inthe document.")]
 	public class API_ReferencePoint_SetPointElementReference : dynRevitAPINode
 	{
@@ -261,7 +261,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ReferencePoint_GetPointElementReference")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieve a copy of the rule that computes thelocation of the ReferencePoint relative to other elements inthe document.")]
 	public class API_ReferencePoint_GetPointElementReference : dynRevitAPINode
 	{
@@ -288,7 +288,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ReferencePoint_ShowNormalReferencePlaneOnly")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Whether all three coordinate planes are shown, or only thenormal (XY) plane.")]
 	public class API_ReferencePoint_ShowNormalReferencePlaneOnly : dynRevitTransactionNodeWithOneOutput
 	{
@@ -308,7 +308,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ReferencePoint_CoordinatePlaneVisibility")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Visibility settings for the coordinate reference planes.")]
 	public class API_ReferencePoint_CoordinatePlaneVisibility : dynRevitTransactionNodeWithOneOutput
 	{
@@ -328,7 +328,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ReferencePoint_Visible")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Whether the point is visible when the family is loadedinto a project.")]
 	public class API_ReferencePoint_Visible : dynRevitTransactionNodeWithOneOutput
 	{
@@ -348,7 +348,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ReferencePoint_Position")]
 	[NodeSearchTags("point","reference","pt","coordinate","system")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REFERENCEPOINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The position of the ReferencePoint.")]
 	public class API_ReferencePoint_Position : dynRevitTransactionNodeWithOneOutput
 	{
@@ -368,7 +368,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("HermiteFace_MixedDerivs")]
 	[NodeSearchTags("face","hermite")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITEFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Mixed derivatives of the surface.")]
 	public class API_HermiteFace_MixedDerivs : dynRevitTransactionNodeWithOneOutput
 	{
@@ -388,7 +388,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("HermiteFace_Points")]
 	[NodeSearchTags("face","hermite")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITEFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Interpolation points of the surface.")]
 	public class API_HermiteFace_Points : dynRevitTransactionNodeWithOneOutput
 	{
@@ -411,7 +411,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Transform_AlmostEqual")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines whether this transformation and the specified transformation are the same within the tolerance (1.0e-09).")]
 	public class API_Transform_AlmostEqual : dynRevitAPINode
 	{
@@ -442,7 +442,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Transform_ScaleBasisAndOrigin")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Scales the basis vectors and the origin of this transformation and returns the result.")]
 	public class API_Transform_ScaleBasisAndOrigin : dynRevitAPINode
 	{
@@ -473,7 +473,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Transform_ScaleBasis")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Scales the basis vectors of this transformation and returns the result.")]
 	public class API_Transform_ScaleBasis : dynRevitAPINode
 	{
@@ -504,7 +504,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Transform_Multiply")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Multiplies this transformation by the specified transformation and returns the result.")]
 	public class API_Transform_Multiply : dynRevitAPINode
 	{
@@ -535,7 +535,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Transform_OfVector")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Applies the transform to the vector")]
 	public class API_Transform_OfVector : dynRevitAPINode
 	{
@@ -566,7 +566,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Transform_OfPoint")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Applies the transformation to the point and returns the result.")]
 	public class API_Transform_OfPoint : dynRevitAPINode
 	{
@@ -594,7 +594,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_Inverse")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The inverse transformation of this transformation.")]
 	public class API_Transform_Inverse : dynRevitTransactionNodeWithOneOutput
 	{
@@ -614,7 +614,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_Determinant")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The determinant of this transformation.")]
 	public class API_Transform_Determinant : dynRevitTransactionNodeWithOneOutput
 	{
@@ -634,7 +634,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_IsConformal")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value that indicates whether this transformation is conformal.")]
 	public class API_Transform_IsConformal : dynRevitTransactionNodeWithOneOutput
 	{
@@ -654,7 +654,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_HasReflection")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value that indicates whether this transformation produces reflection.")]
 	public class API_Transform_HasReflection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -674,7 +674,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_Scale")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The real number that represents the scale of the transformation.")]
 	public class API_Transform_Scale : dynRevitTransactionNodeWithOneOutput
 	{
@@ -694,7 +694,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_IsTranslation")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value that indicates whether this transformation is a translation.")]
 	public class API_Transform_IsTranslation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -714,7 +714,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_IsIdentity")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value that indicates whether this transformation is an identity.")]
 	public class API_Transform_IsIdentity : dynRevitTransactionNodeWithOneOutput
 	{
@@ -734,7 +734,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_Origin")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Defines the origin of the old coordinate system in the new coordinate system.")]
 	public class API_Transform_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -754,7 +754,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_BasisZ")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The basis of the Z axis of this transformation.")]
 	public class API_Transform_BasisZ : dynRevitTransactionNodeWithOneOutput
 	{
@@ -774,7 +774,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_BasisY")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The basis of the Y axis of this transformation.")]
 	public class API_Transform_BasisY : dynRevitTransactionNodeWithOneOutput
 	{
@@ -794,7 +794,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Transform_BasisX")]
 	[NodeSearchTags("transform","coordinate system","cs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_TRANSFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The basis of the X axis of this transformation.")]
 	public class API_Transform_BasisX : dynRevitTransactionNodeWithOneOutput
 	{
@@ -814,7 +814,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Mesh_MaterialElementId")]
 	[NodeSearchTags("mesh")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MESH)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Element ID of the material from which this mesh is composed.")]
 	public class API_Mesh_MaterialElementId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -834,7 +834,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Mesh_Vertices")]
 	[NodeSearchTags("mesh")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MESH)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieves all vertices used to define this mesh. Intended for indexed access.")]
 	public class API_Mesh_Vertices : dynRevitTransactionNodeWithOneOutput
 	{
@@ -854,7 +854,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Mesh_NumTriangles")]
 	[NodeSearchTags("mesh")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MESH)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The number of triangles that the mesh contains.")]
 	public class API_Mesh_NumTriangles : dynRevitTransactionNodeWithOneOutput
 	{
@@ -877,7 +877,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("GeometryInstance_GetInstanceGeometry")]
 	[NodeSearchTags("geometry","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Computes a transformation of the geometric representation of the instance.")]
 	public class API_GeometryInstance_GetInstanceGeometry : dynRevitAPINode
 	{
@@ -908,7 +908,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("GeometryInstance_GetInstanceGeometry_1")]
 	[NodeSearchTags("geometry","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Computes the geometric representation of the instance.")]
 	public class API_GeometryInstance_GetInstanceGeometry_1 : dynRevitAPINode
 	{
@@ -938,7 +938,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("GeometryInstance_GetSymbolGeometry")]
 	[NodeSearchTags("geometry","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Computes a transformation of the geometric representation of the symbol which generates this instance.")]
 	public class API_GeometryInstance_GetSymbolGeometry : dynRevitAPINode
 	{
@@ -969,7 +969,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("GeometryInstance_GetSymbolGeometry_1")]
 	[NodeSearchTags("geometry","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Computes the geometric representation of the symbol which generates this instance.")]
 	public class API_GeometryInstance_GetSymbolGeometry_1 : dynRevitAPINode
 	{
@@ -996,7 +996,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("GeometryInstance_SymbolGeometry")]
 	[NodeSearchTags("geometry","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The geometric representation of the symbol which generates this instance.")]
 	public class API_GeometryInstance_SymbolGeometry : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1016,7 +1016,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("GeometryInstance_Symbol")]
 	[NodeSearchTags("geometry","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The symbol element that this object is referring to.")]
 	public class API_GeometryInstance_Symbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1036,7 +1036,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("GeometryInstance_Transform")]
 	[NodeSearchTags("geometry","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GEOMETRYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The affine transformation from the local coordinate space of the symbol into thecoordinate space of the instance.")]
 	public class API_GeometryInstance_Transform : dynRevitTransactionNodeWithOneOutput
 	{
@@ -1059,7 +1059,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewDividedSurface")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a DividedSurface element on one surface of another element.")]
 	public class API_FamilyItemFactory_NewDividedSurface : dynRevitAPINode
 	{
@@ -1090,7 +1090,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewCurveByPoints")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a 3d curve through two or more points in an AutodeskRevit family document.")]
 	public class API_FamilyItemFactory_NewCurveByPoints : dynRevitAPINode
 	{
@@ -1121,7 +1121,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewSymbolicCurve")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a symbolic curve in an Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewSymbolicCurve : dynRevitAPINode
 	{
@@ -1153,7 +1153,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewControl")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new control into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewControl : dynRevitAPINode
 	{
@@ -1186,7 +1186,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewModelText")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a model text in the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewModelText : dynRevitAPINode
 	{
@@ -1222,7 +1222,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewOpening")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create an opening to cut the wall or ceiling.")]
 	public class API_FamilyItemFactory_NewOpening : dynRevitAPINode
 	{
@@ -1254,7 +1254,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewElectricalConnector")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new Electrical connector into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewElectricalConnector : dynRevitAPINode
 	{
@@ -1286,7 +1286,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewPipeConnector")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new pipe connector into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewPipeConnector : dynRevitAPINode
 	{
@@ -1318,7 +1318,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewDuctConnector")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new duct connector into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewDuctConnector : dynRevitAPINode
 	{
@@ -1350,7 +1350,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewRadialDimension")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Generate a new radial dimension object using a specified dimension type.")]
 	public class API_FamilyItemFactory_NewRadialDimension : dynRevitAPINode
 	{
@@ -1384,7 +1384,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewDiameterDimension")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new diameter dimension object using the default dimension type.")]
 	public class API_FamilyItemFactory_NewDiameterDimension : dynRevitAPINode
 	{
@@ -1417,7 +1417,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewRadialDimension_1")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new radial dimension object using the default dimension type.")]
 	public class API_FamilyItemFactory_NewRadialDimension_1 : dynRevitAPINode
 	{
@@ -1450,7 +1450,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewArcLengthDimension")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new arc length dimension object using the specified dimension type.")]
 	public class API_FamilyItemFactory_NewArcLengthDimension : dynRevitAPINode
 	{
@@ -1486,7 +1486,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewArcLengthDimension_1")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new arc length dimension object using the default dimension type.")]
 	public class API_FamilyItemFactory_NewArcLengthDimension_1 : dynRevitAPINode
 	{
@@ -1521,7 +1521,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewAngularDimension")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new angular dimension object using the specified dimension type.")]
 	public class API_FamilyItemFactory_NewAngularDimension : dynRevitAPINode
 	{
@@ -1556,7 +1556,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewAngularDimension_1")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new angular dimension object using the default dimension type.")]
 	public class API_FamilyItemFactory_NewAngularDimension_1 : dynRevitAPINode
 	{
@@ -1590,7 +1590,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewLinearDimension")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new linear dimension object using the specified dimension type.")]
 	public class API_FamilyItemFactory_NewLinearDimension : dynRevitAPINode
 	{
@@ -1624,7 +1624,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewLinearDimension_1")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Generate a new linear dimension object using the default dimension type.")]
 	public class API_FamilyItemFactory_NewLinearDimension_1 : dynRevitAPINode
 	{
@@ -1657,7 +1657,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewFormByThickenSingleSurface")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a new Form element by thickening a single-surface form, and add it into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewFormByThickenSingleSurface : dynRevitAPINode
 	{
@@ -1690,7 +1690,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewFormByCap")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create new Form element by cap operation (to create a single-surface form), and add it into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewFormByCap : dynRevitAPINode
 	{
@@ -1722,7 +1722,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewRevolveForms")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create new Form elements by revolve operation, and add them into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewRevolveForms : dynRevitAPINode
 	{
@@ -1757,7 +1757,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewSweptBlendForm")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create new Form element by swept blend operation, and add it into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewSweptBlendForm : dynRevitAPINode
 	{
@@ -1790,7 +1790,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewExtrusionForm")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create new Form element by Extrude operation, and add it into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewExtrusionForm : dynRevitAPINode
 	{
@@ -1823,7 +1823,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewLoftForm")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create new Form element by Loft operation, and add it into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewLoftForm : dynRevitAPINode
 	{
@@ -1855,7 +1855,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewSweptBlend")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new swept blend into the family document, using a selected reference as the path.")]
 	public class API_FamilyItemFactory_NewSweptBlend : dynRevitAPINode
 	{
@@ -1889,7 +1889,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewSweptBlend_1")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new swept blend into the family document, using a curve as the path.")]
 	public class API_FamilyItemFactory_NewSweptBlend_1 : dynRevitAPINode
 	{
@@ -1924,7 +1924,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewSweep")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new sweep form into the family document, using an array of selected references as a 3D path.")]
 	public class API_FamilyItemFactory_NewSweep : dynRevitAPINode
 	{
@@ -1959,7 +1959,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewSweep_1")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new sweep form to the family document, using a path of curve elements.")]
 	public class API_FamilyItemFactory_NewSweep_1 : dynRevitAPINode
 	{
@@ -1995,7 +1995,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewRevolution")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new Revolution instance into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewRevolution : dynRevitAPINode
 	{
@@ -2031,7 +2031,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewBlend")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new Blend instance into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewBlend : dynRevitAPINode
 	{
@@ -2065,7 +2065,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyItemFactory_NewExtrusion")]
 	[NodeSearchTags("create","factory","family")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_FAMILYITEMFACTORY)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new Extrusion instance into the Autodesk Revit family document.")]
 	public class API_FamilyItemFactory_NewExtrusion : dynRevitAPINode
 	{
@@ -2099,7 +2099,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewAlignment")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new locked alignment into the Autodesk Revit document.")]
 	public class API_ItemFactoryBase_NewAlignment : dynRevitAPINode
 	{
@@ -2132,7 +2132,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_PlaceGroup")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Place an instance of a Model Group into the Autodesk Revit document, using a locationand a group type.")]
 	public class API_ItemFactoryBase_PlaceGroup : dynRevitAPINode
 	{
@@ -2164,7 +2164,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewViewSection")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new section view.")]
 	public class API_ItemFactoryBase_NewViewSection : dynRevitAPINode
 	{
@@ -2195,7 +2195,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewView3D")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new 3D view.")]
 	public class API_ItemFactoryBase_NewView3D : dynRevitAPINode
 	{
@@ -2226,7 +2226,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewTextNotes")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates TextNotes with the specified data.")]
 	public class API_ItemFactoryBase_NewTextNotes : dynRevitAPINode
 	{
@@ -2257,7 +2257,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewTextNote")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new text note with a single leader.")]
 	public class API_ItemFactoryBase_NewTextNote : dynRevitAPINode
 	{
@@ -2298,7 +2298,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewTextNote_1")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new TextNote object without a leader.")]
 	public class API_ItemFactoryBase_NewTextNote_1 : dynRevitAPINode
 	{
@@ -2335,7 +2335,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewSketchPlane")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new sketch plane on a reference to existing planar geometry.")]
 	public class API_ItemFactoryBase_NewSketchPlane : dynRevitAPINode
 	{
@@ -2366,7 +2366,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewSketchPlane_1")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new sketch plane on a planar face of existing geometry.")]
 	public class API_ItemFactoryBase_NewSketchPlane_1 : dynRevitAPINode
 	{
@@ -2397,7 +2397,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewSketchPlane_2")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new sketch plane from an arbitrary geometric plane.")]
 	public class API_ItemFactoryBase_NewSketchPlane_2 : dynRevitAPINode
 	{
@@ -2428,7 +2428,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewReferencePlane2")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of ReferencePlane.")]
 	public class API_ItemFactoryBase_NewReferencePlane2 : dynRevitAPINode
 	{
@@ -2462,7 +2462,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewReferencePlane")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of ReferencePlane.")]
 	public class API_ItemFactoryBase_NewReferencePlane : dynRevitAPINode
 	{
@@ -2496,7 +2496,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewViewPlan")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a plan view based on the specified level.")]
 	public class API_ItemFactoryBase_NewViewPlan : dynRevitAPINode
 	{
@@ -2529,7 +2529,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewLevel")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new level.")]
 	public class API_ItemFactoryBase_NewLevel : dynRevitAPINode
 	{
@@ -2560,7 +2560,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewModelCurve")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new model line element.")]
 	public class API_ItemFactoryBase_NewModelCurve : dynRevitAPINode
 	{
@@ -2592,7 +2592,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewGroup")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new type of group.")]
 	public class API_ItemFactoryBase_NewGroup : dynRevitAPINode
 	{
@@ -2623,7 +2623,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewGroup_1")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new type of group.")]
 	public class API_ItemFactoryBase_NewGroup_1 : dynRevitAPINode
 	{
@@ -2654,7 +2654,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstances2")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates Family instances within the document.")]
 	public class API_ItemFactoryBase_NewFamilyInstances2 : dynRevitAPINode
 	{
@@ -2685,7 +2685,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstances")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates Family instances within the document.")]
 	public class API_ItemFactoryBase_NewFamilyInstances : dynRevitAPINode
 	{
@@ -2716,7 +2716,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a line based detail family instance into the Autodesk Revit document, using an line and a view where the instance should be placed.")]
 	public class API_ItemFactoryBase_NewFamilyInstance : dynRevitAPINode
 	{
@@ -2749,7 +2749,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance_1")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new family instance into the Autodesk Revit document, using an origin and a view where the instance should be placed.")]
 	public class API_ItemFactoryBase_NewFamilyInstance_1 : dynRevitAPINode
 	{
@@ -2782,7 +2782,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance_2")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family onto a face referenced by the input Reference instance, using a line on that face for its position, and a type/symbol.")]
 	public class API_ItemFactoryBase_NewFamilyInstance_2 : dynRevitAPINode
 	{
@@ -2815,7 +2815,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance_3")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family onto a face referenced by the input Reference instance, using a location, reference direction, and a type/symbol.")]
 	public class API_ItemFactoryBase_NewFamilyInstance_3 : dynRevitAPINode
 	{
@@ -2849,7 +2849,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance_4")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family onto a face of an existing element, using a line on that face for its position, and a type/symbol.")]
 	public class API_ItemFactoryBase_NewFamilyInstance_4 : dynRevitAPINode
 	{
@@ -2882,7 +2882,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance_5")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family onto a face of an existing element, using a location, reference direction, and a type/symbol.")]
 	public class API_ItemFactoryBase_NewFamilyInstance_5 : dynRevitAPINode
 	{
@@ -2916,7 +2916,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance_6")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family into the document, using a location and atype/symbol.")]
 	public class API_ItemFactoryBase_NewFamilyInstance_6 : dynRevitAPINode
 	{
@@ -2949,7 +2949,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance_7")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family into the document,using a location, type/symbol, and the host element.")]
 	public class API_ItemFactoryBase_NewFamilyInstance_7 : dynRevitAPINode
 	{
@@ -2983,7 +2983,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewFamilyInstance_8")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family into the document,using a location, type/symbol, the host element and a reference direction.")]
 	public class API_ItemFactoryBase_NewFamilyInstance_8 : dynRevitAPINode
 	{
@@ -3018,7 +3018,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewDimension")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new linear dimension object using the specified dimension style.")]
 	public class API_ItemFactoryBase_NewDimension : dynRevitAPINode
 	{
@@ -3052,7 +3052,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewDimension_1")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new linear dimension object using the default dimension style.")]
 	public class API_ItemFactoryBase_NewDimension_1 : dynRevitAPINode
 	{
@@ -3085,7 +3085,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewDetailCurveArray")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an array of new detail curve elements.")]
 	public class API_ItemFactoryBase_NewDetailCurveArray : dynRevitAPINode
 	{
@@ -3117,7 +3117,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewDetailCurve")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new detail curve element.")]
 	public class API_ItemFactoryBase_NewDetailCurve : dynRevitAPINode
 	{
@@ -3149,7 +3149,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ItemFactoryBase_NewAnnotationSymbol")]
 	[NodeSearchTags("factory","create","item")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_ITEMFACTORYBASE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new instance of an Annotation Symbol into the Autodesk Revit document, using an origin and a view where the instance should be placed.")]
 	public class API_ItemFactoryBase_NewAnnotationSymbol : dynRevitAPINode
 	{
@@ -3182,7 +3182,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PolyLine_Clone")]
 	[NodeSearchTags("pline","polyline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POLYLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a copy of this polyline.")]
 	public class API_PolyLine_Clone : dynRevitAPINode
 	{
@@ -3212,7 +3212,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PolyLine_GetOutline")]
 	[NodeSearchTags("pline","polyline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POLYLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the outline of the polyline.")]
 	public class API_PolyLine_GetOutline : dynRevitAPINode
 	{
@@ -3242,7 +3242,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PolyLine_GetCoordinates")]
 	[NodeSearchTags("pline","polyline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POLYLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the coordinate points of the polyline.")]
 	public class API_PolyLine_GetCoordinates : dynRevitAPINode
 	{
@@ -3272,7 +3272,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PolyLine_GetCoordinate")]
 	[NodeSearchTags("pline","polyline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POLYLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the coordinate point of the specified index.")]
 	public class API_PolyLine_GetCoordinate : dynRevitAPINode
 	{
@@ -3303,7 +3303,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PolyLine_Evaluate")]
 	[NodeSearchTags("pline","polyline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POLYLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Evaluates a parameter on the polyline.")]
 	public class API_PolyLine_Evaluate : dynRevitAPINode
 	{
@@ -3331,7 +3331,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("PolyLine_NumberOfCoordinates")]
 	[NodeSearchTags("pline","polyline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POLYLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the number of the coordinate points.")]
 	public class API_PolyLine_NumberOfCoordinates : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3354,7 +3354,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_ToString")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets formatted string showing (X, Y, Z) with values formatted to 9 decimal places.")]
 	public class API_XYZ_ToString : dynRevitAPINode
 	{
@@ -3384,7 +3384,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_AngleOnPlaneTo")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the angle between this vector and the specified vector projected to the specified plane.")]
 	public class API_XYZ_AngleOnPlaneTo : dynRevitAPINode
 	{
@@ -3416,7 +3416,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_AngleTo")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the angle between this vector and the specified vector.")]
 	public class API_XYZ_AngleTo : dynRevitAPINode
 	{
@@ -3447,7 +3447,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_DistanceTo")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the distance from this point to the specified point.")]
 	public class API_XYZ_DistanceTo : dynRevitAPINode
 	{
@@ -3478,7 +3478,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_IsAlmostEqualTo")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines whether 2 vectors are the same within the given tolerance.")]
 	public class API_XYZ_IsAlmostEqualTo : dynRevitAPINode
 	{
@@ -3510,7 +3510,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_IsAlmostEqualTo_1")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines whether this vector and the specified vector are the same within the tolerance (1.0e-09).")]
 	public class API_XYZ_IsAlmostEqualTo_1 : dynRevitAPINode
 	{
@@ -3541,7 +3541,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_Divide")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Divides this vector by the specified value and returns the result.")]
 	public class API_XYZ_Divide : dynRevitAPINode
 	{
@@ -3572,7 +3572,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_Multiply")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Multiplies this vector by the specified value and returns the result.")]
 	public class API_XYZ_Multiply : dynRevitAPINode
 	{
@@ -3603,7 +3603,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_Negate")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Negates this vector.")]
 	public class API_XYZ_Negate : dynRevitAPINode
 	{
@@ -3633,7 +3633,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_Subtract")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Subtracts the specified vector from this vector and returns the result.")]
 	public class API_XYZ_Subtract : dynRevitAPINode
 	{
@@ -3664,7 +3664,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_Add")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds the specified vector to this vector and returns the result.")]
 	public class API_XYZ_Add : dynRevitAPINode
 	{
@@ -3695,7 +3695,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_TripleProduct")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The triple product of this vector and the two specified vectors.")]
 	public class API_XYZ_TripleProduct : dynRevitAPINode
 	{
@@ -3727,7 +3727,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_CrossProduct")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The cross product of this vector and the specified vector.")]
 	public class API_XYZ_CrossProduct : dynRevitAPINode
 	{
@@ -3758,7 +3758,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_DotProduct")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The dot product of this vector and the specified vector.")]
 	public class API_XYZ_DotProduct : dynRevitAPINode
 	{
@@ -3789,7 +3789,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_GetLength")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the length of this vector.")]
 	public class API_XYZ_GetLength : dynRevitAPINode
 	{
@@ -3819,7 +3819,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_Normalize")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a new XYZ whose coordinates are the normalized values from this vector.")]
 	public class API_XYZ_Normalize : dynRevitAPINode
 	{
@@ -3849,7 +3849,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_IsUnitLength")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value that indicates whether this vector is of unit length.")]
 	public class API_XYZ_IsUnitLength : dynRevitAPINode
 	{
@@ -3879,7 +3879,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_IsZeroLength")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value that indicates whether this vector is a zero vector.")]
 	public class API_XYZ_IsZeroLength : dynRevitAPINode
 	{
@@ -3909,7 +3909,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an XYZ with the supplied coordinates.")]
 	public class API_XYZ : dynRevitAPINode
 	{
@@ -3942,7 +3942,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("XYZ_1")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a default XYZ with the values (0, 0, 0).")]
 	public class API_XYZ_1 : dynRevitAPINode
 	{
@@ -3969,7 +3969,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("XYZ_Z")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the third coordinate.")]
 	public class API_XYZ_Z : dynRevitTransactionNodeWithOneOutput
 	{
@@ -3989,7 +3989,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("XYZ_Y")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the second coordinate.")]
 	public class API_XYZ_Y : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4009,7 +4009,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("XYZ_X")]
 	[NodeSearchTags("xyz","point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_XYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the first coordinate.")]
 	public class API_XYZ_X : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4032,7 +4032,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_SetPointConstraintType")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Sets constrain type of an Adaptive Shape Handle Point.")]
 	public class API_AdaptiveComponentFamilyUtils_SetPointConstraintType : dynRevitAPINode
 	{
@@ -4065,7 +4065,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_GetPointConstraintType")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets constrain type of an Adaptive Shape Handle Point.")]
 	public class API_AdaptiveComponentFamilyUtils_GetPointConstraintType : dynRevitAPINode
 	{
@@ -4097,7 +4097,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_SetPointOrientationType")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Sets orientation type of an Adaptive Placement Point.")]
 	public class API_AdaptiveComponentFamilyUtils_SetPointOrientationType : dynRevitAPINode
 	{
@@ -4130,7 +4130,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_GetPointOrientationType")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets orientation type of an Adaptive Placement Point.")]
 	public class API_AdaptiveComponentFamilyUtils_GetPointOrientationType : dynRevitAPINode
 	{
@@ -4162,7 +4162,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_SetPlacementNumber")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Sets Placement Number of an Adaptive Placement Point.")]
 	public class API_AdaptiveComponentFamilyUtils_SetPlacementNumber : dynRevitAPINode
 	{
@@ -4195,7 +4195,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_GetPlacementNumber")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets Placement number of an Adaptive Placement Point.")]
 	public class API_AdaptiveComponentFamilyUtils_GetPlacementNumber : dynRevitAPINode
 	{
@@ -4227,7 +4227,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_MakeAdaptivePoint")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Makes Reference Point an Adaptive Point or makes an Adaptive Point a Reference Point.")]
 	public class API_AdaptiveComponentFamilyUtils_MakeAdaptivePoint : dynRevitAPINode
 	{
@@ -4260,7 +4260,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_GetNumberOfShapeHandlePoints")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets number of Shape Handle Point Elements in Adaptive Component Family.")]
 	public class API_AdaptiveComponentFamilyUtils_GetNumberOfShapeHandlePoints : dynRevitAPINode
 	{
@@ -4291,7 +4291,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_GetNumberOfPlacementPoints")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets number of Placement Point Elements in Adaptive Component Family.")]
 	public class API_AdaptiveComponentFamilyUtils_GetNumberOfPlacementPoints : dynRevitAPINode
 	{
@@ -4322,7 +4322,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_GetNumberOfAdaptivePoints")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets number of Adaptive Point Elements in Adaptive Component Family.")]
 	public class API_AdaptiveComponentFamilyUtils_GetNumberOfAdaptivePoints : dynRevitAPINode
 	{
@@ -4353,7 +4353,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_IsAdaptiveShapeHandlePoint")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Verifies if the Reference Point is an Adaptive Shape Handle Point.")]
 	public class API_AdaptiveComponentFamilyUtils_IsAdaptiveShapeHandlePoint : dynRevitAPINode
 	{
@@ -4385,7 +4385,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_IsAdaptivePlacementPoint")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Verifies if the Reference Point is an Adaptive Placement Point.")]
 	public class API_AdaptiveComponentFamilyUtils_IsAdaptivePlacementPoint : dynRevitAPINode
 	{
@@ -4417,7 +4417,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_IsAdaptivePoint")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Verifies if the Reference Point is an Adaptive Point.")]
 	public class API_AdaptiveComponentFamilyUtils_IsAdaptivePoint : dynRevitAPINode
 	{
@@ -4449,7 +4449,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentFamilyUtils_IsAdaptiveComponentFamily")]
 	[NodeSearchTags("adaptive","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTFAMILYUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Verifies if the Family is an Adaptive Component Family.")]
 	public class API_AdaptiveComponentFamilyUtils_IsAdaptiveComponentFamily : dynRevitAPINode
 	{
@@ -4477,7 +4477,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("CylindricalFace_Axis")]
 	[NodeSearchTags("face","cylinder","cylindrical")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CYLINDRICALFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Axis of the surface.")]
 	public class API_CylindricalFace_Axis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4497,7 +4497,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("CylindricalFace_Origin")]
 	[NodeSearchTags("face","cylinder","cylindrical")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CYLINDRICALFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Origin of the surface.")]
 	public class API_CylindricalFace_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4517,7 +4517,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ConicalFace_HalfAngle")]
 	[NodeSearchTags("face","conical")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CONICALFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Half angle of the surface.")]
 	public class API_ConicalFace_HalfAngle : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4537,7 +4537,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ConicalFace_Axis")]
 	[NodeSearchTags("face","conical")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CONICALFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Axis of the surface.")]
 	public class API_ConicalFace_Axis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4557,7 +4557,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ConicalFace_Origin")]
 	[NodeSearchTags("face","conical")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CONICALFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Origin of the surface.")]
 	public class API_ConicalFace_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -4580,7 +4580,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewTopographySurface")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new TopographySurface element in the document, and initializes it with a set of points.")]
 	public class API_Document_NewTopographySurface : dynRevitAPINode
 	{
@@ -4611,7 +4611,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewTakeoffFitting")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new family instance of an takeoff fitting into the Autodesk Revit document,using one connector and one MEP curve.")]
 	public class API_Document_NewTakeoffFitting : dynRevitAPINode
 	{
@@ -4643,7 +4643,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewUnionFitting")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new family instance of an union fitting into the Autodesk Revit document,using two connectors.")]
 	public class API_Document_NewUnionFitting : dynRevitAPINode
 	{
@@ -4675,7 +4675,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewCrossFitting")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new family instance of a cross fitting into the Autodesk Revit document,using four connectors.")]
 	public class API_Document_NewCrossFitting : dynRevitAPINode
 	{
@@ -4709,7 +4709,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewTransitionFitting")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new family instance of an transition fitting into the Autodesk Revit document,using two connectors.")]
 	public class API_Document_NewTransitionFitting : dynRevitAPINode
 	{
@@ -4741,7 +4741,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewTeeFitting")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new family instance of a tee fitting into the Autodesk Revit document,using three connectors.")]
 	public class API_Document_NewTeeFitting : dynRevitAPINode
 	{
@@ -4774,7 +4774,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewElbowFitting")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a new family instance of an elbow fitting into the Autodesk Revit document,using two connectors.")]
 	public class API_Document_NewElbowFitting : dynRevitAPINode
 	{
@@ -4806,7 +4806,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFlexPipe")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new flexible pipe into the document, using two connector, and flexible pipe type.")]
 	public class API_Document_NewFlexPipe : dynRevitAPINode
 	{
@@ -4839,7 +4839,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFlexPipe_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new flexible pipe into the document, using a connector, point array and pipe type.")]
 	public class API_Document_NewFlexPipe_1 : dynRevitAPINode
 	{
@@ -4872,7 +4872,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFlexPipe_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new flexible pipe into the document, using a point array and pipe type.")]
 	public class API_Document_NewFlexPipe_2 : dynRevitAPINode
 	{
@@ -4904,7 +4904,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewPipe")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new pipe into the document,  using two connectors and duct type.")]
 	public class API_Document_NewPipe : dynRevitAPINode
 	{
@@ -4937,7 +4937,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewPipe_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new pipe into the document, using a point, connector and pipe type.")]
 	public class API_Document_NewPipe_1 : dynRevitAPINode
 	{
@@ -4970,7 +4970,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewPipe_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new pipe into the document, using two points and pipe type.")]
 	public class API_Document_NewPipe_2 : dynRevitAPINode
 	{
@@ -5003,7 +5003,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFlexDuct")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new flexible duct into the document, using two connector, and duct type.")]
 	public class API_Document_NewFlexDuct : dynRevitAPINode
 	{
@@ -5036,7 +5036,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFlexDuct_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new flexible duct into the document, using a connector, point array and duct type.")]
 	public class API_Document_NewFlexDuct_1 : dynRevitAPINode
 	{
@@ -5069,7 +5069,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFlexDuct_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new flexible duct into the document, using a point array and duct type.")]
 	public class API_Document_NewFlexDuct_2 : dynRevitAPINode
 	{
@@ -5101,7 +5101,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewDuct")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new duct into the document, using two connectors and duct type.")]
 	public class API_Document_NewDuct : dynRevitAPINode
 	{
@@ -5134,7 +5134,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewDuct_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new duct into the document, using a point, connector and duct type.")]
 	public class API_Document_NewDuct_1 : dynRevitAPINode
 	{
@@ -5167,7 +5167,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewDuct_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a new duct into the document, using two points and duct type.")]
 	public class API_Document_NewDuct_2 : dynRevitAPINode
 	{
@@ -5200,7 +5200,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFamilyInstance")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family into the document, using a curve, type/symbol and reference level.")]
 	public class API_Document_NewFamilyInstance : dynRevitAPINode
 	{
@@ -5234,7 +5234,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFamilyInstance_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family into the document, using a location,type/symbol and a base level.")]
 	public class API_Document_NewFamilyInstance_1 : dynRevitAPINode
 	{
@@ -5268,7 +5268,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFamilyInstance_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Inserts a new instance of a family into the document,using a location, type/symbol, the host element and a base level.")]
 	public class API_Document_NewFamilyInstance_2 : dynRevitAPINode
 	{
@@ -5303,7 +5303,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFascia")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a fascia along a reference.")]
 	public class API_Document_NewFascia : dynRevitAPINode
 	{
@@ -5335,7 +5335,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFascia_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a fascia along a reference array.")]
 	public class API_Document_NewFascia_1 : dynRevitAPINode
 	{
@@ -5367,7 +5367,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewGutter")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a gutter along a reference.")]
 	public class API_Document_NewGutter : dynRevitAPINode
 	{
@@ -5399,7 +5399,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewGutter_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a gutter along a reference array.")]
 	public class API_Document_NewGutter_1 : dynRevitAPINode
 	{
@@ -5431,7 +5431,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSlabEdge")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a slab edge along a reference.")]
 	public class API_Document_NewSlabEdge : dynRevitAPINode
 	{
@@ -5463,7 +5463,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSlabEdge_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a slab edge along a reference array.")]
 	public class API_Document_NewSlabEdge_1 : dynRevitAPINode
 	{
@@ -5495,7 +5495,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewCurtainSystem")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new CurtainSystem element from a set of faces.")]
 	public class API_Document_NewCurtainSystem : dynRevitAPINode
 	{
@@ -5527,7 +5527,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewCurtainSystem2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new CurtainSystem element from a set of face references.")]
 	public class API_Document_NewCurtainSystem2 : dynRevitAPINode
 	{
@@ -5559,7 +5559,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewCurtainSystem_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new CurtainSystem element from a set of face references.")]
 	public class API_Document_NewCurtainSystem_1 : dynRevitAPINode
 	{
@@ -5591,7 +5591,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewWire")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new wire element.")]
 	public class API_Document_NewWire : dynRevitAPINode
 	{
@@ -5627,7 +5627,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewZone")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new Zone element.")]
 	public class API_Document_NewZone : dynRevitAPINode
 	{
@@ -5659,7 +5659,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRoomBoundaryLines")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new boundary line as an Room border.")]
 	public class API_Document_NewRoomBoundaryLines : dynRevitAPINode
 	{
@@ -5692,7 +5692,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpaceBoundaryLines")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new boundary line as an Space border.")]
 	public class API_Document_NewSpaceBoundaryLines : dynRevitAPINode
 	{
@@ -5725,7 +5725,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpaceTag")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new SpaceTag.")]
 	public class API_Document_NewSpaceTag : dynRevitAPINode
 	{
@@ -5758,7 +5758,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpaces2_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new spaces on the available plan circuits of a the given level.")]
 	public class API_Document_NewSpaces2_1 : dynRevitAPINode
 	{
@@ -5791,7 +5791,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpaces_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new spaces on the available plan circuits of a the given level.")]
 	public class API_Document_NewSpaces_1 : dynRevitAPINode
 	{
@@ -5824,7 +5824,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpace")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new space element on the given level, at the given location, and assigned to the given phase.")]
 	public class API_Document_NewSpace : dynRevitAPINode
 	{
@@ -5857,7 +5857,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpace_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new space element on the given level at the given location.")]
 	public class API_Document_NewSpace_1 : dynRevitAPINode
 	{
@@ -5889,7 +5889,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpace_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new unplaced space on a given phase.")]
 	public class API_Document_NewSpace_2 : dynRevitAPINode
 	{
@@ -5920,7 +5920,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewPipingSystem")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new MEP piping system element.")]
 	public class API_Document_NewPipingSystem : dynRevitAPINode
 	{
@@ -5953,7 +5953,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewMechanicalSystem")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new MEP mechanical system element.")]
 	public class API_Document_NewMechanicalSystem : dynRevitAPINode
 	{
@@ -5986,7 +5986,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewElectricalSystem")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new MEP Electrical System element from a set of electrical components.")]
 	public class API_Document_NewElectricalSystem : dynRevitAPINode
 	{
@@ -6018,7 +6018,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewElectricalSystem_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new MEP Electrical System element from a set of electrical components.")]
 	public class API_Document_NewElectricalSystem_1 : dynRevitAPINode
 	{
@@ -6050,7 +6050,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewElectricalSystem_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new MEP Electrical System element from an unused Connector.")]
 	public class API_Document_NewElectricalSystem_2 : dynRevitAPINode
 	{
@@ -6082,7 +6082,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewExtrusionRoof")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new Extrusion Roof.")]
 	public class API_Document_NewExtrusionRoof : dynRevitAPINode
 	{
@@ -6118,7 +6118,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFootPrintRoof")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new FootPrintRoof element.")]
 	public class API_Document_NewFootPrintRoof : dynRevitAPINode
 	{
@@ -6152,7 +6152,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewTruss")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a New Truss.")]
 	public class API_Document_NewTruss : dynRevitAPINode
 	{
@@ -6185,7 +6185,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewAreas")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new areas")]
 	public class API_Document_NewAreas : dynRevitAPINode
 	{
@@ -6216,7 +6216,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewArea")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new area")]
 	public class API_Document_NewArea : dynRevitAPINode
 	{
@@ -6248,7 +6248,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewAreaBoundaryLine")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new boundary line as an Area border.")]
 	public class API_Document_NewAreaBoundaryLine : dynRevitAPINode
 	{
@@ -6281,7 +6281,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFoundationWall")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new continuous footing object.")]
 	public class API_Document_NewFoundationWall : dynRevitAPINode
 	{
@@ -6313,7 +6313,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSlab")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a slab within the project with the given horizontal profile using the default floor style.")]
 	public class API_Document_NewSlab : dynRevitAPINode
 	{
@@ -6348,7 +6348,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewTag")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new IndependentTag Element.")]
 	public class API_Document_NewTag : dynRevitAPINode
 	{
@@ -6384,7 +6384,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewOpening")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new opening in a roof, floor and ceiling.")]
 	public class API_Document_NewOpening : dynRevitAPINode
 	{
@@ -6417,7 +6417,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewOpening_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a rectangular opening on a wall.")]
 	public class API_Document_NewOpening_1 : dynRevitAPINode
 	{
@@ -6450,7 +6450,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewOpening_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new shaft opening between a set of levels.")]
 	public class API_Document_NewOpening_2 : dynRevitAPINode
 	{
@@ -6483,7 +6483,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewOpening_3")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new opening in a beam, brace and column.")]
 	public class API_Document_NewOpening_3 : dynRevitAPINode
 	{
@@ -6516,7 +6516,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewAreaBoundaryConditions")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new Area BoundaryConditions element on a host element.")]
 	public class API_Document_NewAreaBoundaryConditions : dynRevitAPINode
 	{
@@ -6553,7 +6553,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLineBoundaryConditions")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new Line BoundaryConditions element on a host element.")]
 	public class API_Document_NewLineBoundaryConditions : dynRevitAPINode
 	{
@@ -6592,7 +6592,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewAreaBoundaryConditions_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new Area BoundaryConditions element on a reference.")]
 	public class API_Document_NewAreaBoundaryConditions_1 : dynRevitAPINode
 	{
@@ -6629,7 +6629,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLineBoundaryConditions_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new Line BoundaryConditions element on a reference.")]
 	public class API_Document_NewLineBoundaryConditions_1 : dynRevitAPINode
 	{
@@ -6668,7 +6668,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewPointBoundaryConditions")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new Point BoundaryConditions Element.")]
 	public class API_Document_NewPointBoundaryConditions : dynRevitAPINode
 	{
@@ -6711,7 +6711,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewBeamSystem")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new BeamSystem with specified profile curves.")]
 	public class API_Document_NewBeamSystem : dynRevitAPINode
 	{
@@ -6745,7 +6745,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewBeamSystem_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new 2D BeamSystem with specified profile curves.")]
 	public class API_Document_NewBeamSystem_1 : dynRevitAPINode
 	{
@@ -6777,7 +6777,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewBeamSystem_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new BeamSystem with specified profile curves.")]
 	public class API_Document_NewBeamSystem_2 : dynRevitAPINode
 	{
@@ -6811,7 +6811,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewBeamSystem_3")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new BeamSystem with specified profile curves.")]
 	public class API_Document_NewBeamSystem_3 : dynRevitAPINode
 	{
@@ -6843,7 +6843,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRoomTag")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new RoomTag.")]
 	public class API_Document_NewRoomTag : dynRevitAPINode
 	{
@@ -6876,7 +6876,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRooms2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new unplaced rooms in the given phase.")]
 	public class API_Document_NewRooms2 : dynRevitAPINode
 	{
@@ -6908,7 +6908,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRooms2_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the given phase.")]
 	public class API_Document_NewRooms2_1 : dynRevitAPINode
 	{
@@ -6940,7 +6940,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRooms2_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the last phase.")]
 	public class API_Document_NewRooms2_2 : dynRevitAPINode
 	{
@@ -6971,7 +6971,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRooms")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new unplaced rooms in the given phase.")]
 	public class API_Document_NewRooms : dynRevitAPINode
 	{
@@ -7003,7 +7003,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRooms_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the given phase.")]
 	public class API_Document_NewRooms_1 : dynRevitAPINode
 	{
@@ -7035,7 +7035,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRooms_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new rooms in each plan circuit found in the given level in the last phase.")]
 	public class API_Document_NewRooms_2 : dynRevitAPINode
 	{
@@ -7066,7 +7066,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRooms_3")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new rooms using the specified placement data.")]
 	public class API_Document_NewRooms_3 : dynRevitAPINode
 	{
@@ -7097,7 +7097,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRoom")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new room within the confines of a plan circuit, or places an unplaced room within the confines of the plan circuit.")]
 	public class API_Document_NewRoom : dynRevitAPINode
 	{
@@ -7129,7 +7129,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRoom_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new unplaced room and with an assigned phase.")]
 	public class API_Document_NewRoom_1 : dynRevitAPINode
 	{
@@ -7160,7 +7160,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRoom_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new room on a level at a specified point.")]
 	public class API_Document_NewRoom_2 : dynRevitAPINode
 	{
@@ -7192,7 +7192,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewGrids")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates new grid lines.")]
 	public class API_Document_NewGrids : dynRevitAPINode
 	{
@@ -7223,7 +7223,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewGrid")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new radial grid line.")]
 	public class API_Document_NewGrid : dynRevitAPINode
 	{
@@ -7254,7 +7254,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewGrid_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new linear grid line.")]
 	public class API_Document_NewGrid_1 : dynRevitAPINode
 	{
@@ -7285,7 +7285,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewViewSheet")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new sheet view.")]
 	public class API_Document_NewViewSheet : dynRevitAPINode
 	{
@@ -7316,7 +7316,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewViewDrafting")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new drafting view.")]
 	public class API_Document_NewViewDrafting : dynRevitAPINode
 	{
@@ -7346,7 +7346,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFoundationSlab")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a foundation slab within the project with the given horizontal profile and floor style on the specified level.")]
 	public class API_Document_NewFoundationSlab : dynRevitAPINode
 	{
@@ -7381,7 +7381,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFloor")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a floor within the project with the given horizontal profile and floor style on the specified level with the specified normal vector.")]
 	public class API_Document_NewFloor : dynRevitAPINode
 	{
@@ -7416,7 +7416,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFloor_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a floor within the project with the given horizontal profile and floor style on the specified level.")]
 	public class API_Document_NewFloor_1 : dynRevitAPINode
 	{
@@ -7450,7 +7450,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewFloor_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a floor within the project with the given horizontal profile using the default floor style.")]
 	public class API_Document_NewFloor_2 : dynRevitAPINode
 	{
@@ -7482,7 +7482,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewWalls")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates profile walls within the project.")]
 	public class API_Document_NewWalls : dynRevitAPINode
 	{
@@ -7513,7 +7513,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewWalls_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates rectangular walls within the project.")]
 	public class API_Document_NewWalls_1 : dynRevitAPINode
 	{
@@ -7544,7 +7544,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewWall")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a non rectangular profile wall within the project using the specified wall type and normal vector.")]
 	public class API_Document_NewWall : dynRevitAPINode
 	{
@@ -7579,7 +7579,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewWall_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a non rectangular profile wall within the project using the specified wall type.")]
 	public class API_Document_NewWall_1 : dynRevitAPINode
 	{
@@ -7613,7 +7613,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewWall_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a non rectangular profile wall within the project using the default wall type.")]
 	public class API_Document_NewWall_2 : dynRevitAPINode
 	{
@@ -7645,7 +7645,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewWall_3")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new rectangular profile wall within the project using the specified wall type, height, and offset.")]
 	public class API_Document_NewWall_3 : dynRevitAPINode
 	{
@@ -7682,7 +7682,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewWall_4")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new rectangular profile wall within the project using the default wall style.")]
 	public class API_Document_NewWall_4 : dynRevitAPINode
 	{
@@ -7715,7 +7715,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpotElevation")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Generate a new spot elevation object within the project.")]
 	public class API_Document_NewSpotElevation : dynRevitAPINode
 	{
@@ -7752,7 +7752,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewSpotCoordinate")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Generate a new spot coordinate object within the project.")]
 	public class API_Document_NewSpotCoordinate : dynRevitAPINode
 	{
@@ -7789,7 +7789,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLoadCombination")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a LoadCombination element     within the project.")]
 	public class API_Document_NewLoadCombination : dynRevitAPINode
 	{
@@ -7826,7 +7826,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLoadCase")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a LoadCase element within the project.")]
 	public class API_Document_NewLoadCase : dynRevitAPINode
 	{
@@ -7859,7 +7859,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLoadUsage")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a LoadUsage element within the project.")]
 	public class API_Document_NewLoadUsage : dynRevitAPINode
 	{
@@ -7890,7 +7890,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLoadNature")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a LoadNature element within the project.")]
 	public class API_Document_NewLoadNature : dynRevitAPINode
 	{
@@ -7921,7 +7921,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewAreaLoad")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new uniform hosted area load with polygonal shape within the project.")]
 	public class API_Document_NewAreaLoad : dynRevitAPINode
 	{
@@ -7955,7 +7955,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewAreaLoad_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new unhosted area load with variable forces at the vertices within the project.")]
 	public class API_Document_NewAreaLoad_1 : dynRevitAPINode
 	{
@@ -7993,7 +7993,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewAreaLoad_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new unhosted area load with variable forces at the vertices within the project.")]
 	public class API_Document_NewAreaLoad_2 : dynRevitAPINode
 	{
@@ -8029,7 +8029,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewAreaLoad_3")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new uniform unhosted area load with polygonal shape within the project.")]
 	public class API_Document_NewAreaLoad_3 : dynRevitAPINode
 	{
@@ -8063,7 +8063,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLineLoad")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new hosted line load within the project using data at an array of points.")]
 	public class API_Document_NewLineLoad : dynRevitAPINode
 	{
@@ -8101,7 +8101,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLineLoad_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new hosted line load within the project using data at two points.")]
 	public class API_Document_NewLineLoad_1 : dynRevitAPINode
 	{
@@ -8139,7 +8139,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLineLoad_2")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new unhosted line load within the project using data at an array of points.")]
 	public class API_Document_NewLineLoad_2 : dynRevitAPINode
 	{
@@ -8177,7 +8177,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewLineLoad_3")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new unhosted line load within the project using data at two points.")]
 	public class API_Document_NewLineLoad_3 : dynRevitAPINode
 	{
@@ -8218,7 +8218,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewPointLoad")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new hosted point load within the project.")]
 	public class API_Document_NewPointLoad : dynRevitAPINode
 	{
@@ -8254,7 +8254,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewPointLoad_1")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new unhosted point load within the project.")]
 	public class API_Document_NewPointLoad_1 : dynRevitAPINode
 	{
@@ -8290,7 +8290,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewPathReinforcement")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a Path Reinforcement element within the project")]
 	public class API_Document_NewPathReinforcement : dynRevitAPINode
 	{
@@ -8323,7 +8323,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Document_NewRebarBarType")]
 	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_DOCUMENT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of Rebar Bar Type, which defines the bar diameter, bar bend diameter and bar material of the rebar.")]
 	public class API_Document_NewRebarBarType : dynRevitAPINode
 	{
@@ -8350,7 +8350,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("HermiteSpline_Parameters")]
 	[NodeSearchTags("curve","hermite","spline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITESPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the params of the Hermite spline.")]
 	public class API_HermiteSpline_Parameters : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8370,7 +8370,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("HermiteSpline_Tangents")]
 	[NodeSearchTags("curve","hermite","spline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITESPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the tangents of the Hermite spline.")]
 	public class API_HermiteSpline_Tangents : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8390,7 +8390,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("HermiteSpline_ControlPoints")]
 	[NodeSearchTags("curve","hermite","spline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITESPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The control points of the Hermite spline.")]
 	public class API_HermiteSpline_ControlPoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8410,7 +8410,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("HermiteSpline_IsPeriodic")]
 	[NodeSearchTags("curve","hermite","spline")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_HERMITESPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns whether the Hermite spline is periodic or not.")]
 	public class API_HermiteSpline_IsPeriodic : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8433,7 +8433,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Profile_Clone")]
 	[NodeSearchTags("profile")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_PROFILE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a copy of this profile.")]
 	public class API_Profile_Clone : dynRevitAPINode
 	{
@@ -8460,7 +8460,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Profile_Curves")]
 	[NodeSearchTags("profile")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_PROFILE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieve the curves that make up the boundary of the profile.")]
 	public class API_Profile_Curves : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8480,7 +8480,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Profile_Filled")]
 	[NodeSearchTags("profile")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_PROFILE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get or set whether the profile is filled.")]
 	public class API_Profile_Filled : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8500,7 +8500,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Sweep_MaxSegmentAngle")]
 	[NodeSearchTags("generic","form","sweep")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The maximum segment angle of the sweep in radians.")]
 	public class API_Sweep_MaxSegmentAngle : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8520,7 +8520,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Sweep_IsTrajectorySegmentationEnabled")]
 	[NodeSearchTags("generic","form","sweep")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The trajectory segmentation option for the sweep.")]
 	public class API_Sweep_IsTrajectorySegmentationEnabled : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8540,7 +8540,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Sweep_Path3d")]
 	[NodeSearchTags("generic","form","sweep")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The selected curves used for the sweep path.")]
 	public class API_Sweep_Path3d : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8560,7 +8560,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Sweep_PathSketch")]
 	[NodeSearchTags("generic","form","sweep")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The sketched path for the sweep.")]
 	public class API_Sweep_PathSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8580,7 +8580,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Sweep_ProfileSymbol")]
 	[NodeSearchTags("generic","form","sweep")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The family symbol profile details for the sweep.")]
 	public class API_Sweep_ProfileSymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8600,7 +8600,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Sweep_ProfileSketch")]
 	[NodeSearchTags("generic","form","sweep")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEEP)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The profile sketch of the sweep.")]
 	public class API_Sweep_ProfileSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -8623,7 +8623,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_SetInstanceFlipped")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Sets the value of the flip parameter on the adaptive instance.")]
 	public class API_AdaptiveComponentInstanceUtils_SetInstanceFlipped : dynRevitAPINode
 	{
@@ -8655,7 +8655,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_IsInstanceFlipped")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the value of the flip parameter on the adaptive instance.")]
 	public class API_AdaptiveComponentInstanceUtils_IsInstanceFlipped : dynRevitAPINode
 	{
@@ -8686,7 +8686,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_GetInstanceShapeHandlePointElementRefIds")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets Shape Handle Adaptive Point Element Ref ids to which the instance geometry adapts.")]
 	public class API_AdaptiveComponentInstanceUtils_GetInstanceShapeHandlePointElementRefIds : dynRevitAPINode
 	{
@@ -8717,7 +8717,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_GetInstancePlacementPointElementRefIds")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets Placement Adaptive Point Element Ref ids to which the instance geometry adapts.")]
 	public class API_AdaptiveComponentInstanceUtils_GetInstancePlacementPointElementRefIds : dynRevitAPINode
 	{
@@ -8748,7 +8748,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_GetInstancePointElementRefIds")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets Adaptive Point Element Ref ids to which the instance geometry adapts.")]
 	public class API_AdaptiveComponentInstanceUtils_GetInstancePointElementRefIds : dynRevitAPINode
 	{
@@ -8779,7 +8779,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_MoveAdaptiveComponentInstance")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Moves Adaptive Component Instance by the specified transformation.")]
 	public class API_AdaptiveComponentInstanceUtils_MoveAdaptiveComponentInstance : dynRevitAPINode
 	{
@@ -8812,7 +8812,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_CreateAdaptiveComponentInstance")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a FamilyInstance of Adaptive Component Family.")]
 	public class API_AdaptiveComponentInstanceUtils_CreateAdaptiveComponentInstance : dynRevitAPINode
 	{
@@ -8844,7 +8844,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_IsAdaptiveComponentInstance")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Verifies if a FamilyInstance is an Adaptive Component Instance.")]
 	public class API_AdaptiveComponentInstanceUtils_IsAdaptiveComponentInstance : dynRevitAPINode
 	{
@@ -8875,7 +8875,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_HasAdaptiveFamilySymbol")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Verifies if a FamilyInstance has an Adaptive Family Symbol.")]
 	public class API_AdaptiveComponentInstanceUtils_HasAdaptiveFamilySymbol : dynRevitAPINode
 	{
@@ -8906,7 +8906,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("AdaptiveComponentInstanceUtils_IsAdaptiveFamilySymbol")]
 	[NodeSearchTags("adpative","component","family","utils")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVECOMPONENTINSTANCEUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Verifies if a FamilySymbol is a valid Adaptive Family Symbol.")]
 	public class API_AdaptiveComponentInstanceUtils_IsAdaptiveFamilySymbol : dynRevitAPINode
 	{
@@ -8937,7 +8937,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_Clone")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a copy of this curve.")]
 	public class API_Curve_Clone : dynRevitAPINode
 	{
@@ -8967,7 +8967,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_Project")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Projects the specified point on this curve.")]
 	public class API_Curve_Project : dynRevitAPINode
 	{
@@ -8998,7 +8998,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_Intersect")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Calculates the intersection of this curve with the specified curve and returns the intersection results.")]
 	public class API_Curve_Intersect : dynRevitAPINode
 	{
@@ -9030,7 +9030,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_Intersect_1")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Calculates the intersection of this curve with the specified curve.")]
 	public class API_Curve_Intersect_1 : dynRevitAPINode
 	{
@@ -9061,7 +9061,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_IsInside")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Indicates whether the specified parameter value is within this curve's bounds and outputs the end index.")]
 	public class API_Curve_IsInside : dynRevitAPINode
 	{
@@ -9093,7 +9093,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_IsInside_1")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Indicates whether the specified parameter value is within this curve's bounds.")]
 	public class API_Curve_IsInside_1 : dynRevitAPINode
 	{
@@ -9124,7 +9124,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_ComputeDerivatives")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the vectors describing the curve at the specified parameter.")]
 	public class API_Curve_ComputeDerivatives : dynRevitAPINode
 	{
@@ -9156,7 +9156,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_Distance")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the shortest distance from the specified point to this curve.")]
 	public class API_Curve_Distance : dynRevitAPINode
 	{
@@ -9187,7 +9187,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_ComputeRawParameter")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Computes the raw parameter from the normalized parameter.")]
 	public class API_Curve_ComputeRawParameter : dynRevitAPINode
 	{
@@ -9218,7 +9218,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_ComputeNormalizedParameter")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Computes the normalized curve parameter from the raw parameter.")]
 	public class API_Curve_ComputeNormalizedParameter : dynRevitAPINode
 	{
@@ -9249,7 +9249,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_MakeUnbound")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Makes this curve unbound.")]
 	public class API_Curve_MakeUnbound : dynRevitAPINode
 	{
@@ -9279,7 +9279,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_MakeBound")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Changes the bounds of this curve to the specified values.")]
 	public class API_Curve_MakeBound : dynRevitAPINode
 	{
@@ -9311,7 +9311,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_Evaluate")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Evaluates a parameter on the curve.")]
 	public class API_Curve_Evaluate : dynRevitAPINode
 	{
@@ -9343,7 +9343,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Curve_Tessellate")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Valid only if the curve is bound. Returns a polyline approximation to the curve.")]
 	public class API_Curve_Tessellate : dynRevitAPINode
 	{
@@ -9370,7 +9370,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Curve_Period")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The period of this curve.")]
 	public class API_Curve_Period : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9390,7 +9390,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Curve_IsCyclic")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value that indicates whether this curve is cyclic.")]
 	public class API_Curve_IsCyclic : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9410,7 +9410,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Curve_Length")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The exact length of the curve.")]
 	public class API_Curve_Length : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9430,7 +9430,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Curve_ApproximateLength")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The approximate length of the curve.")]
 	public class API_Curve_ApproximateLength : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9450,7 +9450,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Curve_Reference")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a stable reference to the curve.")]
 	public class API_Curve_Reference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9470,7 +9470,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Curve_IsBound")]
 	[NodeSearchTags("curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_CURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Describes whether the parameter of the curve is restricted to a particular interval.")]
 	public class API_Curve_IsBound : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9493,7 +9493,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ModelCurve_ChangeToReferenceLine")]
 	[NodeSearchTags("model","curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Changes this curve to a reference curve.")]
 	public class API_ModelCurve_ChangeToReferenceLine : dynRevitAPINode
 	{
@@ -9523,7 +9523,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ModelCurve_GetVisibility")]
 	[NodeSearchTags("model","curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the visibility for the model curve in a family document.")]
 	public class API_ModelCurve_GetVisibility : dynRevitAPINode
 	{
@@ -9550,7 +9550,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ModelCurve_IsReferenceLine")]
 	[NodeSearchTags("model","curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Indicates if this curve is a reference curve.")]
 	public class API_ModelCurve_IsReferenceLine : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9570,7 +9570,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ModelCurve_TrussCurveType")]
 	[NodeSearchTags("model","curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The truss curve type of this model curve.")]
 	public class API_ModelCurve_TrussCurveType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9590,7 +9590,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("ModelCurve_Subcategory")]
 	[NodeSearchTags("model","curve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MODELCURVE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The subcategory.")]
 	public class API_ModelCurve_Subcategory : dynRevitTransactionNodeWithOneOutput
 	{
@@ -9613,7 +9613,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_Rehost")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Rehost Form to sketch plane")]
 	public class API_Form_Rehost : dynRevitAPINode
 	{
@@ -9645,7 +9645,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_Rehost_1")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Rehost Form to edge, face or curve.")]
 	public class API_Form_Rehost_1 : dynRevitAPINode
 	{
@@ -9677,7 +9677,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_AddProfile")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add a profile into the form, by a specified edge/param.")]
 	public class API_Form_AddProfile : dynRevitAPINode
 	{
@@ -9709,7 +9709,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_AddEdge")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add an edge to the form, connecting two edges on same/different profile, by a pair of specified points.")]
 	public class API_Form_AddEdge : dynRevitAPINode
 	{
@@ -9741,7 +9741,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_AddEdge_1")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add an edge to the form, connecting two edges on same/different profile, by a pair of specified edge/param.")]
 	public class API_Form_AddEdge_1 : dynRevitAPINode
 	{
@@ -9775,7 +9775,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_AddEdge_2")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Add an edge to the form, connecting two edges on different profiles, by a specified face of the form and a point on face.")]
 	public class API_Form_AddEdge_2 : dynRevitAPINode
 	{
@@ -9807,7 +9807,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_ScaleProfile")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Scale a profile of the form, by a specified origin and scale factor.")]
 	public class API_Form_ScaleProfile : dynRevitAPINode
 	{
@@ -9840,7 +9840,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_ScaleSubElement")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Scale a face/edge/curve/vertex of the form, by a specified origin and scale factor.")]
 	public class API_Form_ScaleSubElement : dynRevitAPINode
 	{
@@ -9873,7 +9873,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_RotateProfile")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Rotate a profile of the form, by a specified angle around a given axis.")]
 	public class API_Form_RotateProfile : dynRevitAPINode
 	{
@@ -9906,7 +9906,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_RotateSubElement")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Rotate a face/edge/curve/vertex of the form, by a specified angle around a given axis.")]
 	public class API_Form_RotateSubElement : dynRevitAPINode
 	{
@@ -9939,7 +9939,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_MoveProfile")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Move a profile of the form, specified by a reference, and an offset vector.")]
 	public class API_Form_MoveProfile : dynRevitAPINode
 	{
@@ -9971,7 +9971,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_MoveSubElement")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Move a face/edge/curve/vertex of the form, specified by a reference, and an offset vector.")]
 	public class API_Form_MoveSubElement : dynRevitAPINode
 	{
@@ -10003,7 +10003,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_DeleteProfile")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Delete a profile of the form.")]
 	public class API_Form_DeleteProfile : dynRevitAPINode
 	{
@@ -10034,7 +10034,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_DeleteSubElement")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Delete a face/edge/curve/vertex of the form, specified by a reference.")]
 	public class API_Form_DeleteSubElement : dynRevitAPINode
 	{
@@ -10065,7 +10065,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_CanManipulateProfile")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if a profile can be deleted/moved/rotated.")]
 	public class API_Form_CanManipulateProfile : dynRevitAPINode
 	{
@@ -10096,7 +10096,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_CanManipulateSubElement")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if a sub element can be deleted/moved/rotated/scaled.")]
 	public class API_Form_CanManipulateSubElement : dynRevitAPINode
 	{
@@ -10127,7 +10127,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_GetCurvesAndEdgesReference")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Given a point, return all edges and curves that it is lying on.")]
 	public class API_Form_GetCurvesAndEdgesReference : dynRevitAPINode
 	{
@@ -10158,7 +10158,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_GetControlPoints")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Given an edge or a curve or a face, return all control points lying on it (in form of geometry references).")]
 	public class API_Form_GetControlPoints : dynRevitAPINode
 	{
@@ -10189,7 +10189,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsConnectingEdge")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if an edge is a connecting edge on a side face. Connecting edges connect vertices on different profiles.")]
 	public class API_Form_IsConnectingEdge : dynRevitAPINode
 	{
@@ -10220,7 +10220,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsProfileEdge")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if an edge or curve is generated from a profile.")]
 	public class API_Form_IsProfileEdge : dynRevitAPINode
 	{
@@ -10251,7 +10251,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsAutoCreaseEdge")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if an edge is an auto-crease on a top/bottom cap face.")]
 	public class API_Form_IsAutoCreaseEdge : dynRevitAPINode
 	{
@@ -10282,7 +10282,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsSideFace")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Given a face, tell if it is a side face.")]
 	public class API_Form_IsSideFace : dynRevitAPINode
 	{
@@ -10313,7 +10313,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsEndFace")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Given a face, tell if it is an end cap face.")]
 	public class API_Form_IsEndFace : dynRevitAPINode
 	{
@@ -10344,7 +10344,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsBeginningFace")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Given a face, tell if it is a beginning cap face.")]
 	public class API_Form_IsBeginningFace : dynRevitAPINode
 	{
@@ -10375,7 +10375,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsReferenceOnlyProfile")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if the profile is made by referencing existing geometry in the Revit model.")]
 	public class API_Form_IsReferenceOnlyProfile : dynRevitAPINode
 	{
@@ -10406,7 +10406,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsFaceReference")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if the pick is the reference to a face of the form.")]
 	public class API_Form_IsFaceReference : dynRevitAPINode
 	{
@@ -10437,7 +10437,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsCurveReference")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if the pick is the reference to a curve of the form.")]
 	public class API_Form_IsCurveReference : dynRevitAPINode
 	{
@@ -10468,7 +10468,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsEdgeReference")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if the pick is the reference to an edge of the form.")]
 	public class API_Form_IsEdgeReference : dynRevitAPINode
 	{
@@ -10499,7 +10499,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_IsVertexReference")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if the pick is the reference to a vertex of the form.")]
 	public class API_Form_IsVertexReference : dynRevitAPINode
 	{
@@ -10530,7 +10530,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_ConstrainProfiles")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Constrain form profiles using the specified profile as master. This is an advanced version of property \"AreProfilesConstrained\", allowing specify the master profile.")]
 	public class API_Form_ConstrainProfiles : dynRevitAPINode
 	{
@@ -10561,7 +10561,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_GetPathCurveIndexByCurveReference")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Given a reference to certain curve in the path, return its index.")]
 	public class API_Form_GetPathCurveIndexByCurveReference : dynRevitAPINode
 	{
@@ -10592,7 +10592,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Form_GetProfileAndCurveLoopIndexFromReference")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Given a reference to certain curve or edge, get the index of its profile and curve loop respectively.")]
 	public class API_Form_GetProfileAndCurveLoopIndexFromReference : dynRevitAPINode
 	{
@@ -10622,7 +10622,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Form_BaseOffset")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieve/set the base offset of the form object. It is only valid for locked form.")]
 	public class API_Form_BaseOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10642,7 +10642,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Form_TopOffset")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieve/set the top offset of the form object. It is only valid for locked form.")]
 	public class API_Form_TopOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10662,7 +10662,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Form_HasOpenGeometry")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if the form has an open geometry.")]
 	public class API_Form_HasOpenGeometry : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10682,7 +10682,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Form_AreProfilesConstrained")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get/set if the form's profiles are constrained.")]
 	public class API_Form_AreProfilesConstrained : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10702,7 +10702,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Form_IsInXRayMode")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get/set if the form is in X-Ray mode.")]
 	public class API_Form_IsInXRayMode : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10722,7 +10722,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Form_HasOneOrMoreReferenceProfiles")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Tell if the form has any reference profile.")]
 	public class API_Form_HasOneOrMoreReferenceProfiles : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10742,7 +10742,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Form_PathCurveCount")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The number of curves in the form path.")]
 	public class API_Form_PathCurveCount : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10762,7 +10762,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Form_ProfileCount")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The number of profiles in the form.")]
 	public class API_Form_ProfileCount : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10785,7 +10785,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("BoundingBoxUV")]
 	[NodeSearchTags("bounding","box","bounds","bbox")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXUV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates object with supplied values.")]
 	public class API_BoundingBoxUV : dynRevitAPINode
 	{
@@ -10819,7 +10819,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("BoundingBoxUV_1")]
 	[NodeSearchTags("bounding","box","bounds","bbox")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXUV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("default constructor")]
 	public class API_BoundingBoxUV_1 : dynRevitAPINode
 	{
@@ -10846,7 +10846,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("BoundingBoxUV_Max")]
 	[NodeSearchTags("bounding","box","bounds","bbox")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXUV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Maximum coordinates (upper-right corner of the box).")]
 	public class API_BoundingBoxUV_Max : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10866,7 +10866,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("BoundingBoxUV_Min")]
 	[NodeSearchTags("bounding","box","bounds","bbox")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXUV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Minimum coordinates (lower-left corner of the box).")]
 	public class API_BoundingBoxUV_Min : dynRevitTransactionNodeWithOneOutput
 	{
@@ -10889,7 +10889,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Instance_GetTotalTransform")]
 	[NodeSearchTags("instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_INSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the total transform, which includes the true north transform for instances like import instances.")]
 	public class API_Instance_GetTotalTransform : dynRevitAPINode
 	{
@@ -10919,7 +10919,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Instance_GetTransform")]
 	[NodeSearchTags("instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_INSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the transform of the instance.")]
 	public class API_Instance_GetTransform : dynRevitAPINode
 	{
@@ -10949,7 +10949,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_Project")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Projects the specified point on this face.")]
 	public class API_Face_Project : dynRevitAPINode
 	{
@@ -10980,7 +10980,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_Intersect")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Calculates the intersection of the specified curve with this face and returns the intersection results.")]
 	public class API_Face_Intersect : dynRevitAPINode
 	{
@@ -11012,7 +11012,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_Intersect_1")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Calculates the intersection of the specified curve with this face.")]
 	public class API_Face_Intersect_1 : dynRevitAPINode
 	{
@@ -11043,7 +11043,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_IsInside")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Indicates whether the specified point is within this face and outputs additional results.")]
 	public class API_Face_IsInside : dynRevitAPINode
 	{
@@ -11075,7 +11075,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_IsInside_1")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Indicates whether the specified point is within this face.")]
 	public class API_Face_IsInside_1 : dynRevitAPINode
 	{
@@ -11106,7 +11106,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_ComputeNormal")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the normal vector for the face at the given point.")]
 	public class API_Face_ComputeNormal : dynRevitAPINode
 	{
@@ -11137,7 +11137,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_ComputeDerivatives")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the vectors describing the face at the specified point.")]
 	public class API_Face_ComputeDerivatives : dynRevitAPINode
 	{
@@ -11168,7 +11168,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_GetBoundingBox")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the UV bounding box of the face.")]
 	public class API_Face_GetBoundingBox : dynRevitAPINode
 	{
@@ -11198,7 +11198,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_Evaluate")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Evaluates parameters on the face.")]
 	public class API_Face_Evaluate : dynRevitAPINode
 	{
@@ -11229,7 +11229,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_Triangulate")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a triangular mesh approximation to the face.")]
 	public class API_Face_Triangulate : dynRevitAPINode
 	{
@@ -11260,7 +11260,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_Triangulate_1")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a triangular mesh approximation to the face.")]
 	public class API_Face_Triangulate_1 : dynRevitAPINode
 	{
@@ -11290,7 +11290,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Face_GetRegions")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Face regions (created with the Split Face command) of the face.")]
 	public class API_Face_GetRegions : dynRevitAPINode
 	{
@@ -11317,7 +11317,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Face_Area")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The area of this face.")]
 	public class API_Face_Area : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11337,7 +11337,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Face_Reference")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a stable reference to the face.")]
 	public class API_Face_Reference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11357,7 +11357,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Face_IsTwoSided")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines if a face is two-sided (degenerate)")]
 	public class API_Face_IsTwoSided : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11377,7 +11377,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Face_MaterialElementId")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Element ID of the material from which this face is composed.")]
 	public class API_Face_MaterialElementId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11397,7 +11397,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Face_EdgeLoops")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Each edge loop is a closed boundary of the face.")]
 	public class API_Face_EdgeLoops : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11417,7 +11417,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Face_HasRegions")]
 	[NodeSearchTags("face")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Reports if the face contains regions created with the Split Face command.")]
 	public class API_Face_HasRegions : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11437,7 +11437,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("BoundingBoxXYZ_Enabled")]
 	[NodeSearchTags("bounding","box","bounds","bbox")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXXYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Defines whether bounding box is turned on.")]
 	public class API_BoundingBoxXYZ_Enabled : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11457,7 +11457,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("BoundingBoxXYZ_Max")]
 	[NodeSearchTags("bounding","box","bounds","bbox")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXXYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Maximum coordinates (upper-right-front corner of the box).")]
 	public class API_BoundingBoxXYZ_Max : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11477,7 +11477,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("BoundingBoxXYZ_Min")]
 	[NodeSearchTags("bounding","box","bounds","bbox")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXXYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Minimum coordinates (lower-left-rear corner of the box).")]
 	public class API_BoundingBoxXYZ_Min : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11497,7 +11497,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("BoundingBoxXYZ_Transform")]
 	[NodeSearchTags("bounding","box","bounds","bbox")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BOUNDINGBOXXYZ)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The transform FROM the coordinate space of the box TO the model space.")]
 	public class API_BoundingBoxXYZ_Transform : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11520,7 +11520,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_GetOriginalGeometry")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the original geometry of the instance, before the instance is modified by joins, cuts, coping, extensions, or other post-processing.")]
 	public class API_FamilyInstance_GetOriginalGeometry : dynRevitAPINode
 	{
@@ -11551,7 +11551,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_GetFamilyPointPlacementReferences")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Point Placement References for the Family Instance.")]
 	public class API_FamilyInstance_GetFamilyPointPlacementReferences : dynRevitAPINode
 	{
@@ -11581,7 +11581,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_RemoveCoping")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Removes a coping (cut) from a steel beam.")]
 	public class API_FamilyInstance_RemoveCoping : dynRevitAPINode
 	{
@@ -11612,7 +11612,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_AddCoping")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds a coping (cut) to a steel beam.")]
 	public class API_FamilyInstance_AddCoping : dynRevitAPINode
 	{
@@ -11643,7 +11643,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_SetCopingIds")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Specifies the set of coping cutters on this element.")]
 	public class API_FamilyInstance_SetCopingIds : dynRevitAPINode
 	{
@@ -11674,7 +11674,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_GetCopingIds")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Lists the elements currently used as coping cutters for this element.")]
 	public class API_FamilyInstance_GetCopingIds : dynRevitAPINode
 	{
@@ -11704,7 +11704,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_SetCopings")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Specify the set of coping cutters on this element.")]
 	public class API_FamilyInstance_SetCopings : dynRevitAPINode
 	{
@@ -11735,7 +11735,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_GetCopings")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Lists the elements currently used as coping cutters for this element.")]
 	public class API_FamilyInstance_GetCopings : dynRevitAPINode
 	{
@@ -11765,7 +11765,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_GetSubComponentIds")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the sub component ElementIds of the current family instance.")]
 	public class API_FamilyInstance_GetSubComponentIds : dynRevitAPINode
 	{
@@ -11795,7 +11795,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_FlipFromToRoom")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Flips the settings of \"From Room\" and \"To Room\" for the door or window instance.")]
 	public class API_FamilyInstance_FlipFromToRoom : dynRevitAPINode
 	{
@@ -11825,7 +11825,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_rotate")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The family instance will be flipped by 180 degrees. If it can not be rotated, return false, otherwise return true.")]
 	public class API_FamilyInstance_rotate : dynRevitAPINode
 	{
@@ -11855,7 +11855,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_flipFacing")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The orientation of family instance facing will be flipped. If it can not be flipped, return false, otherwise return true.")]
 	public class API_FamilyInstance_flipFacing : dynRevitAPINode
 	{
@@ -11885,7 +11885,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("FamilyInstance_flipHand")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The orientation of family instance hand will be flipped. If it can not be flipped, return false, otherwise return true.")]
 	public class API_FamilyInstance_flipHand : dynRevitAPINode
 	{
@@ -11912,7 +11912,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_IsWorkPlaneFlipped")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Identifies if the instance's work plane is flipped.")]
 	public class API_FamilyInstance_IsWorkPlaneFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11932,7 +11932,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_CanFlipWorkPlane")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Identifies if the instance can flip its work plane.")]
 	public class API_FamilyInstance_CanFlipWorkPlane : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11952,7 +11952,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_IsSlantedColumn")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Indicates if the family instance is a slanted column.")]
 	public class API_FamilyInstance_IsSlantedColumn : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11972,7 +11972,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_ExtensionUtility")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to check whether the instance can be extended and return the interface for extension operation.")]
 	public class API_FamilyInstance_ExtensionUtility : dynRevitTransactionNodeWithOneOutput
 	{
@@ -11992,7 +11992,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_SuperComponent")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to get the super component of current family instance.")]
 	public class API_FamilyInstance_SuperComponent : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12012,7 +12012,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_SubComponents")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to get the sub components of current family instance.")]
 	public class API_FamilyInstance_SubComponents : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12032,7 +12032,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_ToRoom")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The \"To Room\" set for the door or window in the last phase of the project.")]
 	public class API_FamilyInstance_ToRoom : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12052,7 +12052,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_FromRoom")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The \"From Room\" set for the door or window in the last phase of the project.")]
 	public class API_FamilyInstance_FromRoom : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12072,7 +12072,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_CanRotate")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to test whether the family instance can be rotated by 180 degrees.")]
 	public class API_FamilyInstance_CanRotate : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12092,7 +12092,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_CanFlipFacing")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to test whether the orientation of family instance facing can be flipped.")]
 	public class API_FamilyInstance_CanFlipFacing : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12112,7 +12112,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_CanFlipHand")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to test whether the orientation of family instance hand can be flipped.")]
 	public class API_FamilyInstance_CanFlipHand : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12132,7 +12132,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_Mirrored")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to test whether the family instance is mirrored. (only one axis is flipped)")]
 	public class API_FamilyInstance_Mirrored : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12152,7 +12152,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_Invisible")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to test whether the family instance is invisible.")]
 	public class API_FamilyInstance_Invisible : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12172,7 +12172,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_FacingFlipped")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to test whether the orientation of family instance facing is flipped.")]
 	public class API_FamilyInstance_FacingFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12192,7 +12192,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_HandFlipped")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to test whether the orientation of family instance hand is flipped.")]
 	public class API_FamilyInstance_HandFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12212,7 +12212,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_FacingOrientation")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to get the orientation of family instance facing.")]
 	public class API_FamilyInstance_FacingOrientation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12232,7 +12232,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_HandOrientation")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to get the orientation of family instance hand.")]
 	public class API_FamilyInstance_HandOrientation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12252,7 +12252,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_HostFace")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to get the reference to the host face of family instance.")]
 	public class API_FamilyInstance_HostFace : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12272,7 +12272,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_Host")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("If the instance is contained within another element, this property returns the containingelement. An instance that is face hosted will return the element containing the face.")]
 	public class API_FamilyInstance_Host : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12292,7 +12292,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_Location")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("This property is used to find the physical location of an instance within project.")]
 	public class API_FamilyInstance_Location : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12312,7 +12312,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_Space")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The space in which the instance is located (during the last phase of the project).")]
 	public class API_FamilyInstance_Space : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12332,7 +12332,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_Room")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The room in which the instance is located (during the last phase of the project).")]
 	public class API_FamilyInstance_Room : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12352,7 +12352,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_StructuralType")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Provides the primary structural type of the instance, such as beam or column etc.")]
 	public class API_FamilyInstance_StructuralType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12372,7 +12372,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_StructuralUsage")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Provides the primary structural usage of the instance, such as brace, girder etc.")]
 	public class API_FamilyInstance_StructuralUsage : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12392,7 +12392,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_StructuralMaterialId")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Identifies the material that defines the instance's structural analysis properties.")]
 	public class API_FamilyInstance_StructuralMaterialId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12412,7 +12412,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_StructuralMaterialType")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("This property returns the physical material from which the instance is made.")]
 	public class API_FamilyInstance_StructuralMaterialType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12432,7 +12432,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_MEPModel")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieves the MEP model for the family instance.")]
 	public class API_FamilyInstance_MEPModel : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12452,7 +12452,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("FamilyInstance_Symbol")]
 	[NodeSearchTags("family","instance")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_FAMILYINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns or changes the FamilySymbol object that represents the type of the instance.")]
 	public class API_FamilyInstance_Symbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12475,7 +12475,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Color")]
 	[NodeSearchTags("color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Constructor that takes the red, green and blue channels of the color.")]
 	public class API_Color : dynRevitAPINode
 	{
@@ -12505,7 +12505,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Color_IsValid")]
 	[NodeSearchTags("color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Identifies if the color represents a valid color, or an uninitialized/invalid value.")]
 	public class API_Color_IsValid : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12525,7 +12525,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Color_Blue")]
 	[NodeSearchTags("color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get or set the blue channel of the color.")]
 	public class API_Color_Blue : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12545,7 +12545,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Color_Green")]
 	[NodeSearchTags("color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get or set the green channel of the color.")]
 	public class API_Color_Green : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12565,7 +12565,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Color_Red")]
 	[NodeSearchTags("color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_COLOR)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get or set the red channel of the color.")]
 	public class API_Color_Red : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12588,7 +12588,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("GenericForm_GetVisibility")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the visibility for the generic form.")]
 	public class API_GenericForm_GetVisibility : dynRevitAPINode
 	{
@@ -12615,7 +12615,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("GenericForm_Subcategory")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The subcategory.")]
 	public class API_GenericForm_Subcategory : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12635,7 +12635,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("GenericForm_Name")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get and Set the Name property")]
 	public class API_GenericForm_Name : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12655,7 +12655,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("GenericForm_IsSolid")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Identifies if the GenericForm is a solid or a void element.")]
 	public class API_GenericForm_IsSolid : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12675,7 +12675,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("GenericForm_Visible")]
 	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_GENERICFORM)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The visibility of the GenericForm.")]
 	public class API_GenericForm_Visible : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12695,7 +12695,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Point_Reference")]
 	[NodeSearchTags("point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a stable reference to the point.")]
 	public class API_Point_Reference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12715,7 +12715,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Point_Coord")]
 	[NodeSearchTags("point","pt")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINT)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the coordinates of the point.")]
 	public class API_Point_Coord : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12738,7 +12738,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("DividedSurface_CanBeIntersectionElement")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Checks if the element can be an intersection reference.")]
 	public class API_DividedSurface_CanBeIntersectionElement : dynRevitAPINode
 	{
@@ -12769,7 +12769,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("DividedSurface_RemoveAllIntersectionElements")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Removes all the intersection elements from a divided surface.")]
 	public class API_DividedSurface_RemoveAllIntersectionElements : dynRevitAPINode
 	{
@@ -12799,7 +12799,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("DividedSurface_RemoveIntersectionElement")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Removes an intersection element from a divided surface.")]
 	public class API_DividedSurface_RemoveIntersectionElement : dynRevitAPINode
 	{
@@ -12830,7 +12830,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("DividedSurface_AddIntersectionElement")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds an intersection element to the divided surface.")]
 	public class API_DividedSurface_AddIntersectionElement : dynRevitAPINode
 	{
@@ -12861,7 +12861,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("DividedSurface_GetAllIntersectionElements")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets all intersection elements which produce division lines.")]
 	public class API_DividedSurface_GetAllIntersectionElements : dynRevitAPINode
 	{
@@ -12888,7 +12888,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_NumberOfVGridlines")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get the number of V-gridlines used on thesurface.")]
 	public class API_DividedSurface_NumberOfVGridlines : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12908,7 +12908,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_NumberOfUGridlines")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get the number of U-gridlines used on thesurface.")]
 	public class API_DividedSurface_NumberOfUGridlines : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12928,7 +12928,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_IsComponentFlipped")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Whether the pattern is flipped.")]
 	public class API_DividedSurface_IsComponentFlipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12948,7 +12948,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_IsComponentMirrored")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Whether the pattern is mirror-imaged.")]
 	public class API_DividedSurface_IsComponentMirrored : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12968,7 +12968,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_ComponentRotation")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The rotation of the pattern by a multipleof 90 degrees.")]
 	public class API_DividedSurface_ComponentRotation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -12988,7 +12988,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_VPatternIndent")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The offset applied to the pattern by an integral number of grid nodes in the V-direction.")]
 	public class API_DividedSurface_VPatternIndent : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13008,7 +13008,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_UPatternIndent")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The offset applied to the pattern by anintegral number of grid nodes in the U-direction.")]
 	public class API_DividedSurface_UPatternIndent : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13028,7 +13028,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_BorderTile")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines the handling of tiles that overlap the surface'sboundary.")]
 	public class API_DividedSurface_BorderTile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13048,7 +13048,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_AllGridRotation")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Angle of rotation applied to the U- and V- directions together.")]
 	public class API_DividedSurface_AllGridRotation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13068,7 +13068,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_VSpacingRule")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Access to the rule for laying out the second series of equidistantparallel lines on the surface.")]
 	public class API_DividedSurface_VSpacingRule : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13088,7 +13088,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_USpacingRule")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Access to the rule for laying out the first series of equidistantparallel lines on the surface.")]
 	public class API_DividedSurface_USpacingRule : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13108,7 +13108,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_HostReference")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("A reference to the divided face on the host.")]
 	public class API_DividedSurface_HostReference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13128,7 +13128,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("DividedSurface_Host")]
 	[NodeSearchTags("divide","divided","surface","adaptive","components")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_DIVIDEDSURFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The element whose surface has been divided.")]
 	public class API_DividedSurface_Host : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13151,7 +13151,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PointCloudInstance_GetPoints")]
 	[NodeSearchTags("point","cloud")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Extracts a collection of points based on a filter.")]
 	public class API_PointCloudInstance_GetPoints : dynRevitAPINode
 	{
@@ -13183,7 +13183,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PointCloudInstance_Create")]
 	[NodeSearchTags("point","cloud")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a point cloud based on an input point cloud type and transformation.")]
 	public class API_PointCloudInstance_Create : dynRevitAPINode
 	{
@@ -13216,7 +13216,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PointCloudInstance_SetSelectionFilter")]
 	[NodeSearchTags("point","cloud")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Sets active selection filter by cloning of the one passed to it.")]
 	public class API_PointCloudInstance_SetSelectionFilter : dynRevitAPINode
 	{
@@ -13247,7 +13247,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("PointCloudInstance_GetSelectionFilter")]
 	[NodeSearchTags("point","cloud")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the currently active selection filter for this point cloud.")]
 	public class API_PointCloudInstance_GetSelectionFilter : dynRevitAPINode
 	{
@@ -13274,7 +13274,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("PointCloudInstance_FilterAction")]
 	[NodeSearchTags("point","cloud")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_POINTCLOUDINSTANCE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The action taken based on the results of the selection filter applied to this point cloud.")]
 	public class API_PointCloudInstance_FilterAction : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13294,7 +13294,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Ellipse_RadiusY")]
 	[NodeSearchTags("curve","ellipse")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Y vector radius of the ellipse.")]
 	public class API_Ellipse_RadiusY : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13314,7 +13314,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Ellipse_RadiusX")]
 	[NodeSearchTags("curve","ellipse")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the X vector radius of the ellipse.")]
 	public class API_Ellipse_RadiusX : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13334,7 +13334,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Ellipse_YDirection")]
 	[NodeSearchTags("curve","ellipse")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The Y direction.")]
 	public class API_Ellipse_YDirection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13354,7 +13354,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Ellipse_XDirection")]
 	[NodeSearchTags("curve","ellipse")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The X direction.")]
 	public class API_Ellipse_XDirection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13374,7 +13374,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Ellipse_Normal")]
 	[NodeSearchTags("curve","ellipse")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the normal to the plane in which the ellipse is defined.")]
 	public class API_Ellipse_Normal : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13394,7 +13394,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Ellipse_Center")]
 	[NodeSearchTags("curve","ellipse")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELLIPSE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the center of the ellipse.")]
 	public class API_Ellipse_Center : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13414,7 +13414,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Extrusion_EndOffset")]
 	[NodeSearchTags("generic","extrusion")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EXTRUSION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The offset of the end of the extrusion relative to the sketch plane.")]
 	public class API_Extrusion_EndOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13434,7 +13434,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Extrusion_StartOffset")]
 	[NodeSearchTags("generic","extrusion")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EXTRUSION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The offset of the start of the extrusion relative to the sketch plane.")]
 	public class API_Extrusion_StartOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13454,7 +13454,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Extrusion_Sketch")]
 	[NodeSearchTags("generic","extrusion")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EXTRUSION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Sketch of the Extrusion.")]
 	public class API_Extrusion_Sketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -13477,7 +13477,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewReferencePointArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an empty array that can store ReferencePoint objects.")]
 	public class API_Application_NewReferencePointArray : dynRevitAPINode
 	{
@@ -13507,7 +13507,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPointRelativeToPoint")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a PointRelativeToPoint object, which is used to define the placement of a ReferencePoint relative to a host point.")]
 	public class API_Application_NewPointRelativeToPoint : dynRevitAPINode
 	{
@@ -13538,7 +13538,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPointOnEdgeEdgeIntersection")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Construct a PointOnEdgeEdgeIntersection object which is used to define the placement of a ReferencePoint given two references to edge.")]
 	public class API_Application_NewPointOnEdgeEdgeIntersection : dynRevitAPINode
 	{
@@ -13570,7 +13570,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPointOnFace")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Construct a PointOnFace object which is used to define the placement of a ReferencePoint given a reference and a location on the face.")]
 	public class API_Application_NewPointOnFace : dynRevitAPINode
 	{
@@ -13602,7 +13602,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPointOnPlane")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Construct a PointOnPlane object which is used to define the placement of a ReferencePoint from its property values.")]
 	public class API_Application_NewPointOnPlane : dynRevitAPINode
 	{
@@ -13636,7 +13636,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPointOnEdge")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a PointOnEdge object which is used to define the placement of a ReferencePoint.")]
 	public class API_Application_NewPointOnEdge : dynRevitAPINode
 	{
@@ -13668,7 +13668,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilySymbolProfile")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new FamilySymbolProfile object.")]
 	public class API_Application_NewFamilySymbolProfile : dynRevitAPINode
 	{
@@ -13699,7 +13699,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewCurveLoopsProfile")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new CurveLoopsProfile object.")]
 	public class API_Application_NewCurveLoopsProfile : dynRevitAPINode
 	{
@@ -13730,7 +13730,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewElementId")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new Autodesk::Revit::DB::ElementId^ object.")]
 	public class API_Application_NewElementId : dynRevitAPINode
 	{
@@ -13760,7 +13760,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewAreaCreationData")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of Area for batch creation.")]
 	public class API_Application_NewAreaCreationData : dynRevitAPINode
 	{
@@ -13792,7 +13792,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewTextNoteCreationData")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewTextNote() for batch creation.")]
 	public class API_Application_NewTextNoteCreationData : dynRevitAPINode
 	{
@@ -13833,7 +13833,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewTextNoteCreationData_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewTextNote()  for batch creation.")]
 	public class API_Application_NewTextNoteCreationData_1 : dynRevitAPINode
 	{
@@ -13870,7 +13870,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewProfiledWallCreationData")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class API_Application_NewProfiledWallCreationData : dynRevitAPINode
 	{
@@ -13905,7 +13905,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewProfiledWallCreationData_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class API_Application_NewProfiledWallCreationData_1 : dynRevitAPINode
 	{
@@ -13939,7 +13939,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewProfiledWallCreationData_2")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class API_Application_NewProfiledWallCreationData_2 : dynRevitAPINode
 	{
@@ -13971,7 +13971,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewRectangularWallCreationData")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class API_Application_NewRectangularWallCreationData : dynRevitAPINode
 	{
@@ -14004,7 +14004,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewRectangularWallCreationData_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewWall() for batch creation")]
 	public class API_Application_NewRectangularWallCreationData_1 : dynRevitAPINode
 	{
@@ -14041,7 +14041,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewRoomCreationData")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewRoom() for batch creation.")]
 	public class API_Application_NewRoomCreationData : dynRevitAPINode
 	{
@@ -14073,7 +14073,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilyInstanceCreationData")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class API_Application_NewFamilyInstanceCreationData : dynRevitAPINode
 	{
@@ -14106,7 +14106,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilyInstanceCreationData_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class API_Application_NewFamilyInstanceCreationData_1 : dynRevitAPINode
 	{
@@ -14140,7 +14140,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilyInstanceCreationData_2")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class API_Application_NewFamilyInstanceCreationData_2 : dynRevitAPINode
 	{
@@ -14175,7 +14175,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilyInstanceCreationData_3")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class API_Application_NewFamilyInstanceCreationData_3 : dynRevitAPINode
 	{
@@ -14210,7 +14210,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilyInstanceCreationData_4")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class API_Application_NewFamilyInstanceCreationData_4 : dynRevitAPINode
 	{
@@ -14244,7 +14244,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilyInstanceCreationData_5")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class API_Application_NewFamilyInstanceCreationData_5 : dynRevitAPINode
 	{
@@ -14278,7 +14278,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilyInstanceCreationData_6")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class API_Application_NewFamilyInstanceCreationData_6 : dynRevitAPINode
 	{
@@ -14312,7 +14312,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFamilyInstanceCreationData_7")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.")]
 	public class API_Application_NewFamilyInstanceCreationData_7 : dynRevitAPINode
 	{
@@ -14345,7 +14345,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewSpaceSet")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a space set.")]
 	public class API_Application_NewSpaceSet : dynRevitAPINode
 	{
@@ -14375,7 +14375,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewLoadCombinationArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a LoadCombination array.")]
 	public class API_Application_NewLoadCombinationArray : dynRevitAPINode
 	{
@@ -14405,7 +14405,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewLoadUsageArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a LoadUsage array.")]
 	public class API_Application_NewLoadUsageArray : dynRevitAPINode
 	{
@@ -14435,7 +14435,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewLoadCaseArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a LoadCase array.")]
 	public class API_Application_NewLoadCaseArray : dynRevitAPINode
 	{
@@ -14465,7 +14465,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewViewSet")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a View set.")]
 	public class API_Application_NewViewSet : dynRevitAPINode
 	{
@@ -14495,7 +14495,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewIntersectionResultArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of an IntersectionResult array.")]
 	public class API_Application_NewIntersectionResultArray : dynRevitAPINode
 	{
@@ -14525,7 +14525,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFaceArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a face array.")]
 	public class API_Application_NewFaceArray : dynRevitAPINode
 	{
@@ -14555,7 +14555,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewReferenceArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a reference array.")]
 	public class API_Application_NewReferenceArray : dynRevitAPINode
 	{
@@ -14585,7 +14585,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewDoubleArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a double array.")]
 	public class API_Application_NewDoubleArray : dynRevitAPINode
 	{
@@ -14615,7 +14615,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewVolumeCalculationOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates options related to room volume and area computations.")]
 	public class API_Application_NewVolumeCalculationOptions : dynRevitAPINode
 	{
@@ -14645,7 +14645,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewGBXMLImportOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates Green-Building XML Import options.")]
 	public class API_Application_NewGBXMLImportOptions : dynRevitAPINode
 	{
@@ -14675,7 +14675,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewImageImportOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates Image Import options.")]
 	public class API_Application_NewImageImportOptions : dynRevitAPINode
 	{
@@ -14705,7 +14705,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewBuildingSiteExportOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates Building Site Export options.")]
 	public class API_Application_NewBuildingSiteExportOptions : dynRevitAPINode
 	{
@@ -14735,7 +14735,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewFBXExportOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates 3D-Studio Max (FBX) Export options.")]
 	public class API_Application_NewFBXExportOptions : dynRevitAPINode
 	{
@@ -14765,7 +14765,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewGBXMLExportOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates Green-Building XML Export options.")]
 	public class API_Application_NewGBXMLExportOptions : dynRevitAPINode
 	{
@@ -14795,7 +14795,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewDWFXExportOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates DWFX Export options.")]
 	public class API_Application_NewDWFXExportOptions : dynRevitAPINode
 	{
@@ -14825,7 +14825,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewDWFExportOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates DWF Export options.")]
 	public class API_Application_NewDWFExportOptions : dynRevitAPINode
 	{
@@ -14855,7 +14855,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewSATExportOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates SAT Export options.")]
 	public class API_Application_NewSATExportOptions : dynRevitAPINode
 	{
@@ -14885,7 +14885,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewUV")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a UV object by copying the supplied UV object.")]
 	public class API_Application_NewUV : dynRevitAPINode
 	{
@@ -14916,7 +14916,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewUV_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a UV object representing coordinates in 2-space with supplied values.")]
 	public class API_Application_NewUV_1 : dynRevitAPINode
 	{
@@ -14948,7 +14948,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewUV_2")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a UV object at the origin.")]
 	public class API_Application_NewUV_2 : dynRevitAPINode
 	{
@@ -14978,7 +14978,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewXYZ")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a XYZ object by copying the supplied XYZ object.")]
 	public class API_Application_NewXYZ : dynRevitAPINode
 	{
@@ -15009,7 +15009,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewXYZ_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a XYZ object representing coordinates in 3-space with supplied values.")]
 	public class API_Application_NewXYZ_1 : dynRevitAPINode
 	{
@@ -15042,7 +15042,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewXYZ_2")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a XYZ object at the origin.")]
 	public class API_Application_NewXYZ_2 : dynRevitAPINode
 	{
@@ -15072,7 +15072,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewBoundingBoxUV")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a two-dimensional rectangle with supplied values.")]
 	public class API_Application_NewBoundingBoxUV : dynRevitAPINode
 	{
@@ -15106,7 +15106,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewBoundingBoxUV_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an empty two-dimensional rectangle.")]
 	public class API_Application_NewBoundingBoxUV_1 : dynRevitAPINode
 	{
@@ -15136,7 +15136,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewBoundingBoxXYZ")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a three-dimensional rectangular box.")]
 	public class API_Application_NewBoundingBoxXYZ : dynRevitAPINode
 	{
@@ -15166,7 +15166,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewHermiteSpline")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a Hermite spline with specified tangency at its endpoints.")]
 	public class API_Application_NewHermiteSpline : dynRevitAPINode
 	{
@@ -15200,7 +15200,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewHermiteSpline_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a Hermite spline with default tangency at its endpoints.")]
 	public class API_Application_NewHermiteSpline_1 : dynRevitAPINode
 	{
@@ -15232,7 +15232,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewNurbSpline")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric NurbSpline object using the same calculations that Revit uses when sketching splines in the user interface.")]
 	public class API_Application_NewNurbSpline : dynRevitAPINode
 	{
@@ -15264,7 +15264,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewNurbSpline_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric nurbSpline object.")]
 	public class API_Application_NewNurbSpline_1 : dynRevitAPINode
 	{
@@ -15300,7 +15300,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewEllipse")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric ellipse object.")]
 	public class API_Application_NewEllipse : dynRevitAPINode
 	{
@@ -15337,7 +15337,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewProjectPosition")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new project position object.")]
 	public class API_Application_NewProjectPosition : dynRevitAPINode
 	{
@@ -15371,7 +15371,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewArc")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric arc object based on three points.")]
 	public class API_Application_NewArc : dynRevitAPINode
 	{
@@ -15404,7 +15404,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewArc_2")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric arc object based on center, radius, unit vectors, and angles.")]
 	public class API_Application_NewArc_2 : dynRevitAPINode
 	{
@@ -15440,7 +15440,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPoint")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric point object.")]
 	public class API_Application_NewPoint : dynRevitAPINode
 	{
@@ -15471,7 +15471,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPlane")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric plane from a loop of planar curves.")]
 	public class API_Application_NewPlane : dynRevitAPINode
 	{
@@ -15502,7 +15502,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPlane_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric plane object based on a normal vector and an origin.")]
 	public class API_Application_NewPlane_1 : dynRevitAPINode
 	{
@@ -15534,7 +15534,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewPlane_2")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new geometric plane object based on two coordinate vectors and an origin.")]
 	public class API_Application_NewPlane_2 : dynRevitAPINode
 	{
@@ -15567,7 +15567,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewColor")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a new color object.")]
 	public class API_Application_NewColor : dynRevitAPINode
 	{
@@ -15597,7 +15597,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewCombinableElementArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns an array that can hold combinable element objects.")]
 	public class API_Application_NewCombinableElementArray : dynRevitAPINode
 	{
@@ -15627,7 +15627,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewVertexIndexPairArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns an array that can hold VertexIndexPair objects.")]
 	public class API_Application_NewVertexIndexPairArray : dynRevitAPINode
 	{
@@ -15657,7 +15657,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewVertexIndexPair")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new VertexIndexPair object.")]
 	public class API_Application_NewVertexIndexPair : dynRevitAPINode
 	{
@@ -15689,7 +15689,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewElementArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns an array that can hold element objects.")]
 	public class API_Application_NewElementArray : dynRevitAPINode
 	{
@@ -15719,7 +15719,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewCurveArrArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an empty array that can store geometric curve loops.")]
 	public class API_Application_NewCurveArrArray : dynRevitAPINode
 	{
@@ -15749,7 +15749,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewCurveArray")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an empty array that can store geometric curves.")]
 	public class API_Application_NewCurveArray : dynRevitAPINode
 	{
@@ -15779,7 +15779,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewStringStringMap")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new map that maps one string to another string.")]
 	public class API_Application_NewStringStringMap : dynRevitAPINode
 	{
@@ -15809,7 +15809,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewGeometryOptions")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates an object to specify user preferences in parsing of geometry.")]
 	public class API_Application_NewGeometryOptions : dynRevitAPINode
 	{
@@ -15839,7 +15839,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewLineUnbound")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new unbounded geometric line object.")]
 	public class API_Application_NewLineUnbound : dynRevitAPINode
 	{
@@ -15871,7 +15871,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewLineBound")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new bounded geometric line object.")]
 	public class API_Application_NewLineBound : dynRevitAPINode
 	{
@@ -15903,7 +15903,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewLine")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new bound or unbounded geometric line object.")]
 	public class API_Application_NewLine : dynRevitAPINode
 	{
@@ -15936,7 +15936,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewMaterialSet")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Create a new instance of MaterialSet.")]
 	public class API_Application_NewMaterialSet : dynRevitAPINode
 	{
@@ -15966,7 +15966,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewElementSet")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a set specifically for holding elements.")]
 	public class API_Application_NewElementSet : dynRevitAPINode
 	{
@@ -15996,7 +15996,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewTypeBinding")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new type binding object containing the categories passed as a parameter.")]
 	public class API_Application_NewTypeBinding : dynRevitAPINode
 	{
@@ -16027,7 +16027,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewTypeBinding_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new empty type binding object.")]
 	public class API_Application_NewTypeBinding_1 : dynRevitAPINode
 	{
@@ -16057,7 +16057,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewInstanceBinding")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance binding object containing the categories passed as a parameter.")]
 	public class API_Application_NewInstanceBinding : dynRevitAPINode
 	{
@@ -16088,7 +16088,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewInstanceBinding_1")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new empty instance binding object.")]
 	public class API_Application_NewInstanceBinding_1 : dynRevitAPINode
 	{
@@ -16118,7 +16118,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Application_NewCategorySet")]
 	[NodeSearchTags("application","create")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_CREATION_APPLICATION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new instance of a set specifically for holding category objects.")]
 	public class API_Application_NewCategorySet : dynRevitAPINode
 	{
@@ -16145,7 +16145,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revolution_Axis")]
 	[NodeSearchTags("generic","form","revolution")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLUTION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Axis of the Revolution.")]
 	public class API_Revolution_Axis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16165,7 +16165,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revolution_EndAngle")]
 	[NodeSearchTags("generic","form","revolution")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLUTION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The end angle of the revolution relative to the sketch plane.")]
 	public class API_Revolution_EndAngle : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16185,7 +16185,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revolution_StartAngle")]
 	[NodeSearchTags("generic","form","revolution")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLUTION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The start angle of the revolution relative to the sketch plane.")]
 	public class API_Revolution_StartAngle : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16205,7 +16205,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Revolution_Sketch")]
 	[NodeSearchTags("generic","form","revolution")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLUTION)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Sketch of the Revolution.")]
 	public class API_Revolution_Sketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16225,7 +16225,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("RevolvedFace_Curve")]
 	[NodeSearchTags("face","revolved","revolve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLVEDFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Profile curve of the surface.")]
 	public class API_RevolvedFace_Curve : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16245,7 +16245,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("RevolvedFace_Axis")]
 	[NodeSearchTags("face","revolved","revolve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLVEDFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Axis of the surface.")]
 	public class API_RevolvedFace_Axis : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16265,7 +16265,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("RevolvedFace_Origin")]
 	[NodeSearchTags("face","revolved","revolve")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_REVOLVEDFACE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Origin of the surface.")]
 	public class API_RevolvedFace_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16288,7 +16288,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Edge_ComputeDerivatives")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the vectors describing the edge at the specified parameter.")]
 	public class API_Edge_ComputeDerivatives : dynRevitAPINode
 	{
@@ -16319,7 +16319,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Edge_AsCurveFollowingFace")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a curve that corresponds to this edge as oriented in its topological direction on the specified face.")]
 	public class API_Edge_AsCurveFollowingFace : dynRevitAPINode
 	{
@@ -16350,7 +16350,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Edge_AsCurve")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a curve that corresponds to the edge's parametric orientation.")]
 	public class API_Edge_AsCurve : dynRevitAPINode
 	{
@@ -16380,7 +16380,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Edge_EvaluateOnFace")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Evaluates a parameter on the edge to produce UV coordinates on the face.")]
 	public class API_Edge_EvaluateOnFace : dynRevitAPINode
 	{
@@ -16412,7 +16412,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Edge_Evaluate")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Evaluates a parameter on the edge.")]
 	public class API_Edge_Evaluate : dynRevitAPINode
 	{
@@ -16443,7 +16443,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Edge_TessellateOnFace")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a polyline approximation to the edge in UV parameters of the face.")]
 	public class API_Edge_TessellateOnFace : dynRevitAPINode
 	{
@@ -16474,7 +16474,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Edge_Tessellate")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a polyline approximation to the edge.")]
 	public class API_Edge_Tessellate : dynRevitAPINode
 	{
@@ -16501,7 +16501,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Edge_ApproximateLength")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the approximate length of the edge.")]
 	public class API_Edge_ApproximateLength : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16521,7 +16521,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Edge_Reference")]
 	[NodeSearchTags("edge")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_EDGE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a stable reference to the edge.")]
 	public class API_Edge_Reference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -16544,7 +16544,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_ToString")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets formatted string showing (U, V) with values formatted to 9 decimal places.")]
 	public class API_UV_ToString : dynRevitAPINode
 	{
@@ -16574,7 +16574,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_AngleTo")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the angle between this vector and the specified vector.")]
 	public class API_UV_AngleTo : dynRevitAPINode
 	{
@@ -16605,7 +16605,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_DistanceTo")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the distance from this 2-D point to the specified 2-D point.")]
 	public class API_UV_DistanceTo : dynRevitAPINode
 	{
@@ -16636,7 +16636,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_IsAlmostEqualTo")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines whether this 2-D vector and the specified 2-D vector are the same within a specified tolerance.")]
 	public class API_UV_IsAlmostEqualTo : dynRevitAPINode
 	{
@@ -16668,7 +16668,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_IsAlmostEqualTo_1")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines whether this 2-D vector and the specified 2-D vector are the same within the tolerance (1.0e-09).")]
 	public class API_UV_IsAlmostEqualTo_1 : dynRevitAPINode
 	{
@@ -16699,7 +16699,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_Divide")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Divides this 2-D vector by the specified value and returns the result.")]
 	public class API_UV_Divide : dynRevitAPINode
 	{
@@ -16730,7 +16730,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_Multiply")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Multiplies this 2-D vector by the specified value and returns the result.")]
 	public class API_UV_Multiply : dynRevitAPINode
 	{
@@ -16761,7 +16761,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_Negate")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Negates this 2-D vector.")]
 	public class API_UV_Negate : dynRevitAPINode
 	{
@@ -16791,7 +16791,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_Subtract")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Subtracts the specified 2-D vector from this 2-D vector and returns the result.")]
 	public class API_UV_Subtract : dynRevitAPINode
 	{
@@ -16822,7 +16822,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_Add")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Adds the specified 2-D vector to this 2-D vector and returns the result.")]
 	public class API_UV_Add : dynRevitAPINode
 	{
@@ -16853,7 +16853,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_CrossProduct")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The cross product of this 2-D vector and the specified 2-D vector.")]
 	public class API_UV_CrossProduct : dynRevitAPINode
 	{
@@ -16884,7 +16884,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_DotProduct")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The dot product of this 2-D vector and the specified 2-D vector.")]
 	public class API_UV_DotProduct : dynRevitAPINode
 	{
@@ -16915,7 +16915,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_IsUnitLength")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value indicates whether this 2-D vector is of unit length.")]
 	public class API_UV_IsUnitLength : dynRevitAPINode
 	{
@@ -16945,7 +16945,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_IsZeroLength")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The boolean value indicates whether this 2-D vector is a zero vector.")]
 	public class API_UV_IsZeroLength : dynRevitAPINode
 	{
@@ -16975,7 +16975,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_GetLength")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The length of this 2-D vector.")]
 	public class API_UV_GetLength : dynRevitAPINode
 	{
@@ -17005,7 +17005,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_Normalize")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a new UV whose coordinates are the normalized values from this vector.")]
 	public class API_UV_Normalize : dynRevitAPINode
 	{
@@ -17035,7 +17035,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a UV with the supplied coordinates.")]
 	public class API_UV : dynRevitAPINode
 	{
@@ -17067,7 +17067,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("UV_1")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a default UV with the values (0, 0).")]
 	public class API_UV_1 : dynRevitAPINode
 	{
@@ -17094,7 +17094,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("UV_V")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the second coordinate.")]
 	public class API_UV_V : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17114,7 +17114,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("UV_U")]
 	[NodeSearchTags("uv","point","param")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_UV)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the first coordinate.")]
 	public class API_UV_U : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17134,7 +17134,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Line_Direction")]
 	[NodeSearchTags("curve","line")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the direction of the line.")]
 	public class API_Line_Direction : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17154,7 +17154,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Line_Origin")]
 	[NodeSearchTags("curve","line")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the origin of the line.")]
 	public class API_Line_Origin : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17177,7 +17177,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_ClearMaterialAspect")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Removes an aspect from the material.")]
 	public class API_Material_ClearMaterialAspect : dynRevitAPINode
 	{
@@ -17208,7 +17208,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_SetMaterialAspectToIndependent")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Set an aspect of the material from a shared property set to a custom property set owned by the material.")]
 	public class API_Material_SetMaterialAspectToIndependent : dynRevitAPINode
 	{
@@ -17239,7 +17239,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_SetMaterialAspectByPropertySet")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Set an aspect of the material to a shared property set.")]
 	public class API_Material_SetMaterialAspectByPropertySet : dynRevitAPINode
 	{
@@ -17271,7 +17271,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_SetMaterialAspect")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Set the value of an aspect of the material")]
 	public class API_Material_SetMaterialAspect : dynRevitAPINode
 	{
@@ -17304,7 +17304,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_GetMaterialAspectPropertySet")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the identifier of the shared property set for a given aspect.")]
 	public class API_Material_GetMaterialAspectPropertySet : dynRevitAPINode
 	{
@@ -17335,7 +17335,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_GetCutPatternColor")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the color of the cut pattern for the material element.")]
 	public class API_Material_GetCutPatternColor : dynRevitAPINode
 	{
@@ -17365,7 +17365,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_GetCutPatternId")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the cut pattern id of the material.")]
 	public class API_Material_GetCutPatternId : dynRevitAPINode
 	{
@@ -17395,7 +17395,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_SetSmoothness")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Sets the smoothness value.")]
 	public class API_Material_SetSmoothness : dynRevitAPINode
 	{
@@ -17426,7 +17426,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_GetSmoothness")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the smoothness value.")]
 	public class API_Material_GetSmoothness : dynRevitAPINode
 	{
@@ -17456,7 +17456,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_Create")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new material.")]
 	public class API_Material_Create : dynRevitAPINode
 	{
@@ -17488,7 +17488,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Material_Duplicate")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Duplicates the material.")]
 	public class API_Material_Duplicate : dynRevitAPINode
 	{
@@ -17516,7 +17516,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_MaterialClass")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The name of the general material type, e.g. 'Wood.'")]
 	public class API_Material_MaterialClass : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17536,7 +17536,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_ThermalAssetId")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The ElementId of the thermal PropertySetElement.")]
 	public class API_Material_ThermalAssetId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17556,7 +17556,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_StructuralAssetId")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The ElementId of the structural PropertySetElement.")]
 	public class API_Material_StructuralAssetId : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17576,7 +17576,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_Shininess")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The shininess of the material.")]
 	public class API_Material_Shininess : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17596,7 +17596,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_Glow")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Whether the material can glow.")]
 	public class API_Material_Glow : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17616,7 +17616,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_RenderAppearance")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The rendering appearance property of the material.")]
 	public class API_Material_RenderAppearance : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17636,7 +17636,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_SurfacePatternColor")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The surface pattern color of the material.")]
 	public class API_Material_SurfacePatternColor : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17656,7 +17656,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_SurfacePattern")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The surface pattern of the material.")]
 	public class API_Material_SurfacePattern : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17676,7 +17676,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_CutPatternColor")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The cut pattern color of the material.")]
 	public class API_Material_CutPatternColor : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17696,7 +17696,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_CutPattern")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The cut pattern of the material.")]
 	public class API_Material_CutPattern : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17716,7 +17716,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_Smoothness")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The smoothness of the material.")]
 	public class API_Material_Smoothness : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17736,7 +17736,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_Transparency")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The transparency of the material.")]
 	public class API_Material_Transparency : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17756,7 +17756,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Material_Color")]
 	[NodeSearchTags("material","color")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_MATERIAL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The color of the material.")]
 	public class API_Material_Color : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17779,7 +17779,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Solid_getGeometry")]
 	[NodeSearchTags("solid")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Geometry object for this solid.")]
 	public class API_Solid_getGeometry : dynRevitAPINode
 	{
@@ -17809,7 +17809,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Solid_ComputeCentroid")]
 	[NodeSearchTags("solid")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Centroid of this solid.")]
 	public class API_Solid_ComputeCentroid : dynRevitAPINode
 	{
@@ -17836,7 +17836,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Solid_Volume")]
 	[NodeSearchTags("solid")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the signed volume of this solid.")]
 	public class API_Solid_Volume : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17856,7 +17856,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Solid_SurfaceArea")]
 	[NodeSearchTags("solid")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the total surface area of this solid.")]
 	public class API_Solid_SurfaceArea : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17876,7 +17876,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Solid_Faces")]
 	[NodeSearchTags("solid")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The faces that belong to the solid.")]
 	public class API_Solid_Faces : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17896,7 +17896,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Solid_Edges")]
 	[NodeSearchTags("solid")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SOLID)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The edges that belong to the solid.")]
 	public class API_Solid_Edges : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17916,7 +17916,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Arc_Radius")]
 	[NodeSearchTags("curve","arc")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the radius of the arc.")]
 	public class API_Arc_Radius : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17936,7 +17936,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Arc_YDirection")]
 	[NodeSearchTags("curve","arc")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Y direction.")]
 	public class API_Arc_YDirection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17956,7 +17956,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Arc_XDirection")]
 	[NodeSearchTags("curve","arc")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the X direction.")]
 	public class API_Arc_XDirection : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17976,7 +17976,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Arc_Normal")]
 	[NodeSearchTags("curve","arc")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the normal to the plane in which the arc is defined.")]
 	public class API_Arc_Normal : dynRevitTransactionNodeWithOneOutput
 	{
@@ -17996,7 +17996,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Arc_Center")]
 	[NodeSearchTags("curve","arc")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ARC)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the center of the arc.")]
 	public class API_Arc_Center : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18019,7 +18019,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Blend_GetVertexConnectionMap")]
 	[NodeSearchTags("generic","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the mapping between the vertices in the top and bottom profiles.")]
 	public class API_Blend_GetVertexConnectionMap : dynRevitAPINode
 	{
@@ -18046,7 +18046,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Blend_TopProfile")]
 	[NodeSearchTags("generic","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The curves which make up the top profile of the sketch.")]
 	public class API_Blend_TopProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18066,7 +18066,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Blend_BottomProfile")]
 	[NodeSearchTags("generic","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The curves which make up the bottom profile of the sketch.")]
 	public class API_Blend_BottomProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18086,7 +18086,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Blend_TopOffset")]
 	[NodeSearchTags("generic","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The offset of the top end of the blend relative to the sketch plane.")]
 	public class API_Blend_TopOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18106,7 +18106,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Blend_BottomOffset")]
 	[NodeSearchTags("generic","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The offset of the bottom end of the blend relative to the sketch plane.")]
 	public class API_Blend_BottomOffset : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18126,7 +18126,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Blend_BottomSketch")]
 	[NodeSearchTags("generic","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Bottom Sketch of the Blend.")]
 	public class API_Blend_BottomSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18146,7 +18146,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Blend_TopSketch")]
 	[NodeSearchTags("generic","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_BLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the Top Sketch of the Blend.")]
 	public class API_Blend_TopSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18169,7 +18169,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("SweptBlend_GetVertexConnectionMap")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Gets the mapping between the vertices in the top and bottom profiles.")]
 	public class API_SweptBlend_GetVertexConnectionMap : dynRevitAPINode
 	{
@@ -18196,7 +18196,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("SweptBlend_TopProfile")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The curves which make up the top profile of the sketch.")]
 	public class API_SweptBlend_TopProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18216,7 +18216,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("SweptBlend_BottomProfile")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The curves which make up the bottom profile of the sketch.")]
 	public class API_SweptBlend_BottomProfile : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18236,7 +18236,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("SweptBlend_SelectedPath")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The selected curve used for the swept blend path.")]
 	public class API_SweptBlend_SelectedPath : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18256,7 +18256,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("SweptBlend_PathSketch")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The sketched path for the swept blend.")]
 	public class API_SweptBlend_PathSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18276,7 +18276,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("SweptBlend_BottomProfileSymbol")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The bottom family symbol profile of the swept blend.")]
 	public class API_SweptBlend_BottomProfileSymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18296,7 +18296,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("SweptBlend_BottomSketch")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The bottom profile sketch of the swept blend.")]
 	public class API_SweptBlend_BottomSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18316,7 +18316,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("SweptBlend_TopProfileSymbol")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The top family symbol profile of the swept blend.")]
 	public class API_SweptBlend_TopProfileSymbol : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18336,7 +18336,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("SweptBlend_TopSketch")]
 	[NodeSearchTags("generic","sweep","swept","blend")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_SWEPTBLEND)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The top profile sketch of the swept blend.")]
 	public class API_SweptBlend_TopSketch : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18356,7 +18356,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Level_PlaneReference")]
 	[NodeSearchTags("level")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LEVEL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns a reference to this element as a plane.")]
 	public class API_Level_PlaneReference : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18376,7 +18376,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Level_LevelType")]
 	[NodeSearchTags("level")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LEVEL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The level style of this level.")]
 	public class API_Level_LevelType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18396,7 +18396,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Level_ProjectElevation")]
 	[NodeSearchTags("level")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LEVEL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieve the elevation relative to project origin, no matter what values of the Elevation Base parameter is set.")]
 	public class API_Level_ProjectElevation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18416,7 +18416,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Level_Elevation")]
 	[NodeSearchTags("level")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_LEVEL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieves or changes the elevation above or below the ground level.")]
 	public class API_Level_Elevation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18436,7 +18436,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("NurbSpline_Knots")]
 	[NodeSearchTags("curve","nurbs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Return/set the knots of the nurb spline.")]
 	public class API_NurbSpline_Knots : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18456,7 +18456,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("NurbSpline_Weights")]
 	[NodeSearchTags("curve","nurbs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the weights of the nurb spline.")]
 	public class API_NurbSpline_Weights : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18476,7 +18476,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("NurbSpline_CtrlPoints")]
 	[NodeSearchTags("curve","nurbs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the control points of the nurb spline.")]
 	public class API_NurbSpline_CtrlPoints : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18496,7 +18496,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("NurbSpline_Degree")]
 	[NodeSearchTags("curve","nurbs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns the degree of the nurb spline.")]
 	public class API_NurbSpline_Degree : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18516,7 +18516,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("NurbSpline_isRational")]
 	[NodeSearchTags("curve","nurbs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Returns whether the nurb spline is rational or not.")]
 	public class API_NurbSpline_isRational : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18536,7 +18536,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("NurbSpline_isClosed")]
 	[NodeSearchTags("curve","nurbs")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_NURBSPLINE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Return/set the nurb spline's isClosed property.")]
 	public class API_NurbSpline_isClosed : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18556,7 +18556,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("AdaptivePointType")]
 	[NodeSearchTags("adaptive","point","type")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ADAPTIVEPOINTTYPE)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Shape Handle Point.")]
 	public class API_AdaptivePointType : dynEnum
 	{
@@ -18571,7 +18571,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Wall_Create")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a non rectangular profile wall within the project using the specified wall type and normal vector.")]
 	public class API_Wall_Create : dynRevitAPINode
 	{
@@ -18607,7 +18607,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Wall_Create_1")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a non rectangular profile wall within the project using the specified wall type.")]
 	public class API_Wall_Create_1 : dynRevitAPINode
 	{
@@ -18642,7 +18642,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Wall_Create_2")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a non rectangular profile wall within the project using the default wall type.")]
 	public class API_Wall_Create_2 : dynRevitAPINode
 	{
@@ -18675,7 +18675,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Wall_Create_3")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new rectangular profile wall within the project using the specified wall type, height, and offset.")]
 	public class API_Wall_Create_3 : dynRevitAPINode
 	{
@@ -18713,7 +18713,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Wall_Create_4")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a new rectangular profile wall within the project using the default wall style.")]
 	public class API_Wall_Create_4 : dynRevitAPINode
 	{
@@ -18747,7 +18747,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("Wall_Flip")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The wall orientation will be flipped.")]
 	public class API_Wall_Flip : dynRevitAPINode
 	{
@@ -18774,7 +18774,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Wall_Orientation")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("The normal vector projected from the exterior side of the wall.")]
 	public class API_Wall_Orientation : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18794,7 +18794,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Wall_Flipped")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Property to test whether the wall orientation is flipped.")]
 	public class API_Wall_Flipped : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18814,7 +18814,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Wall_StructuralUsage")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieves or changes  the wall's designated structural usage.")]
 	public class API_Wall_StructuralUsage : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18834,7 +18834,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Wall_Width")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get the overall thickness of the wall.")]
 	public class API_Wall_Width : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18854,7 +18854,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Wall_CurtainGrid")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Get the grid object of a curtain wall")]
 	public class API_Wall_CurtainGrid : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18874,7 +18874,7 @@ namespace Dynamo.Nodes
 
 	[NodeName("Wall_WallType")]
 	[NodeSearchTags("wall")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_WALL)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Retrieves or changes the type of the wall.")]
 	public class API_Wall_WallType : dynRevitTransactionNodeWithOneOutput
 	{
@@ -18897,7 +18897,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_RotateElement")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Rotates an element about the given axis and angle.")]
 	public class API_ElementTransformUtils_RotateElement : dynRevitAPINode
 	{
@@ -18931,7 +18931,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_RotateElements")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Rotates a set of elements about the given axis and angle.")]
 	public class API_ElementTransformUtils_RotateElements : dynRevitAPINode
 	{
@@ -18965,7 +18965,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_MirrorElement")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a mirrored copy of an element about a given plane.")]
 	public class API_ElementTransformUtils_MirrorElement : dynRevitAPINode
 	{
@@ -18998,7 +18998,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_MirrorElements")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Creates a mirrored copy of a set of elements about a given plane.")]
 	public class API_ElementTransformUtils_MirrorElements : dynRevitAPINode
 	{
@@ -19031,7 +19031,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_CopyElement")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Copies an element and places the copy at a location indicated by a given transformation.")]
 	public class API_ElementTransformUtils_CopyElement : dynRevitAPINode
 	{
@@ -19064,7 +19064,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_CopyElements")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Copies a set of elements and places the copies at a location indicated by a given translation.")]
 	public class API_ElementTransformUtils_CopyElements : dynRevitAPINode
 	{
@@ -19097,7 +19097,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_MoveElement")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Moves one element by a given transformation.")]
 	public class API_ElementTransformUtils_MoveElement : dynRevitAPINode
 	{
@@ -19130,7 +19130,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_MoveElements")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Moves a set of elements by a given transformation.")]
 	public class API_ElementTransformUtils_MoveElements : dynRevitAPINode
 	{
@@ -19163,7 +19163,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_CanMirrorElement")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines whether element can be mirrored.")]
 	public class API_ElementTransformUtils_CanMirrorElement : dynRevitAPINode
 	{
@@ -19195,7 +19195,7 @@ namespace Dynamo.Nodes
 	///</summary>
 	[NodeName("ElementTransformUtils_CanMirrorElements")]
 	[NodeSearchTags("element","transform","utils","move","rotate","scale","mirror","reflect")]
-	[NodeCategory(BuiltinNodeCategories.AUTODESK_REVIT_DB_ELEMENTTRANSFORMUTILS)]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
 	[NodeDescription("Determines whether elements can be mirrored.")]
 	public class API_ElementTransformUtils_CanMirrorElements : dynRevitAPINode
 	{

@@ -151,8 +151,11 @@ def main():
 	f.write('\tpublic static partial class BuiltinNodeCategories\n')
 	f.write('\t{\n')
 
-	for namespace in valid_namespaces:
-		f.write('\t\tpublic const string ' + namespace.upper().replace('.','_') + ' = \"' + namespace + '\";\n')
+	# for namespace in valid_namespaces:
+	# 	f.write('\t\tpublic const string ' + namespace.upper().replace('.','_') + ' = \"' + namespace + '\";\n')
+
+	# put everyting in the Revit API category for now.
+	f.write('\t\tpublic const string REVIT_API = \"Revit API\";\n')
 
 	f.write('\t}\n')
 	f.write('}\n')
@@ -258,10 +261,17 @@ class RevitMethod:
 		for tag in valid_namespaces[self.type]:
 			search_tags.append('\"' + tag + '\"')
 
+		# node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		# '\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
+		# '\t[NodeCategory(BuiltinNodeCategories.' + self.type.upper().replace('.','_') + ')]\n',
+		# '\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
+
+		#put everything in the Revit API category for now
 		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
 		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
-		'\t[NodeCategory(BuiltinNodeCategories.' + self.type.upper().replace('.','_') + ')]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
+
 		f.writelines(node_attributes)
 
 	def write_constructor(self, f):
@@ -407,9 +417,16 @@ class RevitProperty:
 		for tag in valid_namespaces[self.type]:
 			search_tags.append('\"' + tag + '\"')
 
+		# node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		# '\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
+		# '\t[NodeCategory(BuiltinNodeCategories.' + self.type.upper().replace('.','_') + ')]\n',
+		# '\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
+		# f.writelines(node_attributes)
+
+		#put everything in the Revit API category for now
 		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
 		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
-		'\t[NodeCategory(BuiltinNodeCategories.' + self.type.upper().replace('.','_') + ')]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 		f.writelines(node_attributes)
 
@@ -472,9 +489,16 @@ class RevitField:
 		for tag in valid_namespaces[self.name]:
 			search_tags.append('\"' + tag + '\"')
 
+		# node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		# '\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
+		# '\t[NodeCategory(BuiltinNodeCategories.' + self.name.upper().replace('.','_') + ')]\n',
+		# '\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
+		# f.writelines(node_attributes)
+
+		#put everything in the Revit API namespace for now
 		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
 		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
-		'\t[NodeCategory(BuiltinNodeCategories.' + self.name.upper().replace('.','_') + ')]\n',
+		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 		f.writelines(node_attributes)
 
