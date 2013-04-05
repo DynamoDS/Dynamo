@@ -2935,6 +2935,9 @@ namespace Dynamo
 
             collapsedNode.EnableReporting();
             collapsedNode.NodeUI.UpdateConnections();
+            
+            //set the name on the node
+            collapsedNode.NodeUI.NickName = newNodeName;
 
             CurrentSpace.EnableReporting();
 
