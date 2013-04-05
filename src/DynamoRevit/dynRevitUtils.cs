@@ -70,9 +70,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception e)
                 {
-                    var test = base_type.GetMethods().Where(x => x.Name == methodName).SelectMany(y=>y.GetParameters());
-
-                    Debug.WriteLine(e.Message);
+                    throw new Exception("There was an error finding the appropriate API method to call.", e);
                 }
             }
 
