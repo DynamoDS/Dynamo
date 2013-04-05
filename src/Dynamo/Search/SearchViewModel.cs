@@ -197,12 +197,11 @@ namespace Dynamo.Search
         {
             if (Visible != Visibility.Visible)
                 return;
-
-            SearchResults.Clear();
-
+            
             Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>Search(query) )
                                                         .ContinueWith((t) =>
                                                             {
+                                                                SearchResults.Clear();
                                                                 foreach (SearchElementBase node in t.Result)
                                                                 {
                                                                     SearchResults.Add(node);
@@ -253,7 +252,7 @@ namespace Dynamo.Search
         {
             if (string.IsNullOrEmpty(search))
             {
-                return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).ToList();
+                return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).OrderBy(val => val.Name).ToList();
             }
 
             return SearchDictionary.Search(search, MaxNumSearchResults);

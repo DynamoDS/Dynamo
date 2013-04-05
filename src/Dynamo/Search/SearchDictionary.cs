@@ -216,11 +216,10 @@ namespace Dynamo.Search
                 }
             }
 
-            return searchDict.OrderBy(x => x.Value)
-                             .Reverse()
+            return searchDict.OrderByDescending(x => x.Value)
                              .Select(x => x.Key)
-                             .ToList()
-                             .GetRange(0, Math.Min(numResults, searchDict.Count));
+                             .Take( Math.Min(numResults, searchDict.Count ))
+                             .ToList();
         }
     }
 }
