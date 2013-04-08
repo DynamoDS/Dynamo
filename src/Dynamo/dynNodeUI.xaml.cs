@@ -43,7 +43,6 @@ namespace Dynamo.Controls
     /// Interaction logic for dynControl.xaml
     /// </summary>
     public enum ElementState { DEAD, ACTIVE, ERROR };
-    public enum LacingType { SHORTEST, LONGEST, FULL };
 
     public partial class dynNodeUI : UserControl, INotifyPropertyChanged, ISelectable
     {
@@ -67,7 +66,6 @@ namespace Dynamo.Controls
         Guid guid;
         string toolTipText = "";
         ElementState state;
-        LacingType lacingType = LacingType.SHORTEST;
         dynNode nodeLogic;
         bool isSelected = false;
         int preferredHeight = 30;
@@ -148,12 +146,6 @@ namespace Dynamo.Controls
                 state = value;
                 NotifyPropertyChanged("State");
             }
-        }
-
-        public LacingType LacingType
-        {
-            get { return lacingType; }
-            set { lacingType = value; }
         }
 
         public Grid ContentGrid
