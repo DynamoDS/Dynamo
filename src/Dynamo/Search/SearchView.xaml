@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             Visibility="{Binding Path=Visible}" d:DesignWidth="447" x:Name="SearchControl" MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=ActualHeight}">
+             Visibility="{Binding Path=Visible}" d:DesignWidth="380" x:Name="SearchControl" MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}}, Path=ActualHeight}">
     
   <Grid Background="Black">
 
@@ -14,10 +14,15 @@
       <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal">
 
         <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="18" Padding="10,15,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="355" Text="{Binding Path=SearchText,Mode=TwoWay}" />
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="300" Text="{Binding Path=SearchText,Mode=TwoWay}" />
 
-        <ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="90" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
-                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" IsChecked="{Binding IncludePackageManagerSearchElements, Mode=TwoWay}" Tag="..\Images\cloud_download_arrow_white.png" />
+
+        <Button Name="BackButton" Margin="1, 0, 1, 0" Width="60" FontSize="24" Foreground="White" ToolTip="Go Back" 
+                      Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\arrow-left-white.png" />
+        
+        <ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
+                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" IsChecked="{Binding IncludePackageManagerSearchElements, Mode=TwoWay}" Tag="..\Images\add_32_white.png" />
+
 
       </StackPanel>
 
@@ -35,7 +40,11 @@
                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                      Color="#FFF" />
               </Style.Resources>
+              
+              <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+              
             </Style>
+            
           </ListBox.ItemContainerStyle>
                        
           <ListBox.ItemTemplate >
@@ -48,10 +57,10 @@
 
                   <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="#111" Y1="0" Y2="0" VerticalAlignment="Top"/>
-                  <TextBlock FontSize="24" Name="name" Text="{Binding Path=Name}" Foreground="AliceBlue" Padding="10,5,0,0"/>
-                  <TextBlock FontSize="12" Name="description" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 39, 0, 10"/>
+                  <TextBlock FontSize="16" Name="name" Text="{Binding Path=Name}" Foreground="AliceBlue" Padding="10,5,0,0"/>
+                  <TextBlock FontSize="11" Name="description" TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 30, 0, 10"/>
                   <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 10"/>
-                  <TextBlock FontSize="12" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 10"/>
+                  <TextBlock FontSize="11" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 10"/>
 
                 <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="DimGray" Y1="0" Y2="0" VerticalAlignment="Bottom"/>
@@ -69,16 +78,17 @@
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Community Node">
                   <DataTrigger.Setters>
-                    <Setter Property="Background" Value="#EE111617" TargetName="SearchEle" />
-                    <Setter Property="Foreground" Value="#FFADD8E6" TargetName="type" />
+                    <Setter Property="Background" Value="#EE0C1900" TargetName="SearchEle" />
+                    <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />
                   </DataTrigger.Setters>
                 </DataTrigger>
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Category">
                   <DataTrigger.Setters>
-                    <Setter Property="Background" Value="#EE0C1900" TargetName="SearchEle" />
-                    <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />
+                    <Setter Property="Background" Value="#EE111617" TargetName="SearchEle" />
+                    <Setter Property="Foreground" Value="#FFADD8E6" TargetName="type" />
                   </DataTrigger.Setters>
+
                 </DataTrigger>
 
               </DataTemplate.Triggers>

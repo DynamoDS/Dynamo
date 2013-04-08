@@ -1,6 +1,11 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms;
+using System.Windows.Input;
 using Dynamo.Commands;
+using TextBox = System.Windows.Controls.TextBox;
+using UserControl = System.Windows.Controls.UserControl;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -43,6 +48,16 @@ namespace Dynamo.Search
             BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
                 binding.UpdateSource();
+        }
+
+        public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+           ((SearchViewModel) DataContext).ExecuteSelected();
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
         }
     }
 }

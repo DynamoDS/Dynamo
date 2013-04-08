@@ -320,6 +320,11 @@ limitations under the License.
     <Resource Include="Images\arrow-left-white.png" />
     <Resource Include="Images\arrow-right-black.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\add_32.png" />
+    <Resource Include="Images\add_32_white.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

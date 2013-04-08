@@ -179,7 +179,7 @@ namespace Dynamo.Search
         {
             SearchDictionary.Add(new WorkspaceSearchElement("Home", "Workspace"), "Home");
         }
-
+        
         /// <summary>
         ///     Asyncrhonously erforms a search and updates the observable SearchResults property.
         /// </summary>
@@ -291,10 +291,10 @@ namespace Dynamo.Search
             {
                 PopulateSearchTextWithSelectedResult();
             }
-            else if (e.Key == Key.Back)
-            {
-                SearchText = RemoveLastPartOfSearchText(SearchText);
-            }
+            //else if (e.Key == Key.Back)
+            //{
+            //    RemoveLastPartOfSearchText();
+            //}
             else if (e.Key == Key.Down)
             {
                 SelectNext(); 
@@ -311,8 +311,19 @@ namespace Dynamo.Search
         ///     last character.  If the SearchText property is empty or null
         ///     return doing nothing.
         /// </summary>
+        public void RemoveLastPartOfSearchText()
+        {
+            SearchText = RemoveLastPartOfText(SearchText);
+        }
+
+        /// <summary>
+        ///     If there's a period in the argument, remove text 
+        ///     to the end until you hit a period.  Otherwise, remove the 
+        ///     last character.  If the argument is empty or null
+        ///     return the empty string.
+        /// </summary>
         /// <returns>The string cleaved of everything </returns>
-        public static string RemoveLastPartOfSearchText(string text)
+        public static string RemoveLastPartOfText(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return text;
@@ -328,7 +339,7 @@ namespace Dynamo.Search
             // if period is in last position, remove that period and recurse
             if ( matches[matches.Count - 1].Index + 1 == text.Length )
             {
-                return RemoveLastPartOfSearchText(text.Substring(0, text.Length - 1));
+                return RemoveLastPartOfText(text.Substring(0, text.Length - 1));
             }
 
             // remove to the last period
@@ -376,7 +387,7 @@ namespace Dynamo.Search
             if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
                 SearchDictionary.Add(searchEle, packageHeader.keywords);
             SearchDictionary.Add(searchEle, searchEle.Description);
-            SearchAndUpdateResults();
+            SearchAndUpdateResultsSync(SearchText);
         }
 
         /// <summary>
