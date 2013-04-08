@@ -13,8 +13,6 @@ using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 using Expression = Dynamo.FScheme.Expression;
 using Value = Dynamo.FScheme.Value;
-using HelixToolkit.Wpf;
-using System.Windows.Media.Media3D;
 
 namespace Dynamo.Utilities
 {
@@ -303,23 +301,6 @@ namespace Dynamo.Utilities
                     else if (output == typeof(string))
                     {
                         return string.Format("{0},{1},{2}", a.Coord.X, a.Coord.Y, a.Coord.Z);
-                    }
-                }
-                #endregion
-
-                #region Point3d
-                else if (item.GetType() == typeof(Point3D))
-                {
-                    Point3D a = (Point3D)item;
-
-                    if (output == typeof(XYZ))
-                    {
-                        XYZ xyz = new XYZ(a.X,a.Y,a.Z);
-                        return xyz;
-                    }
-                    else if (output == typeof(string))
-                    {
-                        return string.Format("{0},{1},{2}", a.X, a.Y, a.Z);
                     }
                 }
                 #endregion
