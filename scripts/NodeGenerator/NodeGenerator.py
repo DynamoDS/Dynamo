@@ -267,7 +267,7 @@ class RevitMethod:
 		# '\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
 
 		#put everything in the Revit API category for now
-		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		node_attributes = ['\t[NodeName("API_' + self.nickName + '")]\n',
 		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
 		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
@@ -322,39 +322,6 @@ class RevitMethod:
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
 
-	# def write_evaluate(self, f):
-
-	# 	# write comments for the constructor
-	# 	evaulate_notes=[
-	# 	'\t\t///<summary>\n',
-	# 	'\t\t///' + 'Auto-generated evaulate method for Dynamo node wrapping ' + self.name + '\n',
-	# 	'\t\t///</summary>\n']
-	# 	f.writelines(evaulate_notes)
-
-	# 	f.write('\t\tpublic override Value Evaluate(FSharpList<Value> args)\n')
-	# 	f.write('\t\t{\n')
-
-	# 	# cleanup existing elements created by this
-	# 	# node in previous runs
-	# 	cleanup=[
-	# 	'\t\t\tElements.ForEach(\n',
- #        '\t\t\tdelegate(ElementId el)\n', 
- #        '\t\t\t{\n', 
- #        '\t\t\t\tElement e;\n', 
- #        '\t\t\t\tif (dynUtils.TryGetElement(el, out e))\n', 
- #        '\t\t\t\t{\n', 
- #        '\t\t\t\t\tDeleteElement(e.Id);\n', 
- #        '\t\t\t\t}\n', 
- #        '\t\t\t});\n',
- #        '\t\t\tElements.Clear();\n',
- #        '\n'
-	# 	]
-	# 	f.writelines(cleanup)
-
-	# 	f.write('\t\t\treturn dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi);')
-
-	# 	f.write('\t\t}\n')
-	
 	def match_method_call(self):
 
 		# def_prefix = '((' + self.type + ')(args[0] as Value.Container).Item)'
@@ -424,7 +391,7 @@ class RevitProperty:
 		# f.writelines(node_attributes)
 
 		#put everything in the Revit API category for now
-		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		node_attributes = ['\t[NodeName("API_' + self.nickName + '")]\n',
 		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
 		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']
@@ -496,7 +463,7 @@ class RevitField:
 		# f.writelines(node_attributes)
 
 		#put everything in the Revit API namespace for now
-		node_attributes = ['\t[NodeName("' + self.nickName + '")]\n',
+		node_attributes = ['\t[NodeName("API_' + self.nickName + '")]\n',
 		'\t[NodeSearchTags(' + ','.join(search_tags) + ')]\n',
 		'\t[NodeCategory(BuiltinNodeCategories.REVIT_API)]\n',
 		'\t[NodeDescription("' + self.summary.encode('utf-8').strip().replace('\n','').replace('\"','\\"') + '")]\n']

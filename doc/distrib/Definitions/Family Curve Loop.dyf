@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="-266" Y="41" Name="Family Curve Loop" Category="Revit">
+<dynWorkspace X="-266" Y="41" Name="Family Curve Loop" Category="Revit" ID="1408b2d9-d8d8-4e2b-8f85-8a48b862ac99">
   <dynElements>
     <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="91273b7c-ced2-447a-b2d2-30d5d6e30248" nickname="Number" x="164.148106904232" y="137.536191536748">
       <System.Double value="0" />

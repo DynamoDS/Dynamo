@@ -417,7 +417,7 @@ namespace Dynamo
                             nodeUI.Visibility = Visibility.Hidden;
                         };
 
-                    nodeUI.GUID = new Guid();
+                    nodeUI.GUID = Guid.NewGuid();
                     nodeUI.Margin = new Thickness(5, 30, 5, 5);
 
                     double target = Bench.sidebarGrid.Width - 30;
@@ -1385,7 +1385,16 @@ namespace Dynamo
                     if (typeName.StartsWith(oldNamespace))
                         typeName = "Dynamo.Nodes." + typeName.Remove(0, oldNamespace.Length);
 
+                    //test the GUID to confirm that it is non-zero
+                    //if it is zero, then we have to fix it
+                    //this will break the connectors, but it won't keep
+                    //propagating bad GUIDs
                     var guid = new Guid(guidAttrib.Value);
+                    if (guid == Guid.Empty)
+                    {
+                        guid = Guid.NewGuid();
+                    }
+
                     string nickname = nicknameAttrib.Value;
 
                     double x = Convert.ToDouble(xAttrib.Value);
@@ -1477,15 +1486,22 @@ namespace Dynamo
                     //    continue;
                     //}
 
-                    if (start != null && end != null && start != end)
+                    try
                     {
-                        var newConnector = new dynConnector(
-                            start.NodeUI, end.NodeUI,
-                            startIndex, endIndex,
-                            portType, false
-                            );
+                        if (start != null && end != null && start != end)
+                        {
+                            var newConnector = new dynConnector(
+                                start.NodeUI, end.NodeUI,
+                                startIndex, endIndex,
+                                portType, false
+                                );
 
-                        ws.Connectors.Add(newConnector);
+                            ws.Connectors.Add(newConnector);
+                        }
+                    }
+                    catch
+                    {
+                        Bench.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NodeUI.GUID, end.NodeUI.GUID));
                     }
                 }
 
@@ -1648,7 +1664,17 @@ namespace Dynamo
                     XmlAttribute yAttrib = elNode.Attributes[4];
 
                     string typeName = typeAttrib.Value;
+
+                    //test the GUID to confirm that it is non-zero
+                    //if it is zero, then we have to fix it
+                    //this will break the connectors, but it won't keep
+                    //propagating bad GUIDs
                     var guid = new Guid(guidAttrib.Value);
+                    if (guid == Guid.Empty)
+                    {
+                        guid = Guid.NewGuid();
+                    }
+
                     string nickname = nicknameAttrib.Value;
 
                     double x = Convert.ToDouble(xAttrib.Value);
@@ -2943,6 +2969,9 @@ namespace Dynamo
 
             collapsedNode.EnableReporting();
             collapsedNode.NodeUI.UpdateConnections();
+            
+            //set the name on the node
+            collapsedNode.NodeUI.NickName = newNodeName;
 
             CurrentSpace.EnableReporting();
 

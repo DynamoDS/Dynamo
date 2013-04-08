@@ -923,7 +923,7 @@ namespace Dynamo.Commands
             dynSettings.Controller.Nodes.Add(nodeUi.NodeLogic);
             nodeUi.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
             nodeUi.Opacity = 1;
-
+            
             //if we've received a value in the dictionary
             //try to set the value on the node
             if(data.ContainsKey("value"))
@@ -1037,6 +1037,8 @@ namespace Dynamo.Commands
             int endIndex = (int)connectionData["port_end"];
 
             dynConnector c = new dynConnector(start, end, startIndex, endIndex, 0);
+
+            dynSettings.Controller.CurrentSpace.Connectors.Add(c);
         }
 
         public event EventHandler CanExecuteChanged
@@ -1202,7 +1204,16 @@ namespace Dynamo.Commands
                 }
                 catch
                 {
-                    startNode = c.Start.Owner;
+                    //don't let users paste connectors between workspaces
+                    if (c.Start.Owner.NodeLogic.WorkSpace == dynSettings.Controller.CurrentSpace)
+                    {
+                        startNode = c.Start.Owner;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    
                 }
 
                 connectionData.Add("start", startNode);
