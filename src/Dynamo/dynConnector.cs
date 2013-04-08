@@ -247,11 +247,14 @@ namespace Dynamo.Connectors
 
         public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType, bool visible)
         {
-            //this.workBench = settings.WorkBench;
+            //don't try to create a connector with a bad start,
+            //end, or if we're trying to connector the same
+            //port to itself.
+            if (start == null || end == null || start == end)
+            {
+                throw new Exception("Attempting to create connector with invalid start or end nodes.");
+            }
 
-            //if (start != null && end != null && start != end)
-            //{
-            //in the start element, find the out port at the startIndex
             pStart = start.OutPorts[startIndex];
 
             dynPort endPort = null;
