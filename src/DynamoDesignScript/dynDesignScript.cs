@@ -70,6 +70,9 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
+            Autodesk.ASM.State.ClearPersistedObjects();
+            Autodesk.ASM.OUT.Reset();
+
             Autodesk.ASM.State.StopViewer();
             Autodesk.ASM.State.Stop();
 
@@ -106,7 +109,7 @@ namespace Dynamo.Nodes
             NodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
 
-            InPortData.Add(new PortData("Bindings", "A list of <string, object> variable tuples", typeof(object)));
+            InPortData.Add(new PortData("IN", "A list of objects", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the DesignScript script", typeof(object)));
 
             NodeUI.RegisterAllPorts();
@@ -143,22 +146,13 @@ namespace Dynamo.Nodes
 
         private void ClearCreatedElements()
         {
-            var controller = dynRevitSettings.Controller;
-
-            bool initiated_transaction = false;
-
-            if (!controller.IsTransactionActive())
-            {
-                controller.InitTransaction();
-                initiated_transaction = true;
-            }
-
             foreach (Autodesk.Revit.DB.Element elem in created_elements)
             {
+                // sometimes the Revit element gets lost or doesn't import
+                // correctly, so DeleteElement throws an exception
                 try
                 {
                     DeleteElement(elem.Id);
-                    //Dynamo.Utilities.dynRevitSettings.Doc.Document.Delete(elem.Id);
                 }
                 catch (System.Exception)
                 {
@@ -166,14 +160,10 @@ namespace Dynamo.Nodes
             }
 
             created_elements.Clear();
-
-            if (initiated_transaction)
-                controller.EndTransaction();
         }
 
         ~dynDesignScript()
         {
-            //Cleanup();
         }
 
         public override void Cleanup()
@@ -182,15 +172,30 @@ namespace Dynamo.Nodes
                 core.Cleanup();
 
             Autodesk.ASM.State.ClearPersistedObjects();
-            Autodesk.ASM.DynamoOutput.Reset();
+            Autodesk.ASM.OUT.Reset();
+        }
 
-            ClearCreatedElements();
+        private object ConvertInput(Value val)
+        {
+            if (val.IsNumber)
+            {
+                return (object)((Value.Number)val).Item;
+            }
+            else if (val.IsContainer)
+            {
+                return (object)((Value.Container)val).Item;
+            }
+
+            return null;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             if (coreSet)
+            {
                 Cleanup();
+                ClearCreatedElements();
+            } 
             else
                 coreSet = true;
 
@@ -202,25 +207,35 @@ namespace Dynamo.Nodes
                 FSharpList<Value> containers = Utils.SequenceToFSharpList(
                     ((Value.List)args[0]).Item);
 
-                foreach (Value e in containers)
+                List<object> binding_objects = new List<object>();
+
+                foreach (Value val in containers)
                 {
-                    if (!e.IsList)
-                        continue;
+                    //if (!e.IsList)
+                    //    continue;
 
-                    FSharpList<Value> tuple = Utils.SequenceToFSharpList(
-                        ((Value.List)e).Item);
+                    //FSharpList<Value> tuple = Utils.SequenceToFSharpList(
+                    //    ((Value.List)e).Item);
 
-                    string var_name = (string)((Value.String)tuple[0]).Item;
-                    object var_value = null;
+                    //string var_name = (string)((Value.String)tuple[0]).Item;
+                    //object var_value = null;
 
-                    if (tuple[1].IsNumber)
-                        var_value = (object)((Value.Number)tuple[1]).Item;
-                    else if (tuple[1].IsContainer)
-                        var_value = (object)((Value.Container)tuple[1]).Item;
+                    //if (tuple[1].IsNumber)
+                    //    var_value = (object)((Value.Number)tuple[1]).Item;
+                    //else if (tuple[1].IsContainer)
+                    //    var_value = (object)((Value.Container)tuple[1]).Item;
 
-                    if (var_value != null)
-                        context.Add(var_name, var_value);
+                    //if (var_value != null)
+                    //    context.Add(var_name, var_value);
+
+                    binding_objects.Add(ConvertInput(val));
                 }
+
+                context.Add("IN", binding_objects);
+            }
+            else
+            {
+                context.Add("IN", ConvertInput(args[0]));
             }
 
             core = new ProtoCore.Core(new ProtoCore.Options());
@@ -237,7 +252,7 @@ namespace Dynamo.Nodes
             FSharpList<Value> created_objects = FSharpList<Value>.Empty;
 
             // These are the objects added in the DesignScript script
-            List<object> output_objects = Autodesk.ASM.DynamoOutput.Objects();
+            List<object> output_objects = Autodesk.ASM.OUT.Objects();
 
             foreach (object o in output_objects)
             {
@@ -284,21 +299,28 @@ namespace Dynamo.Nodes
 
                 string temp_file_name = temp_dir + guid.ToString() + ".sat";
 
-                g.ExportToSAT(temp_file_name);
+                try
+                {
+                    g.ExportToSAT(temp_file_name);
 
-                Autodesk.Revit.DB.SATImportOptions options = new
-                    Autodesk.Revit.DB.SATImportOptions();
-                
-                // TODO: get this from the current document. This should be 
-                //       synced with the "default" unit used for ReferencePoints
-                options.Unit = ImportUnit.Foot;
+                    Autodesk.Revit.DB.SATImportOptions options = new
+                        Autodesk.Revit.DB.SATImportOptions();
 
-                Autodesk.Revit.DB.ElementId new_id =
-                    Dynamo.Utilities.dynRevitSettings.Doc.Document.Import(
-                    temp_file_name, options,
-                    Dynamo.Utilities.dynRevitSettings.Doc.ActiveView);
+                    // TODO: get this from the current document. This should be 
+                    //       synced with the "default" unit used for ReferencePoints
+                    options.Unit = ImportUnit.Foot;
 
-                created_elements.Add(Dynamo.Utilities.dynRevitSettings.Doc.Document.GetElement(new_id));
+                    Autodesk.Revit.DB.ElementId new_id =
+                        Dynamo.Utilities.dynRevitSettings.Doc.Document.Import(
+                        temp_file_name, options,
+                        Dynamo.Utilities.dynRevitSettings.Doc.ActiveView);
+
+                    created_elements.Add(Dynamo.Utilities.dynRevitSettings.Doc.Document.GetElement(new_id));
+                }
+                catch (System.Exception)
+                {
+                    continue;
+                }
             }
 
             foreach (Autodesk.Revit.DB.Element elem in created_elements)
@@ -329,23 +351,23 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("DesignScript Script From String")]
-    [NodeCategory(BuiltinNodeCategories.SCRIPTING)]
-    [NodeDescription("Runs a DesignScript script from a string")]
-    public class dynDesignScriptString : dynNodeWithOneOutput
-    {
-        public dynDesignScriptString()
-        {
-            InPortData.Add(new PortData("script", "Script to run", typeof(string)));
-            InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
+    //[NodeName("DesignScript Script From String")]
+    //[NodeCategory(BuiltinNodeCategories.SCRIPTING)]
+    //[NodeDescription("Runs a DesignScript script from a string")]
+    //public class dynDesignScriptString : dynNodeWithOneOutput
+    //{
+    //    public dynDesignScriptString()
+    //    {
+    //        InPortData.Add(new PortData("script", "Script to run", typeof(string)));
+    //        InPortData.Add(new PortData("IN", "Input", typeof(object)));
+    //        OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
-        }
+    //        NodeUI.RegisterAllPorts();
+    //    }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            return Value.NewContainer(true);
-        }
-    }
+    //    public override Value Evaluate(FSharpList<Value> args)
+    //    {
+    //        return Value.NewContainer(true);
+    //    }
+    //}
 }
