@@ -46,6 +46,9 @@ def main():
 	'Autodesk.Revit.DB.UV.BasisU',
 	'Autodesk.Revit.DB.UV.BasisV',
 	'Autodesk.Revit.DB.UV.Zero',
+	'Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference',
+	'Autodesk.Revit.Creation.NewFootPrintRoof',
+	'Autodesk.Revit.Solid.getGeometry'
 	]
 
 	valid_namespaces = {
@@ -538,8 +541,8 @@ def read_method(member_data, revit_types, node_names, skip_list):
 		method_name = method_name.split('(')[0]
 		#print len(param_types)
 
-	# if method_name in skip_list:
-	# 	return
+	if method_name in skip_list:
+		return
 
 	try:
 		summary = member_data.find('summary').text.replace('\n','')

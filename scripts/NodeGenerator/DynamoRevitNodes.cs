@@ -10587,39 +10587,6 @@ namespace Dynamo.Nodes
 		}
 	}
 
-	///<summary>
-	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference
-	///</summary>
-	[NodeName("API_Form_GetProfileAndCurveLoopIndexFromReference")]
-	[NodeSearchTags("generic","form")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Given a reference to certain curve or edge, get the index of its profile and curve loop respectively.")]
-	public class API_Form_GetProfileAndCurveLoopIndexFromReference : dynRevitAPINode
-	{
-		///<summary>
-		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference
-		///</summary>
-		public API_Form_GetProfileAndCurveLoopIndexFromReference()
-		{
-			base_type = typeof(Autodesk.Revit.DB.Form);
-			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetProfileAndCurveLoopIndexFromReference", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(System.Int32),typeof(System.Int32)}, out return_type);
-			pi = mi.GetParameters();
-			if (!mi.IsStatic &&
-				!mi.IsConstructor &&
-				base_type != typeof(Autodesk.Revit.Creation.Document) &&
-				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
-				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
-			{
-				InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form", typeof(object)));
-			}
-			InPortData.Add(new PortData("ref", "Reference to a curve/edge that is part of one profile",typeof(Autodesk.Revit.DB.Reference)));
-			InPortData.Add(new PortData("val", "Profile index for output",typeof(System.Int32)));
-			InPortData.Add(new PortData("val", "Curve loop index for output",typeof(System.Int32)));
-			OutPortData.Add(new PortData("out","Given a reference to certain curve or edge, get the index of its profile and curve loop respectively.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-	}
-
 	[NodeName("API_Form_BaseOffset")]
 	[NodeSearchTags("generic","form")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]

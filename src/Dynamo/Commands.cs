@@ -938,13 +938,17 @@ namespace Dynamo.Commands
                 }
                 else if(typeof(dynVariableInput).IsAssignableFrom(node.GetType()))
                 {
-                    int portCount = (int)data["value"];
-                    for (int i = 0; i < portCount - 1; i++)
+                    int desiredPortCount = (int)data["value"];
+                    if (node.InPortData.Count < desiredPortCount)
                     {
-                        (node as dynVariableInput).AddInput();
+                        int portsToCreate = desiredPortCount - node.InPortData.Count;
+
+                        for (int i = 0; i < portsToCreate; i++)
+                        {
+                            (node as dynVariableInput).AddInput();
+                        }
+                        (node as dynVariableInput).NodeUI.RegisterAllPorts();
                     }
-                    (node as dynVariableInput).NodeUI.RegisterAllPorts();
-                    
                 }
             }
 
