@@ -6114,40 +6114,6 @@ namespace Dynamo.Nodes
 	}
 
 	///<summary>
-	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewFootPrintRoof
-	///</summary>
-	[NodeName("API_Document_NewFootPrintRoof")]
-	[NodeSearchTags("create","document")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Creates a new FootPrintRoof element.")]
-	public class API_Document_NewFootPrintRoof : dynRevitAPINode
-	{
-		///<summary>
-		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.Document.NewFootPrintRoof
-		///</summary>
-		public API_Document_NewFootPrintRoof()
-		{
-			base_type = typeof(Autodesk.Revit.Creation.Document);
-			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewFootPrintRoof", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.RoofType),typeof(Autodesk.Revit.DB.ModelCurveArray)}, out return_type);
-			pi = mi.GetParameters();
-			if (!mi.IsStatic &&
-				!mi.IsConstructor &&
-				base_type != typeof(Autodesk.Revit.Creation.Document) &&
-				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
-				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
-			{
-				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
-			}
-			InPortData.Add(new PortData("crvs", "The footprint of the FootPrintRoof.",typeof(Autodesk.Revit.DB.CurveArray)));
-			InPortData.Add(new PortData("l", "The level of the FootPrintRoof.",typeof(Autodesk.Revit.DB.Level)));
-			InPortData.Add(new PortData("val", "Type of the FootPrintRoof.",typeof(Autodesk.Revit.DB.RoofType)));
-			InPortData.Add(new PortData("val", "An array of Model Curves corresponding to the set of Curves input in the footPrint. By knowing which Model Curve was created by each footPrint curve, you can set properties like SlopeAngle for each curve.",typeof(Autodesk.Revit.DB.ModelCurveArray)));
-			OutPortData.Add(new PortData("out","Creates a new FootPrintRoof element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
-		}
-	}
-
-	///<summary>
 	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewTruss
 	///</summary>
 	[NodeName("API_Document_NewTruss")]
@@ -17738,36 +17704,6 @@ namespace Dynamo.Nodes
 			var arg0=(Autodesk.Revit.DB.Material)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.Material));
 			var result = arg0.Color;
 			return DynamoTypeConverter.ConvertToValue(result);
-		}
-	}
-
-	///<summary>
-	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.Solid.getGeometry
-	///</summary>
-	[NodeName("API_Solid_getGeometry")]
-	[NodeSearchTags("solid")]
-	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
-	[NodeDescription("Returns the Geometry object for this solid.")]
-	public class API_Solid_getGeometry : dynRevitAPINode
-	{
-		///<summary>
-		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.Solid.getGeometry
-		///</summary>
-		public API_Solid_getGeometry()
-		{
-			base_type = typeof(Autodesk.Revit.DB.Solid);
-			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "getGeometry", false, new Type[]{}, out return_type);
-			pi = mi.GetParameters();
-			if (!mi.IsStatic &&
-				!mi.IsConstructor &&
-				base_type != typeof(Autodesk.Revit.Creation.Document) &&
-				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
-				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
-			{
-				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid", typeof(object)));
-			}
-			OutPortData.Add(new PortData("out","Returns the Geometry object for this solid.",typeof(object)));
-			NodeUI.RegisterAllPorts();
 		}
 	}
 

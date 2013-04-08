@@ -47,8 +47,8 @@ def main():
 	'Autodesk.Revit.DB.UV.BasisV',
 	'Autodesk.Revit.DB.UV.Zero',
 	'Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference',
-	'Autodesk.Revit.Creation.NewFootPrintRoof',
-	'Autodesk.Revit.Solid.getGeometry'
+	'Autodesk.Revit.Creation.Document.NewFootPrintRoof',
+	'Autodesk.Revit.DB.Solid.getGeometry'
 	]
 
 	valid_namespaces = {
