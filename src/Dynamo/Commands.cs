@@ -915,7 +915,11 @@ namespace Dynamo.Commands
             dynNode node = dynSettings.Controller.CreateDragNode( data["name"].ToString() );
  
             dynNodeUI nodeUi = node.NodeUI; 
-            dynSettings.Workbench.Children.Add(nodeUi);
+            if (dynSettings.Workbench != null)
+            {
+                dynSettings.Workbench.Children.Add(nodeUi);
+            }
+                
             dynSettings.Controller.Nodes.Add(nodeUi.NodeLogic);
             nodeUi.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
             nodeUi.Opacity = 1;
@@ -960,8 +964,14 @@ namespace Dynamo.Commands
             }
 
             // by default place node at center
-            var x = dynSettings.Bench.outerCanvas.ActualWidth/2.0;
-            var y = dynSettings.Bench.outerCanvas.ActualHeight/2.0;
+            var x = 0.0;
+            var y = 0.0;
+            if (dynSettings.Bench != null)
+            {
+                x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
+                y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
+            }
+            
             var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
                
             if ( data.ContainsKey("x") )

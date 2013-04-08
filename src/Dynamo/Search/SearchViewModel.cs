@@ -154,28 +154,19 @@ namespace Dynamo.Search
         /// </value>
         public int MaxNumSearchResults { get; set; }
 
-        /// <summary>
-        ///     Bench property
-        /// </summary>
-        /// <value>
-        ///     This is the core UI for Dynamo, primarily used for logging.
-        /// </value>
-        public dynBench Bench { get; private set; }
-
         #endregion
 
         /// <summary>
         ///     The class constructor.
         /// </summary>
         /// <param name="bench"> Reference to dynBench object for logging </param>
-        public SearchViewModel(dynBench bench)
+        public SearchViewModel()
         {
             SelectedIndex = 0;
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
             MaxNumSearchResults = 30;
-            Bench = bench;
             Visible = Visibility.Collapsed;
             _SearchText = "";
             AddHomeToSearch();
@@ -414,22 +405,8 @@ namespace Dynamo.Search
         ///     Adds a local DynNode to search
         /// </summary>
         /// <param name="type">A type object that will be used by Activator to instantiate the object</param>
-        public void Add(Type type)
+        public void Add(dynNode dynNode)
         {
-            dynNode dynNode = null;
-
-            try
-            {
-                object obj = Activator.CreateInstance(type);
-                dynNode = (dynNode) obj;
-            }
-            catch (Exception e)
-            {
-                Bench.Log("Error creating search element ");
-                Bench.Log(e.InnerException);
-                return;
-            }
-
             var searchEle = new LocalSearchElement(dynNode);
 
             var cat = dynNode.Category;

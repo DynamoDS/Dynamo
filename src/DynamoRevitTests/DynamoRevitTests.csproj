@@ -31,6 +31,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="nunit.core, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\NUnit\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\NUnit\nunit.core.interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
@@ -41,9 +50,11 @@
       <HintPath>..\..\extern\NUnit\nunit.mocks.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,6 +66,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
+      <Project>{F9B766BE-A5A3-4680-840F-649462340EE7}</Project>
+      <Name>DragCanvas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
+      <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
+      <Name>DynamoElements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
+      <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
+      <Name>FSchemeInterop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FScheme\FScheme.fsproj">
+      <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
+      <Name>FScheme</Name>
+    </ProjectReference>
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -63,14 +90,6 @@
       <HintPath>C:\Program Files\Autodesk\Revit Architecture 2013\Program\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
-      <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
-      <Name>DynamoRevit</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dynamo\DynamoElements.csproj">
-      <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoElements</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

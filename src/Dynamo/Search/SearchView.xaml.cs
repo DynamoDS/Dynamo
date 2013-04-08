@@ -1,10 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Controls;
+using System.Windows.Data;
 using Dynamo.Commands;
-using Dynamo.Controls;
-using Dynamo.Search;
+
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
 //Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,17 +19,16 @@ using Dynamo.Search;
 namespace Dynamo.Search
 {
     /// <summary>
-    /// Interaction logic for SearchView.xaml
+    ///     Interaction logic for SearchView.xaml
     /// </summary>
     public partial class SearchView : UserControl
     {
-
-        public SearchView( SearchViewModel viewModel )
+        public SearchView(SearchViewModel viewModel)
         {
-            this.DataContext = viewModel;
+            DataContext = viewModel;
             InitializeComponent();
-     
-            this.PreviewKeyDown += viewModel.KeyHandler;
+
+            PreviewKeyDown += viewModel.KeyHandler;
 
             SearchTextBox.IsVisibleChanged += delegate
                 {
@@ -43,11 +39,10 @@ namespace Dynamo.Search
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ((TextBox)sender).Select(((TextBox)sender).Text.Length, 0);
-            var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
+            ((TextBox) sender).Select(((TextBox) sender).Text.Length, 0);
+            BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
                 binding.UpdateSource();
         }
-
     }
 }

@@ -62,14 +62,6 @@ namespace Dynamo.Tests
             foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
         }
 
-        [TestFixtureTearDown]
-        public void FinalTearDown()
-        {
-            // Fix for COM exception on close
-            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf
-            Dispatcher.CurrentDispatcher.InvokeShutdown();
-        }
-
         // OpenCommand
 
         [Test]

@@ -24,8 +24,9 @@ namespace Dynamo.Tests
         [TearDown]
         public void Cleanup()
         {
-            dynSettings.Bench.Close();
+            
             dynSettings.Writer.Close();
+            dynSettings.Controller.Bench.Close();
             EmptyTempFolder();
         }
 
@@ -68,7 +69,7 @@ namespace Dynamo.Tests
         public void FinalTearDown()
         {
             // Fix for COM exception on close
-            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf
+            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
             Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
@@ -149,6 +150,7 @@ namespace Dynamo.Tests
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CloseSplashScreenCmd,
                                                                                  null));
             dynSettings.Controller.ProcessCommandQueue();
+
             dynSettings.Controller.SplashScreen.Dispatcher.Invoke(
                 (Action)(() => { Assert.AreEqual(false, dynSettings.Controller.SplashScreen.IsVisible); }));
         }

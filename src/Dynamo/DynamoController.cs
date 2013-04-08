@@ -103,8 +103,8 @@ namespace Dynamo
                 _cspace = value;
                 //Bench.CurrentX = _cspace.PositionX;
                 //Bench.CurrentY = _cspace.PositionY;
-
-                Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
+                if (Bench != null)
+                    Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
 
                 //TODO: Also set the name here.
             }
@@ -133,10 +133,10 @@ namespace Dynamo
         {
             this.RunEnabled = true;
             this.CanRunDynamically = true;
-
+            
             Bench = new dynBench(this);
 
-            SearchViewModel = new SearchViewModel(Bench);
+            SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
             PackageManagerLoginViewModel = new PackageManagerLoginViewModel(PackageManagerClient);
             PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
@@ -145,39 +145,44 @@ namespace Dynamo
 
             //Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
             //Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
+            if (Bench != null) {
+                Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
 
-            Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+                Bench.InitializeComponent();
+                Bench.Log(String.Format(
+                    "Dynamo -- Build {0}.",
+                    Assembly.GetExecutingAssembly().GetName().Version));
 
-            Bench.InitializeComponent();
-            Bench.Log(String.Format(
-                "Dynamo -- Build {0}.",
-                Assembly.GetExecutingAssembly().GetName().Version));
+                dynSettings.Bench = Bench;
 
-            dynSettings.Bench = Bench;
-            dynSettings.Controller = this;
-            dynSettings.Workbench = Bench.WorkBench;
+                //WTF
+                Bench.settings_curves.IsChecked = true;
+                Bench.settings_curves.IsChecked = false;
 
-            if (DynamoCommands.ShowSplashScreenCmd.CanExecute(null))
-            {
-                DynamoCommands.ShowSplashScreenCmd.Execute(null);
+                Bench.LockUI();
+
+                Bench.Activated += Bench_Activated;
+                dynSettings.Workbench = Bench.WorkBench;
+
+                //run tests
+                if (FScheme.RunTests(Bench.Log))
+                {
+                    if (Bench != null)
+                        Bench.Log("All Tests Passed. Core library loaded OK.");
+                }
+
+                if (DynamoCommands.ShowSplashScreenCmd.CanExecute(null))
+                {
+                    DynamoCommands.ShowSplashScreenCmd.Execute(null);
+                }
             }
 
-            //WTF
-            Bench.settings_curves.IsChecked = true;
-            Bench.settings_curves.IsChecked = false;
-
-            Bench.LockUI();
-
-            //run tests
-            if (FScheme.RunTests(Bench.Log))
-                Bench.Log("All Tests Passed. Core library loaded OK.");
+            dynSettings.Controller = this;
 
             FSchemeEnvironment = new ExecutionEnvironment();
 
             LoadBuiltinTypes();
             PopulateSamplesMenu();
-
-            Bench.Activated += Bench_Activated;
 
             //Dispatcher.CurrentDispatcher.Hooks.DispatcherInactive += new EventHandler(Hooks_DispatcherInactive);
         }
@@ -203,8 +208,11 @@ namespace Dynamo
             }
             commandQueue.Clear();
 
-            dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}",
+            if (Bench != null)
+            {
+                dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}",
                                                        Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
+            }
         }
 
         private void Bench_Activated(object sender, EventArgs e)
@@ -368,23 +376,27 @@ namespace Dynamo
                 }
                 else
                 {
-                    Bench.Log("No category specified for \"" + kvp.Key + "\"");
+                    if (Bench != null)
+                        Bench.Log("No category specified for \"" + kvp.Key + "\"");
                     continue;
                 }
 
                 dynNode newNode = null;
 
-                SearchViewModel.Add(kvp.Value.Type);
-
                 try
                 {
                     object obj = Activator.CreateInstance(kvp.Value.Type);
                     newNode = (dynNode) obj; //.Unwrap();
+                    SearchViewModel.Add(newNode);
                 }
                 catch (Exception e) //TODO: Narrow down
                 {
-                    Bench.Log("Error loading \"" + kvp.Key);
-                    Bench.Log(e.InnerException);
+                    if (Bench != null)
+                    {
+                        Bench.Log("Error loading \"" + kvp.Key);
+                        Bench.Log(e.InnerException);
+                    }
+                    
                     continue;
                 }
 
@@ -469,8 +481,11 @@ namespace Dynamo
                 }
                 catch (Exception e)
                 {
-                    Bench.Log("Error loading \"" + kvp.Key);
-                    Bench.Log(e);
+                    if (Bench != null)
+                    {
+                        Bench.Log("Error loading \"" + kvp.Key);
+                        Bench.Log(e);
+                    } 
                 }
             }
 
