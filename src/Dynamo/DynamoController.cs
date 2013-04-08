@@ -744,22 +744,8 @@ namespace Dynamo
 
             dynSettings.FunctionDict[functionDefinition.FunctionId] = functionDefinition;
 
-            //Add an entry to the View menu
-            //var i = new MenuItem();
-            //i.Header = name;
-            //i.Click += new RoutedEventHandler(Bench.ChangeView_Click);
-            //Bench.viewMenu.Items.Add(i);
-            //Bench.viewMenuItemsDict[name] = i;
-
             // add the element to search
             SearchViewModel.Add(workSpace);
-
-            //Add an entry to the Add menu
-            //System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
-            //mi.Header = name;
-            //mi.Click += new RoutedEventHandler(AddElement_Click);
-            //AddMenu.Items.Add(mi);
-            //this.addMenuItemsDict[name] = mi;
 
             dynFunction newEl = CreateFunction(
                 workSpace.Nodes.Where(el => el is dynSymbol)
@@ -2327,21 +2313,7 @@ namespace Dynamo
 
             Bench.workspaceLabel.Content = Bench.editNameBox.Text;
 
-            //Update view menu
-            //MenuItem viewItem = Bench.viewMenuItemsDict[CurrentSpace.Name];
-            //viewItem.Header = newName;
-            //Bench.viewMenuItemsDict.Remove(CurrentSpace.Name);
-            //Bench.viewMenuItemsDict[newName] = viewItem;
-
             SearchViewModel.Refactor(CurrentSpace, newName);
-
-            //Update add menu
-            //var addItem = this.addMenuItemsDict[this.currentFunctionName];
-            //addItem.Header = newName;
-            //this.addMenuItemsDict.Remove(this.currentFunctionName);
-            //this.addMenuItemsDict[newName] = addItem;
-
-            //------------------//
 
             var newAddItem = (dynFunction) Bench.addMenuItemsDictNew[CurrentSpace.Name].NodeLogic;
             if (newAddItem.NodeUI.NickName.Equals(CurrentSpace.Name))
