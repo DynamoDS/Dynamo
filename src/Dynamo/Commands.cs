@@ -919,7 +919,7 @@ namespace Dynamo.Commands
             dynSettings.Controller.Nodes.Add(nodeUi.NodeLogic);
             nodeUi.NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
             nodeUi.Opacity = 1;
-            
+
             //if we've received a value in the dictionary
             //try to set the value on the node
             if(data.ContainsKey("value"))
@@ -1198,16 +1198,7 @@ namespace Dynamo.Commands
                 }
                 catch
                 {
-                    //don't let users paste connectors between workspaces
-                    if (c.Start.Owner.NodeLogic.WorkSpace == dynSettings.Controller.CurrentSpace)
-                    {
-                        startNode = c.Start.Owner;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                    
+                    startNode = c.Start.Owner;
                 }
 
                 connectionData.Add("start", startNode);
