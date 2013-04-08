@@ -66,8 +66,8 @@ namespace Dynamo.Controls
 
         private Point transformOrigin;
 
-        internal Dictionary<string, MenuItem> viewMenuItemsDict
-            = new Dictionary<string, MenuItem>();
+        //internal Dictionary<string, MenuItem> viewMenuItemsDict
+        //    = new Dictionary<string, MenuItem>();
 
         internal dynBench(DynamoController controller)
         {

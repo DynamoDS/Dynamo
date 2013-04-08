@@ -745,11 +745,11 @@ namespace Dynamo
             dynSettings.FunctionDict[functionDefinition.FunctionId] = functionDefinition;
 
             //Add an entry to the View menu
-            var i = new MenuItem();
-            i.Header = name;
+            //var i = new MenuItem();
+            //i.Header = name;
             //i.Click += new RoutedEventHandler(Bench.ChangeView_Click);
-            Bench.viewMenu.Items.Add(i);
-            Bench.viewMenuItemsDict[name] = i;
+            //Bench.viewMenu.Items.Add(i);
+            //Bench.viewMenuItemsDict[name] = i;
 
             // add the element to search
             SearchViewModel.Add(workSpace);
@@ -2328,10 +2328,10 @@ namespace Dynamo
             Bench.workspaceLabel.Content = Bench.editNameBox.Text;
 
             //Update view menu
-            MenuItem viewItem = Bench.viewMenuItemsDict[CurrentSpace.Name];
-            viewItem.Header = newName;
-            Bench.viewMenuItemsDict.Remove(CurrentSpace.Name);
-            Bench.viewMenuItemsDict[newName] = viewItem;
+            //MenuItem viewItem = Bench.viewMenuItemsDict[CurrentSpace.Name];
+            //viewItem.Header = newName;
+            //Bench.viewMenuItemsDict.Remove(CurrentSpace.Name);
+            //Bench.viewMenuItemsDict[newName] = viewItem;
 
             SearchViewModel.Refactor(CurrentSpace, newName);
 

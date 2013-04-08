@@ -5,6 +5,7 @@
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.Commands"
+        xmlns:utilities="clr-namespace:Dynamo.Utilities"
         x:Name="_this"
         Height="768" Width="1024"
         MouseMove="OnMouseMove" 
@@ -26,7 +27,7 @@
     <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>
     <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
-  </Window.Resources>
+    </Window.Resources>
   
   <Window.InputBindings>
     <KeyBinding Key="Tab"
@@ -130,8 +131,16 @@
             <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
           </MenuItem.Icon>
         </MenuItem>
-        <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
+                <MenuItem Header="_Functions" Name="userFunctions" 
+                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.FunctionDict}}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem Header="{Binding Value.Workspace.Name}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static commands:DynamoCommands.DisplayFunctionCmd}}"/>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
+                    <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
       </MenuItem>
       <MenuItem Header="Settings">
         
