@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Dynamo.Commands;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
+using System.Windows.Media;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -37,9 +38,29 @@ namespace Dynamo.Search
 
             SearchTextBox.IsVisibleChanged += delegate
                 {
+                    SearchTextBox.SelectAll();
                     SearchTextBox.Focus();
                     DynamoCommands.SearchCmd.Execute(null);
                 };
+
+            SearchTextBox.GotKeyboardFocus += delegate
+            {
+                if (SearchTextBox.Text == "Search...")
+                {
+                    SearchTextBox.Text = "";
+                }
+
+                SearchTextBox.Foreground = Brushes.White;
+            };
+
+            SearchTextBox.LostKeyboardFocus += delegate
+            {
+                if (SearchTextBox.Text == "")
+                {
+                    SearchTextBox.Text = "Search...";
+                    SearchTextBox.Foreground = Brushes.Gray;
+                }
+            };
         }
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)

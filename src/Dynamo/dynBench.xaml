@@ -34,6 +34,9 @@
     
     <KeyBinding Key="Delete"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
+    <KeyBinding Key="N"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"/>
     <KeyBinding Key="C"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"/>
@@ -91,7 +94,10 @@
               VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
       
       <MenuItem Header="_File" Name="fileMenu">
-      
+
+        <MenuItem Header="_New User-Defined Node..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+        </MenuItem>
+
         <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}" Name="openButton" InputGestureText="Ctrl+O">
           <MenuItem.Icon>
             <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
@@ -246,7 +252,7 @@
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" />
     </ScrollViewer>
-    <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
+    <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Collapsed" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="#FF505050">
       <Grid.RowDefinitions>
         <RowDefinition Height="40"/>
@@ -261,6 +267,8 @@
         <StackPanel Name="SideStackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         </StackPanel>
       </ScrollViewer>
+      
+      
       <!--<Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>-->
       <Grid Margin="10,10,5,5">
         <Grid.Style>
@@ -317,9 +325,9 @@
           </TextBox.Style>
         </TextBox>
       </Grid>
-      <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
-                        VerticalAlignment="Stretch" Click="NewFunction_Click" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
     </Grid>
+    
+    
     <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3" Background="#FFF0F0F0">
       <Button Name="RunButton" Height="25" Width="100" Content="Run" 

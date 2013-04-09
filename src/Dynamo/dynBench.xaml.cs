@@ -669,39 +669,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void NewFunction_Click(object sender, RoutedEventArgs e)
-        {
-            //First, prompt the user to enter a name
-            string name, category;
-            string error = "";
-
-            do
-            {
-                var dialog = new FunctionNamePrompt(addMenuCategoryDict.Keys, error);
-                if (dialog.ShowDialog() != true)
-                {
-                    return;
-                }
-
-                name = dialog.Text;
-                category = dialog.Category;
-
-                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == name))
-                {
-                    error = "A function with this name already exists.";
-                }
-                else if (category.Equals(""))
-                {
-                    error = "Please enter a valid category.";
-                }
-                else
-                {
-                    error = "";
-                }
-            } while (!error.Equals(""));
-
-            Controller.NewFunction(Guid.NewGuid(), name, category, true);
-        }
 
         //internal void ChangeView_Click(object sender, RoutedEventArgs e)
         //{

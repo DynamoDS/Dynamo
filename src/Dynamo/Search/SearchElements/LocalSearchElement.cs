@@ -80,7 +80,7 @@ namespace Dynamo.Search.SearchElements
         /// hits enter in the SearchView.</summary>
         public override void Execute()
         {
-            dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
 
             // create node
             var guid = Guid.NewGuid();

@@ -103,6 +103,20 @@ namespace Dynamo.Search
         /// <summary>
         ///     Remove an element from the search
         /// </summary>
+        /// <param name="value"> The object to remove </param>
+        public void Remove(V value)
+        {
+            _symbolDictionary.Remove(value);
+            
+            foreach (var set in _tagDictionary)
+            {
+                set.Value.Remove(value);
+            }
+        }
+
+        /// <summary>
+        ///     Remove an element from the search
+        /// </summary>
         /// <param name="tag"> The tag for which to remove elements </param>
         public void Remove(string tag)
         {

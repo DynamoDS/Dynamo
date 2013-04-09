@@ -19,6 +19,17 @@ namespace Dynamo.Commands
 
     public static partial class DynamoCommands
     {
+        private static ShowNewFunctionDialogCommand showNewFunctionDialogCmd;
+        public static ShowNewFunctionDialogCommand ShowNewFunctionDialogCmd
+        {
+            get
+            {
+                if (showNewFunctionDialogCmd == null)
+                    showNewFunctionDialogCmd = new ShowNewFunctionDialogCommand();
+                return showNewFunctionDialogCmd;
+            }
+        }
+
         private static ShowSaveImageDialogAndSaveResultCommand showSaveImageDialogAndSaveResultCmd;
         public static ShowSaveImageDialogAndSaveResultCommand ShowSaveImageDialogAndSaveResultCmd
         {
@@ -551,6 +562,55 @@ namespace Dynamo.Commands
                 dynSettings.Controller.SaveAs(_fileDialog.FileName);
             }
           
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ShowNewFunctionDialogCommand : ICommand
+    {
+
+        public void Execute(object parameters)
+        {
+            //First, prompt the user to enter a name
+            string name, category;
+            string error = "";
+
+            do
+            {
+                var dialog = new FunctionNamePrompt( dynSettings.Bench.addMenuCategoryDict.Keys, error);
+                if (dialog.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                name = dialog.Text;
+                category = dialog.Category;
+
+                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == name))
+                {
+                    error = "A function with this name already exists.";
+                }
+                else if (category.Equals(""))
+                {
+                    error = "Please enter a valid category.";
+                }
+                else
+                {
+                    error = "";
+                }
+            } while (!error.Equals(""));
+
+            dynSettings.Controller.NewFunction(Guid.NewGuid(), name, category, true);
         }
 
         public event EventHandler CanExecuteChanged

@@ -184,6 +184,8 @@ namespace Dynamo
             LoadBuiltinTypes();
             PopulateSamplesMenu();
 
+            
+
             //Dispatcher.CurrentDispatcher.Hooks.DispatcherInactive += new EventHandler(Hooks_DispatcherInactive);
         }
 
@@ -248,6 +250,8 @@ namespace Dynamo
                 {
                     DynamoCommands.CloseSplashScreenCmd.Execute(null);
                 }
+
+                DynamoCommands.ShowSearchCmd.Execute(null);
 
                 HomeSpace.OnDisplayed();
             }
@@ -1321,9 +1325,19 @@ namespace Dynamo
                         else if (att.Name.Equals("Category"))
                             category = att.Value;
                         else if (att.Name.Equals("ID"))
+                        {
                             id = att.Value;
+                            if (string.IsNullOrEmpty(id) && node.Name == "Dynamo.Nodes.dynFunction")
+                            {
+                                // assign a legacy dyf with no guid
+                                id = Guid.NewGuid().ToString();
+                            }
+                        }
+                            
                     }
                 }
+
+ 
 
                 //If there is no function name, then we are opening a home definition
                 if (funName == null)
@@ -1427,7 +1441,12 @@ namespace Dynamo
                     if (el is dynFunction)
                     {
                         var fun = el as dynFunction;
+
                         Guid funId = Guid.Parse(fun.Symbol);
+                        if (fun.Symbol == null || funId == Guid.Empty)
+                        {
+                            funId = Guid.NewGuid();
+                        }
 
                         FunctionDefinition funcDef;
                         if (dynSettings.FunctionDict.TryGetValue(funId, out funcDef))

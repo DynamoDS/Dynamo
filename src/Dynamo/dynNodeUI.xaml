@@ -134,7 +134,7 @@
                      Width="{Binding ElementName=grid, Path=ActualWidth}"
                      MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
                      TextWrapping="Wrap"
-                     Background="Transparent" FontStyle="Normal" Foreground="#FF141414">
+                     Background="Transparent" FontStyle="Normal" Foreground="LightGray">
             <!--<TextBox.Background>
                <SolidColorBrush />
             </TextBox.Background>-->

@@ -13,16 +13,28 @@
       
       <StackPanel Name="RSearchBoxStackPanel" Orientation="Horizontal">
 
-        <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="18" Padding="10,15,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="300" Text="{Binding Path=SearchText,Mode=TwoWay}" />
+        <Image  Margin="7,0,7,0"
+Source="..\Images\search_24.png" Opacity="1">
+          <Image.Style>
+            <Style TargetType="Image">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=SearchTextBox,Path=IsFocused}" Value="True">
+                  <Setter Property="Opacity" Value="1" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Image.Style>
+        </Image>
+
+        <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="250" Text="{Binding Path=SearchText,Mode=TwoWay}" />
 
 
         <Button Name="BackButton" Margin="1, 0, 1, 0" Width="60" FontSize="24" Foreground="White" ToolTip="Go Back" 
                       Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\arrow-left-white.png" />
         
-        <ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include nodes from online" 
-                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" IsChecked="{Binding IncludePackageManagerSearchElements, Mode=TwoWay}" Tag="..\Images\add_32_white.png" />
-
+        <ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
+                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" IsChecked="{Binding IncludeOptionalElements, Mode=TwoWay}" Tag="..\Images\add_32_white.png" />
 
       </StackPanel>
 
@@ -85,6 +97,7 @@
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Category">
                   <DataTrigger.Setters>
+                    <Setter Property="Visibility" Value="Hidden" TargetName="description" />
                     <Setter Property="Background" Value="#EE111617" TargetName="SearchEle" />
                     <Setter Property="Foreground" Value="#FFADD8E6" TargetName="type" />
                   </DataTrigger.Setters>

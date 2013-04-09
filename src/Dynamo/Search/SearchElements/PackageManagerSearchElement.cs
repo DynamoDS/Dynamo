@@ -53,7 +53,7 @@ namespace Dynamo.Search.SearchElements
         {
             Guid guid = this.Guid;
 
-            dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
 
             if (!dynSettings.FunctionDict.ContainsKey(this.Guid))
             {
