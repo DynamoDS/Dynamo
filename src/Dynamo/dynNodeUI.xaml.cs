@@ -961,6 +961,32 @@ namespace Dynamo.Controls
         #endregion
     }
 
+    public class ShowHideClassicNavigatorMenuItemConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return "Hide Classic Node Navigator";
+            }
+            else
+            {
+                return "Show Classic Node Navigator";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
     public class ZoomStatConverter : IValueConverter
     {
         #region IValueConverter Members

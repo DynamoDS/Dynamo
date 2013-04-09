@@ -19,6 +19,17 @@ namespace Dynamo.Commands
 
     public static partial class DynamoCommands
     {
+        private static ToggleShowingClassicNodeNavigatorCommand toggleShowingClassicNodeNavigatorCmd;
+        public static ToggleShowingClassicNodeNavigatorCommand ShowClassicNodeNavigatorCmd
+        {
+            get
+            {
+                if (toggleShowingClassicNodeNavigatorCmd == null)
+                    toggleShowingClassicNodeNavigatorCmd = new ToggleShowingClassicNodeNavigatorCommand();
+                return toggleShowingClassicNodeNavigatorCmd;
+            }
+        }
+
         private static ShowNewFunctionDialogCommand showNewFunctionDialogCmd;
         public static ShowNewFunctionDialogCommand ShowNewFunctionDialogCmd
         {
@@ -407,6 +418,35 @@ namespace Dynamo.Commands
         }
 
     }
+
+    public class ToggleShowingClassicNodeNavigatorCommand : ICommand
+    {
+
+        public void Execute(object parameters)
+        {
+            if (dynSettings.Bench.sidebarGrid.Visibility == Visibility.Visible)
+            {
+                dynSettings.Bench.sidebarGrid.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                dynSettings.Bench.sidebarGrid.Visibility = Visibility.Visible;
+            }
+            
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
 
     public class ShowSaveImageDialogAndSaveResultCommand : ICommand
     {

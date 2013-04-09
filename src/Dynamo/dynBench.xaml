@@ -22,6 +22,7 @@
   <Window.Resources>
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
+    <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter"/>
     <controls:ZoomStatConverter x:Key="ZoomStatConverter"/>
     <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>
     <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
@@ -95,7 +96,7 @@
       
       <MenuItem Header="_File" Name="fileMenu">
 
-        <MenuItem Header="_New User-Defined Node..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+        <MenuItem Header="_New Custom Node..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
         </MenuItem>
 
         <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}" Name="openButton" InputGestureText="Ctrl+O">
@@ -128,17 +129,30 @@
         <MenuItem Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"  Name="copy" InputGestureText="Ctrl+C"/>
         <MenuItem Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
         <Separator/>
-        <MenuItem Header="_Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+        <MenuItem Header="_Create Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
       </MenuItem>
+
       <MenuItem Header="_View" Name="viewMenu">
+        <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
+
+        <MenuItem Header="_Show Node Navigator" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}" InputGestureText="Space"/>
+        <MenuItem Header="_Hide Node Navigator" Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}" InputGestureText="Esc"/>
+
+        <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideClassicNavigatorMenuItemConverter}}"
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowClassicNodeNavigatorCmd}}" />
+
+      </MenuItem>
+      
+      <MenuItem Header="_Workspaces" Name="workspacesMenu">
         <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
           <MenuItem.Icon>
             <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
           </MenuItem.Icon>
         </MenuItem>
-        <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
       </MenuItem>
+
+          
       <MenuItem Header="Settings">
         
         <MenuItem Header="_Connector Type" IsEnabled="True">
@@ -275,6 +289,7 @@
           <Style TargetType="Grid">
             <Setter Property="Background">
               <Setter.Value>
+                
                 <VisualBrush Stretch="Fill">
                   <VisualBrush.Visual>
                     <Rectangle Stretch="Fill" Stroke="White"/>
@@ -325,6 +340,8 @@
           </TextBox.Style>
         </TextBox>
       </Grid>
+      <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
+                        VerticalAlignment="Stretch" Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
     </Grid>
     
     
