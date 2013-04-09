@@ -74,7 +74,8 @@ namespace Dynamo.Applications
             Autodesk.ASM.OUT.Reset();
 
             Autodesk.ASM.State.StopViewer();
-            Autodesk.ASM.State.Stop();
+            bool is_plugin = true;
+            Autodesk.ASM.State.Stop(is_plugin);
 
             return Result.Succeeded;
         }
@@ -199,7 +200,6 @@ namespace Dynamo.Nodes
             else
                 coreSet = true;
 
-
             Dictionary<string, object> context = new Dictionary<string, object>();
 
             if (args[0].IsList)
@@ -211,27 +211,10 @@ namespace Dynamo.Nodes
 
                 foreach (Value val in containers)
                 {
-                    //if (!e.IsList)
-                    //    continue;
-
-                    //FSharpList<Value> tuple = Utils.SequenceToFSharpList(
-                    //    ((Value.List)e).Item);
-
-                    //string var_name = (string)((Value.String)tuple[0]).Item;
-                    //object var_value = null;
-
-                    //if (tuple[1].IsNumber)
-                    //    var_value = (object)((Value.Number)tuple[1]).Item;
-                    //else if (tuple[1].IsContainer)
-                    //    var_value = (object)((Value.Container)tuple[1]).Item;
-
-                    //if (var_value != null)
-                    //    context.Add(var_name, var_value);
-
                     binding_objects.Add(ConvertInput(val));
                 }
 
-                context.Add("IN", binding_objects);
+                context.Add("IN", binding_objects.ToArray());
             }
             else
             {
