@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="10" Y="55" Name="Solar Radiation Optimizer" Category="Revit">
+<dynWorkspace X="10" Y="55" Name="Solar Radiation Optimizer" Category="Revit" ID="c5e9ebfb-236f-43c0-93c3-f05a8f667ac6">
   <dynElements>
     <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="4afe98cb-f3f3-405c-b42d-183ac3f100ad" nickname="Variable" x="0" y="0">
       <Symbol value="famInst" />
@@ -28,7 +28,7 @@ limitations under the License.
       <Symbol value="max" />
     </Dynamo.Nodes.dynSymbol>
     <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="a11da7e3-a3dc-42ed-a252-ec8d291e723a" nickname="solarradopt" x="587.1" y="155.8375">
-      <Symbol value="solarradopt" />
+      <ID value="d9380158-c69d-4ea8-b6eb-ae495afb90d0" />
       <Output value="out" />
       <Inputs>
         <Input value="fI" />
@@ -53,7 +53,7 @@ limitations under the License.
     </Dynamo.Nodes.dynSymbol>
     <Dynamo.Nodes.dynFileWatcher type="Dynamo.Nodes.dynFileWatcher" guid="6d8e892b-f3e8-405b-aff6-04953184b2eb" nickname="Watch File" x="320.5" y="327.3875" />
     <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="c14de34c-a2f9-477b-b0a9-a72292e9e2b2" nickname="solarradupdate" x="750.9" y="30.3">
-      <Symbol value="solarradupdate" />
+      <ID value="3ad2dee3-f815-4afa-8372-3f580b01c748" />
       <Output value="out" />
       <Inputs>
         <Input value="fi" />

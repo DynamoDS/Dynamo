@@ -1,10 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Dynamo.Commands;
-using Dynamo.Controls;
-using Dynamo.Search;
+using TextBox = System.Windows.Controls.TextBox;
+using UserControl = System.Windows.Controls.UserControl;
+using System.Windows.Media;
+
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
 //Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,32 +25,60 @@ using Dynamo.Search;
 namespace Dynamo.Search
 {
     /// <summary>
-    /// Interaction logic for SearchView.xaml
+    ///     Interaction logic for SearchView.xaml
     /// </summary>
     public partial class SearchView : UserControl
     {
-
-        public SearchView( SearchViewModel viewModel )
+        public SearchView(SearchViewModel viewModel)
         {
-            this.DataContext = viewModel;
+            DataContext = viewModel;
             InitializeComponent();
-     
-            this.PreviewKeyDown += viewModel.KeyHandler;
+
+            PreviewKeyDown += viewModel.KeyHandler;
 
             SearchTextBox.IsVisibleChanged += delegate
                 {
-                    SearchTextBox.Focus();
                     SearchTextBox.SelectAll();
+                    SearchTextBox.Focus();
                     DynamoCommands.SearchCmd.Execute(null);
                 };
+
+            SearchTextBox.GotKeyboardFocus += delegate
+            {
+                if (SearchTextBox.Text == "Search...")
+                {
+                    SearchTextBox.Text = "";
+                }
+
+                SearchTextBox.Foreground = Brushes.White;
+            };
+
+            SearchTextBox.LostKeyboardFocus += delegate
+            {
+                if (SearchTextBox.Text == "")
+                {
+                    SearchTextBox.Text = "Search...";
+                    SearchTextBox.Foreground = Brushes.Gray;
+                }
+            };
         }
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
+            ((TextBox) sender).Select(((TextBox) sender).Text.Length, 0);
+            BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
                 binding.UpdateSource();
         }
 
+        public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+           ((SearchViewModel) DataContext).ExecuteSelected();
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
+        }
     }
 }

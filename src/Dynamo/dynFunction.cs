@@ -22,10 +22,6 @@ using System.Xml;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
-using Value = Dynamo.FScheme.Value;
-using Dynamo.FSchemeInterop;
 using System.Windows.Media.Effects;
 using Dynamo.Nodes;
 

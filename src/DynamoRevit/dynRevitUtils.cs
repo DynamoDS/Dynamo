@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
+using System.Diagnostics;
+
+using Dynamo.Revit;
 
 using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;
@@ -12,6 +16,136 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Utilities
 {
+    public static class dynRevitUtils
+    {
+
+        /// <summary>
+        /// Utility method used with auto-generated assets for storing ElementIds generated during evaluate.
+        /// Handles conversion of el
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="result"></param>
+        public static void StoreElements(dynRevitTransactionNode node, object result)
+        {
+            if (typeof(Element).IsAssignableFrom(result.GetType()))
+            {
+                node.Elements.Add(((Element)result).Id);
+            }
+            else if (typeof(ElementId).IsAssignableFrom(result.GetType()))
+            {
+                node.Elements.Add((ElementId)result);
+            }
+            else if (typeof(List<Element>).IsAssignableFrom(result.GetType()))
+            {
+                ((List<Element>)result).ForEach(x => node.Elements.Add(((Element)x).Id));
+            }
+            else if (typeof(List<ElementId>).IsAssignableFrom(result.GetType()))
+            {
+                ((List<ElementId>)result).ForEach(x => node.Elements.Add((ElementId)x));
+            }
+        }
+
+        public static MethodBase GetAPIMethodInfo(Type base_type, string methodName, bool isConstructor, Type[] types, out Type returnType)
+        {
+            MethodBase result = null;
+            returnType = base_type;
+
+            if (isConstructor)
+            {
+                result = base_type.GetConstructor(types); 
+            }
+            else
+            {
+                try
+                {
+                    
+                    //http://stackoverflow.com/questions/11443707/getproperty-reflection-results-in-ambiguous-match-found-on-new-property
+                    result = base_type.
+                            GetMethods().
+                            Where(x => x.Name == methodName && x.GetParameters().
+                                Select(y => y.ParameterType).
+                                Except(types).Count() == 0).
+                                First();
+                    
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("There was an error finding the appropriate API method to call.", e);
+                }
+            }
+
+            if (result == typeof(MethodInfo))
+            {
+                returnType = ((MethodInfo)result).ReturnType;
+            }
+
+            return result;
+        }
+
+        public static Value InvokeAPIMethod(dynRevitTransactionNode node, FSharpList<Value> args, Type api_base_type, ParameterInfo[] pi, MethodBase mi, Type return_type)
+        {
+            object invocation_target = null;
+
+            if (api_base_type == typeof(Autodesk.Revit.Creation.Document) ||
+                api_base_type == typeof(Autodesk.Revit.Creation.FamilyItemFactory) ||
+                api_base_type == typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+            {
+                if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+                {
+                    invocation_target = dynRevitSettings.Doc.Document.FamilyCreate;
+                }
+                else
+                {
+                    invocation_target = dynRevitSettings.Doc.Document.Create;
+                }
+            }
+            else if (api_base_type == typeof(Autodesk.Revit.Creation.Application))
+            {
+                invocation_target = dynRevitSettings.Revit.Application.Create;
+            }
+
+            if (!mi.IsStatic && !mi.IsConstructor)
+            {
+                //the first input will always hold the instance
+                //whose methods you want to invoke
+                invocation_target = DynamoTypeConverter.ConvertInput(args[0],api_base_type);
+            }
+
+            object[] parameters = new object[pi.Count()];
+            if (args.Count() == pi.Count())
+            {
+                for (int i = 0; i < pi.Count(); i++)
+                {
+                    parameters[i] = DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < pi.Count(); i++)
+                {
+                    parameters[i] = DynamoTypeConverter.ConvertInput(args[i + 1], pi[i].ParameterType);
+                }
+            }
+
+            object result = null;
+
+            if (mi.IsConstructor)
+            {
+                result = ((ConstructorInfo)mi).Invoke(parameters);
+            }
+            else
+            {
+                result = mi.Invoke(invocation_target, parameters);
+            }
+            
+            if (result != null)
+            {
+                dynRevitUtils.StoreElements(node, result);
+            }
+
+            return DynamoTypeConverter.ConvertToValue(result);
+        }
+    }
 
     /// <summary>
     /// Used with the Auto-generator. Allows automatic conversion of inputs and outputs
@@ -108,6 +242,14 @@ namespace Dynamo.Utilities
 
         }
         
+        /// <summary>
+        /// Convert an input Value into and expected type if possible.
+        /// Ex. If a node expects an XYZ, a user can pass in a ReferencePoint object
+        /// and the position (XYZ) of that object will be returned.
+        /// </summary>
+        /// <param name="input">The value of the input.</param>
+        /// <param name="output">The desired output type.</param>
+        /// <returns></returns>
         public static object ConvertInput(Value input, Type output)
         {
             if (input.IsContainer)
@@ -148,7 +290,7 @@ namespace Dynamo.Utilities
                 #endregion
 
                 #region Point
-               else if (item.GetType() == typeof(Point))
+                else if (item.GetType() == typeof(Point))
                 {
                     Point a = (Point)item;
 
@@ -183,6 +325,51 @@ namespace Dynamo.Utilities
                     else if (output == typeof(string))
                     {
                         return string.Format("{0},{1},{2}", a.Position.X, a.Position.Y, a.Position.Z);
+                    }
+                    else if (output == typeof(ElementId))
+                    {
+                        return a.Id;
+                    }
+                }
+                #endregion
+
+                #region ElementId
+                else if (item.GetType() == typeof(ElementId))
+                {
+                    if (output == typeof(ReferencePoint))
+                    {
+                        ElementId a = (ElementId)item;
+                        Element el = dynRevitSettings.Doc.Document.GetElement(a);
+                        ReferencePoint rp = (ReferencePoint)el;
+                        return rp;
+                    }
+                }
+                #endregion
+
+                #region Reference
+                else if (item.GetType() == typeof(Reference))
+                {
+                    Reference a = (Reference)item;
+                    if(output.IsAssignableFrom(typeof(Element)))
+                    {
+                        Element e = dynRevitSettings.Doc.Document.GetElement(a);
+                    }
+                    else if (output == typeof(Face))
+                    {
+                        Face f = (Face)dynRevitSettings.Doc.Document.GetElement(a.ElementId).GetGeometryObjectFromReference(a);
+                        return f;
+                    }
+                }
+                #endregion
+
+                #region XYZ
+                if (item.GetType() == typeof(XYZ))
+                {
+                    XYZ a = (XYZ)item;
+                    if (output == typeof(Transform))
+                    {
+                        Transform t = Transform.get_Translation(a);
+                        return t;
                     }
                 }
                 #endregion
@@ -237,8 +424,18 @@ namespace Dynamo.Utilities
             return input;
         }
 
+        /// <summary>
+        /// Convert the result of a wrapped Revit API method or property to it's correct Dynamo Value type.
+        /// </summary>
+        /// <param name="input">The result of the Revit API method.</param>
+        /// <returns></returns>
         public static Value ConvertToValue(object input)
         {
+            if (input == null)
+            {
+                return Value.NewNumber(0);
+            }
+
             if (input.GetType() == typeof(double))
             {
                 return Value.NewNumber(System.Convert.ToDouble(input));
@@ -254,6 +451,16 @@ namespace Dynamo.Utilities
             else if (input.GetType() == typeof(bool))
             {
                 return Value.NewNumber(System.Convert.ToInt16(input));
+            }
+            else if (input.GetType() == typeof(List<ElementId>))
+            {
+                List<Value> vals = new List<Value>();
+                foreach (ElementId id in (List<ElementId>)input)
+                {
+                    vals.Add(Value.NewContainer(id));
+                }
+
+                return Value.NewList(Utils.SequenceToFSharpList(vals));
             }
             else if (input.GetType() == typeof(IntersectionResultArray))
             {

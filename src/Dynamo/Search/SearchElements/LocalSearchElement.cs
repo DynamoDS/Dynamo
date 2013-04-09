@@ -14,10 +14,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using Dynamo.Commands;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 
-namespace Dynamo.Search
+namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing a local node </summary>
@@ -35,7 +37,8 @@ namespace Dynamo.Search
         /// Type property </summary>
         /// <value>
         /// A string describing the type of object </value>
-        public override string Type { get { return "Standard Node"; } }
+        private string _type;
+        public override string Type { get { return _type; } }
 
         /// <summary>
         /// Name property </summary>
@@ -47,13 +50,20 @@ namespace Dynamo.Search
         /// Description property </summary>
         /// <value>
         /// A string describing what the node does</value>
-        public override string Description { get { return Node.NodeUI.Description; } }
+        private string _description;
+        public override string Description { get { return _description; } }
 
         /// <summary>
         /// Weight property </summary>
         /// <value>
-        /// Number defining the relative importance of the element in search.  Higher the better </value>
+        /// Number defining the relative importance of the element in search.  Higher weight means closer to the top. </value>
         public override double Weight { get; set; }
+
+        /// <summary>
+        /// Keywords property </summary>
+        /// <value>
+        /// Joined set of keywords </value>
+        public override string Keywords { get; set; }
 
         #endregion
 
@@ -64,6 +74,23 @@ namespace Dynamo.Search
         {
             this.Node = node;
             this.Weight = 1;
+            this.Keywords = String.Join(" ", node.NodeUI.Tags);
+            this._type = "Node";
+            this._description = node.NodeUI.Description;
+        }
+
+        /// <summary>
+        /// The class constructor - use this constructor when for
+        /// custom nodes
+        /// </summary>
+        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
+        public LocalSearchElement(FunctionDefinition funcDef)
+        {
+            this.Node = dynSettings.Controller.CreateDragNode( funcDef.FunctionId.ToString() );
+            this.Weight = 1.1;
+            this.Keywords = "";
+            this._description = "Custom Node";
+            this._type = "Custom Node";
         }
 
         /// <summary>
@@ -71,12 +98,36 @@ namespace Dynamo.Search
         /// hits enter in the SearchView.</summary>
         public override void Execute()
         {
-            DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+            string name;
+
+            if (this.Node is dynFunction)
+            {
+                name = ((dynFunction)Node).Definition.FunctionId.ToString();
+            }
+            else
+            {
+                name = Name;
+            }
+
+            // create node
+            var guid = Guid.NewGuid();
+            var nodeParams = new Dictionary<string, object>()
                 {
-                    {"name", this.Name},
+                    {"name", name},
                     {"transformFromOuterCanvasCoordinates", true},
-                    {"guid", Guid.NewGuid() }
-                });
+                    {"guid", guid}
+                };
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
+            dynSettings.Controller.ProcessCommandQueue();
+
+            // select node
+            var placedNode = dynSettings.Controller.Nodes.Find((node) => node.NodeUI.GUID == guid);
+            if (placedNode != null)
+            {
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
+                dynSettings.Controller.ProcessCommandQueue();
+            }
         }
 
     }

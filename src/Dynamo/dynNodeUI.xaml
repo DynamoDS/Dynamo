@@ -13,10 +13,14 @@
     PreviewKeyUp="OnPreviewKeyUp"
     MouseLeftButtonDown="topControl_MouseLeftButtonDown"
     MouseRightButtonDown="topControl_MouseRightButtonDown" >
-   <UserControl.Resources>
-        <local:MarginConverter x:Key="MarginConverter" />
-        <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
-       <local:StateToColorConverter x:Key="StateToColorConverter"/>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="Themes\DynamoConverters.xaml" />
+                <ResourceDictionary Source="Themes\DynamoModern.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.ToolTip>
         <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
@@ -36,41 +40,41 @@
                            Text="{Binding Path=ToolTipText}" FontFamily="Consolas" FontSize="11" TextTrimming="WordEllipsis" Margin="2"/>
             </StackPanel>
         </Grid>
-   </UserControl.ToolTip>
-   <Grid Name="grid">
-      <Grid.ContextMenu>
-         <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
-            <MenuItem Name="deleteElem_cm" Header="Delete" Click="deleteElem_cm_Click" />
-         </ContextMenu>
-      </Grid.ContextMenu>
-      <Grid Name="gridLeft" 
+    </UserControl.ToolTip>
+    <Grid Name="grid">
+        <Grid.ContextMenu>
+            <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
+                <MenuItem Name="deleteElem_cm" Header="Delete" Click="deleteElem_cm_Click" />
+            </ContextMenu>
+        </Grid.ContextMenu>
+        <Grid Name="gridLeft" 
             Margin="-7,5,0,5"
             HorizontalAlignment="Left"
             IsHitTestVisible="True" 
             Background="Transparent"
             Canvas.ZIndex="90">
-         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50"/>
-            <!--<ColumnDefinition Width="Auto"/>-->
-         </Grid.ColumnDefinitions>
-      </Grid>
-      <Grid Name="gridRight" 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <!--<ColumnDefinition Width="Auto"/>-->
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <Grid Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
               Margin="0,5,-7,5" 
               IsHitTestVisible="True" 
               Background="Transparent"
               Canvas.ZIndex="90">
-         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50"/>
-            <!--<ColumnDefinition Width="Auto"/>-->
-         </Grid.ColumnDefinitions>
-      </Grid>
-      <Canvas Canvas.Left="0" 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <!--<ColumnDefinition Width="Auto"/>-->
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
                 Name="elementCanvas" 
                 Margin="0,0,0,0">
-         <Rectangle HorizontalAlignment="Right" 
+            <Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"
                        Width="{Binding ElementName=topControl, Path=Width}"
@@ -81,18 +85,18 @@
                        Canvas.ZIndex="90"
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
                        StrokeThickness="2"
-                       Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}, Mode=OneWay}">
-            <Rectangle.Effect>
-               <DropShadowEffect Opacity="0" />
-            </Rectangle.Effect>
-            <!--<Rectangle.Fill>
+                       Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}, Mode=TwoWay}">
+                <Rectangle.Effect>
+                    <DropShadowEffect Opacity="0" />
+                </Rectangle.Effect>
+                <!--<Rectangle.Fill>
                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
                   <GradientStop Color="Yellow" Offset="0.0" />
                   <GradientStop Color="Orange" Offset="1" />
                </LinearGradientBrush>
             </Rectangle.Fill>-->
-         </Rectangle>
-         <!--<Rectangle HorizontalAlignment="Right" 
+            </Rectangle>
+            <!--<Rectangle HorizontalAlignment="Right" 
                        Canvas.Left="0"
                        Canvas.Top="0"
                        Width="{Binding ElementName=topControl, Path=Width}"
@@ -105,7 +109,7 @@
                        Canvas.ZIndex="90" 
                        IsHitTestVisible="False">
             </Rectangle>-->
-         <!--<Rectangle HorizontalAlignment="Right" 
+            <!--<Rectangle HorizontalAlignment="Right" 
                      Canvas.Left="0"
                      Canvas.Top="2"
                      Width="{Binding ElementName=topControl, Path=Width}"
@@ -119,7 +123,7 @@
                <SolidColorBrush Opacity=".25" Color="white" />
             </Rectangle.Fill>
          </Rectangle>-->
-         <TextBlock  Height="Auto" 
+            <TextBlock  Height="Auto" 
                      Name="nickNameBlock" 
                      VerticalAlignment="Center" 
                      HorizontalAlignment="Left"
@@ -134,21 +138,21 @@
                      Width="{Binding ElementName=grid, Path=ActualWidth}"
                      MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
                      TextWrapping="Wrap"
-                     Background="Transparent" FontStyle="Normal" Foreground="#FF141414">
+                     Background="Transparent" FontStyle="Normal" Foreground="LightGray">
             <!--<TextBox.Background>
                <SolidColorBrush />
             </TextBox.Background>-->
             <!-- <TextBlock.Effect>
                <DropShadowEffect ShadowDepth="0" Color="WhiteSmoke" BlurRadius="4" />
             </TextBlock.Effect> -->
-         </TextBlock>
-      </Canvas>
-      <Grid Name="inputGrid"
+            </TextBlock>
+        </Canvas>
+        <Grid Name="inputGrid"
             x:FieldModifier="public"
             VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
             Height="Auto"
             Width="Auto"
-            Margin="45,5,45,5"/>
-   </Grid>
+            Margin="45,5,45,5" Canvas.ZIndex="300"/>
+    </Grid>
 </UserControl>

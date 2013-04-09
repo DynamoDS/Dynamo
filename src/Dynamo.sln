@@ -36,6 +36,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoElementsTests", "DynamoElementsTests\DynamoElementsTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoDesignScript", "DynamoDesignScript\DynamoDesignScript.csproj", "{DED5A57D-4816-4162-9A76-8AB8EC7F275D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "DynamoRevitTests\DynamoRevitTests.csproj", "{2C1C4B42-4D95-496A-9078-28309DB47128}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -160,6 +161,16 @@ Global
 		{DED5A57D-4816-4162-9A76-8AB8EC7F275D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DED5A57D-4816-4162-9A76-8AB8EC7F275D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DED5A57D-4816-4162-9A76-8AB8EC7F275D}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2C1C4B42-4D95-496A-9078-28309DB47128}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

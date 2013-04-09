@@ -13,69 +13,64 @@
 //limitations under the License.
 
 using System;
-using System.Windows.Forms;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
-using System.Windows.Media.Imaging;
-using System.Windows.Interop;
 using System.Reflection;
+using System.Resources;
 using System.Windows;
-using System.Xml.Serialization;
-
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit;
-using Autodesk.Revit.UI;
+using System.Windows.Forms;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI.Events;
-using Autodesk.Revit.DB.Events;
-using Autodesk.Revit.DB.Analysis;//MDJ needed for spatialfeildmanager
-
-using Dynamo;
-using Dynamo.Nodes;
+using Autodesk.Revit.DB.Analysis;
+using Autodesk.Revit.UI;
+using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-
+using IWin32Window = System.Windows.Interop.IWin32Window;
+using MessageBox = System.Windows.Forms.MessageBox;
+using Rectangle = System.Drawing.Rectangle;
+//MDJ needed for spatialfeildmanager
 //TAF added to get strings from resource files
-using System.Resources;
 
 namespace Dynamo.Applications
 {
     //MDJ - Added by Matt Jezyk - 10.27.2011
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
-    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
+    [Transaction(TransactionMode.Automatic)]
+    [Regeneration(RegenerationOption.Manual)]
     public class DynamoRevitApp : IExternalApplication
     {
-        static private string m_AssemblyName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-        static private string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
-        static public DynamoUpdater updater;
-        static private ResourceManager res;
+        private static readonly string m_AssemblyName = Assembly.GetExecutingAssembly().Location;
+        private static string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
+        public static DynamoUpdater updater;
+        private static ResourceManager res;
 
-        public Autodesk.Revit.UI.Result OnStartup(UIControlledApplication application)
+        public Result OnStartup(UIControlledApplication application)
         {
             try
             {
                 //TAF load english_us TODO add a way to localize
                 res = Resource_en_us.ResourceManager;
                 // Create new ribbon panel
-                RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description")); //MDJ todo - move hard-coded strings out to resource files
+                RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description"));
 
                 //Create a push button in the ribbon panel 
+                var pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
+                                                                        res.GetString("App_Name"), m_AssemblyName,
+                                                                        "Dynamo.Applications.DynamoRevit")) as
+                                 PushButton;
 
-                PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
-                    res.GetString("App_Name"), m_AssemblyName, "Dynamo.Applications.DynamoRevit")) as PushButton;
+                Bitmap dynamoIcon = Resources.Nodes_32_32;
 
-                System.Drawing.Bitmap dynamoIcon = Dynamo.Applications.Properties.Resources.Nodes_32_32;
-                
-                
-                BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                         dynamoIcon.GetHbitmap(),
-                         IntPtr.Zero,
-                         System.Windows.Int32Rect.Empty,
-                         System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+                BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
+                    dynamoIcon.GetHbitmap(),
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
 
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
@@ -86,15 +81,16 @@ namespace Dynamo.Applications
                 IdlePromise.RegisterIdle(application);
 
                 updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
-                if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId())) UpdaterRegistry.RegisterUpdater(updater);
+                if (!UpdaterRegistry.IsUpdaterRegistered(updater.GetUpdaterId()))
+                    UpdaterRegistry.RegisterUpdater(updater);
 
-                ElementClassFilter SpatialFieldFilter = new ElementClassFilter(typeof(SpatialFieldManager));
-                ElementClassFilter familyFilter = new ElementClassFilter(typeof(FamilyInstance));
-                ElementCategoryFilter refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
-                ElementClassFilter modelCurveFilter = new ElementClassFilter(typeof(CurveElement));
-                ElementClassFilter sunFilter = new ElementClassFilter(typeof(SunAndShadowSettings));
+                var SpatialFieldFilter = new ElementClassFilter(typeof (SpatialFieldManager));
+                var familyFilter = new ElementClassFilter(typeof (FamilyInstance));
+                var refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
+                var modelCurveFilter = new ElementClassFilter(typeof (CurveElement));
+                var sunFilter = new ElementClassFilter(typeof (SunAndShadowSettings));
                 IList<ElementFilter> filterList = new List<ElementFilter>();
-                
+
                 filterList.Add(SpatialFieldFilter);
                 filterList.Add(familyFilter);
                 filterList.Add(modelCurveFilter);
@@ -111,10 +107,11 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.ToString());
                 return Result.Failed;
             }
         }
+
         public Result OnShutdown(UIControlledApplication application)
         {
             UpdaterRegistry.UnregisterUpdater(updater.GetUpdaterId());
@@ -123,16 +120,16 @@ namespace Dynamo.Applications
         }
     }
 
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
-    class DynamoRevit : IExternalCommand
+    [Transaction(TransactionMode.Manual)]
+    [Regeneration(RegenerationOption.Manual)]
+    internal class DynamoRevit : IExternalCommand
     {
-        Autodesk.Revit.UI.UIApplication m_revit;
-        Autodesk.Revit.UI.UIDocument m_doc;
-        static dynBench dynamoBench;
-        TextWriter tw;
+        private static dynBench dynamoBench;
+        private UIDocument m_doc;
+        private UIApplication m_revit;
 
-        public Autodesk.Revit.UI.Result Execute(Autodesk.Revit.UI.ExternalCommandData revit, ref string message, ElementSet elements)
+
+        public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             if (dynamoBench != null)
             {
@@ -143,26 +140,18 @@ namespace Dynamo.Applications
             //SplashScreen splashScreen = null
             Window splashScreen = null;
 
+            dynSettings.StartLogging();
+
             try
             {
-                //create a log file
-                string tempPath = System.IO.Path.GetTempPath();
-                string logPath = Path.Combine(tempPath, "dynamoLog.txt");
-
-                if (File.Exists(logPath))
-                    File.Delete(logPath);
-
-                tw = new StreamWriter(logPath);
-                tw.WriteLine("Dynamo log started " + System.DateTime.Now.ToString());
-
                 m_revit = revit.Application;
                 m_doc = m_revit.ActiveUIDocument;
 
                 #region default level
 
                 Level defaultLevel = null;
-                FilteredElementCollector fecLevel = new FilteredElementCollector(m_doc.Document);
-                fecLevel.OfClass(typeof(Level));
+                var fecLevel = new FilteredElementCollector(m_doc.Document);
+                fecLevel.OfClass(typeof (Level));
                 defaultLevel = fecLevel.ToElements()[0] as Level;
 
                 #endregion
@@ -170,10 +159,8 @@ namespace Dynamo.Applications
                 dynRevitSettings.Revit = m_revit;
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
-                dynSettings.Writer = tw;
 
-                IdlePromise.ExecuteOnIdle(new Action(
-                    delegate
+                IdlePromise.ExecuteOnIdle(delegate
                     {
                         //get window handle
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
@@ -186,67 +173,61 @@ namespace Dynamo.Applications
                         dynamoBench = dynamoController.Bench;
 
                         //set window handle and show dynamo
-                        new System.Windows.Interop.WindowInteropHelper(dynamoBench).Owner = mwHandle;
+                        new WindowInteropHelper(dynamoBench).Owner = mwHandle;
 
                         dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
 
-                        System.Drawing.Rectangle bounds = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+                        Rectangle bounds = Screen.PrimaryScreen.Bounds;
                         dynamoBench.Left = bounds.X;
                         dynamoBench.Top = bounds.Y;
-                        dynamoBench.Loaded += new RoutedEventHandler(dynamoForm_Loaded);
+                        dynamoBench.Loaded += dynamoForm_Loaded;
 
                         dynamoBench.Show();
 
-                        dynamoBench.Closed += new EventHandler(dynamoForm_Closed);
-                    }
-                ));
+                        dynamoBench.Closed += dynamoForm_Closed;
+                    });
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
-                if (tw != null)
+                MessageBox.Show(ex.ToString());
+                if (dynSettings.Writer != null)
                 {
-                    tw.WriteLine(ex.Message);
-                    tw.WriteLine(ex.StackTrace);
-                    tw.WriteLine("Dynamo log ended " + System.DateTime.Now.ToString());
-                    tw.Close();
+                    dynSettings.Writer.WriteLine(ex.Message);
+                    dynSettings.Writer.WriteLine(ex.StackTrace);
+                    dynSettings.Writer.WriteLine("Dynamo log ended " + DateTime.Now.ToString());
                 }
                 return Result.Failed;
             }
 
-            return Autodesk.Revit.UI.Result.Succeeded;
+            return Result.Succeeded;
         }
 
-        void dynamoForm_Closed(object sender, EventArgs e)
+        private void dynamoForm_Closed(object sender, EventArgs e)
         {
             dynamoBench = null;
         }
 
-        void dynamoForm_Loaded(object sender, RoutedEventArgs e)
+        private void dynamoForm_Loaded(object sender, RoutedEventArgs e)
         {
-            ((dynBench)sender).WindowState = WindowState.Maximized;
+            ((dynBench) sender).WindowState = WindowState.Maximized;
         }
     }
 
-    class WindowHandle : System.Windows.Interop.IWin32Window
+    internal class WindowHandle : IWin32Window
     {
-        IntPtr _hwnd;
+        private readonly IntPtr _hwnd;
 
         public WindowHandle(IntPtr h)
         {
             Debug.Assert(IntPtr.Zero != h,
-              "expected non-null window handle");
+                         "expected non-null window handle");
 
             _hwnd = h;
         }
 
         public IntPtr Handle
         {
-            get
-            {
-                return _hwnd;
-            }
+            get { return _hwnd; }
         }
     }
 }
-

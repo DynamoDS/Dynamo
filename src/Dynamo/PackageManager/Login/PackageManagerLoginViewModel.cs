@@ -141,7 +141,7 @@ namespace Dynamo.PackageManager
             ThreadStart start = () => Client.Client.GetRequestTokenAsync((uri, token) =>
                 {
                     BrowserUri = uri;
-                }, Greg.Client.AuthorizationPageViewMode.Desktop);
+                }, Greg.Client.AuthorizationPageViewMode.Iframe);
             new Thread(start).Start();
         }
 
@@ -153,15 +153,18 @@ namespace Dynamo.PackageManager
         public void WebBrowserNavigatedEvent(object sender, NavigationEventArgs e)
         {
             SetSilent( ((WebBrowser) sender), true);
-            if (BrowserUri == new Uri("http://www.google.com"))
+            if (e.Uri.AbsoluteUri.IndexOf("google", StringComparison.Ordinal) > -1)
                 return;
+
             BrowserVisible = Visibility.Visible;
+
             if (e.Uri.AbsoluteUri.IndexOf("Allow", StringComparison.Ordinal) > -1)
             {
                 Visible = Visibility.Hidden;
                 Client.GetAccessToken();
             }
         }
+
 
         /// <summary>
         ///     SILENCE the errors with the web browser

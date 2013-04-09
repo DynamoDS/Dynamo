@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -102,6 +103,20 @@ namespace Dynamo.Search
         /// <summary>
         ///     Remove an element from the search
         /// </summary>
+        /// <param name="value"> The object to remove </param>
+        public void Remove(V value)
+        {
+            _symbolDictionary.Remove(value);
+            
+            foreach (var set in _tagDictionary)
+            {
+                set.Value.Remove(value);
+            }
+        }
+
+        /// <summary>
+        ///     Remove an element from the search
+        /// </summary>
         /// <param name="tag"> The tag for which to remove elements </param>
         public void Remove(string tag)
         {
@@ -151,8 +166,8 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Filter the elements in the SearchDictionary, based on whether there is a word
-        ///     in tag that starts with the given query
+        ///     Filter the elements in the SearchDictionary, based on whether there is a string
+        ///     in the tag matching the query
         /// </summary>
         /// <param name="query"> The query </param>
         public HashSet<V> Filter(string query)
@@ -160,7 +175,6 @@ namespace Dynamo.Search
             var result = new HashSet<V>();
 
             string pattern = ".*(" + Regex.Escape(query) + ").*";
-            
             foreach (var pair in _tagDictionary)
             {
                 MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
@@ -185,13 +199,14 @@ namespace Dynamo.Search
 
             foreach (var pair in _tagDictionary)
             {
-                // does the key have an internal match with the search?
+                // allow internal characters
                 string pattern = ".*(" + Regex.Escape(query) + ").*";
                 MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
                 if (matches.Count > 0)
                 {
                     // it has a match, how close is it to matching the entire string?
-                    double matchCloseness = Math.Max(((double) (pair.Key.Length - query.Length))/pair.Key.Length, 0);
+                    double matchCloseness = ((double) query.Length) / pair.Key.Length;
+
                     foreach (V ele in pair.Value)
                     {
                         double weight = matchCloseness;
@@ -215,10 +230,10 @@ namespace Dynamo.Search
                 }
             }
 
-            return searchDict.OrderBy(x => x.Value)
+            return searchDict.OrderByDescending(x => x.Value)
                              .Select(x => x.Key)
-                             .ToList()
-                             .GetRange(0, Math.Min(numResults, searchDict.Count));
+                             .Take( Math.Min(numResults, searchDict.Count ))
+                             .ToList();
         }
     }
 }

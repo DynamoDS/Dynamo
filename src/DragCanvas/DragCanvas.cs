@@ -274,6 +274,7 @@ namespace Dynamo.Controls
               NotifyPropertyChanged("Selection");
           }
       }
+
       #endregion // ElementBeingDragged
 
       #region FindCanvasChild
@@ -332,6 +333,7 @@ namespace Dynamo.Controls
              //test if we're hitting the background
              // Retrieve the coordinate of the mouse position.
              Point pt = e.GetPosition(this);
+             Debug.WriteLine(string.Format("Hit point x:{0} y:{0}", pt.X, pt.Y));
 
              hitResultsList.Clear();
 
@@ -343,15 +345,18 @@ namespace Dynamo.Controls
              //if you hit a selectable object
              foreach (DependencyObject dobj in hitResultsList)
              {
+                 Debug.WriteLine(string.Format("Testing {0} for hit.", dobj.GetType().ToString()));
                  ISelectable sel = ElementClicked(dobj) as ISelectable;    //, typeof(ISelectable));
                  if (sel != null)
                  {
+                     Debug.WriteLine(string.Format("Hit selectable {0}.", sel.GetType().ToString()));
                      base.OnMouseLeftButtonDown(e);
 
                      //this.isDragInProgress = false;
 
                      // Cache the mouse cursor location.
                      this.origCursorLocation = e.GetPosition(this);
+                     Debug.WriteLine(string.Format("ResetCursorLocation point x:{0} y:{0}", this.origCursorLocation.X, this.origCursorLocation.Y));
 
                      //if (this.selection.Count == 0)
                      //    return;
@@ -716,19 +721,9 @@ namespace Dynamo.Controls
               {
                   Type t = elem.GetType();
 
-                  //if (HasParentType(t, testType))
-                  //{
-                  //    foundElement = elem;
-                  //    return foundElement;
-                  //}
-
-                  //if (elem != null && t.Equals(testType))
-                  //{
-                  //    foundElement = elem;
-                  //    return foundElement;
-                  //}
-
-                  if (elem is ISelectable)
+                  //only hit test against visible elements
+                  //we want to avoid elements in other workspaces.
+                  if (elem is ISelectable && elem.Visibility == System.Windows.Visibility.Visible)
                   {
                       foundElement = elem;
                       return foundElement;

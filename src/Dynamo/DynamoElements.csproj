@@ -121,11 +121,15 @@ limitations under the License.
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\scripts\NodeGenerator\DynamoRevitCategories.cs">
+      <Link>DynamoRevitCategories.cs</Link>
+    </Compile>
     <Compile Include="Commands.cs" />
     <Compile Include="DynamoController.cs" />
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginView.xaml.cs">
@@ -136,7 +140,9 @@ limitations under the License.
     <Compile Include="PackageManager\Publish\PackageManagerPublishView.xaml.cs">
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Search\RecursiveSearchDictionary.cs" />
     <Compile Include="Search\SearchCommands.cs" />
+    <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\LocalSearchElement.cs" />
     <Compile Include="Search\SearchElements\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
@@ -251,6 +257,14 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\DynamoColorsAndBrushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\DynamoConverters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\DynamoModern.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -313,6 +327,19 @@ limitations under the License.
     <Resource Include="Images\arrow-left-black.png" />
     <Resource Include="Images\arrow-left-white.png" />
     <Resource Include="Images\arrow-right-black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\add_32.png" />
+    <Resource Include="Images\add_32_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\search_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\back.png" />
+    <Resource Include="Images\back_24.png" />
+    <Resource Include="Images\back_32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

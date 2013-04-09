@@ -16,7 +16,7 @@ limitations under the License.
 <dynWorkspace X="10" Y="50.1999999999999">
   <dynElements>
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="9c8c2279-6f59-417c-8218-3b337230bd99" nickname="GraphFunction" x="709.655263157895" y="167.384210526316">
-      <Symbol value="GraphFunction" />
+      <ID value="07e6b150-d902-4abb-8103-79193552eee7" />
       <Output value="out" />
       <Inputs>
         <Input value="x-start" />
@@ -36,7 +36,7 @@ limitations under the License.
     </Dynamo.Elements.dynDoubleInput>
     <Dynamo.Elements.dynDivision type="Dynamo.Elements.dynDivision" guid="895fc801-7a2d-4508-bf73-1bc9fe08b7c0" nickname="÷" x="347.763157894737" y="236.257894736842" />
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="954800cc-211c-4f77-af77-d3c7d6af8afc" nickname="C*f(dx)" x="559.642105263158" y="327.323684210526">
-      <Symbol value="C*f(dx)" />
+      <ID value="55ed5d06-66b4-455a-a6d7-bef44619db0b" />
       <Output value="out" />
       <Inputs>
         <Input value="C" />
@@ -60,7 +60,7 @@ limitations under the License.
     </Dynamo.Elements.dynDoubleSliderInput>
     <Dynamo.Elements.dynMultiplication type="Dynamo.Elements.dynMultiplication" guid="bddfacc6-3281-45f1-8346-d7e0eeb5f85c" nickname="×" x="348.131578947368" y="381.184210526316" />
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="70161769-254b-49ea-a964-e083ee7d10df" nickname="ConnectPoints" x="1024.05263157895" y="197.615789473684">
-      <Symbol value="ConnectPoints" />
+      <ID value="fbdfbd95-f779-49ae-869f-227f4a3fdb1e" />
       <Output value="out" />
       <Inputs>
         <Input value="refPts" />

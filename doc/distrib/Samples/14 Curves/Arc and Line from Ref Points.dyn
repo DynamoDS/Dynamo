@@ -13,7 +13,7 @@
     <Dynamo.Elements.dynLineBound type="Dynamo.Elements.dynLineBound" guid="aab4fbd2-1a10-4bcb-8d5f-b6da8bb00cad" nickname="Line" x="386.75" y="233.5" />
     <Dynamo.Elements.dynModelCurve type="Dynamo.Elements.dynModelCurve" guid="e284d845-0db1-45f8-9667-d1e7aebb3c0a" nickname="Model Curve" x="587.75" y="111.75" />
     <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="f0b4ad3e-7b1c-4477-98a9-9017eba88a35" nickname="New Sketch Plane" x="349.75" y="0">
-      <Symbol value="New Sketch Plane" />
+      <ID value="d9bd10fc-a0ed-4c3b-be5a-4f4ba0f37979" />
       <Output value="out" />
       <Inputs />
     </Dynamo.Elements.dynFunction>

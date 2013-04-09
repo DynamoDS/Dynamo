@@ -140,26 +140,22 @@ namespace Dynamo.PackageManager
         /// <param name="keywords"> Keywords to describe the user-defined node </param>
         /// <param name="license"> A license string (e.g. "MIT") </param>
         /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
+        /// <returns> Returns null if it fails to get the xmlDoc, otherwise a valid PackageUpload </returns>
         public PackageUpload GetPackageUpload(FunctionDefinition funDef, string version, string description,
                                               List<string> keywords, string license, string group)
         {
-            try
-            {
-                // var group = ((FuncWorkspace) funDef.Workspace).Category;
-                string name = funDef.Workspace.Name;
-                string contents = Controller.GetXmlDocumentFromWorkspace(funDef.Workspace).OuterXml;
-                string engineVersion = "0.1.0"; //nope
-                string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString(); //store the guid here
+            // var group = ((FuncWorkspace) funDef.Workspace).Category;
+            string name = funDef.Workspace.Name;
+            var xml = Controller.GetXmlDocFromWorkspace(funDef.Workspace);
+            if (xml == null) return null;
+            var contents = xml.OuterXml;
+            string engineVersion = "0.1.0"; //nope
+            string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString(); //store the guid here
 
-                PackageUpload pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license,
-                                                                    contents,
-                                                                    engineVersion, engineMetadata);
-                return pkg;
-            }
-            catch
-            {
-                return null;
-            }
+            PackageUpload pkg = PackageUpload.MakeDynamoPackage(name, version, description, keywords, license,
+                                                                contents,
+                                                                engineVersion, engineMetadata);
+            return pkg;
         }
 
         /// <summary>
@@ -172,28 +168,24 @@ namespace Dynamo.PackageManager
         /// <param name="keywords"> Keywords to describe the user-defined node </param>
         /// <param name="license"> A license string (e.g. "MIT") </param>
         /// <param name="group"> The "group" for the package (e.g. DynamoTutorial) </param>
+        /// <returns>Returns null if it fails to get the xmlDoc, otherwise a valid PackageVersionUpload  </returns>
         public PackageVersionUpload GetPackageVersionUpload(FunctionDefinition funDef, PackageHeader packageHeader,
                                                             string version,
                                                             string description, List<string> keywords, string license,
                                                             string group)
         {
-            try
-            {
-                // var group = ((FuncWorkspace) funDef.Workspace).Category;
-                string name = funDef.Workspace.Name;
-                string contents = Controller.GetXmlDocumentFromWorkspace(funDef.Workspace).OuterXml;
-                string engineVersion = "0.1.0"; //nope
-                string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString();
+            // var group = ((FuncWorkspace) funDef.Workspace).Category;
+            string name = funDef.Workspace.Name;
+            var xml = Controller.GetXmlDocFromWorkspace(funDef.Workspace);
+            if (xml == null) return null;
+            var contents = xml.OuterXml;
+            string engineVersion = "0.1.0"; //nope
+            string engineMetadata = "FunctionDefinitionGuid:" + funDef.FunctionId.ToString();
 
-                var pkg = new PackageVersionUpload(name, version, description, keywords, contents, "dynamo",
-                                                   engineVersion,
-                                                   engineMetadata);
-                return pkg;
-            }
-            catch
-            {
-                return null;
-            }
+            var pkg = new PackageVersionUpload(name, version, description, keywords, contents, "dynamo",
+                                                engineVersion,
+                                                engineMetadata);
+            return pkg;
         }
 
         /// <summary>
@@ -363,9 +355,9 @@ namespace Dynamo.PackageManager
                                     {
                                         if (auth)
                                         {
-                                            // this is bad as this stuff may not be present
-                                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                                            dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                            // TODO: these elements should observe the package manager state
+                                            //dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                                            //dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
                                             IsLoggedIn = true;
                                         }
                                     }))));
@@ -445,30 +437,30 @@ namespace Dynamo.PackageManager
                 dynSettings.Bench.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
             }
-        }
+        } 
 
         /// <summary>
         ///     Shows a string in the UI associated with whether the open workspace is package controlled
         /// </summary>
         public void ShowPackageControlInformation()
         {
-            FunctionDefinition f =
-                dynSettings.FunctionDict.First(x => x.Value.Workspace == Controller.CurrentSpace).Value;
+            //FunctionDefinition f =
+            //    dynSettings.FunctionDict.First(x => x.Value.Workspace == Controller.CurrentSpace).Value;
 
-            if (f != null)
-            {
-                if (LoadedPackageHeaders.ContainsKey(f))
-                {
-                    dynSettings.Bench.packageControlLabel.Content = "Under package control";
-                    dynSettings.Bench.editNameButton.Visibility = Visibility.Collapsed;
-                    dynSettings.Bench.editNameButton.IsHitTestVisible = true;
-                }
-                else
-                {
-                    dynSettings.Bench.packageControlLabel.Content = "Not under package control";
-                }
-                dynSettings.Bench.packageControlLabel.Visibility = Visibility.Visible;
-            }
+            //if (f != null)
+            //{
+            //    if (LoadedPackageHeaders.ContainsKey(f))
+            //    {
+            //        dynSettings.Bench.packageControlLabel.Content = "Under package control";
+            //        dynSettings.Bench.editNameButton.Visibility = Visibility.Collapsed;
+            //        dynSettings.Bench.editNameButton.IsHitTestVisible = true;
+            //    }
+            //    else
+            //    {
+            //        dynSettings.Bench.packageControlLabel.Content = "Not under package control";
+            //    }
+            //    dynSettings.Bench.packageControlLabel.Visibility = Visibility.Visible;
+            //}
         }
 
         /// <summary>
@@ -476,7 +468,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void HidePackageControlInformation()
         {
-            dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
+            //dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
     }
 }

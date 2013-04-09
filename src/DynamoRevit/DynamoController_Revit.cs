@@ -32,7 +32,7 @@ namespace Dynamo
             : base()
         {
             Updater = updater;
-
+            
             dynRevitSettings.Controller = this;
 
             Predicate<dynNode> manualTransactionPredicate = delegate(dynNode node)
@@ -49,6 +49,26 @@ namespace Dynamo
 
             AddPythonBindings();
             AddWatchNodeHandler();
+
+            dynRevitSettings.Revit.Application.DocumentClosed += new EventHandler<Autodesk.Revit.DB.Events.DocumentClosedEventArgs>(Application_DocumentClosed);
+            dynRevitSettings.Revit.Application.DocumentOpened += new EventHandler<Autodesk.Revit.DB.Events.DocumentOpenedEventArgs>(Application_DocumentOpened);
+        }
+
+        void Application_DocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)
+        {
+            //when a document is closed
+            if (dynRevitSettings.Doc == null)
+            {
+                dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
+                Bench.Controller.RunEnabled = true;
+            }
+        }
+
+        void Application_DocumentClosed(object sender, Autodesk.Revit.DB.Events.DocumentClosedEventArgs e)
+        {
+            //Disable running against revit without a document
+            dynRevitSettings.Doc = null;
+            Bench.Controller.RunEnabled = false;
         }
 
         #region Python Nodes Revit Hooks
@@ -299,9 +319,18 @@ namespace Dynamo
 
         bool ExecutionRequiresManualTransaction()
         {
-            return HomeSpace.GetTopMostNodes().Any(
-                checkManualTransaction.TraverseUntilAny
-            );
+            //if there are no topmost nodes, just return false
+            //this will avoid a binding error during bench initialization
+            if (HomeSpace.GetTopMostNodes().Count() > 0)
+            {
+                return HomeSpace.GetTopMostNodes().Any(
+                    checkManualTransaction.TraverseUntilAny
+                );
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private List<Autodesk.Revit.DB.ElementId> _transElements = new List<Autodesk.Revit.DB.ElementId>();
@@ -477,6 +506,7 @@ namespace Dynamo
 
         protected override void Run(IEnumerable<dynNode> topElements, FScheme.Expression runningExpression)
         {
+
             //If we are not running in debug...
             if (!this.RunInDebug)
             {

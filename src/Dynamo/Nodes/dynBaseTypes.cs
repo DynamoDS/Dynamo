@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
     /// categories, then use these constants. This ensures that if the names of the categories
     /// change down the road, your node will still be placed there.
     /// </summary>
-    public static class BuiltinNodeCategories
+    public static partial class BuiltinNodeCategories
     {
         public const string MATH = "Math";
         public const string COMPARISON = "Comparison";
@@ -61,7 +61,6 @@ namespace Dynamo.Nodes
         public const string REVIT_GEOM = "Revit Geometry";
         public const string REVIT_CURVES = "Revit Model Curves";
         public const string REVIT_DATUMS = "Revit Datums";
-        public const string REVIT_API = "Revit API";
         public const string COMMUNICATION = "Communication";
         public const string SCRIPTING = "Scripting";
         public const string STRINGS = "Strings";
@@ -2333,6 +2332,8 @@ namespace Dynamo.Nodes
 
             //remove the margins
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
+
+            Value = "";
         }
 
         public override string Value

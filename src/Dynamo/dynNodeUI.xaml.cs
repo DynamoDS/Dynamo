@@ -43,7 +43,6 @@ namespace Dynamo.Controls
     /// Interaction logic for dynControl.xaml
     /// </summary>
     public enum ElementState { DEAD, ACTIVE, ERROR };
-    public enum LacingType { SHORTEST, LONGEST, FULL };
 
     public partial class dynNodeUI : UserControl, INotifyPropertyChanged, ISelectable
     {
@@ -67,7 +66,6 @@ namespace Dynamo.Controls
         Guid guid;
         string toolTipText = "";
         ElementState state;
-        LacingType lacingType = LacingType.SHORTEST;
         dynNode nodeLogic;
         bool isSelected = false;
         int preferredHeight = 30;
@@ -148,12 +146,6 @@ namespace Dynamo.Controls
                 state = value;
                 NotifyPropertyChanged("State");
             }
-        }
-
-        public LacingType LacingType
-        {
-            get { return lacingType; }
-            set { lacingType = value; }
         }
 
         public Grid ContentGrid
@@ -416,13 +408,6 @@ namespace Dynamo.Controls
                 var port = AddPort(PortType.INPUT, nodeLogic.InPortData[count].NickName, count);
 
                 port.DataContext = this;
-                Binding selectionBinding = new Binding("IsSelected");
-                selectionBinding.Converter = new BooleanToBrushConverter();
-                port.ellipse1.SetBinding(Ellipse.StrokeProperty, selectionBinding);
-
-                Binding fillBinding = new Binding("State");
-                fillBinding.Converter = new StateToColorConverter();
-                port.ellipse1.SetBinding(Ellipse.FillProperty, fillBinding);
 
                 portDataDict[port] = pd;
                 count++;
@@ -474,13 +459,6 @@ namespace Dynamo.Controls
                 var port = AddPort(PortType.OUTPUT, pd.NickName, count);
 
                 port.DataContext = this;
-                Binding selectionBinding = new Binding("IsSelected");
-                selectionBinding.Converter = new BooleanToBrushConverter();
-                port.ellipse1.SetBinding(Ellipse.StrokeProperty, selectionBinding);
-
-                Binding fillBinding = new Binding("State");
-                fillBinding.Converter = new StateToColorConverter();
-                port.ellipse1.SetBinding(Ellipse.FillProperty, fillBinding);
 
                 portDataDict[port] = pd;
                 count++;
@@ -546,7 +524,7 @@ namespace Dynamo.Controls
 
                     p.Owner = this;
                     p.PortName = name;
-
+                    
                     //register listeners on the port
                     p.PortConnected += new PortConnectedHandler(p_PortConnected);
                     p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
@@ -821,7 +799,7 @@ namespace Dynamo.Controls
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             dynSettings.Bench.mainGrid.Focus();
-            dynSettings.Controller.CommandQueue.Add(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
             dynSettings.Controller.ProcessCommandQueue();
         }
 
@@ -832,7 +810,7 @@ namespace Dynamo.Controls
         }
     }
 
-    [ValueConversion(typeof(double), typeof(Thickness))]
+    //[ValueConversion(typeof(double), typeof(Thickness))]
     public class MarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -870,20 +848,26 @@ namespace Dynamo.Controls
 
     public class StateToColorConverter : IValueConverter
     {
+        //http://stackoverflow.com/questions/3238590/accessing-colors-in-a-resource-dictionary-from-a-value-converter
+
+        public LinearGradientBrush DeadBrush { get; set; }
+        public LinearGradientBrush ActiveBrush { get; set; }
+        public LinearGradientBrush ErrorBrush { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             ElementState state = (ElementState)value;
             switch (state)
             {
                 case ElementState.ACTIVE:
-                    return dynSettings.ActiveBrush;
+                    return ActiveBrush;
                 case ElementState.DEAD:
-                    return dynSettings.DeadBrush;
+                    return DeadBrush;
                 case ElementState.ERROR:
-                    return dynSettings.ErrorBrush;
+                    return ErrorBrush;
             }
 
-            return dynSettings.DeadBrush;
+            return DeadBrush;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -920,7 +904,7 @@ namespace Dynamo.Controls
         }
     }
 
-    [ValueConversion(typeof(bool), typeof(bool))]
+    //[ValueConversion(typeof(bool), typeof(bool))]
     public class InverseBooleanConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -957,6 +941,32 @@ namespace Dynamo.Controls
             else
             {
                 return "Show Console";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class ShowHideClassicNavigatorMenuItemConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return "Hide Classic Node Library";
+            }
+            else
+            {
+                return "Show Classic Node Library";
             }
         }
 

@@ -5,6 +5,7 @@
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.Commands"
+        xmlns:utilities="clr-namespace:Dynamo.Utilities"
         x:Name="_this"
         Height="768" Width="1024"
         MouseMove="OnMouseMove" 
@@ -18,209 +19,245 @@
         MinWidth="800" 
         Title="Dynamo"
         AllowsTransparency="False">
-  
-  <Window.Resources>
-    <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-    <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
-    <controls:ZoomStatConverter x:Key="ZoomStatConverter"/>
-    <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>
-    <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
-    <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
-  </Window.Resources>
-  
-  <Window.InputBindings>
-    <KeyBinding Key="Tab"
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\DynamoModern.xaml" />
+                <ResourceDictionary Source="Themes\DynamoConverters.xaml"/>
+                <ResourceDictionary Source="Themes\DynamoColorsAndBrushes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.InputBindings>
+
+        <KeyBinding Key="Tab"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
-    
-    <KeyBinding Key="Delete"
+
+        <KeyBinding Key="Delete"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
-    <KeyBinding Key="C"
+        <KeyBinding Key="N"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"/>
+        <KeyBinding Key="Tab"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
+
+        <KeyBinding Key="Delete"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
+        <KeyBinding Key="C"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"/>
-    <KeyBinding Key="D"
+        <KeyBinding Key="D"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
-    <KeyBinding Key="V"
+        <KeyBinding Key="V"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
-    <KeyBinding Key="S"
+        <KeyBinding Key="S"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.SaveCmd}}"/>
-    <KeyBinding Key="S"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}"/>
+        <KeyBinding Key="S"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.SaveAsCmd}}"/>
-    <KeyBinding Key="O"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}"/>
+        <KeyBinding Key="O"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.SaveAsCmd}}"/>
-    <KeyBinding Key="H"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}"/>
+        <KeyBinding Key="H"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}"/>
-    <KeyBinding Key="Up"
+        <KeyBinding Key="Up"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}"/>
-    <KeyBinding Key="F4"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}"/>
+        <KeyBinding Key="F4"
                 Modifiers="Alt"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"/>
-    <KeyBinding Key="C"
+        <KeyBinding Key="C"
                                 Modifiers="Control+Shift"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}"/>
 
-    <KeyBinding Key="Space"
+        <KeyBinding Key="Space"
                     Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}"/>
-    <KeyBinding Key="R"
+        <!--<KeyBinding Key="R"
                 Modifiers="Ctrl"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"/>
-    <KeyBinding Key="Escape"
+                    Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"/>-->
+        <KeyBinding Key="Escape"
                     Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}"/>
 
-  </Window.InputBindings>
-  <Grid Name="mainGrid" Focusable="True">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="22"/>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Name="consoleRow" Height="0"/>
-      <RowDefinition Height="35"/>
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto" MaxWidth="300"/>
-      <ColumnDefinition Width="Auto"/>
-      <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
-    <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
-              VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
-      
-      <MenuItem Header="_File" Name="fileMenu">
-      
-        <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.OpenCmd}}" Name="openButton" InputGestureText="Ctrl+O">
-          <MenuItem.Icon>
-            <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <Separator />
-        <MenuItem Header="_Save" Command="{Binding Source={x:Static commands:DynamoCommands.SaveCmd}}" Name="saveThisButton" InputGestureText="Ctrl+S">
-          <MenuItem.Icon>
-            <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="_Save As..." Command="{Binding Source={x:Static commands:DynamoCommands.SaveAsCmd}}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
-          <MenuItem.Icon>
-            <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.SaveImageCmd}}" Name="saveImage"/>
-          <Separator />
-        <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
-          <MenuItem.Icon>
-            <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <Separator />
-        <MenuItem Header="_Exit" Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"  Name="exit" InputGestureText="Alt+F4"/>
-      </MenuItem>
-      <MenuItem Header="_Edit" Name="editMenu">
-        <MenuItem Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"  Name="copy" InputGestureText="Ctrl+C"/>
-        <MenuItem Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
-        <Separator/>
-        <MenuItem Header="_Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
-      </MenuItem>
-      <MenuItem Header="_View" Name="viewMenu">
-        <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
-          <MenuItem.Icon>
-            <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowConsoleCmd}}" InputGestureText="Ctrl+Shift+Up"/>
-      </MenuItem>
-      <MenuItem Header="Settings">
-        
-        <MenuItem Header="_Connector Type" IsEnabled="True">
-          <MenuItem Name="settings_curves" IsCheckable="True" 
-                              IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Header="Curves"/>
-          <MenuItem Name="settings_plines" IsCheckable="True" 
-                              IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
-        </MenuItem>
+    </Window.InputBindings>
 
-        <MenuItem Header="_Package Manager" IsEnabled="True" >
+    <Grid Name="mainGrid" Focusable="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Name="consoleRow" Height="0"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MaxWidth="300"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
+              VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
+
+            <MenuItem Header="_File" Name="fileMenu">
+
+                <MenuItem Header="_New Custom Node..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                </MenuItem>
+
+                <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}" Name="openButton" InputGestureText="Ctrl+O">
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Save" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}" Name="saveThisButton" InputGestureText="Ctrl+S">
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Save As..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveImageDialogAndSaveResultCmd}}" Name="saveImage"/>
+                <Separator />
+                <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Exit" Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"  Name="exit" InputGestureText="Alt+F4"/>
+            </MenuItem>
+
+            <MenuItem Header="_Edit" Name="editMenu">
+                <MenuItem Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"  Name="copy" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
+                <Separator/>
+                <MenuItem Header="_Create Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+            </MenuItem>
+
+            <MenuItem Header="_View" Name="viewMenu">
+                <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
+
+                <MenuItem Header="_Show Node Library" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}" InputGestureText="Space"/>
+                <MenuItem Header="_Hide Node Library" Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}" InputGestureText="Esc"/>
+
+                <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideClassicNavigatorMenuItemConverter}}"
+                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowClassicNodeNavigatorCmd}}" />
+
+            </MenuItem>
+
+            <MenuItem Header="_Workspaces" Name="workspacesMenu">
+                <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Custom Nodes" Name="userFunctions" 
+                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.FunctionDict}}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem Header="{Binding Value.Workspace.Name}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static commands:DynamoCommands.DisplayFunctionCmd}}"/>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
+            </MenuItem>
+
+            <MenuItem Header="Settings">
+
+                <MenuItem Header="_Connector Type" IsEnabled="True">
+                    <MenuItem Name="settings_curves" IsCheckable="True" 
+                              IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Header="Curves"/>
+                    <MenuItem Name="settings_plines" IsCheckable="True" 
+                              IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
+                </MenuItem>
+
+                <!--<MenuItem Header="_Package Manager" IsEnabled="True" >
           <MenuItem Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
           <MenuItem Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
           <MenuItem Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
 
           <MenuItem Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
-        </MenuItem>
+        </MenuItem>-->
 
-      </MenuItem>
-      <MenuItem Header="Help">
-        <MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>
-        <MenuItem Header="Samples" Name="SamplesMenu">
-          <MenuItem.Icon>
-            <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="_Source Code" Command="{Binding Source={x:Static commands:DynamoCommands.GoToSourceCodeCmd}}"  Name="sourceCode"/>
-        <MenuItem Header="_Wiki" Command="{Binding Source={x:Static commands:DynamoCommands.GoToWikiCmd}}"  Name="wiki"/>
-      </MenuItem>
+            </MenuItem>
 
-    </Menu>
+            <MenuItem Header="Help">
+                <MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>
+                <MenuItem Header="Samples" Name="SamplesMenu">
+                    <MenuItem.Icon>
+                        <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Source Code" Command="{Binding Source={x:Static commands:DynamoCommands.GoToSourceCodeCmd}}"  Name="sourceCode"/>
+                <MenuItem Header="_Wiki" Command="{Binding Source={x:Static commands:DynamoCommands.GoToWikiCmd}}"  Name="wiki"/>
+            </MenuItem>
 
-    <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
+        </Menu>
+
+        <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
-      <!--outer canvas clips the inner canvas-->
-      <Canvas Name="outerCanvas" 
+            <!--outer canvas clips the inner canvas-->
+            <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
                  ClipToBounds="True" 
                  Grid.Row="0" 
                  Grid.Column="2">
-        <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
-          <dragCanvas:DragCanvas x:Name="WorkBench"
+                <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
+                    <dragCanvas:DragCanvas x:Name="WorkBench"
                                     x:FieldModifier="public"
                                     Width="100000" 
                                     Height="100000" 
                                     Visibility="Hidden"
                                     ContextMenuOpening="WorkBench_ContextMenuOpening">
-            <Rectangle
+                        <Rectangle
                             x:Name="selectionBox"
                             Visibility="Collapsed"
                             Stroke="Black"
                             StrokeThickness="1"
                             IsHitTestVisible="False"
                         />
-            <Canvas.Background>
-              <SolidColorBrush Color="Transparent"/>
-            </Canvas.Background>
-          </dragCanvas:DragCanvas>
-        </controls:ZoomBorder>
-        <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" 
+                        <!--<Ellipse Canvas.Left="0" Canvas.Right="0" Fill="Red" Width="10" Height="10" Name="debugPt" IsHitTestVisible="False"/>-->
+                        <Canvas.Background>
+                            <SolidColorBrush Color="Transparent"/>
+                        </Canvas.Background>
+                    </dragCanvas:DragCanvas>
+                </controls:ZoomBorder>
+                <Label Canvas.Right="30" Canvas.Top="5" Content="Home" Height="45" Name="workspaceLabel" 
                        HorizontalContentAlignment="Right" FontSize="24" 
                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
-        <Label Canvas.Right="10" Canvas.Top="50" Content="Not Under Package Control" Height="45" Name="packageControlLabel" 
+                <Label Canvas.Right="10" Canvas.Top="50" Content="Not Under Package Control" Height="45" Name="packageControlLabel" 
                        HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="16" 
                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
-        <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" 
+                <Image Canvas.Right="0" Canvas.Top="5" Height="35" Name="editNameButton" Stretch="Fill" Width="33" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon.png" 
                        MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
                        MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" />
-        <TextBox Canvas.Right="30" Canvas.Top="13" Height="23" Name="editNameBox" Width="263" 
+                <TextBox Canvas.Right="30" Canvas.Top="13" Height="23" Name="editNameBox" Width="263" 
                          Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
                          IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
-        <Canvas.Background>
-          <SolidColorBrush Color="#FF505050" />
-          <!--<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF4B4B4B" Offset="1" />
-                        <GradientStop Color="#FF7A7A7A" Offset="0" />
-                    </LinearGradientBrush>-->
-        </Canvas.Background>
-        <Canvas.ContextMenu>
-          <ContextMenu>
-            <MenuItem 
-                            Header="_New Node From Selection" 
-                            Name="NodeFromSelection"
-                            Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
-          </ContextMenu>
-        </Canvas.ContextMenu>
-      </Canvas>
-    </Border>
-    <ScrollViewer Name="LogScroller" 
+                <Canvas.Background>
+                    <SolidColorBrush Color="{StaticResource canvasBackground}" />
+                </Canvas.Background>
+                <Canvas.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem 
+                Header="_New Node From Selection" 
+                Name="NodeFromSelection"
+                Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
+
+                    </ContextMenu>
+                </Canvas.ContextMenu>
+
+            </Canvas>
+        </Border>
+
+        <ScrollViewer Name="LogScroller" 
                     VerticalAlignment="Stretch"
                     VerticalScrollBarVisibility="Auto" 
                     HorizontalAlignment="Stretch"
@@ -231,118 +268,121 @@
                     Grid.Row="3"
                     Grid.Column="0" 
                     Grid.ColumnSpan="3">
-      <ScrollViewer.ContextMenu>
-        <ContextMenu>
-          <MenuItem Header="Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearLogCmd}}"/>
-        </ContextMenu>
-      </ScrollViewer.ContextMenu>
-      <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
+            <ScrollViewer.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearLogCmd}}"/>
+                </ContextMenu>
+            </ScrollViewer.ContextMenu>
+            <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
                     Foreground="#FF505050" BorderThickness="0" BorderBrush="#00000000" 
                     Margin="0" TextWrapping="Wrap" Focusable="True"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" />
-    </ScrollViewer>
-    <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
+        </ScrollViewer>
+
+        <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Collapsed" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="#FF505050">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="40"/>
-        <RowDefinition Height="*"/>
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="80"/>
-      </Grid.ColumnDefinitions>
-      <ScrollViewer HorizontalAlignment="Stretch" Margin="10,5,10,10" Name="scrollViewer1" VerticalAlignment="Stretch" 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <ScrollViewer HorizontalAlignment="Stretch" Margin="10,5,10,10" Name="scrollViewer1" VerticalAlignment="Stretch" 
                           VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
-        <StackPanel Name="SideStackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        </StackPanel>
-      </ScrollViewer>
-      <!--<Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>-->
-      <Grid Margin="10,10,5,5">
-        <Grid.Style>
-          <Style TargetType="Grid">
-            <Setter Property="Background">
-              <Setter.Value>
-                <VisualBrush Stretch="Fill">
-                  <VisualBrush.Visual>
-                    <Rectangle Stretch="Fill" Stroke="White"/>
-                  </VisualBrush.Visual>
-                </VisualBrush>
-              </Setter.Value>
-            </Setter>
-          </Style>
-        </Grid.Style>
-        <TextBox Name="SearchBox" Padding="5"
+
+                <StackPanel Name="SideStackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                </StackPanel>
+            </ScrollViewer>
+            <!--<Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>-->
+            <Grid Margin="10,10,5,5">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <VisualBrush Stretch="Fill">
+                                    <VisualBrush.Visual>
+                                        <Rectangle Stretch="Fill" Stroke="White"/>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Style>
+                <TextBox Name="SearchBox" Padding="5"
                             Text="" IsEnabled="True" TextChanged="SearchBox_OnTextChanged" 
                             LostFocus="searchBox_LostFocus" FontFamily="Arial" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch">
-          <TextBox.Style>
-            <Style TargetType="TextBox">
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
-                  <Setter Property="Background">
-                    <Setter.Value>
-                      <VisualBrush Stretch="None">
-                        <VisualBrush.Visual>
-                          <TextBlock Text="Filter..." FontFamily="Arial" FontSize="12" Foreground="Gray"/>
-                        </VisualBrush.Visual>
-                      </VisualBrush>
-                    </Setter.Value>
-                  </Setter>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="{x:Null}">
-                  <Setter Property="Background">
-                    <Setter.Value>
-                      <VisualBrush Stretch="None">
-                        <VisualBrush.Visual>
-                          <TextBlock Text="Filter..." Margin="0" FontFamily="Arial" FontSize="12" Foreground="Gray"/>
-                        </VisualBrush.Visual>
-                      </VisualBrush>
-                    </Setter.Value>
-                  </Setter>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="True">
-                  <Setter Property="Background">
-                    <Setter.Value>
-                      <VisualBrush Stretch="None">
-                      </VisualBrush>
-                    </Setter.Value>
-                  </Setter>
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </TextBox.Style>
-        </TextBox>
-      </Grid>
-      <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
-                        VerticalAlignment="Stretch" Click="NewFunction_Click" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
-    </Grid>
-    
-    <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="None">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock Text="Filter..." FontFamily="Arial" FontSize="12" Foreground="Gray"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="{x:Null}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="None">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock Text="Filter..." Margin="0" FontFamily="Arial" FontSize="12" Foreground="Gray"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="True">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="None">
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </Grid>
+            <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
+                        VerticalAlignment="Stretch" Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
+        </Grid>
+
+        <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3" Background="#FFF0F0F0">
-      <Button Name="RunButton" Height="25" Width="100" Content="Run" 
+            <Button Name="RunButton" Height="25" Width="100" Content="Run" 
                     FontFamily="Arial" Margin="5"
                     Command="{Binding Source={x:Static commands:DynamoCommands.RunExpressionCmd}}"
-                    CommandParameter="{Binding ElementName=_this, Path=Controller.RunInDebug}"/>
-      <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
+                    CommandParameter="{Binding ElementName=_this, Path=Controller.RunInDebug}"
+                    IsEnabled="{Binding ElementName=_this, Path=Controller.RunEnabled, Mode=TwoWay}"/>
+            <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
                       Command="{Binding Source={x:Static commands:DynamoCommands.CancelRunCmd}}" FontFamily="Arial" Margin="5"/>
-      <CheckBox Margin="10"
+            <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 
                       Content="Run Automatically" FontSize="11" IsChecked="{Binding ElementName=_this, Path=Controller.DynamicRunEnabled, Mode=TwoWay}"
                       IsEnabled="{Binding ElementName=_this, Path=Controller.CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-      <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+            <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
                       IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}"
                       Content="Debug" VerticalContentAlignment="Center"/>
-    </WrapPanel>
-    
-    <!-- Not the best place for this - PB -->
-    <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
+        </WrapPanel>
+
+        <!-- Not the best place for this - PB -->
+        <!--<DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
       <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
       <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
-    </DockPanel>
+    </DockPanel>-->
 
-    <Canvas HorizontalAlignment="Stretch"
+        <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
               Grid.Row="1"
               Grid.Column="0"
@@ -355,20 +395,9 @@
               MouseUp="OverlayCanvas_OnMouseUp" 
               PreviewMouseMove="OverlayCanvas_OnMouseMove"
               Visibility="Visible">
-      <Canvas.Background>
-        <SolidColorBrush />
-      </Canvas.Background>
-    </Canvas>
-    
-    <!--<StackPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-            <Label Name="zoomStatLabel" FontFamily="Consolas" FontSize="11" Foreground="White" 
-                   Content="{Binding ElementName=_this, Path=Zoom, Mode=OneWay, Converter={StaticResource ZoomStatConverter}}"/> 
-            <Label Name="transformOriginStatLabel" FontFamily="Consolas" FontSize="11" Foreground="White" 
-                   Content="{Binding ElementName=_this, Path=TransformOrigin, Mode=OneWay, Converter={StaticResource TransformOriginStatConverter}}"/>
-            <Label Name="currentOffsetStatLabel" FontFamily="Consolas" FontSize="11" Foreground="White" 
-                   Content="{Binding ElementName=_this, Path=CurrentOffset, Mode=OneWay, Converter={StaticResource CurrentOffsetStatConverter}}"/>
-        </StackPanel>-->
-    <GridSplitter ResizeDirection="Rows" 
+        </Canvas>
+
+        <GridSplitter ResizeDirection="Rows" 
                         Grid.Column="2" 
                         Grid.ColumnSpan="1"
                         Grid.Row="2" 
@@ -378,7 +407,8 @@
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
                         Margin="0" Background="#FF646464"/>
-    <GridSplitter ResizeDirection="Auto" 
+
+        <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
                           Grid.Row="1" 
                           Grid.RowSpan="2"
@@ -387,5 +417,6 @@
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch" 
                           Margin="0" Background="#FF646464"/>
-  </Grid>
+
+    </Grid>
 </Window>

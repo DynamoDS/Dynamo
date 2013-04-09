@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<dynWorkspace X="10" Y="54.2" Name="C*f(dx)" Category="Math">
+<dynWorkspace X="10" Y="54.2" Name="C*f(dx)" Category="Math" ID="55ed5d06-66b4-455a-a6d7-bef44619db0b">
   <dynElements>
     <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="165c9880-4013-41ec-8aab-678afd8755f9" nickname="Variable" x="0" y="20.85">
       <Symbol value="C" />

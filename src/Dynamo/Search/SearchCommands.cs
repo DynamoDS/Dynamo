@@ -76,7 +76,7 @@ namespace Dynamo.Commands
             return true;
         }
     }
-
+    
     public class HideSearchCommand : ICommand {
 
         public void Execute(object parameters)
@@ -94,7 +94,7 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            return true;
+            return (dynSettings.Controller.SearchViewModel.Visible == Visibility.Visible);
         }
     }
 
@@ -124,7 +124,7 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            return true;
+            return (dynSettings.Controller.SearchViewModel.Visible != Visibility.Visible);
         }
     }
 }

@@ -13,142 +13,328 @@
 //limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Media;
+using System.Linq;
+using System.ComponentModel;
+using System.Collections.Specialized;
+
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
-using Microsoft.FSharp.Collections;
-using Expression = Dynamo.FScheme.Expression;
-using System.Collections;
 
 namespace Dynamo.Utilities
 {
     public static class dynSettings
     {
-        //colors taken from:
-        //http://cloford.com/resources/colours/500col.htm
-        //http://linaker-wall.net/Colour/Dynamic_Fmt/Swatch_rgb_numbers.htm
-        static System.Windows.Media.Color colorGreen1 = System.Windows.Media.Color.FromRgb(193, 255, 193);
-        static System.Windows.Media.Color colorGreen2 = System.Windows.Media.Color.FromRgb(155, 250, 155);
-        static System.Windows.Media.Color colorRed1 = System.Windows.Media.Color.FromRgb(255, 64, 64);
-        static System.Windows.Media.Color colorRed2 = System.Windows.Media.Color.FromRgb(205, 51, 51);
-        //System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 193, 37);
-        //System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(238, 180, 34);
-        static System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 207, 98);
-        static System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(235, 187, 78);
-        static System.Windows.Media.Color colorGray1 = System.Windows.Media.Color.FromRgb(220, 220, 220);
-        static System.Windows.Media.Color colorGray2 = System.Windows.Media.Color.FromRgb(192, 192, 192);
+        public static ObservableDictionary<Guid, FunctionDefinition> FunctionDict =
+            new ObservableDictionary<Guid, FunctionDefinition>();
 
-        public static Dynamo.Controls.DragCanvas Workbench
-        {
-            get;
-            internal set;
-        }
-
-        public static dynCollection Collection
-        {
-            get;
-            internal set;
-        }
-
-        public static LinearGradientBrush ErrorBrush
-        {
-            get;
-            internal set;
-        }
-
-        public static LinearGradientBrush ActiveBrush
-        {
-            get;
-            internal set;
-        }
-
-        public static LinearGradientBrush SelectedBrush
-        {
-            get;
-            internal set;
-        }
-
-        public static LinearGradientBrush DeadBrush
-        {
-            get;
-            internal set;
-        }
-
-        public static dynBench Bench
-        {
-            get;
-            internal set;
-        }
-
-        public static TextWriter Writer
-        {
-            get;
-            set;
-        }
-
-        /*
-        public dynElementSettings(Autodesk.Revit.UI.UIApplication app, Autodesk.Revit.UI.UIDocument doc, Level defaultLevel, DynamoWarningSwallower warningSwallower, Transaction t)
-       {
-
-           this.revit = app;
-           this.doc = doc;
-           this.defaultLevel = defaultLevel;
-           this.warningSwallower = warningSwallower;
-           this.trans = t;
-
-            SetupBrushes();
-
-       }
-        */
+        public static HashSet<FunctionDefinition> FunctionWasEvaluated =
+            new HashSet<FunctionDefinition>();
 
         static dynSettings()
         {
-            SetupBrushes();
         }
 
-        static void SetupBrushes()
-        {
-            ErrorBrush = new LinearGradientBrush();
-            ErrorBrush.StartPoint = new System.Windows.Point(0.5, 0);
-            ErrorBrush.EndPoint = new System.Windows.Point(0.5, 1);
-            ErrorBrush.GradientStops.Add(new GradientStop(colorRed1, 0.0));
-            ErrorBrush.GradientStops.Add(new GradientStop(colorRed2, .25));
-            ErrorBrush.GradientStops.Add(new GradientStop(colorRed2, 1.0));
+        public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
 
-            ActiveBrush = new LinearGradientBrush();
-            ActiveBrush.StartPoint = new System.Windows.Point(0.5, 0);
-            ActiveBrush.EndPoint = new System.Windows.Point(0.5, 1);
-            ActiveBrush.GradientStops.Add(new GradientStop(colorOrange1, 0.0));
-            ActiveBrush.GradientStops.Add(new GradientStop(colorOrange2, .25));
-            ActiveBrush.GradientStops.Add(new GradientStop(colorOrange2, 1.0));
+        public static dynCollection Collection { get; internal set; }
 
-            SelectedBrush = new LinearGradientBrush();
-            SelectedBrush.StartPoint = new System.Windows.Point(0.5, 0);
-            SelectedBrush.EndPoint = new System.Windows.Point(0.5, 1);
-            SelectedBrush.GradientStops.Add(new GradientStop(colorGreen1, 0.0));
-            SelectedBrush.GradientStops.Add(new GradientStop(colorGreen2, .25));
-            SelectedBrush.GradientStops.Add(new GradientStop(colorGreen2, 1.0));
+        //public static LinearGradientBrush ErrorBrush { get; internal set; }
 
-            DeadBrush = new LinearGradientBrush();
-            DeadBrush.StartPoint = new System.Windows.Point(0.5, 0);
-            DeadBrush.EndPoint = new System.Windows.Point(0.5, 1);
-            DeadBrush.GradientStops.Add(new GradientStop(colorGray1, 0.0));
-            DeadBrush.GradientStops.Add(new GradientStop(colorGray2, .25));
-            DeadBrush.GradientStops.Add(new GradientStop(colorGray2, 1.0));
-        }
-        
+        //public static LinearGradientBrush ActiveBrush { get; internal set; }
+
+        //public static LinearGradientBrush SelectedBrush { get; internal set; }
+
+        //public static LinearGradientBrush DeadBrush { get; internal set; }
+
+        public static dynBench Bench { get; internal set; }
+
+        public static TextWriter Writer { get; set; }
+
         public static DynamoController Controller { get; internal set; }
 
         public static PackageManagerClient PackageManagerClient { get; internal set; }
 
-        public static Dictionary<Guid, FunctionDefinition> FunctionDict = 
-            new Dictionary<Guid, FunctionDefinition>();
+        public static void StartLogging()
+        {
+            //create log files in a directory 
+            //with the executing assembly
+            string log_dir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dynamo_logs");
+            if (!Directory.Exists(log_dir))
+            {
+                Directory.CreateDirectory(log_dir);
+            }
 
-        public static HashSet<FunctionDefinition> FunctionWasEvaluated =
-            new HashSet<FunctionDefinition>();
+            string logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+
+            TextWriter tw = new StreamWriter(logPath);
+            tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
+
+            Writer = tw;
+        }
+
+        public static void FinishLogging()
+        {
+            if (Writer != null)
+            {
+                Writer.WriteLine("Goodbye.");
+                Writer.Close();
+            }
+        }
     }
+
+    //http://blogs.microsoft.co.il/blogs/shimmy/archive/2010/12/26/observabledictionary-lt-tkey-tvalue-gt-c.aspx
+    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged, INotifyPropertyChanged
+    {
+    private const string CountString = "Count";
+    private const string IndexerName = "Item[]";
+    private const string KeysName = "Keys";
+    private const string ValuesName = "Values";
+
+    private IDictionary<TKey, TValue> _Dictionary;
+    protected IDictionary<TKey, TValue> Dictionary
+    {
+        get { return _Dictionary; }
+    }
+ 
+    #region Constructors
+    public ObservableDictionary()
+    {
+        _Dictionary = new Dictionary<TKey, TValue>();
+    }
+    public ObservableDictionary(IDictionary<TKey, TValue> dictionary)
+    {
+        _Dictionary = new Dictionary<TKey, TValue>(dictionary);
+    }
+    public ObservableDictionary(IEqualityComparer<TKey> comparer)
+    {
+        _Dictionary = new Dictionary<TKey, TValue>(comparer);
+    }
+    public ObservableDictionary(int capacity)
+    {
+        _Dictionary = new Dictionary<TKey, TValue>(capacity);
+    }
+    public ObservableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
+    {
+        _Dictionary = new Dictionary<TKey, TValue>(dictionary, comparer);
+    }
+    public ObservableDictionary(int capacity, IEqualityComparer<TKey> comparer)
+    {
+        _Dictionary = new Dictionary<TKey, TValue>(capacity, comparer);
+    }
+    #endregion
+ 
+    #region IDictionary<TKey,TValue> Members
+ 
+    public void Add(TKey key, TValue value)
+    {
+        Insert(key, value, true);
+    }
+ 
+    public bool ContainsKey(TKey key)
+    {
+        return Dictionary.ContainsKey(key);
+    }
+ 
+    public ICollection<TKey> Keys
+    {
+        get { return Dictionary.Keys; }
+    }
+ 
+    public bool Remove(TKey key)
+    {
+        if (key == null) throw new ArgumentNullException("key");
+ 
+        TValue value;
+        Dictionary.TryGetValue(key, out value);
+        var removed = Dictionary.Remove(key);
+        if (removed)
+        //OnCollectionChanged(NotifyCollectionChangedAction.Remove, new KeyValuePair<TKey, TValue>(key, value));
+        OnCollectionChanged();
+        return removed;
+    }
+ 
+    public bool TryGetValue(TKey key, out TValue value)
+    {
+        return Dictionary.TryGetValue(key, out value);
+    }
+ 
+    public ICollection<TValue> Values
+    {
+        get { return Dictionary.Values; }
+    }
+ 
+    public TValue this[TKey key]
+    {
+        get
+        {
+        return Dictionary[key];
+        }
+        set
+        {
+        Insert(key, value, false);
+        }
+    }
+ 
+    #endregion
+ 
+    #region ICollection<KeyValuePair<TKey,TValue>> Members
+ 
+    public void Add(KeyValuePair<TKey, TValue> item)
+    {
+        Insert(item.Key, item.Value, true);
+    }
+ 
+    public void Clear()
+    {
+        if (Dictionary.Count > 0)
+        {
+        Dictionary.Clear();
+        OnCollectionChanged();
+        }
+    }
+ 
+    public bool Contains(KeyValuePair<TKey, TValue> item)
+    {
+        return Dictionary.Contains(item);
+    }
+ 
+    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+    {
+        Dictionary.CopyTo(array, arrayIndex);
+    }
+ 
+    public int Count
+    {
+        get { return Dictionary.Count; }
+    }
+ 
+    public bool IsReadOnly
+    {
+        get { return Dictionary.IsReadOnly; }
+    }
+ 
+    public bool Remove(KeyValuePair<TKey, TValue> item)
+    {
+        return Remove(item.Key);
+    }
+ 
+ 
+    #endregion
+ 
+    #region IEnumerable<KeyValuePair<TKey,TValue>> Members
+ 
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+    {
+        return Dictionary.GetEnumerator();
+    }
+ 
+    #endregion
+ 
+    #region IEnumerable Members
+ 
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)Dictionary).GetEnumerator();
+    }
+ 
+    #endregion
+ 
+    #region INotifyCollectionChanged Members
+ 
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
+ 
+    #endregion
+ 
+    #region INotifyPropertyChanged Members
+ 
+    public event PropertyChangedEventHandler PropertyChanged;
+ 
+    #endregion
+ 
+    public void AddRange(IDictionary<TKey, TValue> items)
+    {
+        if (items == null) throw new ArgumentNullException("items");
+ 
+        if (items.Count > 0)
+        {
+        if (Dictionary.Count > 0)
+        {
+            if (items.Keys.Any((k) => Dictionary.ContainsKey(k)))
+            throw new ArgumentException("An item with the same key has already been added.");
+            else
+            foreach (var item in items) Dictionary.Add(item);
+        }
+        else
+            _Dictionary = new Dictionary<TKey, TValue>(items);
+ 
+        OnCollectionChanged(NotifyCollectionChangedAction.Add, items.ToArray());
+        }                                                     
+    }
+ 
+    private void Insert(TKey key, TValue value, bool add)
+    {
+        if (key == null) throw new ArgumentNullException("key");
+ 
+        TValue item;
+        if (Dictionary.TryGetValue(key, out item))
+        {
+        if (add) throw new ArgumentException("An item with the same key has already been added.");
+        if (Equals(item, value)) return;
+        Dictionary[key] = value;
+
+        OnCollectionChanged(NotifyCollectionChangedAction.Replace, new KeyValuePair<TKey, TValue>(key, value), new KeyValuePair<TKey, TValue>(key, item));
+        }
+        else
+        {
+        Dictionary[key] = value;
+
+        OnCollectionChanged(NotifyCollectionChangedAction.Add, new KeyValuePair<TKey, TValue>(key, value));
+        }
+    }
+ 
+    private void OnPropertyChanged()
+    {
+        OnPropertyChanged(CountString);
+        OnPropertyChanged(IndexerName);
+        OnPropertyChanged(KeysName);
+        OnPropertyChanged(ValuesName);
+    }
+ 
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+ 
+    private void OnCollectionChanged()
+    {
+        OnPropertyChanged();
+        if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+    }
+ 
+    private void OnCollectionChanged(NotifyCollectionChangedAction action, KeyValuePair<TKey, TValue> changedItem)
+    {
+        OnPropertyChanged();
+        if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(action, changedItem));
+    }
+ 
+    private void OnCollectionChanged(NotifyCollectionChangedAction action, KeyValuePair<TKey, TValue> newItem, KeyValuePair<TKey, TValue> oldItem)
+    {
+        OnPropertyChanged();
+        if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(action, newItem, oldItem));
+    }
+ 
+    private void OnCollectionChanged(NotifyCollectionChangedAction action, IList newItems)
+    {
+        OnPropertyChanged();
+        if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(action, newItems));
+    }
+    }
+ 
 }

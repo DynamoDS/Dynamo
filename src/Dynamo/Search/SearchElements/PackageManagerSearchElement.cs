@@ -14,12 +14,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using Dynamo.Commands;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Greg.Responses;
 
-namespace Dynamo.Search
+namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing an element from the package manager </summary>
@@ -34,6 +35,14 @@ namespace Dynamo.Search
             this.Header = header;
             this.Guid = PackageManagerClient.ExtractFunctionDefinitionGuid(header, 0);
             this.Weight = 1;
+            if (header.keywords.Count > 0)
+            {
+                this.Keywords = String.Join(" ", header.keywords);
+            } 
+            else
+            {
+                this.Keywords = "";
+            }
         }
 
         /// <summary>
@@ -43,6 +52,8 @@ namespace Dynamo.Search
         public override void Execute()
         {
             Guid guid = this.Guid;
+
+            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
 
             if (!dynSettings.FunctionDict.ContainsKey(this.Guid))
             {
@@ -113,7 +124,8 @@ namespace Dynamo.Search
             public string Id { get { return Header._id; } }
 
         #endregion
-
+        
+            public override string Keywords { get; set; }
     }
 
 }

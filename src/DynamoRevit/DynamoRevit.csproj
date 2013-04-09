@@ -92,6 +92,7 @@
     </Compile>
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="dynFunctionWithRevit.cs" />
+    <Compile Include="dynRevitAPINode.cs" />
     <Compile Include="dynRevitSettings.cs" />
     <Compile Include="dynRevitTransactionNode.cs" />
     <Compile Include="dynRevitUtils.cs" />

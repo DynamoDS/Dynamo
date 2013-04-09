@@ -12,18 +12,20 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Commands;
-using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
+using System;
 
 namespace Dynamo.Search
 {
@@ -35,28 +37,22 @@ namespace Dynamo.Search
         #region Properties
 
         /// <summary>
-        ///     IncludePackageManagerSearchElements property
+        ///     IncludeOptionalElements property
         /// </summary>
         /// <value>
-        ///     Specifies whether we are including PackageManagerSearchElements in search - possibly for remote download.
+        ///     Specifies whether we are including Revit API elements in search.
         /// </value>
-        public bool _IncludePackageManagerSearchElements;
-        public bool IncludePackageManagerSearchElements
+        public bool _IncludeOptionalElements;
+        public bool IncludeOptionalElements
         {
-            get { return _IncludePackageManagerSearchElements; }
+            get { return _IncludeOptionalElements; }
             set
             {
-                _IncludePackageManagerSearchElements = value;
-                RaisePropertyChanged("IncludePackageManagerSearchElements");
-                if (value)
-                {
-                    DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
-                }
-                else
-                {
-                    SearchDictionary.Remove((element) => element is PackageManagerSearchElement);
-                    this.SearchAndUpdateResults();
-                }
+                _IncludeOptionalElements = value;
+                RaisePropertyChanged("IncludeOptionalElements");
+                // DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
+                ToggleIncludingRevitAPIElements();
+
             }
         }
 
@@ -94,13 +90,27 @@ namespace Dynamo.Search
                 {
                     _selectedIndex = value;
 
-                    //if (i < this.SearchResultsListBox.Items.Count)
-                    //    this.SearchResultsListBox.ScrollIntoView(this.SearchResultsListBox.Items[i]);
-
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
         }
+
+        /// <summary>
+        ///     NodeCategories property
+        /// </summary>
+        /// <value>
+        ///     A set of categories
+        /// </value>
+        private Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
+
+        /// <summary>
+        ///     RevitApiSearchElements property
+        /// </summary>
+        /// <value>
+        ///     A collection of elements corresponding to the auto-generated Revit 
+        ///     API elements
+        /// </value>
+        public List<SearchElementBase> RevitApiSearchElements { get; private set; }
 
         /// <summary>
         ///     Visible property
@@ -109,17 +119,13 @@ namespace Dynamo.Search
         ///     Tells whether the View is visible or not
         /// </value>
         private Visibility _visible;
-
         public Visibility Visible
         {
             get { return _visible; }
             set
             {
-                if (_visible != value)
-                {
-                    _visible = value;
-                    RaisePropertyChanged("Visible");
-                }
+                _visible = value;
+                RaisePropertyChanged("Visible");
             }
         }
 
@@ -147,29 +153,23 @@ namespace Dynamo.Search
         /// </value>
         public int MaxNumSearchResults { get; set; }
 
-        /// <summary>
-        ///     Bench property
-        /// </summary>
-        /// <value>
-        ///     This is the core UI for Dynamo, primarily used for logging.
-        /// </value>
-        public dynBench Bench { get; private set; }
-
         #endregion
 
         /// <summary>
         ///     The class constructor.
         /// </summary>
         /// <param name="bench"> Reference to dynBench object for logging </param>
-        public SearchViewModel(dynBench bench)
+        public SearchViewModel()
         {
             SelectedIndex = 0;
+            RevitApiSearchElements = new List<SearchElementBase>();
+            NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
-            MaxNumSearchResults = 30;
-            Bench = bench;
+            MaxNumSearchResults = 100;
             Visible = Visibility.Collapsed;
             _SearchText = "";
+            IncludeOptionalElements = false; // revit api
             AddHomeToSearch();
         }
 
@@ -178,25 +178,54 @@ namespace Dynamo.Search
         /// </summary>
         private void AddHomeToSearch()
         {
-            SearchDictionary.Add(new WorkspaceSearchElement("Home", "Workspace"), "Home");
+            SearchDictionary.Add(new WorkspaceSearchElement("Home", "Navigate to Home Workspace"), "Home");
         }
-
+        
         /// <summary>
-        ///     Performs a search given a search query and updates the observable SearchResults property.
+        ///     Asyncrhonously erforms a search and updates the observable SearchResults property.
         /// </summary>
-        /// <param name="search"> The search query </param>
-        internal void SearchAndUpdateResults(string search)
+        /// <param name="query"> The search query </param>
+        internal void SearchAndUpdateResults(string query)
         {
             if (Visible != Visibility.Visible)
                 return;
 
-            SearchResults.Clear();
+            Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
+                {
+                    lock (SearchDictionary) 
+                    {
+                        return Search(query);
+                    }
+                }).ContinueWith((t) => {    
+                                            lock (SearchResults)
+                                            {
+                                                SearchResults.Clear();
+                                                foreach (SearchElementBase node in t.Result)
+                                                {
+                                                    SearchResults.Add(node);
+                                                }
+                                                SelectedIndex = 0;
+                                            }
+                                        }
+                                , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+        }
 
-            foreach (SearchElementBase node in Search(search))
+        /// <summary>
+        ///     Synchronously Performs a search and updates the observable SearchResults property
+        ///     on the current thread.
+        /// </summary>
+        /// <param name="query"> The search query </param>
+        internal void SearchAndUpdateResultsSync(string query)
+        {
+            if (Visible != Visibility.Visible)
+                return;
+
+            var result = Search(query);
+            SearchResults.Clear();
+            foreach (SearchElementBase node in result)
             {
                 SearchResults.Add(node);
             }
-
             SelectedIndex = 0;
         }
 
@@ -240,6 +269,14 @@ namespace Dynamo.Search
         /// <param name="search"> The search query </param>
         internal List<SearchElementBase> Search(string search)
         {
+            if (string.IsNullOrEmpty(search) || search == "Search...")
+            {
+                if (IncludeOptionalElements)
+                    return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).OrderBy(val => val.Name).ToList();
+                else
+                    return NodeCategories.Select(kvp => (SearchElementBase) kvp.Value).Where((ele) => !ele.Name.StartsWith("Revit API")).OrderBy(val => val.Name).ToList();
+            }
+
             return SearchDictionary.Search(search, MaxNumSearchResults);
         }
 
@@ -254,14 +291,106 @@ namespace Dynamo.Search
             {
                 ExecuteSelected();
             }
+            else if (e.Key == Key.Tab)
+            {
+                PopulateSearchTextWithSelectedResult();
+            }
+            //else if (e.Key == Key.Back)
+            //{
+            //    RemoveLastPartOfSearchText();
+            //}
             else if (e.Key == Key.Down)
             {
-                SelectNext(); // nope
+                SelectNext(); 
             }
             else if (e.Key == Key.Up)
             {
-                SelectPrevious(); // nope
+                SelectPrevious(); 
             }
+        }
+
+        /// <summary>
+        ///     If Revit API elements are shown, hides them.  Otherwise,
+        ///     shows them.  Update search when done with either.
+        /// </summary>
+        public void ToggleIncludingRevitAPIElements()
+        {
+            if (!IncludeOptionalElements)
+            {
+                foreach (var ele in RevitApiSearchElements)
+                {
+                    SearchDictionary.Remove(ele, ele.Name);
+                    if (!(ele is CategorySearchElement))
+                        SearchDictionary.Remove(ele, "Revit API." + ele.Name);
+                }
+            }
+            else
+            {
+                // add elements to search
+                foreach (var ele in RevitApiSearchElements)
+                {
+                    SearchDictionary.Add(ele, ele.Name);
+                    if (!(ele is CategorySearchElement))
+                        SearchDictionary.Add(ele, "Revit API." + ele.Name); 
+                }
+            }
+            this.SearchAndUpdateResults();
+        }
+
+        /// <summary>
+        ///     If there's a period in the SearchText property, remove text 
+        ///     to the end until you hit a period.  Otherwise, remove the 
+        ///     last character.  If the SearchText property is empty or null
+        ///     return doing nothing.
+        /// </summary>
+        public void RemoveLastPartOfSearchText()
+        {
+            SearchText = RemoveLastPartOfText(SearchText);
+        }
+
+        /// <summary>
+        ///     If there's a period in the argument, remove text 
+        ///     to the end until you hit a period.  Otherwise, remove the 
+        ///     last character.  If the argument is empty or null
+        ///     return the empty string.
+        /// </summary>
+        /// <returns>The string cleaved of everything </returns>
+        public static string RemoveLastPartOfText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            var matches = Regex.Matches(text, Regex.Escape("."));
+
+            // no period
+            if (matches.Count == 0)
+            {
+                return "";
+            }
+
+            // if period is in last position, remove that period and recurse
+            if ( matches[matches.Count - 1].Index + 1 == text.Length )
+            {
+                return RemoveLastPartOfText(text.Substring(0, text.Length - 1));
+            }
+
+            // remove to the last period
+            return text.Substring(0, matches[matches.Count-1].Index + 2);
+        }
+
+        /// <summary>
+        ///     If there are results, fill the search field with the text from the
+        ///     name property of the first search result.
+        /// </summary>
+        public void PopulateSearchTextWithSelectedResult()
+        {
+            if (SearchResults.Count == 0) return;
+
+            // none of the elems are selected, return 
+            if (SelectedIndex == -1)
+                return;
+
+            SearchText = SearchResults[SelectedIndex].Name;
         }
 
         /// <summary>
@@ -276,7 +405,6 @@ namespace Dynamo.Search
             if (SelectedIndex == -1)
                 return;
 
-            Visible = Visibility.Collapsed;
             SearchResults[SelectedIndex].Execute();
         }
 
@@ -291,7 +419,7 @@ namespace Dynamo.Search
             if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
                 SearchDictionary.Add(searchEle, packageHeader.keywords);
             SearchDictionary.Add(searchEle, searchEle.Description);
-            SearchAndUpdateResults();
+            SearchAndUpdateResultsSync(SearchText);
         }
 
         /// <summary>
@@ -310,39 +438,78 @@ namespace Dynamo.Search
         /// <param name="name">The name to use</param>
         public void Add(dynWorkspace workspace, string name)
         {
-            var searchEle = new WorkspaceSearchElement(name, "Workspace");
+            if (name == "Home")
+                return;
+
+            // create the workspace in search
+            var searchEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name );
             searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
+
+            if (searchEle.Guid == Guid.Empty)
+                return;
+
             SearchDictionary.Add(searchEle, searchEle.Name);
-            SearchAndUpdateResults();
+
+            // create the node in search
+            var nodeEle = new LocalSearchElement( dynSettings.FunctionDict[searchEle.Guid] );
+            SearchDictionary.Add(nodeEle, nodeEle.Name);
+
+            // update search
+            SearchAndUpdateResultsSync(SearchText);
+            
         }
 
         /// <summary>
         ///     Adds a local DynNode to search
         /// </summary>
-        /// <param name="type">A type object that will be used by Activator to instantiate the object</param>
-        public void Add(Type type)
+        /// <param name="dynNode">A Dynamo node object</param>
+        public void Add(dynNode dynNode)
         {
-            dynNode dynNode = null;
-
-            try
-            {
-                object obj = Activator.CreateInstance(type);
-                dynNode = (dynNode) obj;
-            }
-            catch (Exception e)
-            {
-                Bench.Log("Error creating search element ");
-                Bench.Log(e.InnerException);
-                return;
-            }
-
             var searchEle = new LocalSearchElement(dynNode);
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            if (dynNode.NodeUI.Tags.Count > 0)
+
+            // add category to search
+            var cat = dynNode.Category;
+            if (!string.IsNullOrEmpty(cat))
             {
-                SearchDictionary.Add(searchEle, dynNode.NodeUI.Tags);
+                if (!cat.StartsWith("Revit API"))
+                {
+                    SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
+
+                    if (!NodeCategories.ContainsKey(cat))
+                    {
+                        var nameEle = new CategorySearchElement(cat);
+                        NodeCategories.Add(cat, nameEle);
+                        SearchDictionary.Add(nameEle, cat);
+                    }
+                }
+                else
+                {
+                    if (!NodeCategories.ContainsKey(cat))
+                    {
+                        var nameEle = new CategorySearchElement(cat);
+                        NodeCategories.Add(cat, nameEle);
+                        RevitApiSearchElements.Add(nameEle);
+                    }
+                }
+
             }
-            SearchDictionary.Add(searchEle, dynNode.NodeUI.Description );
+
+            NodeCategories[cat].NumElements++;
+
+            // add node to search
+            if ( (searchEle.Name.StartsWith("API_")) )
+            {
+                RevitApiSearchElements.Add( searchEle );
+            }
+            else
+            {
+                SearchDictionary.Add(searchEle, searchEle.Name);
+                if (dynNode.NodeUI.Tags.Count > 0)
+                {
+                    SearchDictionary.Add(searchEle, dynNode.NodeUI.Tags);
+                }
+                SearchDictionary.Add(searchEle, dynNode.NodeUI.Description);
+            }
                 
         }
 
