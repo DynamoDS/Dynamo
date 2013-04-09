@@ -72,21 +72,6 @@ namespace Dynamo.Utilities
 
         public static TextWriter Writer { get; set; }
 
-        /*
-        public dynElementSettings(Autodesk.Revit.UI.UIApplication app, Autodesk.Revit.UI.UIDocument doc, Level defaultLevel, DynamoWarningSwallower warningSwallower, Transaction t)
-       {
-
-           this.revit = app;
-           this.doc = doc;
-           this.defaultLevel = defaultLevel;
-           this.warningSwallower = warningSwallower;
-           this.trans = t;
-
-            SetupBrushes();
-
-       }
-        */
-
         public static DynamoController Controller { get; internal set; }
 
         public static PackageManagerClient PackageManagerClient { get; internal set; }
