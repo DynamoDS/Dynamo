@@ -197,13 +197,5 @@
         </Setter>
     </Style>
 
-    <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-    <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
-    <controls:ZoomStatConverter x:Key="ZoomStatConverter"/>
-    <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>
-    <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
-    <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
 
-    <Color x:Key="canvasBackground">#FF505050</Color>
-    
 </ResourceDictionary>
