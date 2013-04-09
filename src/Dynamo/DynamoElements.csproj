@@ -257,10 +257,18 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Resource Include="Themes\DynamoModern.xaml">
+    <Page Include="Themes\DynamoColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Resource>
+    </Page>
+    <Page Include="Themes\DynamoConverters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\DynamoModern.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DragCanvas\DragCanvas.csproj">
