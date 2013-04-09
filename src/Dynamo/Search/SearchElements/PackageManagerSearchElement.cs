@@ -69,7 +69,6 @@ namespace Dynamo.Search.SearchElements
             }
             else
             {
-     
                 // get the node from here
                 DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                     {

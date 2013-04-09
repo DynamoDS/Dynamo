@@ -56,10 +56,8 @@ namespace Dynamo.Applications
                 res = Resource_en_us.ResourceManager;
                 // Create new ribbon panel
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description"));
-                    //MDJ todo - move hard-coded strings out to resource files
 
                 //Create a push button in the ribbon panel 
-
                 var pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
                                                                         res.GetString("App_Name"), m_AssemblyName,
                                                                         "Dynamo.Applications.DynamoRevit")) as
