@@ -16,4 +16,5 @@
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
+    <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter"/>
 </ResourceDictionary>

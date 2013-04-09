@@ -27,12 +27,6 @@
                 <ResourceDictionary Source="Themes\DynamoConverters.xaml"/>
                 <ResourceDictionary Source="Themes\DynamoColorsAndBrushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            
-            <!--<controls:ZoomStatConverter x:Key="ZoomStatConverter"/>
-            <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>-->
-            <!--<controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>-->
-            
         </ResourceDictionary>
     </Window.Resources>
 
@@ -193,6 +187,7 @@
         </MenuItem>-->
 
             </MenuItem>
+
             <MenuItem Header="Help">
                 <MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>
                 <MenuItem Header="Samples" Name="SamplesMenu">
@@ -261,6 +256,7 @@
 
             </Canvas>
         </Border>
+
         <ScrollViewer Name="LogScroller" 
                     VerticalAlignment="Stretch"
                     VerticalScrollBarVisibility="Auto" 
@@ -283,6 +279,7 @@
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" />
         </ScrollViewer>
+
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Collapsed" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="#FF505050">
             <Grid.RowDefinitions>
@@ -356,8 +353,9 @@
                 </TextBox>
             </Grid>
             <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
-                        VerticalAlignment="Stretch" Click="NewFunction_Click" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
+                        VerticalAlignment="Stretch" Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
         </Grid>
+
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3" Background="#FFF0F0F0">
             <Button Name="RunButton" Height="25" Width="100" Content="Run" 
@@ -377,11 +375,13 @@
                       IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}"
                       Content="Debug" VerticalContentAlignment="Center"/>
         </WrapPanel>
+
         <!-- Not the best place for this - PB -->
         <!--<DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
       <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
       <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
     </DockPanel>-->
+
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
               Grid.Row="1"
@@ -407,6 +407,7 @@
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
                         Margin="0" Background="#FF646464"/>
+
         <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
                           Grid.Row="1" 
@@ -416,6 +417,6 @@
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch" 
                           Margin="0" Background="#FF646464"/>
-    
+
     </Grid>
 </Window>
