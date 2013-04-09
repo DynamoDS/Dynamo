@@ -204,4 +204,6 @@
     <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
 
+    <Color x:Key="canvasBackground">#FF505050</Color>
+    
 </ResourceDictionary>
