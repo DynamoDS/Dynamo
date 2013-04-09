@@ -417,6 +417,17 @@ namespace Dynamo.Commands
             }
         }
 
+        private static DisplayFunctionCommand displayFunctionCmd;
+        public static DisplayFunctionCommand DisplayFunctionCmd
+        {
+            get
+            {
+                if (displayFunctionCmd == null)
+                    displayFunctionCmd = new DisplayFunctionCommand();
+
+                return displayFunctionCmd;
+            }
+        }
     }
 
     public class ToggleShowingClassicNodeNavigatorCommand : ICommand
@@ -1119,8 +1130,8 @@ namespace Dynamo.Commands
         {
             Dictionary<string, object> data = parameters as Dictionary<string, object>;
 
-            if (data != null && 
-                dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()))
+            if (data != null &&
+                dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) || dynSettings.FunctionDict.ContainsKey( Guid.Parse( (string) data["name"] ) ) )
             {
                 return true;
             }
@@ -1801,6 +1812,31 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
+            return true;
+        }
+    }
+
+    public class DisplayFunctionCommand : ICommand
+    {
+        public void Execute(object parameters)
+        {
+            dynSettings.Controller.DisplayFunction((parameters as FunctionDefinition));
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            FunctionDefinition fd = parameters as FunctionDefinition;
+            if(fd == null)
+            {
+                return false;
+            }
+
             return true;
         }
     }

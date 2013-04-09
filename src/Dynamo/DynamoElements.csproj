@@ -328,6 +328,11 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="Images\search_24.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\back.png" />
+    <Resource Include="Images\back_24.png" />
+    <Resource Include="Images\back_32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

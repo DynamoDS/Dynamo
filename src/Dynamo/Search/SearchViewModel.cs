@@ -25,6 +25,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
+using System;
 
 namespace Dynamo.Search
 {
@@ -177,7 +178,7 @@ namespace Dynamo.Search
         /// </summary>
         private void AddHomeToSearch()
         {
-            SearchDictionary.Add(new WorkspaceSearchElement("Home", "Workspace"), "Home");
+            SearchDictionary.Add(new WorkspaceSearchElement("Home", "Navigate to Home Workspace"), "Home");
         }
         
         /// <summary>
@@ -437,10 +438,25 @@ namespace Dynamo.Search
         /// <param name="name">The name to use</param>
         public void Add(dynWorkspace workspace, string name)
         {
-            var searchEle = new WorkspaceSearchElement(name, "Workspace");
+            if (name == "Home")
+                return;
+
+            // create the workspace in search
+            var searchEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name );
             searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
+
+            if (searchEle.Guid == Guid.Empty)
+                return;
+
             SearchDictionary.Add(searchEle, searchEle.Name);
-            SearchAndUpdateResults();
+
+            // create the node in search
+            var nodeEle = new LocalSearchElement( dynSettings.FunctionDict[searchEle.Guid] );
+            SearchDictionary.Add(nodeEle, nodeEle.Name);
+
+            // update search
+            SearchAndUpdateResultsSync(SearchText);
+            
         }
 
         /// <summary>

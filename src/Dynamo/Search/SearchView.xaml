@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             Visibility="{Binding Path=Visible}" d:DesignWidth="380" x:Name="SearchControl" MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}}, Path=ActualHeight}">
+             Visibility="{Binding Path=Visible}" d:DesignWidth="344" x:Name="SearchControl" MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}}, Path=ActualHeight}">
     
   <Grid Background="Black">
 
@@ -29,9 +29,8 @@ Source="..\Images\search_24.png" Opacity="1">
         <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Width="250" Text="{Binding Path=SearchText,Mode=TwoWay}" />
 
-
-        <Button Name="BackButton" Margin="1, 0, 1, 0" Width="60" FontSize="24" Foreground="White" ToolTip="Go Back" 
-                      Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\arrow-left-white.png" />
+        <Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
+                      Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png" />
         
         <ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
                       Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" IsChecked="{Binding IncludeOptionalElements, Mode=TwoWay}" Tag="..\Images\add_32_white.png" />
@@ -70,7 +69,7 @@ Source="..\Images\search_24.png" Opacity="1">
                   <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="#111" Y1="0" Y2="0" VerticalAlignment="Top"/>
                   <TextBlock FontSize="16" Name="name" Text="{Binding Path=Name}" Foreground="AliceBlue" Padding="10,5,0,0"/>
-                  <TextBlock FontSize="11" Name="description" TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 30, 0, 10"/>
+                  <TextBlock FontSize="11" Name="description" Visibility="Collapsed"  TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 30, 0, 10"/>
                   <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 10"/>
                   <TextBlock FontSize="11" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 10"/>
 
@@ -80,9 +79,16 @@ Source="..\Images\search_24.png" Opacity="1">
               </Grid>
                 
               <DataTemplate.Triggers>
-
+                
+                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Node">
+                  <DataTrigger.Setters>
+                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
+                  </DataTrigger.Setters>
+                </DataTrigger>
+                
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Workspace">
                     <DataTrigger.Setters>
+                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
                     <Setter Property="Background" Value="#EE1A1600" TargetName="SearchEle" />
                     <Setter Property="Foreground" Value="Gold" TargetName="type" />
                   </DataTrigger.Setters>
@@ -90,6 +96,7 @@ Source="..\Images\search_24.png" Opacity="1">
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Community Node">
                   <DataTrigger.Setters>
+                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
                     <Setter Property="Background" Value="#EE0C1900" TargetName="SearchEle" />
                     <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />
                   </DataTrigger.Setters>
@@ -97,7 +104,7 @@ Source="..\Images\search_24.png" Opacity="1">
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Category">
                   <DataTrigger.Setters>
-                    <Setter Property="Visibility" Value="Hidden" TargetName="description" />
+
                     <Setter Property="Background" Value="#EE111617" TargetName="SearchEle" />
                     <Setter Property="Foreground" Value="#FFADD8E6" TargetName="type" />
                   </DataTrigger.Setters>

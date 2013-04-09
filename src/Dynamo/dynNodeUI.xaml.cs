@@ -970,11 +970,11 @@ namespace Dynamo.Controls
         {
             if ((bool)value == true)
             {
-                return "Hide Classic Node Navigator";
+                return "Hide Classic Node Library";
             }
             else
             {
-                return "Show Classic Node Navigator";
+                return "Show Classic Node Library";
             }
         }
 

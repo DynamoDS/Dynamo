@@ -5,6 +5,7 @@
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.Commands"
+        xmlns:utilities="clr-namespace:Dynamo.Utilities"
         x:Name="_this"
         Height="768" Width="1024"
         MouseMove="OnMouseMove" 
@@ -18,7 +19,7 @@
         MinWidth="800" 
         Title="Dynamo"
         AllowsTransparency="False">
-  
+
   <Window.Resources>
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
@@ -28,11 +29,11 @@
     <controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
   </Window.Resources>
-  
+
   <Window.InputBindings>
     <KeyBinding Key="Tab"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
-    
+
     <KeyBinding Key="Delete"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
     <KeyBinding Key="N"
@@ -93,7 +94,7 @@
     </Grid.ColumnDefinitions>
     <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
               VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
-      
+
       <MenuItem Header="_File" Name="fileMenu">
 
         <MenuItem Header="_New Custom Node..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
@@ -116,7 +117,7 @@
           </MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveImageDialogAndSaveResultCmd}}" Name="saveImage"/>
-          <Separator />
+        <Separator />
         <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
           <MenuItem.Icon>
             <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
@@ -136,25 +137,33 @@
         <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
 
-        <MenuItem Header="_Show Node Navigator" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}" InputGestureText="Space"/>
-        <MenuItem Header="_Hide Node Navigator" Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}" InputGestureText="Esc"/>
+        <MenuItem Header="_Show Node Library" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}" InputGestureText="Space"/>
+        <MenuItem Header="_Hide Node Library" Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}" InputGestureText="Esc"/>
 
         <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideClassicNavigatorMenuItemConverter}}"
                           Command="{Binding Source={x:Static commands:DynamoCommands.ShowClassicNodeNavigatorCmd}}" />
 
       </MenuItem>
-      
+
       <MenuItem Header="_Workspaces" Name="workspacesMenu">
         <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
           <MenuItem.Icon>
             <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
           </MenuItem.Icon>
         </MenuItem>
+        <MenuItem Header="_Custom Nodes" Name="userFunctions" 
+                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.FunctionDict}}">
+          <MenuItem.ItemTemplate>
+            <DataTemplate>
+              <MenuItem Header="{Binding Value.Workspace.Name}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static commands:DynamoCommands.DisplayFunctionCmd}}"/>
+            </DataTemplate>
+          </MenuItem.ItemTemplate>
+        </MenuItem>
       </MenuItem>
 
-          
+
       <MenuItem Header="Settings">
-        
+
         <MenuItem Header="_Connector Type" IsEnabled="True">
           <MenuItem Name="settings_curves" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Header="Curves"/>
@@ -206,8 +215,8 @@
                             StrokeThickness="1"
                             IsHitTestVisible="False"
                         />
-                        <!--<Ellipse Canvas.Left="0" Canvas.Right="0" Fill="Red" Width="10" Height="10" Name="debugPt" IsHitTestVisible="False"/>-->
-                            <Canvas.Background>
+            <!--<Ellipse Canvas.Left="0" Canvas.Right="0" Fill="Red" Width="10" Height="10" Name="debugPt" IsHitTestVisible="False"/>-->
+            <Canvas.Background>
               <SolidColorBrush Color="Transparent"/>
             </Canvas.Background>
           </dragCanvas:DragCanvas>
@@ -231,17 +240,17 @@
                         <GradientStop Color="#FF7A7A7A" Offset="0" />
                     </LinearGradientBrush>-->
         </Canvas.Background>
-        
+
         <Canvas.ContextMenu>
           <ContextMenu>
             <MenuItem 
                 Header="_New Node From Selection" 
                 Name="NodeFromSelection"
                 Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
-            
+
           </ContextMenu>
         </Canvas.ContextMenu>
-        
+
       </Canvas>
     </Border>
     <ScrollViewer Name="LogScroller" 
@@ -281,15 +290,15 @@
         <StackPanel Name="SideStackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         </StackPanel>
       </ScrollViewer>
-      
-      
+
+
       <!--<Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>-->
       <Grid Margin="10,10,5,5">
         <Grid.Style>
           <Style TargetType="Grid">
             <Setter Property="Background">
               <Setter.Value>
-                
+
                 <VisualBrush Stretch="Fill">
                   <VisualBrush.Visual>
                     <Rectangle Stretch="Fill" Stroke="White"/>
@@ -343,8 +352,8 @@
       <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
                         VerticalAlignment="Stretch" Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
     </Grid>
-    
-    
+
+
     <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3" Background="#FFF0F0F0">
       <Button Name="RunButton" Height="25" Width="100" Content="Run" 
@@ -386,7 +395,7 @@
         <SolidColorBrush />
       </Canvas.Background>
     </Canvas>
-    
+
     <!--<StackPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom">
             <Label Name="zoomStatLabel" FontFamily="Consolas" FontSize="11" Foreground="White" 
                    Content="{Binding ElementName=_this, Path=Zoom, Mode=OneWay, Converter={StaticResource ZoomStatConverter}}"/> 

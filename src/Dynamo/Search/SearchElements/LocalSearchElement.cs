@@ -37,7 +37,8 @@ namespace Dynamo.Search.SearchElements
         /// Type property </summary>
         /// <value>
         /// A string describing the type of object </value>
-        public override string Type { get { return "Standard Node"; } }
+        private string _type;
+        public override string Type { get { return _type; } }
 
         /// <summary>
         /// Name property </summary>
@@ -49,7 +50,8 @@ namespace Dynamo.Search.SearchElements
         /// Description property </summary>
         /// <value>
         /// A string describing what the node does</value>
-        public override string Description { get { return Node.NodeUI.Description; } }
+        private string _description;
+        public override string Description { get { return _description; } }
 
         /// <summary>
         /// Weight property </summary>
@@ -73,6 +75,22 @@ namespace Dynamo.Search.SearchElements
             this.Node = node;
             this.Weight = 1;
             this.Keywords = String.Join(" ", node.NodeUI.Tags);
+            this._type = "Node";
+            this._description = node.NodeUI.Description;
+        }
+
+        /// <summary>
+        /// The class constructor - use this constructor when for
+        /// custom nodes
+        /// </summary>
+        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
+        public LocalSearchElement(FunctionDefinition funcDef)
+        {
+            this.Node = dynSettings.Controller.CreateDragNode( funcDef.FunctionId.ToString() );
+            this.Weight = 1.1;
+            this.Keywords = "";
+            this._description = "Custom Node";
+            this._type = "Custom Node";
         }
 
         /// <summary>
@@ -81,12 +99,22 @@ namespace Dynamo.Search.SearchElements
         public override void Execute()
         {
             //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
+            string name;
+
+            if (this.Node is dynFunction)
+            {
+                name = ((dynFunction)Node).Definition.FunctionId.ToString();
+            }
+            else
+            {
+                name = Name;
+            }
 
             // create node
             var guid = Guid.NewGuid();
             var nodeParams = new Dictionary<string, object>()
                 {
-                    {"name", this.Name},
+                    {"name", name},
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };

@@ -38,16 +38,21 @@ namespace Dynamo.Nodes
         ///</summary>
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Elements.ForEach(
-            delegate(ElementId el)
+            //Elements.ForEach(
+            //delegate(ElementId el)
+            //{
+            //    Element e;
+            //    if (dynUtils.TryGetElement(el, out e))
+            //    {
+            //        DeleteElement(e.Id);
+            //    }
+            //});
+            //Elements.Clear();
+
+            foreach (var e in this.Elements)
             {
-                Element e;
-                if (dynUtils.TryGetElement(el, out e))
-                {
-                    DeleteElement(e.Id);
-                }
-            });
-            Elements.Clear();
+                this.DeleteElement(e);
+            }
 
             return dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
         }
