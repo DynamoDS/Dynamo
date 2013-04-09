@@ -83,6 +83,7 @@
                     Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}"/>
 
     </Window.InputBindings>
+    
     <Grid Name="mainGrid" Focusable="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>
