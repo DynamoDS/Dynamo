@@ -437,7 +437,7 @@ namespace Dynamo.PackageManager
                 dynSettings.Bench.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
             }
-        }
+        } 
 
         /// <summary>
         ///     Shows a string in the UI associated with whether the open workspace is package controlled

@@ -494,6 +494,8 @@ namespace Dynamo.Search
 
             }
 
+            NodeCategories[cat].NumElements++;
+
             // add node to search
             if ( (searchEle.Name.StartsWith("API_")) )
             {

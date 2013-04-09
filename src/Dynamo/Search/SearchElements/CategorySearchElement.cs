@@ -28,9 +28,10 @@ namespace Dynamo.Search.SearchElements
         /// Description property </summary>
         /// <value>
         /// A string describing what the node does</value>
+        private string _description;
         public override string Description
         {
-            get { return "Category"; }
+            get { return _description; }
         }
 
         /// <summary>
@@ -44,6 +45,27 @@ namespace Dynamo.Search.SearchElements
         /// <value>
         /// Number defining the relative importance of the element in search.  Higher weight means closer to the top. </value>
         public override double Weight { get; set; }
+
+
+        /// <summary>
+        /// NumElements property </summary>
+        /// <value>
+        /// The number of elements in the category.  Setting also updates the description.
+        /// </value>
+        private int _numElements;
+        public int NumElements
+        {
+            get
+            {
+                return _numElements;
+            }
+            set 
+            {
+                this._description = value + " nodes";
+                _numElements = value;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -54,6 +76,8 @@ namespace Dynamo.Search.SearchElements
             _name = name + ".";
             Weight = 1.2;
             Keywords = "";
+            NumElements = 0;
+            _description = "";
         }
         
         /// <summary>

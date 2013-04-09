@@ -68,10 +68,10 @@ Source="..\Images\search_24.png" Opacity="1">
 
                   <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="#111" Y1="0" Y2="0" VerticalAlignment="Top"/>
-                  <TextBlock FontSize="16" Name="name" Text="{Binding Path=Name}" Foreground="AliceBlue" Padding="10,5,0,0"/>
-                  <TextBlock FontSize="11" Name="description" Visibility="Collapsed"  TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 30, 0, 10"/>
-                  <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 10"/>
-                  <TextBlock FontSize="11" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 10"/>
+                <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" MaxWidth="250" Foreground="AliceBlue" Padding="10,5,0,0"/>
+                <TextBlock FontSize="11" Name="description" TextWrapping ="Wrap" Text="{Binding Path=Description}" Foreground="Gray"  Padding="10, 30, 0, 10" />
+                  <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 0"/>
+                  <TextBlock FontSize="11" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 0"/>
 
                 <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="DimGray" Y1="0" Y2="0" VerticalAlignment="Bottom"/>
@@ -79,16 +79,9 @@ Source="..\Images\search_24.png" Opacity="1">
               </Grid>
                 
               <DataTemplate.Triggers>
-                
-                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Node">
-                  <DataTrigger.Setters>
-                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
-                  </DataTrigger.Setters>
-                </DataTrigger>
-                
+
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Workspace">
                     <DataTrigger.Setters>
-                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
                     <Setter Property="Background" Value="#EE1A1600" TargetName="SearchEle" />
                     <Setter Property="Foreground" Value="Gold" TargetName="type" />
                   </DataTrigger.Setters>
@@ -96,7 +89,6 @@ Source="..\Images\search_24.png" Opacity="1">
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Community Node">
                   <DataTrigger.Setters>
-                    <Setter Property="Visibility" Value="Visible" TargetName="description" />
                     <Setter Property="Background" Value="#EE0C1900" TargetName="SearchEle" />
                     <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />
                   </DataTrigger.Setters>
@@ -104,7 +96,6 @@ Source="..\Images\search_24.png" Opacity="1">
 
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Category">
                   <DataTrigger.Setters>
-
                     <Setter Property="Background" Value="#EE111617" TargetName="SearchEle" />
                     <Setter Property="Foreground" Value="#FFADD8E6" TargetName="type" />
                   </DataTrigger.Setters>
