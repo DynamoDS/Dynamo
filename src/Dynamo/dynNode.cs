@@ -231,6 +231,8 @@ namespace Dynamo.Nodes
 
         internal virtual INode BuildExpression(Dictionary<dynNode, Dictionary<int, INode>> buildDict)
         {
+            Debug.WriteLine("Building expression...");
+
             if (OutPortData.Count > 1)
             {
                 var names = OutPortData.Select(x => x.NickName).Zip(Enumerable.Range(0, OutPortData.Count), (x, i) => x+i);
@@ -253,6 +255,8 @@ namespace Dynamo.Nodes
         /// <returns>The INode representation of this Element.</returns>
         protected internal virtual INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
+            Debug.WriteLine("Building node...");
+
             Dictionary<int, INode> result;
             if (preBuilt.TryGetValue(this, out result))
                 return result[outPort];
@@ -281,6 +285,8 @@ namespace Dynamo.Nodes
                 //if (port.Connectors.Any())
                 if (TryGetInput(data.Index, out input))
                 {
+                    Debug.WriteLine(string.Format("Connecting input {0}", data.Name));
+
                     //Compile input and connect it
                     node.ConnectInput(data.Name, input.Item2.Build(preBuilt, input.Item1));
                 }
@@ -359,6 +365,8 @@ namespace Dynamo.Nodes
         /// <returns>A ProcedureCallNode which will then be processed recursively to be connected to its inputs.</returns>
         protected virtual InputNode Compile(IEnumerable<string> portNames)
         {
+            Debug.WriteLine(string.Format("Compiling InputNode with ports {0}.", string.Join(",", portNames)));
+
             //Return a Function that calls eval.
             return new ExternalFunctionNode(evalIfDirty, portNames);
         }
@@ -416,10 +424,12 @@ namespace Dynamo.Nodes
 
         private delegate Value innerEvaluationDelegate();
 
-        private static Dictionary<PortData, Value> evaluationDict = new Dictionary<PortData, Value>();
+        private Dictionary<PortData, Value> evaluationDict = new Dictionary<PortData, Value>();
 
         protected internal virtual Value evaluateNode(FSharpList<Value> args)
         {
+            Debug.WriteLine("Evaluating node...");
+
             if (SaveResult)
             {
                 savePortMappings();
@@ -511,6 +521,21 @@ namespace Dynamo.Nodes
         
         protected internal virtual void __eval_internal(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
+            var argList = new List<string>();
+            if (args.Count() > 0)
+            {
+                argList = args.Select(x => x.ToString()).ToList<string>();
+            }
+            var outPutsList = new List<string>();
+            if(outPuts.Count() > 0)
+            {
+                outPutsList = outPuts.Keys.Select(x=>x.NickName).ToList<string>();
+            }
+
+            Debug.WriteLine(string.Format("__eval_internal : {0} : {1}", 
+                string.Join(",", argList), 
+                string.Join(",", outPutsList)));
+
             Evaluate(args, outPuts);
         }
         
