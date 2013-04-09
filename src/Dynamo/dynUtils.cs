@@ -31,20 +31,6 @@ namespace Dynamo.Utilities
 {
     public static class dynSettings
     {
-        //colors taken from:
-        //http://cloford.com/resources/colours/500col.htm
-        //http://linaker-wall.net/Colour/Dynamic_Fmt/Swatch_rgb_numbers.htm
-        private static readonly Color colorGreen1 = Color.FromRgb(193, 255, 193);
-        private static readonly Color colorGreen2 = Color.FromRgb(155, 250, 155);
-        private static readonly Color colorRed1 = Color.FromRgb(255, 64, 64);
-        private static readonly Color colorRed2 = Color.FromRgb(205, 51, 51);
-        //System.Windows.Media.Color colorOrange1 = System.Windows.Media.Color.FromRgb(255, 193, 37);
-        //System.Windows.Media.Color colorOrange2 = System.Windows.Media.Color.FromRgb(238, 180, 34);
-        private static readonly Color colorOrange1 = Color.FromRgb(255, 207, 98);
-        private static readonly Color colorOrange2 = Color.FromRgb(235, 187, 78);
-        private static readonly Color colorGray1 = Color.FromRgb(220, 220, 220);
-        private static readonly Color colorGray2 = Color.FromRgb(192, 192, 192);
-
         public static ObservableDictionary<Guid, FunctionDefinition> FunctionDict =
             new ObservableDictionary<Guid, FunctionDefinition>();
 
@@ -53,74 +39,27 @@ namespace Dynamo.Utilities
 
         static dynSettings()
         {
-            SetupBrushes();
         }
 
         public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
 
         public static dynCollection Collection { get; internal set; }
 
-        public static LinearGradientBrush ErrorBrush { get; internal set; }
+        //public static LinearGradientBrush ErrorBrush { get; internal set; }
 
-        public static LinearGradientBrush ActiveBrush { get; internal set; }
+        //public static LinearGradientBrush ActiveBrush { get; internal set; }
 
-        public static LinearGradientBrush SelectedBrush { get; internal set; }
+        //public static LinearGradientBrush SelectedBrush { get; internal set; }
 
-        public static LinearGradientBrush DeadBrush { get; internal set; }
+        //public static LinearGradientBrush DeadBrush { get; internal set; }
 
         public static dynBench Bench { get; internal set; }
 
         public static TextWriter Writer { get; set; }
 
-        /*
-        public dynElementSettings(Autodesk.Revit.UI.UIApplication app, Autodesk.Revit.UI.UIDocument doc, Level defaultLevel, DynamoWarningSwallower warningSwallower, Transaction t)
-       {
-
-           this.revit = app;
-           this.doc = doc;
-           this.defaultLevel = defaultLevel;
-           this.warningSwallower = warningSwallower;
-           this.trans = t;
-
-            SetupBrushes();
-
-       }
-        */
-
         public static DynamoController Controller { get; internal set; }
 
         public static PackageManagerClient PackageManagerClient { get; internal set; }
-
-        private static void SetupBrushes()
-        {
-            ErrorBrush = new LinearGradientBrush();
-            ErrorBrush.StartPoint = new Point(0.5, 0);
-            ErrorBrush.EndPoint = new Point(0.5, 1);
-            ErrorBrush.GradientStops.Add(new GradientStop(colorRed1, 0.0));
-            ErrorBrush.GradientStops.Add(new GradientStop(colorRed2, .25));
-            ErrorBrush.GradientStops.Add(new GradientStop(colorRed2, 1.0));
-
-            ActiveBrush = new LinearGradientBrush();
-            ActiveBrush.StartPoint = new Point(0.5, 0);
-            ActiveBrush.EndPoint = new Point(0.5, 1);
-            ActiveBrush.GradientStops.Add(new GradientStop(colorOrange1, 0.0));
-            ActiveBrush.GradientStops.Add(new GradientStop(colorOrange2, .25));
-            ActiveBrush.GradientStops.Add(new GradientStop(colorOrange2, 1.0));
-
-            SelectedBrush = new LinearGradientBrush();
-            SelectedBrush.StartPoint = new Point(0.5, 0);
-            SelectedBrush.EndPoint = new Point(0.5, 1);
-            SelectedBrush.GradientStops.Add(new GradientStop(colorGreen1, 0.0));
-            SelectedBrush.GradientStops.Add(new GradientStop(colorGreen2, .25));
-            SelectedBrush.GradientStops.Add(new GradientStop(colorGreen2, 1.0));
-
-            DeadBrush = new LinearGradientBrush();
-            DeadBrush.StartPoint = new Point(0.5, 0);
-            DeadBrush.EndPoint = new Point(0.5, 1);
-            DeadBrush.GradientStops.Add(new GradientStop(colorGray1, 0.0));
-            DeadBrush.GradientStops.Add(new GradientStop(colorGray2, .25));
-            DeadBrush.GradientStops.Add(new GradientStop(colorGray2, 1.0));
-        }
 
         public static void StartLogging()
         {

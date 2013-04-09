@@ -5,6 +5,15 @@
     Width="Auto"
     MouseLeftButtonDown="UserControl_MouseLeftButtonDown" 
     Background="{x:Null}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="Themes\DynamoConverters.xaml" />
+                <ResourceDictionary Source="Themes\DynamoModern.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid Name="mainGrid">
         <Grid Name="portGrid">
             <Grid.ColumnDefinitions>
@@ -20,9 +29,9 @@
                     Name="ellipse1" 
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Center" 
-                    Fill="Gainsboro"
+                    Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}, Mode=OneWay}"
                     IsHitTestVisible="True" 
-                    Stroke="Black"
+                    Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"
                     StrokeThickness="2" Grid.Column="0">
                 <Ellipse.Clip>
                     <RectangleGeometry Rect="0,0,10,20"/>

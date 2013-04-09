@@ -40,15 +40,17 @@ Source="..\Images\search_24.png" Opacity="1">
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" MaxHeight="{Binding ElementName=SearchControl, Path=MaxHeight}" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
 
         <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" 
+
                    BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
 
-          <ListBox.ItemContainerStyle>
-            <Style TargetType="ListBoxItem">
-              <Style.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Style.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                      Color="#FFF"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                      Color="#FFF" />
+                              
               </Style.Resources>
 
               <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
@@ -72,7 +74,8 @@ Source="..\Images\search_24.png" Opacity="1">
                 <TextBlock FontSize="10" Name="keywords" Text="{Binding Path=Keywords}" HorizontalAlignment="Right" Foreground="Gray"  Padding="10, 20, 10, 0"/>
                 <TextBlock FontSize="11" Name="type" Text="{Binding Path=Type}" Foreground="Azure" HorizontalAlignment="Right" Padding="10, 5, 10, 0"/>
 
-                <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
+
+                                <Line X1="0" X2="{Binding ElementName=SearchResultsListBox,Path=ActualWidth}" 
                             Stroke="DimGray" Y1="0" Y2="0" VerticalAlignment="Bottom"/>
 
               </Grid>

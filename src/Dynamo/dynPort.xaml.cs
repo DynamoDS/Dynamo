@@ -114,7 +114,11 @@ namespace Dynamo.Connectors
         public dynNodeUI Owner
         {
             get { return owner; }
-            set { owner = value; }
+            set 
+            { 
+                owner = value;
+                NotifyPropertyChanged("Owner");
+            }
         }
 
         public int Index
