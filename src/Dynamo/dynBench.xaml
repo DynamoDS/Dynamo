@@ -24,7 +24,15 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes\DynamoModern.xaml" />
+                <ResourceDictionary Source="Themes\DynamoConverters.xaml"/>
+                <ResourceDictionary Source="Themes\DynamoColorsAndBrushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            
+            <!--<controls:ZoomStatConverter x:Key="ZoomStatConverter"/>
+            <controls:CurrentOffsetStatConverter x:Key="CurrentOffsetStatConverter"/>-->
+            <!--<controls:TransformOriginStatConverter x:Key="TransformOriginStatConverter"/>-->
+            
         </ResourceDictionary>
     </Window.Resources>
 
