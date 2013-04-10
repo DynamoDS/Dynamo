@@ -243,8 +243,8 @@ namespace Dynamo.Controls
             outPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ports_collectionChanged);
             this.IsSelected = false;
 
-            Binding heightBinding = new Binding("PreferredHeight");
-            topControl.SetBinding(UserControl.HeightProperty, heightBinding);
+            //Binding heightBinding = new Binding("PreferredHeight");
+            //topControl.SetBinding(UserControl.HeightProperty, heightBinding);
             
             State = ElementState.DEAD;
 
@@ -275,7 +275,7 @@ namespace Dynamo.Controls
 
         public void RegisterAllPorts()
         {
-            ResizeElementForPorts();
+            //ResizeElementForPorts();
             SetupPortGrids();
             RegisterInputs();
             RegisterOutputs();
@@ -332,26 +332,26 @@ namespace Dynamo.Controls
         /// <summary>
         /// Resize the control based on the number of inputs.
         /// </summary>
-        public void ResizeElementForPorts()
-        {
-            Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
-            gridLeft.Margin = leftGridThick;
+        //public void ResizeElementForPorts()
+        //{
+        //    Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
+        //    gridLeft.Margin = leftGridThick;
 
-            Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
-            gridRight.Margin = rightGridThick;
+        //    Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
+        //    gridRight.Margin = rightGridThick;
 
-            Thickness inputGridThick = new Thickness(inputGrid.Margin.Left, inputGrid.Margin.Top, inputGrid.Margin.Right, 5);
-            inputGrid.Margin = inputGridThick;
+        //    Thickness inputGridThick = new Thickness(inputGrid.Margin.Left, inputGrid.Margin.Top, inputGrid.Margin.Right, 5);
+        //    inputGrid.Margin = inputGridThick;
 
-            grid.UpdateLayout();
+        //    grid.UpdateLayout();
 
-            if (inputGrid.Children.Count == 0)
-            {
-                //decrease the width of the node because
-                //there's nothing in the middle grid
-                topControl.Width = 100;
-            }
-        }
+        //    if (inputGrid.Children.Count == 0)
+        //    {
+        //        //decrease the width of the node because
+        //        //there's nothing in the middle grid
+        //        topControl.Width = 100;
+        //    }
+        //}
 
         /// <summary>
         /// Sets up the control's grids based on numbers of input and output ports.
