@@ -276,7 +276,7 @@ namespace Dynamo.Controls
         public void RegisterAllPorts()
         {
             //ResizeElementForPorts();
-            SetupPortGrids();
+            //SetupPortGrids();
             RegisterInputs();
             RegisterOutputs();
 
@@ -358,37 +358,37 @@ namespace Dynamo.Controls
         /// </summary>
         public void SetupPortGrids()
         {
-            int count = 0;
-            int numRows = gridLeft.RowDefinitions.Count;
-            foreach (var input in nodeLogic.InPortData)
-            {
-                if (count++ < numRows)
-                    continue;
+            //int count = 0;
+            //int numRows = gridLeft.RowDefinitions.Count;
+            //foreach (var input in nodeLogic.InPortData)
+            //{
+            //    if (count++ < numRows)
+            //        continue;
 
-                RowDefinition rd = new RowDefinition();
-                gridLeft.RowDefinitions.Add(rd);
-            }
+            //    RowDefinition rd = new RowDefinition();
+            //    gridLeft.RowDefinitions.Add(rd);
+            //}
 
-            if (count < numRows)
-            {
-                gridLeft.RowDefinitions.RemoveRange(count, numRows - count);
-            }
+            //if (count < numRows)
+            //{
+            //    gridLeft.RowDefinitions.RemoveRange(count, numRows - count);
+            //}
 
-            count = 0;
-            numRows = gridRight.RowDefinitions.Count;
-            foreach (var input in nodeLogic.OutPortData)
-            {
-                if (count++ < numRows)
-                    continue;
+            //count = 0;
+            //numRows = gridRight.RowDefinitions.Count;
+            //foreach (var input in nodeLogic.OutPortData)
+            //{
+            //    if (count++ < numRows)
+            //        continue;
 
-                RowDefinition rd = new RowDefinition();
-                gridRight.RowDefinitions.Add(rd);
-            }
+            //    RowDefinition rd = new RowDefinition();
+            //    gridRight.RowDefinitions.Add(rd);
+            //}
 
-            if (count < numRows)
-            {
-                gridRight.RowDefinitions.RemoveRange(count, numRows - count);
-            }
+            //if (count < numRows)
+            //{
+            //    gridRight.RowDefinitions.RemoveRange(count, numRows - count);
+            //}
         }
 
         /// <summary>
@@ -498,9 +498,9 @@ namespace Dynamo.Controls
 
                     p.PortType = PortType.INPUT;
                     InPorts.Add(p);
-                    gridLeft.Children.Add(p);
-                    Grid.SetColumn(p, 0);
-                    Grid.SetRow(p, index);
+                    //gridLeft.Children.Add(p);
+                    //Grid.SetColumn(p, 0);
+                    //Grid.SetRow(p, index);
 
                     p.Owner = this;
                     p.PortName = name;
@@ -525,9 +525,9 @@ namespace Dynamo.Controls
                     p.PortType = PortType.OUTPUT;
                     OutPorts.Add(p);
                     //portTextBlocks[p] = tb;
-                    gridRight.Children.Add(p);
-                    Grid.SetColumn(p, 1);
-                    Grid.SetRow(p, index);
+                    //gridRight.Children.Add(p);
+                    //Grid.SetColumn(p, 1);
+                    //Grid.SetRow(p, index);
 
                     p.Owner = this;
                     p.PortName = name;

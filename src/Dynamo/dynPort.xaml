@@ -56,7 +56,8 @@
                     Name="ellipse1Dot" 
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Center" 
-                    Fill="White" Margin="7" Grid.Column="0">
+                    Fill="{Binding Path=IsConnected, Converter={StaticResource PortConnectedBooleanToBrushConverter}, Mode=OneWay}" 
+                     Margin="7" Grid.Column="0">
             </Ellipse>
         </Grid>
         <TextBlock Name="portNameTb" Width="Auto" Margin="15,0,0,0"
