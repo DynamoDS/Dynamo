@@ -66,17 +66,17 @@ namespace Dynamo.Connectors
 
         #region private members
 
-        List<dynConnector> connectors;
+        List<dynConnector> connectors = new List<dynConnector>();
         Point center;
 
         dynNodeUI owner;
         int index;
         PortType portType;
         string name;
-
         #endregion
 
         #region public members
+
         public Point Center
         {
             get { return UpdateCenter(); }
@@ -89,11 +89,24 @@ namespace Dynamo.Connectors
             set { connectors = value; }
         }
 
-        //public bool IsInputPort
-        //{
-        //    get { return isInputPort; }
-        //    set { isInputPort = value; }
-        //}
+        public string ToolTipContent
+        {
+            get
+            {
+                if (Owner != null)
+                {
+                    if (PortType == Dynamo.Connectors.PortType.INPUT)
+                    {
+                        return Owner.NodeLogic.InPortData[index].ToolTipString;
+                    }
+                    else
+                    {
+                        return Owner.NodeLogic.OutPortData[index].ToolTipString;
+                    }
+                }
+                return "";
+            }
+        }
 
         public string PortName
         {
@@ -105,6 +118,7 @@ namespace Dynamo.Connectors
             }
                 
         }
+        
         public PortType PortType
         {
             get { return portType; }
@@ -132,15 +146,15 @@ namespace Dynamo.Connectors
 
         public dynPort(int index)
         {
-            connectors = new List<dynConnector>();
-            //this.workBench = workBench;
-            this.index = index;
             InitializeComponent();
+
+            Index = index;
 
             this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
             this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
 
             portNameTb.DataContext = this;
+            toolTipText.DataContext = this;
         }
         #endregion constructors
 
@@ -196,27 +210,16 @@ namespace Dynamo.Connectors
             double x = rootPoint.X;
             double y = rootPoint.Y;
 
-            if (this.portType == Dynamo.Connectors.PortType.OUTPUT)
+            if(portType == Dynamo.Connectors.PortType.INPUT)
             {
-                //x += this.Width / 2;
-            }
-            else
-            {
-                //x += this.Width / 2;
                 x += ellipse1.Width / 2;
             }
-            //y += this.Height / 2;
             y += ellipse1.Height / 2;
 
             return new Point(x, y);
 
         }
         #endregion
-
-        private void ellipse1_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //show the contextual menu
-        }
 
         private void OnOpened(object sender, RoutedEventArgs e)
         {
