@@ -211,16 +211,10 @@ namespace Dynamo.Connectors
             double x = rootPoint.X;
             double y = rootPoint.Y;
 
-            if (this.portType == Dynamo.Connectors.PortType.OUTPUT)
+            if(portType == Dynamo.Connectors.PortType.INPUT)
             {
-                //x += this.Width / 2;
-            }
-            else
-            {
-                //x += this.Width / 2;
                 x += ellipse1.Width / 2;
             }
-            //y += this.Height / 2;
             y += ellipse1.Height / 2;
 
             return new Point(x, y);
