@@ -147,6 +147,7 @@ namespace Dynamo.Nodes
 		///<summary>
 		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.ReferencePoint.GetCoordinatePlaneReferenceXY
 		///</summary>
+        ///
 		public API_ReferencePoint_GetCoordinatePlaneReferenceXY()
 		{
 			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
