@@ -667,18 +667,6 @@ namespace Dynamo.Nodes
         public virtual void Cleanup()
         {
         }
-
-        public IEnumerable<dynNode> DescendantsAndSelf()
-        {
-            yield return this;
-            foreach (dynNode item in Inputs.Values.
-                Where(x=>x!=null).
-                Select(x => x.Item2).
-                SelectMany(x => (x as dynNode).DescendantsAndSelf()))
-            {
-                yield return item;
-            }
-        }
     }
 
     public abstract class dynNodeWithOneOutput : dynNode
