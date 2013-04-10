@@ -26,6 +26,7 @@ using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
 using System;
+using Dynamo.Search.Regions;
 
 namespace Dynamo.Search
 {
@@ -35,6 +36,19 @@ namespace Dynamo.Search
     public class SearchViewModel : NotificationObject
     {
         #region Properties
+
+        /// <summary>
+        ///     Regions property
+        /// </summary>
+        /// <value>
+        ///     Specifies different regions to search over.  The command toggles whether searching
+        ///     over that field or not.
+        /// </value>
+        public ObservableDictionary<string, RegionBase> Regions
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         ///     IncludeOptionalElements property
@@ -50,9 +64,7 @@ namespace Dynamo.Search
             {
                 _IncludeOptionalElements = value;
                 RaisePropertyChanged("IncludeOptionalElements");
-                // DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
                 ToggleIncludingRevitAPIElements();
-
             }
         }
 
@@ -170,6 +182,9 @@ namespace Dynamo.Search
             Visible = Visibility.Collapsed;
             _SearchText = "";
             IncludeOptionalElements = false; // revit api
+            Regions = new ObservableDictionary<string, RegionBase>();
+            Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
+            Regions.Add("Include Nodes from the Revit API", new RevitAPIRegion());
             AddHomeToSearch();
         }
 

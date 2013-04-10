@@ -178,14 +178,14 @@
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
                 </MenuItem>
 
-                <!--<MenuItem Header="_Package Manager" IsEnabled="True" >
+               <MenuItem Header="_Package Manager" IsEnabled="True" >
           <MenuItem Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
           <MenuItem Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
           <MenuItem Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
 
           <MenuItem Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
-        </MenuItem>-->
-
+        </MenuItem>
+              
             </MenuItem>
 
             <MenuItem Header="Help">
@@ -201,9 +201,10 @@
 
         </Menu>
 
-        <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
+    <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
                 Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
-            <!--outer canvas clips the inner canvas-->
+        
+        <!--outer canvas clips the inner canvas-->
             <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
                  ClipToBounds="True" 
@@ -377,10 +378,10 @@
         </WrapPanel>
 
         <!-- Not the best place for this - PB -->
-        <!--<DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
+        <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" HorizontalAlignment="Right">
       <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
       <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
-    </DockPanel>-->
+    </DockPanel>
 
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"

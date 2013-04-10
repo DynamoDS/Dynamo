@@ -80,5 +80,14 @@ namespace Dynamo.Search
         {
             ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
         }
+
+        public void ibtnServiceController_MouseLeftButtonUp(object sender, RoutedEventArgs e)
+        {
+
+            cmServiceController.PlacementTarget = (UIElement)sender;
+            cmServiceController.IsOpen = true;
+
+        }
+
     }
 }

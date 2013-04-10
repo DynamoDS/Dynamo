@@ -356,8 +356,8 @@ namespace Dynamo.PackageManager
                                         if (auth)
                                         {
                                             // TODO: these elements should observe the package manager state
-                                            //dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
-                                            //dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
+                                            dynSettings.Bench.PackageManagerLoginState.Text = "Logged in";
+                                            dynSettings.Bench.PackageManagerLoginButton.IsEnabled = false;
                                             IsLoggedIn = true;
                                         }
                                     }))));
@@ -444,23 +444,23 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void ShowPackageControlInformation()
         {
-            //FunctionDefinition f =
-            //    dynSettings.FunctionDict.First(x => x.Value.Workspace == Controller.CurrentSpace).Value;
+            FunctionDefinition f =
+                dynSettings.FunctionDict.First(x => x.Value.Workspace == Controller.CurrentSpace).Value;
 
-            //if (f != null)
-            //{
-            //    if (LoadedPackageHeaders.ContainsKey(f))
-            //    {
-            //        dynSettings.Bench.packageControlLabel.Content = "Under package control";
-            //        dynSettings.Bench.editNameButton.Visibility = Visibility.Collapsed;
-            //        dynSettings.Bench.editNameButton.IsHitTestVisible = true;
-            //    }
-            //    else
-            //    {
-            //        dynSettings.Bench.packageControlLabel.Content = "Not under package control";
-            //    }
-            //    dynSettings.Bench.packageControlLabel.Visibility = Visibility.Visible;
-            //}
+            if (f != null)
+            {
+                if (LoadedPackageHeaders.ContainsKey(f))
+                {
+                    dynSettings.Bench.packageControlLabel.Content = "Under package control";
+                    dynSettings.Bench.editNameButton.Visibility = Visibility.Collapsed;
+                    dynSettings.Bench.editNameButton.IsHitTestVisible = true;
+                }
+                else
+                {
+                    dynSettings.Bench.packageControlLabel.Content = "Not under package control";
+                }
+                dynSettings.Bench.packageControlLabel.Visibility = Visibility.Visible;
+            }
         }
 
         /// <summary>
@@ -468,7 +468,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void HidePackageControlInformation()
         {
-            //dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
+            dynSettings.Bench.packageControlLabel.Visibility = Visibility.Collapsed;
         }
     }
 }

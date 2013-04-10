@@ -141,6 +141,9 @@ limitations under the License.
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\RecursiveSearchDictionary.cs" />
+    <Compile Include="Search\Regions\PackageManagerRegion.cs" />
+    <Compile Include="Search\Regions\RegionBase.cs" />
+    <Compile Include="Search\Regions\RevitAPIRegion.cs" />
     <Compile Include="Search\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\LocalSearchElement.cs" />

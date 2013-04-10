@@ -14,15 +14,6 @@
 
         <Image  Margin="7,0,7,0"
 Source="..\Images\search_24.png" Opacity="1">
-          <Image.Style>
-            <Style TargetType="Image">
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=SearchTextBox,Path=IsFocused}" Value="True">
-                  <Setter Property="Opacity" Value="1" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </Image.Style>
         </Image>
 
         <TextBox Name="SearchTextBox" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,15,5,10" Margin ="0"
@@ -31,8 +22,41 @@ Source="..\Images\search_24.png" Opacity="1">
         <Button Name="BackButton" Margin="1, 0, 1, 0" Width="42" FontSize="24" Foreground="White" ToolTip="Go Back" 
                       Style="{DynamicResource ResourceKey=SImageButton}" Click="Back_Click" Tag="..\Images\back_24.png" />
 
-        <ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
-                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" IsChecked="{Binding IncludeOptionalElements, Mode=TwoWay}" Tag="..\Images\add_32_white.png" />
+        <!--<ToggleButton Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
+                      Style="{DynamicResource ResourceKey=SSearchOnlineToggleButton}" IsChecked="{Binding IncludeOptionalElements, Mode=TwoWay}" Tag="..\Images\add_32_white.png" >
+
+          <ToggleButton.ContextMenu>
+
+            <ContextMenu Name="cmServiceController">
+
+              <MenuItem Header="Start" Name="miStart" Click="miStart_Click" />
+
+              <MenuItem Header="Stop" Name="miStop" Click="miStop_Click" />
+
+            </ContextMenu>
+
+          </ToggleButton.ContextMenu>
+
+        </ToggleButton>-->
+
+        <Button Name="RSearchBoxIncludeOnline" Margin="0" Width="30" FontSize="24" Foreground="White" ToolTip="Include extended Revit API" 
+                      Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\add_32_white.png" Click="ibtnServiceController_MouseLeftButtonUp">
+
+          <Button.ContextMenu>
+
+            <ContextMenu Name="cmServiceController" ItemsSource="{Binding Path=Regions}">
+
+              <ContextMenu.ItemTemplate>
+                <DataTemplate>
+                  <MenuItem Header="{Binding Key}" Command="{Binding Value}" IsChecked="{Binding Value.Loaded}" IsCheckable="True"/>
+                </DataTemplate>
+              </ContextMenu.ItemTemplate>
+
+            </ContextMenu>
+
+          </Button.ContextMenu>
+
+        </Button>
 
       </StackPanel>
 

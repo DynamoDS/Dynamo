@@ -20,6 +20,7 @@ using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
+using System.Windows.Controls;
 
 namespace Dynamo.Commands
 {
@@ -71,6 +72,8 @@ namespace Dynamo.Commands
             {
                 _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
                 dynSettings.Bench.outerCanvas.Children.Add(_view);
+                Canvas.SetBottom(_view, 0);
+                Canvas.SetRight(_view, 0);
                 init = true;
             }
             
@@ -116,7 +119,10 @@ namespace Dynamo.Commands
         {
             if (!_init)
             {
-                dynSettings.Bench.outerCanvas.Children.Add(new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel));
+                var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
+                dynSettings.Bench.outerCanvas.Children.Add(loginView);
+                Canvas.SetBottom(loginView, 0);
+                Canvas.SetRight(loginView, 0);
                 _init = true;
             }
 

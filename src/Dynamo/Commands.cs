@@ -1399,6 +1399,7 @@ namespace Dynamo.Commands
                     dynSettings.Bench.WorkBench.Selection.Remove(node);
                 }
             }
+
         }
 
         public event EventHandler CanExecuteChanged
