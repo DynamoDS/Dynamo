@@ -108,12 +108,6 @@ namespace Dynamo.Connectors
             }
         }
 
-        //public bool IsInputPort
-        //{
-        //    get { return isInputPort; }
-        //    set { isInputPort = value; }
-        //}
-
         public string PortName
         {
             get { return name; }
