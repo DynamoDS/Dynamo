@@ -275,8 +275,6 @@ namespace Dynamo.Controls
 
         public void RegisterAllPorts()
         {
-            //ResizeElementForPorts();
-            //SetupPortGrids();
             RegisterInputs();
             RegisterOutputs();
 
@@ -327,68 +325,6 @@ namespace Dynamo.Controls
                 return OutPorts == null 
                     || OutPorts.All(x => !x.Connectors.Any());
             }
-        }
-
-        /// <summary>
-        /// Resize the control based on the number of inputs.
-        /// </summary>
-        //public void ResizeElementForPorts()
-        //{
-        //    Thickness leftGridThick = new Thickness(gridLeft.Margin.Left, gridLeft.Margin.Top, gridLeft.Margin.Right, 5);
-        //    gridLeft.Margin = leftGridThick;
-
-        //    Thickness rightGridThick = new Thickness(gridRight.Margin.Left, gridRight.Margin.Top, gridRight.Margin.Right, 5);
-        //    gridRight.Margin = rightGridThick;
-
-        //    Thickness inputGridThick = new Thickness(inputGrid.Margin.Left, inputGrid.Margin.Top, inputGrid.Margin.Right, 5);
-        //    inputGrid.Margin = inputGridThick;
-
-        //    grid.UpdateLayout();
-
-        //    if (inputGrid.Children.Count == 0)
-        //    {
-        //        //decrease the width of the node because
-        //        //there's nothing in the middle grid
-        //        topControl.Width = 100;
-        //    }
-        //}
-
-        /// <summary>
-        /// Sets up the control's grids based on numbers of input and output ports.
-        /// </summary>
-        public void SetupPortGrids()
-        {
-            //int count = 0;
-            //int numRows = gridLeft.RowDefinitions.Count;
-            //foreach (var input in nodeLogic.InPortData)
-            //{
-            //    if (count++ < numRows)
-            //        continue;
-
-            //    RowDefinition rd = new RowDefinition();
-            //    gridLeft.RowDefinitions.Add(rd);
-            //}
-
-            //if (count < numRows)
-            //{
-            //    gridLeft.RowDefinitions.RemoveRange(count, numRows - count);
-            //}
-
-            //count = 0;
-            //numRows = gridRight.RowDefinitions.Count;
-            //foreach (var input in nodeLogic.OutPortData)
-            //{
-            //    if (count++ < numRows)
-            //        continue;
-
-            //    RowDefinition rd = new RowDefinition();
-            //    gridRight.RowDefinitions.Add(rd);
-            //}
-
-            //if (count < numRows)
-            //{
-            //    gridRight.RowDefinitions.RemoveRange(count, numRows - count);
-            //}
         }
 
         /// <summary>
@@ -587,11 +523,7 @@ namespace Dynamo.Controls
             }
             else
             {
-                //don't override state if it's in error
-                //if (State != ElementState.ERROR)
-                //{
-                    State = ElementState.ACTIVE;
-                //}
+                State = ElementState.ACTIVE;
             }
         }
 
