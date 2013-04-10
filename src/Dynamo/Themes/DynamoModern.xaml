@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Dynamo.Controls">
+                    xmlns:controls="clr-namespace:Dynamo.Controls"
+                    xmlns:clr="clr-namespace:System;assembly=mscorlib">
 
     <Style x:Key="SSearchOnlineToggleButton" TargetType="{x:Type ToggleButton}">
         <Setter Property="Template">
@@ -197,5 +198,9 @@
         </Setter>
     </Style>
 
-
+    <clr:Int32 x:Key="connector_end_dot_size">6</clr:Int32>
+    <clr:Int32 x:Key="connector_stroke_thickness">2</clr:Int32>
+    <clr:Double x:Key="connector_stroke_opacity">0.6</clr:Double>
+    <clr:Double x:Key="connector_bezier_offset">20.0</clr:Double>
+    
 </ResourceDictionary>
