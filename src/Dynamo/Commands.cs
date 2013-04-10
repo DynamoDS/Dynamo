@@ -19,6 +19,18 @@ namespace Dynamo.Commands
 
     public static partial class DynamoCommands
     {
+
+        private static ShowPackageManagerCommand showPackageManagerCmd;
+        public static ShowPackageManagerCommand ShowPackageManagerCmd
+        {
+            get
+            {
+                if (showPackageManagerCmd == null)
+                    showPackageManagerCmd = new ShowPackageManagerCommand();
+                return showPackageManagerCmd;
+            }
+        }
+
         private static ToggleShowingClassicNodeNavigatorCommand toggleShowingClassicNodeNavigatorCmd;
         public static ToggleShowingClassicNodeNavigatorCommand ShowClassicNodeNavigatorCmd
         {
@@ -427,6 +439,27 @@ namespace Dynamo.Commands
 
                 return displayFunctionCmd;
             }
+        }
+    }
+
+    public class ShowPackageManagerCommand : ICommand
+    {
+
+        public void Execute(object parameters)
+        {
+            dynSettings.Bench.PackageManagerLoginStateContainer.Visibility = Visibility.Visible;
+            dynSettings.Bench.PackageManagerMenu.Visibility = Visibility.Visible;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
         }
     }
 
