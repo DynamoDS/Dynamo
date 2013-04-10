@@ -256,6 +256,29 @@ class RevitMethod:
 		f.write('\t{\n')
 
 		self.write_constructor(f)
+		
+		draw_candidates = ['Autodesk.Revit.DB.ReferencePoint',
+		'Autodesk.Revit.DB.Curve',
+		'Autodesk.Revit.DB.Arc',
+		'Autodesk.Revit.DB.CylindricalHelix',
+		'Autodesk.Revit.DB.Ellipse',
+		'Autodesk.Revit.DB.HermiteSpline',
+		'Autodesk.Revit.DB.Line',
+		'Autodesk.Revit.DB.NurbSpline',
+		'Autodesk.Revit.DB.Face',
+		'Autodesk.Revit.DB.ConicalFace',
+		'Autodesk.Revit.DB.CylindricalFace',
+		'Autodesk.Revit.DB.HermiteFace',
+		'Autodesk.Revit.DB.PlanarFace',
+		'Autodesk.Revit.DB.RevolvedFace',
+		'Autodesk.Revit.DB.RuledFace',
+		'Autodesk.Revit.DB.Solid',
+		'Autodesk.Revit.DB.']
+
+		if self.returns in draw_candidates:
+			#write the Draw method for the IDrawable interface
+			self.write_draw(f);
+
 		f.write('\t}\n')
 		f.write('\n')
 
