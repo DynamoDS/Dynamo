@@ -222,11 +222,6 @@ namespace Dynamo.Connectors
         }
         #endregion
 
-        private void ellipse1_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //show the contextual menu
-        }
-
         private void OnOpened(object sender, RoutedEventArgs e)
         {
             //do some stuff when opening
