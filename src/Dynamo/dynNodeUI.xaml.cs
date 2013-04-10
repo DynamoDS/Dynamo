@@ -282,7 +282,6 @@ namespace Dynamo.Controls
 
             UpdateLayout();
 
-            SetToolTips();
             ValidateConnections();
         }
 
@@ -477,25 +476,6 @@ namespace Dynamo.Controls
                 }
 
                 //OutPorts.RemoveRange(count, outPorts.Count - count);
-            }
-        }
-
-        public void SetToolTips()
-        {
-            //set all the tooltips
-            int count = 0;
-            foreach (dynPort p in InPorts)
-            {
-                //get the types from the types list
-                p.toolTipText.Text = nodeLogic.InPortData[count].ToolTipString;
-                count++;
-            }
-
-            count = 0;
-            foreach (dynPort p in OutPorts)
-            {
-                p.toolTipText.Text = nodeLogic.OutPortData[count].ToolTipString;
-                count++;
             }
         }
 

@@ -21,7 +21,7 @@
             </Grid.ColumnDefinitions>
             <Grid.ToolTip>
                 <ToolTip Name="toolTip1">
-                    <TextBlock Name="toolTipText" FontFamily="Courier New" FontSize="11">This is the port's tooltip</TextBlock>
+                    <TextBlock Name="toolTipText" FontFamily="Courier New" FontSize="11" Text="{Binding Path=ToolTipContent}"/>
                 </ToolTip>
             </Grid.ToolTip>
             <Ellipse Height="20" 

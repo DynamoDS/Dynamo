@@ -73,10 +73,10 @@ namespace Dynamo.Connectors
         int index;
         PortType portType;
         string name;
-
         #endregion
 
         #region public members
+
         public Point Center
         {
             get { return UpdateCenter(); }
@@ -87,6 +87,25 @@ namespace Dynamo.Connectors
         {
             get { return connectors; }
             set { connectors = value; }
+        }
+
+        public string ToolTipContent
+        {
+            get
+            {
+                if (Owner != null)
+                {
+                    if (PortType == Dynamo.Connectors.PortType.INPUT)
+                    {
+                        return Owner.NodeLogic.InPortData[index].ToolTipString;
+                    }
+                    else
+                    {
+                        return Owner.NodeLogic.OutPortData[index].ToolTipString;
+                    }
+                }
+                return "";
+            }
         }
 
         //public bool IsInputPort
@@ -105,6 +124,7 @@ namespace Dynamo.Connectors
             }
                 
         }
+        
         public PortType PortType
         {
             get { return portType; }
@@ -141,6 +161,7 @@ namespace Dynamo.Connectors
             this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
 
             portNameTb.DataContext = this;
+            toolTipText.DataContext = this;
         }
         #endregion constructors
 
