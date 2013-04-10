@@ -54,6 +54,8 @@ namespace Dynamo.Connectors
         const int STROKE_THICKNESS = 2;
         const double STROKE_OPACITY = .6;
         const double DEFAULT_BEZ_OFFSET = 20;
+        const int END_DOT_SIZE = 6;
+        double bezOffset = 20;
 
         dynPort pStart;
         dynPort pEnd;
@@ -65,14 +67,11 @@ namespace Dynamo.Connectors
         ConnectorType connectorType;
 
         Ellipse endDot;
-        const int END_DOT_SIZE = 6;
+        
         Path connector;
         Path plineConnector;
         Brush strokeBrush;
 
-        double bezOffset = 20;
-
-        //Canvas workBench;
         bool isDrawing = false;
 
         public bool IsDrawing
@@ -128,6 +127,7 @@ namespace Dynamo.Connectors
             }
         }
 
+        #region constructors
         public dynConnector(dynPort port, Canvas workBench, Point mousePt)
         {
             //don't allow connections to start at an input port
@@ -343,14 +343,15 @@ namespace Dynamo.Connectors
             ConnectorType = dynSettings.Bench.ConnectorType;
         }
 
+        public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType)
+            : this(start, end, startIndex, endIndex, portType, true)
+        { }
+        #endregion
+        
         void endDot_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             throw new NotImplementedException();
         }
-
-        public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType)
-            : this(start, end, startIndex, endIndex, portType, true)
-        { }
 
         public void Highlight()
         {
@@ -392,24 +393,6 @@ namespace Dynamo.Connectors
             {
                 return false;
             }
-
-            //TODO: Re-enable
-            //test if the port element at B can connect to the port at A
-            //test if you can convert the element at A to the element at b
-            //if (p.PortType == PortType.INPUT)
-            //{
-            //    if (!p.Owner.InPortData[p.Index].PortType.IsAssignableFrom(pStart.Owner.OutPortData[pStart.Index].PortType))
-            //    {
-            //        return false;
-            //    }
-            //}
-            //else if (p.PortType == PortType.STATE)
-            //{
-            //    if (!p.Owner.StatePortData[p.Index].PortType.IsAssignableFrom(pStart.Owner.OutPortData[pStart.Index].PortType))
-            //    {
-            //        return false;
-            //    }
-            //}
 
             //turn the line solid
             connector.StrokeDashArray.Clear();
