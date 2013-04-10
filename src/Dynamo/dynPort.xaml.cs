@@ -180,6 +180,10 @@ namespace Dynamo.Connectors
 
         void portGrid_Loaded(object sender, RoutedEventArgs e)
         {
+            //flip the output ports so they show up on the 
+            //right hand side of the node with text on the left
+            //do this after the port is loaded so we can get
+            //its ActualWidth
             if (PortType == Dynamo.Connectors.PortType.OUTPUT)
             {
                 ScaleTransform trans = new ScaleTransform(-1, 1, ActualWidth/2, Height / 2);
