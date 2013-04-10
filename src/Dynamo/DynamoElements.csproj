@@ -125,12 +125,12 @@ limitations under the License.
       <Link>DynamoRevitCategories.cs</Link>
     </Compile>
     <Compile Include="Commands.cs" />
-    <Compile Include="Converters.cs" />
+    <Compile Include="Utilities\Converters.cs" />
     <Compile Include="DynamoController.cs" />
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GuidUtility.cs" />
+    <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />

@@ -2543,6 +2543,7 @@ namespace Dynamo
         {
             var selectedNodeSet = new HashSet<dynNode>(selectedNodes);
 
+            // TODO: this code needs refactoring
             #region Prompt
 
             //First, prompt the user to enter a name
@@ -2596,11 +2597,11 @@ namespace Dynamo
 
             //Step 1: determine which nodes will be inputs to the new node
             var inputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
-                selectedNodeSet.SelectMany(
-                    node => Enumerable.Range(0, node.InPortData.Count)
-                        .Where(node.HasInput).Select(data => Tuple
-                        .Create(node, data, node.Inputs[data]))
-                        .Where( input => !selectedNodeSet.Contains(input.Item3.Item2))));
+                    selectedNodeSet
+                        .SelectMany( node => Enumerable.Range(0, node.InPortData.Count)
+                            .Where(node.HasInput)
+                            .Select(data => Tuple.Create(node, data, node.Inputs[data]))
+                                                 .Where( input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
             var outputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
                 selectedNodeSet.SelectMany(
@@ -2971,8 +2972,8 @@ namespace Dynamo
             foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
                 node.Visibility = Visibility.Hidden;
 
-            foreach (dynConnector connector in newNodeWorkspace.Connectors)
-                connector.Visible = false;
+            //foreach (dynConnector connector in newNodeWorkspace.Connectors)
+            //    connector.Visible = false;
 
             #endregion
 
