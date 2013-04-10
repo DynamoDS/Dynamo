@@ -1298,6 +1298,7 @@ namespace Dynamo
                 double cy = dynBench.CANVAS_OFFSET_Y;
                 string id = "";
 
+                // load the header
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
                 {
                     foreach (XmlAttribute att in node.Attributes)
@@ -1313,17 +1314,17 @@ namespace Dynamo
                         else if (att.Name.Equals("ID"))
                         {
                             id = att.Value;
-                            if (string.IsNullOrEmpty(id) && node.Name == "Dynamo.Nodes.dynFunction")
-                            {
-                                // assign a legacy dyf with no guid
-                                id = Guid.NewGuid().ToString();
-                            }
-                        }
-                            
+                        }   
                     }
                 }
 
- 
+                // we have a dyf and it lacks an ID field, we need to assign it
+                // a deterministic guid based on its name.  By doing it deterministically,
+                // files remain compatible
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName))
+                {
+                    id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
+                }
 
                 //If there is no function name, then we are opening a home definition
                 if (funName == null)
@@ -1424,14 +1425,23 @@ namespace Dynamo
                     el.DisableReporting();
                     el.LoadElement(elNode);
 
+                    
                     if (el is dynFunction)
                     {
                         var fun = el as dynFunction;
 
-                        Guid funId = Guid.Parse(fun.Symbol);
-                        if (fun.Symbol == null || funId == Guid.Empty)
+                        // we've found a custom node, we need to attempt to load its guid.  
+                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
+                        // deterministically
+                        Guid funId;
+                        try
                         {
-                            funId = Guid.NewGuid();
+                            funId = Guid.Parse(fun.Symbol);
+                        }
+                        catch
+                        {
+                            funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
+                            fun.Symbol = funId.ToString();
                         }
 
                         FunctionDefinition funcDef;
@@ -1718,8 +1728,21 @@ namespace Dynamo
                     if (el is dynFunction)
                     {
                         var fun = el as dynFunction;
-                        Guid funId = Guid.Parse(fun.Symbol);
 
+                        // we've found a custom node, we need to attempt to load its guid.  
+                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
+                        // deterministically
+                        Guid funId;
+                        try
+                        {
+                            funId = Guid.Parse(fun.Symbol);
+                        }
+                        catch
+                        {
+                            funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
+                            fun.Symbol = funId.ToString();
+                        }
+                            
                         FunctionDefinition funcDef;
                         if (dynSettings.FunctionDict.TryGetValue(funId, out funcDef))
                             fun.Definition = funcDef;

@@ -129,6 +129,7 @@ limitations under the License.
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GuidUtility.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
