@@ -9,10 +9,15 @@ using HelixToolkit.Wpf;
 
 namespace Dynamo.Nodes
 {
+    public class RenderDescription
+    {
+        public Point3DCollection points;
+        public Point3DCollection lines;
+        public Mesh3D[] meshes;
+    }
+    
     public interface IDrawable
     {
-        Point3DCollection Points();
-        Point3DCollection Lines(); // each point pair is a straight line
-        Mesh3D[] Meshes();
+        RenderDescription Draw(object objectToDraw, Func<object> renderFunction);
     }
 }
