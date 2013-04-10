@@ -2537,7 +2537,7 @@ namespace Dynamo
 
         #endregion
 
-        #region Refactor
+        #region Node from selection
 
         internal void NodeFromSelection(IEnumerable<dynNode> selectedNodes)
         {
@@ -2597,9 +2597,10 @@ namespace Dynamo
             //Step 1: determine which nodes will be inputs to the new node
             var inputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
                 selectedNodeSet.SelectMany(
-                    node => Enumerable.Range(0, node.InPortData.Count).Where(node.HasInput).Select(
-                        data => Tuple.Create(node, data, node.Inputs[data])).Where(
-                            input => !selectedNodeSet.Contains(input.Item3.Item2))));
+                    node => Enumerable.Range(0, node.InPortData.Count)
+                        .Where(node.HasInput).Select(data => Tuple
+                        .Create(node, data, node.Inputs[data]))
+                        .Where( input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
             var outputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
                 selectedNodeSet.SelectMany(
