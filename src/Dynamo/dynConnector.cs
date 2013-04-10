@@ -370,25 +370,6 @@ namespace Dynamo.Connectors
             }
         }
 
-        public void SendMessage()
-        {
-
-            if (pEnd != null)
-            {
-                if (pEnd.Owner != null)
-                {
-                    //if (pEnd.PortType == PortType.INPUT)
-                    //   pEnd.Owner.InPortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
-                    //else if (pEnd.PortType == PortType.STATE)
-                    //   pEnd.Owner.StatePortData[pEnd.Index].Object = pStart.Owner.OutPortData.Object;
-
-                    //tell the end port's ownder to update
-                    //pEnd.Owner.Update();
-                }
-            }
-
-        }
-
         public bool Connect(dynPort p)
         {
             //test if the port that you are connecting too is not the start port or the end port
@@ -608,34 +589,6 @@ namespace Dynamo.Connectors
             }
         }
 
-        public dynNodeUI FindDynElementByGuid(Guid guid)
-        {
-            foreach (UIElement uiel in dynSettings.Workbench.Children)
-            {
-                dynNodeUI testEl = null;
-
-                //walk up through the inheritance to find whether the base type is a dynElement
-                Type startType = uiel.GetType();
-                while (startType.BaseType != null)
-                {
-                    startType = startType.BaseType;
-                    if (startType == typeof(dynNodeUI))
-                    {
-                        testEl = uiel as dynNodeUI;
-                        break;
-                    }
-                }
-
-                if (testEl != null)
-                {
-                    if (testEl.GUID == guid)
-                    {
-                        return testEl;
-                    }
-                }
-            }
-            return null;
-        }
     }
 
     public class InvalidPortException : ApplicationException
