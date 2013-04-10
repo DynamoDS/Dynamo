@@ -156,7 +156,7 @@ namespace Dynamo.Connectors
 
         #region constructors
 
-        public dynPort(int index)
+        public dynPort(int index, PortType portType, dynNodeUI owner, string name)
         {
             InitializeComponent();
 
@@ -171,6 +171,22 @@ namespace Dynamo.Connectors
 
             IsConnected = false;
 
+            PortType = portType;
+            Owner = owner;
+            PortName = name;
+
+            portGrid.Loaded += new RoutedEventHandler(portGrid_Loaded);
+        }
+
+        void portGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (PortType == Dynamo.Connectors.PortType.OUTPUT)
+            {
+                ScaleTransform trans = new ScaleTransform(-1, 1, ActualWidth/2, Height / 2);
+                portGrid.RenderTransform = trans;
+                portNameTb.Margin = new Thickness(0, 0, 15, 0);
+                portNameTb.TextAlignment = TextAlignment.Right;
+            }
         }
         #endregion constructors
 

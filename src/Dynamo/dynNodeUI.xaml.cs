@@ -494,17 +494,10 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    dynPort p = new dynPort(index);
+                    dynPort p = new dynPort(index, portType, this, name);
 
-                    p.PortType = PortType.INPUT;
                     InPorts.Add(p);
-                    //gridLeft.Children.Add(p);
-                    //Grid.SetColumn(p, 0);
-                    //Grid.SetRow(p, index);
 
-                    p.Owner = this;
-                    p.PortName = name;
-                    
                     //register listeners on the port
                     p.PortConnected += new PortConnectedHandler(p_PortConnected);
                     p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
@@ -520,27 +513,14 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    dynPort p = new dynPort(index);
+                    dynPort p = new dynPort(index, portType, this, name);
 
-                    p.PortType = PortType.OUTPUT;
                     OutPorts.Add(p);
-                    //portTextBlocks[p] = tb;
-                    //gridRight.Children.Add(p);
-                    //Grid.SetColumn(p, 1);
-                    //Grid.SetRow(p, index);
-
-                    p.Owner = this;
-                    p.PortName = name;
 
                     //register listeners on the port
                     p.PortConnected += new PortConnectedHandler(p_PortConnected);
                     p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
 
-                    //flip the right hand ports
-                    ScaleTransform trans = new ScaleTransform(-1, 1, 25, p.Height / 2);
-                    p.portGrid.RenderTransform = trans;
-                    p.portNameTb.Margin = new Thickness(0, 0, 15, 0);
-                    p.portNameTb.TextAlignment = TextAlignment.Right;
                     return p;
                 }
             }
