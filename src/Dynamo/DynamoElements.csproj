@@ -125,6 +125,7 @@ limitations under the License.
       <Link>DynamoRevitCategories.cs</Link>
     </Compile>
     <Compile Include="Commands.cs" />
+    <Compile Include="Converters.cs" />
     <Compile Include="DynamoController.cs" />
     <Compile Include="DynamoSplash.xaml.cs">
       <DependentUpon>DynamoSplash.xaml</DependentUpon>
