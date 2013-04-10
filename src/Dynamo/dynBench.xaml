@@ -173,9 +173,11 @@
 
                 <MenuItem Header="_Connector Type" IsEnabled="True">
                     <MenuItem Name="settings_curves" IsCheckable="True" 
-                              IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Header="Curves"/>
+                              IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
+                              Command="{Binding Source={x:Static commands:DynamoCommands.SetConnectorTypeCmd}}" CommandParameter="BEZIER" Header="Curves"/>
                     <MenuItem Name="settings_plines" IsCheckable="True" 
-                              IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Header="Polylines"/>
+                              IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
+                              Command="{Binding Source={x:Static commands:DynamoCommands.SetConnectorTypeCmd}}" CommandParameter="POLYLINE" Header="Polylines"/>
                 </MenuItem>
 
                <MenuItem Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >

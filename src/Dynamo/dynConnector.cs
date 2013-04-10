@@ -79,11 +79,13 @@ namespace Dynamo.Connectors
         {
             get { return isDrawing; }
         }
+        
         public dynPort Start
         {
             get { return pStart; }
             set { pStart = value; }
         }
+        
         public dynPort End
         {
             get { return pEnd; }
@@ -92,6 +94,7 @@ namespace Dynamo.Connectors
                 pEnd = value;
             }
         }
+        
         public ConnectorType ConnectorType
         {
             get { return connectorType; }
@@ -218,31 +221,14 @@ namespace Dynamo.Connectors
                 Canvas.SetZIndex(connector, 0);
                 Canvas.SetZIndex(endDot, 1);
 
-                //register an event listener for the start port update
-                //this will tell the connector to set the elements at either
-                //end to be equal if pStart and pEnd are not null
-                //pStart.Owner.Outputs[pStart.Index].dynElementUpdated += new Dynamo.Nodes.dynElementUpdatedHandler(StartPortUpdated);
-                this.ConnectorType = dynSettings.Bench.ConnectorType;
-                dynSettings.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
-                dynSettings.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
+                ConnectorType = dynSettings.Bench.ConnectorType;
+
             }
             else
             {
                 throw new InvalidPortException();
             }
 
-        }
-
-        void settings_plines_Checked(object sender, RoutedEventArgs e)
-        {
-            this.ConnectorType = Connectors.ConnectorType.POLYLINE;
-            Redraw();
-        }
-
-        void settings_curves_Checked(object sender, RoutedEventArgs e)
-        {
-            this.ConnectorType = Connectors.ConnectorType.BEZIER;
-            Redraw();
         }
 
         public dynConnector(dynNodeUI start, dynNodeUI end, int startIndex, int endIndex, int portType, bool visible)
@@ -354,9 +340,7 @@ namespace Dynamo.Connectors
 
             this.Connect(endPort);
 
-            this.ConnectorType = dynSettings.Bench.ConnectorType;
-            dynSettings.Bench.settings_curves.Checked += new RoutedEventHandler(settings_curves_Checked);
-            dynSettings.Bench.settings_plines.Checked += new RoutedEventHandler(settings_plines_Checked);
+            ConnectorType = dynSettings.Bench.ConnectorType;
         }
 
         void endDot_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
