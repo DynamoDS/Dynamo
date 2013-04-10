@@ -66,7 +66,7 @@ namespace Dynamo.Connectors
 
         #region private members
 
-        List<dynConnector> connectors;
+        List<dynConnector> connectors = new List<dynConnector>();
         Point center;
 
         dynNodeUI owner;
@@ -146,10 +146,9 @@ namespace Dynamo.Connectors
 
         public dynPort(int index)
         {
-            connectors = new List<dynConnector>();
-            //this.workBench = workBench;
-            this.index = index;
             InitializeComponent();
+
+            Index = index;
 
             this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
             this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
