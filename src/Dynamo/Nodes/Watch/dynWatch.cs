@@ -38,9 +38,9 @@ namespace Dynamo.Nodes
     [NodeSearchTags("print", "output", "display")]
     public class dynWatch: dynNodeWithOneOutput
     {
-        //System.Windows.Controls.TextBlock watchBlock;
         WatchTree wt;
         WatchTreeBranch wtb;
+        int oldPreferredHeight;
 
         private class WatchHandlers
         {
@@ -87,21 +87,38 @@ namespace Dynamo.Nodes
             //and make this so it's not so wide
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             NodeUI.topControl.Width = 300;
-            NodeUI.topControl.Height = 200;
-
+            
+            //set a default height
+            oldPreferredHeight = NodeUI.PreferredHeight;
+            
             wt = new WatchTree();
-            NodeUI.inputGrid.Children.Add(wt);
-            wtb = wt.FindResource("Tree") as WatchTreeBranch;
+            wt.TreeExpanded += new EventHandler(wt_TreeExpanded);
+            wt.TreeCollapsed += new EventHandler(wt_TreeCollapsed);
 
+            NodeUI.inputGrid.Children.Add(wt);
+
+            wtb = wt.FindResource("Tree") as WatchTreeBranch;
+            
             foreach (dynPort p in NodeUI.InPorts)
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
         }
 
+        void wt_TreeCollapsed(object sender, EventArgs e)
+        {
+            NodeUI.PreferredHeight = oldPreferredHeight;
+        }
+
+        void wt_TreeExpanded(object sender, EventArgs e)
+        {
+            NodeUI.PreferredHeight = 200;
+        }
+
         void p_PortDisconnected(object sender, EventArgs e)
         {
             wtb.Clear();
+            NodeUI.PreferredHeight = oldPreferredHeight;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -145,13 +162,6 @@ namespace Dynamo.Nodes
                 {
                     //TODO: make clickable hyperlinks to show the element in Revit
                     //http://stackoverflow.com/questions/7890159/programmatically-make-textblock-with-hyperlink-in-between-text
-
-                    //string id = "";
-                    //Element revitEl = (eIn as Value.Container).Item as Autodesk.Revit.DB.Element;
-                    //if (revitEl != null)
-                    //{
-                    //    id = revitEl.Id.ToString();
-                    //}
 
                     content += (eIn as Value.Container).Item.ToString();
 

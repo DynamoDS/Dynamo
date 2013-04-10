@@ -6,65 +6,64 @@
              xmlns:local="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="161" d:DesignWidth="410" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black">
-   <UserControl.Resources>
-      <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
-         <Setter Property="Padding" Value="1"/>
-         <Setter Property="Background" Value="PaleGreen" />
-         <Setter Property="Template">
-            <Setter.Value>
-               <ControlTemplate TargetType="{x:Type Button}">
-                  <Border Name="border" Background="{TemplateBinding Background}">
-                     <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+    <UserControl.Resources>
+        <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Background" Value="PaleGreen" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="border" Background="{TemplateBinding Background}">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       Margin="{TemplateBinding Padding}"
                                       RecognizesAccessKey="True"
                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                  </Border>
-                  <ControlTemplate.Triggers>
-                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter TargetName="content" Property="RenderTransform" >
-                           <Setter.Value>
-                              <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
-                           </Setter.Value>
-                        </Setter>
-                     </Trigger>
-                     <Trigger Property="IsPressed" Value="True">
-                        <Setter TargetName="content" Property="RenderTransform" >
-                           <Setter.Value>
-                              <ScaleTransform ScaleX=".95" ScaleY=".95" />
-                           </Setter.Value>
-                        </Setter>
-                     </Trigger>
-                     <Trigger Property="IsFocused" Value="True">
-                     </Trigger>
-                  </ControlTemplate.Triggers>
-               </ControlTemplate>
-            </Setter.Value>
-         </Setter>
-      </Style>
-      <local:WatchTreeBranch x:Key="Tree">
-         <!--<local:WatchNode NodeLabel="A" Link="Blah"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="content" Property="RenderTransform" >
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="content" Property="RenderTransform" >
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX=".95" ScaleY=".95" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <local:WatchTreeBranch x:Key="Tree">
+            <!--<local:WatchNode NodeLabel="A" Link="Blah"/>
             <local:WatchNode NodeLabel="B"/>
             <local:WatchNode NodeLabel="C" Link="Blah Blah Blah"/>-->
-      </local:WatchTreeBranch>
-   </UserControl.Resources>
-   <Grid DataContext="{StaticResource Tree}">
-      <TreeView Name="treeView1" 
+        </local:WatchTreeBranch>
+    </UserControl.Resources>
+    <Grid DataContext="{StaticResource Tree}">
+        <TreeView Name="treeView1"
                   ItemsSource="{Binding}"
                   Background="#FFE7E4E4" 
                   BorderBrush="{x:Null}">
-         <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type local:WatchNode}">
-               <StackPanel Orientation="Horizontal"
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type local:WatchNode}">
+                    <StackPanel Orientation="Horizontal"
                                     Width="Auto" 
                                     Background="#FFD1D1D1"
-                                    Margin="2"
-                                    >
-                  <TextBlock Text="{Binding Path=NodeLabel}" 
+                                    Margin="2">
+                        <TextBlock Text="{Binding Path=NodeLabel}" 
                                        VerticalAlignment="Center" 
                                        Margin="4,0,0,0"
                                        Width="Auto"/>
-                  <Button Content="{Binding Path=Link}" 
+                        <Button Content="{Binding Path=Link}" 
                                     RenderTransformOrigin="0.5,0.5"
                                     Margin="10,2,2,2" 
                                     VerticalAlignment="Center" 
@@ -72,10 +71,15 @@
                                     Padding="4,2,4,2"
                                     Visibility="{Binding Path=Link, TargetNullValue=Hidden}"
                                     Style="{StaticResource BorderlessButton}"/>
-               </StackPanel>
-               <!--<TreeViewItem Header="{Binding NodeLabel}"/>-->
-            </HierarchicalDataTemplate>
-         </TreeView.ItemTemplate>
-      </TreeView>
-   </Grid>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <EventSetter Event="TreeViewItem.Expanded" Handler="treeView1_Expanded"/>
+                    <EventSetter Event="TreeViewItem.Collapsed" Handler="treeView1_Collapsed"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+    </Grid>
 </UserControl>
