@@ -270,7 +270,7 @@ namespace Dynamo.Controls
                                                                                .SelectMany(x => x.Connectors)
                                                                                .Concat(
                                                                                    el.InPorts.SelectMany(
-                                                                                       x => x.Connectors)));
+                                                                                       x => x.Connectors))).Distinct();
 
                 foreach (dynConnector connector in allConnectors)
                 {
