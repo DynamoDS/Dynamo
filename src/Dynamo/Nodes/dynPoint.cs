@@ -82,6 +82,11 @@ namespace Dynamo.Nodes
         {
             return null;
         }
+
+        public RenderDescription Draw()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     //[NodeName("Watch 3D Accumulator")]

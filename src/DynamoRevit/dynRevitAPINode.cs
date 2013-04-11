@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
         public RenderDescription Draw()
         {
             //TODO: draw something
-            throw new NotImplementedException("Implement drawing for different types of Revit elements.");
+            throw new NotImplementedException();
         }
     }
 

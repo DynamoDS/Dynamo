@@ -223,29 +223,29 @@ namespace Dynamo.Nodes
 
         private void PredrawIDrawable(IDrawable drawable)
         {
-            if (drawable.Points() != null)
-            {
-                foreach (Point3D p in drawable.Points())
-                {
-                    watchPoints.Add(p);
-                }
-            }
+            //if (drawable.Points() != null)
+            //{
+            //    foreach (Point3D p in drawable.Points())
+            //    {
+            //        watchPoints.Add(p);
+            //    }
+            //}
 
-            if (drawable.Lines() != null)
-            {
-                foreach (Point3D p in drawable.Lines())
-                {
-                    watchLines.Add(p);
-                }
-            }
+            //if (drawable.Lines() != null)
+            //{
+            //    foreach (Point3D p in drawable.Lines())
+            //    {
+            //        watchLines.Add(p);
+            //    }
+            //}
 
-            if (drawable.Meshes() != null)
-            {
-                foreach (Mesh3D mesh in drawable.Meshes())
-                {
-                    watchMeshes.Add(mesh);
-                }
-            }
+            //if (drawable.Meshes() != null)
+            //{
+            //    foreach (Mesh3D mesh in drawable.Meshes())
+            //    {
+            //        watchMeshes.Add(mesh);
+            //    }
+            //}
         }
 
         public override Value Evaluate(FSharpList<Value> args)
