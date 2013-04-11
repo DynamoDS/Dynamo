@@ -362,6 +362,9 @@ namespace Dynamo
 
             var sortedExpanders = new SortedDictionary<string, Tuple<Expander, SortedList<string, dynNodeUI>>>();
 
+            Stopwatch ui_population_timer = new Stopwatch();
+            ui_population_timer.Start();
+
             foreach (var kvp in builtinTypesByNickname)
             {
                 //if (!kvp.Value.t.Equals(typeof(dynSymbol)))
@@ -507,9 +510,11 @@ namespace Dynamo
                 }
             }
 
+            ui_population_timer.Stop();
+            dynSettings.Bench.Log(string.Format("{0} ellapsed for populating the UI with nodes.", ui_population_timer.Elapsed));
+
             #endregion
         }
-
 
         private bool isNodeSubType(Type t)
         {
@@ -639,6 +644,9 @@ namespace Dynamo
         /// </summary>
         public void LoadUserTypes()
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
 
@@ -646,6 +654,9 @@ namespace Dynamo
             {
                 Bench.Log("Autoloading definitions...");
                 loadUserWorkspaces(pluginsPath);
+
+                sw.Stop();
+                Bench.Log(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
             }
         }
 
