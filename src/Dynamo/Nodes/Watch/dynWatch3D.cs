@@ -223,6 +223,7 @@ namespace Dynamo.Nodes
 
         private void PredrawIDrawable(IDrawable drawable)
         {
+
             RenderDescription description = drawable.Draw();
 
             if (description.points != null)
