@@ -6,6 +6,10 @@
              mc:Ignorable="d" 
              Visibility="{Binding Path=Visible}" d:DesignWidth="344" x:Name="SearchControl" MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}}, Path=ActualHeight}">
 
+  <UserControl.Effect>
+    <DropShadowEffect ShadowDepth="0" BlurRadius ="10" />
+  </UserControl.Effect>
+  
   <Grid Background="Black">
 
     <StackPanel x:Name="RSearchContainerStackPanel"  Margin="0">
@@ -61,7 +65,7 @@ Source="..\Images\search_24.png" Opacity="1">
       </StackPanel>
 
       <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="RSearchResultsScrollView" VerticalAlignment="Stretch" 
-                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" MaxHeight="{Binding ElementName=SearchControl, Path=MaxHeight}" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
+                      VerticalScrollBarVisibility="Visible" MaxHeight="{Binding ElementName=SearchControl, Path=MaxHeight}" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}">
 
         <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" 
 

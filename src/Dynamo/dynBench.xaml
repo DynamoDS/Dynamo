@@ -264,8 +264,8 @@
                     VerticalAlignment="Stretch"
                     VerticalScrollBarVisibility="Auto" 
                     HorizontalAlignment="Stretch"
-                    HorizontalScrollBarVisibility="Auto"
-                    Background="Gainsboro" 
+                    HorizontalScrollBarVisibility="Hidden"
+                    Background="Black" 
                     Opacity="1" 
                     Visibility="Visible"
                     Grid.Row="3"
@@ -277,7 +277,7 @@
                 </ContextMenu>
             </ScrollViewer.ContextMenu>
             <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
-                    Foreground="#FF505050" BorderThickness="0" BorderBrush="#00000000" 
+                    Foreground="#FF00FF00" BorderThickness="0" BorderBrush="#00000000" Background="Black"
                     Margin="0" TextWrapping="Wrap" Focusable="True"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" />

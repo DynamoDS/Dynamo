@@ -965,7 +965,10 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            dynSettings.Controller.SplashScreen = new Controls.DynamoSplash();
+            if (dynSettings.Controller.SplashScreen == null)
+            {
+                dynSettings.Controller.SplashScreen = new Controls.DynamoSplash();
+            }
             dynSettings.Controller.SplashScreen.Show();
         }
 
@@ -1131,6 +1134,12 @@ namespace Dynamo.Commands
             {
                 x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
                 y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
+
+                // apply small perturbation
+                // so node isn't right on top of last placed node
+                Random r = new Random();
+                x += (r.NextDouble() - 0.5) * 50;
+                y += (r.NextDouble() - 0.5) * 50;
             }
             
             var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
@@ -1151,8 +1160,11 @@ namespace Dynamo.Commands
             }
 
             // center the node at the drop point
-            dropPt.X -= (nodeUi.Width / 2.0);
-            dropPt.Y -= (nodeUi.Height / 2.0);
+            if (!Double.IsNaN(nodeUi.ActualWidth))
+                dropPt.X -= (nodeUi.ActualWidth / 2.0);
+
+            if (!Double.IsNaN(nodeUi.ActualHeight))
+                dropPt.Y -= (nodeUi.ActualHeight / 2.0);
 
             Canvas.SetLeft(nodeUi, dropPt.X);
             Canvas.SetTop(nodeUi, dropPt.Y);

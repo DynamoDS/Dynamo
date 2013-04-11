@@ -34,6 +34,7 @@ using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
 using Dynamo.FSchemeInterop;
+using Dynamo.Commands;
 //MDJ needed for spatialfeildmanager
 //TAF added to get strings from resource files
 
@@ -141,9 +142,6 @@ namespace Dynamo.Applications
                 return Result.Succeeded;
             }
 
-            //SplashScreen splashScreen = null
-            Window splashScreen = null;
-
             dynSettings.StartLogging();
 
             try
@@ -168,9 +166,6 @@ namespace Dynamo.Applications
                     {
                         //get window handle
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
-
-                        //prepare and show splash
-                        splashScreen = new DynamoSplash();
 
                         //show the window
                         var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater);

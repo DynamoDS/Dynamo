@@ -112,15 +112,13 @@ namespace Dynamo.Commands
     public class ShowSearchCommand : ICommand
     {
         private SearchView search;
-        private static bool init = false;
 
         public void Execute(object parameters)
         {
-            if (!init)
+            if (null == dynSettings.Bench.outerCanvas.FindName("SearchControl") )
             {
-                search = new SearchView(dynSettings.Controller.SearchViewModel);
+                search = new SearchView(dynSettings.Controller.SearchViewModel); 
                 dynSettings.Bench.outerCanvas.Children.Add(search);
-                init = true;
             }
 
             dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;

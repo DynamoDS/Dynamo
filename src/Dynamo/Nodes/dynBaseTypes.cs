@@ -118,6 +118,8 @@ namespace Dynamo.Nodes
             var val = ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
                 .Item.Invoke(args);
 
+            var symbol = ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol)).Item;
+
             return val;
         }
     }

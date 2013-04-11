@@ -29,6 +29,9 @@ namespace Dynamo
 {
     public class DynamoController : INotifyPropertyChanged
     {
+
+        #region properties
+
         private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
             new SortedDictionary<string, TypeLoadData>();
 
@@ -93,8 +96,6 @@ namespace Dynamo
             get { return builtinTypesByNickname; }
         }
 
-        public DynamoSplash SplashScreen { get; set; }
-
         public dynWorkspace CurrentSpace
         {
             get { return _cspace; }
@@ -124,102 +125,73 @@ namespace Dynamo
             get { return CurrentSpace == HomeSpace; }
         }
 
-        #region Constructor and Initialization
+        private bool _benchActivated;
+        public DynamoSplash SplashScreen { get; set; }
 
-        //public DynamoController(SplashScreen splash)
-        private bool _activated;
+        #endregion
+
+        #region Constructor and Initialization
 
         public DynamoController(ExecutionEnvironment env)
         {
+            dynSettings.Controller = this;
+
             this.RunEnabled = true;
             this.CanRunDynamically = true;
-            
-            Bench = new dynBench(this);
+
+            this.ActivateBench();
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
             PackageManagerLoginViewModel = new PackageManagerLoginViewModel(PackageManagerClient);
             PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
-
-            HomeSpace = CurrentSpace = new HomeWorkspace();
-
-            //Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
-            //Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
-            if (Bench != null) {
-                Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
-
-                Bench.InitializeComponent();
-                Bench.Log(String.Format(
-                    "Dynamo -- Build {0}.",
-                    Assembly.GetExecutingAssembly().GetName().Version));
-
-                dynSettings.Bench = Bench;
-
-                //WTF
-                Bench.settings_curves.IsChecked = true;
-                Bench.settings_curves.IsChecked = false;
-
-                Bench.LockUI();
-
-                Bench.Activated += Bench_Activated;
-                dynSettings.Workbench = Bench.WorkBench;
-
-                //run tests
-                if (FScheme.RunTests(Bench.Log))
-                {
-                    if (Bench != null)
-                        Bench.Log("All Tests Passed. Core library loaded OK.");
-                }
-
-                if (DynamoCommands.ShowSplashScreenCmd.CanExecute(null))
-                {
-                    DynamoCommands.ShowSplashScreenCmd.Execute(null);
-                }
-            }
-
-            dynSettings.Controller = this;
-
+ 
             FSchemeEnvironment = env;
 
             LoadBuiltinTypes();
             PopulateSamplesMenu();
-
-            //Dispatcher.CurrentDispatcher.Hooks.DispatcherInactive += new EventHandler(Hooks_DispatcherInactive);
         }
 
-        private void Hooks_DispatcherInactive(object sender, EventArgs e)
+        private void ActivateBench()
         {
-            ProcessCommandQueue();
-        }
+            Bench = new dynBench(this);
+            DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
+            
+            HomeSpace = CurrentSpace = new HomeWorkspace();
 
-        public void ProcessCommandQueue()
-        {
-            while (commandQueue.Count > 0)
+            //Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
+            //Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
+            Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+
+            Bench.InitializeComponent();
+            Bench.Log(String.Format(
+                "Dynamo -- Build {0}.",
+                Assembly.GetExecutingAssembly().GetName().Version));
+
+            dynSettings.Bench = Bench;
+
+            //WTF
+            Bench.settings_curves.IsChecked = true;
+            Bench.settings_curves.IsChecked = false;
+
+            Bench.LockUI();
+
+            Bench.Activated += OnBenchActivated;
+            dynSettings.Workbench = Bench.WorkBench;
+
+            //run tests
+            if (FScheme.RunTests(Bench.Log))
             {
-                var cmdData = commandQueue.Dequeue();
-                var cmd = cmdData.Item1 as ICommand;
-                if (cmd != null)
-                {
-                    if (cmd.CanExecute(cmdData.Item2))
-                    {
-                        cmd.Execute(cmdData.Item2);
-                    }
-                }
+                if (Bench != null)
+                    Bench.Log("All Tests Passed. Core library loaded OK.");
             }
-            commandQueue.Clear();
-
-            if (Bench != null)
-            {
-                dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}",
-                                                       Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
-            }
         }
 
-        private void Bench_Activated(object sender, EventArgs e)
+        private void OnBenchActivated(object sender, EventArgs e)
         {
-            if (!_activated)
+            if (!_benchActivated)
             {
-                _activated = true;
+                _benchActivated = true;
 
                 LoadUserTypes();
                 Bench.Log("Welcome to Dynamo!");
@@ -254,6 +226,36 @@ namespace Dynamo
                 HomeSpace.OnDisplayed();
             }
         }
+
+        private void Hooks_DispatcherInactive(object sender, EventArgs e)
+        {
+            ProcessCommandQueue();
+        }
+
+        public void ProcessCommandQueue()
+        {
+            while (commandQueue.Count > 0)
+            {
+                var cmdData = commandQueue.Dequeue();
+                var cmd = cmdData.Item1 as ICommand;
+                if (cmd != null)
+                {
+                    if (cmd.CanExecute(cmdData.Item2))
+                    {
+                        cmd.Execute(cmdData.Item2);
+                    }
+                }
+            }
+            commandQueue.Clear();
+
+            if (Bench != null)
+            {
+                dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}",
+                                                       Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
+            }
+        }
+
+ 
 
         #endregion
 
@@ -1115,7 +1117,6 @@ namespace Dynamo
 
             dynWorkspace functionWorkspace = definition.Workspace;
 
-            // must create a guid for the definition, save it to xml, 
             //Generate xml, and save it in a fixed place
             if (writeDefinition)
             {

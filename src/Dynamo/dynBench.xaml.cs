@@ -630,7 +630,7 @@ namespace Dynamo.Controls
             //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
 
             var bgBrush = (SolidColorBrush) outerCanvas.Background;
-            bgBrush.Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
+            bgBrush.Color = Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A); //Dark
         }
 
         internal void setHomeBackground()
