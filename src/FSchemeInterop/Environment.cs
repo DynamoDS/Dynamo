@@ -28,18 +28,15 @@ namespace Dynamo.FSchemeInterop
     //Class wrapping an FScheme environment.
     internal class EnvironmentWrapper
     {
-        //Our FScheme compilation environment.
-        private FSharpRef<FSharpList<FSharpList<string>>> cEnv;
-
-        //Our FScheme runtime environment.
-        private FSharpRef<FSharpList<FSharpRef<FSharpRef<Value>[]>>> rEnv;
+        //Our FScheme environment.
+        private FScheme.FSchemeEnvironment env;
 
         /// <summary>
         /// Environment containing compile-time symbols.
         /// </summary>
         public FSharpRef<FSharpList<FSharpList<string>>> CompilationEnvironment 
         {
-            get { return cEnv; }
+            get { return env.cEnv; }
         }
 
         /// <summary>
@@ -48,15 +45,14 @@ namespace Dynamo.FSchemeInterop
         /// </summary>
         public FSharpRef<FSharpList<FSharpRef<FSharpRef<Value>[]>>> RuntimeEnvironment
         {
-            get { return rEnv; }
+            get { return env.rEnv; }
         }
 
         //Sets the environment contained by this EnvironmentWrapper
         //to the one provided by FScheme by default.
         public EnvironmentWrapper()
         {
-            this.cEnv = FScheme.compileEnvironment;
-            this.rEnv = FScheme.environment;
+            env = FScheme.CreateEnvironments();
         }
 
         /// <summary>
@@ -66,9 +62,9 @@ namespace Dynamo.FSchemeInterop
         public void Delete(string symbol)
         {
             var removedIndeces = new HashSet<int>();
-            
-            this.cEnv.Value = Utils.SequenceToFSharpList(
-                this.cEnv.Value.Select(
+
+            this.CompilationEnvironment.Value = Utils.SequenceToFSharpList(
+                this.CompilationEnvironment.Value.Select(
                     x => Utils.SequenceToFSharpList(
                         x.Where((y, i) => 
                             {
@@ -79,7 +75,7 @@ namespace Dynamo.FSchemeInterop
                             })))
                 .Where(x => x.Any()));
 
-            this.rEnv.Value.Head.Value = this.rEnv.Value.Head.Value.Where(
+            this.RuntimeEnvironment.Value.Head.Value = this.RuntimeEnvironment.Value.Head.Value.Where(
                 (_, i) => !removedIndeces.Contains(i)
             ).ToArray();
         }

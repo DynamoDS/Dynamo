@@ -28,8 +28,8 @@ namespace Dynamo
 
         dynamic oldPyEval;
 
-        public DynamoController_Revit(DynamoUpdater updater)
-            : base()
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater)
+            : base(env)
         {
             Updater = updater;
             

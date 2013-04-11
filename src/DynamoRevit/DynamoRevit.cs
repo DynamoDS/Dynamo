@@ -33,6 +33,7 @@ using Dynamo.Utilities;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
+using Dynamo.FSchemeInterop;
 //MDJ needed for spatialfeildmanager
 //TAF added to get strings from resource files
 
@@ -47,6 +48,7 @@ namespace Dynamo.Applications
         private static string m_AssemblyDirectory = Path.GetDirectoryName(m_AssemblyName);
         public static DynamoUpdater updater;
         private static ResourceManager res;
+        public static ExecutionEnvironment env;
 
         public Result OnStartup(UIControlledApplication application)
         {
@@ -102,6 +104,8 @@ namespace Dynamo.Applications
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
                 UpdaterRegistry.AddTrigger(updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
+
+                env = new ExecutionEnvironment();
 
                 return Result.Succeeded;
             }
@@ -169,7 +173,7 @@ namespace Dynamo.Applications
                         splashScreen = new DynamoSplash();
 
                         //show the window
-                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.updater);
+                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater);
                         dynamoBench = dynamoController.Bench;
 
                         //set window handle and show dynamo
