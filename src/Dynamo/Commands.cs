@@ -813,6 +813,7 @@ namespace Dynamo.Commands
 
             foreach (ISelectable sel in sels)
             {
+
                 ((dynNodeUI)sel).SelectNeighbors();
             }
         }

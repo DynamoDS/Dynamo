@@ -2582,17 +2582,6 @@ namespace Dynamo
 
             CurrentSpace.DisableReporting();
 
-            #region UI Positioning Calculations
-
-            double avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
-            double avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
-
-            double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI));
-            double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
-            double rightMost = selectedNodeSet.Max(node => Canvas.GetLeft(node.NodeUI) + node.NodeUI.Width);
-
-            #endregion
-
             #region Determine Inputs and Outputs
 
             //Step 1: determine which nodes will be inputs to the new node
@@ -2688,6 +2677,17 @@ namespace Dynamo
                             }).ToList();
 
             #endregion
+            
+            #region UI Positioning Calculations
+
+            double avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
+            double avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
+
+            double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI));
+            double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
+            double rightMost = selectedNodeSet.Max(node => Canvas.GetLeft(node.NodeUI) + node.NodeUI.Width);
+
+            #endregion
 
             #region Move selection to new workspace
 
@@ -2712,8 +2712,8 @@ namespace Dynamo
             }
 
             #endregion
-
-            #region Insert new node replacement into the current workspace
+            
+            #region Insert new node into the current workspace
 
             //Step 5: insert new node into original workspace
             var collapsedNode = new dynFunction(
@@ -2972,8 +2972,8 @@ namespace Dynamo
             foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
                 node.Visibility = Visibility.Hidden;
 
-            //foreach (dynConnector connector in newNodeWorkspace.Connectors)
-            //    connector.Visible = false;
+            foreach (dynConnector connector in newNodeWorkspace.Connectors)
+                connector.Visible = false;
 
             #endregion
 
