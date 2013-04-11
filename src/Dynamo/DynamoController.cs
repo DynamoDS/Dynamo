@@ -1827,6 +1827,8 @@ namespace Dynamo
                     }
                 }
 
+                CurrentSpace.Connectors.ForEach(x => x.Redraw());
+
                 #region instantiate notes
 
                 if (nNodesList != null)

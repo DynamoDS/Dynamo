@@ -24,4 +24,8 @@
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
     <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter"/>
+    <controls:PortTypeToMarginConverter x:Key="PortTypeToMarginConverter"/>
+    <controls:PortTypeToTextAlignmentConverter x:Key="PortTypeToTextAlignmentConverter"/>
+    <controls:PortTypeToGridColumnConverter x:Key="PortTypeToGridColumnConverter"/>
+    <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter"/>
 </ResourceDictionary>

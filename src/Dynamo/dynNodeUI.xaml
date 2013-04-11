@@ -53,7 +53,7 @@
             HorizontalAlignment="Left"
             IsHitTestVisible="True" 
             Background="Transparent"
-            Canvas.ZIndex="90" Width="Auto">
+            Canvas.ZIndex="1" Width="Auto">
             <ItemsControl ItemsSource="{Binding Path=InPorts}">
 
             </ItemsControl>
@@ -64,7 +64,7 @@
               Margin="0,5,-7,5" 
               IsHitTestVisible="True" 
               Background="Transparent"
-              Canvas.ZIndex="90" Width="Auto">
+              Canvas.ZIndex="1" Width="Auto">
             <ItemsControl ItemsSource="{Binding Path=OutPorts}">
                 
             </ItemsControl>
