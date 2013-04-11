@@ -79,6 +79,10 @@
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoElements</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
+      <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
+      <Name>FSchemeInterop</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

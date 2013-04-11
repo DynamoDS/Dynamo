@@ -29,16 +29,21 @@ namespace Dynamo.Controls
 
     public class BooleanToBrushConverter : IValueConverter
     {
+        public SolidColorBrush TrueBrush{get;set;}
+        public SolidColorBrush FalseBrush{get;set;}
+
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool condition = (bool)value;
             if (condition)
             {
-                return new SolidColorBrush(Colors.Cyan);
+                //return new SolidColorBrush(Colors.Cyan);
+                return TrueBrush;
             }
             else
             {
-                return new SolidColorBrush(Colors.Black);
+                //return new SolidColorBrush(Colors.Black);
+                return FalseBrush;
             }
         }
 

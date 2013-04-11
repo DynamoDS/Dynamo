@@ -286,7 +286,7 @@ namespace Dynamo.PackageManager
         public void Download(string id, string version, Action<Guid> callback)
         {
             ThreadStart start = () =>
-                {
+                {   
                     // download the package
                     var m = new HeaderDownload(id);
                     ResponseWithContentBody<PackageHeader> p = Client.ExecuteAndDeserializeWithContent<PackageHeader>(m);

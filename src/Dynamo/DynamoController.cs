@@ -129,7 +129,7 @@ namespace Dynamo
         //public DynamoController(SplashScreen splash)
         private bool _activated;
 
-        public DynamoController()
+        public DynamoController(ExecutionEnvironment env)
         {
             this.RunEnabled = true;
             this.CanRunDynamically = true;
@@ -179,12 +179,10 @@ namespace Dynamo
 
             dynSettings.Controller = this;
 
-            FSchemeEnvironment = new ExecutionEnvironment();
+            FSchemeEnvironment = env;
 
             LoadBuiltinTypes();
             PopulateSamplesMenu();
-
-            
 
             //Dispatcher.CurrentDispatcher.Hooks.DispatcherInactive += new EventHandler(Hooks_DispatcherInactive);
         }
@@ -292,8 +290,10 @@ namespace Dynamo
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>(
                 AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.Location));
 
-            var allLoadedAssemblies = new Dictionary<string, Assembly>(
-                AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.FullName));
+            var allLoadedAssemblies = new Dictionary<string, Assembly>();
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                allLoadedAssemblies[assembly.FullName] = assembly;
 
             //var tempDomain = AppDomain.CreateDomain("TemporaryAppDomain");
 
@@ -649,6 +649,9 @@ namespace Dynamo
 
         private void loadUserWorkspaces(string directory)
         {
+            dynSettings.FunctionDict.Clear();
+            dynSettings.FunctionWasEvaluated.Clear();
+
             var parentBuffer = new Dictionary<Guid, HashSet<Guid>>();
             var childrenBuffer = new Dictionary<Guid, HashSet<FunctionDefinition>>();
             string[] filePaths = Directory.GetFiles(directory, "*.dyf");

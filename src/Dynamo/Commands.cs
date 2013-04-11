@@ -440,6 +440,18 @@ namespace Dynamo.Commands
                 return displayFunctionCmd;
             }
         }
+
+        private static SetConnectorTypeCommand setConnectorTypeCmd;
+        public static SetConnectorTypeCommand SetConnectorTypeCmd
+        {
+            get
+            {
+                if (setConnectorTypeCmd == null)
+                    setConnectorTypeCmd = new SetConnectorTypeCommand();
+
+                return setConnectorTypeCmd;
+            }
+        }
     }
 
     public class ShowPackageManagerCommand : ICommand
@@ -1872,6 +1884,37 @@ namespace Dynamo.Commands
                 return false;
             }
 
+            return true;
+        }
+    }
+
+    public class SetConnectorTypeCommand : ICommand
+    {
+        public void Execute(object parameters)
+        {
+            if (parameters.ToString() == "BEZIER")
+            {
+                dynSettings.Controller.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
+            }
+            else
+            {
+                dynSettings.Controller.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            //parameter object will be BEZIER or POLYLINE
+            if(string.IsNullOrEmpty(parameters.ToString()))
+            {
+                return false;
+            }
             return true;
         }
     }

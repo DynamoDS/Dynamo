@@ -114,8 +114,11 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
+
+            var val = ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
                 .Item.Invoke(args);
+
+            return val;
         }
     }
 

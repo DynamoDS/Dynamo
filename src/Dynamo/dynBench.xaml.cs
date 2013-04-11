@@ -270,7 +270,7 @@ namespace Dynamo.Controls
                                                                                .SelectMany(x => x.Connectors)
                                                                                .Concat(
                                                                                    el.InPorts.SelectMany(
-                                                                                       x => x.Connectors)));
+                                                                                       x => x.Connectors))).Distinct();
 
                 foreach (dynConnector connector in allConnectors)
                 {
@@ -303,6 +303,7 @@ namespace Dynamo.Controls
                 else
                 {
                     Canvas.SetTop(selectionBox, mousePos.Y);
+
                     selectionBox.Height = mouseDownPos.Y - mousePos.Y;
                 }
 
@@ -468,7 +469,6 @@ namespace Dynamo.Controls
             Log(e.StackTrace);
         }
 
-
         internal void BeginDragElement(dynNodeUI nodeUI, string name, Point eleOffset)
         {
             if (UILocked)
@@ -512,49 +512,6 @@ namespace Dynamo.Controls
 
             overlayCanvas.IsHitTestVisible = true;
         }
-
-
-        //private void Open_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //string xmlPath = "C:\\test\\myWorkbench.xml";
-        //    string xmlPath = "";
-
-        //    System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog()
-        //    {
-        //        Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*"
-        //    };
-
-        //    if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-        //    {
-        //        xmlPath = openDialog.FileName;
-        //    }
-
-        //    if (!string.IsNullOrEmpty(xmlPath))
-        //    {
-        //        if (this.UILocked)
-        //        {
-        //            ViewModel.QueueLoad(xmlPath);
-        //            return;
-        //        }
-
-        //        LockUI();
-        //        if (!ViewModel.OpenDefinition(xmlPath))
-        //        {
-        //            //MessageBox.Show("Workbench could not be opened.");
-        //            Log("Workbench could not be opened.");
-
-        //            //dynSettings.Writer.WriteLine("Workbench could not be opened.");
-        //            //dynSettings.Writer.WriteLine(xmlPath);
-
-        //            if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-        //            {
-        //                DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
-        //                DynamoCommands.WriteToLogCmd.Execute(xmlPath);
-        //            }
-        //        }
-        //        UnlockUI();
-        //    }
-        //}
 
         private void WindowClosed(object sender, EventArgs e)
         {
@@ -665,14 +622,6 @@ namespace Dynamo.Controls
                 SearchBox.SelectAll();
             }
         }
-
-
-        //internal void ChangeView_Click(object sender, RoutedEventArgs e)
-        //{
-        //    System.Windows.Controls.MenuItem item = sender as System.Windows.Controls.MenuItem;
-
-        //    ViewModel.DisplayFunction(item.Header.ToString());
-        //}
 
         internal void setFunctionBackground()
         {

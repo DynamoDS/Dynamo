@@ -68,7 +68,7 @@ namespace Dynamo.Connectors
 
         List<dynConnector> connectors = new List<dynConnector>();
         Point center;
-
+        bool isConnected;
         dynNodeUI owner;
         int index;
         PortType portType;
@@ -140,11 +140,23 @@ namespace Dynamo.Connectors
             get { return index; }
             set { index = value; }
         }
+
+        public bool IsConnected
+        {
+            get
+            { return isConnected; }
+            set
+            {
+                isConnected = value;
+                NotifyPropertyChanged("IsConnected");
+            }
+        }
+
         #endregion
 
         #region constructors
 
-        public dynPort(int index)
+        public dynPort(int index, PortType portType, dynNodeUI owner, string name)
         {
             InitializeComponent();
 
@@ -155,6 +167,30 @@ namespace Dynamo.Connectors
 
             portNameTb.DataContext = this;
             toolTipText.DataContext = this;
+            ellipse1Dot.DataContext = this;
+
+            IsConnected = false;
+
+            PortType = portType;
+            Owner = owner;
+            PortName = name;
+
+            portGrid.Loaded += new RoutedEventHandler(portGrid_Loaded);
+        }
+
+        void portGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //flip the output ports so they show up on the 
+            //right hand side of the node with text on the left
+            //do this after the port is loaded so we can get
+            //its ActualWidth
+            if (PortType == Dynamo.Connectors.PortType.OUTPUT)
+            {
+                ScaleTransform trans = new ScaleTransform(-1, 1, ActualWidth/2, Height / 2);
+                portGrid.RenderTransform = trans;
+                portNameTb.Margin = new Thickness(0, 0, 15, 0);
+                portNameTb.TextAlignment = TextAlignment.Right;
+            }
         }
         #endregion constructors
 
@@ -163,11 +199,10 @@ namespace Dynamo.Connectors
         {
             connectors.Add(connector);
 
-            ellipse1Dot.Fill = System.Windows.Media.Brushes.Black;
-
             //throw the event for a connection
             OnPortConnected(EventArgs.Empty);
 
+            IsConnected = true;
         }
 
         public void Disconnect(dynConnector connector)
@@ -183,11 +218,14 @@ namespace Dynamo.Connectors
             //don't set back to white if
             //there are still connectors on this port
             if (connectors.Count == 0)
-                ellipse1Dot.Fill = System.Windows.Media.Brushes.White;
+            {
+                IsConnected = false;
+            }
 
             if (connectors.Count == 0)
                 Owner.State = ElementState.DEAD;
 
+            
         }
 
         public void Update()

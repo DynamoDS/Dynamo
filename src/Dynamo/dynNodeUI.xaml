@@ -2,10 +2,11 @@
     x:ClassModifier="public"
     x:FieldModifier="public"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:local="clr-namespace:Dynamo.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dropShadow="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-    Height="300"
+    xmlns:local="clr-namespace:Dynamo.Controls"
+    Height="{Binding Path=PreferredHeight}"
+    MinWidth="100"
     Width="160" 
     Name="topControl" 
     Loaded="topControl_Loaded" 
@@ -47,29 +48,27 @@
                 <MenuItem Name="deleteElem_cm" Header="Delete" Click="deleteElem_cm_Click" />
             </ContextMenu>
         </Grid.ContextMenu>
-        <Grid Name="gridLeft" 
+        <StackPanel Name="gridLeft" 
             Margin="-7,5,0,5"
             HorizontalAlignment="Left"
             IsHitTestVisible="True" 
             Background="Transparent"
-            Canvas.ZIndex="90">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"/>
-                <!--<ColumnDefinition Width="Auto"/>-->
-            </Grid.ColumnDefinitions>
-        </Grid>
-        <Grid Name="gridRight" 
+            Canvas.ZIndex="90" Width="Auto">
+            <ItemsControl ItemsSource="{Binding Path=InPorts}">
+
+            </ItemsControl>
+        </StackPanel>
+        <StackPanel Name="gridRight" 
               HorizontalAlignment="Right" 
               VerticalAlignment="Stretch"
               Margin="0,5,-7,5" 
               IsHitTestVisible="True" 
               Background="Transparent"
-              Canvas.ZIndex="90">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"/>
-                <!--<ColumnDefinition Width="Auto"/>-->
-            </Grid.ColumnDefinitions>
-        </Grid>
+              Canvas.ZIndex="90" Width="Auto">
+            <ItemsControl ItemsSource="{Binding Path=OutPorts}">
+                
+            </ItemsControl>
+        </StackPanel>
         <Canvas Canvas.Left="0" 
                 Canvas.Top="0" 
                 Name="elementCanvas" 

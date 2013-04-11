@@ -52,7 +52,7 @@ namespace Dynamo.Tests
             dynSettings.Writer = tw;
 
             //create a new instance of the ViewModel
-            var controller = new DynamoController();
+            var controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment());
         }
 
         public static void EmptyTempFolder()
