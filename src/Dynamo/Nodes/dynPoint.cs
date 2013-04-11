@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
     [NodeName("Drawable Point")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
     [NodeDescription("An example of a point that can be drawn.")]
-    class dynPoint3D : dynNodeWithOneOutput, IDrawable
+    class dynPoint3D : dynNodeWithOneOutput
     {
         Point3D p;
         Point3DCollection points = new Point3DCollection();
@@ -81,11 +81,6 @@ namespace Dynamo.Nodes
         public virtual Mesh3D[] Meshes()
         {
             return null;
-        }
-
-        public RenderDescription Draw()
-        {
-            throw new NotImplementedException();
         }
     }
 

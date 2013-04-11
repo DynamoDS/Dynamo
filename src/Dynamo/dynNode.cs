@@ -123,7 +123,16 @@ namespace Dynamo.Nodes
             {
                 _isDirty = value;
                 if (value && _report && WorkSpace != null)
+                {
                     WorkSpace.Modified();
+
+                    //clear the current rendering results
+                    //for this nodes
+                    if (WorkSpace.RenderData.ContainsKey(NodeUI.GUID))
+                    {
+                        WorkSpace.RenderData[NodeUI.GUID].Clear();
+                    }
+                }
             }
         }
 
@@ -133,7 +142,10 @@ namespace Dynamo.Nodes
         protected internal bool isDirty
         {
             get { return _isDirty; }
-            set { RequiresRecalc = value; }
+            set 
+            { 
+                RequiresRecalc = value;
+            }
         }
 
         private bool _saveResult = false;

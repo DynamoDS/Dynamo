@@ -39,7 +39,7 @@ namespace Dynamo.Nodes
     {
         HelixViewport3D view;
 
-        LinesVisual3D axis;
+        //LinesVisual3D axis;
 
         PointsVisual3D helixChildPoints;
         LinesVisual3D helixChildLines;
@@ -129,22 +129,22 @@ namespace Dynamo.Nodes
 
             watchMeshes = new List<Mesh3D>();
 
-            axis = new LinesVisual3D
-            {
-                Color = Colors.Gray,
-                Thickness = 0.1
-            };
+            //axis = new LinesVisual3D
+            //{
+            //    Color = Colors.Gray,
+            //    Thickness = 0.1
+            //};
             
-            axis.Points.Add(new Point3D(1000, 0, 0));
-            axis.Points.Add(new Point3D(-1000, 0, 0));
+            //axis.Points.Add(new Point3D(1000, 0, 0));
+            //axis.Points.Add(new Point3D(-1000, 0, 0));
 
-            axis.Points.Add(new Point3D(0, 1000, 0));
-            axis.Points.Add(new Point3D(0, -1000, 0));
+            //axis.Points.Add(new Point3D(0, 1000, 0));
+            //axis.Points.Add(new Point3D(0, -1000, 0));
 
-            axis.Points.Add(new Point3D(0, 0, 1000));
-            axis.Points.Add(new Point3D(0, 0, -1000));
+            //axis.Points.Add(new Point3D(0, 0, 1000));
+            //axis.Points.Add(new Point3D(0, 0, -1000));
 
-            view.Children.Add(axis);
+            //view.Children.Add(axis);
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -208,47 +208,47 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void PredrawNode(dynNode node)
-        {
-            IDrawable d = node as IDrawable;
+        //private void PredrawNode(dynNode node)
+        //{
+        //    IDrawable d = node as IDrawable;
 
-            if (d != null)
-                PredrawIDrawable(d);
+        //    if (d != null)
+        //        PredrawIDrawable(d);
 
-            foreach (KeyValuePair<int, Tuple<int, dynNode>> entry in node.Inputs)
-            {
-                PredrawNode(entry.Value.Item2);
-            }
-        }
+        //    foreach (KeyValuePair<int, Tuple<int, dynNode>> entry in node.Inputs)
+        //    {
+        //        PredrawNode(entry.Value.Item2);
+        //    }
+        //}
 
-        private void PredrawIDrawable(IDrawable drawable)
-        {
-            RenderDescription description = drawable.Draw();
+        //private void PredrawIDrawable(IDrawable drawable)
+        //{
+        //    RenderDescription description = drawable.Draw();
 
-            if (description.points != null)
-            {
-                foreach (Point3D p in description.points)
-                {
-                    watchPoints.Add(p);
-                }
-            }
-            
-            if (description.lines != null)
-            {
-                foreach (Point3D p in description.lines)
-                {
-                    watchLines.Add(p);
-                }
-            }
+        //    if (description.points != null)
+        //    {
+        //        foreach (Point3D p in description.points)
+        //        {
+        //            watchPoints.Add(p);
+        //        }
+        //    }
 
-            if (description.meshes != null)
-            {
-                foreach (Mesh3D mesh in description.meshes)
-                {
-                    watchMeshes.Add(mesh);
-                }
-            }
-        }
+        //    if (description.lines != null)
+        //    {
+        //        foreach (Point3D p in description.lines)
+        //        {
+        //            watchLines.Add(p);
+        //        }
+        //    }
+
+        //    if (description.meshes != null)
+        //    {
+        //        foreach (Mesh3D mesh in description.meshes)
+        //        {
+        //            watchMeshes.Add(mesh);
+        //        }
+        //    }
+        //}
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -257,10 +257,40 @@ namespace Dynamo.Nodes
             NodeUI.Dispatcher.Invoke(new Action(delegate {
                 ClearPointsCollections();
 
-                foreach (KeyValuePair<int, Tuple<int, dynNode>> entry in Inputs)
+                var descendants = Inputs.Values.SelectMany(x=>x.Item2.DescendantsAndSelf());
+                var guids = descendants.Where(x => x is IDrawable).Select(x=>x.NodeUI.GUID);
+                var renderDataLists = dynSettings.Controller.CurrentSpace.RenderData.
+                    Where(x => guids.Contains(x.Key)).
+                    Select(x=>x.Value);
+                
+                var points = renderDataLists.SelectMany(x=>x).Select(x=>x.points);
+                var lines = renderDataLists.SelectMany(x => x).Select(x => x.lines);
+                var meshes = renderDataLists.SelectMany(x => x).Select(x => x.meshes);
+
+                foreach (Point3DCollection pColl in points)
                 {
-                    PredrawNode(entry.Value.Item2);
+                    foreach (Point3D p in pColl)
+                    {
+                        watchPoints.Add(p);
+                    }
                 }
+                foreach (Point3DCollection lColl in lines)
+                {
+                    foreach (Point3D p in lColl)
+                    {
+                        watchLines.Add(p);
+                    }
+                }
+
+                //foreach (Point3D p in points)
+                //{
+                //    watchPoints.Add(p);
+                //}
+
+                //foreach (KeyValuePair<int, Tuple<int, dynNode>> entry in Inputs)
+                //{
+                //    PredrawNode(entry.Value.Item2);
+                //}
             }));
 
             return input;

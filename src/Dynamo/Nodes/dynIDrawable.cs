@@ -13,11 +13,18 @@ namespace Dynamo.Nodes
     {
         public Point3DCollection points = null;
         public Point3DCollection lines = null;
-        public Mesh3D[] meshes = null;
+        public List<Mesh3D> meshes = null;
+
+        public RenderDescription()
+        {
+            points = new Point3DCollection();
+            lines = new Point3DCollection();
+            meshes = new List<Mesh3D>();
+        }
     }
     
     public interface IDrawable
     {
-        RenderDescription Draw();
+        RenderDescription Draw(object obj);
     }
 }
