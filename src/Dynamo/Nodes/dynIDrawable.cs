@@ -11,13 +11,13 @@ namespace Dynamo.Nodes
 {
     public class RenderDescription
     {
-        public Point3DCollection points;
-        public Point3DCollection lines;
-        public Mesh3D[] meshes;
+        public Point3DCollection points = null;
+        public Point3DCollection lines = null;
+        public Mesh3D[] meshes = null;
     }
     
     public interface IDrawable
     {
-        RenderDescription Draw(object objectToDraw, Func<object> renderFunction);
+        RenderDescription Draw();
     }
 }

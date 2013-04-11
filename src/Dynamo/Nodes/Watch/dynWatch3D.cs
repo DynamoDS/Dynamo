@@ -223,25 +223,27 @@ namespace Dynamo.Nodes
 
         private void PredrawIDrawable(IDrawable drawable)
         {
-            if (drawable.Points() != null)
+            RenderDescription description = drawable.Draw();
+
+            if (description.points != null)
             {
-                foreach (Point3D p in drawable.Points())
+                foreach (Point3D p in description.points)
                 {
                     watchPoints.Add(p);
                 }
             }
 
-            if (drawable.Lines() != null)
+            if (description.lines != null)
             {
-                foreach (Point3D p in drawable.Lines())
+                foreach (Point3D p in description.lines)
                 {
                     watchLines.Add(p);
                 }
             }
 
-            if (drawable.Meshes() != null)
+            if (description.meshes != null)
             {
-                foreach (Mesh3D mesh in drawable.Meshes())
+                foreach (Mesh3D mesh in description.meshes)
                 {
                     watchMeshes.Add(mesh);
                 }
