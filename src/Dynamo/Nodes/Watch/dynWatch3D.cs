@@ -208,22 +208,21 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void PredrawValue(Value val)
+        private void PredrawNode(dynNode node)
         {
-            if (!val.IsContainer)
-                return;
+            IDrawable d = node as IDrawable;
 
-            IDrawable d = ((Value.Container)val).Item as IDrawable;
+            if (d != null)
+                PredrawIDrawable(d);
 
-            if (d == null)
-                return;
-
-            PredrawIDrawable(d);
+            foreach (KeyValuePair<int, Tuple<int, dynNode>> entry in node.Inputs)
+            {
+                PredrawNode(entry.Value.Item2);
+            }
         }
 
         private void PredrawIDrawable(IDrawable drawable)
         {
-
             RenderDescription description = drawable.Draw();
 
             if (description.points != null)
@@ -233,7 +232,7 @@ namespace Dynamo.Nodes
                     watchPoints.Add(p);
                 }
             }
-
+            
             if (description.lines != null)
             {
                 foreach (Point3D p in description.lines)
@@ -256,22 +255,11 @@ namespace Dynamo.Nodes
             var input = args[0];
 
             NodeUI.Dispatcher.Invoke(new Action(delegate {
-
                 ClearPointsCollections();
 
-                if (input.IsList)
+                foreach (KeyValuePair<int, Tuple<int, dynNode>> entry in Inputs)
                 {
-                    FSharpList<Value> containers = Utils.SequenceToFSharpList(
-                        ((Value.List)input).Item);
-
-                    foreach (Value val in containers) 
-                    {
-                        PredrawValue(val);
-                    }
-                }
-                else
-                {
-                    PredrawValue(args[0]);
+                    PredrawNode(entry.Value.Item2);
                 }
             }));
 

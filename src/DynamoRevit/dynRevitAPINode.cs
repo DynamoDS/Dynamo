@@ -49,12 +49,6 @@ namespace Dynamo.Nodes
 
             return dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
         }
-
-        public RenderDescription Draw()
-        {
-            //TODO: draw something
-            throw new NotImplementedException();
-        }
     }
 
     /// <summary>

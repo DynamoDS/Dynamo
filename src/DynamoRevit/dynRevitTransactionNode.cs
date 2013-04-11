@@ -11,10 +11,18 @@ using Value = Dynamo.FScheme.Value;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
+
 namespace Dynamo.Revit
 {
-    public abstract class dynRevitTransactionNode : dynNode
+    public abstract class dynRevitTransactionNode : dynNode, IDrawable
     {
+        protected object drawableObject = null;
+        protected Func<object, RenderDescription> drawMethod = null;
+
+        private Type base_type = null;
+
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
         {
@@ -41,6 +49,71 @@ namespace Dynamo.Revit
             {
                 elements[runCount] = value;
             }
+        }
+
+        public RenderDescription Draw()
+        {
+            if (base_type == null)
+            {
+                if (Elements.Count == 0)
+                    return new RenderDescription();
+
+                Element elem = dynRevitSettings.Doc.Document.GetElement(Elements[0]);
+                base_type = elem.GetType();
+            }
+
+            if (drawableObject != null)
+                return drawMethod.Invoke(drawableObject);
+            if (base_type.IsSubclassOf(typeof(Autodesk.Revit.DB.ReferencePoint)))
+                drawMethod = DrawReferencePoint;
+            else if (base_type.IsSubclassOf(typeof(Autodesk.Revit.DB.Curve)))
+                drawMethod = DrawCurve;
+            else if (base_type.IsSubclassOf(typeof(Autodesk.Revit.DB.CurveElement)))
+                drawMethod = DrawCurveElemet;
+            else
+                drawMethod = DrawUndrawable;
+
+            drawableObject = dynRevitSettings.Doc.Document.GetElement(Elements[0]);
+
+            return drawMethod.Invoke(drawableObject);
+        }
+
+        private static RenderDescription DrawUndrawable(object obj)
+        {
+            return new RenderDescription();
+        }
+
+        private static RenderDescription DrawReferencePoint(object obj)
+        {
+            RenderDescription description = new RenderDescription();
+            ReferencePoint point = obj as ReferencePoint;
+            description.points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
+                point.GetCoordinateSystem().Origin.Y,
+                point.GetCoordinateSystem().Origin.Z));
+
+            return description;
+        }
+
+        private static RenderDescription DrawCurve(object obj)
+        {
+            Autodesk.Revit.DB.Curve curve = obj as Autodesk.Revit.DB.Curve;
+
+            IList<XYZ> points = curve.Tessellate();
+
+            RenderDescription description = new RenderDescription();
+
+            foreach (XYZ xyz in points)
+            {
+                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+            }
+
+            return description;
+        }
+        private static RenderDescription DrawCurveElemet(object obj)
+        {
+            Autodesk.Revit.DB.CurveElement elem = obj as Autodesk.Revit.DB.CurveElement;
+
+            return DrawCurve(elem.GeometryCurve);
         }
 
         //TODO: Move handling of increments to wrappers for eval. Should never have to touch this in subclasses.

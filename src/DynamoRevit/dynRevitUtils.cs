@@ -145,37 +145,6 @@ namespace Dynamo.Utilities
 
             return DynamoTypeConverter.ConvertToValue(result);
         }
-
-        public static Dynamo.Nodes.RenderDescription DrawPoint(Autodesk.Revit.DB.ReferencePoint point)
-        {
-            return null;
-        }
-
-        public static Dynamo.Nodes.RenderDescription DrawCurveElement(Autodesk.Revit.DB.CurveElement elem)
-        {
-            return DrawCurve(elem.GeometryCurve);
-        }
-
-        public static Dynamo.Nodes.RenderDescription DrawCurve(Autodesk.Revit.DB.Curve curve) 
-        {
-            return null;
-        }
-
-        public static Dynamo.Nodes.RenderDescription DrawFace(Autodesk.Revit.DB.Face face)
-        {
-            return null;
-        }
-
-        public static Dynamo.Nodes.RenderDescription DrawSolid(Autodesk.Revit.DB.Solid solid)
-        {
-            return null;
-        }
-
-
-
-
-
-
     }
 
     /// <summary>
