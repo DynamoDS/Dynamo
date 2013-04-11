@@ -8,6 +8,10 @@ using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Connectors;
 using Dynamo.Revit;
+
+using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
+
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Microsoft.FSharp.Collections;
@@ -18,7 +22,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for all auto-generated Revit API nodes.
     /// </summary>
-    public abstract class dynRevitAPINode : dynRevitTransactionNodeWithOneOutput
+    public abstract class dynRevitAPINode : dynRevitTransactionNodeWithOneOutput, IDrawable
     {
         protected Type base_type;
         protected Type return_type;
@@ -38,23 +42,18 @@ namespace Dynamo.Nodes
         ///</summary>
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //Elements.ForEach(
-            //delegate(ElementId el)
-            //{
-            //    Element e;
-            //    if (dynUtils.TryGetElement(el, out e))
-            //    {
-            //        DeleteElement(e.Id);
-            //    }
-            //});
-            //Elements.Clear();
-
             foreach (var e in this.Elements)
             {
                 this.DeleteElement(e);
             }
 
             return dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
+        }
+
+        public RenderDescription Draw()
+        {
+            //TODO: draw something
+            throw new NotImplementedException("Implement drawing for different types of Revit elements.");
         }
     }
 
