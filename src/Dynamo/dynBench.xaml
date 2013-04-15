@@ -300,7 +300,7 @@
                 </StackPanel>
             </ScrollViewer>
             <!--<Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>-->
-            <Grid Margin="10,10,5,5">
+            <!--<Grid Margin="10,10,5,5">
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Background">
@@ -354,9 +354,9 @@
                         </Style>
                     </TextBox.Style>
                 </TextBox>
-            </Grid>
-            <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
-                        VerticalAlignment="Stretch" Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
+            </Grid>-->
+            <!--<Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"-->
+                        <!--VerticalAlignment="Stretch" Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>-->
         </Grid>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 

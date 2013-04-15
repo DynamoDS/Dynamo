@@ -1782,7 +1782,7 @@ namespace Dynamo.Commands
                     object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
                     NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
-                    dynNode el = dynSettings.Controller.AddDynElement(
+                    dynNode el = dynSettings.Controller.CreateInstanceAndAddNodeToWorkspace(
                            t, elNameAttrib.Name, Guid.NewGuid(), x, y,
                            dynSettings.Controller.CurrentSpace
                         );

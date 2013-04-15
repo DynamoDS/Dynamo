@@ -139,28 +139,25 @@ namespace Dynamo
             this.RunEnabled = true;
             this.CanRunDynamically = true;
 
-            this.ActivateBench();
+            this.Initialize(env);
+        }
+
+
+        private void Initialize(ExecutionEnvironment env)
+        {
+            DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
+
+            Bench = new dynBench(this);
+            dynSettings.Bench = Bench;           
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
             PackageManagerLoginViewModel = new PackageManagerLoginViewModel(PackageManagerClient);
             PackageManagerPublishViewModel = new PackageManagerPublishViewModel(PackageManagerClient);
- 
+
             FSchemeEnvironment = env;
 
-            LoadBuiltinTypes();
-            PopulateSamplesMenu();
-        }
-
-        private void ActivateBench()
-        {
-            Bench = new dynBench(this);
-            DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
-            
             HomeSpace = CurrentSpace = new HomeWorkspace();
-
-            //Bench.CurrentX = dynBench.CANVAS_OFFSET_X;
-            //Bench.CurrentY = dynBench.CANVAS_OFFSET_Y;
             Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
 
             Bench.InitializeComponent();
@@ -168,9 +165,9 @@ namespace Dynamo
                 "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            dynSettings.Bench = Bench;
+            LoadBuiltinTypes();
+            PopulateSamplesMenu();
 
-            //WTF
             Bench.settings_curves.IsChecked = true;
             Bench.settings_curves.IsChecked = false;
 
@@ -194,6 +191,7 @@ namespace Dynamo
                 _benchActivated = true;
 
                 LoadUserTypes();
+
                 Bench.Log("Welcome to Dynamo!");
 
                 if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
@@ -216,17 +214,17 @@ namespace Dynamo
                 Bench.UnlockUI();
                 Bench.WorkBench.Visibility = Visibility.Visible;
 
-                if (DynamoCommands.CloseSplashScreenCmd.CanExecute(null))
-                {
-                    DynamoCommands.CloseSplashScreenCmd.Execute(null);
-                }
-
                 DynamoCommands.ShowSearchCmd.Execute(null);
 
                 HomeSpace.OnDisplayed();
+
+                DynamoCommands.CloseSplashScreenCmd.Execute(null);
             }
         }
 
+        #endregion
+
+        #region CommandQueue
         private void Hooks_DispatcherInactive(object sender, EventArgs e)
         {
             ProcessCommandQueue();
@@ -254,9 +252,6 @@ namespace Dynamo
                                                        Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
             }
         }
-
- 
-
         #endregion
 
         #region Loading
@@ -271,21 +266,9 @@ namespace Dynamo
         /// </summary>
         private void LoadBuiltinTypes()
         {
-            //setup the menu with all the types by reflecting
-            //the DynamoElements.dll
             Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
 
             string location = Path.GetDirectoryName(dynamoAssembly.Location);
-
-            //try getting the element types via reflection. 
-            // MDJ - I wrapped this in a try-catch as we were having problems with an 
-            // external dll (MIConvexHullPlugin.dll) not loading correctly from \dynamo\packages 
-            // because the dll did not have a strong name by default and was not loaded into the GAC.
-            // The exceptions are now caught but if there is an exception no built-in types are loaded.
-            // TODO - move the try catch inside the for loop if possible to not fail all loads. this could slow down load times though.
-
-            //var loadedAssemblies = new List<Assembly>();
-            //var assembliesToLoad = new List<string>();
 
             #region determine assemblies to load
 
@@ -345,25 +328,12 @@ namespace Dynamo
 
             #endregion
 
-            //foreach (var assembly in loadedAssemblies.Concat(assembliesToLoad.Select(Assembly.LoadFile)))
-            //    loadNodesFromAssembly(assembly);
-
-            ProcessThreadCollection threads = Process.GetCurrentProcess().Threads;
-                // trying to understand why processor pegs after loading.
-
-            //string pluginsPath = Path.Combine(location, "definitions");
-
-            //if (Directory.Exists(pluginsPath))
-            //{
-            //    loadUserAssemblies(pluginsPath);
-            //}
-
             #region PopulateUI
 
-            var sortedExpanders = new SortedDictionary<string, Tuple<Expander, SortedList<string, dynNodeUI>>>();
+            //var sortedExpanders = new SortedDictionary<string, Tuple<Expander, SortedList<string, dynNodeUI>>>();
 
-            foreach (var kvp in builtinTypesByNickname)
-            {
+            //foreach (var kvp in builtinTypesByNickname)
+            //{
                 //if (!kvp.Value.t.Equals(typeof(dynSymbol)))
                 //{
                 //   System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
@@ -374,142 +344,141 @@ namespace Dynamo
 
                 //---------------------//
 
-                object[] catAtts = kvp.Value.Type.GetCustomAttributes(typeof (NodeCategoryAttribute), false);
-                string categoryName;
-                if (catAtts.Length > 0)
-                {
-                    categoryName = ((NodeCategoryAttribute) catAtts[0]).ElementCategory;
-                }
-                else
-                {
-                    if (Bench != null)
-                        Bench.Log("No category specified for \"" + kvp.Key + "\"");
-                    continue;
-                }
+                //object[] catAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+                //string categoryName;
+                //if (catAtts.Length > 0)
+                //{
+                //    categoryName = ((NodeCategoryAttribute)catAtts[0]).ElementCategory;
+                //}
+                //else
+                //{
+                //    if (Bench != null)
+                //        Bench.Log("No category specified for \"" + kvp.Key + "\"");
+                //    continue;
+                //}
 
-                dynNode newNode = null;
+                //dynNode newNode = null;
 
-                try
-                {
-                    object obj = Activator.CreateInstance(kvp.Value.Type);
-                    newNode = (dynNode) obj; //.Unwrap();
-                    SearchViewModel.Add(newNode);
-                }
-                catch (Exception e) //TODO: Narrow down
-                {
-                    if (Bench != null)
-                    {
-                        Bench.Log("Error loading \"" + kvp.Key);
-                        Bench.Log(e.InnerException);
-                    }
-                    
-                    continue;
-                }
+                //try
+                //{
+                //    object obj = Activator.CreateInstance(kvp.Value.Type);
+                //    newNode = (dynNode)obj; //.Unwrap();
+                //    SearchViewModel.Add(newNode);
+                //}
+                //catch (Exception e) //TODO: Narrow down
+                //{
+                //    if (Bench != null)
+                //    {
+                //        Bench.Log("Error loading \"" + kvp.Key);
+                //        Bench.Log(e.InnerException);
+                //    }
 
-                try
-                {
-                    dynNodeUI nodeUI = newNode.NodeUI;
+                //    continue;
+                //}
 
-                    nodeUI.DisableInteraction();
+                //try
+                //{
+                //    dynNodeUI nodeUI = newNode.NodeUI;
 
-                    string name = kvp.Key;
+                //    nodeUI.DisableInteraction();
+
+                //    string name = kvp.Key;
 
                     //newEl.MouseDoubleClick += delegate { AddElement(name); };
 
-                    nodeUI.MouseDown += delegate
-                        {
-                            Bench.BeginDragElement(nodeUI, nodeUI.NodeLogic.GetType().ToString(),
-                                                   Mouse.GetPosition(nodeUI));
-                            nodeUI.Visibility = Visibility.Hidden;
-                        };
+                    //nodeUI.MouseDown += delegate
+                    //    {
+                    //        Bench.BeginDragElement(nodeUI, nodeUI.NodeLogic.GetType().ToString(),
+                    //                               Mouse.GetPosition(nodeUI));
+                    //        nodeUI.Visibility = Visibility.Hidden;
+                    //    };
 
-                    nodeUI.GUID = Guid.NewGuid();
-                    nodeUI.Margin = new Thickness(5, 30, 5, 5);
+                    //nodeUI.GUID = Guid.NewGuid();
+                    //nodeUI.Margin = new Thickness(5, 30, 5, 5);
 
-                    double target = Bench.sidebarGrid.Width - 30;
-                    double width = nodeUI.ActualWidth != 0 ? nodeUI.ActualWidth : nodeUI.Width;
-                    double scale = Math.Min(target/width, .8);
+                    //double target = Bench.sidebarGrid.Width - 30;
+                    //double width = nodeUI.ActualWidth != 0 ? nodeUI.ActualWidth : nodeUI.Width;
+                    //double scale = Math.Min(target / width, .8);
 
-                    nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
+                    //nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
 
-                    Tuple<Expander, SortedList<string, dynNodeUI>> expander;
+                    //Tuple<Expander, SortedList<string, dynNodeUI>> expander;
 
-                    if (sortedExpanders.ContainsKey(categoryName))
-                    {
-                        expander = sortedExpanders[categoryName];
-                    }
-                    else
-                    {
-                        var e = new Expander
-                            {
-                                Header = categoryName,
-                                Height = double.NaN,
-                                Margin = new Thickness(0, 5, 0, 0),
-                                Content = new WrapPanel
-                                    {
-                                        Height = double.NaN,
-                                        Width = double.NaN
-                                    },
-                                HorizontalAlignment = HorizontalAlignment.Left,
-                                Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
-                            };
+                    //if (sortedExpanders.ContainsKey(categoryName))
+                    //{
+                    //    expander = sortedExpanders[categoryName];
+                    //}
+                    //else
+                    //{
+                    //    var e = new Expander
+                    //        {
+                    //            Header = categoryName,
+                    //            Height = double.NaN,
+                    //            Margin = new Thickness(0, 5, 0, 0),
+                    //            Content = new WrapPanel
+                    //                {
+                    //                    Height = double.NaN,
+                    //                    Width = double.NaN
+                    //                },
+                    //            HorizontalAlignment = HorizontalAlignment.Left,
+                    //            Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
+                    //        };
 
-                        Bench.addMenuCategoryDict[categoryName] = e;
+                    //    Bench.addMenuCategoryDict[categoryName] = e;
 
-                        expander = new Tuple<Expander, SortedList<string, dynNodeUI>>(e,
-                                                                                      new SortedList<string, dynNodeUI>());
+                    //    expander = new Tuple<Expander, SortedList<string, dynNodeUI>>(e,
+                    //                                                                  new SortedList<string, dynNodeUI>());
 
-                        sortedExpanders[categoryName] = expander;
-                    }
+                    //    sortedExpanders[categoryName] = expander;
+                    //}
 
-                    SortedList<string, dynNodeUI> sortedElements = expander.Item2;
-                    sortedElements.Add(kvp.Key, nodeUI);
+                    //SortedList<string, dynNodeUI> sortedElements = expander.Item2;
+                    //sortedElements.Add(kvp.Key, nodeUI);
 
-                    Bench.addMenuItemsDictNew[kvp.Key] = nodeUI;
+                    //Bench.addMenuItemsDictNew[kvp.Key] = nodeUI;
 
-                    //--------------//
 
-                    object[] tagAtts = kvp.Value.Type.GetCustomAttributes(typeof (NodeSearchTagsAttribute), false);
+                    //object[] tagAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
 
-                    List<string> tags = null;
+                    //List<string> tags = null;
 
-                    if (tagAtts.Length > 0)
-                    {
-                        tags = ((NodeSearchTagsAttribute) tagAtts[0]).Tags;
-                    }
+                    //if (tagAtts.Length > 0)
+                    //{
+                    //    tags = ((NodeSearchTagsAttribute)tagAtts[0]).Tags;
+                    //}
 
-                    if (tags != null)
-                    {
-                        searchDict.Add(nodeUI, tags.Where(x => x.Length > 0));
-                    }
+                    //if (tags != null)
+                    //{
+                    //    searchDict.Add(nodeUI, tags.Where(x => x.Length > 0));
+                    //}
 
-                    searchDict.Add(nodeUI, kvp.Key);
-                }
-                catch (Exception e)
-                {
-                    if (Bench != null)
-                    {
-                        Bench.Log("Error loading \"" + kvp.Key);
-                        Bench.Log(e);
-                    } 
-                }
-            }
+                    //searchDict.Add(nodeUI, kvp.Key);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        if (Bench != null)
+            //        {
+            //            Bench.Log("Error loading \"" + kvp.Key);
+            //            Bench.Log(e);
+            //        }
+            //    }
+            //}
 
-            //Add everything to the menu here
-            foreach (var kvp in sortedExpanders)
-            {
-                Tuple<Expander, SortedList<string, dynNodeUI>> expander = kvp.Value;
-                Bench.SideStackPanel.Children.Add(expander.Item1);
-                var wp = (WrapPanel) expander.Item1.Content;
-                foreach (dynNodeUI e in expander.Item2.Values)
-                {
-                    wp.Children.Add(e);
-                }
-            }
+            ////Add everything to the menu here
+            //foreach (var kvp in sortedExpanders)
+            //{
+            //    Tuple<Expander, SortedList<string, dynNodeUI>> expander = kvp.Value;
+            //    Bench.SideStackPanel.Children.Add(expander.Item1);
+            //    var wp = (WrapPanel)expander.Item1.Content;
+            //    foreach (dynNodeUI e in expander.Item2.Values)
+            //    {
+            //        wp.Children.Add(e);
+            //    }
+            //}
 
             #endregion
+        
         }
-
 
         private bool isNodeSubType(Type t)
         {
@@ -532,6 +501,7 @@ namespace Dynamo
 
                     if (isNodeSubType(t) && attribs.Length > 0)
                     {
+                        SearchViewModel.Add(t);
                         string typeName = (attribs[0] as NodeNameAttribute).Name;
                         var data = new TypeLoadData(assembly, t);
                         builtinTypesByNickname.Add(typeName, data);
@@ -619,6 +589,7 @@ namespace Dynamo
             //this.fileMenu.Items.Remove(this.samplesMenu);
         }
 
+        // TODO: deprecated callback
         private void sample_Click(object sender, RoutedEventArgs e)
         {
             var path = (string) ((MenuItem) sender).Tag;
@@ -645,11 +616,32 @@ namespace Dynamo
             if (Directory.Exists(pluginsPath))
             {
                 Bench.Log("Autoloading definitions...");
-                loadUserWorkspaces(pluginsPath);
+                //loadUserWorkspaces(pluginsPath);
+                StoreUserWorkspaces(pluginsPath);
             }
         }
 
-        private void loadUserWorkspaces(string directory)
+        //private void loadUserWorkspaces(string directory)
+        //{
+        //    dynSettings.FunctionDict.Clear();
+        //    dynSettings.FunctionWasEvaluated.Clear();
+
+        //    var parentBuffer = new Dictionary<Guid, HashSet<Guid>>();
+        //    var childrenBuffer = new Dictionary<Guid, HashSet<FunctionDefinition>>();
+        //    string[] filePaths = Directory.GetFiles(directory, "*.dyf");
+        //    foreach (string filePath in filePaths)
+        //    {
+        //        OpenDefinition(filePath, childrenBuffer, parentBuffer);
+        //    }
+        //    foreach (dynNode e in AllNodes)
+        //    {
+        //        e.EnableReporting();
+        //    }
+        //}
+
+
+ 
+        private void StoreUserWorkspaces(string directory)
         {
             dynSettings.FunctionDict.Clear();
             dynSettings.FunctionWasEvaluated.Clear();
@@ -667,21 +659,23 @@ namespace Dynamo
             }
         }
 
+        // get guid from 
+
         #endregion
 
         #region Node Initialization
 
+
         /// <summary>
-        ///     This method adds dynElements when opening from a file
+        ///     Create a node from a type object in a given workspace.
         /// </summary>
-        /// <param name="elementType"></param>
-        /// <param name="nickName"></param>
-        /// <param name="guid"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public dynNode AddDynElement(
-            Type elementType, string nickName, Guid guid,
+        /// <param name="elementType"> The Type object from which the node can be activated </param>
+        /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
+        /// <param name="guid"> The unique identifier for the node in the workspace. </param>
+        /// <param name="x"> The x coordinate where the dynNodeUI will be placed </param>
+        /// <param name="y"> The x coordinate where the dynNodeUI will be placed</param>
+        /// <returns> The newly instantiate dynNode</returns>
+        public dynNode CreateInstanceAndAddNodeToWorkspace( Type elementType, string nickName, Guid guid,
             double x, double y, dynWorkspace ws,
             Visibility vis = Visibility.Visible)
         {
@@ -737,11 +731,16 @@ namespace Dynamo
             }
         }
 
-        internal FunctionDefinition NewFunction(Guid id, string name, string category, bool display)
+        internal FunctionDefinition NewFunction(Guid id, 
+                                                string name, 
+                                                string category, 
+                                                bool display, 
+                                                double workspaceOffsetX = dynBench.CANVAS_OFFSET_X, 
+                                                double workspaceOffsetY = dynBench.CANVAS_OFFSET_Y )
         {
             //Add an entry to the funcdict
             var workSpace = new FuncWorkspace(
-                name, category, dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+                name, category, workspaceOffsetX, workspaceOffsetY);
 
             List<dynNode> newElements = workSpace.Nodes;
             List<dynConnector> newConnectors = workSpace.Connectors;
@@ -777,65 +776,68 @@ namespace Dynamo
             newEl.NodeUI.LayoutTransform = new ScaleTransform(.8, .8);
             newEl.NodeUI.State = ElementState.DEAD;
 
-            Expander expander;
+            #region add to deprecated sidebar
+            //Expander expander;
 
-            if (Bench.addMenuCategoryDict.ContainsKey(category))
-            {
-                expander = Bench.addMenuCategoryDict[category];
-            }
-            else
-            {
-                expander = new Expander
-                    {
-                        Header = category,
-                        Height = double.NaN,
-                        Margin = new Thickness(0, 5, 0, 0),
-                        Content = new WrapPanel
-                            {
-                                Height = double.NaN,
-                                Width = 240
-                            },
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        //FontWeight = FontWeights.Bold
-                        Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
-                    };
+            //if (Bench.addMenuCategoryDict.ContainsKey(category))
+            //{
+            //    expander = Bench.addMenuCategoryDict[category];
+            //}
+            //else
+            //{
+            //    expander = new Expander
+            //        {
+            //            Header = category,
+            //            Height = double.NaN,
+            //            Margin = new Thickness(0, 5, 0, 0),
+            //            Content = new WrapPanel
+            //                {
+            //                    Height = double.NaN,
+            //                    Width = 240
+            //                },
+            //            HorizontalAlignment = HorizontalAlignment.Left,
+            //            //FontWeight = FontWeights.Bold
+            //            Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
+            //        };
 
-                Bench.addMenuCategoryDict[category] = expander;
+            //    Bench.addMenuCategoryDict[category] = expander;
 
-                var sortedExpanders = new SortedList<string, Expander>();
-                foreach (Expander child in Bench.SideStackPanel.Children)
-                {
-                    sortedExpanders.Add((string) child.Header, child);
-                }
-                sortedExpanders.Add(category, expander);
+            //    var sortedExpanders = new SortedList<string, Expander>();
+            //    foreach (Expander child in Bench.SideStackPanel.Children)
+            //    {
+            //        sortedExpanders.Add((string) child.Header, child);
+            //    }
+            //    sortedExpanders.Add(category, expander);
 
-                Bench.SideStackPanel.Children.Clear();
+            //    Bench.SideStackPanel.Children.Clear();
 
-                foreach (Expander child in sortedExpanders.Values)
-                {
-                    Bench.SideStackPanel.Children.Add(child);
-                }
-            }
+            //    foreach (Expander child in sortedExpanders.Values)
+            //    {
+            //        Bench.SideStackPanel.Children.Add(child);
+            //    }
+            //}
 
-            var wp = (WrapPanel) expander.Content;
+            //var wp = (WrapPanel) expander.Content;
 
-            var sortedElements = new SortedList<string, dynNodeUI>();
-            foreach (dynNodeUI child in wp.Children)
-            {
-                sortedElements.Add(child.NickName, child);
-            }
-            sortedElements.Add(name, newEl.NodeUI);
+            //var sortedElements = new SortedList<string, dynNodeUI>();
+            //foreach (dynNodeUI child in wp.Children)
+            //{
+            //    sortedElements.Add(child.NickName, child);
+            //}
+            //sortedElements.Add(name, newEl.NodeUI);
 
-            wp.Children.Clear();
+            //wp.Children.Clear();
 
-            foreach (dynNodeUI child in sortedElements.Values)
-            {
-                wp.Children.Add(child);
-            }
+            //foreach (dynNodeUI child in sortedElements.Values)
+            //{
+            //    wp.Children.Add(child);
+            //}
 
-            Bench.addMenuItemsDictNew[name] = newEl.NodeUI;
+            //Bench.addMenuItemsDictNew[name] = newEl.NodeUI;
 
-            searchDict.Add(newEl.NodeUI, name);
+            //searchDict.Add(newEl.NodeUI, name);
+
+            #endregion
 
             if (display)
             {
@@ -917,6 +919,7 @@ namespace Dynamo
             }
             else
             {
+
                 FunctionDefinition def;
                 dynSettings.FunctionDict.TryGetValue(Guid.Parse(name), out def);
                 if (def == null)
@@ -973,10 +976,10 @@ namespace Dynamo
         #region Saving and Opening Workspaces
 
         /// <summary>
-        ///     Attempts to save the current workspace
-        ///     to a given path.  If successful, the CurrentSpace.FilePath
-        ///     field is updated as a side effect
+        ///     Save to a specific file path, if the path is null or empty, does nothing.
+        ///     If successful, the CurrentSpace.FilePath field is updated as a side effect
         /// </summary>
+        /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
             if (!string.IsNullOrEmpty(path))
@@ -1002,6 +1005,11 @@ namespace Dynamo
                 SaveAs(CurrentSpace.FilePath);
         }
 
+        /// <summary>
+        ///     Generate the xml doc of the workspace from memory
+        /// </summary>
+        /// <param name="workSpace">The workspace</param>
+        /// <returns>The generated xmldoc</returns>
         public XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace)
         {
             try
@@ -1089,6 +1097,12 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        ///     Generate an xml doc and write the workspace to the given path
+        /// </summary>
+        /// <param name="xmlPath">The path to save to</param>
+        /// <param name="workSpace">The workspace</param>
+        /// <returns>Whether the operation was successful</returns>
         private bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
         {
             Bench.Log("Saving " + xmlPath + "...");
@@ -1110,14 +1124,22 @@ namespace Dynamo
             return true;
         }
 
+        /// <summary>
+        ///     Save a function.  This includes writing to a file and compiling the 
+        ///     function and saving it to the FSchemeEnvironment
+        /// </summary>
+        /// <param name="definition">The definition to saveo</param>
+        /// <param name="bool">Whether to write the function to file</param>
+        /// <returns>Whether the operation was successful</returns>
         public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true)
         {
             if (definition == null)
                 return;
 
+            // Get the internal nodes for the function
             dynWorkspace functionWorkspace = definition.Workspace;
 
-            //Generate xml, and save it in a fixed place
+            // If asked to, write the definition to file
             if (writeDefinition)
             {
                 string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -1139,14 +1161,20 @@ namespace Dynamo
                 }
             }
 
+            
             try
             {
+                #region Find outputs
+
+                // Find output elements for the node
                 IEnumerable<dynNode> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
 
                 var topMost = new List<Tuple<int, dynNode>>();
 
                 IEnumerable<string> outputNames;
 
+                // if we found output nodes, add select their inputs
+                // these will serve as the function output
                 if (outputs.Any())
                 {
                     topMost.AddRange(
@@ -1156,6 +1184,8 @@ namespace Dynamo
                 }
                 else
                 {
+                    // if there are no explicitly defined output nodes
+                    // get the top most nodes and set THEM as tht output
                     IEnumerable<dynNode> topMostNodes = functionWorkspace.GetTopMostNodes();
 
                     var outNames = new List<string>();
@@ -1175,14 +1205,15 @@ namespace Dynamo
                     outputNames = outNames;
                 }
 
+                #endregion
+
+                // color the node to define its connectivity
                 foreach (var ele in topMost)
                 {
                     ele.Item2.NodeUI.ValidateConnections();
                 }
 
                 //Find function entry point, and then compile the function and add it to our environment
-                //dynNode top = topMost.FirstOrDefault();
-
                 IEnumerable<dynNode> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
                 IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
 
@@ -1208,6 +1239,8 @@ namespace Dynamo
                 else
                     top = topMost[0].Item2.BuildExpression(buildDict);
 
+                // if the node has any outputs, we create a BeginNode in order to evaluate all of them
+                // sequentially (begin evaluates a list of expressions)
                 if (outputs.Any())
                 {
                     var beginNode = new BeginNode();
@@ -1223,9 +1256,11 @@ namespace Dynamo
                     top = beginNode;
                 }
 
+                // make the anonymous function
                 FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.NodeUI.GUID.ToString()),
                                                                top.Compile());
 
+                // make it accessible in the FScheme environment
                 FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), expression);
 
                 //Update existing function nodes which point to this function to match its changes
@@ -1249,16 +1284,17 @@ namespace Dynamo
                     el.onSave();
 
                 //Update new add menu
-                var addItem = (dynFunction) Bench.addMenuItemsDictNew[functionWorkspace.Name].NodeLogic;
-                addItem.SetInputs(inputNames);
-                addItem.SetOutputs(outputNames);
-                addItem.NodeUI.RegisterAllPorts();
-                addItem.NodeUI.State = ElementState.DEAD;
+                //var addItem = (dynFunction) Bench.addMenuItemsDictNew[functionWorkspace.Name].NodeLogic;
+                //addItem.SetInputs(inputNames);
+                //addItem.SetOutputs(outputNames);
+                //addItem.NodeUI.RegisterAllPorts();
+                //addItem.NodeUI.State = ElementState.DEAD;
             }
             catch (Exception ex)
             {
                 Bench.Log(ex.GetType() + ": " + ex.Message);
             }
+
         }
 
         private static string FormatFileName(string filename)
@@ -1347,20 +1383,16 @@ namespace Dynamo
 
                 Bench.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
-                //TODO: refactor to include x,y
                 FunctionDefinition def = NewFunction(
                     Guid.Parse(id),
                     funName,
                     category.Length > 0
                         ? category
                         : BuiltinNodeCategories.MISC,
-                    false
+                    false, cx, cy
                     );
 
                 dynWorkspace ws = def.Workspace;
-
-                ws.PositionX = cx;
-                ws.PositionY = cy;
 
                 //this.Log("Opening definition " + xmlPath + "...");
 
@@ -1421,7 +1453,7 @@ namespace Dynamo
                     else
                         t = tData.Type;
 
-                    dynNode el = AddDynElement(t, nickname, guid, x, y, ws, Visibility.Hidden);
+                    dynNode el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws, Visibility.Hidden);
 
                     if (el == null)
                         return false;
@@ -1429,7 +1461,6 @@ namespace Dynamo
                     el.DisableReporting();
                     el.LoadElement(elNode);
 
-                    
                     if (el is dynFunction)
                     {
                         var fun = el as dynFunction;
@@ -1586,8 +1617,8 @@ namespace Dynamo
                     SaveFunction(def, false);
 
                 PackageManagerClient.LoadPackageHeader(def, funName);
-
                 nodeWorkspaceWasLoaded(def, children, parents);
+
             }
             catch (Exception ex)
             {
@@ -1717,7 +1748,7 @@ namespace Dynamo
                     else
                         t = tData.Type;
 
-                    dynNode el = AddDynElement(
+                    dynNode el = CreateInstanceAndAddNodeToWorkspace(
                         t, nickname, guid, x, y,
                         CurrentSpace
                         );
@@ -2361,42 +2392,42 @@ namespace Dynamo
 
             SearchViewModel.Refactor(CurrentSpace, newName);
 
-            var newAddItem = (dynFunction) Bench.addMenuItemsDictNew[CurrentSpace.Name].NodeLogic;
-            if (newAddItem.NodeUI.NickName.Equals(CurrentSpace.Name))
-                newAddItem.NodeUI.NickName = newName;
+            //var newAddItem = (dynFunction) Bench.addMenuItemsDictNew[CurrentSpace.Name].NodeLogic;
+            //if (newAddItem.NodeUI.NickName.Equals(CurrentSpace.Name))
+            //    newAddItem.NodeUI.NickName = newName;
             //newAddItem.Symbol = newName;
-            Bench.addMenuItemsDictNew.Remove(CurrentSpace.Name);
-            Bench.addMenuItemsDictNew[newName] = newAddItem.NodeUI;
+            //Bench.addMenuItemsDictNew.Remove(CurrentSpace.Name);
+            //Bench.addMenuItemsDictNew[newName] = newAddItem.NodeUI;
 
-            //Sort the menu after a rename
-            Expander unsorted = Bench.addMenuCategoryDict.Values.FirstOrDefault(
-                ex => ((WrapPanel) ex.Content).Children.Contains(newAddItem.NodeUI)
-                );
+            ////Sort the menu after a rename
+            //Expander unsorted = Bench.addMenuCategoryDict.Values.FirstOrDefault(
+            //    ex => ((WrapPanel) ex.Content).Children.Contains(newAddItem.NodeUI)
+            //    );
 
-            var wp = (WrapPanel) unsorted.Content;
+            //var wp = (WrapPanel) unsorted.Content;
 
-            var sortedElements = new SortedList<string, dynNodeUI>();
-            foreach (dynNodeUI child in wp.Children)
-            {
-                sortedElements.Add(child.NickName, child);
-            }
+            //var sortedElements = new SortedList<string, dynNodeUI>();
+            //foreach (dynNodeUI child in wp.Children)
+            //{
+            //    sortedElements.Add(child.NickName, child);
+            //}
 
-            wp.Children.Clear();
+            //wp.Children.Clear();
 
-            foreach (dynNodeUI child in sortedElements.Values)
-            {
-                wp.Children.Add(child);
-            }
+            //foreach (dynNodeUI child in sortedElements.Values)
+            //{
+            //    wp.Children.Add(child);
+            //}
 
 
-            //Update search dictionary after a rename
-            IEnumerable<string> oldTags = CurrentSpace.Name.Split(' ').Where(x => x.Length > 0);
-            searchDict.Remove(newAddItem.NodeUI, oldTags);
-            searchDict.Add(newAddItem.NodeUI, CurrentSpace.Name);
+            ////Update search dictionary after a rename
+            //IEnumerable<string> oldTags = CurrentSpace.Name.Split(' ').Where(x => x.Length > 0);
+            //searchDict.Remove(newAddItem.NodeUI, oldTags);
+            //searchDict.Add(newAddItem.NodeUI, CurrentSpace.Name);
 
-            IEnumerable<string> newTags = newName.Split(' ').Where(x => x.Length > 0);
-            searchDict.Add(newAddItem.NodeUI, newTags);
-            searchDict.Add(newAddItem.NodeUI, newName);
+            //IEnumerable<string> newTags = newName.Split(' ').Where(x => x.Length > 0);
+            //searchDict.Add(newAddItem.NodeUI, newTags);
+            //searchDict.Add(newAddItem.NodeUI, newName);
 
             //------------------//
 
@@ -2451,93 +2482,93 @@ namespace Dynamo
 
         #region Filtering
 
-        private static readonly Regex searchBarNumRegex = new Regex(@"^-?\d+(\.\d*)?$");
-        private static readonly Regex searchBarStrRegex = new Regex("^\"([^\"]*)\"?$");
-        private readonly SearchDictionary<dynNodeUI> searchDict = new SearchDictionary<dynNodeUI>();
-        private bool storedSearchBool;
-        private double storedSearchNum;
-        private string storedSearchStr = "";
+        //private static readonly Regex searchBarNumRegex = new Regex(@"^-?\d+(\.\d*)?$");
+        //private static readonly Regex searchBarStrRegex = new Regex("^\"([^\"]*)\"?$");
+        //private readonly SearchDictionary<dynNodeUI> searchDict = new SearchDictionary<dynNodeUI>();
+        //private bool storedSearchBool;
+        //private double storedSearchNum;
+        //private string storedSearchStr = "";
 
-        internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)
-        {
-            var content = (WrapPanel) ex.Content;
+        //internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)
+        //{
+        //    var content = (WrapPanel) ex.Content;
 
-            bool filterWholeCategory = true;
+        //    bool filterWholeCategory = true;
 
-            foreach (dynNodeUI ele in content.Children)
-            {
-                if (!elements.Contains(ele))
-                {
-                    ele.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    ele.Visibility = Visibility.Visible;
-                    filterWholeCategory = false;
-                }
-            }
+        //    foreach (dynNodeUI ele in content.Children)
+        //    {
+        //        if (!elements.Contains(ele))
+        //        {
+        //            ele.Visibility = Visibility.Collapsed;
+        //        }
+        //        else
+        //        {
+        //            ele.Visibility = Visibility.Visible;
+        //            filterWholeCategory = false;
+        //        }
+        //    }
 
-            if (filterWholeCategory)
-            {
-                ex.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ex.Visibility = Visibility.Visible;
+        //    if (filterWholeCategory)
+        //    {
+        //        ex.Visibility = Visibility.Collapsed;
+        //    }
+        //    else
+        //    {
+        //        ex.Visibility = Visibility.Visible;
 
-                //if (filter.Length > 0)
-                //   ex.IsExpanded = true;
-            }
-        }
+        //        //if (filter.Length > 0)
+        //        //   ex.IsExpanded = true;
+        //    }
+        //}
 
-        internal void UpdateSearch(string search)
-        {
-            Match m;
+        //internal void UpdateSearch(string search)
+        //{
+        //    Match m;
 
-            if (searchBarNumRegex.IsMatch(search))
-            {
-                storedSearchNum = Convert.ToDouble(search);
-                Bench.FilterAddMenu(
-                    new HashSet<dynNodeUI>
-                        {
-                            Bench.addMenuItemsDictNew["Number"],
-                            Bench.addMenuItemsDictNew["Number Slider"]
-                        }
-                    );
-            }
-            else if ((m = searchBarStrRegex.Match(search)).Success) //(search.StartsWith("\""))
-            {
-                storedSearchStr = m.Groups[1].Captures[0].Value;
-                Bench.FilterAddMenu(
-                    new HashSet<dynNodeUI>
-                        {
-                            Bench.addMenuItemsDictNew["String"]
-                        }
-                    );
-            }
-            else if (search.Equals("true") || search.Equals("false"))
-            {
-                storedSearchBool = Convert.ToBoolean(search);
-                Bench.FilterAddMenu(
-                    new HashSet<dynNodeUI>
-                        {
-                            Bench.addMenuItemsDictNew["Boolean"]
-                        }
-                    );
-            }
-            else
-            {
-                storedSearchNum = 0;
-                storedSearchStr = "";
-                storedSearchBool = false;
+        //    if (searchBarNumRegex.IsMatch(search))
+        //    {
+        //        storedSearchNum = Convert.ToDouble(search);
+        //        Bench.FilterAddMenu(
+        //            new HashSet<dynNodeUI>
+        //                {
+        //                    Bench.addMenuItemsDictNew["Number"],
+        //                    Bench.addMenuItemsDictNew["Number Slider"]
+        //                }
+        //            );
+        //    }
+        //    else if ((m = searchBarStrRegex.Match(search)).Success) //(search.StartsWith("\""))
+        //    {
+        //        storedSearchStr = m.Groups[1].Captures[0].Value;
+        //        Bench.FilterAddMenu(
+        //            new HashSet<dynNodeUI>
+        //                {
+        //                    Bench.addMenuItemsDictNew["String"]
+        //                }
+        //            );
+        //    }
+        //    else if (search.Equals("true") || search.Equals("false"))
+        //    {
+        //        storedSearchBool = Convert.ToBoolean(search);
+        //        Bench.FilterAddMenu(
+        //            new HashSet<dynNodeUI>
+        //                {
+        //                    Bench.addMenuItemsDictNew["Boolean"]
+        //                }
+        //            );
+        //    }
+        //    else
+        //    {
+        //        storedSearchNum = 0;
+        //        storedSearchStr = "";
+        //        storedSearchBool = false;
 
-                HashSet<dynNodeUI> filter = search.Length == 0
-                                                ? new HashSet<dynNodeUI>(Bench.addMenuItemsDictNew.Values)
-                                                : searchDict.Filter(search.ToLower());
+        //        HashSet<dynNodeUI> filter = search.Length == 0
+        //                                        ? new HashSet<dynNodeUI>(Bench.addMenuItemsDictNew.Values)
+        //                                        : searchDict.Filter(search.ToLower());
 
-                Bench.FilterAddMenu(filter);
-            }
-        }
+        //        Bench.FilterAddMenu(filter);
+        //    }
+        //}
 
         #endregion
 
