@@ -125,6 +125,15 @@ limitations under the License.
       <Link>DynamoRevitCategories.cs</Link>
     </Compile>
     <Compile Include="Commands.cs" />
+    <Compile Include="Models\DynamoModel.cs" />
+    <Compile Include="Models\dynConnectorModel.cs" />
+    <Compile Include="Models\dynModelBase.cs" />
+    <Compile Include="Models\dynNodeModel.cs" />
+    <Compile Include="Models\dynNoteModel.cs" />
+    <Compile Include="ViewModels\DynamoViewModel.cs" />
+    <Compile Include="ViewModels\dynViewModelBase.cs" />
+    <Compile Include="Models\dynWorkspaceModel.cs" />
+    <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
     <Compile Include="Utilities\Converters.cs" />
     <Compile Include="DynamoController.cs" />
     <Compile Include="DynamoSplash.xaml.cs">
@@ -349,6 +358,9 @@ limitations under the License.
     <Resource Include="Images\back.png" />
     <Resource Include="Images\back_24.png" />
     <Resource Include="Images\back_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
