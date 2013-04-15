@@ -35,7 +35,7 @@ namespace Dynamo
         private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
             new SortedDictionary<string, TypeLoadData>();
 
-        private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
+        public readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
         private readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
@@ -142,11 +142,23 @@ namespace Dynamo
             this.Initialize(env);
         }
 
-
         private void Initialize(ExecutionEnvironment env)
         {
-            DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
 
+            // custom node loader
+
+                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string pluginsPath = Path.Combine(directory, "definitions");
+
+                var nl = new CustomNodeLoader(pluginsPath);
+                nl.UpdateSearchPath();
+                
+            // openDefinition should be calling CustomNodeLoader
+
+            var nn = nl.GetNodeNames();
+            dynFunction df;
+            nl.GetInstance(nn[0], out df);
+            
             Bench = new dynBench(this);
             dynSettings.Bench = Bench;           
 
@@ -218,7 +230,6 @@ namespace Dynamo
 
                 HomeSpace.OnDisplayed();
 
-                DynamoCommands.CloseSplashScreenCmd.Execute(null);
             }
         }
 
@@ -665,6 +676,39 @@ namespace Dynamo
 
         #region Node Initialization
 
+        /// <summary>
+        ///     Create a build-in node from a type object in a given workspace.
+        /// </summary>
+        /// <param name="elementType"> The Type object from which the node can be activated </param>
+        /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
+        /// <param name="guid"> The unique identifier for the node in the workspace. </param>
+        /// <returns> The newly instantiated dynNode</returns>
+        public static dynNode CreateNodeInstance(Type elementType, string nickName, Guid guid )
+        {
+            var node = (dynNode)Activator.CreateInstance(elementType);
+
+            dynNodeUI nodeUI = node.NodeUI;
+
+            if (!string.IsNullOrEmpty(nickName))
+            {
+                nodeUI.NickName = nickName;
+            }
+            else
+            {
+                var elNameAttrib =
+                    node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
+                if (elNameAttrib != null)
+                {
+                    nodeUI.NickName = elNameAttrib.Name;
+                }
+            }
+
+            nodeUI.GUID = guid;
+
+            string name = nodeUI.NickName;
+            return node;
+        }
+
 
         /// <summary>
         ///     Create a node from a type object in a given workspace.
@@ -681,30 +725,8 @@ namespace Dynamo
         {
             try
             {
-                //create a new object from a type
-                //that is passed in
-                //dynElement el = (dynElement)Activator.CreateInstance(elementType, new object[] { nickName });
-                var node = (dynNode) Activator.CreateInstance(elementType);
-
-                dynNodeUI nodeUI = node.NodeUI;
-
-                if (!string.IsNullOrEmpty(nickName))
-                {
-                    nodeUI.NickName = nickName;
-                }
-                else
-                {
-                    var elNameAttrib =
-                        node.GetType().GetCustomAttributes(typeof (NodeNameAttribute), true)[0] as NodeNameAttribute;
-                    if (elNameAttrib != null)
-                    {
-                        nodeUI.NickName = elNameAttrib.Name;
-                    }
-                }
-
-                nodeUI.GUID = guid;
-
-                string name = nodeUI.NickName;
+                var node = DynamoController.CreateNodeInstance(elementType, nickName, guid);
+                var nodeUI = node.NodeUI;
 
                 //store the element in the elements list
                 ws.Nodes.Add(node);
@@ -755,130 +777,17 @@ namespace Dynamo
             // add the element to search
             SearchViewModel.Add(workSpace);
 
-            dynFunction newEl = CreateFunction(
-                workSpace.Nodes.Where(el => el is dynSymbol)
-                         .Select(s => ((dynSymbol) s).Symbol),
-                new List<String> {"out"},
-                functionDefinition);
-
-            newEl.NodeUI.NickName = name;
-
-            newEl.NodeUI.DisableInteraction();
-            newEl.NodeUI.MouseDown += delegate
-                {
-                    Bench.BeginDragElement(newEl.NodeUI, newEl.Definition.FunctionId.ToString(),
-                                           Mouse.GetPosition(newEl.NodeUI));
-
-                    newEl.NodeUI.Visibility = Visibility.Hidden;
-                };
-            newEl.NodeUI.GUID = Guid.NewGuid();
-            newEl.NodeUI.Margin = new Thickness(5, 30, 5, 5);
-            newEl.NodeUI.LayoutTransform = new ScaleTransform(.8, .8);
-            newEl.NodeUI.State = ElementState.DEAD;
-
-            #region add to deprecated sidebar
-            //Expander expander;
-
-            //if (Bench.addMenuCategoryDict.ContainsKey(category))
-            //{
-            //    expander = Bench.addMenuCategoryDict[category];
-            //}
-            //else
-            //{
-            //    expander = new Expander
-            //        {
-            //            Header = category,
-            //            Height = double.NaN,
-            //            Margin = new Thickness(0, 5, 0, 0),
-            //            Content = new WrapPanel
-            //                {
-            //                    Height = double.NaN,
-            //                    Width = 240
-            //                },
-            //            HorizontalAlignment = HorizontalAlignment.Left,
-            //            //FontWeight = FontWeights.Bold
-            //            Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
-            //        };
-
-            //    Bench.addMenuCategoryDict[category] = expander;
-
-            //    var sortedExpanders = new SortedList<string, Expander>();
-            //    foreach (Expander child in Bench.SideStackPanel.Children)
-            //    {
-            //        sortedExpanders.Add((string) child.Header, child);
-            //    }
-            //    sortedExpanders.Add(category, expander);
-
-            //    Bench.SideStackPanel.Children.Clear();
-
-            //    foreach (Expander child in sortedExpanders.Values)
-            //    {
-            //        Bench.SideStackPanel.Children.Add(child);
-            //    }
-            //}
-
-            //var wp = (WrapPanel) expander.Content;
-
-            //var sortedElements = new SortedList<string, dynNodeUI>();
-            //foreach (dynNodeUI child in wp.Children)
-            //{
-            //    sortedElements.Add(child.NickName, child);
-            //}
-            //sortedElements.Add(name, newEl.NodeUI);
-
-            //wp.Children.Clear();
-
-            //foreach (dynNodeUI child in sortedElements.Values)
-            //{
-            //    wp.Children.Add(child);
-            //}
-
-            //Bench.addMenuItemsDictNew[name] = newEl.NodeUI;
-
-            //searchDict.Add(newEl.NodeUI, name);
-
-            #endregion
-
             if (display)
             {
-                //Store old workspace
-                //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
-
                 if (!ViewingHomespace)
                 {
-                    //Step 2: Store function workspace in the function dictionary
-                    //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
-
-                    //Step 3: Save function
-                    SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
+                    SaveFunction( dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace) );
                 }
 
-                //Make old workspace invisible
-                foreach (dynNode dynE in Nodes)
-                {
-                    dynE.NodeUI.Visibility = Visibility.Collapsed;
-                }
-                foreach (dynConnector dynC in CurrentSpace.Connectors)
-                {
-                    dynC.Visible = false;
-                }
-                foreach (dynNote note in CurrentSpace.Notes)
-                {
-                    note.Visibility = Visibility.Hidden;
-                }
-
-                //this.currentFunctionName = name;
-
-                ////Clear the bench for the new function
-                //this.elements = newElements;
-                //this.connectors = newConnectors;
-                //this.CurrentX = CANVAS_OFFSET_X;
-                //this.CurrentY = CANVAS_OFFSET_Y;
+                DynamoController.hideWorkspace(CurrentSpace);
                 CurrentSpace = workSpace;
 
-                //this.saveFuncItem.IsEnabled = true;
                 Bench.homeButton.IsEnabled = true;
-                //this.varItem.IsEnabled = true;
 
                 Bench.workspaceLabel.Content = CurrentSpace.Name;
                 Bench.editNameButton.Visibility = Visibility.Visible;
@@ -1010,7 +919,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="workSpace">The workspace</param>
         /// <returns>The generated xmldoc</returns>
-        public XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace)
+        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace )
         {
             try
             {
@@ -1022,7 +931,7 @@ namespace Dynamo
                 root.SetAttribute("X", workSpace.PositionX.ToString());
                 root.SetAttribute("Y", workSpace.PositionY.ToString());
 
-                if (workSpace != HomeSpace) //If we are not saving the home space
+                if (!savingHomespace) //If we are not saving the home space
                 {
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace) workSpace).Category);
@@ -1091,7 +1000,6 @@ namespace Dynamo
             }
             catch (Exception ex)
             {
-                Bench.Log(ex);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return null;
             }
@@ -1108,7 +1016,7 @@ namespace Dynamo
             Bench.Log("Saving " + xmlPath + "...");
             try
             {
-                var xmlDoc = GetXmlDocFromWorkspace(workSpace);
+                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace == HomeSpace);
                 xmlDoc.Save(xmlPath);
 
                 //cache the file path for future save operations
@@ -1631,8 +1539,7 @@ namespace Dynamo
 
             return true;
         }
-
-
+        
         private void nodeWorkspaceWasLoaded(
             FunctionDefinition def,
             Dictionary<Guid, HashSet<FunctionDefinition>> children,
@@ -1658,7 +1565,7 @@ namespace Dynamo
             }
         }
 
-        private void hideWorkspace(dynWorkspace ws)
+        public static void hideWorkspace(dynWorkspace ws)
         {
             foreach (dynNode e in ws.Nodes)
                 e.NodeUI.Visibility = Visibility.Collapsed;

@@ -5,6 +5,11 @@ using System.Text;
 using System.Xml;
 using Dynamo.Nodes;
 using System.IO;
+using Dynamo.Connectors;
+using Dynamo.Controls;
+using Dynamo.FSchemeInterop.Node;
+using Dynamo.FSchemeInterop;
+using System.Reflection;
 
 namespace Dynamo.Utilities
 {
@@ -18,7 +23,8 @@ namespace Dynamo.Utilities
         #region Fields and properties
 
         private Dictionary<Guid, FunctionDefinition> loadedNodes = new Dictionary<Guid, FunctionDefinition>();
-        public Dictionary<Guid, string> nodePaths = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> nodePaths = new Dictionary<Guid, string>();
+        private Dictionary<string, Guid> nodeNames = new Dictionary<string, Guid>();
 
         /// <summary>
         /// SearchPath property </summary>
@@ -37,6 +43,15 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        ///     Enumerates all of the node names.
+        /// </summary>
+        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
+        public List<string> GetNodeNames()
+        {
+            return nodeNames.Keys.ToList();
+        }
+
+        /// <summary>
         ///     Enumerates all of the files in the search path and get's their guids.
         ///     Does not instantiate the nodes.
         /// </summary>
@@ -51,9 +66,10 @@ namespace Dynamo.Utilities
             foreach (string file in Directory.EnumerateFiles(SearchPath, "*.dyf"))
             {
                 Guid guid;
-                if (GetGuidFromPath(file, out guid))
+                string name;
+                if (GetHeaderFromPath(file, out guid, out name))
                 {
-                    this.SetNodePath(guid, file);
+                    this.SetNodeNameAndPath(name, guid, file);
                 }
             }
             
@@ -87,6 +103,38 @@ namespace Dynamo.Utilities
         ///     Stores the path and function definition without initializing node
         /// </summary>
         /// <param name="guid">The unique id for the node.</param>
+        /// <param name="path">The path for the node.</param>
+        private void SetNodeNameAndPath(string name, Guid id, string path)
+        {
+            if ( this.Contains(name) )
+            {
+                this.nodeNames[name] = id;
+            }
+            else
+            {
+                this.nodeNames.Add(name, id);
+            }
+            this.SetNodePath(id, path);
+        }
+
+        /// <summary>
+        ///     Get the function definition from a guid
+        /// </summary>
+        /// <param name="guid">The unique id for the node.</param>
+        /// <returns>The path to the node or null if it wasn't found.</returns>
+        public FunctionDefinition GetFunctionDefinition(Guid id)
+        {
+            if ( this.IsInitialized(id) )
+            {
+                return loadedNodes[id];
+            }
+            return null;
+        }
+
+        /// <summary>
+        ///     Stores the path and function definition without initializing node
+        /// </summary>
+        /// <param name="guid">The unique id for the node.</param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
         public string GetNodePath(Guid id)
         {
@@ -100,14 +148,41 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Tells whether the custom node's unique identifier is inside of the manager (initialized or not)
         /// </summary>
-        /// <param name="guid">Whether the definition is stored with the manager.</param>
+        /// <param name="guid">The FunctionId</param>
         public bool Contains(Guid guid)
         {
             return IsInitialized(guid) || nodePaths.ContainsKey(guid);
         }
 
         /// <summary>
-        ///     Tells whether the custom node's unique identifier is initialized in the manager
+        ///     Tells whether the custom node's name is inside of the manager (initialized or not)
+        /// </summary>
+        /// <param name="name">The name of the custom node.</param>
+        public bool Contains(string name)
+        {
+            return IsInitialized(name) || nodeNames.ContainsKey(name);
+        }
+
+        /// <summary>
+        ///     Tells whether the custom node is initialized in the manager
+        /// </summary>
+        /// <param name="name">The name of the node</param>
+        /// <returns>The name of the </returns>
+        public bool IsInitialized(string name)
+        {
+            if (this.nodeNames.ContainsKey(name))
+            {
+                var guid = this.nodeNames[name];
+                return this.IsInitialized(guid);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Tells whether the custom node is initialized in the manager
         /// </summary>
         /// <param name="guid">Whether the definition is stored with the manager.</param>
         public bool IsInitialized(Guid guid)
@@ -116,7 +191,39 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Get a the type from a guid, also stores type info for future instantiation.
+        ///     Get the guid from a name.
+        /// </summary>
+        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
+        /// <returns>False if the name doesn't exist in this</returns>
+        public Guid GetGuidFromName(string name)
+        {
+            if (!this.Contains(name))
+            {
+                return Guid.Empty;
+            }
+
+            return this.nodeNames[name];
+
+        }
+
+        /// <summary>
+        ///     Get a guid from the name of a node.  If it doesn't exist, returns Guid.Empty.
+        /// </summary>
+        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
+        public bool GetInstance(string name, out dynFunction result)
+        {
+            if (!this.Contains(name))
+            {
+                result = null;
+                return false;
+            }
+
+            return this.GetInstance(GetGuidFromName(name), out result);
+
+        }
+
+        /// <summary>
+        ///     Get a the type from a guid, also stores type internally info for future instantiation.
         ///     As a side effect, any of its dependent nodes are also initialized.
         /// </summary>
         /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
@@ -135,7 +242,9 @@ namespace Dynamo.Utilities
                     result = null;
                     return false;
                 }
-            }           
+            } else {
+                def = this.loadedNodes[guid];
+            }
 
             dynWorkspace ws = def.Workspace;
 
@@ -170,8 +279,15 @@ namespace Dynamo.Utilities
             result = new dynFunction(inputs, outputs, def);
             result.NodeUI.NickName = ws.Name;
 
+            this.loadedNodes.Add(guid, def);
+
             return true;
         }
+
+
+
+
+
 
         /// <summary>
         ///     Get a FunctionDefinition from a specific path
@@ -254,8 +370,7 @@ namespace Dynamo.Utilities
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="guid">A reference to the guid (OUT) Guid.Empty if function returns false. </param>
         /// <returns>Whether we successfully obtained the guid or not.  </returns>
-        public static bool GetGuidFromPath(string path, out Guid guid) {
-
+        public static bool GetHeaderFromPath(string path, out Guid guid, out string name) {
 
             try
             {
@@ -280,6 +395,7 @@ namespace Dynamo.Utilities
                         }
                     }
                 }
+
                 #endregion
 
                 // we have a dyf and it lacks an ID field, we need to assign it
@@ -292,8 +408,10 @@ namespace Dynamo.Utilities
                 else
                 {
                     guid = Guid.Parse(id);
+                   
                 }
 
+                name = funName;
                 return true;
 
             }
@@ -301,11 +419,480 @@ namespace Dynamo.Utilities
             {
 
                 guid = Guid.Empty;
+                name = "";
                 return false;
 
             }
 
         }
+
+        private bool OpenDefinition(
+            string xmlPath,
+            Dictionary<Guid, HashSet<FunctionDefinition>> children,
+            Dictionary<Guid, HashSet<Guid>> parents, DynamoController controller,
+            out FunctionDefinition def )
+        {
+            try
+            {
+                #region read xml file
+
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(xmlPath);
+
+                string funName = null;
+                string category = "";
+                double cx = 0;
+                double cy = 0;
+                string id = "";
+
+                // load the header
+                foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
+                {
+                    foreach (XmlAttribute att in node.Attributes)
+                    {
+                        if (att.Name.Equals("X"))
+                            cx = Convert.ToDouble(att.Value);
+                        else if (att.Name.Equals("Y"))
+                            cy = Convert.ToDouble(att.Value);
+                        else if (att.Name.Equals("Name"))
+                            funName = att.Value;
+                        else if (att.Name.Equals("Category"))
+                            category = att.Value;
+                        else if (att.Name.Equals("ID"))
+                        {
+                            id = att.Value;
+                        }
+                    }
+                }
+
+                // we have a dyf and it lacks an ID field, we need to assign it
+                // a deterministic guid based on its name.  By doing it deterministically,
+                // files remain compatible
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName))
+                {
+                    id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
+                }
+
+                category = category.Length > 0 ? category : BuiltinNodeCategories.MISC;
+
+                def = NewFunction(Guid.Parse(id), funName, category, cx, cy);
+                dynWorkspace ws = def.Workspace;
+
+
+                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
+                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("dynNotes");
+
+                XmlNode elNodesList = elNodes[0];
+                XmlNode cNodesList = cNodes[0];
+                XmlNode nNodesList = nNodes[0];
+
+                var dependencies = new Stack<Guid>();
+
+                #region instantiate nodes
+
+                foreach (XmlNode elNode in elNodesList.ChildNodes)
+                {
+                    XmlAttribute typeAttrib = elNode.Attributes[0];
+                    XmlAttribute guidAttrib = elNode.Attributes[1];
+                    XmlAttribute nicknameAttrib = elNode.Attributes[2];
+                    XmlAttribute xAttrib = elNode.Attributes[3];
+                    XmlAttribute yAttrib = elNode.Attributes[4];
+
+                    string typeName = typeAttrib.Value;
+
+                    string oldNamespace = "Dynamo.Elements.";
+                    if (typeName.StartsWith(oldNamespace))
+                        typeName = "Dynamo.Nodes." + typeName.Remove(0, oldNamespace.Length);
+
+                    //test the GUID to confirm that it is non-zero
+                    //if it is zero, then we have to fix it
+                    //this will break the connectors, but it won't keep
+                    //propagating bad GUIDs
+                    var guid = new Guid(guidAttrib.Value);
+                    if (guid == Guid.Empty)
+                    {
+                        guid = Guid.NewGuid();
+                    }
+
+                    string nickname = nicknameAttrib.Value;
+
+                    double x = Convert.ToDouble(xAttrib.Value);
+                    double y = Convert.ToDouble(yAttrib.Value);
+
+
+                    TypeLoadData tData;
+                    Type t;
+
+                    if (!controller.builtinTypesByTypeName.TryGetValue(typeName, out tData))
+                    {
+                        t = Type.GetType(typeName);
+                        if (t == null)
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                        t = tData.Type;
+
+                    dynNode el = DynamoController.CreateNodeInstance(t, nickname, guid);
+
+                    if (el == null)
+                        return false;
+
+                    el.DisableReporting();
+                    el.LoadElement(elNode);
+
+                    if (el is dynFunction)
+                    {
+                        var fun = el as dynFunction;
+
+                        // we've found a custom node, we need to attempt to load its guid.  
+                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
+                        // deterministically
+                        Guid funId;
+                        try
+                        {
+                            funId = Guid.Parse(fun.Symbol);
+                        }
+                        catch
+                        {
+                            funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
+                            fun.Symbol = funId.ToString();
+                        }
+
+                        if (this.IsInitialized(funId))
+                        {
+                            fun.Definition = this.GetFunctionDefinition(funId);
+                        }
+                        else
+                        {
+                            dependencies.Push(funId);
+                        }
+
+                        //if ( FunctionDict.TryGetValue(funId, out funcDef) )
+                        //    fun.Definition = funcDef;
+                        //else
+                        //    dependencies.Push(funId);
+                    }
+                }
+
+                #endregion
+
+                //Bench.WorkBench.UpdateLayout();
+
+                #region instantiate connectors
+
+                foreach (XmlNode connector in cNodesList.ChildNodes)
+                {
+                    XmlAttribute guidStartAttrib = connector.Attributes[0];
+                    XmlAttribute intStartAttrib = connector.Attributes[1];
+                    XmlAttribute guidEndAttrib = connector.Attributes[2];
+                    XmlAttribute intEndAttrib = connector.Attributes[3];
+                    XmlAttribute portTypeAttrib = connector.Attributes[4];
+
+                    var guidStart = new Guid(guidStartAttrib.Value);
+                    var guidEnd = new Guid(guidEndAttrib.Value);
+                    int startIndex = Convert.ToInt16(intStartAttrib.Value);
+                    int endIndex = Convert.ToInt16(intEndAttrib.Value);
+                    int portType = Convert.ToInt16(portTypeAttrib.Value);
+
+                    //find the elements to connect
+                    dynNode start = null;
+                    dynNode end = null;
+
+                    foreach (dynNode e in ws.Nodes)
+                    {
+                        if (e.NodeUI.GUID == guidStart)
+                        {
+                            start = e;
+                        }
+                        else if (e.NodeUI.GUID == guidEnd)
+                        {
+                            end = e;
+                        }
+                        if (start != null && end != null)
+                        {
+                            break;
+                        }
+                    }
+
+                    try
+                    {
+                        if (start != null && end != null && start != end)
+                        {
+                            var newConnector = new dynConnector(
+                                start.NodeUI, end.NodeUI,
+                                startIndex, endIndex,
+                                portType, false
+                                );
+
+                            ws.Connectors.Add(newConnector);
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                #endregion
+
+                #region instantiate notes
+
+                //if (nNodesList != null)
+                //{
+                //    foreach (XmlNode note in nNodesList.ChildNodes)
+                //    {
+                //        XmlAttribute textAttrib = note.Attributes[0];
+                //        XmlAttribute xAttrib = note.Attributes[1];
+                //        XmlAttribute yAttrib = note.Attributes[2];
+
+                //        string text = textAttrib.Value;
+                //        double x = Convert.ToDouble(xAttrib.Value);
+                //        double y = Convert.ToDouble(yAttrib.Value);
+
+                //        //dynNote n = Bench.AddNote(text, x, y, ws);
+                //        //Bench.AddNote(text, x, y, ws);
+
+                //        var paramDict = new Dictionary<string, object>();
+                //        paramDict.Add("x", x);
+                //        paramDict.Add("y", y);
+                //        paramDict.Add("text", text);
+                //        paramDict.Add("workspace", ws);
+                //        DynamoCommands.AddNoteCmd.Execute(paramDict);
+                //    }
+                //}
+
+                #endregion
+
+                foreach (dynNode e in ws.Nodes)
+                    e.EnableReporting();
+
+                DynamoController.hideWorkspace(ws);
+
+                #endregion
+
+                ws.FilePath = xmlPath;
+
+                //bool canLoad = true;
+
+                //For each node this workspace depends on...
+                foreach (Guid dep in dependencies)
+                {
+                    //canLoad = false;
+                    
+                    //Dep -> Ws
+                    if (children.ContainsKey(dep))
+                        children[dep].Add(def);
+                    else
+                        children[dep] = new HashSet<FunctionDefinition> { def };
+
+                    //Ws -> Deps
+                    if (parents.ContainsKey(def.FunctionId))
+                        parents[def.FunctionId].Add(dep);
+                    else
+                        parents[def.FunctionId] = new HashSet<Guid> { dep };
+                }
+
+                //PackageManagerClient.LoadPackageHeader(def, funName);
+                // nodeWorkspaceWasLoaded(def, children, parents);
+
+            }
+            catch
+            {
+                def = null;
+                return false;
+            }
+
+            return true;
+        }
+        
+        internal FunctionDefinition NewFunction(Guid id,
+                                                string name,
+                                                string category,
+                                                double workspaceOffsetX = dynBench.CANVAS_OFFSET_X,
+                                                double workspaceOffsetY = dynBench.CANVAS_OFFSET_Y)
+        {
+            //Add an entry to the funcdict
+            var workSpace = new FuncWorkspace(
+                name, category, workspaceOffsetX, workspaceOffsetY);
+
+            List<dynNode> newElements = workSpace.Nodes;
+            List<dynConnector> newConnectors = workSpace.Connectors;
+
+            var functionDefinition = new FunctionDefinition(id)
+            {
+                Workspace = workSpace
+            };
+
+            return functionDefinition;
+        }
+
+
+        /// <summary>
+        ///     Save a function.  This includes writing to a file and compiling the 
+        ///     function and saving it to the FSchemeEnvironment
+        /// </summary>
+        /// <param name="definition">The definition to saveo</param>
+        /// <param name="bool">Whether to write the function to file</param>
+        /// <returns>Whether the operation was successful</returns>
+        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true)
+        {
+            if (definition == null)
+                return;
+
+            // Get the internal nodes for the function
+            dynWorkspace functionWorkspace = definition.Workspace;
+
+            // If asked to, write the definition to file
+            if (writeDefinition)
+            {
+                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string pluginsPath = Path.Combine(directory, "definitions");
+
+                try
+                {
+                    if (!Directory.Exists(pluginsPath))
+                        Directory.CreateDirectory(pluginsPath);
+
+                    string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
+                    DynamoController.GetXmlDocFromWorkspace(functionWorkspace, false);
+
+                    //SearchViewModel.Add(definition.Workspace);
+                }
+                catch
+                {
+                    //Bench.Log("Error saving:" + e.GetType());
+                    //Bench.Log(e);
+                }
+            }
+        }
+
+        private static FScheme.Expression CompileFunction( FunctionDefinition definition ) {
+
+            if (definition == null)
+                return null;
+
+            // Get the internal nodes for the function
+            dynWorkspace functionWorkspace = definition.Workspace;
+
+            #region Find outputs
+
+            // Find output elements for the node
+            IEnumerable<dynNode> outputs = functionWorkspace.Nodes.Where(x => x is dynOutput);
+
+            var topMost = new List<Tuple<int, dynNode>>();
+
+            IEnumerable<string> outputNames;
+
+            // if we found output nodes, add select their inputs
+            // these will serve as the function output
+            if (outputs.Any())
+            {
+                topMost.AddRange(
+                    outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
+
+                outputNames = outputs.Select(x => (x as dynOutput).Symbol);
+            }
+            else
+            {
+                // if there are no explicitly defined output nodes
+                // get the top most nodes and set THEM as tht output
+                IEnumerable<dynNode> topMostNodes = functionWorkspace.GetTopMostNodes();
+
+                var outNames = new List<string>();
+
+                foreach (dynNode topNode in topMostNodes)
+                {
+                    foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
+                    {
+                        if (!topNode.HasOutput(output))
+                        {
+                            topMost.Add(Tuple.Create(output, topNode));
+                            outNames.Add(topNode.OutPortData[output].NickName);
+                        }
+                    }
+                }
+
+                outputNames = outNames;
+            }
+
+            #endregion
+
+            // color the node to define its connectivity
+            foreach (var ele in topMost)
+            {
+                ele.Item2.NodeUI.ValidateConnections();
+            }
+
+            //Find function entry point, and then compile the function and add it to our environment
+            IEnumerable<dynNode> variables = functionWorkspace.Nodes.Where(x => x is dynSymbol);
+            IEnumerable<string> inputNames = variables.Select(x => (x as dynSymbol).Symbol);
+
+            INode top;
+            var buildDict = new Dictionary<dynNode, Dictionary<int, INode>>();
+
+            if (topMost.Count > 1)
+            {
+                InputNode node = new ExternalFunctionNode(
+                    FScheme.Value.NewList,
+                    Enumerable.Range(0, topMost.Count).Select(x => x.ToString()));
+
+                int i = 0;
+                foreach (var topNode in topMost)
+                {
+                    string inputName = i.ToString();
+                    node.ConnectInput(inputName, topNode.Item2.Build(buildDict, topNode.Item1));
+                    i++;
+                }
+
+                top = node;
+            }
+            else
+                top = topMost[0].Item2.BuildExpression(buildDict);
+
+            // if the node has any outputs, we create a BeginNode in order to evaluate all of them
+            // sequentially (begin evaluates a list of expressions)
+            if (outputs.Any())
+            {
+                var beginNode = new BeginNode();
+                List<dynNode> hangingNodes = functionWorkspace.GetTopMostNodes().ToList();
+                foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
+                {
+                    beginNode.AddInput(tNode.Index.ToString());
+                    beginNode.ConnectInput(tNode.Index.ToString(), tNode.Node.Build(buildDict, 0));
+                }
+                beginNode.AddInput(hangingNodes.Count.ToString());
+                beginNode.ConnectInput(hangingNodes.Count.ToString(), top);
+
+                top = beginNode;
+            }
+
+            // make the anonymous function
+            FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.NodeUI.GUID.ToString()),
+                                                            top.Compile());
+                
+            return expression;
+
+        }
+
+        private static string FormatFileName(string filename)
+        {
+            return RemoveChars(
+                filename,
+                new[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" }
+                );
+        }
+
+        internal static string RemoveChars(string s, IEnumerable<string> chars)
+        {
+            foreach (string c in chars)
+                s = s.Replace(c, "");
+            return s;
+        }
+
+
 
     }
 }
