@@ -242,19 +242,26 @@ namespace Dynamo.Connectors
         #region private methods
         Point UpdateCenter()
         {
-            GeneralTransform transform = ellipse1.TransformToAncestor(dynSettings.Workbench);
-            Point rootPoint = transform.Transform(new Point(0, 0));
-
-            double x = rootPoint.X;
-            double y = rootPoint.Y;
-
-            if(portType == Dynamo.Connectors.PortType.INPUT)
+            try
             {
-                x += ellipse1.Width / 2;
-            }
-            y += ellipse1.Height / 2;
+                GeneralTransform transform = ellipse1.TransformToAncestor(dynSettings.Workbench);
+                Point rootPoint = transform.Transform(new Point(0, 0));
 
-            return new Point(x, y);
+                double x = rootPoint.X;
+                double y = rootPoint.Y;
+
+                if (portType == Dynamo.Connectors.PortType.INPUT)
+                {
+                    x += ellipse1.Width / 2;
+                }
+                y += ellipse1.Height / 2;
+
+                return new Point(x, y);
+            }
+            catch
+            {
+                return new Point(0,0);
+            }
 
         }
         #endregion

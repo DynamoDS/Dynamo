@@ -145,20 +145,6 @@ namespace Dynamo
         private void Initialize(ExecutionEnvironment env)
         {
 
-            // custom node loader
-
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "definitions");
-
-                var nl = new CustomNodeLoader(pluginsPath);
-                nl.UpdateSearchPath();
-                
-            // openDefinition should be calling CustomNodeLoader
-
-            var nn = nl.GetNodeNames();
-            dynFunction df;
-            nl.GetInstance(nn[0], out df);
-            
             Bench = new dynBench(this);
             dynSettings.Bench = Bench;           
 
@@ -202,7 +188,7 @@ namespace Dynamo
             {
                 _benchActivated = true;
 
-                LoadUserTypes();
+                LoadCustomNodes();
 
                 Bench.Log("Welcome to Dynamo!");
 
@@ -619,39 +605,23 @@ namespace Dynamo
         /// <summary>
         ///     Setup the "Add" menu with all available user-defined types.
         /// </summary>
-        public void LoadUserTypes()
+        public void LoadCustomNodes()
         {
+            // custom node loader
+
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
 
-            if (Directory.Exists(pluginsPath))
-            {
-                Bench.Log("Autoloading definitions...");
-                //loadUserWorkspaces(pluginsPath);
-                StoreUserWorkspaces(pluginsPath);
-            }
+            var nl = new CustomNodeLoader(pluginsPath);
+            nl.UpdateSearchPath();
+
+            var nn = nl.GetNodeNames();
+            dynFunction df;
+            var res = nl.GetNodeInstance(this, nn[0], out df);
+
+
         }
 
-        //private void loadUserWorkspaces(string directory)
-        //{
-        //    dynSettings.FunctionDict.Clear();
-        //    dynSettings.FunctionWasEvaluated.Clear();
-
-        //    var parentBuffer = new Dictionary<Guid, HashSet<Guid>>();
-        //    var childrenBuffer = new Dictionary<Guid, HashSet<FunctionDefinition>>();
-        //    string[] filePaths = Directory.GetFiles(directory, "*.dyf");
-        //    foreach (string filePath in filePaths)
-        //    {
-        //        OpenDefinition(filePath, childrenBuffer, parentBuffer);
-        //    }
-        //    foreach (dynNode e in AllNodes)
-        //    {
-        //        e.EnableReporting();
-        //    }
-        //}
-
-
- 
         private void StoreUserWorkspaces(string directory)
         {
             dynSettings.FunctionDict.Clear();

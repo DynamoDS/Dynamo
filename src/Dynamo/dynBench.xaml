@@ -148,9 +148,6 @@
                 <MenuItem Header="_Show Node Library" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}" InputGestureText="Space"/>
                 <MenuItem Header="_Hide Node Library" Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}" InputGestureText="Esc"/>
 
-                <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideClassicNavigatorMenuItemConverter}}"
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowClassicNodeNavigatorCmd}}" />
-
             </MenuItem>
 
             <MenuItem Header="_Workspaces" Name="workspacesMenu">
