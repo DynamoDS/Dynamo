@@ -43,6 +43,7 @@ namespace Dynamo
         private dynWorkspace _cspace;
         private bool isProcessingCommandQueue = false;
 
+        public CustomNodeLoader CustomNodeLoader { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
         public PackageManagerLoginViewModel PackageManagerLoginViewModel { get; internal set; }
         public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
@@ -145,8 +146,16 @@ namespace Dynamo
         private void Initialize(ExecutionEnvironment env)
         {
 
+            
             Bench = new dynBench(this);
-            dynSettings.Bench = Bench;           
+            DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
+            dynSettings.Bench = Bench;
+
+            // custom node loader
+            //string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //string pluginsPath = Path.Combine(directory, "definitions");
+
+            //CustomNodeLoader = new CustomNodeLoader(pluginsPath);
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
@@ -210,12 +219,12 @@ namespace Dynamo
                 UnlockLoadPath = null;
 
                 Bench.UnlockUI();
-                Bench.WorkBench.Visibility = Visibility.Visible;
-
                 DynamoCommands.ShowSearchCmd.Execute(null);
 
                 HomeSpace.OnDisplayed();
 
+                DynamoCommands.CloseSplashScreenCmd.Execute(null); // closed in bench activated
+                Bench.WorkBench.Visibility = Visibility.Visible;
             }
         }
 
@@ -609,20 +618,34 @@ namespace Dynamo
         {
             // custom node loader
 
+                //CustomNodeLoader.UpdateSearchPath();
+
+                //var nn = CustomNodeLoader.GetNodeNameGuidPairs();
+
+                //// add nodes to search
+                //foreach (var pair in nn)
+                //{
+                //    SearchViewModel.Add(pair.Item1, pair.Item2);
+                //}
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
 
-            var nl = new CustomNodeLoader(pluginsPath);
-            nl.UpdateSearchPath();
+            if (Directory.Exists(pluginsPath))
+            {
+                Bench.Log("Autoloading definitions...");
+                loadUserWorkspaces(pluginsPath);
 
-            var nn = nl.GetNodeNames();
-            dynFunction df;
-            var res = nl.GetNodeInstance(this, nn[0], out df);
-
+                sw.Stop();
+                Bench.Log(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
+            }
 
         }
 
-        private void StoreUserWorkspaces(string directory)
+        private void loadUserWorkspaces(string directory)
         {
             dynSettings.FunctionDict.Clear();
             dynSettings.FunctionWasEvaluated.Clear();
@@ -798,14 +821,20 @@ namespace Dynamo
             }
             else
             {
-
                 FunctionDefinition def;
                 dynSettings.FunctionDict.TryGetValue(Guid.Parse(name), out def);
-                if (def == null)
-                {
-                    Bench.Log("Failed to find FunctionDefinition.");
-                    return null;
-                }
+
+                //dynFunction func;
+
+                //if (CustomNodeLoader.GetNodeInstance(this, Guid.Parse(name), out func))
+                //{
+                //    result = func;
+                //}
+                //else
+                //{
+                //    Bench.Log("Failed to find FunctionDefinition.");
+                //    return null;
+                //}
 
                 dynWorkspace ws = def.Workspace;
 

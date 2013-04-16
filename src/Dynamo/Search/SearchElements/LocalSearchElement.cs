@@ -27,6 +27,13 @@ namespace Dynamo.Search.SearchElements
     {
 
         #region Properties
+
+        /// <summary>
+        /// Guid property </summary>
+        /// <value>
+        /// The guid used to reference a dynFunction </value>
+        public Guid Guid { get; internal set; }
+
         /// <summary>
         /// Node property </summary>
         /// <value>
@@ -112,6 +119,22 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
+        /// The class constructor - use this constructor when for
+        /// custom nodes
+        /// </summary>
+        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
+        public LocalSearchElement(string name, Guid guid)
+        {
+            this.Node = null;
+            this._name = name;
+            this.Weight = 1;
+            this.Keywords = "";
+            this._type = "Custom Node";
+            this.Guid = guid;
+            this._description = "";
+        }
+
+        /// <summary>
         /// Executes the element in search, this is what happens when the user 
         /// hits enter in the SearchView.</summary>
         public override void Execute()
@@ -122,6 +145,10 @@ namespace Dynamo.Search.SearchElements
             if (this.Node != null && this.Node is dynFunction)
             {
                 name = ((dynFunction)Node).Definition.FunctionId.ToString();
+            } 
+            else if (this.Guid != Guid.Empty && this._type == "Custom Node") 
+            {
+                name = this.Guid.ToString();
             }
             else
             {

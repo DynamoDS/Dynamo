@@ -1189,7 +1189,9 @@ namespace Dynamo.Commands
             Dictionary<string, object> data = parameters as Dictionary<string, object>;
 
             if (data != null &&
-                dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) || dynSettings.FunctionDict.ContainsKey( Guid.Parse( (string) data["name"] ) ) )
+                (   dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) || 
+                    dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ) ) ||
+                    dynSettings.FunctionDict.ContainsKey( Guid.Parse( (string) data["name"] ) )))
             {
                 return true;
             }

@@ -457,7 +457,7 @@ namespace Dynamo.Search
                 return;
 
             // create the workspace in search
-            var searchEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name );
+            var searchEle = new WorkspaceSearchElement(name, "Go to " + name );
             searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
 
             if (searchEle.Guid == Guid.Empty)
@@ -472,6 +472,34 @@ namespace Dynamo.Search
             // update search
             SearchAndUpdateResultsSync(SearchText);
             
+        }
+
+        /// <summary>
+        ///     Add a 
+        /// </summary>
+        /// <param name="workspace">A dynWorkspace to add</param>
+        /// <param name="name">The name to use</param>
+        public void Add(string name, Guid functionId)
+        {
+            if (name == "Home")
+                return;
+
+            // create the workspace in search
+            //var searchEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name);
+            //searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
+
+            //if (searchEle.Guid == Guid.Empty)
+            //    return;
+
+            //SearchDictionary.Add(searchEle, searchEle.Name);
+
+            // create the node in search
+            var nodeEle = new LocalSearchElement(name, functionId);
+            SearchDictionary.Add(nodeEle, nodeEle.Name);
+
+            // update search
+            SearchAndUpdateResultsSync(SearchText);
+
         }
 
         /// <summary>
@@ -511,26 +539,46 @@ namespace Dynamo.Search
 
             var searchEle = new LocalSearchElement(name, description, tags);
 
-            // add category to search
             if (!string.IsNullOrEmpty(cat))
             {
-                if (!NodeCategories.ContainsKey(cat))
+                if (!cat.StartsWith("Revit API"))
                 {
-                    var nameEle = new CategorySearchElement(cat);
-                    NodeCategories.Add(cat, nameEle);
+                    SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
+
+                    if (!NodeCategories.ContainsKey(cat))
+                    {
+                        var nameEle = new CategorySearchElement(cat);
+                        NodeCategories.Add(cat, nameEle);
+                        SearchDictionary.Add(nameEle, cat);
+                    }
+                }
+                else
+                {
+                    if (!NodeCategories.ContainsKey(cat))
+                    {
+                        var nameEle = new CategorySearchElement(cat);
+                        NodeCategories.Add(cat, nameEle);
+                        RevitApiSearchElements.Add(nameEle);
+                    }
                 }
             }
 
             NodeCategories[cat].NumElements++;
 
             // add node to search
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            if (tags.Count > 0)
+            if ((searchEle.Name.StartsWith("API_")))
             {
-                SearchDictionary.Add(searchEle, tags);
+                RevitApiSearchElements.Add(searchEle);
             }
-            SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
-            SearchDictionary.Add(searchEle, description);
+            else
+            {
+                SearchDictionary.Add(searchEle, searchEle.Name);
+                if (tags.Count > 0)
+                {
+                    SearchDictionary.Add(searchEle, tags);
+                }
+                SearchDictionary.Add(searchEle, description);
+            }
 
         }
 

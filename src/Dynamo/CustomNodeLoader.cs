@@ -47,10 +47,19 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Enumerates all of the node names.
         /// </summary>
-        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public List<string> GetNodeNames()
+        /// <returns>A list of all of the node names</returns>
+        public IEnumerable<string> GetNodeNames()
         {
             return nodeNames.Keys.ToList();
+        }
+
+        /// <summary>
+        ///     Enumerates all of the node name guid pairs
+        /// </summary>
+        /// <returns>A list of tuples with the name as first element and guid as second</returns>
+        public IEnumerable<Tuple<string, Guid>> GetNodeNameGuidPairs()
+        {
+            return nodeNames.Keys.Zip(nodeNames.Values, (first, second) => new Tuple<string, Guid>(first, second));
         }
 
         /// <summary>
