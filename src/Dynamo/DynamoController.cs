@@ -333,156 +333,6 @@ namespace Dynamo
             //AppDomain.Unload(tempDomain);
 
             #endregion
-
-            #region PopulateUI
-
-            //var sortedExpanders = new SortedDictionary<string, Tuple<Expander, SortedList<string, dynNodeUI>>>();
-
-            //foreach (var kvp in builtinTypesByNickname)
-            //{
-                //if (!kvp.Value.t.Equals(typeof(dynSymbol)))
-                //{
-                //   System.Windows.Controls.MenuItem mi = new System.Windows.Controls.MenuItem();
-                //   mi.Header = kvp.Key;
-                //   mi.Click += new RoutedEventHandler(AddElement_Click);
-                //   AddMenu.Items.Add(mi);
-                //}
-
-                //---------------------//
-
-                //object[] catAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-                //string categoryName;
-                //if (catAtts.Length > 0)
-                //{
-                //    categoryName = ((NodeCategoryAttribute)catAtts[0]).ElementCategory;
-                //}
-                //else
-                //{
-                //    if (Bench != null)
-                //        Bench.Log("No category specified for \"" + kvp.Key + "\"");
-                //    continue;
-                //}
-
-                //dynNode newNode = null;
-
-                //try
-                //{
-                //    object obj = Activator.CreateInstance(kvp.Value.Type);
-                //    newNode = (dynNode)obj; //.Unwrap();
-                //    SearchViewModel.Add(newNode);
-                //}
-                //catch (Exception e) //TODO: Narrow down
-                //{
-                //    if (Bench != null)
-                //    {
-                //        Bench.Log("Error loading \"" + kvp.Key);
-                //        Bench.Log(e.InnerException);
-                //    }
-
-                //    continue;
-                //}
-
-                //try
-                //{
-                //    dynNodeUI nodeUI = newNode.NodeUI;
-
-                //    nodeUI.DisableInteraction();
-
-                //    string name = kvp.Key;
-
-                    //newEl.MouseDoubleClick += delegate { AddElement(name); };
-
-                    //nodeUI.MouseDown += delegate
-                    //    {
-                    //        Bench.BeginDragElement(nodeUI, nodeUI.NodeLogic.GetType().ToString(),
-                    //                               Mouse.GetPosition(nodeUI));
-                    //        nodeUI.Visibility = Visibility.Hidden;
-                    //    };
-
-                    //nodeUI.GUID = Guid.NewGuid();
-                    //nodeUI.Margin = new Thickness(5, 30, 5, 5);
-
-                    //double target = Bench.sidebarGrid.Width - 30;
-                    //double width = nodeUI.ActualWidth != 0 ? nodeUI.ActualWidth : nodeUI.Width;
-                    //double scale = Math.Min(target / width, .8);
-
-                    //nodeUI.LayoutTransform = new ScaleTransform(scale, scale);
-
-                    //Tuple<Expander, SortedList<string, dynNodeUI>> expander;
-
-                    //if (sortedExpanders.ContainsKey(categoryName))
-                    //{
-                    //    expander = sortedExpanders[categoryName];
-                    //}
-                    //else
-                    //{
-                    //    var e = new Expander
-                    //        {
-                    //            Header = categoryName,
-                    //            Height = double.NaN,
-                    //            Margin = new Thickness(0, 5, 0, 0),
-                    //            Content = new WrapPanel
-                    //                {
-                    //                    Height = double.NaN,
-                    //                    Width = double.NaN
-                    //                },
-                    //            HorizontalAlignment = HorizontalAlignment.Left,
-                    //            Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200))
-                    //        };
-
-                    //    Bench.addMenuCategoryDict[categoryName] = e;
-
-                    //    expander = new Tuple<Expander, SortedList<string, dynNodeUI>>(e,
-                    //                                                                  new SortedList<string, dynNodeUI>());
-
-                    //    sortedExpanders[categoryName] = expander;
-                    //}
-
-                    //SortedList<string, dynNodeUI> sortedElements = expander.Item2;
-                    //sortedElements.Add(kvp.Key, nodeUI);
-
-                    //Bench.addMenuItemsDictNew[kvp.Key] = nodeUI;
-
-
-                    //object[] tagAtts = kvp.Value.Type.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
-
-                    //List<string> tags = null;
-
-                    //if (tagAtts.Length > 0)
-                    //{
-                    //    tags = ((NodeSearchTagsAttribute)tagAtts[0]).Tags;
-                    //}
-
-                    //if (tags != null)
-                    //{
-                    //    searchDict.Add(nodeUI, tags.Where(x => x.Length > 0));
-                    //}
-
-                    //searchDict.Add(nodeUI, kvp.Key);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        if (Bench != null)
-            //        {
-            //            Bench.Log("Error loading \"" + kvp.Key);
-            //            Bench.Log(e);
-            //        }
-            //    }
-            //}
-
-            ////Add everything to the menu here
-            //foreach (var kvp in sortedExpanders)
-            //{
-            //    Tuple<Expander, SortedList<string, dynNodeUI>> expander = kvp.Value;
-            //    Bench.SideStackPanel.Children.Add(expander.Item1);
-            //    var wp = (WrapPanel)expander.Item1.Content;
-            //    foreach (dynNodeUI e in expander.Item2.Values)
-            //    {
-            //        wp.Children.Add(e);
-            //    }
-            //}
-
-            #endregion
         
         }
 
@@ -616,6 +466,7 @@ namespace Dynamo
         /// </summary>
         public void LoadCustomNodes()
         {
+
             // custom node loader
 
                 //CustomNodeLoader.UpdateSearchPath();
@@ -1764,6 +1615,8 @@ namespace Dynamo
                     }
                 }
 
+                CurrentSpace.Connectors.ForEach(x => x.Redraw());
+
                 #region instantiate notes
 
                 if (nNodesList != null)
@@ -2383,98 +2236,6 @@ namespace Dynamo
 
             SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
         }
-
-        #endregion
-
-        #region Filtering
-
-        //private static readonly Regex searchBarNumRegex = new Regex(@"^-?\d+(\.\d*)?$");
-        //private static readonly Regex searchBarStrRegex = new Regex("^\"([^\"]*)\"?$");
-        //private readonly SearchDictionary<dynNodeUI> searchDict = new SearchDictionary<dynNodeUI>();
-        //private bool storedSearchBool;
-        //private double storedSearchNum;
-        //private string storedSearchStr = "";
-
-        //internal void filterCategory(HashSet<dynNodeUI> elements, Expander ex)
-        //{
-        //    var content = (WrapPanel) ex.Content;
-
-        //    bool filterWholeCategory = true;
-
-        //    foreach (dynNodeUI ele in content.Children)
-        //    {
-        //        if (!elements.Contains(ele))
-        //        {
-        //            ele.Visibility = Visibility.Collapsed;
-        //        }
-        //        else
-        //        {
-        //            ele.Visibility = Visibility.Visible;
-        //            filterWholeCategory = false;
-        //        }
-        //    }
-
-        //    if (filterWholeCategory)
-        //    {
-        //        ex.Visibility = Visibility.Collapsed;
-        //    }
-        //    else
-        //    {
-        //        ex.Visibility = Visibility.Visible;
-
-        //        //if (filter.Length > 0)
-        //        //   ex.IsExpanded = true;
-        //    }
-        //}
-
-        //internal void UpdateSearch(string search)
-        //{
-        //    Match m;
-
-        //    if (searchBarNumRegex.IsMatch(search))
-        //    {
-        //        storedSearchNum = Convert.ToDouble(search);
-        //        Bench.FilterAddMenu(
-        //            new HashSet<dynNodeUI>
-        //                {
-        //                    Bench.addMenuItemsDictNew["Number"],
-        //                    Bench.addMenuItemsDictNew["Number Slider"]
-        //                }
-        //            );
-        //    }
-        //    else if ((m = searchBarStrRegex.Match(search)).Success) //(search.StartsWith("\""))
-        //    {
-        //        storedSearchStr = m.Groups[1].Captures[0].Value;
-        //        Bench.FilterAddMenu(
-        //            new HashSet<dynNodeUI>
-        //                {
-        //                    Bench.addMenuItemsDictNew["String"]
-        //                }
-        //            );
-        //    }
-        //    else if (search.Equals("true") || search.Equals("false"))
-        //    {
-        //        storedSearchBool = Convert.ToBoolean(search);
-        //        Bench.FilterAddMenu(
-        //            new HashSet<dynNodeUI>
-        //                {
-        //                    Bench.addMenuItemsDictNew["Boolean"]
-        //                }
-        //            );
-        //    }
-        //    else
-        //    {
-        //        storedSearchNum = 0;
-        //        storedSearchStr = "";
-        //        storedSearchBool = false;
-
-        //        HashSet<dynNodeUI> filter = search.Length == 0
-        //                                        ? new HashSet<dynNodeUI>(Bench.addMenuItemsDictNew.Values)
-        //                                        : searchDict.Filter(search.ToLower());
-
-        //        Bench.FilterAddMenu(filter);
-        //    }
-        //}
 
         #endregion
 

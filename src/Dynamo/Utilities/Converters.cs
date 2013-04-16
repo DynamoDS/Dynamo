@@ -272,4 +272,88 @@ namespace Dynamo.Controls
             return Enum.Parse(targetType, parameterString);
         }
     }
+
+    public class PortTypeToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            PortType p = (PortType)value;
+            if (p == PortType.INPUT)
+            {
+                return new Thickness(20, 0, 0, 0);
+            }
+            else
+            {
+                return new Thickness(-20, 0, 0, 0);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class PortTypeToTextAlignmentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            PortType p = (PortType)value;
+            if (p == PortType.INPUT)
+            {
+                return HorizontalAlignment.Left;
+            }
+            else
+            {
+                return HorizontalAlignment.Right;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class PortTypeToGridColumnConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            PortType p = (PortType)value;
+            if (p == PortType.INPUT)
+            {
+                return 2;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class PortTypeToClipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            PortType p = (PortType)value;
+            if (p == PortType.INPUT)
+            {
+                return new Rect(0,0,10,20);
+            }
+            else
+            {
+                return new Rect(10, 0, 10, 20);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }
