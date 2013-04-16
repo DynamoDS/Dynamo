@@ -336,7 +336,8 @@ namespace Dynamo.Connectors
             Dynamo.Controls.DragCanvas.SetCanBeDragged(connector, false);
 
             //set the z order to the front
-            Canvas.SetZIndex(this, 300);
+            //Canvas.SetZIndex(this, 300);
+            Canvas.SetZIndex(this, 1);
 
             this.Connect(endPort);
 

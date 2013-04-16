@@ -231,7 +231,7 @@ namespace Dynamo.Nodes
 
         internal virtual INode BuildExpression(Dictionary<dynNode, Dictionary<int, INode>> buildDict)
         {
-            Debug.WriteLine("Building expression...");
+            //Debug.WriteLine("Building expression...");
 
             if (OutPortData.Count > 1)
             {
@@ -255,7 +255,7 @@ namespace Dynamo.Nodes
         /// <returns>The INode representation of this Element.</returns>
         protected internal virtual INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            Debug.WriteLine("Building node...");
+            //Debug.WriteLine("Building node...");
 
             Dictionary<int, INode> result;
             if (preBuilt.TryGetValue(this, out result))
@@ -285,7 +285,7 @@ namespace Dynamo.Nodes
                 //if (port.Connectors.Any())
                 if (TryGetInput(data.Index, out input))
                 {
-                    Debug.WriteLine(string.Format("Connecting input {0}", data.Name));
+                    //Debug.WriteLine(string.Format("Connecting input {0}", data.Name));
 
                     //Compile input and connect it
                     node.ConnectInput(data.Name, input.Item2.Build(preBuilt, input.Item1));
@@ -365,7 +365,7 @@ namespace Dynamo.Nodes
         /// <returns>A ProcedureCallNode which will then be processed recursively to be connected to its inputs.</returns>
         protected virtual InputNode Compile(IEnumerable<string> portNames)
         {
-            Debug.WriteLine(string.Format("Compiling InputNode with ports {0}.", string.Join(",", portNames)));
+            //Debug.WriteLine(string.Format("Compiling InputNode with ports {0}.", string.Join(",", portNames)));
 
             //Return a Function that calls eval.
             return new ExternalFunctionNode(evalIfDirty, portNames);
@@ -428,7 +428,7 @@ namespace Dynamo.Nodes
 
         protected internal virtual Value evaluateNode(FSharpList<Value> args)
         {
-            Debug.WriteLine("Evaluating node...");
+            //Debug.WriteLine("Evaluating node...");
 
             if (SaveResult)
             {

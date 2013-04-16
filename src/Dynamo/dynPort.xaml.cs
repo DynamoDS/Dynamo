@@ -165,15 +165,17 @@ namespace Dynamo.Connectors
             this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
             this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
 
-            portNameTb.DataContext = this;
-            toolTipText.DataContext = this;
-            ellipse1Dot.DataContext = this;
-
             IsConnected = false;
 
             PortType = portType;
             Owner = owner;
             PortName = name;
+
+            portGrid.DataContext = this;
+            portNameTb.DataContext = this;
+            toolTipText.DataContext = this;
+            ellipse1Dot.DataContext = this;
+            ellipse1.DataContext = Owner;
 
             portGrid.Loaded += new RoutedEventHandler(portGrid_Loaded);
         }
@@ -184,13 +186,13 @@ namespace Dynamo.Connectors
             //right hand side of the node with text on the left
             //do this after the port is loaded so we can get
             //its ActualWidth
-            if (PortType == Dynamo.Connectors.PortType.OUTPUT)
-            {
-                ScaleTransform trans = new ScaleTransform(-1, 1, ActualWidth/2, Height / 2);
-                portGrid.RenderTransform = trans;
-                portNameTb.Margin = new Thickness(0, 0, 15, 0);
-                portNameTb.TextAlignment = TextAlignment.Right;
-            }
+            //if (PortType == Dynamo.Connectors.PortType.OUTPUT)
+            //{
+            //    ScaleTransform trans = new ScaleTransform(-1, 1, ActualWidth/2, Height / 2);
+            //    portGrid.RenderTransform = trans;
+            //    portNameTb.Margin = new Thickness(0, 0, 15, 0);
+            //    portNameTb.TextAlignment = TextAlignment.Right;
+            //}
         }
         #endregion constructors
 
@@ -242,19 +244,20 @@ namespace Dynamo.Connectors
         #region private methods
         Point UpdateCenter()
         {
-            GeneralTransform transform = ellipse1.TransformToAncestor(dynSettings.Workbench);
-            Point rootPoint = transform.Transform(new Point(0, 0));
+            GeneralTransform transform = portCircle.TransformToAncestor(dynSettings.Workbench);
+            Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
 
-            double x = rootPoint.X;
-            double y = rootPoint.Y;
+            //double x = rootPoint.X;
+            //double y = rootPoint.Y;
 
-            if(portType == Dynamo.Connectors.PortType.INPUT)
-            {
-                x += ellipse1.Width / 2;
-            }
-            y += ellipse1.Height / 2;
+            //if(portType == Dynamo.Connectors.PortType.INPUT)
+            //{
+            //    x += ellipse1.Width / 2;
+            //}
+            //y += ellipse1.Height / 2;
 
-            return new Point(x, y);
+            //return new Point(x, y);
+            return new Point(rootPoint.X, rootPoint.Y);
 
         }
         #endregion
