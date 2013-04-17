@@ -30,6 +30,8 @@ namespace Dynamo.Revit
             get { return dynRevitSettings.Doc; }
         }
 
+        // this contains a list of all the elements created over all previous
+        // runs over the node
         private List<List<ElementId>> elements
         {
             get
@@ -38,6 +40,8 @@ namespace Dynamo.Revit
             }
         }
 
+        // This List won't always contain the current Revit IDs. 
+        // NOTE: buggy; do not use. Use elements instead
         public List<ElementId> Elements
         {
             get
