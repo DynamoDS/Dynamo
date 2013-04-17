@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,8 @@ namespace Dynamo.Nodes
 
         System.Windows.Point _rightMousePoint;
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
+        
+        private bool _requiresRedraw = false;
 
         bool _isScreenShot = false;
 
@@ -164,17 +167,7 @@ namespace Dynamo.Nodes
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            if (_lines != null)
-                _lines.Points = Lines;
-            if (_points != null)
-                _points.Points = Points;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var input = args[0];
-
-            NodeUI.Dispatcher.Invoke(new Action(delegate
+            if (_requiresRedraw)
             {
                 Points = null;
                 Lines = null;
@@ -184,26 +177,27 @@ namespace Dynamo.Nodes
                 Points = new Point3DCollection();
                 Lines = new Point3DCollection();
 
-                var descendants = Inputs.Values.SelectMany(x=>x.Item2.DescendantsAndSelf());
-                var guids = descendants.Where(x => x is IDrawable).Select(x=>x.NodeUI.GUID);
+                var descendants = Inputs.Values.SelectMany(x => x.Item2.DescendantsAndSelf());
+                var guids = descendants.Where(x => x is IDrawable).Select(x => x.NodeUI.GUID);
 
                 var drawable = descendants.Where(x => (x is IDrawable));
+                Debug.WriteLine(string.Format("Drawing {0} elements in the watch.", drawable.Count()));
+
                 foreach (var d in drawable)
                 {
-                    if (d is IDrawable)
+
+                    RenderDescription rd = (d as IDrawable).Draw();
+
+                    foreach (Point3D p in rd.points)
                     {
-                        RenderDescription rd = (d as IDrawable).Draw();
-
-                        foreach (Point3D p in rd.points)
-                        {
-                            Points.Add(p);
-                        }
-
-                        foreach (Point3D p in rd.lines)
-                        {
-                            Lines.Add(p); 
-                        }
+                        Points.Add(p);
                     }
+
+                    foreach (Point3D p in rd.lines)
+                    {
+                        Lines.Add(p);
+                    }
+
                 }
 
                 _lines.Points = Lines;
@@ -211,7 +205,55 @@ namespace Dynamo.Nodes
 
                 RaisePropertyChanged("Points");
                 RaisePropertyChanged("Lines");
-            }));
+
+                _requiresRedraw = false;
+            }
+            //if (_lines != null)
+            //    _lines.Points = Lines;
+            //if (_points != null)
+            //    _points.Points = Points;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            _requiresRedraw = true;
+
+            //Points = null;
+            //Lines = null;
+            //_lines.Points = null;
+            //_points.Points = null;
+
+            //Points = new Point3DCollection();
+            //Lines = new Point3DCollection();
+
+            //var descendants = Inputs.Values.SelectMany(x=>x.Item2.DescendantsAndSelf());
+            //var guids = descendants.Where(x => x is IDrawable).Select(x=>x.NodeUI.GUID);
+
+            //var drawable = descendants.Where(x => (x is IDrawable));
+            //foreach (var d in drawable)
+            //{
+                    
+            //    RenderDescription rd = (d as IDrawable).Draw();
+
+            //    foreach (Point3D p in rd.points)
+            //    {
+            //        Points.Add(p);
+            //    }
+
+            //    foreach (Point3D p in rd.lines)
+            //    {
+            //        Lines.Add(p); 
+            //    }
+                    
+            //}
+
+            //_lines.Points = Lines;
+            //_points.Points = Points;
+
+            //RaisePropertyChanged("Points");
+            //RaisePropertyChanged("Lines");
 
             return input;
         }
