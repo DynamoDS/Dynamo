@@ -55,8 +55,11 @@ namespace Dynamo.Nodes
 
         bool inRevitViews = true;
         ElementId transientRevitDisplayId = ElementId.InvalidElementId;
+
+        //statics for reflection
         static MethodInfo methodSetForTransientDisplay = null;
-        static MethodInfo methodAddForTransientDisplay = null;        
+        static MethodInfo methodAddForTransientDisplay = null;
+        static MethodInfo methodCreatePoint = null;
 
         public List<Point3DCollection> Points{get;set;}
 
@@ -320,7 +323,41 @@ namespace Dynamo.Nodes
                 }
                 */
            
-        }                                                                                                                                                       
+        }
+
+        Autodesk.Revit.DB.Point makePoint(XYZ xyzPoint)
+        {
+            if (!inRevitViews)
+                return null;
+
+            if (methodCreatePoint == null)
+            {
+                Type ReOrVaPoint = typeof(Autodesk.Revit.DB.Point);
+                MethodInfo[] miReORVarPoint = ReOrVaPoint.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+                String nameOfMethodCreatePoint = "CreatePoint";
+                foreach (MethodInfo m in miReORVarPoint)
+                {
+                    if (m.Name == nameOfMethodCreatePoint)
+                    {
+                        methodCreatePoint = m;
+                        break;
+                    }
+                }
+            }
+
+            if (methodCreatePoint == null)
+            {
+                inRevitViews = false;
+                return null;
+            }
+            object[] argsM = new object[3];
+            argsM[0] = xyzPoint[0];
+            argsM[1] = xyzPoint[1];
+            argsM[2] = xyzPoint[2];
+
+            return (Autodesk.Revit.DB.Point)methodCreatePoint.Invoke(null, argsM);
+        }                                                                                                                                                 
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -383,7 +420,7 @@ namespace Dynamo.Nodes
                             pt = (XYZ)test;
                             DrawPoint(pt);
                             RaisePropertyChanged("Points");
-                            //geomObject = Autodesk.Revit.DB.Point.CreatePoint(pt[0], pt[1], pt[2]);
+                            geomObject = makePoint(pt); //Autodesk.Revit.DB.Point.CreatePoint(pt[0], pt[1], pt[2]);
                         }
 
                         if (geomObject != null)
@@ -399,13 +436,6 @@ namespace Dynamo.Nodes
 
             return input; //watch 3d should be a 'pass through' node
             
-        }
-
-        private void DrawPoint(XYZ pt)
-        {
-            int lastPointColor = Points.Count() - 1;//master Point list for color assignment
-            var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
-            Points[lastPointColor].Add(ptVis);
         }
 
         private void DrawList(Value input,  System.Collections.Generic.List<Autodesk.Revit.DB.GeometryObject> toDrawInRevitView)
@@ -431,7 +461,7 @@ namespace Dynamo.Nodes
                     {
                         pt = (e as Value.Container).Item as XYZ;
                         DrawPoint(pt);
-                        //geomObject = Autodesk.Revit.DB.Point.CreatePoint(pt[0], pt[1], pt[2]);
+                        geomObject = makePoint(pt); //Autodesk.Revit.DB.Point.CreatePoint(pt[0], pt[1], pt[2]);
                     }
                     else if (cvTest != null)
                     {
@@ -446,6 +476,15 @@ namespace Dynamo.Nodes
             RaisePropertyChanged("Points");
             #endregion
         }
+
+        private void DrawPoint(XYZ pt)
+        {
+            int lastPointColor = Points.Count() - 1;//master Point list for color assignment
+            var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
+            //Points[lastPointColor].Add(ptVis);
+            FixedPoints.Add(ptVis);
+        }
+
         private void DrawCurve(Curve c)
         {
             List<XYZ> points;
