@@ -31,6 +31,8 @@ using System.Windows.Data;
 using System.ComponentModel;
 using System.Windows.Controls;
 
+using System.Reflection;
+
 namespace Dynamo.Nodes
 {
     [NodeName("Watch 3D")]
@@ -50,6 +52,11 @@ namespace Dynamo.Nodes
         ParticleSystem ps;
         Curve c;
         XYZ pt;
+
+        bool inRevitViews = true;
+        ElementId transientRevitDisplayId = ElementId.InvalidElementId;
+        static MethodInfo methodSetForTransientDisplay = null;
+        static MethodInfo methodAddForTransientDisplay = null;        
 
         public List<Point3DCollection> Points{get;set;}
 
@@ -203,7 +210,7 @@ namespace Dynamo.Nodes
                 //{
                     points.Points = Points[0];
                 //}
-                //else
+                // else
                 //{
                     for(int i=0; i<linesList.Count(); i++)
                     {
@@ -214,26 +221,131 @@ namespace Dynamo.Nodes
                 //}
                 
             }
-        }                                                                                                                                                                                                         
+        }
+        
+        public bool eraseTransientRevitDisplay()
+        {
+            if (transientRevitDisplayId != ElementId.InvalidElementId && methodSetForTransientDisplay != null)
+            {
+                Element transientGrepKeeper = dynRevitSettings.Doc.Document.GetElement(transientRevitDisplayId);
+                if (transientGrepKeeper == null)
+                {
+                    transientRevitDisplayId = ElementId.InvalidElementId;
+                    return false;
+                }
+
+                System.Collections.Generic.List<Autodesk.Revit.DB.GeometryObject> toDraw = new System.Collections.Generic.List<Autodesk.Revit.DB.GeometryObject>();
+
+                object[] argsM = new object[4];
+                argsM[0] = dynRevitSettings.Doc.Document;
+                argsM[1] = transientRevitDisplayId;
+                argsM[2] = toDraw;
+                argsM[3] = ElementId.InvalidElementId;
+
+                transientRevitDisplayId = (ElementId)methodSetForTransientDisplay.Invoke(null, argsM);
+                /* direct call after APIs for Revit gets this method from Vasari API
+                Autodesk.Revit.DB.GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document,
+                                                                   ElementId.InvalidElementId, toDraw, ElementId.InvalidElementId);
+                */
+                return true;
+            }
+            return false;
+        }
+
+        void drawInRevitViews(System.Collections.Generic.List<Autodesk.Revit.DB.GeometryObject> toDrawInRevitView)
+        {
+            Element transientGrepKeeper = null;
+            if (transientRevitDisplayId != ElementId.InvalidElementId)
+                transientGrepKeeper = dynRevitSettings.Doc.Document.GetElement(transientRevitDisplayId);
+
+            if (methodSetForTransientDisplay == null && methodAddForTransientDisplay == null)
+            {
+                Type ReOrVaGeometryElement = typeof(Autodesk.Revit.DB.GeometryElement);
+                MethodInfo[] miReORVarReOrVaGeometryElement = ReOrVaGeometryElement.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+                String nameOfMethodSet = "SetForTransientDisplay";
+                String nameOfMethodAdd = "AddForTransientDisplay";
+
+                int numFound = 0;
+
+                foreach (MethodInfo m in miReORVarReOrVaGeometryElement)
+                {
+                    if (m.Name == nameOfMethodSet)
+                    {
+                        methodSetForTransientDisplay = m;
+                        numFound++;
+                    }
+                    else if (m.Name == nameOfMethodAdd)
+                    {
+                        methodAddForTransientDisplay = m;
+                        numFound++;
+                    }
+                    if (numFound == 2)
+                        break;
+                }
+            }
+            if (methodSetForTransientDisplay != null && methodAddForTransientDisplay != null)
+            {
+                object[] argsM = new object[4];
+                argsM[0] = dynRevitSettings.Doc.Document;
+                argsM[1] = transientGrepKeeper == null ? ElementId.InvalidElementId : transientRevitDisplayId;
+                argsM[2] = toDrawInRevitView;
+                argsM[3] = ElementId.InvalidElementId;
+
+                if (transientGrepKeeper == null)
+                {
+                    transientRevitDisplayId = (ElementId)methodSetForTransientDisplay.Invoke(null, argsM);
+                }
+                else
+                {
+                    methodAddForTransientDisplay.Invoke(null, argsM);
+                }
+            }
+            else
+            {
+                //report that Watch3d will not show geoemtry in Revit window
+                inRevitViews = false;
+            }
+                /* direct calls when both APIs (Revit and Vasari) will have those methods
+                if (transientGrepKeeper == null)
+                {
+                                      
+                      transientRevitDisplayId = Autodesk.Revit.DB.GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document,
+                                                                 ElementId.InvalidElementId, toDraw, ElementId.InvalidElementId);
+                }
+                else
+                {
+                      Autodesk.Revit.DB.GeometryElement.AddForTransientDisplay(dynRevitSettings.Doc.Document,
+                                                                 transientRevitDisplayId, toDraw, ElementId.InvalidElementId);
+                }
+                */
+           
+        }                                                                                                                                                       
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
+            eraseTransientRevitDisplay();
+            
+
             NodeUI.Dispatcher.Invoke(new Action(
                delegate
                {
+                   System.Collections.Generic.List<Autodesk.Revit.DB.GeometryObject> toDrawInRevitView = new System.Collections.Generic.List<Autodesk.Revit.DB.GeometryObject>();
+
                     //If we are receiving a list, we test to see if they are XYZs or curves and then make Preview3d elements.
                     if (input.IsList)
                     {
                         DetachVisuals();
                         ClearPointsCollections();
-
-                        DrawList(input);
+                        DrawList(input, toDrawInRevitView);
                     }
                     else if (input.IsContainer) //if not a list, try to cast to either a particle system, curve, or xyz
                     {
                         var test = ((Value.Container)(input)).Item;
+
+                        GeometryObject geomObject = test as GeometryObject;
 
                         if (test is ParticleSystem)
                         {
@@ -241,8 +353,11 @@ namespace Dynamo.Nodes
 
                             try
                             {
+
                                 UpdateVisualsFromParticleSystem();
+
                                 RaisePropertyChanged("Points");
+
                             }
                             catch (Exception e)
                             {
@@ -251,6 +366,7 @@ namespace Dynamo.Nodes
                         }
                         else if (test is Curve)
                         {
+
                             DetachVisuals();
                             ClearPointsCollections();
 
@@ -265,9 +381,19 @@ namespace Dynamo.Nodes
                             ClearPointsCollections();
 
                             pt = (XYZ)test;
-                            DrawCurve(c);
+                            DrawPoint(pt);
                             RaisePropertyChanged("Points");
+                            //geomObject = Autodesk.Revit.DB.Point.CreatePoint(pt[0], pt[1], pt[2]);
                         }
+
+                        if (geomObject != null)
+                            toDrawInRevitView.Add(geomObject);
+                    }
+
+                    if (inRevitViews && toDrawInRevitView.Count > 0)
+                    {
+                        drawInRevitViews(toDrawInRevitView);
+   
                     }
                }));
 
@@ -275,7 +401,14 @@ namespace Dynamo.Nodes
             
         }
 
-        private void DrawList(Value input)
+        private void DrawPoint(XYZ pt)
+        {
+            int lastPointColor = Points.Count() - 1;//master Point list for color assignment
+            var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
+            Points[lastPointColor].Add(ptVis);
+        }
+
+        private void DrawList(Value input,  System.Collections.Generic.List<Autodesk.Revit.DB.GeometryObject> toDrawInRevitView)
         {
             #region points and curves
             //FSharpList<Value> list = ((Value.List)args[0]).Item;
@@ -283,9 +416,11 @@ namespace Dynamo.Nodes
 
             foreach (Value e in inList)
             {
+                GeometryObject geomObject = (e as Value.Container).Item as GeometryObject;
+
                 if (e.IsList)
                 {
-                    DrawList(e);
+                    DrawList(e, toDrawInRevitView);
                 }
                 else if (e.IsContainer)
                 {
@@ -296,27 +431,21 @@ namespace Dynamo.Nodes
                     {
                         pt = (e as Value.Container).Item as XYZ;
                         DrawPoint(pt);
+                        //geomObject = Autodesk.Revit.DB.Point.CreatePoint(pt[0], pt[1], pt[2]);
                     }
                     else if (cvTest != null)
                     {
                         c = (e as Value.Container).Item as Curve;
                         DrawCurve(c);
                     }
+                    if (geomObject != null)
+                        toDrawInRevitView.Add(geomObject);
                 }
             }
-            
+
             RaisePropertyChanged("Points");
             #endregion
         }
-
-        private void DrawPoint(XYZ pt)
-        {
-            int lastPointColor = Points.Count() - 1;//master Point list for color assignment
-            var ptVis = new Point3D(pt.X, pt.Y, pt.Z);
-            //Points[lastPointColor].Add(ptVis);
-            FixedPoints.Add(ptVis);
-        }
-
         private void DrawCurve(Curve c)
         {
             List<XYZ> points;
