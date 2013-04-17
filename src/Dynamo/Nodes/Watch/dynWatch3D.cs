@@ -37,22 +37,18 @@ namespace Dynamo.Nodes
     [NodeDescription("Shows a dynamic preview of geometry.")]
     public class dynWatch3D : dynNodeWithOneOutput, INotifyPropertyChanged
     {
-        HelixViewport3D view;
+        WatchControl _watchView;
 
-        //LinesVisual3D axis;
+        private PointsVisual3D _points;
+        private LinesVisual3D _lines;
 
-        PointsVisual3D helixChildPoints;
-        LinesVisual3D helixChildLines;
-        List<MeshVisual3D> helixChildMeshes;
+        public Point3DCollection Points { get; set; }
+        public Point3DCollection Lines { get; set; }
 
-        Point3DCollection watchPoints;
-        Point3DCollection watchLines;
-        List<Mesh3D> watchMeshes;
-
-        System.Windows.Point rightMousePoint;
+        System.Windows.Point _rightMousePoint;
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
 
-        bool isScreenShot = false;
+        bool _isScreenShot = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -81,9 +77,9 @@ namespace Dynamo.Nodes
             //take out the left and right margins and make this so it's not so wide
             NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
 
-            isScreenShot = true;
+            _isScreenShot = true;
 
-            if (isScreenShot)
+            if (_isScreenShot)
             {
                 NodeUI.topControl.Width = 800;
                 NodeUI.topControl.Height = 500;
@@ -96,44 +92,25 @@ namespace Dynamo.Nodes
 
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
-            view = new HelixViewport3D();
-            view.DataContext = this;
-            view.CameraRotationMode = CameraRotationMode.Turntable;
-            view.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            view.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-            //RenderOptions.SetEdgeMode(view,EdgeMode.Aliased);
-            RenderOptions.SetEdgeMode(view, EdgeMode.Unspecified);
-            view.ShowViewCube = false;
+            _watchView = new WatchControl();
+            _watchView.watch_view.DataContext = this;
 
-            //view.IsHitTestVisible = true;
-            view.ShowFrameRate = true;
+            RenderOptions.SetEdgeMode(_watchView, EdgeMode.Unspecified);
 
-            view.MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
-            view.PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
+            _watchView.MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
+            _watchView.PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
-            helixChildPoints = new PointsVisual3D { Color = Colors.Red, Size = 8 };
-            view.Children.Add(helixChildPoints);
+            Points = new Point3DCollection();
+            Lines = new Point3DCollection();
 
-            helixChildLines = new LinesVisual3D
-            {
-                Color = Colors.Black,
-                Thickness = 1
-            };
+            _points = new PointsVisual3D{Color = Colors.Red, Size=6};
+            _lines = new LinesVisual3D{Color = Colors.Blue, Thickness = 1};
+            
+            _points.Points = Points;
+            _lines.Points = Lines;
 
-            view.Children.Add(helixChildLines);
-
-            helixChildMeshes = new List<MeshVisual3D>();
-
-            watchPoints = new Point3DCollection();
-            watchLines = new Point3DCollection();
-
-            watchMeshes = new List<Mesh3D>();
-
-            //axis = new LinesVisual3D
-            //{
-            //    Color = Colors.Gray,
-            //    Thickness = 0.1
-            //};
+            _watchView.watch_view.Children.Add(_lines);
+            _watchView.watch_view.Children.Add(_points);
             
             //axis.Points.Add(new Point3D(1000, 0, 0));
             //axis.Points.Add(new Point3D(-1000, 0, 0));
@@ -159,14 +136,14 @@ namespace Dynamo.Nodes
             SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
             backgroundRect.Fill = backgroundBrush;
             NodeUI.inputGrid.Children.Add(backgroundRect);
-            NodeUI.inputGrid.Children.Add(view);
+            NodeUI.inputGrid.Children.Add(_watchView);
 
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }
 
         void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            rightMousePoint = e.GetPosition(NodeUI.topControl);
+            _rightMousePoint = e.GetPosition(NodeUI.topControl);
         }
 
         void view_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -174,7 +151,7 @@ namespace Dynamo.Nodes
             //if the mouse has moved, and this is a right
             //click, we assume rotation. handle the event
             //so we don't show the context menu
-            if (e.GetPosition(NodeUI.topControl) != rightMousePoint)
+            if (e.GetPosition(NodeUI.topControl) != _rightMousePoint)
             {
                 e.Handled = true;
             }
@@ -182,137 +159,61 @@ namespace Dynamo.Nodes
 
         void mi_Click(object sender, RoutedEventArgs e)
         {
-            view.ZoomExtents();
+            _watchView.watch_view.ZoomExtents();
         }
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            helixChildPoints.Points = watchPoints;
-
-            helixChildLines.Points = watchLines;
-
-            foreach (MeshVisual3D m in helixChildMeshes) 
-            {
-                view.Children.Remove(m);
-            }
-
-            helixChildMeshes.Clear();
-
-            foreach (Mesh3D mesh in watchMeshes) 
-            {
-                MeshVisual3D visual_mesh = new MeshVisual3D();
-                visual_mesh.Mesh = mesh;
-
-                view.Children.Add(visual_mesh);
-                helixChildMeshes.Add(visual_mesh);
-            }
+            if (_lines != null)
+                _lines.Points = Lines;
+            if (_points != null)
+                _points.Points = Points;
         }
-
-        //private void PredrawNode(dynNode node)
-        //{
-        //    IDrawable d = node as IDrawable;
-
-        //    if (d != null)
-        //        PredrawIDrawable(d);
-
-        //    foreach (KeyValuePair<int, Tuple<int, dynNode>> entry in node.Inputs)
-        //    {
-        //        PredrawNode(entry.Value.Item2);
-        //    }
-        //}
-
-        //private void PredrawIDrawable(IDrawable drawable)
-        //{
-        //    RenderDescription description = drawable.Draw();
-
-        //    if (description.points != null)
-        //    {
-        //        foreach (Point3D p in description.points)
-        //        {
-        //            watchPoints.Add(p);
-        //        }
-        //    }
-
-        //    if (description.lines != null)
-        //    {
-        //        foreach (Point3D p in description.lines)
-        //        {
-        //            watchLines.Add(p);
-        //        }
-        //    }
-
-        //    if (description.meshes != null)
-        //    {
-        //        foreach (Mesh3D mesh in description.meshes)
-        //        {
-        //            watchMeshes.Add(mesh);
-        //        }
-        //    }
-        //}
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             var input = args[0];
 
-            NodeUI.Dispatcher.Invoke(new Action(delegate {
-                ClearPointsCollections();
+            NodeUI.Dispatcher.Invoke(new Action(delegate
+            {
+                Points = null;
+                Lines = null;
+                _lines.Points = null;
+                _points.Points = null;
+
+                Points = new Point3DCollection();
+                Lines = new Point3DCollection();
 
                 var descendants = Inputs.Values.SelectMany(x=>x.Item2.DescendantsAndSelf());
                 var guids = descendants.Where(x => x is IDrawable).Select(x=>x.NodeUI.GUID);
-                var renderDataLists = dynSettings.Controller.CurrentSpace.RenderData.
-                    Where(x => guids.Contains(x.Key)).
-                    Select(x=>x.Value);
-                
-                var points = renderDataLists.SelectMany(x=>x).Select(x=>x.points);
-                var lines = renderDataLists.SelectMany(x => x).Select(x => x.lines);
-                var meshes = renderDataLists.SelectMany(x => x).Select(x => x.meshes);
 
-                foreach (Point3DCollection pColl in points)
+                var drawable = descendants.Where(x => (x is IDrawable));
+                foreach (var d in drawable)
                 {
-                    foreach (Point3D p in pColl)
+                    if (d is IDrawable)
                     {
-                        watchPoints.Add(p);
-                    }
-                }
-                foreach (Point3DCollection lColl in lines)
-                {
-                    foreach (Point3D p in lColl)
-                    {
-                        watchLines.Add(p);
+                        RenderDescription rd = (d as IDrawable).Draw();
+
+                        foreach (Point3D p in rd.points)
+                        {
+                            Points.Add(p);
+                        }
+
+                        foreach (Point3D p in rd.lines)
+                        {
+                            Lines.Add(p); 
+                        }
                     }
                 }
 
-                //foreach (Point3D p in points)
-                //{
-                //    watchPoints.Add(p);
-                //}
+                _lines.Points = Lines;
+                _points.Points = Points;
 
-                //foreach (KeyValuePair<int, Tuple<int, dynNode>> entry in Inputs)
-                //{
-                //    PredrawNode(entry.Value.Item2);
-                //}
+                RaisePropertyChanged("Points");
+                RaisePropertyChanged("Lines");
             }));
 
             return input;
-        }
-
-        private void ClearPointsCollections()
-        {
-            watchPoints.Clear();
-            watchLines.Clear();
-            watchMeshes.Clear();
-        }
-
-        // Patrick: I don't understand what this does. Can someone add a comment
-        private void DetachVisuals()
-        {
-            helixChildPoints.Points = null;
-            helixChildLines.Points = null;
-
-            foreach (MeshVisual3D m in helixChildMeshes)
-            {
-                m.Mesh = null;
-            }
         }
     }
 }

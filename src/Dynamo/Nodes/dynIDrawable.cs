@@ -25,6 +25,6 @@ namespace Dynamo.Nodes
     
     public interface IDrawable
     {
-        RenderDescription Draw(object obj);
+        RenderDescription Draw();
     }
 }

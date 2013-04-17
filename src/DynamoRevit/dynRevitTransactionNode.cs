@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -16,7 +17,7 @@ using System.Windows.Media.Media3D;
 
 namespace Dynamo.Revit
 {
-    public abstract class dynRevitTransactionNode : dynNode
+    public abstract class dynRevitTransactionNode : dynNode,IDrawable
     {
         protected object drawableObject = null;
         protected Func<object, RenderDescription> drawMethod = null;
@@ -51,37 +52,83 @@ namespace Dynamo.Revit
             }
         }
 
-        //public RenderDescription Draw()
-        //{
-        //    if (base_type == null)
-        //    {
-        //        if (Elements.Count == 0)
-        //            return new RenderDescription();
+        public RenderDescription Draw()
+        {
+            var drawaableRevitElements = elements.SelectMany(x => x.Select(y => dynRevitSettings.Doc.Document.GetElement(y)));
 
-        //        Element elem = dynRevitSettings.Doc.Document.GetElement(Elements[0]);
-        //        base_type = elem.GetType();
-        //    }
+            Debug.WriteLine(string.Format("Drawing {0} elements of type : {1}", drawaableRevitElements.Count(),
+                                          this.GetType()));
 
-        //    if (drawableObject != null)
-        //        return drawMethod.Invoke(drawableObject);
-        //    if (base_type.IsSubclassOf(typeof(Autodesk.Revit.DB.ReferencePoint)))
-        //        drawMethod = DrawReferencePoint;
-        //    else if (base_type.IsSubclassOf(typeof(Autodesk.Revit.DB.Curve)))
-        //        drawMethod = DrawCurve;
-        //    else if (base_type.IsSubclassOf(typeof(Autodesk.Revit.DB.CurveElement)))
-        //        drawMethod = DrawCurveElemet;
-        //    else
-        //        drawMethod = DrawUndrawable;
+            RenderDescription description = new RenderDescription();
+            foreach (Element e in drawaableRevitElements)
+            {
+                Draw(description, e);
+            }
+            return description;
+        }
 
-        //    drawableObject = dynRevitSettings.Doc.Document.GetElement(Elements[0]);
+        private void DrawUndrawable(RenderDescription description, object obj)
+        {
+            //TODO: What is this for?
+        }
 
-        //    return drawMethod.Invoke(drawableObject);
-        //}
+        private void DrawReferencePoint(RenderDescription description, object obj)
+        {
+            ReferencePoint point = obj as ReferencePoint;
+            description.points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
+                point.GetCoordinateSystem().Origin.Y,
+                point.GetCoordinateSystem().Origin.Z));
+        }
 
+        private void DrawXYZ(RenderDescription description, object obj)
+        {
+            XYZ point = obj as XYZ;
+            description.points.Add(new Point3D(point.X, point.Y, point.Z));
+        }
+
+        private void DrawCurve(RenderDescription description, object obj)
+        {
+            Autodesk.Revit.DB.Curve curve = obj as Autodesk.Revit.DB.Curve;
+
+            IList<XYZ> points = curve.Tessellate();
+
+            foreach (XYZ xyz in points)
+            {
+                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+            }
+        }
+
+        private void DrawCurveElement(RenderDescription description, object obj)
+        {
+            Autodesk.Revit.DB.CurveElement elem = obj as Autodesk.Revit.DB.CurveElement;
+
+            DrawCurve(description, elem.GeometryCurve);
+        }
+
+        public void Draw(RenderDescription description, object obj)
+        {
+            if (typeof(Autodesk.Revit.DB.Curve).IsAssignableFrom(obj.GetType()))
+            {
+                DrawCurve(description, obj);
+            }
+            else if (typeof(Autodesk.Revit.DB.CurveElement).IsAssignableFrom(obj.GetType()))
+            {
+                DrawCurveElement(description, obj);
+            }
+            else if (typeof(Autodesk.Revit.DB.ReferencePoint).IsAssignableFrom(obj.GetType()))
+            {
+                DrawReferencePoint(description, obj);
+            }
+            else if (typeof(Autodesk.Revit.DB.XYZ).IsAssignableFrom(obj.GetType()))
+            {
+                DrawXYZ(description, obj);
+            }
+            else
+            {
+                DrawUndrawable(description, obj);
+            }
+        }
         
-        
-        
-
         //TODO: Move handling of increments to wrappers for eval. Should never have to touch this in subclasses.
         /// <summary>
         /// Implementation detail, records how many times this Element has been executed during this run.

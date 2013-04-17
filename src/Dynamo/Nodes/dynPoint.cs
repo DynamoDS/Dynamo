@@ -35,10 +35,9 @@ namespace Dynamo.Nodes
     [NodeName("Drawable Point")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
     [NodeDescription("An example of a point that can be drawn.")]
-    class dynPoint3D : dynNodeWithOneOutput
+    class dynPoint3D : dynNodeWithOneOutput, IDrawable
     {
         Point3D p;
-        Point3DCollection points = new Point3DCollection();
 
         public dynPoint3D()
         {
@@ -58,30 +57,16 @@ namespace Dynamo.Nodes
 
             p = new Point3D(x, y, z);
 
-            NodeUI.Dispatcher.Invoke(new Action(
-               delegate
-               {
-                   points.Clear();
-                   points.Add(p);
-               }));
-
             return Value.NewContainer(this);
         }
 
-        public virtual Point3DCollection Points()
+        public RenderDescription Draw()
         {
-            return points;
+            RenderDescription rd = new RenderDescription();
+            rd.points.Add(p);
+            return rd;
         }
 
-        public virtual Point3DCollection Lines()
-        {
-            return null;
-        }
-
-        public virtual Mesh3D[] Meshes()
-        {
-            return null;
-        }
     }
 
     //[NodeName("Watch 3D Accumulator")]
