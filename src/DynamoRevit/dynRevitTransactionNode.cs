@@ -58,7 +58,7 @@ namespace Dynamo.Revit
 
             Debug.WriteLine(string.Format("Drawing {0} elements of type : {1}", drawaableRevitElements.Count(),
                                           this.GetType()));
-
+            
             RenderDescription description = new RenderDescription();
             foreach (Element e in drawaableRevitElements)
             {
@@ -153,6 +153,8 @@ namespace Dynamo.Revit
 
         internal void PruneRuns(int runCount)
         {
+            Debug.WriteLine(string.Format("Pruning runs from {0} to {1}", elements.Count, runCount));
+
             for (int i = elements.Count - 1; i >= runCount; i--)
             {
                 var elems = elements[i];
