@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Diagnostics;
-using Dynamo.Nodes;
+
 using Dynamo.Revit;
 
 using Autodesk.Revit.DB;
@@ -25,26 +25,23 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="node"></param>
         /// <param name="result"></param>
-        public static void StoreElements(dynRevitTransactionNode node, List<object> results)
+        public static void StoreElements(dynRevitTransactionNode node, object result)
         {
-            foreach (object result in results)
+            if (typeof(Element).IsAssignableFrom(result.GetType()))
             {
-                if (typeof (Element).IsAssignableFrom(result.GetType()))
-                {
-                    node.Elements.Add(((Element) result).Id);
-                }
-                else if (typeof (ElementId).IsAssignableFrom(result.GetType()))
-                {
-                    node.Elements.Add((ElementId) result);
-                }
-                else if (typeof (List<Element>).IsAssignableFrom(result.GetType()))
-                {
-                    ((List<Element>) result).ForEach(x => node.Elements.Add(((Element) x).Id));
-                }
-                else if (typeof (List<ElementId>).IsAssignableFrom(result.GetType()))
-                {
-                    ((List<ElementId>) result).ForEach(x => node.Elements.Add((ElementId) x));
-                }
+                node.Elements.Add(((Element)result).Id);
+            }
+            else if (typeof(ElementId).IsAssignableFrom(result.GetType()))
+            {
+                node.Elements.Add((ElementId)result);
+            }
+            else if (typeof(List<Element>).IsAssignableFrom(result.GetType()))
+            {
+                ((List<Element>)result).ForEach(x => node.Elements.Add(((Element)x).Id));
+            }
+            else if (typeof(List<ElementId>).IsAssignableFrom(result.GetType()))
+            {
+                ((List<ElementId>)result).ForEach(x => node.Elements.Add((ElementId)x));
             }
         }
 
@@ -114,130 +111,39 @@ namespace Dynamo.Utilities
                 invocation_target = DynamoTypeConverter.ConvertInput(args[0],api_base_type);
             }
 
-            //if any argument are a list, honor the lacing strategy
-            //compile a list of parameter lists to be passed into our method
-            List<List<object>> parameters = null;
-
-            //if (args.Any(x => x.IsList))
-            //{
-                switch (node.ArgumentLacing)
-                {
-                    case LacingStrategy.Single:
-                        parameters = GetSingleArguments(args, pi);
-                        break;
-                    case LacingStrategy.Shortest:
-                        //TODO: implement shortest lacing
-                        //parameters = GetShortestArguments(args, pi);
-                        break;
-                    case LacingStrategy.Longest:
-                        //TODO: implement longest lacing
-                        //parameters = GetLongestArguments(args, pi);
-                        break;
-                    default:
-                        parameters = GetSingleArguments(args, pi);
-                        break;
-                }
-            //}
-
-            //object result = null;
-            List<object> results = null;
-
-            if (mi.IsConstructor)
-            {
-                //result = ((ConstructorInfo)mi).Invoke(parameters);
-                results = parameters.Select(x => ((ConstructorInfo) mi).Invoke(x.ToArray())).ToList();
-            }
-            else
-            {
-                //result = mi.Invoke(invocation_target, parameters);
-                results = parameters.Select(x => mi.Invoke(invocation_target, x.ToArray())).ToList();
-            }
-            
-            dynRevitUtils.StoreElements(node, results);
-
-            //if there are multiple items in the results list
-            //return a list type
-            if (results.Count > 1)
-            {
-                FSharpList<Value> lst = FSharpList<Value>.Empty;
-
-                foreach (var result in results)
-                {
-                    FSharpList<Value>.Cons(DynamoTypeConverter.ConvertToValue(result), lst);
-                }
-
-                //the result will be a list of objects if any lists
-                
-                return Value.NewList(lst);
-            }
-            //otherwise, return a single value
-            else
-            {
-                return DynamoTypeConverter.ConvertToValue(results.First());
-            }
-        }
-
-        private static List<List<object>> GetSingleArguments(FSharpList<Value> args, ParameterInfo[] pi)
-        {
-            List<List<object>> parameters = new List<List<object>>();
-
-            //return a single list of parameters
-            List<object> currParams = new List<object>();
+            object[] parameters = new object[pi.Count()];
             if (args.Count() == pi.Count())
             {
                 for (int i = 0; i < pi.Count(); i++)
                 {
-                    currParams.Add(DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType));
+                    parameters[i] = DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType);
                 }
             }
             else
             {
                 for (int i = 0; i < pi.Count(); i++)
                 {
-                    currParams.Add(DynamoTypeConverter.ConvertInput(args[i + 1], pi[i].ParameterType));
+                    parameters[i] = DynamoTypeConverter.ConvertInput(args[i + 1], pi[i].ParameterType);
                 }
             }
 
-            parameters.Add(currParams);
+            object result = null;
 
-            return parameters;
-        }
+            if (mi.IsConstructor)
+            {
+                result = ((ConstructorInfo)mi).Invoke(parameters);
+            }
+            else
+            {
+                result = mi.Invoke(invocation_target, parameters);
+            }
+            
+            if (result != null)
+            {
+                dynRevitUtils.StoreElements(node, result);
+            }
 
-        private static List<List<object>> GetShortestArguments(FSharpList<Value> args, ParameterInfo[] pi)
-        {
-            List<List<object>> parameters = new List<List<object>>();
-
-            return parameters;
-        }
-
-        private static List<List<object>> GetLongestArguments(FSharpList<Value> args, ParameterInfo[] pi)
-        {
-            List<List<object>> parameters = new List<List<object>>();
-
-            //int count = -1;
-            //foreach (var arg in args)
-            //{
-            //    if (arg.IsList)
-            //    {
-            //        if (count == -1)
-            //            count = ((Value.List) arg).Item.Count();
-            //        else
-            //        {
-            //            count = Math.Min(count, ((Value.List) arg).Item.Count());
-            //        }
-            //    }
-            //}
-
-            ////if you have lists, but they only have one item in them
-            ////then just use the single strategy
-            //if (count == 1)
-            //{
-            //    return GetSingleArguments(args, pi);
-            //}
-
-            //TODO:Make the rest of this
-
-            return parameters;
+            return DynamoTypeConverter.ConvertToValue(result);
         }
     }
 
