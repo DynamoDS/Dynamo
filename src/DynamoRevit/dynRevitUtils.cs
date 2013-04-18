@@ -272,7 +272,7 @@ namespace Dynamo.Utilities
                         if (arg.IsList)
                         {
                             var lst = (Value.List) arg;
-                            var argItem = (lst.Item.Count() < end ? lst.Item.Last() : lst.Item[j]);
+                            var argItem = (j < lst.Item.Count() ? lst.Item[j]: lst.Item.Last());
 
                             currParams.Add(DynamoTypeConverter.ConvertInput(argItem, pi[i].ParameterType));
                         }
