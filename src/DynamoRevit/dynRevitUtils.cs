@@ -144,11 +144,15 @@ namespace Dynamo.Utilities
 
             if (mi.IsConstructor)
             {
+                //invoke the constructor for each of the parameter lists
+
                 //result = ((ConstructorInfo)mi).Invoke(parameters);
                 results = parameters.Select(x => ((ConstructorInfo) mi).Invoke(x.ToArray())).ToList();
             }
             else
             {
+                //invoke the method for each of the parameter lists
+
                 //result = mi.Invoke(invocation_target, parameters);
                 results = parameters.Select(x => mi.Invoke(invocation_target, x.ToArray())).ToList();
             }
@@ -177,12 +181,19 @@ namespace Dynamo.Utilities
             }
         }
 
+        /// <summary>
+        /// Get a straight list of matching arguments and parameters
+        /// </summary>
+        /// <param name="args">The incoming arguments.</param>
+        /// <param name="pi">The parameter information.</param>
+        /// <returns></returns>
         private static List<List<object>> GetSingleArguments(FSharpList<Value> args, ParameterInfo[] pi)
         {
-            List<List<object>> parameters = new List<List<object>>();
+            var parameters = new List<List<object>>();
 
             //return a single list of parameters
-            List<object> currParams = new List<object>();
+            var currParams = new List<object>();
+
             if (args.Count() == pi.Count())
             {
                 for (int i = 0; i < pi.Count(); i++)
@@ -194,7 +205,8 @@ namespace Dynamo.Utilities
             {
                 for (int i = 0; i < pi.Count(); i++)
                 {
-                    currParams.Add(DynamoTypeConverter.ConvertInput(args[i + 1], pi[i].ParameterType));
+                    currParams.Add(
+                        args[i + 1], pi[i].ParameterType));
                 }
             }
 
@@ -203,10 +215,63 @@ namespace Dynamo.Utilities
             return parameters;
         }
 
+        /// <summary>
+        /// Get the shortest list of arguments.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="pi"></param>
+        /// <returns></returns>
         private static List<List<object>> GetShortestArguments(FSharpList<Value> args, ParameterInfo[] pi)
         {
             List<List<object>> parameters = new List<List<object>>();
 
+            //find the largest list in the inputs
+            int longest = args.Where(arg => arg.IsList).Select(arg => ((Value.List) arg).Item.Count()).Concat(new[] {1}).Max();
+
+            if (args.Count() == pi.Count())
+            {
+                for (int i = 0; i < pi.Count(); i++)
+                {
+                    currParams.Add(DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < pi.Count(); i++)
+                {
+                    currParams.Add(
+                        args[i + 1], pi[i].ParameterType));
+                }
+            }
+
+            //parameters -> A,B,C
+            //inputs -> {A1,A2,A3},{B},{C1,C2,C3,C4}
+
+
+            //loop over all the parameters
+            for (int j = 0; j < pi.Count(); j++)
+            {
+                for (int i = 0; i < longest; i++)
+                {
+                    var currParams = new List<object>();
+                    foreach (Value v in args)
+                    {
+                        //if the value is a list, add the ith item converted to
+                        //or the last item if i exceeds the count of the list
+                        if (v.IsList)
+                        {
+                            currParams.Add(((Value.List)v).Item.Count() < longest ? 
+                                DynamoTypeConverter.ConvertInput(args.Last(), pi[j].ParameterType) :
+                                DynamoTypeConverter.ConvertInput(args[i], pi[j].ParameterType));
+                        }
+                        else
+                            //if the value is not a list,
+                            //add the value
+                            currParams.Add(DynamoTypeConverter.ConvertInput(v, pi[j].ParameterType));
+                    }
+                    parameters.Add(currParams);
+                }
+            }
             return parameters;
         }
 
