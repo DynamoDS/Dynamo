@@ -14,12 +14,23 @@ using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
+using Microsoft.Practices.Prism.Events;
 
 using Value = Dynamo.FScheme.Value;
 
 
 namespace Dynamo.Nodes
 {
+
+    public enum LacingStrategy
+    {
+        Longest,
+        Shortest,
+        Single
+    };
+
+    public delegate void LacingTypeChangedHandler(object sender, EventArgs e);
+
     public abstract class dynNode
     {
         /* TODO:
@@ -54,6 +65,29 @@ namespace Dynamo.Nodes
             new Dictionary<int, Tuple<int, dynNode>>();
         private Dictionary<int, HashSet<Tuple<int, dynNode>>> previousOutputPortMappings =
             new Dictionary<int, HashSet<Tuple<int, dynNode>>>();
+
+        private LacingStrategy _argumentLacing  = LacingStrategy.Single;
+
+        public event LacingTypeChangedHandler ArgumentLacingUpdated;
+        protected virtual void OnArgumentLacingUpdated(EventArgs e)
+        {
+            if (ArgumentLacingUpdated != null)
+                ArgumentLacingUpdated(this, e);
+        }
+
+        /// <summary>
+        /// Control how arguments lists of various sizes are laced.
+        /// </summary>
+        public LacingStrategy ArgumentLacing
+        {
+            get { return _argumentLacing; }
+            set
+            {
+                _argumentLacing = value;
+                isDirty = true;
+                OnArgumentLacingUpdated(EventArgs.Empty);
+            }
+        }
 
         /// <summary>
         ///     Category property
@@ -222,7 +256,9 @@ namespace Dynamo.Nodes
             {
                 input.Item2.MarkDirty();
                 if (input.Item2.RequiresRecalc)
+                {
                     dirty = true;
+                }
             }
             if (!_isDirty)
                 _isDirty = dirty;

@@ -148,9 +148,6 @@
                 <MenuItem Header="_Show Node Library" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSearchCmd}}" InputGestureText="Space"/>
                 <MenuItem Header="_Hide Node Library" Command="{Binding Source={x:Static commands:DynamoCommands.HideSearchCmd}}" InputGestureText="Esc"/>
 
-                <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideClassicNavigatorMenuItemConverter}}"
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ShowClassicNodeNavigatorCmd}}" />
-
             </MenuItem>
 
             <MenuItem Header="_Workspaces" Name="workspacesMenu">
@@ -282,82 +279,6 @@
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" />
         </ScrollViewer>
-
-        <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Collapsed" 
-              Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="#FF505050">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="80"/>
-            </Grid.ColumnDefinitions>
-            <ScrollViewer HorizontalAlignment="Stretch" Margin="10,5,10,10" Name="scrollViewer1" VerticalAlignment="Stretch" 
-                          VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
-
-                <StackPanel Name="SideStackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                </StackPanel>
-            </ScrollViewer>
-            <!--<Label Content="Search:" Margin="0,5,5,0" Height="23" VerticalAlignment="Top" Width="Auto" HorizontalAlignment="Left" FontFamily="Arial" Foreground="#FFC8C8C8"/>-->
-            <Grid Margin="10,10,5,5">
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <VisualBrush Stretch="Fill">
-                                    <VisualBrush.Visual>
-                                        <Rectangle Stretch="Fill" Stroke="White"/>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Grid.Style>
-                <TextBox Name="SearchBox" Padding="5"
-                            Text="" IsEnabled="True" TextChanged="SearchBox_OnTextChanged" 
-                            LostFocus="searchBox_LostFocus" FontFamily="Arial" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <VisualBrush Stretch="None">
-                                                <VisualBrush.Visual>
-                                                    <TextBlock Text="Filter..." FontFamily="Arial" FontSize="12" Foreground="Gray"/>
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="{x:Null}">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <VisualBrush Stretch="None">
-                                                <VisualBrush.Visual>
-                                                    <TextBlock Text="Filter..." Margin="0" FontFamily="Arial" FontSize="12" Foreground="Gray"/>
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="True">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <VisualBrush Stretch="None">
-                                            </VisualBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-            </Grid>
-            <Button HorizontalAlignment="Stretch" Name="NewNodeButton" Content="New..." Margin="5,10,10,5"
-                        VerticalAlignment="Stretch" Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}" FontFamily="Arial" Grid.Column="1" Grid.Row="0"/>
-        </Grid>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3" Background="#FFF0F0F0">

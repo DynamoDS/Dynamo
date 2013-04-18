@@ -244,6 +244,7 @@ namespace Dynamo.Connectors
         #region private methods
         Point UpdateCenter()
         {
+
             GeneralTransform transform = portCircle.TransformToAncestor(dynSettings.Workbench);
             Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
 

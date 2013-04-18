@@ -134,6 +134,9 @@ limitations under the License.
     <Compile Include="ViewModels\dynViewModelBase.cs" />
     <Compile Include="Models\dynWorkspaceModel.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
+    <Compile Include="CustomNodeLoader.cs" />
+    <Compile Include="DynamoLoader.cs" />
+    <Compile Include="NodeCollapser.cs" />
     <Compile Include="Utilities\Converters.cs" />
     <Compile Include="DynamoController.cs" />
     <Compile Include="DynamoSplash.xaml.cs">
@@ -279,10 +282,10 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\DynamoModern.xaml">
+    <Resource Include="Themes\DynamoModern.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
     <Page Include="Themes\DynamoText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

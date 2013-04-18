@@ -541,8 +541,8 @@ namespace Dynamo.Controls
             {
                 DynamoCommands.WriteToLogCmd.Execute(message);
             }
-
-            LogScroller.ScrollToBottom();
+            if (LogScroller != null)
+                LogScroller.ScrollToBottom();
         }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -605,7 +605,7 @@ namespace Dynamo.Controls
             {
                 if (Keyboard.IsKeyDown(Key.Enter))
                 {
-                    Controller.SaveNameEdit();
+                    Controller.RefactorCustomNode();
                     DisableEditNameBox();
                     e.Handled = true;
                 }
@@ -616,11 +616,11 @@ namespace Dynamo.Controls
                 }
             }
 
-            if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.F))
-            {
-                SearchBox.Focus();
-                SearchBox.SelectAll();
-            }
+            //if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.F))
+            //{
+            //    SearchBox.Focus();
+            //    SearchBox.SelectAll();
+            //}
         }
 
         internal void setFunctionBackground()
@@ -680,7 +680,7 @@ namespace Dynamo.Controls
             {
                 if (editingName)
                 {
-                    Controller.SaveNameEdit();
+                    Controller.RefactorCustomNode();
                     DisableEditNameBox();
                 }
                 else
@@ -786,32 +786,6 @@ namespace Dynamo.Controls
             dragOffset = new Point();
         }
 
-        internal void FilterAddMenu(HashSet<dynNodeUI> elements)
-        {
-            foreach (FrameworkElement ex in SideStackPanel.Children)
-            {
-                if (ex.GetType() == typeof (StackPanel)) // if search results
-                {
-                    ex.Visibility = Visibility.Collapsed;
-                }
-                else if (ex.GetType() == typeof (Expander))
-                {
-                    ex.Visibility = Visibility.Visible;
-                    Controller.filterCategory(elements, (Expander) ex);
-                }
-            }
-        }
-
-        private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            Controller.UpdateSearch(SearchBox.Text.Trim());
-        }
-
-        private void searchBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            //if (this.searchBox.Text.Equals(""))
-            //   this.searchBox.Text = "Filter";
-        }
 
         private static void SaveRTBAsPNG(RenderTargetBitmap bmp, string filename)
         {

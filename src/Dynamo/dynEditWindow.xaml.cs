@@ -24,6 +24,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -35,6 +36,9 @@ namespace Dynamo.Nodes
         public dynEditWindow()
         {
             InitializeComponent();
+            this.Owner = dynSettings.Bench;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            this.editText.Focus();
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)

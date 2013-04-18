@@ -27,6 +27,13 @@ namespace Dynamo.Search.SearchElements
     {
 
         #region Properties
+
+        /// <summary>
+        /// Guid property </summary>
+        /// <value>
+        /// The guid used to reference a dynFunction </value>
+        public Guid Guid { get; internal set; }
+
         /// <summary>
         /// Node property </summary>
         /// <value>
@@ -44,7 +51,8 @@ namespace Dynamo.Search.SearchElements
         /// Name property </summary>
         /// <value>
         /// The name of the node </value>
-        public override string Name { get { return Node.NodeUI.NickName; } }
+        private string _name;
+        public override string Name { get { return _name; } }
 
         /// <summary>
         /// Description property </summary>
@@ -73,6 +81,7 @@ namespace Dynamo.Search.SearchElements
         public LocalSearchElement(dynNode node)
         {
             this.Node = node;
+            this._name = Node.NodeUI.NickName;
             this.Weight = 1;
             this.Keywords = String.Join(" ", node.NodeUI.Tags);
             this._type = "Node";
@@ -87,10 +96,42 @@ namespace Dynamo.Search.SearchElements
         public LocalSearchElement(FunctionDefinition funcDef)
         {
             this.Node = dynSettings.Controller.CreateDragNode( funcDef.FunctionId.ToString() );
+            this._name = Node.NodeUI.NickName;
             this.Weight = 1.1;
             this.Keywords = "";
             this._description = "Custom Node";
             this._type = "Custom Node";
+        }
+
+        /// <summary>
+        /// The class constructor - use this constructor when for
+        /// custom nodes
+        /// </summary>
+        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
+        public LocalSearchElement(string name, string description, List<string> tags)
+        {
+            this.Node = null;
+            this._name = name;
+            this.Weight = 1;
+            this.Keywords = String.Join(" ", tags);
+            this._type = "Node";
+            this._description = description;
+        }
+
+        /// <summary>
+        /// The class constructor - use this constructor when for
+        /// custom nodes
+        /// </summary>
+        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
+        public LocalSearchElement(string name, Guid guid)
+        {
+            this.Node = null;
+            this._name = name;
+            this.Weight = 1;
+            this.Keywords = "";
+            this._type = "Custom Node";
+            this.Guid = guid;
+            this._description = "";
         }
 
         /// <summary>
@@ -101,9 +142,13 @@ namespace Dynamo.Search.SearchElements
             //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
             string name;
 
-            if (this.Node is dynFunction)
+            if (this.Node != null && this.Node is dynFunction)
             {
                 name = ((dynFunction)Node).Definition.FunctionId.ToString();
+            } 
+            else if (this.Guid != Guid.Empty && this._type == "Custom Node") 
+            {
+                name = this.Guid.ToString();
             }
             else
             {

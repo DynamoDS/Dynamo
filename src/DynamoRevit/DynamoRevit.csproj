@@ -40,13 +40,13 @@
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="HelixToolkit.Wpf">
-      <HintPath>..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit.Wpf.Input">
-      <HintPath>..\..\packages\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
+      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.Input.dll</HintPath>
     </Reference>
     <Reference Include="MIConvexHullPlugin">
-      <HintPath>..\..\packages\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
+      <HintPath>..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore">
@@ -177,10 +177,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DynamoForRevit.addin">
+    <Content Include="addins\DynamoForRevit.addin">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="DynamoForVasari.addin" />
+    <Content Include="addins\DynamoForVasari.addin" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

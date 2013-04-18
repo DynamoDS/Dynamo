@@ -24,42 +24,64 @@ namespace Dynamo.Tests
         [TearDown]
         public void Cleanup()
         {
-            dynSettings.Writer.Close();
-            EmptyTempFolder();
+            try
+            {
+                dynSettings.Writer.Close();
+                EmptyTempFolder();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         private static string TempFolder;
 
         private static void StartDynamo()
         {
-            string tempPath = Path.GetTempPath();
-            var random = new Random();
-            string logPath = Path.Combine(tempPath, "dynamoLog" + random.Next() + ".txt");
-
-            TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-            if (!Directory.Exists(TempFolder))
+            try
             {
-                Directory.CreateDirectory(TempFolder);
+
+                string tempPath = Path.GetTempPath();
+                var random = new Random();
+                string logPath = Path.Combine(tempPath, "dynamoLog" + random.Next() + ".txt");
+
+                TempFolder = Path.Combine(tempPath, "dynamoTmp");
+
+                if (!Directory.Exists(TempFolder))
+                {
+                    Directory.CreateDirectory(TempFolder);
+                }
+                else
+                {
+                    EmptyTempFolder();
+                }
+
+                TextWriter tw = new StreamWriter(logPath);
+                tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
+                dynSettings.Writer = tw;
+
+                //create a new instance of the ViewModel
+                var controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment());
             }
-            else
+            catch (Exception ex)
             {
-                EmptyTempFolder();
+                Console.WriteLine(ex.StackTrace);
             }
-
-            TextWriter tw = new StreamWriter(logPath);
-            tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
-            dynSettings.Writer = tw;
-
-            //create a new instance of the ViewModel
-            var controller = new DynamoController(new FSchemeInterop.ExecutionEnvironment());
         }
 
         public static void EmptyTempFolder()
         {
-            var directory = new DirectoryInfo(TempFolder);
-            foreach (FileInfo file in directory.GetFiles()) file.Delete();
-            foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+            try
+            {
+                var directory = new DirectoryInfo(TempFolder);
+                foreach (FileInfo file in directory.GetFiles()) file.Delete();
+                foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         // OpenCommand
