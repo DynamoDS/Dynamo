@@ -394,8 +394,8 @@ namespace Dynamo
                 Bench.homeButton.IsEnabled = true;
 
                 Bench.workspaceLabel.Content = CurrentSpace.Name;
-                Bench.editNameButton.Visibility = Visibility.Visible;
-                Bench.editNameButton.IsHitTestVisible = true;
+                //Bench.editNameButton.Visibility = Visibility.Visible;
+                //Bench.editNameButton.IsHitTestVisible = true;
                 Bench.setFunctionBackground();
             }
 
@@ -1848,8 +1848,8 @@ namespace Dynamo
             PackageManagerClient.HidePackageControlInformation();
 
             Bench.workspaceLabel.Content = "Home";
-            Bench.editNameButton.Visibility = Visibility.Collapsed;
-            Bench.editNameButton.IsHitTestVisible = false;
+            //Bench.editNameButton.Visibility = Visibility.Collapsed;
+            //Bench.editNameButton.IsHitTestVisible = false;
 
             Bench.setHomeBackground();
 
