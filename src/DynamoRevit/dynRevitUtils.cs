@@ -85,9 +85,19 @@ namespace Dynamo.Utilities
             return result;
         }
 
+        /// <summary>
+        /// Invoke an API method, using the node's lacing strategy to build lists of arguments
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="args">The incoming Values on the node.</param>
+        /// <param name="api_base_type">The API's base type whose method we will invoke.</param>
+        /// <param name="pi">An array of parameter info for the method.</param>
+        /// <param name="mi">The method info for the method.</param>
+        /// <param name="return_type">The expected return type from the method.</param>
+        /// <returns></returns>
         public static Value InvokeAPIMethod(dynRevitTransactionNode node, FSharpList<Value> args, Type api_base_type, ParameterInfo[] pi, MethodBase mi, Type return_type)
         {
-            object invocation_target = null;
+            object invocationTarget = null;
 
             if (api_base_type == typeof(Autodesk.Revit.Creation.Document) ||
                 api_base_type == typeof(Autodesk.Revit.Creation.FamilyItemFactory) ||
@@ -95,49 +105,44 @@ namespace Dynamo.Utilities
             {
                 if (dynRevitSettings.Doc.Document.IsFamilyDocument)
                 {
-                    invocation_target = dynRevitSettings.Doc.Document.FamilyCreate;
+                    invocationTarget = dynRevitSettings.Doc.Document.FamilyCreate;
                 }
                 else
                 {
-                    invocation_target = dynRevitSettings.Doc.Document.Create;
+                    invocationTarget = dynRevitSettings.Doc.Document.Create;
                 }
             }
             else if (api_base_type == typeof(Autodesk.Revit.Creation.Application))
             {
-                invocation_target = dynRevitSettings.Revit.Application.Create;
+                invocationTarget = dynRevitSettings.Revit.Application.Create;
             }
 
             if (!mi.IsStatic && !mi.IsConstructor)
             {
                 //the first input will always hold the instance
                 //whose methods you want to invoke
-                invocation_target = DynamoTypeConverter.ConvertInput(args[0],api_base_type);
+                invocationTarget = DynamoTypeConverter.ConvertInput(args[0],api_base_type);
             }
 
             //if any argument are a list, honor the lacing strategy
             //compile a list of parameter lists to be passed into our method
             List<List<object>> parameters = null;
 
-            //if (args.Any(x => x.IsList))
-            //{
-                switch (node.ArgumentLacing)
-                {
-                    case LacingStrategy.Single:
-                        parameters = GetSingleArguments(args, pi);
-                        break;
-                    case LacingStrategy.Shortest:
-                        //TODO: implement shortest lacing
-                        //parameters = GetShortestArguments(args, pi);
-                        break;
-                    case LacingStrategy.Longest:
-                        //TODO: implement longest lacing
-                        //parameters = GetLongestArguments(args, pi);
-                        break;
-                    default:
-                        parameters = GetSingleArguments(args, pi);
-                        break;
-                }
-            //}
+            switch (node.ArgumentLacing)
+            {
+                case LacingStrategy.Single:
+                    parameters = GetSingleArguments(args, pi);
+                    break;
+                case LacingStrategy.Shortest:
+                    parameters = GetShortestArguments(args, pi);
+                    break;
+                case LacingStrategy.Longest:
+                    parameters = GetLongestArguments(args, pi);
+                    break;
+                default:
+                    parameters = GetSingleArguments(args, pi);
+                    break;
+            }
 
             //object result = null;
             List<object> results = null;
@@ -154,7 +159,7 @@ namespace Dynamo.Utilities
                 //invoke the method for each of the parameter lists
 
                 //result = mi.Invoke(invocation_target, parameters);
-                results = parameters.Select(x => mi.Invoke(invocation_target, x.ToArray())).ToList();
+                results = parameters.Select(x => mi.Invoke(invocationTarget, x.ToArray())).ToList();
             }
             
             dynRevitUtils.StoreElements(node, results);
@@ -164,14 +169,12 @@ namespace Dynamo.Utilities
             if (results.Count > 1)
             {
                 FSharpList<Value> lst = FSharpList<Value>.Empty;
-
                 foreach (var result in results)
                 {
                     FSharpList<Value>.Cons(DynamoTypeConverter.ConvertToValue(result), lst);
                 }
 
                 //the result will be a list of objects if any lists
-                
                 return Value.NewList(lst);
             }
             //otherwise, return a single value
@@ -183,6 +186,9 @@ namespace Dynamo.Utilities
 
         /// <summary>
         /// Get a straight list of matching arguments and parameters
+        /// For a parameter set like p1, p2, p3 and argument lists like {a} {b1,b2,b3} {c1,c2}
+        /// This will return a List of Lists of objects like:
+        /// {a,b1,c1}
         /// </summary>
         /// <param name="args">The incoming arguments.</param>
         /// <param name="pi">The parameter information.</param>
@@ -191,118 +197,122 @@ namespace Dynamo.Utilities
         {
             var parameters = new List<List<object>>();
 
-            //return a single list of parameters
-            var currParams = new List<object>();
-
-            if (args.Count() == pi.Count())
-            {
-                for (int i = 0; i < pi.Count(); i++)
-                {
-                    currParams.Add(DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType));
-                }
-            }
-            else
-            {
-                for (int i = 0; i < pi.Count(); i++)
-                {
-                    currParams.Add(
-                        args[i + 1], pi[i].ParameterType));
-                }
-            }
-
-            parameters.Add(currParams);
+            BuildParameterList(args, pi, 1, parameters);
 
             return parameters;
         }
 
         /// <summary>
         /// Get the shortest list of arguments.
+        /// For a parameter set like p1, p2, p3 and argument lists like {a} {b1,b2,b3} {c1,c2}
+        /// This will return a List of Lists of objects like:
+        /// {a,b1,c1} {a,b2,c2}
         /// </summary>
         /// <param name="args"></param>
         /// <param name="pi"></param>
         /// <returns></returns>
         private static List<List<object>> GetShortestArguments(FSharpList<Value> args, ParameterInfo[] pi)
         {
-            List<List<object>> parameters = new List<List<object>>();
+            var parameters = new List<List<object>>();
 
-            //find the largest list in the inputs
-            int longest = args.Where(arg => arg.IsList).Select(arg => ((Value.List) arg).Item.Count()).Concat(new[] {1}).Max();
+            //find the SMALLEST list in the inputs
+            int end = args.Where(arg => arg.IsList).Select(arg => ((Value.List) arg).Item.Count()).Concat(new[] {1000000}).Min();
 
+            BuildParameterList(args, pi, end, parameters);
+
+            return parameters;
+        }
+
+        /// <summary>
+        /// Get the longest list of arguments.
+        /// For a parameter set like p1, p2, p3 and argument lists like {a} {b1,b2,b3} {c1,c2}
+        /// This will return a List of Lists of objects like:
+        /// {a,b1,c1} {a,b2,c2} {a,b3,c2}
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="pi"></param>
+        /// <returns></returns>
+        private static List<List<object>> GetLongestArguments(FSharpList<Value> args, ParameterInfo[] pi)
+        {
+            var parameters = new List<List<object>>();
+
+            //find the LARGEST list in the inputs
+            int end = args.Where(arg => arg.IsList).Select(arg => ((Value.List)arg).Item.Count()).Concat(new[] { 1 }).Min();
+
+            BuildParameterList(args, pi, end, parameters);
+
+            return parameters;
+        }
+
+        /// <summary>
+        /// Builds a parameter list given a list of arguments and a list of parameter info
+        /// </summary>
+        /// <param name="args">A list of Values which will be distributed to the output lists</param>
+        /// <param name="pi">An array of parameter info for the method</param>
+        /// <param name="end">The end count</param>
+        /// <param name="parameters">A parameters List to add to.</param>
+        private static void BuildParameterList(FSharpList<Value> args, ParameterInfo[] pi, int end, List<List<object>> parameters)
+        {
             if (args.Count() == pi.Count())
             {
-                for (int i = 0; i < pi.Count(); i++)
+                //ARGUMENT LOOP
+                for (int j = 0; j < end; j++)
                 {
-                    currParams.Add(DynamoTypeConverter.ConvertInput(args[i], pi[i].ParameterType));
+                    //create a list to hold each set of arguments
+                    var currParams = new List<object>();
+
+                    //PARAMETER LOOP
+                    for (int i = 0; i < pi.Count(); i++)
+                    {
+                        var arg = args[i];
+
+                        //if the value is a list, add the jth item converted
+                        //or the last item if i exceeds the count of the list
+                        if (arg.IsList)
+                        {
+                            var argItem = ((Value.List)arg).Item.Count() < end ? args.Last() : args[j];
+
+                            currParams.Add(DynamoTypeConverter.ConvertInput(argItem, pi[i].ParameterType));
+                        }
+                        else
+                            //if the value is not a list,
+                            //just add the value
+                            currParams.Add(DynamoTypeConverter.ConvertInput(arg, pi[i].ParameterType));
+                    }
+
+                    parameters.Add(currParams);
                 }
             }
             else
             {
-                for (int i = 0; i < pi.Count(); i++)
+                //ARGUMENT LOOP
+                for (int j = 0; j < end; j++)
                 {
-                    currParams.Add(
-                        args[i + 1], pi[i].ParameterType));
-                }
-            }
-
-            //parameters -> A,B,C
-            //inputs -> {A1,A2,A3},{B},{C1,C2,C3,C4}
-
-
-            //loop over all the parameters
-            for (int j = 0; j < pi.Count(); j++)
-            {
-                for (int i = 0; i < longest; i++)
-                {
+                    //create a list to hold each set of arguments
                     var currParams = new List<object>();
-                    foreach (Value v in args)
+
+                    //PARAMETER LOOP
+                    for (int i = 0; i < pi.Count(); i++)
                     {
-                        //if the value is a list, add the ith item converted to
+                        var arg = args[i + 1];
+
+                        //if the value is a list, add the jth item converted
                         //or the last item if i exceeds the count of the list
-                        if (v.IsList)
+                        if (arg.IsList)
                         {
-                            currParams.Add(((Value.List)v).Item.Count() < longest ? 
-                                DynamoTypeConverter.ConvertInput(args.Last(), pi[j].ParameterType) :
-                                DynamoTypeConverter.ConvertInput(args[i], pi[j].ParameterType));
+                            var argItem = ((Value.List)arg).Item.Count() < end ? args.Last() : args[j];
+
+                            currParams.Add(DynamoTypeConverter.ConvertInput(argItem, pi[i].ParameterType));
                         }
                         else
                             //if the value is not a list,
-                            //add the value
-                            currParams.Add(DynamoTypeConverter.ConvertInput(v, pi[j].ParameterType));
+                            //just add the value
+                            currParams.Add(DynamoTypeConverter.ConvertInput(arg, pi[i].ParameterType));
                     }
+
                     parameters.Add(currParams);
                 }
             }
-            return parameters;
-        }
-
-        private static List<List<object>> GetLongestArguments(FSharpList<Value> args, ParameterInfo[] pi)
-        {
-            List<List<object>> parameters = new List<List<object>>();
-
-            //int count = -1;
-            //foreach (var arg in args)
-            //{
-            //    if (arg.IsList)
-            //    {
-            //        if (count == -1)
-            //            count = ((Value.List) arg).Item.Count();
-            //        else
-            //        {
-            //            count = Math.Min(count, ((Value.List) arg).Item.Count());
-            //        }
-            //    }
-            //}
-
-            ////if you have lists, but they only have one item in them
-            ////then just use the single strategy
-            //if (count == 1)
-            //{
-            //    return GetSingleArguments(args, pi);
-            //}
-
-            //TODO:Make the rest of this
-
-            return parameters;
         }
     }
 
