@@ -38,17 +38,6 @@ namespace Dynamo.Nodes
         ///</summary>
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //Elements.ForEach(
-            //delegate(ElementId el)
-            //{
-            //    Element e;
-            //    if (dynUtils.TryGetElement(el, out e))
-            //    {
-            //        DeleteElement(e.Id);
-            //    }
-            //});
-            //Elements.Clear();
-
             foreach (var e in this.Elements)
             {
                 this.DeleteElement(e);

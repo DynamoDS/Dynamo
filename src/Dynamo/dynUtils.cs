@@ -45,14 +45,6 @@ namespace Dynamo.Utilities
 
         public static dynCollection Collection { get; internal set; }
 
-        //public static LinearGradientBrush ErrorBrush { get; internal set; }
-
-        //public static LinearGradientBrush ActiveBrush { get; internal set; }
-
-        //public static LinearGradientBrush SelectedBrush { get; internal set; }
-
-        //public static LinearGradientBrush DeadBrush { get; internal set; }
-
         public static dynBench Bench { get; internal set; }
 
         public static TextWriter Writer { get; set; }

@@ -249,7 +249,7 @@ namespace Dynamo.Nodes
                 p = this.UIDocument.Document.FamilyCreate.NewReferencePoint(edgePoint);
                 this.Elements.Add(p.Id);
             }
-
+            
             return Value.NewContainer(p);
         }
     }
