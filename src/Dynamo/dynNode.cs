@@ -84,6 +84,10 @@ namespace Dynamo.Nodes
             set
             {
                 _argumentLacing = value;
+<<<<<<< HEAD
+=======
+                isDirty = true;
+>>>>>>> origin/multiMap
                 OnArgumentLacingUpdated(EventArgs.Empty);
             }
         }
