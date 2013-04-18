@@ -31,17 +31,6 @@ namespace Dynamo.Commands
             }
         }
 
-        private static ToggleShowingClassicNodeNavigatorCommand toggleShowingClassicNodeNavigatorCmd;
-        public static ToggleShowingClassicNodeNavigatorCommand ShowClassicNodeNavigatorCmd
-        {
-            get
-            {
-                if (toggleShowingClassicNodeNavigatorCmd == null)
-                    toggleShowingClassicNodeNavigatorCmd = new ToggleShowingClassicNodeNavigatorCommand();
-                return toggleShowingClassicNodeNavigatorCmd;
-            }
-        }
-
         private static ShowNewFunctionDialogCommand showNewFunctionDialogCmd;
         public static ShowNewFunctionDialogCommand ShowNewFunctionDialogCmd
         {
@@ -475,35 +464,6 @@ namespace Dynamo.Commands
         }
     }
 
-    public class ToggleShowingClassicNodeNavigatorCommand : ICommand
-    {
-
-        public void Execute(object parameters)
-        {
-            if (dynSettings.Bench.sidebarGrid.Visibility == Visibility.Visible)
-            {
-                dynSettings.Bench.sidebarGrid.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                dynSettings.Bench.sidebarGrid.Visibility = Visibility.Visible;
-            }
-            
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
-
-
     public class ShowSaveImageDialogAndSaveResultCommand : ICommand
     {
         private FileDialog _fileDialog;
@@ -683,7 +643,7 @@ namespace Dynamo.Commands
 
             do
             {
-                var dialog = new FunctionNamePrompt( dynSettings.Bench.addMenuCategoryDict.Keys, error);
+                var dialog = new FunctionNamePrompt( dynSettings.Controller.SearchViewModel.Categories, error);
                 if (dialog.ShowDialog() != true)
                 {
                     return;
@@ -1190,7 +1150,7 @@ namespace Dynamo.Commands
 
             if (data != null &&
                 (   dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) || 
-                    dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ) ) ||
+                    //dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ) ) ||
                     dynSettings.FunctionDict.ContainsKey( Guid.Parse( (string) data["name"] ) )))
             {
                 return true;

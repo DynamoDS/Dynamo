@@ -222,7 +222,9 @@ namespace Dynamo.Nodes
             {
                 input.Item2.MarkDirty();
                 if (input.Item2.RequiresRecalc)
+                {
                     dirty = true;
+                }
             }
             if (!_isDirty)
                 _isDirty = dirty;

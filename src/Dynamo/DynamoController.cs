@@ -665,10 +665,20 @@ namespace Dynamo
             {
                 TypeLoadData tld = builtinTypesByNickname[name];
 
-                ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                var newEl = (dynNode) obj.Unwrap();
-                newEl.NodeUI.DisableInteraction();
-                result = newEl;
+                try
+                {
+
+                    ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                    var newEl = (dynNode)obj.Unwrap();
+                    newEl.NodeUI.DisableInteraction();
+                    result = newEl;
+                }
+                catch (Exception ex)
+                {
+                    Bench.Log("Failed to load built-in type");
+                    Bench.Log(ex);
+                    result = null;
+                }
             }
             else
             {
@@ -769,7 +779,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="workSpace">The workspace</param>
         /// <returns>The generated xmldoc</returns>
-        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace )
+        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace)
         {
             try
             {
@@ -786,9 +796,9 @@ namespace Dynamo
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace) workSpace).Category);
                     root.SetAttribute(
-                        "ID",
-                        dynSettings.FunctionDict.Values
-                                   .First(x => x.Workspace == workSpace).FunctionId.ToString());
+                            "ID",
+                            dynSettings.FunctionDict.Values
+                                       .First(x => x.Workspace == workSpace).FunctionId.ToString());
                 }
 
                 xmlDoc.AppendChild(root);
@@ -1041,16 +1051,46 @@ namespace Dynamo
                 foreach (dynNode el in functionWorkspace.Nodes)
                     el.onSave();
 
-                //Update new add menu
-                //var addItem = (dynFunction) Bench.addMenuItemsDictNew[functionWorkspace.Name].NodeLogic;
-                //addItem.SetInputs(inputNames);
-                //addItem.SetOutputs(outputNames);
-                //addItem.NodeUI.RegisterAllPorts();
-                //addItem.NodeUI.State = ElementState.DEAD;
             }
             catch (Exception ex)
             {
                 Bench.Log(ex.GetType() + ": " + ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        ///     Save a function.  This includes writing to a file and compiling the 
+        ///     function and saving it to the FSchemeEnvironment
+        /// </summary>
+        /// <param name="definition">The definition to saveo</param>
+        /// <param name="bool">Whether to write the function to file</param>
+        /// <returns>Whether the operation was successful</returns>
+        public string SaveFunctionOnly(FunctionDefinition definition)
+        {
+            if (definition == null)
+                return "";
+
+            // Get the internal nodes for the function
+            dynWorkspace functionWorkspace = definition.Workspace;
+
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string pluginsPath = Path.Combine(directory, "definitions");
+
+            try
+            {
+                if (!Directory.Exists(pluginsPath))
+                    Directory.CreateDirectory(pluginsPath);
+
+                string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
+                SaveWorkspace(path, functionWorkspace);
+                return path;
+            }
+            catch (Exception e)
+            {
+                Bench.Log("Error saving:" + e.GetType());
+                Bench.Log(e);
+                return "";
             }
 
         }
@@ -1123,6 +1163,8 @@ namespace Dynamo
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
+
+                #endregion
 
                 //If there is no function name, then we are opening a home definition
                 if (funName == null)
@@ -1347,8 +1389,6 @@ namespace Dynamo
                     e.EnableReporting();
 
                 hideWorkspace(ws);
-
-                #endregion
 
                 ws.FilePath = xmlPath;
 
@@ -1831,8 +1871,10 @@ namespace Dynamo
                     string inputName = i.ToString();
                     topNode.AddInput(inputName);
                     topNode.ConnectInput(inputName, topMost.BuildExpression(buildDict));
+
                     i++;
                 }
+                
 
                 FScheme.Expression runningExpression = topNode.Compile();
 
@@ -2254,7 +2296,7 @@ namespace Dynamo
 
             do
             {
-                var dialog = new FunctionNamePrompt(Bench.addMenuCategoryDict.Keys, error);
+                var dialog = new FunctionNamePrompt(SearchViewModel.Categories, error);
                 if (dialog.ShowDialog() != true)
                 {
                     return;
@@ -2277,8 +2319,24 @@ namespace Dynamo
                 }
             } while (!error.Equals(""));
 
-            FunctionDefinition newNodeDefinition = NewFunction(Guid.NewGuid(), newNodeName, newNodeCategory, false);
-            dynWorkspace newNodeWorkspace = newNodeDefinition.Workspace;
+            //FunctionDefinition newNodeDefinition = NewFunction(Guid.NewGuid(), newNodeName, newNodeCategory, false);
+            //dynWorkspace newNodeWorkspace = newNodeDefinition.Workspace;
+
+            var newNodeWorkspace = new FuncWorkspace(newNodeName, newNodeCategory, 0, 0);
+            var newNodeDefinition = new FunctionDefinition(Guid.NewGuid());
+            newNodeDefinition.Workspace = newNodeWorkspace;
+
+            //var workSpace = new FuncWorkspace( name, category, workspaceOffsetX, workspaceOffsetY);
+
+            //List<dynNode> newElements = workSpace.Nodes;
+            //List<dynConnector> newConnectors = workSpace.Connectors;
+
+            //var functionDefinition = new FunctionDefinition(id)
+            //{
+            //    Workspace = workSpace
+            //};
+
+            //dynSettings.FunctionDict[functionDefinition.FunctionId] = functionDefinition;
 
             #endregion
 
@@ -2402,6 +2460,7 @@ namespace Dynamo
             //  remove from old
             CurrentSpace.Nodes.RemoveAll(selectedNodeSet.Contains);
             CurrentSpace.Connectors.RemoveAll(connectors.Contains);
+
             //  add to new
             newNodeWorkspace.Nodes.AddRange(selectedNodeSet);
             newNodeWorkspace.Connectors.AddRange(connectors);
@@ -2435,7 +2494,7 @@ namespace Dynamo
             Canvas.SetLeft(collapsedNode.NodeUI, avgX);
             Canvas.SetTop(collapsedNode.NodeUI, avgY);
 
-            Bench.WorkBench.UpdateLayout();
+            //Bench.WorkBench.UpdateLayout();
 
             #endregion
 
@@ -2466,6 +2525,8 @@ namespace Dynamo
 
             newNodeWorkspace.Nodes.ForEach(x => x.DisableReporting());
 
+            var inConnectors = new List<Tuple<dynNodeUI, int, int>>();
+            
             #region Process inputs
 
             //Step 3: insert variables (reference step 1)
@@ -2480,14 +2541,16 @@ namespace Dynamo
                 int inputData = input.Item2.Item3.Item1;
 
                 //Connect outside input to the node
-                CurrentSpace.Connectors.Add(
-                    new dynConnector(
-                        inputNode.NodeUI,
-                        collapsedNode.NodeUI,
-                        inputData,
-                        inputIndex,
-                        0,
-                        true));
+                //CurrentSpace.Connectors.Add(
+                //    new dynConnector(
+                //        inputNode.NodeUI,
+                //        collapsedNode.NodeUI,
+                //        inputData,
+                //        inputIndex,
+                //        0,
+                //        true));
+
+                inConnectors.Add(new Tuple<dynNodeUI, int, int>( inputNode.NodeUI, inputData, inputIndex ));
 
                 //Create Symbol Node
                 var node = new dynSymbol
@@ -2563,6 +2626,8 @@ namespace Dynamo
             //List of all inner nodes to connect an output. Unique.
             var outportList = new List<Tuple<dynNode, int>>();
 
+            var outConnectors = new List<Tuple<dynNodeUI, int, int>>();
+
             int i = 0;
             foreach (var output in outputs)
             {
@@ -2616,6 +2681,8 @@ namespace Dynamo
                                                         0,
                                                         false));
 
+
+
                     i++;
                 }
             }
@@ -2637,14 +2704,18 @@ namespace Dynamo
 
                 if (curriedNode == null)
                 {
-                    CurrentSpace.Connectors.Add(
-                        new dynConnector(
-                            collapsedNode.NodeUI,
-                            outputReceiverNode.NodeUI,
-                            outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
-                            outputReceiverData,
-                            0,
-                            true));
+                    //CurrentSpace.Connectors.Add(
+                    //    new dynConnector(
+                    //        collapsedNode.NodeUI,
+                    //        outputReceiverNode.NodeUI,
+                    //        outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
+                    //        outputReceiverData,
+                    //        0,
+                    //        true));
+
+                    outConnectors.Add(new Tuple<dynNodeUI, int, int>(outputReceiverNode.NodeUI, 
+                                                                     outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData), 
+                                                                     outputReceiverData));
                 }
                 else
                 {
@@ -2679,21 +2750,74 @@ namespace Dynamo
 
             #endregion
 
-            newNodeWorkspace.Nodes.ForEach(x =>
-                {
-                    x.EnableReporting();
-                    x.NodeUI.UpdateConnections();
-                });
+            //newNodeWorkspace.Nodes.ForEach(x =>
+            //    {
+            //        x.EnableReporting();
+            //        x.NodeUI.UpdateConnections();
+            //    });
 
-            collapsedNode.EnableReporting();
-            collapsedNode.NodeUI.UpdateConnections();
-            
+            //collapsedNode.EnableReporting();
+            //collapsedNode.NodeUI.UpdateConnections();
+
             //set the name on the node
             collapsedNode.NodeUI.NickName = newNodeName;
 
-            CurrentSpace.EnableReporting();
+            CurrentSpace.Nodes.Remove(collapsedNode);
+            Bench.WorkBench.Children.Remove(collapsedNode.NodeUI);
 
-            SaveFunction(newNodeDefinition, true);
+
+            //SaveFunction(newNodeDefinition, true); // has the side effect of incorrectly compiling
+
+            // save and load the definition from file
+            dynSettings.FunctionDict.Add(newNodeDefinition.FunctionId, newNodeDefinition);
+            var path = SaveFunctionOnly(newNodeDefinition);
+            dynSettings.FunctionDict.Remove(newNodeDefinition.FunctionId);
+
+            this.OpenDefinition(path);
+
+            DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+                {
+                    {"name", collapsedNode.Definition.FunctionId.ToString() },
+                    {"x", avgX },
+                    {"y", avgY }
+                });
+
+            var newlyPlacedCollapsedNode = CurrentSpace.Nodes
+                                            .Where(node => node is dynFunction)
+                                            .First(node => ((dynFunction)node).Definition.FunctionId == newNodeDefinition.FunctionId);
+
+            newlyPlacedCollapsedNode.DisableReporting();
+
+            Bench.WorkBench.UpdateLayout(); // without doing this, connectors fail to be created
+
+            foreach (var nodeTuple in inConnectors)
+            {
+                CurrentSpace.Connectors.Add(
+                    new dynConnector(
+                        nodeTuple.Item1,
+                        newlyPlacedCollapsedNode.NodeUI,
+                        nodeTuple.Item2,
+                        nodeTuple.Item3,
+                        0,
+                        true));
+            }
+
+            foreach (var nodeTuple in outConnectors)
+            {
+                CurrentSpace.Connectors.Add(
+                    new dynConnector(
+                        newlyPlacedCollapsedNode.NodeUI,
+                        nodeTuple.Item1,
+                        nodeTuple.Item2,
+                        nodeTuple.Item3,
+                        0,
+                        true));
+            }
+
+            newlyPlacedCollapsedNode.EnableReporting();
+            CurrentSpace.EnableReporting();
+            
+
         }
 
         #endregion
