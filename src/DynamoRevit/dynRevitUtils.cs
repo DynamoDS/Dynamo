@@ -169,10 +169,11 @@ namespace Dynamo.Utilities
             if (results.Count > 1)
             {
                 FSharpList<Value> lst = FSharpList<Value>.Empty;
-                foreach (var result in results)
-                {
-                    lst = FSharpList<Value>.Cons(DynamoTypeConverter.ConvertToValue(result), lst);
-                }
+
+                //reverse the results list so our CONs list isn't backwards
+                results.Reverse();
+
+                lst = results.Aggregate(lst, (current, result) => FSharpList<Value>.Cons(DynamoTypeConverter.ConvertToValue(result), current));
 
                 //the result will be a list of objects if any lists
                 return Value.NewList(lst);

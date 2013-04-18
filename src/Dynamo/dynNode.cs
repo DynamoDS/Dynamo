@@ -84,6 +84,7 @@ namespace Dynamo.Nodes
             set
             {
                 _argumentLacing = value;
+                isDirty = true;
                 OnArgumentLacingUpdated(EventArgs.Empty);
             }
         }
