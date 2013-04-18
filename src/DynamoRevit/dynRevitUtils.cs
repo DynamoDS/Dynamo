@@ -171,7 +171,7 @@ namespace Dynamo.Utilities
                 FSharpList<Value> lst = FSharpList<Value>.Empty;
                 foreach (var result in results)
                 {
-                    FSharpList<Value>.Cons(DynamoTypeConverter.ConvertToValue(result), lst);
+                    lst = FSharpList<Value>.Cons(DynamoTypeConverter.ConvertToValue(result), lst);
                 }
 
                 //the result will be a list of objects if any lists
@@ -237,7 +237,7 @@ namespace Dynamo.Utilities
             var parameters = new List<List<object>>();
 
             //find the LARGEST list in the inputs
-            int end = args.Where(arg => arg.IsList).Select(arg => ((Value.List)arg).Item.Count()).Concat(new[] { 1 }).Min();
+            int end = args.Where(arg => arg.IsList).Select(arg => ((Value.List)arg).Item.Count()).Concat(new[] { 1 }).Max();
 
             BuildParameterList(args, pi, end, parameters);
 
@@ -270,7 +270,8 @@ namespace Dynamo.Utilities
                         //or the last item if i exceeds the count of the list
                         if (arg.IsList)
                         {
-                            var argItem = ((Value.List)arg).Item.Count() < end ? args.Last() : args[j];
+                            var lst = (Value.List) arg;
+                            var argItem = (lst.Item.Count() < end ? lst.Item.Last() : lst.Item[j]);
 
                             currParams.Add(DynamoTypeConverter.ConvertInput(argItem, pi[i].ParameterType));
                         }
