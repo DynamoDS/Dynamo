@@ -758,7 +758,7 @@ namespace Dynamo.Commands
         {
             if (dynSettings.Bench.WorkBench.Selection.Count > 0)
             {
-                dynSettings.Bench.Controller.NodeFromSelection(
+                dynSettings.Bench.Controller.CollapseNodes(
                     dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
                         .Select(x => (x as dynNodeUI).NodeLogic));
             }
@@ -1006,7 +1006,7 @@ namespace Dynamo.Commands
         {
            if (parameter is Guid && dynSettings.FunctionDict.ContainsKey( (Guid)parameter ) )
            {
-               dynSettings.Controller.DisplayFunction( dynSettings.FunctionDict[ (Guid) parameter] );   
+               dynSettings.Controller.ViewCustomNodeWorkspace( dynSettings.FunctionDict[ (Guid) parameter] );   
            }     
         }
 
@@ -1841,7 +1841,7 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            dynSettings.Controller.DisplayFunction((parameters as FunctionDefinition));
+            dynSettings.Controller.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
         }
 
         public event EventHandler CanExecuteChanged

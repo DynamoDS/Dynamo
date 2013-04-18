@@ -605,7 +605,7 @@ namespace Dynamo.Controls
             {
                 if (Keyboard.IsKeyDown(Key.Enter))
                 {
-                    Controller.SaveNameEdit();
+                    Controller.RefactorCustomNode();
                     DisableEditNameBox();
                     e.Handled = true;
                 }
@@ -680,7 +680,7 @@ namespace Dynamo.Controls
             {
                 if (editingName)
                 {
-                    Controller.SaveNameEdit();
+                    Controller.RefactorCustomNode();
                     DisableEditNameBox();
                 }
                 else

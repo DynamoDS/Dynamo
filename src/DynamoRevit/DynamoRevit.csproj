@@ -177,10 +177,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DynamoForRevit.addin">
+    <Content Include="addins\DynamoForRevit.addin">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="DynamoForVasari.addin" />
+    <Content Include="addins\DynamoForVasari.addin" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
