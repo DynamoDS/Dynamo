@@ -446,14 +446,13 @@ namespace Dynamo.Nodes
 
             foreach (Value e in inList)
             {
-                GeometryObject geomObject = (e as Value.Container).Item as GeometryObject;
-
                 if (e.IsList)
                 {
                     DrawList(e, toDrawInRevitView);
                 }
                 else if (e.IsContainer)
                 {
+                    GeometryObject geomObject = (e as Value.Container).Item as GeometryObject;
                     XYZ ptTest = (inList.First() as Value.Container).Item as XYZ;
                     Curve cvTest = (inList.First() as Value.Container).Item as Curve;
 
