@@ -33,7 +33,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Utilities;
 using Dynamo.Commands;
-
+using Microsoft.Practices.Prism.Commands;
 using Expression = Dynamo.FScheme.Expression;
 using Grid = System.Windows.Controls.Grid;
 
@@ -75,6 +75,10 @@ namespace Dynamo.Controls
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
 
         #region public members
+
+        public DelegateCommand<string> SetLacingTypeCmd { get; set; }
+
+        public LacingStrategy ArgumentLacing { get; set; }
 
         public dynNode NodeLogic
         {
@@ -227,8 +231,11 @@ namespace Dynamo.Controls
         public dynNodeUI(dynNode logic)
         {
             InitializeComponent();
+            SetLacingTypeCmd = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
 
             nodeLogic = logic;
+            ArgumentLacing = NodeLogic.ArgumentLacing;
+            nodeLogic.ArgumentLacingUpdated += new Nodes.LacingTypeChangedHandler(nodeLogic_ArgumentLacingUpdated);
 
             //set the main grid's data context to 
             //this element
@@ -264,6 +271,37 @@ namespace Dynamo.Controls
 
             //set the z index to 2
             Canvas.SetZIndex(this, 1); 
+        }
+
+        void nodeLogic_ArgumentLacingUpdated(object sender, EventArgs e)
+        {
+            ArgumentLacing = (sender as dynNode).ArgumentLacing;
+            NotifyPropertyChanged("ArgumentLacing");
+        }
+
+        void SetLacingType(string parameter)
+        {
+            if (parameter == "Single")
+            {
+                NodeLogic.ArgumentLacing = LacingStrategy.Single;
+            }
+            else if (parameter == "Longest")
+            {
+                NodeLogic.ArgumentLacing = LacingStrategy.Longest;
+            }
+            else if (parameter == "Shortest")
+            {
+                NodeLogic.ArgumentLacing = LacingStrategy.Shortest;
+            }
+            else
+                NodeLogic.ArgumentLacing = LacingStrategy.Single;
+
+            NotifyPropertyChanged("Lacing");
+        }
+
+        bool CanSetLacingType(string parameter)
+        {
+            return true;
         }
 
         void ports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -701,5 +739,4 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
     }
-
 }
