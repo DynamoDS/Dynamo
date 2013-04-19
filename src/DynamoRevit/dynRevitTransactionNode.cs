@@ -192,8 +192,9 @@ namespace Dynamo.Revit
 
         public static void DrawGeometryObject(RenderDescription description, object obj)
         {
-            string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
-            System.IO.File.WriteAllText(path, obj.GetType().Name);
+            // Debugging code
+            //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
+            //System.IO.File.WriteAllText(path, obj.GetType().Name);
 
             if (typeof(Autodesk.Revit.DB.Curve).IsAssignableFrom(obj.GetType()))
             {
@@ -234,7 +235,8 @@ namespace Dynamo.Revit
             }
             else
             {
-                DrawUndrawable(description, obj);
+                Element elem = obj as Element;
+                DrawGeometryElement(description, elem.get_Geometry(new Options()));
             }
         }
 
