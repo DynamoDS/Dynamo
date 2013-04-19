@@ -1,84 +1,235 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Dynamo.Connectors;
+using Dynamo.Controls;
+using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo
 {
     class dynWorkspaceViewModel: dynViewModelBase
     {
-        private dynWorkspaceModel _workspace;
+        private dynWorkspace _workspace;
 
-        ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>(); 
-        public ObservableCollection<dynWorkspaceViewModel> Workspaces
+        ObservableCollection<dynWorkspaceViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
+        ObservableCollection<dynWorkspaceViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
+        ObservableCollection<dynWorkspaceViewModel> _notes = new ObservableCollection<dynNoteViewModel>(); 
+
+        public ObservableCollection<dynWorkspaceViewModel> Connectors
         {
-            get { return _workspaces; }
+            get { return _connectors; }
             set { 
-                _workspaces = value;
-                RaisePropertyChanged("Workspaces");
+                _connectors = value;
+                RaisePropertyChanged("Connectors");
             }
         }
 
-        public DelegateCommand AddNodeCommand { get; private set; }
+        public ObservableCollection<dynWorkspaceViewModel> Nodes
+        {
+            get { return _nodes; }
+            set
+            {
+                _nodes = value;
+                RaisePropertyChanged("Nodes");
+            }
+        }
 
-        public DelegateCommand AddConnectorCommand { get; private set; }
+        public ObservableCollection<dynWorkspaceViewModel> Notes
+        {
+            get { return _notes; }
+            set
+            {
+                _notes = value;
+                RaisePropertyChanged("Notes");
+            }
+        }
 
-        public DelegateCommand AddNoteCommand { get; private set; }
+        public DelegateCommand CreateNodeCommand { get; set; }
 
-        public dynWorkspaceViewModel(string name, dynWorkspaceModel workspace):base(name)
+        public DelegateCommand CreateConnectionCommand { get; set; }
+
+        public dynWorkspaceViewModel(dynWorkspace workspace)
         {
             _workspace = workspace;
             _workspace.NodeAdded += new EventHandler(_workspace_NodeAdded);
             _workspace.ConnectorAdded += new EventHandler(_workspace_ConnectorAdded);
             _workspace.NoteAdded += new EventHandler(_workspace_NoteAdded);
 
-            AddNodeCommand = new DelegateCommand(new Action(AddNode), CanAddNode);
-            AddConnectorCommand = new DelegateCommand(new Action(AddConnector), CanAddConnector);
-            AddNoteCommand = new DelegateCommand(new Action(AddNote), CanAddNote);
+            CreateNodeCommand = new DelegateCommand(new Action<string>(CreateNode), CanCreateNode());
+            CreateConnectionCommand = new DelegateCommand(new Action<string>(CreateConnection), CanCreateConnection);
+
         }
 
         void _workspace_NoteAdded(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Notes.Add(new dynNoteModelView(sender as dynNote));
         }
 
         void _workspace_ConnectorAdded(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Connectors.Add(new dynControllerModelView(sender as dynNode));
         }
 
         void _workspace_NodeAdded(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Nodes.Add(new dynNodeModelView(sender as dynNode));
         }
 
-        private bool CanAddNode()
+        void CreateNode(string parameters)
         {
-            return true;
+            Dictionary<string, object> data = parameters as Dictionary<string, object>;
+            if (data == null)
+            {
+                return;
+            }
+
+            dynNode node = dynSettings.Controller.CreateDragNode(data["name"].ToString());
+
+            dynNodeUI nodeUi = node.NodeUI;
+            if (dynSettings.Workbench != null)
+            {
+                dynSettings.Workbench.Children.Add(nodeUi);
+            }
+
+            dynSettings.Controller.Nodes.Add(NodeLogic);
+            NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
+            nodeUi.Opacity = 1;
+
+            //if we've received a value in the dictionary
+            //try to set the value on the node
+            if (data.ContainsKey("value"))
+            {
+                if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.GetType()))
+                {
+                    (node as dynBasicInteractive<double>).Value = (double)data["value"];
+                }
+                else if (typeof(dynBasicInteractive<string>).IsAssignableFrom(node.GetType()))
+                {
+                    (node as dynBasicInteractive<string>).Value = data["value"].ToString();
+                }
+                else if (typeof(dynBasicInteractive<bool>).IsAssignableFrom(node.GetType()))
+                {
+                    (node as dynBasicInteractive<bool>).Value = (bool)data["value"];
+                }
+                else if (typeof(dynVariableInput).IsAssignableFrom(node.GetType()))
+                {
+                    int desiredPortCount = (int)data["value"];
+                    if (node.InPortData.Count < desiredPortCount)
+                    {
+                        int portsToCreate = desiredPortCount - node.InPortData.Count;
+
+                        for (int i = 0; i < portsToCreate; i++)
+                        {
+                            (node as dynVariableInput).AddInput();
+                        }
+                        (node as dynVariableInput).NodeUI.RegisterAllPorts();
+                    }
+                }
+            }
+
+            //override the guid so we can store
+            //for connection lookup
+            if (data.ContainsKey("guid"))
+            {
+                GUID = (Guid)data["guid"];
+            }
+            else
+            {
+                GUID = Guid.NewGuid();
+            }
+
+            // by default place node at center
+            var x = 0.0;
+            var y = 0.0;
+            if (dynSettings.Bench != null)
+            {
+                x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
+                y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
+
+                // apply small perturbation
+                // so node isn't right on top of last placed node
+                Random r = new Random();
+                x += (r.NextDouble() - 0.5) * 50;
+                y += (r.NextDouble() - 0.5) * 50;
+            }
+
+            var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
+
+            if (data.ContainsKey("x"))
+                x = (double)data["x"];
+
+            if (data.ContainsKey("y"))
+                y = (double)data["y"];
+
+            Point dropPt = new Point(x, y);
+
+            // Transform dropPt from outerCanvas space into zoomCanvas space
+            if (transformFromOuterCanvas)
+            {
+                var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
+                dropPt = a.Transform(dropPt);
+            }
+
+            // center the node at the drop point
+            if (!Double.IsNaN(nodeUi.ActualWidth))
+                dropPt.X -= (nodeUi.ActualWidth / 2.0);
+
+            if (!Double.IsNaN(nodeUi.ActualHeight))
+                dropPt.Y -= (nodeUi.ActualHeight / 2.0);
+
+            Canvas.SetLeft(nodeUi, dropPt.X);
+            Canvas.SetTop(nodeUi, dropPt.Y);
+
+            nodeUi.EnableInteraction();
+
+            if (dynSettings.Controller.ViewingHomespace)
+            {
+                NodeLogic.SaveResult = true;
+            }
         }
 
-        private void AddNode()
+        bool CanCreateNode()
         {
-            _workspace.AddNode();
+            Dictionary<string, object> data = parameters as Dictionary<string, object>;
+
+            if (data != null &&
+                (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) ||
+                //dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ) ) ||
+                    dynSettings.FunctionDict.ContainsKey(Guid.Parse((string)data["name"]))))
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        private bool CanAddConnector()
+        void CreateConnection(string parameters)
         {
-            return true;
+            Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
+
+            dynNodeUI start = (dynNodeUI)connectionData["start"];
+            dynNodeUI end = (dynNodeUI)connectionData["end"];
+            int startIndex = (int)connectionData["port_start"];
+            int endIndex = (int)connectionData["port_end"];
+
+            dynConnector c = new dynConnector(start, end, startIndex, endIndex, 0);
+
+            dynSettings.Controller.CurrentSpace.Connectors.Add(c);
         }
 
-        private void AddConnector()
+        bool CanCreateConnection(string parameters)
         {
-            _workspace.AddConnector();
+            //make sure you have valid connection data
+            Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
+            if (connectionData != null && connectionData.Count == 4)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        private bool CanAddNote()
-        {
-            return true;
-        }
-
-        private void AddNote()
-        {
-            _workspace.AddNote();
-        }
     }
 }

@@ -41,7 +41,7 @@ namespace Dynamo
 
         private readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
         private string UnlockLoadPath;
-        private dynWorkspace _cspace;
+        
         private bool isProcessingCommandQueue = false;
 
         public CustomNodeLoader CustomNodeLoader { get; internal set; }
@@ -80,55 +80,15 @@ namespace Dynamo
 
         public dynBench Bench { get; private set; }
 
-        public IEnumerable<dynNode> AllNodes
-        {
-            get
-            {
-                return HomeSpace.Nodes.Concat(
-                    dynSettings.FunctionDict.Values.Aggregate(
-                        (IEnumerable<dynNode>) new List<dynNode>(),
-                        (a, x) => a.Concat(x.Workspace.Nodes)
-                        )
-                    );
-            }
-        }
-
         public SortedDictionary<string, TypeLoadData> BuiltInTypesByNickname
         {
             get { return builtinTypesByNickname; }
         }
 
-        public dynWorkspace CurrentSpace
-        {
-            get { return _cspace; }
-            internal set
-            {
-                _cspace = value;
-                //Bench.CurrentX = _cspace.PositionX;
-                //Bench.CurrentY = _cspace.PositionY;
-                if (Bench != null)
-                    Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
-
-                //TODO: Also set the name here.
-            }
-        }
-
-        public dynWorkspace HomeSpace { get; protected set; }
-
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }
 
-        public List<dynNode> Nodes
-        {
-            get { return CurrentSpace.Nodes; }
-        }
-
-        public bool ViewingHomespace
-        {
-            get { return CurrentSpace == HomeSpace; }
-        }
-
         private bool _benchActivated;
-        public DynamoSplash SplashScreen { get; set; }
+        //public DynamoSplash SplashScreen { get; set; }
 
         #endregion
 
@@ -141,11 +101,11 @@ namespace Dynamo
         {
             dynSettings.Controller = this;
 
-            this.RunEnabled = true;
-            this.CanRunDynamically = true;
+            RunEnabled = true;
+            CanRunDynamically = true;
 
             Bench = new dynBench(this);
-            DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
+            //DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
             dynSettings.Bench = Bench;
 
             // custom node loader
@@ -161,7 +121,6 @@ namespace Dynamo
 
             FSchemeEnvironment = env;
 
-            HomeSpace = CurrentSpace = new HomeWorkspace();
             Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
 
             Bench.InitializeComponent();
@@ -172,8 +131,8 @@ namespace Dynamo
             DynamoLoader.LoadBuiltinTypes(SearchViewModel, this, Bench);
             DynamoLoader.LoadSamplesMenu(Bench);
 
-            Bench.settings_curves.IsChecked = true;
-            Bench.settings_curves.IsChecked = false;
+            //Bench.settings_curves.IsChecked = true;
+            //Bench.settings_curves.IsChecked = false;
 
             Bench.LockUI();
 
@@ -275,9 +234,6 @@ namespace Dynamo
 
         #endregion
 
-
-
-
         #region Node Initialization
 
         /// <summary>
@@ -312,7 +268,6 @@ namespace Dynamo
             string name = nodeUI.NickName;
             return node;
         }
-
 
         /// <summary>
         ///     Create a node from a type object in a given workspace.

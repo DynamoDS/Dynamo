@@ -39,8 +39,7 @@ namespace Dynamo.Controls
     {
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
-        private dynConnector activeConnector;
-
+        
         internal Dictionary<string, Expander> addMenuCategoryDict
             = new Dictionary<string, Expander>();
 
@@ -51,84 +50,15 @@ namespace Dynamo.Controls
 
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
-        private ConnectorType connectorType;
-        private bool consoleShowing;
-        private DynamoController controller;
         private Point dragOffset;
         private dynNodeUI draggedElementMenuItem;
         private dynNodeUI draggedNode;
         private bool editingName;
         private bool hoveringEditBox;
         private bool isWindowSelecting;
-        private string logText;
+
         private Point mouseDownPos;
-        public StringWriter sw;
-
-        private Point transformOrigin;
-
-        internal dynBench(DynamoController controller)
-        {
-            Controller = controller;
-            sw = new StringWriter();
-            ConnectorType = ConnectorType.BEZIER;
-        }
-
-        public ConnectorType ConnectorType
-        {
-            get { return connectorType; }
-            set
-            {
-                connectorType = value;
-                NotifyPropertyChanged("ConnectorType");
-            }
-        }
-
-        public Point TransformOrigin
-        {
-            get { return transformOrigin; }
-            set
-            {
-                transformOrigin = value;
-                NotifyPropertyChanged("TransformOrigin");
-            }
-        }
-
-        public bool ConsoleShowing
-        {
-            get { return consoleShowing; }
-            set
-            {
-                consoleShowing = value;
-                NotifyPropertyChanged("ConsoleShowing");
-            }
-        }
-
-        public dynConnector ActiveConnector
-        {
-            get { return activeConnector; }
-            set { activeConnector = value; }
-        }
-
-        public DynamoController Controller
-        {
-            get { return controller; }
-            set
-            {
-                controller = value;
-                NotifyPropertyChanged("ViewModel");
-            }
-        }
-
-        public string LogText
-        {
-            get { return logText; }
-            set
-            {
-                logText = value;
-                NotifyPropertyChanged("LogText");
-            }
-        }
-
+        
         public Point CurrentOffset
         {
             get { return zoomBorder.GetTranslateTransformOrigin(); }
@@ -786,7 +716,6 @@ namespace Dynamo.Controls
             dragOffset = new Point();
         }
 
-
         private static void SaveRTBAsPNG(RenderTargetBitmap bmp, string filename)
         {
             var enc = new PngBitmapEncoder();
@@ -807,10 +736,6 @@ namespace Dynamo.Controls
             DrawGrid();
             mainGrid.Focus();
         }
-    }
-
-    public class dynSelection : ObservableCollection<UserControl>
-    {
     }
 
     public class TypeLoadData

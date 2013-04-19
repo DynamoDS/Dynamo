@@ -192,7 +192,7 @@ namespace Dynamo.Nodes
         {
             InPortData = new List<PortData>();
             OutPortData = new List<PortData>();
-            NodeUI = new dynNodeUI(this);
+            //NodeUI = new dynNodeUI(this);
         }
 
         /// <summary>

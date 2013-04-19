@@ -128,11 +128,11 @@ limitations under the License.
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynConnectorModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
-    <Compile Include="Models\dynNodeModel.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="ViewModels\DynamoViewModel.cs" />
+    <Compile Include="ViewModels\dynBenchViewModel.cs" />
+    <Compile Include="ViewModels\dynNodeViewModel.cs" />
     <Compile Include="ViewModels\dynViewModelBase.cs" />
-    <Compile Include="Models\dynWorkspaceModel.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
     <Compile Include="CustomNodeLoader.cs" />
     <Compile Include="DynamoLoader.cs" />

@@ -9,7 +9,10 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    class DynamoViewModel:NotificationObject
+    /// <summary>
+    /// DynamoViewModel
+    /// </summary>
+    class DynamoViewModel:dynViewModelBase
     {
         private ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
 
@@ -23,37 +26,39 @@ namespace Dynamo
             }
         }
 
-        public DelegateCommand SaveWorkspaceCommand { get; set; }
+        public DelegateCommand AddWorkspaceCommand { get; set; }
 
-        public DynamoViewModel()
+        public bool ViewingHomespace
         {
-            SaveWorkspaceCommand = new Microsoft.Practices.Prism.Commands.DelegateCommand(new Action(SaveWorkspace), CanSaveWorkspace);
+            get { return DynamoModel.Instance.CurrentSpace == DynamoModel.Instance.HomeSpace; }
+        }
 
+        public DynamoViewModel(DynamoModel model)
+        {
             DynamoModel.Instance.WorkspaceAdded += new EventHandler(Instance_WorkspaceAdded);
-            DynamoModel.Instance.WorkspaceAdded += new EventHandler(Instance_WorkspaceAdded);
+            DynamoModel.Instance.WorkspaceRemoved+=new EventHandler(Instance_WorkspaceRemoved);   
+
+            AddWorkspaceCommand = new DelegateCommand(new Action(AddFunctionWorkspace), CanAddFunctionWorkspace);
         }
 
         void Instance_WorkspaceAdded(object sender, EventArgs e)
         {
-            dynWorkspaceViewModel wvm = new dynWorkspaceViewModel("", ((DynamoModelUpdateArgs)e).Item as dynWorkspaceModel);
-            Workspaces.Add(wvm);
+            //TODO: What do we do in the view model when we add a workspace?
         }
 
-        /// <summary>
-        /// Can we add a workspace?
-        /// </summary>
-        /// <returns></returns>
-        public bool CanSaveWorkspace()
+        void Instance_WorkspaceRemoved(object sender, EventArgs e)
+        {
+            //TODO: What do we do in the view model when we remove a workspace?
+        }
+
+        private void AddFunctionWorkspace()
+        {
+            DynamoModel.Instance.Workspaces.Add(new FuncWorkspace());
+        }
+
+        private bool CanAddFunctionWorkspace()
         {
             return true;
-        }
-
-        /// <summary>
-        /// Add a workspace in the model.
-        /// </summary>
-        public void SaveWorkspace()
-        {
-            DynamoModel.Instance.SaveWorkspace();
         }
     }
 }

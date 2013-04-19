@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo
 {
@@ -10,8 +12,9 @@ namespace Dynamo
     /// </summary>
     public class DynamoModel
     {
-        private List<dynWorkspaceModel> _workSpaces = new List<dynWorkspaceModel>();
+        private List<dynWorkspace> _workSpaces = new List<dynWorkspace>();
         private static DynamoModel _instance;
+        private dynWorkspace _cspace;
 
         public event EventHandler WorkspaceAdded;
         public event EventHandler WorkspaceRemoved;
@@ -39,10 +42,40 @@ namespace Dynamo
             }
         }
 
+        public dynWorkspace CurrentSpace
+        {
+            get { return _cspace; }
+            internal set
+            {
+                _cspace = value;
+                //Bench.CurrentX = _cspace.PositionX;
+                //Bench.CurrentY = _cspace.PositionY;
+                if (Bench != null)
+                    Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
+
+                //TODO: Also set the name here.
+            }
+        }
+
+        public dynWorkspace HomeSpace { get; protected set; }
+
+        public IEnumerable<dynNode> AllNodes
+        {
+            get
+            {
+                return HomeSpace.Nodes.Concat(
+                    dynSettings.FunctionDict.Values.Aggregate(
+                        (IEnumerable<dynNode>)new List<dynNode>(),
+                        (a, x) => a.Concat(x.Workspace.Nodes)
+                        )
+                    );
+            }
+        }
+
         /// <summary>
         /// A collection of workspaces in the dynamo model.
         /// </summary>
-        public List<dynWorkspaceModel> Workspaces
+        public List<dynWorkspace> Workspaces
         {
             get { return _workSpaces; }
             set 
@@ -50,33 +83,40 @@ namespace Dynamo
                 _workSpaces = value;
             }
         }
-    
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        private DynamoModel()
+
+        public List<dynNode> Nodes
         {
-            
+            get { return CurrentSpace.Nodes; }
+        }
+
+        /// <summary>
+        /// Construct a Dynamo Model and create a home space.
+        /// </summary>
+        public DynamoModel()
+        {
+            HomeSpace = CurrentSpace = new HomeWorkspace();
+            _workSpaces.Add(HomeSpace);
+            OnWorkspaceAdded(this, new DynamoModelUpdateArgs(HomeSpace));
         }
 
         /// <summary>
         /// Add a workspace to the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
-        public void AddWorkspace()
+        public void AddHomeWorkspace()
         {
-            dynWorkspaceModel workspace = new dynWorkspaceModel();
+            dynHomeWorkspace workspace = new dynHomeWorkspace();
             _workSpaces.Add(workspace);
 
             //Fire an event and send along the workspace
             OnWorkspaceAdded(this, new DynamoModelUpdateArgs(workspace));
         }
-    
+
         /// <summary>
         /// Remove a workspace from the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
-        public void RemoveWorkspace(dynWorkspaceModel workspace)
+        public void RemoveWorkspace(dynWorkspace workspace)
         {
             _workSpaces.Remove(workspace);
             OnWorkspaceRemoved(this, new DynamoModelUpdateArgs(workspace));

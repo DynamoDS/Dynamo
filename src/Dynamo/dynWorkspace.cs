@@ -31,6 +31,28 @@ namespace Dynamo
         public List<dynConnector> Connectors { get; private set; }
         public List<dynNote> Notes { get; private set; }
 
+        public event EventHandler NodeAdded;
+        public event EventHandler ConnectorAdded;
+        public event EventHandler NoteAdded;
+
+        protected virtual void OnNodeAdded(object sender, DynamoModelUpdateArgs e)
+        {
+            if (NodeAdded != null)
+                NodeAdded(this, e);
+        }
+
+        protected virtual void OnConnectorAdded(object sender, DynamoModelUpdateArgs e)
+        {
+            if (ConnectorAdded != null)
+                ConnectorAdded(this, e);
+        }
+
+        protected virtual void OnNoteAdded(object sender, DynamoModelUpdateArgs e)
+        {
+            if (NoteAdded != null)
+                NoteAdded(this, e);
+        }
+
         public double PositionX { get; set; }
         public double PositionY { get; set; }
         public string FilePath { get; set; }
@@ -45,12 +67,12 @@ namespace Dynamo
 
         protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y)
         {
-            this.Name = name;
-            this.Nodes = e;
-            this.Connectors = c;
-            this.PositionX = x;
-            this.PositionY = y;
-            this.Notes = new List<dynNote>();
+            Name = name;
+            Nodes = e;
+            Connectors = c;
+            PositionX = x;
+            PositionY = y;
+            Notes = new List<dynNote>();
         }
 
         public void DisableReporting()
@@ -75,6 +97,7 @@ namespace Dynamo
                x => x.OutPortData.Any() && x.NodeUI.OutPorts.All(y => !y.Connectors.Any())
             );
         }
+
     }
 
     internal static class WorkspaceHelpers
@@ -82,8 +105,6 @@ namespace Dynamo
         public static Dictionary<string, dynNodeUI> hiddenNodes =
             new Dictionary<string, dynNodeUI>();
     }
-
-
 
     public class FuncWorkspace : dynWorkspace
     {

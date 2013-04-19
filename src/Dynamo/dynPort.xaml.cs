@@ -69,7 +69,7 @@ namespace Dynamo.Connectors
         List<dynConnector> connectors = new List<dynConnector>();
         Point center;
         bool isConnected;
-        dynNodeUI owner;
+        dynNodeViewModel owner;
         int index;
         PortType portType;
         string name;
@@ -125,7 +125,7 @@ namespace Dynamo.Connectors
             set { portType = value; }
         }
 
-        public dynNodeUI Owner
+        public dynNodeViewModel Owner
         {
             get { return owner; }
             set 
@@ -227,7 +227,6 @@ namespace Dynamo.Connectors
             if (connectors.Count == 0)
                 Owner.State = ElementState.DEAD;
 
-            
         }
 
         public void Update()
@@ -291,7 +290,7 @@ namespace Dynamo.Connectors
                     bench.ActiveConnector = this.Connectors[0];
                     bench.ActiveConnector.Disconnect(this);
                     bench.WorkBench.IsConnecting = true;
-                    dynSettings.Controller.CurrentSpace.Connectors.Remove(bench.ActiveConnector);
+                    DynamoModel.Instance.CurrentSpace.Connectors.Remove(bench.ActiveConnector);
                 }
                 else
                 {
