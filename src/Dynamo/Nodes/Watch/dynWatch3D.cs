@@ -42,9 +42,11 @@ namespace Dynamo.Nodes
 
         private PointsVisual3D _points;
         private LinesVisual3D _lines;
+        private List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
 
         public Point3DCollection Points { get; set; }
         public Point3DCollection Lines { get; set; }
+        public List<Mesh3D> Meshes { get; set; }
 
         System.Windows.Point _rightMousePoint;
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
@@ -114,17 +116,6 @@ namespace Dynamo.Nodes
 
             _watchView.watch_view.Children.Add(_lines);
             _watchView.watch_view.Children.Add(_points);
-            
-            //axis.Points.Add(new Point3D(1000, 0, 0));
-            //axis.Points.Add(new Point3D(-1000, 0, 0));
-
-            //axis.Points.Add(new Point3D(0, 1000, 0));
-            //axis.Points.Add(new Point3D(0, -1000, 0));
-
-            //axis.Points.Add(new Point3D(0, 0, 1000));
-            //axis.Points.Add(new Point3D(0, 0, -1000));
-
-            //view.Children.Add(axis);
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -167,51 +158,68 @@ namespace Dynamo.Nodes
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            if (_requiresRedraw)
+            if (!_requiresRedraw)
+                return;
+
+            Points = null;
+            Lines = null;
+            _lines.Points = null;
+            _points.Points = null;
+
+            Points = new Point3DCollection();
+            Lines = new Point3DCollection();
+            Meshes = new List<Mesh3D>();
+
+            var descendants = Inputs.Values.SelectMany(x => x.Item2.DescendantsAndSelf());
+            var guids = descendants.Where(x => x is IDrawable).Select(x => x.NodeUI.GUID);
+
+            var drawable = descendants.Where(x => (x is IDrawable));
+            Debug.WriteLine(string.Format("Drawing {0} elements in the watch.", drawable.Count()));
+
+            foreach (var d in drawable)
             {
-                Points = null;
-                Lines = null;
-                _lines.Points = null;
-                _points.Points = null;
+                RenderDescription rd = (d as IDrawable).Draw();
 
-                Points = new Point3DCollection();
-                Lines = new Point3DCollection();
-
-                var descendants = Inputs.Values.SelectMany(x => x.Item2.DescendantsAndSelf());
-                var guids = descendants.Where(x => x is IDrawable).Select(x => x.NodeUI.GUID);
-
-                var drawable = descendants.Where(x => (x is IDrawable));
-                Debug.WriteLine(string.Format("Drawing {0} elements in the watch.", drawable.Count()));
-
-                foreach (var d in drawable)
+                foreach (Point3D p in rd.points)
                 {
-
-                    RenderDescription rd = (d as IDrawable).Draw();
-
-                    foreach (Point3D p in rd.points)
-                    {
-                        Points.Add(p);
-                    }
-
-                    foreach (Point3D p in rd.lines)
-                    {
-                        Lines.Add(p);
-                    }
-
+                    Points.Add(p);
                 }
 
-                _lines.Points = Lines;
-                _points.Points = Points;
+                foreach (Point3D p in rd.lines)
+                {
+                    Lines.Add(p);
+                }
 
-                RaisePropertyChanged("Points");
-                RaisePropertyChanged("Lines");
-
-                _requiresRedraw = false;
+                foreach (Mesh3D mesh in rd.meshes)
+                {
+                    Meshes.Add(mesh);
+                }
             }
-            //if (_lines != null)
-            //    _lines.Points = Lines;
-            //if (_points != null)
-            //    _points.Points = Points;
+
+            _lines.Points = Lines;
+            _points.Points = Points;
+
+            // remove old meshes from the renderer
+            foreach (MeshVisual3D mesh in _meshes)
+            {
+                _watchView.watch_view.Children.Remove(mesh);
+            }
+
+            _meshes.Clear();
+
+            foreach (Mesh3D mesh in Meshes)
+            {
+                MeshVisual3D vismesh = new MeshVisual3D();
+                vismesh.Mesh = mesh;
+                _watchView.watch_view.Children.Add(vismesh);
+                _meshes.Add(vismesh);
+            }
+
+            RaisePropertyChanged("Points");
+            RaisePropertyChanged("Lines");
+            RaisePropertyChanged("Meshes");
+
+            _requiresRedraw = false;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -219,41 +227,6 @@ namespace Dynamo.Nodes
             var input = args[0];
 
             _requiresRedraw = true;
-
-            //Points = null;
-            //Lines = null;
-            //_lines.Points = null;
-            //_points.Points = null;
-
-            //Points = new Point3DCollection();
-            //Lines = new Point3DCollection();
-
-            //var descendants = Inputs.Values.SelectMany(x=>x.Item2.DescendantsAndSelf());
-            //var guids = descendants.Where(x => x is IDrawable).Select(x=>x.NodeUI.GUID);
-
-            //var drawable = descendants.Where(x => (x is IDrawable));
-            //foreach (var d in drawable)
-            //{
-                    
-            //    RenderDescription rd = (d as IDrawable).Draw();
-
-            //    foreach (Point3D p in rd.points)
-            //    {
-            //        Points.Add(p);
-            //    }
-
-            //    foreach (Point3D p in rd.lines)
-            //    {
-            //        Lines.Add(p); 
-            //    }
-                    
-            //}
-
-            //_lines.Points = Lines;
-            //_points.Points = Points;
-
-            //RaisePropertyChanged("Points");
-            //RaisePropertyChanged("Lines");
 
             return input;
         }
