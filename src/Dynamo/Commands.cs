@@ -1082,7 +1082,7 @@ namespace Dynamo.Commands
             //paste contents in
             dynSettings.Bench.WorkBench.Selection.RemoveAll();
 
-            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x is dynNodeUI);
+            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x is dynNodeView);
             var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
 
             foreach (dynNodeUI node in nodes)

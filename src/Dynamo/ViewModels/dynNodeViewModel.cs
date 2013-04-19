@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -38,8 +39,8 @@ namespace Dynamo.Controls
         #endregion
 
         #region private members
-        ObservableCollection<dynPort> inPorts;
-        ObservableCollection<dynPort> outPorts;
+        ObservableCollection<dynPortModelView> inPorts = new ObservableCollection<dynPortModelView>();
+        ObservableCollection<dynPortModelView> outPorts = new ObservableCollection<dynPortModelView>();
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
         string nickName;
         string toolTipText = "";
@@ -82,7 +83,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ObservableCollection<dynPort> InPorts
+        public ObservableCollection<dynPortModelView> InPorts
         {
             get { return inPorts; }
             set
@@ -91,7 +92,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ObservableCollection<dynPort> OutPorts
+        public ObservableCollection<dynPortModelView> OutPorts
         {
             get { return outPorts; }
             set
@@ -214,10 +215,11 @@ namespace Dynamo.Controls
             ArgumentLacing = NodeLogic.ArgumentLacing;
             nodeLogic.ArgumentLacingUpdated += new Nodes.LacingTypeChangedHandler(nodeLogic_ArgumentLacingUpdated);
 
-            inPorts = new ObservableCollection<dynPort>();
-            outPorts = new ObservableCollection<dynPort>();
-            inPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ports_collectionChanged);
-            outPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ports_collectionChanged);
+            //respond to collection changed events to add
+            //and remove port model views
+            logic.InPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(inports_collectionChanged);
+            logic.OutPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(outports_collectionChanged);
+
             this.IsSelected = false;
 
             //Binding heightBinding = new Binding("PreferredHeight");
@@ -306,9 +308,52 @@ namespace Dynamo.Controls
             return true;
         }
 
-        void ports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            //The visual height of the node is bound to preferred height.
             PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
+
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                //create a new port view model
+                foreach (var item in e.NewItems)
+                {
+                    InPorts.Add(new dynPortModelView(item));
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                //remove the port view model whose model item
+                //is the one passed in
+                foreach (var item in e.OldItems)
+                {
+                    InPorts.Remove(InPorts.ToList().Where(x => x.PortModel == item));
+                }
+            }
+        }
+
+        void outports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //The visual height of the node is bound to preferred height.
+            PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
+
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                //create a new port view model
+                foreach (var item in e.NewItems)
+                {
+                    OutPorts.Add(new dynPortModelView(item));
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                //remove the port view model whose model item is the
+                //one passed in
+                foreach (var item in e.OldItems)
+                {
+                    OutPorts.Remove(OutPorts.ToList().Where(x => x.PortModel == item));
+                }
+            }
         }
 
         #endregion
@@ -403,21 +448,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void RemovePort(dynPort inport)
-        {
-            if (inport.PortType == PortType.INPUT)
-            {
-                //int index = inPorts.FindIndex(x => x == inport);
-                int index = inPorts.IndexOf(inport);
-                gridLeft.Children.Remove(inport);
-
-                while (inport.Connectors.Any())
-                {
-                    inport.Connectors[0].Kill();
-                }
-            }
-        }
-
         /// <summary>
         /// Reads outputs list and adds ports for each output
         /// </summary>
@@ -453,54 +483,6 @@ namespace Dynamo.Controls
 
                 //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
-        }
-
-        /// <summary>
-        /// Add a dynPort element to this control.
-        /// </summary>
-        /// <param name="isInput">Is the port an input?</param>
-        /// <param name="index">The index of the port in the port list.</param>
-        public dynPort AddPort(PortType portType, string name, int index)
-        {
-            if (portType == PortType.INPUT)
-            {
-                if (inPorts.Count > index)
-                {
-                    return inPorts[index];
-                }
-                else
-                {
-                    dynPort p = new dynPort(index, portType, this, name);
-
-                    InPorts.Add(p);
-
-                    //register listeners on the port
-                    p.PortConnected += new PortConnectedHandler(p_PortConnected);
-                    p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
-
-                    return p;
-                }
-            }
-            else if (portType == PortType.OUTPUT)
-            {
-                if (outPorts.Count > index)
-                {
-                    return outPorts[index];
-                }
-                else
-                {
-                    dynPort p = new dynPort(index, portType, this, name);
-
-                    OutPorts.Add(p);
-
-                    //register listeners on the port
-                    p.PortConnected += new PortConnectedHandler(p_PortConnected);
-                    p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
-
-                    return p;
-                }
-            }
-            return null;
         }
 
         //TODO: call connect and disconnect for dynNode
@@ -555,7 +537,7 @@ namespace Dynamo.Controls
         {
             // if there are inputs without connections
             // mark as dead
-            if (inPorts.Select(x => x).Where(x => x.Connectors.Count == 0).Count() > 0)
+            if (inPorts.Select(x => x).Where(x => x.PortModel.Connectors.Count == 0).Count() > 0)
             {
                 State = ElementState.DEAD;
             }

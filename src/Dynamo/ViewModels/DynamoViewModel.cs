@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -59,6 +63,59 @@ namespace Dynamo
         private bool CanAddFunctionWorkspace()
         {
             return true;
+        }
+
+        /// <summary>
+        ///     Change the currently visible workspace to the home workspace
+        /// </summary>
+        /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
+        internal void ViewHomeWorkspace()
+        {
+            //Step 1: Make function workspace invisible
+            foreach (dynNode ele in Nodes)
+            {
+                ele.NodeUI.Visibility = Visibility.Collapsed;
+            }
+            foreach (dynConnector con in DynamoModel.Instance.CurrentSpace.Connectors)
+            {
+                con.Visible = false;
+            }
+            foreach (dynNote note in DynamoModel.Instance.CurrentSpace.Notes)
+            {
+                note.Visibility = Visibility.Hidden;
+            }
+
+            //Step 3: Save function
+            SaveFunction(dynSettings.FunctionDict.Values.FirstOrDefault(x => x.Workspace == DynamoModel.Instance.CurrentSpace));
+
+            //Step 4: Make home workspace visible
+            DynamoModel.Instance.CurrentSpace = DynamoModel.Instance.HomeSpace;
+
+            foreach (dynNode ele in Nodes)
+            {
+                ele.NodeUI.Visibility = Visibility.Visible;
+            }
+            foreach (dynConnector con in DynamoModel.Instance.CurrentSpace.Connectors)
+            {
+                con.Visible = true;
+            }
+            foreach (dynNote note in DynamoModel.Instance.CurrentSpace.Notes)
+            {
+                note.Visibility = Visibility.Visible;
+            }
+
+            Bench.homeButton.IsEnabled = false;
+
+            // TODO: get this out of here
+            PackageManagerClient.HidePackageControlInformation();
+
+            Bench.workspaceLabel.Content = "Home";
+            Bench.editNameButton.Visibility = Visibility.Collapsed;
+            Bench.editNameButton.IsHitTestVisible = false;
+
+            Bench.setHomeBackground();
+
+            DynamoModel.Instance.CurrentSpace.OnDisplayed();
         }
     }
 }

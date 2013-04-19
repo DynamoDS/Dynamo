@@ -100,7 +100,8 @@ namespace Dynamo.Controls
 
                 e.IsEnabled = false;
             }
-            State = ElementState.DEAD;
+            
+            = ElementState.DEAD;
         }
 
         internal void EnableInteraction()

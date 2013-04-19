@@ -31,6 +31,8 @@ namespace Dynamo.Nodes
 
     public delegate void LacingTypeChangedHandler(object sender, EventArgs e);
 
+    public delegate void PortsChangedHandler(object sender, EventArgs e);
+
     public abstract class dynNode
     {
         /* TODO:
@@ -53,8 +55,9 @@ namespace Dynamo.Nodes
 
         public dynWorkspace WorkSpace;
 
-        public List<PortData> InPortData { get; private set; }
+        public Obser<PortData> InPortData { get; private set; }
         public List<PortData> OutPortData { get; private set; }
+
         public dynNodeUI NodeUI;
         public Dictionary<int, Tuple<int, dynNode>> Inputs = 
             new Dictionary<int, Tuple<int, dynNode>>();
@@ -66,8 +69,12 @@ namespace Dynamo.Nodes
         private Dictionary<int, HashSet<Tuple<int, dynNode>>> previousOutputPortMappings =
             new Dictionary<int, HashSet<Tuple<int, dynNode>>>();
 
+        ObservableCollection<dynPort> inPorts = new ObservableCollection<dynPort>();
+        ObservableCollection<dynPort> outPorts = new ObservableCollection<dynPort>();
+
         private LacingStrategy _argumentLacing  = LacingStrategy.Single;
 
+        #region events
         public event LacingTypeChangedHandler ArgumentLacingUpdated;
         protected virtual void OnArgumentLacingUpdated(EventArgs e)
         {
@@ -75,6 +82,26 @@ namespace Dynamo.Nodes
                 ArgumentLacingUpdated(this, e);
         }
 
+        #endregion
+
+        public ObservableCollection<dynPort> InPorts
+        {
+            get { return inPorts; }
+            set
+            {
+                inPorts = value;
+            }
+        }
+
+        public ObservableCollection<dynPort> OutPorts
+        {
+            get { return outPorts; }
+            set
+            {
+                outPorts = value;
+            }
+        }
+        
         /// <summary>
         /// Control how arguments lists of various sizes are laced.
         /// </summary>
@@ -701,6 +728,69 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual void Cleanup()
         {
+        }
+
+        /// <summary>
+        /// Add a dynPort element to this control.
+        /// </summary>
+        /// <param name="isInput">Is the port an input?</param>
+        /// <param name="index">The index of the port in the port list.</param>
+        public dynPort AddPort(PortType portType, string name, int index)
+        {
+            if (portType == PortType.INPUT)
+            {
+                if (inPorts.Count > index)
+                {
+                    return inPorts[index];
+                }
+                else
+                {
+                    dynPort p = new dynPort(index, portType, this, name);
+
+                    InPorts.Add(p);
+
+                    //register listeners on the port
+                    p.PortConnected += new PortConnectedHandler(p_PortConnected);
+                    p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+
+                    return p;
+                }
+            }
+            else if (portType == PortType.OUTPUT)
+            {
+                if (outPorts.Count > index)
+                {
+                    return outPorts[index];
+                }
+                else
+                {
+                    dynPort p = new dynPort(index, portType, this, name);
+
+                    OutPorts.Add(p);
+
+                    //register listeners on the port
+                    p.PortConnected += new PortConnectedHandler(p_PortConnected);
+                    p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        private void RemovePort(dynPort inport)
+        {
+            if (inport.PortType == PortType.INPUT)
+            {
+                //int index = inPorts.FindIndex(x => x == inport);
+                int index = inPorts.IndexOf(inport);
+                //gridLeft.Children.Remove(inport);
+
+                while (inport.Connectors.Any())
+                {
+                    inport.Connectors[0].Kill();
+                }
+            }
         }
     }
 

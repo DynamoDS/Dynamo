@@ -47,129 +47,14 @@ namespace Dynamo.Connectors
             }
         }
 
-        #region events
-        public event PortConnectedHandler PortConnected;
-        public event PortConnectedHandler PortDisconnected;
-
-        protected virtual void OnPortConnected(EventArgs e)
-        {
-            if (PortConnected != null)
-                PortConnected(this, e);
-        }
-        protected virtual void OnPortDisconnected(EventArgs e)
-        {
-            if (PortDisconnected != null)
-                PortDisconnected(this, e);
-        }
-
-        #endregion
-
-        #region private members
-
-        List<dynConnector> connectors = new List<dynConnector>();
-        Point center;
-        bool isConnected;
-        dynNodeViewModel owner;
-        int index;
-        PortType portType;
-        string name;
-        #endregion
-
-        #region public members
-
-        public Point Center
-        {
-            get { return UpdateCenter(); }
-            set { center = value; }
-        }
-
-        public List<dynConnector> Connectors
-        {
-            get { return connectors; }
-            set { connectors = value; }
-        }
-
-        public string ToolTipContent
-        {
-            get
-            {
-                if (Owner != null)
-                {
-                    if (PortType == Dynamo.Connectors.PortType.INPUT)
-                    {
-                        return Owner.NodeLogic.InPortData[index].ToolTipString;
-                    }
-                    else
-                    {
-                        return Owner.NodeLogic.OutPortData[index].ToolTipString;
-                    }
-                }
-                return "";
-            }
-        }
-
-        public string PortName
-        {
-            get { return name; }
-            set
-            {
-                name = value;
-                NotifyPropertyChanged("PortName");
-            }
-                
-        }
-        
-        public PortType PortType
-        {
-            get { return portType; }
-            set { portType = value; }
-        }
-
-        public dynNodeViewModel Owner
-        {
-            get { return owner; }
-            set 
-            { 
-                owner = value;
-                NotifyPropertyChanged("Owner");
-            }
-        }
-
-        public int Index
-        {
-            get { return index; }
-            set { index = value; }
-        }
-
-        public bool IsConnected
-        {
-            get
-            { return isConnected; }
-            set
-            {
-                isConnected = value;
-                NotifyPropertyChanged("IsConnected");
-            }
-        }
-
-        #endregion
-
         #region constructors
 
         public dynPort(int index, PortType portType, dynNodeUI owner, string name)
         {
             InitializeComponent();
 
-            Index = index;
-
             this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
             this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
-
-            IsConnected = false;
-
-            PortType = portType;
-            Owner = owner;
-            PortName = name;
 
             portGrid.DataContext = this;
             portNameTb.DataContext = this;
@@ -179,6 +64,8 @@ namespace Dynamo.Connectors
 
             portGrid.Loaded += new RoutedEventHandler(portGrid_Loaded);
         }
+
+        #endregion constructors
 
         void portGrid_Loaded(object sender, RoutedEventArgs e)
         {
@@ -194,41 +81,9 @@ namespace Dynamo.Connectors
             //    portNameTb.TextAlignment = TextAlignment.Right;
             //}
         }
-        #endregion constructors
-
+        
         #region public methods
-        public void Connect(dynConnector connector)
-        {
-            connectors.Add(connector);
-
-            //throw the event for a connection
-            OnPortConnected(EventArgs.Empty);
-
-            IsConnected = true;
-        }
-
-        public void Disconnect(dynConnector connector)
-        {
-            //throw the event for a connection
-            OnPortDisconnected(EventArgs.Empty);
-
-            if (connectors.Contains(connector))
-            {
-                connectors.Remove(connector);
-            }
-            
-            //don't set back to white if
-            //there are still connectors on this port
-            if (connectors.Count == 0)
-            {
-                IsConnected = false;
-            }
-
-            if (connectors.Count == 0)
-                Owner.State = ElementState.DEAD;
-
-        }
-
+        
         public void Update()
         {
             foreach (dynConnector c in connectors)
@@ -239,38 +94,6 @@ namespace Dynamo.Connectors
             }
         }
         #endregion
-
-        #region private methods
-        Point UpdateCenter()
-        {
-
-            GeneralTransform transform = portCircle.TransformToAncestor(dynSettings.Workbench);
-            Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
-
-            //double x = rootPoint.X;
-            //double y = rootPoint.Y;
-
-            //if(portType == Dynamo.Connectors.PortType.INPUT)
-            //{
-            //    x += ellipse1.Width / 2;
-            //}
-            //y += ellipse1.Height / 2;
-
-            //return new Point(x, y);
-            return new Point(rootPoint.X, rootPoint.Y);
-
-        }
-        #endregion
-
-        private void OnOpened(object sender, RoutedEventArgs e)
-        {
-            //do some stuff when opening
-        }
-
-        private void OnClosed(object sender, RoutedEventArgs e)
-        {
-            //do some stuff when closing
-        }
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -333,59 +156,7 @@ namespace Dynamo.Connectors
             #endregion
         }
 
-        internal void KillAllConnectors()
-        {
-            foreach (var c in connectors.ToList())
-                c.Kill();
-        }
+        
     }
 
-    public class PortData
-    {
-        string nickName;
-        string toolTip;
-        Type portType;
-
-        public string NickName
-        {
-            get { return nickName; }
-            internal set { nickName = value; }
-        }
-
-        public string ToolTipString
-        {
-            get { return toolTip; }
-            internal set { toolTip = value; }
-        }
-
-        public Type PortType
-        {
-            get { return portType; }
-            set { portType = value; }
-        }
-
-        public PortData(string nickName, string tip, Type portType)
-        {
-            this.nickName = nickName;
-            this.toolTip = tip;
-            this.portType = portType;
-        }
-
-        //public override bool Equals(object obj)
-        //{
-        //    var other = obj as PortData;
-
-        //    return other != null
-        //        && other.nickName.Equals(nickName)
-        //        && other.portType.Equals(portType)
-        //        && other.toolTip == toolTip;
-        //}
-
-        //public override int GetHashCode()
-        //{
-        //    return nickName.GetHashCode() * 7 
-        //        + portType.GetHashCode() * 11 
-        //        + toolTip.GetHashCode() * 3;
-        //}
-    }
 }
