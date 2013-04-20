@@ -8,7 +8,11 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Connectors
 {
+<<<<<<< HEAD
     class dynPortModel
+=======
+    public class dynPortModel
+>>>>>>> Progress commit.
     {
         #region events
 

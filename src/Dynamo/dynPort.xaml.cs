@@ -95,6 +95,32 @@ namespace Dynamo.Connectors
         }
         #endregion
 
+<<<<<<< HEAD
+=======
+        public bool Visible
+        {
+            get
+            {
+                return connector.Opacity > 0;
+            }
+            set
+            {
+                if (value)
+                {
+                    connector.Opacity = STROKE_OPACITY;
+                    plineConnector.Opacity = STROKE_OPACITY;
+                    endDot.Opacity = STROKE_OPACITY;
+                }
+                else
+                {
+                    connector.Opacity = 0;
+                    plineConnector.Opacity = 0;
+                    endDot.Opacity = 0;
+                }
+            }
+        }
+
+>>>>>>> Progress commit.
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Debug.WriteLine(string.Format("Port {0} selected.", this.Index));

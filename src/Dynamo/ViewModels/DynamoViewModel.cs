@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -18,7 +19,15 @@ namespace Dynamo
     /// </summary>
     class DynamoViewModel:dynViewModelBase
     {
-        private ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
+        private DynamoModel _model;
+
+        public DynamoModel Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        public ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -39,10 +48,24 @@ namespace Dynamo
 
         public DynamoViewModel(DynamoModel model)
         {
-            DynamoModel.Instance.WorkspaceAdded += new EventHandler(Instance_WorkspaceAdded);
-            DynamoModel.Instance.WorkspaceRemoved+=new EventHandler(Instance_WorkspaceRemoved);   
+            _model = model;
+            _model.Workspaces.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Workspaces_CollectionChanged);
 
             AddWorkspaceCommand = new DelegateCommand(new Action(AddFunctionWorkspace), CanAddFunctionWorkspace);
+        }
+
+        void Workspaces_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach(var item in e.NewItems)
+                    _workspaces.Add(new dynWorkspaceViewModel(item as dynWorkspace));
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var item in e.OldItems)
+                    _workspaces.Remove(_workspaces.ToList().Where(x=>x.Workspace == item));
+            }
         }
 
         void Instance_WorkspaceAdded(object sender, EventArgs e)

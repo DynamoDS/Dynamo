@@ -57,8 +57,8 @@ namespace Dynamo.Connectors
         const int END_DOT_SIZE = 6;
         double bezOffset = 20;
 
-        dynPort pStart;
-        dynPort pEnd;
+        dynPortModel pStart;
+        dynPortModel pEnd;
 
         PathFigure connectorPoints;
         BezierSegment connectorCurve;
@@ -372,7 +372,7 @@ namespace Dynamo.Connectors
             }
         }
 
-        public bool Connect(dynPort p)
+        public bool Connect(dynPortModel p)
         {
             //test if the port that you are connecting too is not the start port or the end port
             //of the current connector
@@ -412,30 +412,9 @@ namespace Dynamo.Connectors
             return true;
         }
 
-        public bool Visible
-        {
-            get
-            {
-                return connector.Opacity > 0;
-            }
-            set
-            {
-                if (value)
-                {
-                    connector.Opacity = STROKE_OPACITY;
-                    plineConnector.Opacity = STROKE_OPACITY;
-                    endDot.Opacity = STROKE_OPACITY;
-                }
-                else
-                {
-                    connector.Opacity = 0;
-                    plineConnector.Opacity = 0;
-                    endDot.Opacity = 0;
-                }
-            }
-        }
+        
 
-        public void Disconnect(dynPort p)
+        public void Disconnect(dynPortModel p)
         {
             if (p.Equals(pStart))
             {
@@ -530,48 +509,48 @@ namespace Dynamo.Connectors
             }
         }
 
-        public void Redraw()
-        {
-            if (pStart == null && pEnd == null)
-                return;
+        //public void Redraw()
+        //{
+        //    if (pStart == null && pEnd == null)
+        //        return;
 
-            double distance = 0.0;
-            if (connectorType == Connectors.ConnectorType.BEZIER)
-            {
-                distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
-                bezOffset = .3 * distance;
-            }
-            else
-            {
-                distance = pEnd.Center.X - pStart.Center.X;
-                bezOffset = distance / 2;
-            }
+        //    double distance = 0.0;
+        //    if (connectorType == Connectors.ConnectorType.BEZIER)
+        //    {
+        //        distance = Math.Sqrt(Math.Pow(pEnd.Center.X - pStart.Center.X, 2) + Math.Pow(pEnd.Center.Y - pStart.Center.Y, 2));
+        //        bezOffset = .3 * distance;
+        //    }
+        //    else
+        //    {
+        //        distance = pEnd.Center.X - pStart.Center.X;
+        //        bezOffset = distance / 2;
+        //    }
 
 
-            //don't redraw with null end points;
-            if (pStart != null)
-            {
-                connectorPoints.StartPoint = pStart.Center;
-                plineFigure.StartPoint = pStart.Center;
+        //    //don't redraw with null end points;
+        //    if (pStart != null)
+        //    {
+        //        connectorPoints.StartPoint = pStart.Center;
+        //        plineFigure.StartPoint = pStart.Center;
 
-                connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
-                pline.Points[0] = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
-            }
-            if (pEnd != null)
-            {
+        //        connectorCurve.Point1 = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
+        //        pline.Points[0] = new Point(pStart.Center.X + bezOffset, pStart.Center.Y);
+        //    }
+        //    if (pEnd != null)
+        //    {
 
-                if (pEnd.PortType == PortType.INPUT)
-                {
-                    connectorCurve.Point2 = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
-                    pline.Points[1] = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
-                }
-                connectorCurve.Point3 = pEnd.Center;
-                pline.Points[2] = pEnd.Center;
+        //        if (pEnd.PortType == PortType.INPUT)
+        //        {
+        //            connectorCurve.Point2 = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
+        //            pline.Points[1] = new Point(pEnd.Center.X - bezOffset, pEnd.Center.Y);
+        //        }
+        //        connectorCurve.Point3 = pEnd.Center;
+        //        pline.Points[2] = pEnd.Center;
 
-                Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
-                Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
-            }
-        }
+        //        Canvas.SetTop(endDot, connectorCurve.Point3.Y - END_DOT_SIZE / 2);
+        //        Canvas.SetLeft(endDot, connectorCurve.Point3.X - END_DOT_SIZE / 2);
+        //    }
+        //}
 
     }
 

@@ -11,7 +11,7 @@ namespace Dynamo
 {
     class dynWorkspaceViewModel: dynViewModelBase
     {
-        private dynWorkspace _workspace;
+        public dynWorkspace Workspace;
 
         ObservableCollection<dynWorkspaceViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
         ObservableCollection<dynWorkspaceViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
@@ -50,15 +50,19 @@ namespace Dynamo
 
         public DelegateCommand CreateConnectionCommand { get; set; }
 
+        public double PositionX { get; set; }
+
+        public double PositionY { get; set; }
+
         public dynWorkspaceViewModel(dynWorkspace workspace)
         {
-            _workspace = workspace;
-            _workspace.NodeAdded += new EventHandler(_workspace_NodeAdded);
-            _workspace.ConnectorAdded += new EventHandler(_workspace_ConnectorAdded);
-            _workspace.NoteAdded += new EventHandler(_workspace_NoteAdded);
+            Workspace = workspace;
+            Workspace.NodeAdded += new EventHandler(_workspace_NodeAdded);
+            Workspace.ConnectorAdded += new EventHandler(_workspace_ConnectorAdded);
+            Workspace.NoteAdded += new EventHandler(_workspace_NoteAdded);
 
-            CreateNodeCommand = new DelegateCommand(new Action<string>(CreateNode), CanCreateNode());
-            CreateConnectionCommand = new DelegateCommand(new Action<string>(CreateConnection), CanCreateConnection);
+            CreateNodeCommand = new DelegateCommand(new Action<string>(CreateNode()), CanCreateNode());
+            CreateConnectionCommand = new DelegateCommand(new Action<string>(CreateConnection()), CanCreateConnection);
 
         }
 

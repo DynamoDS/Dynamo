@@ -53,9 +53,8 @@ namespace Dynamo
                 NoteAdded(this, e);
         }
 
-        public double PositionX { get; set; }
-        public double PositionY { get; set; }
         public string FilePath { get; set; }
+
         public String Name { get; set; }
 
         public event Action OnModified;

@@ -591,7 +591,7 @@ namespace Dynamo.Commands
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                dynSettings.Controller.SaveAs(_fileDialog.FileName);
+                DynamoModel.Instance.SaveAs(_fileDialog.FileName);
             }
           
         }
@@ -734,7 +734,7 @@ namespace Dynamo.Commands
         {
             if (dynSettings.Bench.WorkBench.Selection.Count > 0)
             {
-                dynSettings.Bench.Controller.CollapseNodes(
+                DynamoModel.Instance.CollapseNodes(
                     dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
                         .Select(x => (x as dynNodeViewModel).NodeLogic));
             }
@@ -793,7 +793,7 @@ namespace Dynamo.Commands
             ws.Notes.Add(n);
             dynSettings.Bench.WorkBench.Children.Add(n);
 
-            if (!dynSettings.Bench.Controller.ViewingHomespace)
+            if (!DynamoModel.Instance.ViewingHomespace)
             {
                 DynamoModel.Instance.CurrentSpace.Modified();
             }
@@ -1082,10 +1082,14 @@ namespace Dynamo.Commands
             //paste contents in
             dynSettings.Bench.WorkBench.Selection.RemoveAll();
 
+<<<<<<< HEAD
             var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x is dynNodeView);
+=======
+            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x is dynNodeViewModel);
+>>>>>>> Progress commit.
             var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
 
-            foreach (dynNodeUI node in nodes)
+            foreach (dynNodeViewModel node in nodes)
             {
                 //create a new guid for us to use
                 Guid newGuid = Guid.NewGuid();

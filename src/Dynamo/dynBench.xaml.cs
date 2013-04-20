@@ -59,18 +59,7 @@ namespace Dynamo.Controls
 
         private Point mouseDownPos;
         
-        public Point CurrentOffset
-        {
-            get { return zoomBorder.GetTranslateTransformOrigin(); }
-            set
-            {
-                if (zoomBorder != null)
-                {
-                    zoomBorder.SetTranslateTransformOrigin(value);
-                }
-                NotifyPropertyChanged("CurrentOffset");
-            }
-        }
+        
 
         public bool UILocked { get; private set; }
 

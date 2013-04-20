@@ -1,4 +1,4 @@
-//Copyright 2013 Ian Keough
+﻿//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -1665,7 +1665,7 @@ namespace Dynamo.Nodes
                 numeric = value;
                 if (value && Text.Length > 0)
                 {
-                    Text = DynamoController.RemoveChars(
+                    Text = DynamoModel.RemoveChars(
                        Text,
                        Text.ToCharArray()
                           .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
@@ -1729,7 +1729,7 @@ namespace Dynamo.Nodes
             {
                 var p = CaretIndex;
 
-                base.Text = DynamoController.RemoveChars(
+                base.Text = DynamoModel.RemoveChars(
                    Text,
                    Text.ToCharArray()
                       .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
