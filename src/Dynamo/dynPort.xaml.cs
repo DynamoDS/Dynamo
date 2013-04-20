@@ -95,8 +95,6 @@ namespace Dynamo.Connectors
         }
         #endregion
 
-<<<<<<< HEAD
-=======
         public bool Visible
         {
             get
@@ -120,7 +118,6 @@ namespace Dynamo.Connectors
             }
         }
 
->>>>>>> Progress commit.
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Debug.WriteLine(string.Format("Port {0} selected.", this.Index));

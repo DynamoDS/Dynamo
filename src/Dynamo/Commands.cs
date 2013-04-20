@@ -1082,11 +1082,8 @@ namespace Dynamo.Commands
             //paste contents in
             dynSettings.Bench.WorkBench.Selection.RemoveAll();
 
-<<<<<<< HEAD
-            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x is dynNodeView);
-=======
             var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x is dynNodeViewModel);
->>>>>>> Progress commit.
+
             var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
 
             foreach (dynNodeViewModel node in nodes)

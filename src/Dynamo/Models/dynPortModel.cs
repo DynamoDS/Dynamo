@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 
 namespace Dynamo.Connectors
 {
-<<<<<<< HEAD
-    class dynPortModel
-=======
     public class dynPortModel
->>>>>>> Progress commit.
     {
         #region events
 

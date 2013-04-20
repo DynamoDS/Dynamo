@@ -55,13 +55,8 @@ namespace Dynamo.Nodes
 
         public dynWorkspace WorkSpace;
 
-<<<<<<< HEAD
-        public Obser<PortData> InPortData { get; private set; }
-        public List<PortData> OutPortData { get; private set; }
-=======
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
->>>>>>> Progress commit.
 
         public dynNodeUI NodeUI;
         public Dictionary<int, Tuple<int, dynNode>> Inputs = 
@@ -783,11 +778,7 @@ namespace Dynamo.Nodes
             return null;
         }
 
-<<<<<<< HEAD
-        private void RemovePort(dynPort inport)
-=======
         private void RemovePort(dynPortModel inport)
->>>>>>> Progress commit.
         {
             if (inport.PortType == PortType.INPUT)
             {

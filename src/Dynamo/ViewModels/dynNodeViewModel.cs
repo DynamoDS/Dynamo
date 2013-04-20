@@ -39,13 +39,9 @@ namespace Dynamo.Controls
         #endregion
 
         #region private members
-<<<<<<< HEAD
-        ObservableCollection<dynPortModelView> inPorts = new ObservableCollection<dynPortModelView>();
-        ObservableCollection<dynPortModelView> outPorts = new ObservableCollection<dynPortModelView>();
-=======
-        ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortModelView>();
-        ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortModelView>();
->>>>>>> Progress commit.
+
+        ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortViewModel>();
+        ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
         string nickName;
         string toolTipText = "";
@@ -88,11 +84,7 @@ namespace Dynamo.Controls
             }
         }
 
-<<<<<<< HEAD
-        public ObservableCollection<dynPortModelView> InPorts
-=======
         public ObservableCollection<dynPortViewModel> InPorts
->>>>>>> Progress commit.
         {
             get { return inPorts; }
             set
@@ -101,11 +93,7 @@ namespace Dynamo.Controls
             }
         }
 
-<<<<<<< HEAD
-        public ObservableCollection<dynPortModelView> OutPorts
-=======
         public ObservableCollection<dynPortViewModel> OutPorts
->>>>>>> Progress commit.
         {
             get { return outPorts; }
             set

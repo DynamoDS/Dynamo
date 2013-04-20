@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-<<<<<<< HEAD
-
-namespace Dynamo.Nodes.ViewModels
-{
-    class dynConnectorViewModel
-    {
-=======
 using Microsoft.Practices.Prism;
 
 namespace Dynamo.Connectors
@@ -31,8 +24,5 @@ namespace Dynamo.Connectors
         {
             throw new NotImplementedException();
         }
-
-        
->>>>>>> Progress commit.
     }
 }
