@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for all auto-generated Revit API nodes.
     /// </summary>
-    public abstract class dynRevitAPINode : dynRevitTransactionNodeWithOneOutput
+    public abstract class dynAPIMethodNode : dynRevitTransactionNodeWithOneOutput
     {
         protected Type base_type;
         protected Type return_type;
@@ -28,7 +28,7 @@ namespace Dynamo.Nodes
         ///<summary>
         ///Default constructor
         ///</summary>
-        public dynRevitAPINode()
+        public dynAPIMethodNode()
         {
 
         }
@@ -44,6 +44,32 @@ namespace Dynamo.Nodes
             }
 
             return dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
+        }
+    }
+
+    /// <summary>
+    /// Base class for wrapped properties. Does not create a transaction.
+    /// </summary>
+    public abstract class dynAPIPropertyNode : dynNodeWithOneOutput
+    {
+        protected Type base_type;
+        protected Type return_type;
+        protected PropertyInfo pi;
+
+        ///<summary>
+        ///Default constructor
+        ///</summary>
+        public dynAPIPropertyNode()
+        {
+
+        }
+
+        ///<summary>
+        ///Auto-generated evaulate method for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewRadialDimension
+        ///</summary>
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return dynRevitUtils.GetAPIPropertyValue(args, base_type, pi, return_type);
         }
     }
 

@@ -252,7 +252,7 @@ class RevitMethod:
 		f.writelines(class_notes)
 
 		self.write_attributes(f, valid_namespaces)
-		f.write('\tpublic class API_' + self.nickName + ' : dynRevitAPINode\n')
+		f.write('\tpublic class API_' + self.nickName + ' : dynAPIMethodNode\n')
 		f.write('\t{\n')
 
 		self.write_constructor(f)
@@ -375,10 +375,10 @@ class RevitProperty:
 
 	def write(self, f, valid_namespaces):
 		self.write_attributes(f, valid_namespaces)
-		f.write('\tpublic class API_' + self.nickName + ' : dynRevitTransactionNodeWithOneOutput\n')
+		f.write('\tpublic class API_' + self.nickName + ' : dynAPIPropertyNode\n')
 		f.write('\t{\n')
 		self.write_constructor(f)
-		self.write_evaluate(f)
+		#self.write_evaluate(f)
 		f.write('\t}\n')
 		f.write('\n')
 

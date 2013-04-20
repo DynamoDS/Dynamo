@@ -164,6 +164,54 @@ namespace Dynamo.Utilities
             
             dynRevitUtils.StoreElements(node, results);
 
+            return ConvertAllResults(results);
+        }
+
+        /// <summary>
+        /// Get a property value from a member
+        /// </summary>
+        /// <param name="args">The incoming arguments</param>
+        /// <param name="api_base_type">The base type</param>
+        /// <param name="pi">The property info object for which you will return the value.</param>
+        /// <param name="return_type">The expected return type.</param>
+        /// <returns></returns>
+        public static Value GetAPIPropertyValue( FSharpList<Value> args,
+                                                 Type api_base_type, PropertyInfo pi, Type return_type)
+        {
+            //var arg0 = (Autodesk.Revit.DB.HermiteFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteFace));
+            //var result = arg0.Points;
+
+            List<object> results = new List<object>();
+
+            //there should only be one argument
+            foreach (var arg in args)
+            {
+                if (arg.IsList)
+                {
+                    FSharpList<Value> lst = FSharpList<Value>.Empty;
+
+                    //the values here are the items whose properties
+                    //you want to query. nothing fancy, just get the
+                    //property for each of the items.
+                    foreach (Value v in ((Value.List) arg).Item)
+                    {
+                        object invocationTarget = DynamoTypeConverter.ConvertInput(v, api_base_type);
+                        results.Add(pi.GetValue(invocationTarget,null));
+                    }
+                }
+                else
+                {
+                    object invocationTarget = DynamoTypeConverter.ConvertInput(args[0], api_base_type);
+                    results.Add(pi.GetValue(invocationTarget,null));
+                }
+            }
+
+            return ConvertAllResults(results);
+            
+        }
+
+        private static Value ConvertAllResults(List<object> results)
+        {
             //if there are multiple items in the results list
             //return a list type
             if (results.Count > 1)
@@ -173,7 +221,9 @@ namespace Dynamo.Utilities
                 //reverse the results list so our CONs list isn't backwards
                 results.Reverse();
 
-                lst = results.Aggregate(lst, (current, result) => FSharpList<Value>.Cons(DynamoTypeConverter.ConvertToValue(result), current));
+                lst = results.Aggregate(lst,
+                                        (current, result) =>
+                                        FSharpList<Value>.Cons(DynamoTypeConverter.ConvertToValue(result), current));
 
                 //the result will be a list of objects if any lists
                 return Value.NewList(lst);
@@ -302,7 +352,10 @@ namespace Dynamo.Utilities
                         //or the last item if i exceeds the count of the list
                         if (arg.IsList)
                         {
-                            var argItem = ((Value.List)arg).Item.Count() < end ? args.Last() : args[j];
+                            //var argItem = ((Value.List)arg).Item.Count() < end ? args.Last() : args[j];
+
+                            var lst = (Value.List)arg;
+                            var argItem = (j < lst.Item.Count() ? lst.Item[j] : lst.Item.Last());
 
                             currParams.Add(DynamoTypeConverter.ConvertInput(argItem, pi[i].ParameterType));
                         }
