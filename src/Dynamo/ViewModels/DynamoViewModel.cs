@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using Dynamo.Commands;
 using Dynamo.Connectors;
+using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
@@ -27,7 +30,14 @@ namespace Dynamo
             set { _model = value; }
         }
 
-        public ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
+        public DelegateCommand AddWorkspaceCommand { get; set; }
+
+        public string DisplayName
+        {
+            get { return _model.CurrentSpace == _model.HomeSpace ? "Home" : _model.CurrentSpace.Name; }
+        }
+
+        private ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -38,8 +48,6 @@ namespace Dynamo
                 RaisePropertyChanged("Workspaces");
             }
         }
-
-        public DelegateCommand AddWorkspaceCommand { get; set; }
 
         public bool ViewingHomespace
         {
@@ -52,6 +60,10 @@ namespace Dynamo
             _model.Workspaces.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Workspaces_CollectionChanged);
 
             AddWorkspaceCommand = new DelegateCommand(new Action(AddFunctionWorkspace), CanAddFunctionWorkspace);
+            
+            
+           
+            
         }
 
         void Workspaces_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -132,13 +144,17 @@ namespace Dynamo
             // TODO: get this out of here
             PackageManagerClient.HidePackageControlInformation();
 
-            Bench.workspaceLabel.Content = "Home";
-            Bench.editNameButton.Visibility = Visibility.Collapsed;
-            Bench.editNameButton.IsHitTestVisible = false;
+            //Bench.workspaceLabel.Content = "Home";
+            //Bench.editNameButton.Visibility = Visibility.Collapsed;
+            //Bench.editNameButton.IsHitTestVisible = false;
 
             Bench.setHomeBackground();
 
             DynamoModel.Instance.CurrentSpace.OnDisplayed();
         }
+
+        
     }
+
+    
 }

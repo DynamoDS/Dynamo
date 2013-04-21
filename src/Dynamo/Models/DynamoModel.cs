@@ -11,6 +11,7 @@ using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
 

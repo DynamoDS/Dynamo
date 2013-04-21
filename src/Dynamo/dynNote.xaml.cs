@@ -56,9 +56,6 @@ namespace Dynamo.Nodes
         {
             dynEditWindow editWindow = new dynEditWindow();
             
-
-                
-
             //set the text of the edit window to begin
             editWindow.editText.Text = noteText.Text;
 

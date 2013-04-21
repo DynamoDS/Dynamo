@@ -233,7 +233,7 @@
                          Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
                          IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
                         
-                        <Label Padding="10" Content="Home" Name="workspaceLabel" 
+                        <Label Padding="10" Content="{Binding Path=DisplayName}" Name="workspaceLabel" 
                                HorizontalContentAlignment="Right" FontSize="15" Background="Black" Foreground="Gray"
                                FontFamily="Trebuchet MS" IsHitTestVisible="False" HorizontalAlignment="Right"/>
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -13,9 +14,9 @@ namespace Dynamo
     {
         public dynWorkspace Workspace;
 
-        ObservableCollection<dynWorkspaceViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
-        ObservableCollection<dynWorkspaceViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
-        ObservableCollection<dynWorkspaceViewModel> _notes = new ObservableCollection<dynNoteViewModel>(); 
+        ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
+        ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
+        ObservableCollection<dynNoteVIewModel> _notes = new ObservableCollection<dynNoteVIewModel>(); 
 
         public ObservableCollection<dynWorkspaceViewModel> Connectors
         {
@@ -47,8 +48,10 @@ namespace Dynamo
         }
 
         public DelegateCommand CreateNodeCommand { get; set; }
-
         public DelegateCommand CreateConnectionCommand { get; set; }
+        public DelegateCommand AddNoteCommand { get; set; }
+        public DelegateCommand DeleteCommand { get; set; }
+        public DelegateCommand NodeFromSelectionCommand { get; set; }
 
         public double PositionX { get; set; }
 
@@ -63,7 +66,24 @@ namespace Dynamo
 
             CreateNodeCommand = new DelegateCommand(new Action<string>(CreateNode()), CanCreateNode());
             CreateConnectionCommand = new DelegateCommand(new Action<string>(CreateConnection()), CanCreateConnection);
+            AddNoteCommand = new DelegateCommand(new Action<object>(AddNote()), CanAddNote);
+            DeleteCommand = new DelegateCommand(Delete, CanDelete);
+            NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
+        }
 
+        private void CreateNodeFromSelection()
+        {
+            if (dynSettings.Bench.WorkBench.Selection.Count > 0)
+            {
+                DynamoModel.Instance.CollapseNodes(
+                    dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
+                        .Select(x => (x as dynNodeViewModel).NodeLogic));
+            }
+        }
+
+        private bool CanCreateNodeFromSelection()
+        {
+            return true;
         }
 
         void _workspace_NoteAdded(object sender, EventArgs e)
@@ -235,5 +255,99 @@ namespace Dynamo
             return false;
         }
 
+        private void Delete(object parameters)
+        {
+            //if you get an object in the parameters, just delete that object
+            if (parameters != null)
+            {
+                dynNote note = parameters as dynNote;
+                dynNodeUI node = parameters as dynNodeUI;
+
+                if (node != null)
+                {
+                    DeleteNode(node);
+                }
+                else if (note != null)
+                {
+                    DeleteNote(note);
+                }
+            }
+            else
+            {
+                for (int i = dynSettings.Workbench.Selection.Count - 1; i >= 0; i--)
+                {
+                    dynNote note = dynSettings.Workbench.Selection[i] as dynNote;
+                    dynNodeUI node = dynSettings.Workbench.Selection[i] as dynNodeUI;
+
+                    if (node != null)
+                    {
+                        DeleteNode(node);
+                    }
+                    else if (note != null)
+                    {
+                        DeleteNote(note);
+                    }
+                }
+            }
+        }
+
+        private bool CanDelete()
+        {
+            return dynSettings.Workbench.Selection.Count > 0;
+        }
+
+        private void AddNote(object parameters)
+        {
+            Dictionary<string, object> inputs = (Dictionary<string, object>)parameters;
+
+            dynNoteModel n = new dynNoteModel((double)inputs["x"], (double)inputs["y"]);
+
+            n.noteText.Text = inputs["text"].ToString();
+            dynWorkspace ws = (dynWorkspace)inputs["workspace"];
+
+            ws.Notes.Add(n);
+            dynSettings.Bench.WorkBench.Children.Add(n);
+
+            if (!ViewingHomespace)
+            {
+                DynamoModel.Instance.CurrentSpace.Modified();
+            }
+        }
+
+        private void CanAddNote()
+        {
+            return true;
+        }
+
+        private static void DeleteNote(dynNote note)
+        {
+            dynSettings.Workbench.Selection.Remove(note);
+            DynamoModel.Instance.CurrentSpace.Notes.Remove(note);
+            dynSettings.Workbench.Children.Remove(note);
+        }
+
+        private static void DeleteNode(dynNodeViewModel node)
+        {
+            foreach (var port in node.OutPorts)
+            {
+                for (int j = port.Connectors.Count - 1; j >= 0; j--)
+                {
+                    port.Connectors[j].Kill();
+                }
+            }
+
+            foreach (dynPort p in node.InPorts)
+            {
+                for (int j = p.Connectors.Count - 1; j >= 0; j--)
+                {
+                    p.Connectors[j].Kill();
+                }
+            }
+
+            node.NodeLogic.Cleanup();
+            dynSettings.Workbench.Selection.Remove(node);
+            dynSettings.Controller.Nodes.Remove(node.NodeLogic);
+            dynSettings.Workbench.Children.Remove(node);
+        }
     }
 }

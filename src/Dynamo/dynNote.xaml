@@ -20,7 +20,7 @@
             Name="noteText"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
-            Text="New Note" 
+            Text="{Binding Path=Text, Mode=OneWay}" 
             FontFamily="Arial" 
             FontSize="14" 
             Foreground="#FFEAD871"

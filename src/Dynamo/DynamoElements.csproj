@@ -134,6 +134,7 @@ limitations under the License.
     <Compile Include="ViewModels\dynBenchViewModel.cs" />
     <Compile Include="ViewModels\dynConnectorViewModel.cs" />
     <Compile Include="ViewModels\dynNodeViewModel.cs" />
+    <Compile Include="ViewModels\dynNoteVIewModel.cs" />
     <Compile Include="ViewModels\dynPortViewModel.cs" />
     <Compile Include="ViewModels\dynViewModelBase.cs" />
     <Compile Include="ViewModels\dynWorkspaceViewModel.cs" />
@@ -366,7 +367,6 @@ limitations under the License.
     <Resource Include="Images\back_32.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\" />
     <Resource Include="Images\Anonymous_Pencil_icon_white.png" />
   </ItemGroup>
   <ItemGroup>
@@ -374,6 +374,9 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Anonymous_Pencil_icon_white_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
