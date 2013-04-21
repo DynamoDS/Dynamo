@@ -46,6 +46,37 @@ namespace Dynamo.Nodes
 	}
 
 	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.ReferencePoint.SetVisibility
+	///</summary>
+	[NodeName("API_ReferencePoint_SetVisibility")]
+	[NodeSearchTags("point","reference","pt","coordinate","system")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Sets the visibility for the point.")]
+	public class API_ReferencePoint_SetVisibility : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.ReferencePoint.SetVisibility
+		///</summary>
+		public API_ReferencePoint_SetVisibility()
+		{
+			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetVisibility", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyElementVisibility)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyElementVisibility",typeof(Autodesk.Revit.DB.FamilyElementVisibility)));
+			OutPortData.Add(new PortData("out","Sets the visibility for the point.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
 	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.ReferencePoint.GetVisibility
 	///</summary>
 	[NodeName("API_ReferencePoint_GetVisibility")]
@@ -191,6 +222,37 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The set of CurveByPoints elements that interpolatea ReferencePoint.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.ReferencePoint.SetCoordinateSystem
+	///</summary>
+	[NodeName("API_ReferencePoint_SetCoordinateSystem")]
+	[NodeSearchTags("point","reference","pt","coordinate","system")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The position and orientation of the ReferencePoint.")]
+	public class API_ReferencePoint_SetCoordinateSystem : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.ReferencePoint.SetCoordinateSystem
+		///</summary>
+		public API_ReferencePoint_SetCoordinateSystem()
+		{
+			base_type = typeof(Autodesk.Revit.DB.ReferencePoint);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetCoordinateSystem", false, new Type[]{typeof(Autodesk.Revit.DB.Transform)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
+			OutPortData.Add(new PortData("out","The position and orientation of the ReferencePoint.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -552,6 +614,37 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The point to transform.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Applies the transformation to the point and returns the result.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.Transform.#ctor
+	///</summary>
+	[NodeName("API_Transform")]
+	[NodeSearchTags("transform","coordinate system","cs")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("The copy constructor.")]
+	public class API_Transform : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.Transform.#ctor
+		///</summary>
+		public API_Transform()
+		{
+			base_type = typeof(Autodesk.Revit.DB.Transform);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Transform", true, new Type[]{typeof(Autodesk.Revit.DB.Transform)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
+			OutPortData.Add(new PortData("out","The copy constructor.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -974,6 +1067,99 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Two or more PointElements. The curve will interpolatethese points.",typeof(Autodesk.Revit.DB.ReferencePointArray)));
 			OutPortData.Add(new PortData("out","Create a 3d curve through two or more points in an AutodeskRevit family document.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewReferencePoint
+	///</summary>
+	[NodeName("API_FamilyItemFactory_NewReferencePoint")]
+	[NodeSearchTags("create","factory","family")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a reference point on an existing reference in an AutodeskRevit family document.")]
+	public class API_FamilyItemFactory_NewReferencePoint : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewReferencePoint
+		///</summary>
+		public API_FamilyItemFactory_NewReferencePoint()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewReferencePoint", false, new Type[]{typeof(Autodesk.Revit.DB.PointElementReference)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PointElementReference",typeof(Autodesk.Revit.DB.PointElementReference)));
+			OutPortData.Add(new PortData("out","Create a reference point on an existing reference in an AutodeskRevit family document.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewReferencePoint
+	///</summary>
+	[NodeName("API_FamilyItemFactory_NewReferencePoint_1")]
+	[NodeSearchTags("create","factory","family")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a reference point at a given location and with a givencoordinate system in an Autodesk Revit family document.")]
+	public class API_FamilyItemFactory_NewReferencePoint_1 : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewReferencePoint
+		///</summary>
+		public API_FamilyItemFactory_NewReferencePoint_1()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewReferencePoint", false, new Type[]{typeof(Autodesk.Revit.DB.Transform)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
+			OutPortData.Add(new PortData("out","Create a reference point at a given location and with a givencoordinate system in an Autodesk Revit family document.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewReferencePoint
+	///</summary>
+	[NodeName("API_FamilyItemFactory_NewReferencePoint_2")]
+	[NodeSearchTags("create","factory","family")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Create a reference point at a given location in an AutodeskRevit family document.")]
+	public class API_FamilyItemFactory_NewReferencePoint_2 : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewReferencePoint
+		///</summary>
+		public API_FamilyItemFactory_NewReferencePoint_2()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.FamilyItemFactory);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewReferencePoint", false, new Type[]{typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.FamilyItemFactory", typeof(object)));
+			}
+			InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ",typeof(Autodesk.Revit.DB.XYZ)));
+			OutPortData.Add(new PortData("out","Create a reference point at a given location in an AutodeskRevit family document.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -2418,6 +2604,38 @@ namespace Dynamo.Nodes
 	}
 
 	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.ItemFactoryBase.NewModelCurveArray
+	///</summary>
+	[NodeName("API_ItemFactoryBase_NewModelCurveArray")]
+	[NodeSearchTags("factory","create","item")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates an array of new model line elements.")]
+	public class API_ItemFactoryBase_NewModelCurveArray : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.ItemFactoryBase.NewModelCurveArray
+		///</summary>
+		public API_ItemFactoryBase_NewModelCurveArray()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.ItemFactoryBase);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewModelCurveArray", false, new Type[]{typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.SketchPlane)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.ItemFactoryBase", typeof(object)));
+			}
+			InPortData.Add(new PortData("crvs", "Autodesk.Revit.DB.CurveArray",typeof(Autodesk.Revit.DB.CurveArray)));
+			InPortData.Add(new PortData("sp", "Autodesk.Revit.DB.SketchPlane",typeof(Autodesk.Revit.DB.SketchPlane)));
+			OutPortData.Add(new PortData("out","Creates an array of new model line elements.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
 	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.ItemFactoryBase.NewModelCurve
 	///</summary>
 	[NodeName("API_ItemFactoryBase_NewModelCurve")]
@@ -3040,6 +3258,37 @@ namespace Dynamo.Nodes
 	}
 
 	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.PolyLine.Create
+	///</summary>
+	[NodeName("API_PolyLine_Create")]
+	[NodeSearchTags("pline","polyline")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a polyline with coordinate points provided.")]
+	public class API_PolyLine_Create : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.PolyLine.Create
+		///</summary>
+		public API_PolyLine_Create()
+		{
+			base_type = typeof(Autodesk.Revit.DB.PolyLine);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "Create", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
+			}
+			InPortData.Add(new PortData("lst", "System.Collections.Generic.IList{Autodesk.Revit.DB.XYZ}",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
+			OutPortData.Add(new PortData("out","Creates a polyline with coordinate points provided.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
 	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.PolyLine.Clone
 	///</summary>
 	[NodeName("API_PolyLine_Clone")]
@@ -3065,6 +3314,37 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a copy of this polyline.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.PolyLine.GetTransformed
+	///</summary>
+	[NodeName("API_PolyLine_GetTransformed")]
+	[NodeSearchTags("pline","polyline")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Gets the copy of the polyline which is applied the specified transformation.")]
+	public class API_PolyLine_GetTransformed : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.PolyLine.GetTransformed
+		///</summary>
+		public API_PolyLine_GetTransformed()
+		{
+			base_type = typeof(Autodesk.Revit.DB.PolyLine);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetTransformed", false, new Type[]{typeof(Autodesk.Revit.DB.Transform)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
+			OutPortData.Add(new PortData("out","Gets the copy of the polyline which is applied the specified transformation.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -5564,6 +5844,70 @@ namespace Dynamo.Nodes
 	///<summary>
 	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewSpaces2
 	///</summary>
+	[NodeName("API_Document_NewSpaces2")]
+	[NodeSearchTags("create","document")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a set of new unplaced spaces on a given phase.")]
+	public class API_Document_NewSpaces2 : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.Document.NewSpaces2
+		///</summary>
+		public API_Document_NewSpaces2()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.Document);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpaces2", false, new Type[]{typeof(Autodesk.Revit.DB.Phase),typeof(System.Int32)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Phase",typeof(Autodesk.Revit.DB.Phase)));
+			InPortData.Add(new PortData("i", "System.Int32",typeof(System.Int32)));
+			OutPortData.Add(new PortData("out","Creates a set of new unplaced spaces on a given phase.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewSpaces
+	///</summary>
+	[NodeName("API_Document_NewSpaces")]
+	[NodeSearchTags("create","document")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a set of new unplaced spaces on a given phase.")]
+	public class API_Document_NewSpaces : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.Document.NewSpaces
+		///</summary>
+		public API_Document_NewSpaces()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.Document);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewSpaces", false, new Type[]{typeof(Autodesk.Revit.DB.Phase),typeof(System.Int32)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Phase",typeof(Autodesk.Revit.DB.Phase)));
+			InPortData.Add(new PortData("i", "System.Int32",typeof(System.Int32)));
+			OutPortData.Add(new PortData("out","Creates a set of new unplaced spaces on a given phase.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewSpaces2
+	///</summary>
 	[NodeName("API_Document_NewSpaces2_1")]
 	[NodeSearchTags("create","document")]
 	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
@@ -6013,6 +6357,72 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("v", "The view of area element.",typeof(Autodesk.Revit.DB.ViewPlan)));
 			InPortData.Add(new PortData("uv", "The point which lies in the enclosed region of AreaBoundaryLines to put the new created Area",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates a new area",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewAreaTag
+	///</summary>
+	[NodeName("API_Document_NewAreaTag")]
+	[NodeSearchTags("create","document")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new area tag.")]
+	public class API_Document_NewAreaTag : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.Document.NewAreaTag
+		///</summary>
+		public API_Document_NewAreaTag()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.Document);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaTag", false, new Type[]{typeof(Autodesk.Revit.DB.ViewPlan),typeof(Autodesk.Revit.DB.Area),typeof(Autodesk.Revit.DB.UV)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
+			}
+			InPortData.Add(new PortData("v", "Autodesk.Revit.DB.ViewPlan",typeof(Autodesk.Revit.DB.ViewPlan)));
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Area",typeof(Autodesk.Revit.DB.Area)));
+			InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV",typeof(Autodesk.Revit.DB.UV)));
+			OutPortData.Add(new PortData("out","Creates a new area tag.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewAreaViewPlan
+	///</summary>
+	[NodeName("API_Document_NewAreaViewPlan")]
+	[NodeSearchTags("create","document")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new view for the new area.")]
+	public class API_Document_NewAreaViewPlan : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.Document.NewAreaViewPlan
+		///</summary>
+		public API_Document_NewAreaViewPlan()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.Document);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaViewPlan", false, new Type[]{typeof(System.String),typeof(Autodesk.Revit.DB.Level),typeof(Autodesk.Revit.DB.AreaElemType)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
+			}
+			InPortData.Add(new PortData("s", "System.String",typeof(System.String)));
+			InPortData.Add(new PortData("l", "Autodesk.Revit.DB.Level",typeof(Autodesk.Revit.DB.Level)));
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AreaElemType",typeof(Autodesk.Revit.DB.AreaElemType)));
+			OutPortData.Add(new PortData("out","Creates a new view for the new area.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -8093,6 +8503,39 @@ namespace Dynamo.Nodes
 	}
 
 	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewAreaReinforcement
+	///</summary>
+	[NodeName("API_Document_NewAreaReinforcement")]
+	[NodeSearchTags("create","document")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new instance of an Area Reinforcement element within the project")]
+	public class API_Document_NewAreaReinforcement : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.Document.NewAreaReinforcement
+		///</summary>
+		public API_Document_NewAreaReinforcement()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.Document);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewAreaReinforcement", false, new Type[]{typeof(Autodesk.Revit.DB.Element),typeof(Autodesk.Revit.DB.CurveArray),typeof(Autodesk.Revit.DB.XYZ)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
+			}
+			InPortData.Add(new PortData("el", "Autodesk.Revit.DB.Element",typeof(Autodesk.Revit.DB.Element)));
+			InPortData.Add(new PortData("crvs", "Autodesk.Revit.DB.CurveArray",typeof(Autodesk.Revit.DB.CurveArray)));
+			InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ",typeof(Autodesk.Revit.DB.XYZ)));
+			OutPortData.Add(new PortData("out","Creates a new instance of an Area Reinforcement element within the project",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
 	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Document.NewRebarBarType
 	///</summary>
 	[NodeName("API_Document_NewRebarBarType")]
@@ -9180,6 +9623,37 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Changes this curve to a reference curve.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.ModelCurve.SetVisibility
+	///</summary>
+	[NodeName("API_ModelCurve_SetVisibility")]
+	[NodeSearchTags("model","curve")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Sets the visibility for the model curve in a family document.")]
+	public class API_ModelCurve_SetVisibility : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.ModelCurve.SetVisibility
+		///</summary>
+		public API_ModelCurve_SetVisibility()
+		{
+			base_type = typeof(Autodesk.Revit.DB.ModelCurve);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetVisibility", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyElementVisibility)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyElementVisibility",typeof(Autodesk.Revit.DB.FamilyElementVisibility)));
+			OutPortData.Add(new PortData("out","Sets the visibility for the model curve in a family document.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -11887,6 +12361,37 @@ namespace Dynamo.Nodes
 	}
 
 	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.GenericForm.SetVisibility
+	///</summary>
+	[NodeName("API_GenericForm_SetVisibility")]
+	[NodeSearchTags("generic","form")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Sets the visibility for the generic form.")]
+	public class API_GenericForm_SetVisibility : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.GenericForm.SetVisibility
+		///</summary>
+		public API_GenericForm_SetVisibility()
+		{
+			base_type = typeof(Autodesk.Revit.DB.GenericForm);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetVisibility", false, new Type[]{typeof(Autodesk.Revit.DB.FamilyElementVisibility)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GenericForm", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyElementVisibility",typeof(Autodesk.Revit.DB.FamilyElementVisibility)));
+			OutPortData.Add(new PortData("out","Sets the visibility for the generic form.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
 	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.GenericForm.GetVisibility
 	///</summary>
 	[NodeName("API_GenericForm_GetVisibility")]
@@ -12149,6 +12654,226 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets all intersection elements which produce division lines.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetTileFamilyInstance
+	///</summary>
+	[NodeName("API_DividedSurface_GetTileFamilyInstance")]
+	[NodeSearchTags("divide","divided","surface","adaptive","components")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Get a reference to a tile elementassociated with a given seed node.")]
+	public class API_DividedSurface_GetTileFamilyInstance : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetTileFamilyInstance
+		///</summary>
+		public API_DividedSurface_GetTileFamilyInstance()
+		{
+			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetTileFamilyInstance", false, new Type[]{typeof(Autodesk.Revit.DB.GridNode),typeof(System.Int32)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
+			InPortData.Add(new PortData("i", "System.Int32",typeof(System.Int32)));
+			OutPortData.Add(new PortData("out","Get a reference to a tile elementassociated with a given seed node.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetTileReference
+	///</summary>
+	[NodeName("API_DividedSurface_GetTileReference")]
+	[NodeSearchTags("divide","divided","surface","adaptive","components")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Get a reference to one of the tile surfacesassociated with a given seed node.")]
+	public class API_DividedSurface_GetTileReference : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetTileReference
+		///</summary>
+		public API_DividedSurface_GetTileReference()
+		{
+			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetTileReference", false, new Type[]{typeof(Autodesk.Revit.DB.GridNode),typeof(System.Int32)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
+			InPortData.Add(new PortData("i", "System.Int32",typeof(System.Int32)));
+			OutPortData.Add(new PortData("out","Get a reference to one of the tile surfacesassociated with a given seed node.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.IsSeedNode
+	///</summary>
+	[NodeName("API_DividedSurface_IsSeedNode")]
+	[NodeSearchTags("divide","divided","surface","adaptive","components")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Reports whether a grid node is a \"seed node,\" a nodethat is associated with one or more tiles.")]
+	public class API_DividedSurface_IsSeedNode : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.IsSeedNode
+		///</summary>
+		public API_DividedSurface_IsSeedNode()
+		{
+			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "IsSeedNode", false, new Type[]{typeof(Autodesk.Revit.DB.GridNode)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
+			OutPortData.Add(new PortData("out","Reports whether a grid node is a \"seed node,\" a nodethat is associated with one or more tiles.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetGridSegmentReference
+	///</summary>
+	[NodeName("API_DividedSurface_GetGridSegmentReference")]
+	[NodeSearchTags("divide","divided","surface","adaptive","components")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Get a reference to a line segment connectingtwo adjacent grid nodes.")]
+	public class API_DividedSurface_GetGridSegmentReference : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetGridSegmentReference
+		///</summary>
+		public API_DividedSurface_GetGridSegmentReference()
+		{
+			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetGridSegmentReference", false, new Type[]{typeof(Autodesk.Revit.DB.GridNode),typeof(Autodesk.Revit.DB.GridSegmentDirection)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridSegmentDirection",typeof(Autodesk.Revit.DB.GridSegmentDirection)));
+			OutPortData.Add(new PortData("out","Get a reference to a line segment connectingtwo adjacent grid nodes.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetGridNodeReference
+	///</summary>
+	[NodeName("API_DividedSurface_GetGridNodeReference")]
+	[NodeSearchTags("divide","divided","surface","adaptive","components")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Get a reference to the geometric pointassociated with a grid node.")]
+	public class API_DividedSurface_GetGridNodeReference : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetGridNodeReference
+		///</summary>
+		public API_DividedSurface_GetGridNodeReference()
+		{
+			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetGridNodeReference", false, new Type[]{typeof(Autodesk.Revit.DB.GridNode)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
+			OutPortData.Add(new PortData("out","Get a reference to the geometric pointassociated with a grid node.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetGridNodeLocation
+	///</summary>
+	[NodeName("API_DividedSurface_GetGridNodeLocation")]
+	[NodeSearchTags("divide","divided","surface","adaptive","components")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Specify whether a particular grid node is interior to the surface, on the boundary, or outsidethe boundary.")]
+	public class API_DividedSurface_GetGridNodeLocation : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetGridNodeLocation
+		///</summary>
+		public API_DividedSurface_GetGridNodeLocation()
+		{
+			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetGridNodeLocation", false, new Type[]{typeof(Autodesk.Revit.DB.GridNode)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
+			OutPortData.Add(new PortData("out","Specify whether a particular grid node is interior to the surface, on the boundary, or outsidethe boundary.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetGridNodeUV
+	///</summary>
+	[NodeName("API_DividedSurface_GetGridNodeUV")]
+	[NodeSearchTags("divide","divided","surface","adaptive","components")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Get the position of a grid node in UVcoordinates in the surface.")]
+	public class API_DividedSurface_GetGridNodeUV : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.DividedSurface.GetGridNodeUV
+		///</summary>
+		public API_DividedSurface_GetGridNodeUV()
+		{
+			base_type = typeof(Autodesk.Revit.DB.DividedSurface);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "GetGridNodeUV", false, new Type[]{typeof(Autodesk.Revit.DB.GridNode)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
+			OutPortData.Add(new PortData("out","Get the position of a grid node in UVcoordinates in the surface.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -12658,6 +13383,39 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of the host point.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Create a PointRelativeToPoint object, which is used to define the placement of a ReferencePoint relative to a host point.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Application.NewPointOnEdgeFaceIntersection
+	///</summary>
+	[NodeName("API_Application_NewPointOnEdgeFaceIntersection")]
+	[NodeSearchTags("application","create")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Construct a PointOnEdgeFaceIntersection object which is used to define the placement of a ReferencePoint given a references to edge and a reference to face.")]
+	public class API_Application_NewPointOnEdgeFaceIntersection : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.Application.NewPointOnEdgeFaceIntersection
+		///</summary>
+		public API_Application_NewPointOnEdgeFaceIntersection()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.Application);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewPointOnEdgeFaceIntersection", false, new Type[]{typeof(Autodesk.Revit.DB.Reference),typeof(Autodesk.Revit.DB.Reference),typeof(System.Boolean)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
+			}
+			InPortData.Add(new PortData("ref", "Autodesk.Revit.DB.Reference",typeof(Autodesk.Revit.DB.Reference)));
+			InPortData.Add(new PortData("ref", "Autodesk.Revit.DB.Reference",typeof(Autodesk.Revit.DB.Reference)));
+			InPortData.Add(new PortData("b", "System.Boolean",typeof(System.Boolean)));
+			OutPortData.Add(new PortData("out","Construct a PointOnEdgeFaceIntersection object which is used to define the placement of a ReferencePoint given a references to edge and a reference to face.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -14524,6 +15282,40 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The end point of the arc.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "A point on the arc.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new geometric arc object based on three points.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.Creation.Application.NewArc
+	///</summary>
+	[NodeName("API_Application_NewArc_1")]
+	[NodeSearchTags("application","create")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Creates a new geometric arc object based on plane, radius, and angles.")]
+	public class API_Application_NewArc_1 : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.Creation.Application.NewArc
+		///</summary>
+		public API_Application_NewArc_1()
+		{
+			base_type = typeof(Autodesk.Revit.Creation.Application);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "NewArc", false, new Type[]{typeof(Autodesk.Revit.DB.Plane),typeof(System.Double),typeof(System.Double),typeof(System.Double)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
+			}
+			InPortData.Add(new PortData("p", "Autodesk.Revit.DB.Plane",typeof(Autodesk.Revit.DB.Plane)));
+			InPortData.Add(new PortData("n", "System.Double",typeof(System.Double)));
+			InPortData.Add(new PortData("n", "System.Double",typeof(System.Double)));
+			InPortData.Add(new PortData("n", "System.Double",typeof(System.Double)));
+			OutPortData.Add(new PortData("out","Creates a new geometric arc object based on plane, radius, and angles.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -16904,6 +17696,37 @@ namespace Dynamo.Nodes
 	}
 
 	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.Blend.SetVertexConnectionMap
+	///</summary>
+	[NodeName("API_Blend_SetVertexConnectionMap")]
+	[NodeSearchTags("generic","blend")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Sets the mapping between the vertices in the top and bottom profiles.")]
+	public class API_Blend_SetVertexConnectionMap : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.Blend.SetVertexConnectionMap
+		///</summary>
+		public API_Blend_SetVertexConnectionMap()
+		{
+			base_type = typeof(Autodesk.Revit.DB.Blend);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetVertexConnectionMap", false, new Type[]{typeof(Autodesk.Revit.DB.VertexIndexPairArray)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.VertexIndexPairArray",typeof(Autodesk.Revit.DB.VertexIndexPairArray)));
+			OutPortData.Add(new PortData("out","Sets the mapping between the vertices in the top and bottom profiles.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
 	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.Blend.GetVertexConnectionMap
 	///</summary>
 	[NodeName("API_Blend_GetVertexConnectionMap")]
@@ -17013,6 +17836,37 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend",typeof(Autodesk.Revit.DB.Blend)));
 			OutPortData.Add(new PortData("out","Returns the Top Sketch of the Blend.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.SweptBlend.SetVertexConnectionMap
+	///</summary>
+	[NodeName("API_SweptBlend_SetVertexConnectionMap")]
+	[NodeSearchTags("generic","sweep","swept","blend")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Sets the mapping between the vertices in the top and bottom profiles.")]
+	public class API_SweptBlend_SetVertexConnectionMap : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.SweptBlend.SetVertexConnectionMap
+		///</summary>
+		public API_SweptBlend_SetVertexConnectionMap()
+		{
+			base_type = typeof(Autodesk.Revit.DB.SweptBlend);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetVertexConnectionMap", false, new Type[]{typeof(Autodesk.Revit.DB.VertexIndexPairArray)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend", typeof(object)));
+			}
+			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.VertexIndexPairArray",typeof(Autodesk.Revit.DB.VertexIndexPairArray)));
+			OutPortData.Add(new PortData("out","Sets the mapping between the vertices in the top and bottom profiles.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}
@@ -17211,6 +18065,38 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("l", "Autodesk.Revit.DB.Level",typeof(Autodesk.Revit.DB.Level)));
 			OutPortData.Add(new PortData("out","Retrieves or changes the elevation above or below the ground level.",typeof(object)));
+			NodeUI.RegisterAllPorts();
+		}
+	}
+
+	///<summary>
+	///Auto-generated Dynamo node wrapping Autodesk.Revit.DB.NurbSpline.SetControlPointsAndWeights
+	///</summary>
+	[NodeName("API_NurbSpline_SetControlPointsAndWeights")]
+	[NodeSearchTags("curve","nurbs")]
+	[NodeCategory(BuiltinNodeCategories.REVIT_API)]
+	[NodeDescription("Set the control points, weights simultaneously.")]
+	public class API_NurbSpline_SetControlPointsAndWeights : dynAPIMethodNode
+	{
+		///<summary>
+		///Auto-generated constructor for Dynamo node wrapping Autodesk.Revit.DB.NurbSpline.SetControlPointsAndWeights
+		///</summary>
+		public API_NurbSpline_SetControlPointsAndWeights()
+		{
+			base_type = typeof(Autodesk.Revit.DB.NurbSpline);
+			mi = dynRevitUtils.GetAPIMethodInfo(base_type, "SetControlPointsAndWeights", false, new Type[]{typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>),typeof(Autodesk.Revit.DB.DoubleArray)}, out return_type);
+			pi = mi.GetParameters();
+			if (!mi.IsStatic &&
+				!mi.IsConstructor &&
+				base_type != typeof(Autodesk.Revit.Creation.Document) &&
+				base_type != typeof(Autodesk.Revit.Creation.FamilyItemFactory) &&
+				base_type != typeof(Autodesk.Revit.Creation.ItemFactoryBase))
+			{
+				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.NurbSpline", typeof(object)));
+			}
+			InPortData.Add(new PortData("lst", "System.Collections.Generic.IList{Autodesk.Revit.DB.XYZ}",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
+			InPortData.Add(new PortData("arr", "Autodesk.Revit.DB.DoubleArray",typeof(Autodesk.Revit.DB.DoubleArray)));
+			OutPortData.Add(new PortData("out","Set the control points, weights simultaneously.",typeof(object)));
 			NodeUI.RegisterAllPorts();
 		}
 	}

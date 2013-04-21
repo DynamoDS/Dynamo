@@ -48,7 +48,8 @@ def main():
 	'Autodesk.Revit.DB.UV.Zero',
 	'Autodesk.Revit.DB.Form.GetProfileAndCurveLoopIndexFromReference',
 	'Autodesk.Revit.Creation.Document.NewFootPrintRoof',
-	'Autodesk.Revit.DB.Solid.getGeometry'
+	'Autodesk.Revit.DB.Solid.getGeometry',
+	'Autodesk.Revit.DB.Profile.transformGPolyCurve'
 	]
 
 	valid_namespaces = {
@@ -568,20 +569,26 @@ def read_method(member_data, revit_types, node_names, skip_list):
 
 	#the Revit API xml has methods where there are
 	#more parameter descriptions than there are parameters
-	#in this case, just return
+	#in this case, just fill in the params with the input types
 	if len(param_types) != len(params):
-		return
-	
-	paramCount = 0
-	for param in params:
-		param_name = param.get('name').replace('\n','')
-		if param.text is None:
-			param_description = ''
-		else:
-			param_description = param.text
-		newParameter = RevitParameter(param_name, param_types[paramCount],param_description)
-		newMethod.parameters.append(newParameter)
-		paramCount += 1
+		# return
+		# print method_name + ':' + str(len(param_types)) + ':' + str(len(params))
+		for param_type in param_types:
+			param_name = param_type
+			param_description = param_type
+			newParameter = RevitParameter(param_name, param_type,param_description)
+			newMethod.parameters.append(newParameter)
+	else:
+		paramCount = 0
+		for param in params:
+			param_name = param.get('name').replace('\n','')
+			if param.text is None:
+				param_description = ''
+			else:
+				param_description = param.text
+			newParameter = RevitParameter(param_name, param_types[paramCount],param_description)
+			newMethod.parameters.append(newParameter)
+			paramCount += 1
 
 
 

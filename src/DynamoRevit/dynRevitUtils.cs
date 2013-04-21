@@ -97,35 +97,8 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         public static Value InvokeAPIMethod(dynRevitTransactionNode node, FSharpList<Value> args, Type api_base_type, ParameterInfo[] pi, MethodBase mi, Type return_type)
         {
-            object invocationTarget = null;
-
-            if (api_base_type == typeof(Autodesk.Revit.Creation.Document) ||
-                api_base_type == typeof(Autodesk.Revit.Creation.FamilyItemFactory) ||
-                api_base_type == typeof(Autodesk.Revit.Creation.ItemFactoryBase))
-            {
-                if (dynRevitSettings.Doc.Document.IsFamilyDocument)
-                {
-                    invocationTarget = dynRevitSettings.Doc.Document.FamilyCreate;
-                }
-                else
-                {
-                    invocationTarget = dynRevitSettings.Doc.Document.Create;
-                }
-            }
-            else if (api_base_type == typeof(Autodesk.Revit.Creation.Application))
-            {
-                invocationTarget = dynRevitSettings.Revit.Application.Create;
-            }
-
-            if (!mi.IsStatic && !mi.IsConstructor)
-            {
-                //the first input will always hold the instance
-                //whose methods you want to invoke
-                invocationTarget = DynamoTypeConverter.ConvertInput(args[0],api_base_type);
-            }
-
             //if any argument are a list, honor the lacing strategy
-            //compile a list of parameter lists to be passed into our method
+            //compile a list of parameter lists to be used in our method invocation
             List<List<object>> parameters = null;
 
             switch (node.ArgumentLacing)
@@ -144,23 +117,52 @@ namespace Dynamo.Utilities
                     break;
             }
 
-            //object result = null;
-            List<object> results = null;
+            var invocationTargetList = new List<object>();
 
-            if (mi.IsConstructor)
+            if (api_base_type == typeof(Autodesk.Revit.Creation.Document) ||
+                api_base_type == typeof(Autodesk.Revit.Creation.FamilyItemFactory) ||
+                api_base_type == typeof(Autodesk.Revit.Creation.ItemFactoryBase))
             {
-                //invoke the constructor for each of the parameter lists
-
-                //result = ((ConstructorInfo)mi).Invoke(parameters);
-                results = parameters.Select(x => ((ConstructorInfo) mi).Invoke(x.ToArray())).ToList();
+                if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+                {
+                    invocationTargetList.Add(dynRevitSettings.Doc.Document.FamilyCreate);
+                }
+                else
+                {
+                    invocationTargetList.Add(dynRevitSettings.Doc.Document.Create);
+                }
+            }
+            else if (api_base_type == typeof(Autodesk.Revit.Creation.Application))
+            {
+                invocationTargetList.Add(dynRevitSettings.Revit.Application.Create);
             }
             else
             {
-                //invoke the method for each of the parameter lists
-
-                //result = mi.Invoke(invocation_target, parameters);
-                results = parameters.Select(x => mi.Invoke(invocationTarget, x.ToArray())).ToList();
+                if (!mi.IsStatic && !mi.IsConstructor)
+                {
+                    if (args[0].IsList)
+                    {
+                        invocationTargetList.AddRange(((Value.List)args[0]).Item.Select(x => DynamoTypeConverter.ConvertInput(x, api_base_type)));
+                    }
+                    else
+                    {
+                        //the first input will always hold the instance
+                        //whose methods you want to invoke
+                        invocationTargetList.Add(DynamoTypeConverter.ConvertInput(args[0], api_base_type));
+                    }
+                }
             }
+
+            //object result = null;
+            List<object> results = null;
+
+            //if the method info is for a constructor, then
+            //call the constructor for each set of parameters
+            //if it's an instance method, then invoke the method for
+            //each instance passed in.
+            results = mi.IsConstructor ? 
+                parameters.Select(x => ((ConstructorInfo) mi).Invoke(x.ToArray())).ToList() :
+                invocationTargetList.SelectMany(x => parameters.Select(y => mi.Invoke(x, y.ToArray())).ToList()).ToList();
             
             dynRevitUtils.StoreElements(node, results);
 
@@ -181,7 +183,7 @@ namespace Dynamo.Utilities
             //var arg0 = (Autodesk.Revit.DB.HermiteFace)DynamoTypeConverter.ConvertInput(args[0], typeof(Autodesk.Revit.DB.HermiteFace));
             //var result = arg0.Points;
 
-            List<object> results = new List<object>();
+            var results = new List<object>();
 
             //there should only be one argument
             foreach (var arg in args)
@@ -193,15 +195,13 @@ namespace Dynamo.Utilities
                     //the values here are the items whose properties
                     //you want to query. nothing fancy, just get the
                     //property for each of the items.
-                    foreach (Value v in ((Value.List) arg).Item)
-                    {
-                        object invocationTarget = DynamoTypeConverter.ConvertInput(v, api_base_type);
-                        results.Add(pi.GetValue(invocationTarget,null));
-                    }
+                    results.AddRange(((Value.List) arg).Item.
+                        Select(v => DynamoTypeConverter.ConvertInput(v, api_base_type)).
+                        Select(invocationTarget => pi.GetValue(invocationTarget, null)));
                 }
                 else
                 {
-                    object invocationTarget = DynamoTypeConverter.ConvertInput(args[0], api_base_type);
+                    var invocationTarget = DynamoTypeConverter.ConvertInput(args[0], api_base_type);
                     results.Add(pi.GetValue(invocationTarget,null));
                 }
             }
@@ -304,6 +304,8 @@ namespace Dynamo.Utilities
         /// <param name="parameters">A parameters List to add to.</param>
         private static void BuildParameterList(FSharpList<Value> args, ParameterInfo[] pi, int end, List<List<object>> parameters)
         {
+            //for a static method, the number of parameters
+            //will equal the number of arguments on the node
             if (args.Count() == pi.Count())
             {
                 //ARGUMENT LOOP
@@ -335,6 +337,9 @@ namespace Dynamo.Utilities
                     parameters.Add(currParams);
                 }
             }
+            //for instance methods, the first argument will be the 
+            //item or list of items which will be the target of invocation
+            //in this case, skip parsing the first argument
             else
             {
                 //ARGUMENT LOOP
