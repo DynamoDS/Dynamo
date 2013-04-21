@@ -471,18 +471,6 @@ namespace Dynamo.Controls
             //start at the bench and move up to root, not raising the event
             //on any other elements
 
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
-            {
-                var paramDict = new Dictionary<string, object>();
-                paramDict.Add("x", Mouse.GetPosition(dynSettings.Workbench).X);
-                paramDict.Add("y", Mouse.GetPosition(dynSettings.Workbench).Y);
-                paramDict.Add("workspace", Controller.CurrentSpace);
-                paramDict.Add("text", "New Note");
-                DynamoCommands.AddNoteCmd.Execute(paramDict);
-
-                e.Handled = true;
-            }
-
             IInputElement focusElement = FocusManager.GetFocusedElement(this);
 
             if (focusElement != null &&
@@ -534,12 +522,6 @@ namespace Dynamo.Controls
                     e.Handled = true;
                 }
             }
-
-            //if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.F))
-            //{
-            //    SearchBox.Focus();
-            //    SearchBox.SelectAll();
-            //}
         }
 
         internal void setFunctionBackground()

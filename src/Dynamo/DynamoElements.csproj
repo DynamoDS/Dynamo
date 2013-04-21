@@ -367,6 +367,13 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\" />
+    <Resource Include="Images\Anonymous_Pencil_icon_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Anonymous_Pencil_icon_white_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Anonymous_Pencil_icon_white_24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

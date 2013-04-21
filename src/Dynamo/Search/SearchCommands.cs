@@ -118,7 +118,8 @@ namespace Dynamo.Commands
             if (null == dynSettings.Bench.outerCanvas.FindName("SearchControl") )
             {
                 search = new SearchView(dynSettings.Controller.SearchViewModel); 
-                dynSettings.Bench.outerCanvas.Children.Add(search);
+                //dynSettings.Bench.outerCanvas.Children.Add(search);
+                dynSettings.Bench.sidebarGrid.Children.Add(search);
             }
 
             dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;

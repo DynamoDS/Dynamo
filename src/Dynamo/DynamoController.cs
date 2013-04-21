@@ -340,8 +340,8 @@ namespace Dynamo
                 Bench.homeButton.IsEnabled = true;
 
                 Bench.workspaceLabel.Content = CurrentSpace.Name;
-                Bench.editNameButton.Visibility = Visibility.Visible;
-                Bench.editNameButton.IsHitTestVisible = true;
+                //Bench.editNameButton.Visibility = Visibility.Visible;
+                //Bench.editNameButton.IsHitTestVisible = true;
                 Bench.setFunctionBackground();
             }
 
@@ -1173,7 +1173,6 @@ namespace Dynamo
         }
 
         #endregion
-
 
 
         //public event PropertyChangedEventHandler PropertyChanged;

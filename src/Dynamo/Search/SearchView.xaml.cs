@@ -84,8 +84,8 @@ namespace Dynamo.Search
         public void ibtnServiceController_MouseLeftButtonUp(object sender, RoutedEventArgs e)
         {
 
-            cmServiceController.PlacementTarget = (UIElement)sender;
-            cmServiceController.IsOpen = true;
+            RegionMenu.PlacementTarget = (UIElement)sender;
+            RegionMenu.IsOpen = true;
 
         }
 

@@ -470,8 +470,8 @@ namespace Dynamo
             PackageManagerClient.HidePackageControlInformation();
 
             Bench.workspaceLabel.Content = "Home";
-            Bench.editNameButton.Visibility = Visibility.Collapsed;
-            Bench.editNameButton.IsHitTestVisible = false;
+            //Bench.editNameButton.Visibility = Visibility.Collapsed;
+            //Bench.editNameButton.IsHitTestVisible = false;
 
             Bench.setHomeBackground();
 
