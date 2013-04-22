@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Xml;
 using Dynamo.Commands;
 using Dynamo.Connectors;
@@ -22,13 +18,11 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using MenuItem = System.Windows.Controls.MenuItem;
 using Dynamo.Utilties;
 
 namespace Dynamo
 {
-    public class DynamoController //: INotifyPropertyChanged
+    public class DynamoController
     {
 
         #region properties
@@ -49,8 +43,6 @@ namespace Dynamo
         public PackageManagerLoginViewModel PackageManagerLoginViewModel { get; internal set; }
         public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
-
-        
 
         List<dynViewModelBase> clipBoard = new List<dynViewModelBase>();
         public List<dynViewModelBase> ClipBoard
@@ -354,7 +346,7 @@ namespace Dynamo
             return new dynFunction(inputs, outputs, functionDefinition);
         }
 
-        internal dynNode CreateDragNode(string name)
+        internal dynNode CreateNode(string name)
         {
             dynNode result;
 
@@ -567,8 +559,6 @@ namespace Dynamo
 
             return true;
         }
-
-        
 
         internal bool OpenDefinition(string xmlPath)
         {
@@ -925,8 +915,6 @@ namespace Dynamo
                 n.Visibility = Visibility.Hidden;
         }
 
-        
-
         #endregion
 
         #region Running
@@ -1173,20 +1161,5 @@ namespace Dynamo
         }
 
         #endregion
-
-
-        //public event PropertyChangedEventHandler PropertyChanged;
-
-        ///// <summary>
-        /////     Used by various properties to notify observers that a property has changed.
-        ///// </summary>
-        ///// <param name="info">What changed.</param>
-        //protected void NotifyPropertyChanged(String info)
-        //{
-        //    if (PropertyChanged != null)
-        //    {
-        //        PropertyChanged(this, new PropertyChangedEventArgs(info));
-        //    }
-        //}
     }
 }

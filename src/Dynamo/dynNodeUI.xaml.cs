@@ -101,7 +101,10 @@ namespace Dynamo.Controls
                 e.IsEnabled = false;
             }
             
-            = ElementState.DEAD;
+            //set the state using the view model's command
+            var viewModel = (dynNodeViewModel)DataContext;
+            if (viewModel.SetStateCommand.CanExecute(ElementState.DEAD))
+                viewModel.SetStateCommand.Execute(ElementState.DEAD);
         }
 
         internal void EnableInteraction()

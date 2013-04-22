@@ -19,17 +19,6 @@ namespace Dynamo.Commands
 
     public static partial class DynamoCommands
     {
-        private static GoToWorkspaceCommand goToWorkspaceCmd;
-        public static GoToWorkspaceCommand GoToWorkspaceCmd
-        {
-            get
-            {
-                if (goToWorkspaceCmd == null)
-                    goToWorkspaceCmd = new GoToWorkspaceCommand();
-                return goToWorkspaceCmd;
-            }
-        }
-
         private static SelectNeighborsCommand selectNeighborsCmd;
         public static SelectNeighborsCommand SelectNeighborsCmd
         {
@@ -103,8 +92,6 @@ namespace Dynamo.Commands
         }
     }
 
-
-
     public class SelectNeighborsCommand : ICommand
     {
 
@@ -164,7 +151,7 @@ namespace Dynamo.Commands
         {
            if (parameter is Guid && dynSettings.FunctionDict.ContainsKey( (Guid)parameter ) )
            {
-               dynSettings.Controller.ViewCustomNodeWorkspace( dynSettings.FunctionDict[ (Guid) parameter] );   
+               DynamoModel.Instance.ViewCustomNodeWorkspace( dynSettings.FunctionDict[ (Guid) parameter] );   
            }     
         }
 
@@ -259,7 +246,7 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            dynSettings.Controller.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
+            DynamoModel.Instance.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
         }
 
         public event EventHandler CanExecuteChanged

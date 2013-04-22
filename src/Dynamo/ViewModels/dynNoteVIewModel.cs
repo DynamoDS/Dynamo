@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
         public dynNoteVIewModel(dynNoteModel note)
         {
             _note = note;
-            note.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(note_PropertyChanged);
+            note.PropertyChanged += note_PropertyChanged;
         }
 
         //respond to changes on the model's properties
