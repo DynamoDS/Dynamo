@@ -85,8 +85,8 @@ namespace Dynamo
             get
             {
                 return HomeSpace.Nodes.Concat(
-                    dynSettings.FunctionDict.Values.Aggregate(
-                        (IEnumerable<dynNode>) new List<dynNode>(),
+                    this.CustomNodeLoader.GetLoadedDefinitions().Aggregate(
+                        (IEnumerable<dynNode>)new List<dynNode>(),
                         (a, x) => a.Concat(x.Workspace.Nodes)
                         )
                     );
@@ -149,10 +149,10 @@ namespace Dynamo
             dynSettings.Bench = Bench;
 
             // custom node loader
-            //string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //string pluginsPath = Path.Combine(directory, "definitions");
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string pluginsPath = Path.Combine(directory, "definitions");
 
-            //CustomNodeLoader = new CustomNodeLoader(pluginsPath);
+            CustomNodeLoader = new CustomNodeLoader(pluginsPath);
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
@@ -199,7 +199,7 @@ namespace Dynamo
             {
                 _benchActivated = true;
 
-                DynamoLoader.LoadCustomNodes(dynSettings.Bench);
+                DynamoLoader.LoadCustomNodes(dynSettings.Bench, this.CustomNodeLoader, this.SearchViewModel);
 
                 Bench.Log("Welcome to Dynamo!");
 
@@ -287,7 +287,7 @@ namespace Dynamo
         /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
         /// <returns> The newly instantiated dynNode</returns>
-        public static dynNode CreateNodeInstance(Type elementType, string nickName, Guid guid )
+        public static dynNode CreateBuiltInNodeInstance(Type elementType, string nickName, Guid guid )
         {
             var node = (dynNode)Activator.CreateInstance(elementType);
 
@@ -329,7 +329,7 @@ namespace Dynamo
         {
             try
             {
-                var node = DynamoController.CreateNodeInstance(elementType, nickName, guid);
+                var node = DynamoController.CreateBuiltInNodeInstance(elementType, nickName, guid);
                 var nodeUI = node.NodeUI;
 
                 //store the element in the elements list
@@ -376,7 +376,8 @@ namespace Dynamo
                     Workspace = workSpace
                 };
 
-            dynSettings.FunctionDict[functionDefinition.FunctionId] = functionDefinition;
+            //dynSettings.FunctionDict[functionDefinition.FunctionId] = functionDefinition;
+            this.CustomNodeLoader.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
 
             // add the element to search
             SearchViewModel.Add(workSpace);
@@ -385,7 +386,9 @@ namespace Dynamo
             {
                 if (!ViewingHomespace)
                 {
-                    SaveFunction( dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace) );
+                    var def = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
+                    if (def != null)
+                        SaveFunction( def );
                 }
 
                 DynamoController.hideWorkspace(CurrentSpace);
@@ -408,7 +411,7 @@ namespace Dynamo
             return new dynFunction(inputs, outputs, functionDefinition);
         }
 
-        internal dynNode CreateNode(string name)
+        internal dynNode CreateNodeInstance(string name)
         {
             dynNode result;
 
@@ -442,60 +445,19 @@ namespace Dynamo
             }
             else
             {
-                FunctionDefinition def;
-                dynSettings.FunctionDict.TryGetValue(Guid.Parse(name), out def);
+                dynFunction func;
 
-                //dynFunction func;
-
-                //if (CustomNodeLoader.GetNodeInstance(this, Guid.Parse(name), out func))
-                //{
-                //    result = func;
-                //}
-                //else
-                //{
-                //    Bench.Log("Failed to find FunctionDefinition.");
-                //    return null;
-                //}
-
-                dynWorkspace ws = def.Workspace;
-
-                //TODO: Update to base off of Definition
-                IEnumerable<string> inputs =
-                    ws.Nodes.Where(e => e is dynSymbol)
-                      .Select(s => (s as dynSymbol).Symbol);
-
-                IEnumerable<string> outputs =
-                    ws.Nodes.Where(e => e is dynOutput)
-                      .Select(o => (o as dynOutput).Symbol);
-
-                if (!outputs.Any())
+                if (CustomNodeLoader.GetNodeInstance(this, Guid.Parse(name), out func))
                 {
-                    var topMost = new List<Tuple<int, dynNode>>();
-
-                    IEnumerable<dynNode> topMostNodes = ws.GetTopMostNodes();
-
-                    foreach (dynNode topNode in topMostNodes)
-                    {
-                        foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
-                        {
-                            if (!topNode.HasOutput(output))
-                                topMost.Add(Tuple.Create(output, topNode));
-                        }
-                    }
-
-                    outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
+                    result = func;
+                }
+                else
+                {
+                    Bench.Log("Failed to find FunctionDefinition.");
+                    return null;
                 }
 
-                result = new dynFunction(inputs, outputs, def);
-                result.NodeUI.NickName = ws.Name;
             }
-
-            //if (result is dynDouble)
-            //    (result as dynDouble).Value = this.storedSearchNum;
-            //else if (result is dynStringInput)
-            //    (result as dynStringInput).Value = this.storedSearchStr;
-            //else if (result is dynBool)
-            //    (result as dynBool).Value = this.storedSearchBool;
 
             return result;
         }
@@ -513,7 +475,11 @@ namespace Dynamo
         {
             if (!string.IsNullOrEmpty(path))
             {
-                if (!SaveWorkspace(path, CurrentSpace))
+                var guid = Guid.Empty;
+                if (CurrentSpace != this.HomeSpace)
+                    guid = this.CustomNodeLoader.GetGuidFromName(CurrentSpace.Name);
+
+                if (!SaveWorkspace(path, CurrentSpace, guid))
                 {
                     Bench.Log("Workbench could not be saved.");
                 }
@@ -539,7 +505,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="workSpace">The workspace</param>
         /// <returns>The generated xmldoc</returns>
-        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace)
+        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace, Guid functionId )
         {
             try
             {
@@ -555,10 +521,7 @@ namespace Dynamo
                 {
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace) workSpace).Category);
-                    root.SetAttribute(
-                            "ID",
-                            dynSettings.FunctionDict.Values
-                                       .First(x => x.Workspace == workSpace).FunctionId.ToString());
+                    root.SetAttribute("ID", functionId.ToString() );
                 }
 
                 xmlDoc.AppendChild(root);
@@ -631,12 +594,12 @@ namespace Dynamo
         /// <param name="xmlPath">The path to save to</param>
         /// <param name="workSpace">The workspace</param>
         /// <returns>Whether the operation was successful</returns>
-        private bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
+        private bool SaveWorkspace(string xmlPath, dynWorkspace workSpace, Guid funId)
         {
             Bench.Log("Saving " + xmlPath + "...");
             try
             {
-                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace == HomeSpace);
+                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace == HomeSpace, funId);
                 xmlDoc.Save(xmlPath);
 
                 //cache the file path for future save operations
@@ -679,8 +642,7 @@ namespace Dynamo
                         Directory.CreateDirectory(pluginsPath);
 
                     string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
-                    SaveWorkspace(path, functionWorkspace);
-                    SearchViewModel.Add(definition.Workspace);
+                    SaveWorkspace(path, functionWorkspace, definition.FunctionId);
                 }
                 catch (Exception e)
                 {
@@ -843,7 +805,7 @@ namespace Dynamo
                     Directory.CreateDirectory(pluginsPath);
 
                 string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
-                SaveWorkspace(path, functionWorkspace);
+                SaveWorkspace(path, functionWorkspace, definition.FunctionId);
                 return path;
             }
             catch (Exception e)
@@ -934,7 +896,7 @@ namespace Dynamo
                         ViewHomeWorkspace(); //TODO: Refactor
                     return OpenWorkbench(xmlPath);
                 }
-                else if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == funName))
+                else if ( this.CustomNodeLoader.Contains(funName) )
                 {
                     Bench.Log("ERROR: Could not load definition for \"" + funName +
                               "\", a node with this name already exists.");
@@ -1039,9 +1001,8 @@ namespace Dynamo
                             fun.Symbol = funId.ToString();
                         }
 
-                        FunctionDefinition funcDef;
-                        if (dynSettings.FunctionDict.TryGetValue(funId, out funcDef))
-                            fun.Definition = funcDef;
+                        if (dynSettings.Controller.CustomNodeLoader.IsInitialized(funId))
+                            fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
                         else
                             dependencies.Push(funId);
                     }
@@ -1190,7 +1151,7 @@ namespace Dynamo
             return true;
         }
         
-        private void nodeWorkspaceWasLoaded(
+        public void nodeWorkspaceWasLoaded(
             FunctionDefinition def,
             Dictionary<Guid, HashSet<FunctionDefinition>> children,
             Dictionary<Guid, HashSet<Guid>> parents)
@@ -1334,9 +1295,9 @@ namespace Dynamo
                             funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
                             fun.Symbol = funId.ToString();
                         }
-                            
-                        FunctionDefinition funcDef;
-                        if (dynSettings.FunctionDict.TryGetValue(funId, out funcDef))
+
+                        FunctionDefinition funcDef = this.CustomNodeLoader.GetFunctionDefinition(funId);
+                        if (funcDef != null)
                             fun.Definition = funcDef;
                         else
                             fun.NodeUI.Error("No definition found.");
@@ -1787,7 +1748,7 @@ namespace Dynamo
                 }
                 else
                 {
-                    foreach (FunctionDefinition funcDef in dynSettings.FunctionDict.Values)
+                    foreach (FunctionDefinition funcDef in this.CustomNodeLoader.GetLoadedDefinitions() )
                     {
                         if (funcDef.Workspace.Nodes.Contains(e))
                         {
@@ -1824,7 +1785,7 @@ namespace Dynamo
             }
 
             //Step 3: Save function
-            SaveFunction( dynSettings.FunctionDict.Values.FirstOrDefault(x => x.Workspace == CurrentSpace) );
+            SaveFunction( this.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace) );//dynSettings.FunctionDict.Values.FirstOrDefault(x => x.Workspace == CurrentSpace) );
 
             //Step 4: Make home workspace visible
             CurrentSpace = HomeSpace;
@@ -1850,7 +1811,7 @@ namespace Dynamo
             Bench.workspaceLabel.Content = "Home";
             //Bench.editNameButton.Visibility = Visibility.Collapsed;
             //Bench.editNameButton.IsHitTestVisible = false;
-
+            Bench.DisableEditNameBox();
             Bench.setHomeBackground();
 
             CurrentSpace.OnDisplayed();
@@ -1888,11 +1849,8 @@ namespace Dynamo
 
             if (!ViewingHomespace)
             {
-                //Step 2: Store function workspace in the function dictionary
-                //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
-
                 //Step 3: Save function
-                SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
+                SaveFunction(CustomNodeLoader.GetDefinitionFromWorkspace(newWs));
             }
 
             CurrentSpace = newWs;
@@ -1935,7 +1893,7 @@ namespace Dynamo
         {
             string newName = Bench.editNameBox.Text;
 
-            if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == newName))
+            if ( this.CustomNodeLoader.Contains(newName) )
             {
                 Bench.Log("ERROR: Cannot rename to \"" + newName + "\", node with same name already exists.");
                 return;
@@ -1943,6 +1901,8 @@ namespace Dynamo
 
             Bench.workspaceLabel.Content = Bench.editNameBox.Text;
             SearchViewModel.Refactor(CurrentSpace, newName);
+
+            // THIS IS BAD - these nodes should update on their own when editing the function definition
 
             //Update existing function nodes
             foreach (dynNode el in AllNodes)
@@ -1953,7 +1913,7 @@ namespace Dynamo
 
                     if (node.Definition == null)
                     {
-                        node.Definition = dynSettings.FunctionDict[Guid.Parse( node.Symbol ) ];
+                        node.Definition = this.CustomNodeLoader.GetFunctionDefinition(Guid.Parse(node.Symbol)); //dynSettings.FunctionDict[Guid.Parse( node.Symbol ) ];
                     }
 
                     if (!node.Definition.Workspace.Name.Equals(CurrentSpace.Name))
@@ -1985,8 +1945,7 @@ namespace Dynamo
             }
 
             (CurrentSpace).Name = newName;
-
-            SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
+            SaveFunction(this.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace));
         }
 
         /// <summary>

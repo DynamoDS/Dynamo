@@ -652,7 +652,7 @@ namespace Dynamo.Commands
                 name = dialog.Text;
                 category = dialog.Category;
 
-                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == name))
+                if (dynSettings.Controller.CustomNodeLoader.Contains(name))
                 {
                     error = "A function with this name already exists.";
                 }
@@ -1004,9 +1004,10 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameter)
         {
-           if (parameter is Guid && dynSettings.FunctionDict.ContainsKey( (Guid)parameter ) )
+           if (parameter is Guid && dynSettings.Controller.CustomNodeLoader.Contains((Guid)parameter))
            {
-               dynSettings.Controller.ViewCustomNodeWorkspace( dynSettings.FunctionDict[ (Guid) parameter] );   
+               var def = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameter);
+               dynSettings.Controller.ViewCustomNodeWorkspace( def );   
            }     
         }
 
@@ -1032,7 +1033,7 @@ namespace Dynamo.Commands
                 return;
             }
 
-            dynNode node = dynSettings.Controller.CreateNode( data["name"].ToString() );
+            dynNode node = dynSettings.Controller.CreateNodeInstance( data["name"].ToString() );
  
             dynNodeUI nodeUi = node.NodeUI; 
             if (dynSettings.Workbench != null)
@@ -1150,8 +1151,7 @@ namespace Dynamo.Commands
 
             if (data != null &&
                 (   dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) || 
-                    //dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ) ) ||
-                    dynSettings.FunctionDict.ContainsKey( Guid.Parse( (string) data["name"] ) )))
+                    dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ))))
             {
                 return true;
             }

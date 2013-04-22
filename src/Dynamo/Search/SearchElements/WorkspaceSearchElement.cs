@@ -24,7 +24,6 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a workspace that can be navigated to </summary>
     public class WorkspaceSearchElement : SearchElementBase
     {
-
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="symbol">The name of the symbol for the workspace</param>

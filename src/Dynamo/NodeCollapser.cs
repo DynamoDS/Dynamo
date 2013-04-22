@@ -43,7 +43,7 @@ namespace Dynamo.Utilities
                 newNodeName = dialog.Text;
                 newNodeCategory = dialog.Category;
 
-                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == newNodeName))
+                if (dynSettings.Controller.CustomNodeLoader.Contains(newNodeName))
                 {
                     error = "A function with this name already exists.";
                 }
@@ -460,11 +460,12 @@ namespace Dynamo.Utilities
             dynSettings.Bench.WorkBench.Children.Remove(collapsedNode.NodeUI);
 
             // save and load the definition from file
-            dynSettings.FunctionDict.Add(newNodeDefinition.FunctionId, newNodeDefinition);
+            //dynSettings.FunctionDict.Add(newNodeDefinition.FunctionId, newNodeDefinition);
             var path = dynSettings.Controller.SaveFunctionOnly(newNodeDefinition);
-            dynSettings.FunctionDict.Remove(newNodeDefinition.FunctionId);
+            //dynSettings.FunctionDict.Remove(newNodeDefinition.FunctionId);
 
-            dynSettings.Controller.OpenDefinition(path);
+            //dynSettings.Controller.OpenDefinition(path);
+            dynSettings.Controller.CustomNodeLoader.AddNodeNameAndPath(newNodeName, newNodeDefinition.FunctionId, path);
 
             DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {

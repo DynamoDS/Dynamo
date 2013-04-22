@@ -31,9 +31,6 @@ namespace Dynamo.Utilities
 {
     public static class dynSettings
     {
-        public static ObservableDictionary<Guid, FunctionDefinition> FunctionDict =
-            new ObservableDictionary<Guid, FunctionDefinition>();
-
         public static HashSet<FunctionDefinition> FunctionWasEvaluated =
             new HashSet<FunctionDefinition>();
 

@@ -236,60 +236,30 @@ namespace Dynamo.Utilties
         ///     directory where the executing assembly is located..
         /// </summary>
         /// <param name="bench">The logger is needed in order to tell how long it took.</param>
-        public static void LoadCustomNodes(dynBench bench)
+        public static void LoadCustomNodes(dynBench bench, CustomNodeLoader customNodeLoader, SearchViewModel searchViewModel)
         {
 
             // custom node loader
-
-            //CustomNodeLoader.UpdateSearchPath();
-
-            //var nn = CustomNodeLoader.GetNodeNameGuidPairs();
-
-            //// add nodes to search
-            //foreach (var pair in nn)
-            //{
-            //    SearchViewModel.Add(pair.Item1, pair.Item2);
-            //}
-
             var sw = new Stopwatch();
             sw.Start();
 
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
+            customNodeLoader.UpdateSearchPath();
 
-            if (Directory.Exists(pluginsPath))
+            var nn = customNodeLoader.GetNodeNameGuidPairs();
+
+            // add nodes to search
+            foreach (var pair in nn)
             {
-                bench.Log("Autoloading definitions...");
-                LoadCustomNodesInDirectory(pluginsPath);
-
-                sw.Stop();
-                bench.Log(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
+                searchViewModel.Add(pair.Item1, pair.Item2);
             }
+            
+            sw.Stop();
+            bench.Log(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
+
+            // update search view
+            searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
 
         }
-
-        /// <summary>
-        ///     Load all of the custom nodes in a given directory
-        /// </summary>
-        /// <param name="searchViewModel">The directory from which to enumerate the nodes</param>
-        private static void LoadCustomNodesInDirectory(string directory)
-        {
-            dynSettings.FunctionDict.Clear();
-            dynSettings.FunctionWasEvaluated.Clear();
-
-            var parentBuffer = new Dictionary<Guid, HashSet<Guid>>();
-            var childrenBuffer = new Dictionary<Guid, HashSet<FunctionDefinition>>();
-            string[] filePaths = Directory.GetFiles(directory, "*.dyf");
-            foreach (string filePath in filePaths)
-            {
-                dynSettings.Controller.OpenDefinition(filePath, childrenBuffer, parentBuffer);
-            }
-            foreach (dynNode e in dynSettings.Controller.AllNodes)
-            {
-                e.EnableReporting();
-            }
-        }
-
 
     }
 }

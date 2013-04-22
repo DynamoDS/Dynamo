@@ -146,7 +146,7 @@ namespace Dynamo.PackageManager
         {
             // var group = ((FuncWorkspace) funDef.Workspace).Category;
             string name = funDef.Workspace.Name;
-            var xml = DynamoController.GetXmlDocFromWorkspace(funDef.Workspace, false);
+            var xml = DynamoController.GetXmlDocFromWorkspace(funDef.Workspace, false, funDef.FunctionId);
             if (xml == null) return null;
             var contents = xml.OuterXml;
             string engineVersion = "0.1.0"; //nope
@@ -176,7 +176,7 @@ namespace Dynamo.PackageManager
         {
             // var group = ((FuncWorkspace) funDef.Workspace).Category;
             string name = funDef.Workspace.Name;
-            var xml = DynamoController.GetXmlDocFromWorkspace(funDef.Workspace, false);
+            var xml = DynamoController.GetXmlDocFromWorkspace(funDef.Workspace, false, funDef.FunctionId);
             if (xml == null) return null;
             var contents = xml.OuterXml;
             string engineVersion = "0.1.0"; //nope
@@ -444,8 +444,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void ShowPackageControlInformation()
         {
-            FunctionDefinition f =
-                dynSettings.FunctionDict.First(x => x.Value.Workspace == Controller.CurrentSpace).Value;
+            FunctionDefinition f = Controller.CustomNodeLoader.GetDefinitionFromWorkspace(Controller.CurrentSpace);
 
             if (f != null)
             {

@@ -823,14 +823,14 @@ namespace Dynamo.Nodes
             if (entry is dynFunction)
             {
                 var symbol = Guid.Parse((entry as dynFunction).Symbol);
-                if (!dynSettings.FunctionDict.ContainsKey(symbol))
+                if (!dynSettings.Controller.CustomNodeLoader.Contains(symbol))
                 {
                     dynSettings.Bench.Log("WARNING -- No implementation found for node: " + symbol);
                     entry.NodeUI.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }
 
-                result = dynSettings.FunctionDict[symbol]
+                result = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(symbol)
                     .Workspace.GetTopMostNodes().Any(ContinueTraversalUntilAny);
             }
             resultDict[entry] = result;

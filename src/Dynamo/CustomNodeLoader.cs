@@ -12,6 +12,7 @@ using Dynamo.FSchemeInterop;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Commands;
 
 namespace Dynamo.Utilities
 {
@@ -63,6 +64,24 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        ///     Enumerates all of the loaded custom node defs
+        /// </summary>
+        /// <returns>A list of the current loaded custom node defs</returns>
+        public IEnumerable<FunctionDefinition> GetLoadedDefinitions()
+        {
+            return loadedNodes.Values.ToList();
+        }
+
+        /// <summary>
+        ///     Manually add the FunctionDefinition to LoadedNodes, overwriting the existing FunctionDefinition
+        /// </summary>
+        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
+        public void AddFunctionDefinition(Guid id, FunctionDefinition def)
+        {
+            this.loadedNodes[id] = def;
+        }
+
+        /// <summary>
         ///     Enumerates all of the files in the search path and get's their guids.
         ///     Does not instantiate the nodes.
         /// </summary>
@@ -80,7 +99,7 @@ namespace Dynamo.Utilities
                 string name;
                 if (GetHeaderFromPath(file, out guid, out name))
                 {
-                    this.SetNodeNameAndPath(name, guid, file);
+                    this.AddNodeNameAndPath(name, guid, file);
                 }
             }
             
@@ -111,11 +130,11 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Stores the path and function definition without initializing node
+        ///     Stores the path and function definition without initializing a node
         /// </summary>
         /// <param name="guid">The unique id for the node.</param>
         /// <param name="path">The path for the node.</param>
-        private void SetNodeNameAndPath(string name, Guid id, string path)
+        public void AddNodeNameAndPath(string name, Guid id, string path)
         {
             if ( this.Contains(name) )
             {
@@ -135,9 +154,20 @@ namespace Dynamo.Utilities
         /// <returns>The path to the node or null if it wasn't found.</returns>
         public FunctionDefinition GetFunctionDefinition(Guid id)
         {
-            if ( this.IsInitialized(id) )
+            if (!this.Contains(id))
+                return null;
+
+            if (this.IsInitialized(id))
             {
                 return loadedNodes[id];
+            }
+            else
+            {
+                FunctionDefinition def;
+                if ( this.GetDefinitionFromPath(this.GetNodePath(id), dynSettings.Controller, out def) )
+                {
+                    return def;
+                }
             }
             return null;
         }
@@ -255,7 +285,6 @@ namespace Dynamo.Utilities
                     result = null;
                     return false;
                 }
-                this.loadedNodes.Add(guid, def);
             } else {
                 def = this.loadedNodes[guid];
             }
@@ -358,6 +387,25 @@ namespace Dynamo.Utilities
 
         }
 
+        /// <summary>
+        ///     Get a FunctionDefinition from a workspace.  Assumes the FunctionDefinition is already loaded.
+        ///     Use IsInitialized to figure out if the FunctionDef is loaded.
+        /// </summary>
+        /// <param name="workspace">The workspace which you'd like to find the Definition for</param>
+        /// <returns>A valid function definition if the FunctionDefinition is already loaded, otherwise null. </returns>
+        public FunctionDefinition GetDefinitionFromWorkspace(dynWorkspace workspace)
+        {
+            return this.loadedNodes.Values.FirstOrDefault((def) => def.Workspace == workspace);
+        }
+
+        /// <summary>
+        ///     Deserialize a function definition from a given path.  A side effect of this function is that
+        ///     the node is added to the dictionary of loadedNodes.  
+        /// </summary>
+        /// <param name="xmlPath">Path to the function definition</param>
+        /// <param name="controller">Reference to the calling controller</param>
+        /// <param name="def">The resultant function definition</param>
+        /// <returns></returns>
         private bool GetDefinitionFromPath(string xmlPath, DynamoController controller, out FunctionDefinition def)
         {
             return this.GetDefinitionFromPath(  xmlPath,
@@ -375,17 +423,16 @@ namespace Dynamo.Utilities
         {
             try
             {
-
-                var funName = "";
-                var category = "";
-                var cx = 0.0;
-                var cy = 0.0;
-                var id = "";
-
-                #region Get xml document and parse
+                #region read xml file
 
                 var xmlDoc = new XmlDocument();
-                xmlDoc.Load( xmlPath );
+                xmlDoc.Load(xmlPath);
+
+                string funName = null;
+                string category = "";
+                double cx = dynBench.CANVAS_OFFSET_X;
+                double cy = dynBench.CANVAS_OFFSET_Y;
+                string id = "";
 
                 // load the header
                 foreach (XmlNode node in xmlDoc.GetElementsByTagName("dynWorkspace"))
@@ -403,7 +450,7 @@ namespace Dynamo.Utilities
                         else if (att.Name.Equals("ID"))
                         {
                             id = att.Value;
-                        }
+                        }   
                     }
                 }
 
@@ -415,24 +462,38 @@ namespace Dynamo.Utilities
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
 
-                //If there is no function name, then we are opening a dyn
-                if (string.IsNullOrEmpty(funName))
-                {
-                    def = null;
-                    return false;
-                }
-
-                category = category.Length > 0 ? category : BuiltinNodeCategories.MISC;
-
                 #endregion
 
-                var workSpace = new FuncWorkspace(funName, category, cx, cy);
-                def = new FunctionDefinition(Guid.Parse(id))
+                //If there is no function name, then we are opening a home definition
+                if (funName == null)
                 {
-                    Workspace = workSpace
-                };
+                    //View the home workspace, then open the bench file
+                    if (!controller.ViewingHomespace)
+                        controller.ViewHomeWorkspace(); //TODO: Refactor
+                    def = null;
+                    return controller.OpenWorkbench(xmlPath);
+                } 
+
+                dynSettings.Bench.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
+
+                var workSpace = new FuncWorkspace(
+                    funName, category.Length > 0
+                    ? category
+                    : BuiltinNodeCategories.MISC, cx, cy);
+
+                List<dynNode> newElements = workSpace.Nodes;
+                List<dynConnector> newConnectors = workSpace.Connectors;
+
+                def = new FunctionDefinition(Guid.Parse(id))
+                    {
+                        Workspace = workSpace
+                    };
+
+                this.loadedNodes.Add(def.FunctionId, def);
 
                 dynWorkspace ws = def.Workspace;
+
+                //this.Log("Opening definition " + xmlPath + "...");
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("dynElements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
@@ -475,7 +536,7 @@ namespace Dynamo.Utilities
                     double x = Convert.ToDouble(xAttrib.Value);
                     double y = Convert.ToDouble(yAttrib.Value);
 
-
+                    //Type t = Type.GetType(typeName);
                     TypeLoadData tData;
                     Type t;
 
@@ -484,31 +545,18 @@ namespace Dynamo.Utilities
                         t = Type.GetType(typeName);
                         if (t == null)
                         {
+                            dynSettings.Bench.Log("Error loading definition. Could not load node of type: " + typeName);
                             return false;
                         }
                     }
                     else
                         t = tData.Type;
 
-                    dynNode el = DynamoController.CreateNodeInstance(t, nickname, guid);
-
-                    // note - this is because the connectors fail to be created if there's not added
-                    // to the canvas
-                        ws.Nodes.Add(el);
-                        el.WorkSpace = ws;
-                        var nodeUI = el.NodeUI;
-
-                        nodeUI.Visibility = Visibility.Visible;
-
-                        dynSettings.Bench.WorkBench.Children.Add(nodeUI);
-
-                        Canvas.SetLeft(nodeUI, x);
-                        Canvas.SetTop(nodeUI, y);
+                    dynNode el = controller.CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws, Visibility.Hidden);
 
                     if (el == null)
                         return false;
 
-                    ws.Nodes.Add(el);
                     el.DisableReporting();
                     el.LoadElement(elNode);
 
@@ -530,23 +578,16 @@ namespace Dynamo.Utilities
                             fun.Symbol = funId.ToString();
                         }
 
-                        if (this.IsInitialized(funId))
-                        {
-                            fun.Definition = this.GetFunctionDefinition(funId);
-                        }
+                        if ( dynSettings.Controller.CustomNodeLoader.IsInitialized(funId) )
+                            fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
                         else
-                        {
                             dependencies.Push(funId);
-                        }
-
-                        //if ( FunctionDict.TryGetValue(funId, out funcDef) )
-                        //    fun.Definition = funcDef;
-                        //else
-                        //    dependencies.Push(funId);
                     }
                 }
 
                 #endregion
+
+                dynSettings.Bench.WorkBench.UpdateLayout();
 
                 #region instantiate connectors
 
@@ -584,6 +625,15 @@ namespace Dynamo.Utilities
                         }
                     }
 
+                    //don't connect if the end element is an instance map
+                    //those have a morphing set of inputs
+                    //dynInstanceParameterMap endTest = end as dynInstanceParameterMap;
+
+                    //if (endTest != null)
+                    //{
+                    //    continue;
+                    //}
+
                     try
                     {
                         if (start != null && end != null && start != end)
@@ -597,9 +647,9 @@ namespace Dynamo.Utilities
                             ws.Connectors.Add(newConnector);
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        Console.Write(ex);
+                        dynSettings.Bench.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NodeUI.GUID, end.NodeUI.GUID));
                     }
                 }
 
@@ -607,29 +657,29 @@ namespace Dynamo.Utilities
 
                 #region instantiate notes
 
-                //if (nNodesList != null)
-                //{
-                //    foreach (XmlNode note in nNodesList.ChildNodes)
-                //    {
-                //        XmlAttribute textAttrib = note.Attributes[0];
-                //        XmlAttribute xAttrib = note.Attributes[1];
-                //        XmlAttribute yAttrib = note.Attributes[2];
+                if (nNodesList != null)
+                {
+                    foreach (XmlNode note in nNodesList.ChildNodes)
+                    {
+                        XmlAttribute textAttrib = note.Attributes[0];
+                        XmlAttribute xAttrib = note.Attributes[1];
+                        XmlAttribute yAttrib = note.Attributes[2];
 
-                //        string text = textAttrib.Value;
-                //        double x = Convert.ToDouble(xAttrib.Value);
-                //        double y = Convert.ToDouble(yAttrib.Value);
+                        string text = textAttrib.Value;
+                        double x = Convert.ToDouble(xAttrib.Value);
+                        double y = Convert.ToDouble(yAttrib.Value);
 
-                //        //dynNote n = Bench.AddNote(text, x, y, ws);
-                //        //Bench.AddNote(text, x, y, ws);
+                        //dynNote n = Bench.AddNote(text, x, y, ws);
+                        //Bench.AddNote(text, x, y, ws);
 
-                //        var paramDict = new Dictionary<string, object>();
-                //        paramDict.Add("x", x);
-                //        paramDict.Add("y", y);
-                //        paramDict.Add("text", text);
-                //        paramDict.Add("workspace", ws);
-                //        DynamoCommands.AddNoteCmd.Execute(paramDict);
-                //    }
-                //}
+                        var paramDict = new Dictionary<string, object>();
+                        paramDict.Add("x", x);
+                        paramDict.Add("y", y);
+                        paramDict.Add("text", text);
+                        paramDict.Add("workspace", ws);
+                        DynamoCommands.AddNoteCmd.Execute(paramDict);
+                    }
+                }
 
                 #endregion
 
@@ -646,32 +696,31 @@ namespace Dynamo.Utilities
                 foreach (Guid dep in dependencies)
                 {
                     canLoad = false;
-                    
                     //Dep -> Ws
                     if (children.ContainsKey(dep))
                         children[dep].Add(def);
                     else
-                        children[dep] = new HashSet<FunctionDefinition> { def };
+                        children[dep] = new HashSet<FunctionDefinition> {def};
 
                     //Ws -> Deps
                     if (parents.ContainsKey(def.FunctionId))
                         parents[def.FunctionId].Add(dep);
                     else
-                        parents[def.FunctionId] = new HashSet<Guid> { dep };
+                        parents[def.FunctionId] = new HashSet<Guid> {dep};
                 }
 
-                if (canLoad) // if all its dependents are loaded, compile it
-                {
-                    var expression = CompileFunction(def);
-                    controller.FSchemeEnvironment.DefineSymbol( def.FunctionId.ToString(), expression);
-                }
+                if (canLoad)
+                    SaveFunction(def, false);
 
-                //PackageManagerClient.LoadPackageHeader(def, funName);
-                nodeWorkspaceWasLoaded(def, children, parents, controller);
+                controller.PackageManagerClient.LoadPackageHeader(def, funName);
+                this.nodeWorkspaceWasLoaded(def, children, parents, controller);
 
             }
-            catch
+            catch (Exception ex)
             {
+                dynSettings.Bench.Log("There was an error opening the workbench.");
+                dynSettings.Bench.Log(ex);
+                controller.CleanWorkbench();
                 def = null;
                 return false;
             }
@@ -679,11 +728,10 @@ namespace Dynamo.Utilities
             return true;
         }
 
-        private void nodeWorkspaceWasLoaded(
-            FunctionDefinition def,
-            Dictionary<Guid, HashSet<FunctionDefinition>> children,
-            Dictionary<Guid, HashSet<Guid>> parents,
-            DynamoController controller )
+        private void nodeWorkspaceWasLoaded(FunctionDefinition def,
+                                            Dictionary<Guid, HashSet<FunctionDefinition>> children,
+                                            Dictionary<Guid, HashSet<Guid>> parents,
+                                            DynamoController controller )
         {
             //If there were some workspaces that depended on this node...
             if (children.ContainsKey(def.FunctionId))
@@ -733,7 +781,7 @@ namespace Dynamo.Utilities
                         Directory.CreateDirectory(pluginsPath);
 
                     string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
-                    DynamoController.GetXmlDocFromWorkspace(functionWorkspace, false);
+                    DynamoController.GetXmlDocFromWorkspace(functionWorkspace, false, definition.FunctionId);
 
                     //SearchViewModel.Add(definition.Workspace);
                 }

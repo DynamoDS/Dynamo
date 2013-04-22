@@ -240,6 +240,15 @@ namespace Dynamo.Search
         }
 
         /// <summary>
+        ///     Synchronously performs a search using the current SearchText
+        /// </summary>
+        /// <param name="query"> The search query </param>
+        internal void SearchAndUpdateResultsSync()
+        {
+            this.SearchAndUpdateResultsSync(this.SearchText);
+        }
+
+        /// <summary>
         ///     Synchronously Performs a search and updates the observable SearchResults property
         ///     on the current thread.
         /// </summary>
@@ -472,7 +481,7 @@ namespace Dynamo.Search
 
             // create the workspace in search
             var searchEle = new WorkspaceSearchElement(name, "Go to " + name );
-            searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
+            searchEle.Guid = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace).FunctionId;
 
             if (searchEle.Guid == Guid.Empty)
                 return;
@@ -480,7 +489,7 @@ namespace Dynamo.Search
             SearchDictionary.Add(searchEle, searchEle.Name);
 
             // create the node in search
-            var nodeEle = new LocalSearchElement( dynSettings.FunctionDict[searchEle.Guid] );
+            var nodeEle = new LocalSearchElement( dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(searchEle.Guid) );
             SearchDictionary.Add(nodeEle, nodeEle.Name);
 
             // update search
@@ -489,7 +498,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Add a 
+        ///     Add a custom node to search.
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
         /// <param name="name">The name to use</param>
@@ -499,20 +508,14 @@ namespace Dynamo.Search
                 return;
 
             // create the workspace in search
-            //var searchEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name);
-            //searchEle.Guid = dynSettings.FunctionDict.First(x => x.Value.Workspace == workspace).Key;
+            var workspaceEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name);
+            workspaceEle.Guid = functionId;
 
-            //if (searchEle.Guid == Guid.Empty)
-            //    return;
-
-            //SearchDictionary.Add(searchEle, searchEle.Name);
+            SearchDictionary.Add(workspaceEle, workspaceEle.Name);
 
             // create the node in search
             var nodeEle = new LocalSearchElement(name, functionId);
             SearchDictionary.Add(nodeEle, nodeEle.Name);
-
-            // update search
-            SearchAndUpdateResultsSync(SearchText);
 
         }
 

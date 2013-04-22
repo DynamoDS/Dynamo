@@ -177,9 +177,9 @@ namespace Dynamo.Commands
                 return;
             }
 
-            if ( dynSettings.FunctionDict.ContainsKey( nodeList[0] ) )
+            if ( dynSettings.Controller.CustomNodeLoader.Contains( nodeList[0] ) )
             {
-                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute( dynSettings.FunctionDict[nodeList[0]] );
+                DynamoCommands.ShowNodeNodePublishInfoCmd.Execute( dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition( nodeList[0]) );
             }
             else
             {
@@ -217,7 +217,7 @@ namespace Dynamo.Commands
             }
 
             var currentFunDef =
-                dynSettings.FunctionDict.FirstOrDefault(x => x.Value.Workspace == dynSettings.Controller.CurrentSpace).Value;
+                dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(dynSettings.Controller.CurrentSpace);
 
             if ( currentFunDef != null )
             {

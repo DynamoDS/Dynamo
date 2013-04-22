@@ -486,7 +486,7 @@ namespace Dynamo.Controls
             dynNode newEl;
             try
             {
-                newEl = Controller.CreateNode(name);
+                newEl = Controller.CreateNodeInstance(name);
             }
             catch (Exception e)
             {
@@ -679,7 +679,7 @@ namespace Dynamo.Controls
             beginNameEditClick = true;
         }
 
-        private void EnableEditNameBox()
+        public void EnableEditNameBox()
         {
             workspaceLabel.Visibility = Visibility.Collapsed;
 
@@ -694,12 +694,13 @@ namespace Dynamo.Controls
             editingName = true;
         }
 
-        private void DisableEditNameBox()
+        public void DisableEditNameBox()
         {
             editNameBox.Visibility = Visibility.Collapsed;
             editNameBox.IsEnabled = false;
             editNameBox.IsHitTestVisible = false;
             editNameBox.Focusable = false;
+            editNameButton.Visibility = Visibility.Collapsed;
 
             workspaceLabel.Visibility = Visibility.Visible;
 
