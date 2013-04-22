@@ -8,6 +8,7 @@ namespace Dynamo.Nodes
     class dynNoteVIewModel:dynViewModelBase
     {
         private dynNoteModel _note;
+
         public dynNoteModel Note
         {
             get { return _note; }
@@ -18,9 +19,31 @@ namespace Dynamo.Nodes
             }
         }
 
-        public double X { get;}
-        public double Y { get;}
-        public string Text { get;}
+        public double X
+        {
+            get { return _note.X; }
+            set
+            {
+                _x = value;
+                RaisePropertyChanged("X");
+            }
+        }
+
+        public double Y
+        {
+            get { return _note.Y; }
+            set 
+            { _
+                _y = value; 
+                RaisePropertyChanged("Y");
+            }
+        }
+
+        public string Text
+        {
+            get { return _note.Text; }
+            set {RaisePropertyChanged("Text");}
+        }
 
         public dynNoteVIewModel(dynNoteModel note)
         {
