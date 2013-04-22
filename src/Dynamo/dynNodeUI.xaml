@@ -109,22 +109,25 @@
             Height="Auto"
             Width="Auto"
             Margin="45,5,45,5" Canvas.ZIndex="300"/>
-        <TextBlock  Height="Auto" 
-                     Name="nickNameBlock" 
-                     VerticalAlignment="Top" 
-                     HorizontalAlignment="Center"
-                     TextTrimming="CharacterEllipsis"
-                     Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="0,-20"
-                     FontFamily="Arial"
-                     FontSize="12" 
-                     FontWeight="Normal" 
-                     TextAlignment="Center" 
-                     IsHitTestVisible="False" 
-                     Canvas.ZIndex="99" 
-                     Width="{Binding ElementName=grid, Path=ActualWidth}"
-                     MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
-                     Background="Transparent" FontStyle="Normal" Foreground="LightGray">
-        </TextBlock>
+
+            <TextBlock  
+                         Name="nickNameBlock" 
+                         VerticalAlignment="Top" 
+                         HorizontalAlignment="Center"
+                         TextTrimming="CharacterEllipsis"
+                         Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="16,-22"
+                         Padding="3"
+                         FontSize="11" 
+                         FontWeight="Normal" 
+                         TextAlignment="Center" 
+                         IsHitTestVisible="False" 
+                         Canvas.ZIndex="99" 
+                         Height="22"
+                         Width="{Binding ElementName=grid, Path=ActualWidth}"
+                         MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
+                         Background="#99000000" FontStyle="Normal" Foreground="LightGray">
+            </TextBlock>
+
     </Grid>
 </UserControl>

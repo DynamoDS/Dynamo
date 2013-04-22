@@ -42,9 +42,6 @@ namespace Dynamo
                 foreach (var output in outputs)
                     OutPortData.Add(new PortData(output, "function output", typeof(object)));
 
-                //Add a drop-shadow.
-                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
-
                 //Setup double-click behavior
                 NodeUI.MouseDoubleClick += delegate
                 {
@@ -62,9 +59,6 @@ namespace Dynamo
                 {
                     Controller.ViewCustomNodeWorkspace(_def);
                 };
-
-                //Add a drop-shadow
-                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
             }
 
             FunctionDefinition _def;

@@ -1034,7 +1034,13 @@ namespace Dynamo.Commands
             }
 
             dynNode node = dynSettings.Controller.CreateNodeInstance( data["name"].ToString() );
- 
+
+            if (node == null)
+            {
+                dynSettings.Bench.Log("Failed to instantiate node " + data["name"].ToString());
+                return;
+            }
+                
             dynNodeUI nodeUi = node.NodeUI; 
             if (dynSettings.Workbench != null)
             {
