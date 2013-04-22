@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,38 +8,21 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
-using System.ComponentModel;
-
-using Dynamo.Controls;
 
 namespace Dynamo.Controls
 {
    /// <summary>
    /// A Canvas which manages dragging of the UIElements it contains.  
    /// </summary>
-   public class DragCanvas : Canvas, INotifyPropertyChanged
+   public class DragCanvas : Canvas
    {
-       public event PropertyChangedEventHandler PropertyChanged;
-
-       /// <summary>
-       /// Used by various properties to notify observers that a property has changed.
-       /// </summary>
-       /// <param name="info">What changed.</param>
-       private void NotifyPropertyChanged(String info)
-       {
-           if (PropertyChanged != null)
-           {
-               PropertyChanged(this, new PropertyChangedEventArgs(info));
-           }
-       }
 
        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
       #region Data
 
       // Stores a reference to the UIElement currently being dragged by the user.
-       private ObservableCollection<ISelectable> selection = new ObservableCollection<ISelectable>();
-       private ObservableCollection<OffsetData> offsets = new ObservableCollection<OffsetData>();
+      private ObservableCollection<OffsetData> offsets = new ObservableCollection<OffsetData>();
 
       // Keeps track of where the mouse cursor was when a drag operation began.		
       private Point origCursorLocation;
@@ -126,7 +107,7 @@ namespace Dynamo.Controls
       /// </summary>
       public DragCanvas()
       {
-          selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(selection_CollectionChanged);
+          DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(selection_CollectionChanged);
       }
 
        /// <summary>
@@ -258,23 +239,6 @@ namespace Dynamo.Controls
 
       #region ElementBeingDragged
 
-      /// <summary>
-      /// Returns the selection.
-      /// </summary>
-      /// <remarks>
-      /// Note to inheritors: This property exposes a protected 
-      /// setter which should be used to modify the drag element.
-      /// </remarks>
-      public ObservableCollection<ISelectable> Selection
-      {
-          get { return selection; }
-          set
-          {
-              selection = value;
-              NotifyPropertyChanged("Selection");
-          }
-      }
-
       #endregion // ElementBeingDragged
 
       #region FindCanvasChild
@@ -327,7 +291,7 @@ namespace Dynamo.Controls
 
          if (!isConnecting)
          {
-             if (this.selection.Count == 0)
+             if (DynamoSelection.Instance.Selection.Count == 0)
                  return;
 
              //test if we're hitting the background
@@ -378,7 +342,7 @@ namespace Dynamo.Controls
       {
          base.OnPreviewMouseMove(e);
 
-         if (this.selection.Count == 0 || !this.isDragInProgress)
+         if (DynamoSelection.Instance.Selection.Count == 0 || !this.isDragInProgress)
              return;
 
          // Get the position of the mouse cursor, relative to the Canvas.
@@ -387,7 +351,7 @@ namespace Dynamo.Controls
          #region Calculate Offsets
 
          int count = 0;
-         foreach (UIElement el in this.selection)
+         foreach (UIElement el in DynamoSelection.Instance.Selection)
          {
              OffsetData od = offsets[count];
  
@@ -414,7 +378,7 @@ namespace Dynamo.Controls
             #region Verify Drag Element Location
 
              count = 0;
-             foreach (UIElement el in this.selection)
+             foreach (UIElement el in DynamoSelection.Instance.Selection)
              {
                  OffsetData od = offsets[count];
 
@@ -451,7 +415,7 @@ namespace Dynamo.Controls
          this.Dispatcher.Invoke(new Action(
                delegate
                {
-                   foreach (UIElement el in this.selection)
+                   foreach (UIElement el in DynamoSelection.Instance.Selection)
                  {
                      OffsetData od = offsets[count];
  
@@ -486,7 +450,7 @@ namespace Dynamo.Controls
           // recalculate the offsets for all items in
           // the selection. 
          int count = 0;
-         foreach (ISelectable n in selection)
+         foreach (ISelectable n in DynamoSelection.Instance.Selection)
          {
              UIElement el = (UIElement)n;
 
@@ -514,7 +478,7 @@ namespace Dynamo.Controls
 
       public void ClearSelection()
       {
-          selection.RemoveAll();
+          DynamoSelection.Instance.Selection.RemoveAll();
       }
       #endregion // OnHostPreviewMouseUp
 
@@ -815,21 +779,4 @@ namespace Dynamo.Controls
        }
    }
 
-   public interface ISelectable
-   {
-       void Select();
-       void Deselect();
-   }
-
-    public static class Extensions
-    {
-        public static void RemoveAll(this ObservableCollection<ISelectable> list)
-        {
-            while (list.Count > 0)
-            {
-                list.RemoveAt(list.Count - 1);
-            }
-        }
-    }
-    
 }

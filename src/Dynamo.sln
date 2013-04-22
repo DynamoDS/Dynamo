@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoElementsTests", "Dyna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "DynamoRevitTests\DynamoRevitTests.csproj", "{2C1C4B42-4D95-496A-9078-28309DB47128}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoSelection", "DynamoSelection\DynamoSelection.csproj", "{34115F51-F34F-463F-8281-68D5BBA63F30}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.vsmdi
@@ -157,6 +159,16 @@ Global
 		{2C1C4B42-4D95-496A-9078-28309DB47128}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2C1C4B42-4D95-496A-9078-28309DB47128}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2C1C4B42-4D95-496A-9078-28309DB47128}.Release|x86.ActiveCfg = Release|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{34115F51-F34F-463F-8281-68D5BBA63F30}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
