@@ -245,12 +245,12 @@ namespace Dynamo.Utilties
 
             customNodeLoader.UpdateSearchPath();
 
-            var nn = customNodeLoader.GetNodeNameGuidPairs();
+            var nn = customNodeLoader.GetNodeNameCategoryAndGuidList();
 
             // add nodes to search
             foreach (var pair in nn)
             {
-                searchViewModel.Add(pair.Item1, pair.Item2);
+                searchViewModel.Add(pair.Item1, pair.Item2, pair.Item3);
             }
             
             sw.Stop();

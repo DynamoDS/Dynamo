@@ -857,8 +857,6 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("b", "operand", typeof(double)));
             OutPortData.Add(new PortData("a∧b", "result", typeof(double)));
 
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
-
             NodeUI.RegisterAllPorts();
         }
 
@@ -929,8 +927,6 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
             OutPortData.Add(new PortData("a∨b", "result", typeof(bool)));
-
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
 
             NodeUI.RegisterAllPorts();
         }
@@ -1004,8 +1000,6 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
             OutPortData.Add(new PortData("a⊻b", "result", typeof(bool)));
 
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
-
             NodeUI.RegisterAllPorts();
         }
     }
@@ -1020,8 +1014,6 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             OutPortData.Add(new PortData("!a", "result", typeof(bool)));
-
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
 
             NodeUI.RegisterAllPorts();
         }
@@ -1536,8 +1528,6 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("true", "True block", typeof(object)));
             InPortData.Add(new PortData("false", "False block", typeof(object)));
             OutPortData.Add(new PortData("result", "Result", typeof(object)));
-
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
 
             NodeUI.RegisterAllPorts();
         }

@@ -502,7 +502,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
         /// <param name="name">The name to use</param>
-        public void Add(string name, Guid functionId)
+        public void Add(string name, string category, Guid functionId)
         {
             if (name == "Home")
                 return;
@@ -511,12 +511,19 @@ namespace Dynamo.Search
             var workspaceEle = new WorkspaceSearchElement(name, "Navigate to workspace called " + name);
             workspaceEle.Guid = functionId;
 
+            if (!NodeCategories.ContainsKey(category))
+            {
+                NodeCategories.Add(category, new CategorySearchElement(category));
+            }
+
+            NodeCategories[category].NumElements++;
+
             SearchDictionary.Add(workspaceEle, workspaceEle.Name);
 
             // create the node in search
             var nodeEle = new LocalSearchElement(name, functionId);
             SearchDictionary.Add(nodeEle, nodeEle.Name);
-
+            SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
         }
 
         /// <summary>

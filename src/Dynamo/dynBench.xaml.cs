@@ -700,7 +700,6 @@ namespace Dynamo.Controls
             editNameBox.IsEnabled = false;
             editNameBox.IsHitTestVisible = false;
             editNameBox.Focusable = false;
-            editNameButton.Visibility = Visibility.Collapsed;
 
             workspaceLabel.Visibility = Visibility.Visible;
 

@@ -127,7 +127,7 @@ namespace Dynamo.Search.SearchElements
         {
             this.Node = null;
             this._name = name;
-            this.Weight = 1;
+            this.Weight = 0.9;
             this.Keywords = "";
             this._type = "Custom Node";
             this.Guid = guid;

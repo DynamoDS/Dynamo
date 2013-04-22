@@ -1847,7 +1847,17 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            dynSettings.Controller.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
+            FunctionDefinition funcDef;
+
+            if (parameters is Guid) {
+                funcDef = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition((Guid)parameters);
+                dynSettings.Controller.ViewCustomNodeWorkspace(funcDef);
+            }
+            else if (parameters is FunctionDefinition)
+            {
+                funcDef = (FunctionDefinition)parameters;
+                dynSettings.Controller.ViewCustomNodeWorkspace(funcDef);
+            }
         }
 
         public event EventHandler CanExecuteChanged
@@ -1858,12 +1868,6 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            FunctionDefinition fd = parameters as FunctionDefinition;
-            if(fd == null)
-            {
-                return false;
-            }
-
             return true;
         }
     }

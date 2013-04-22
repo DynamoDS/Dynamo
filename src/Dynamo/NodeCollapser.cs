@@ -460,12 +460,8 @@ namespace Dynamo.Utilities
             dynSettings.Bench.WorkBench.Children.Remove(collapsedNode.NodeUI);
 
             // save and load the definition from file
-            //dynSettings.FunctionDict.Add(newNodeDefinition.FunctionId, newNodeDefinition);
             var path = dynSettings.Controller.SaveFunctionOnly(newNodeDefinition);
-            //dynSettings.FunctionDict.Remove(newNodeDefinition.FunctionId);
-
-            //dynSettings.Controller.OpenDefinition(path);
-            dynSettings.Controller.CustomNodeLoader.AddNodeNameAndPath(newNodeName, newNodeDefinition.FunctionId, path);
+            dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, newNodeDefinition.FunctionId, path);
 
             DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {
@@ -473,6 +469,8 @@ namespace Dynamo.Utilities
                     {"x", avgX },
                     {"y", avgY }
                 });
+
+
 
             var newlyPlacedCollapsedNode = currentWorkspace.Nodes
                                             .Where(node => node is dynFunction)

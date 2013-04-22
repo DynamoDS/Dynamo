@@ -151,14 +151,14 @@
                         <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <!--<MenuItem Header="_Custom Nodes" Name="userFunctions" 
-                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.FunctionDict}}">
+                <MenuItem Header="_Custom Nodes" Name="userFunctions" 
+                  ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <MenuItem Header="{Binding Value.Workspace.Name}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static commands:DynamoCommands.DisplayFunctionCmd}}"/>
+                            <MenuItem Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static commands:DynamoCommands.DisplayFunctionCmd}}"/>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
-                </MenuItem>-->
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Settings">

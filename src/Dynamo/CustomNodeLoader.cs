@@ -27,12 +27,28 @@ namespace Dynamo.Utilities
 
         private Dictionary<Guid, FunctionDefinition> loadedNodes = new Dictionary<Guid, FunctionDefinition>();
         private Dictionary<Guid, string> nodePaths = new Dictionary<Guid, string>();
-        private Dictionary<string, Guid> nodeNames = new Dictionary<string, Guid>();
+
+        /// <summary>
+        /// NodeNames </summary>
+        /// <value>Maps function names to function ids.</value>
+        public ObservableDictionary<string, Guid> NodeNames
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// NodeCategories property </summary>
+        /// <value>Maps function ids to categories. </value>
+        public ObservableDictionary<Guid, string> NodeCategories
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// SearchPath property </summary>
-        /// <value>
-        /// The name of the node </value>
+        /// <value>This is where this object will search for dyf files.</value>
         public string SearchPath { get; set; }
 
         #endregion
@@ -43,6 +59,8 @@ namespace Dynamo.Utilities
         /// <param name="searchPath">The path to search for definitions</param>
         public CustomNodeLoader(string searchPath) {
             SearchPath = searchPath;
+            NodeNames = new ObservableDictionary<string, Guid>();
+            NodeCategories = new ObservableDictionary<Guid, string>();
         }
 
         /// <summary>
@@ -51,16 +69,16 @@ namespace Dynamo.Utilities
         /// <returns>A list of all of the node names</returns>
         public IEnumerable<string> GetNodeNames()
         {
-            return nodeNames.Keys.ToList();
+            return NodeNames.Keys.ToList();
         }
 
         /// <summary>
         ///     Enumerates all of the node name guid pairs
         /// </summary>
         /// <returns>A list of tuples with the name as first element and guid as second</returns>
-        public IEnumerable<Tuple<string, Guid>> GetNodeNameGuidPairs()
+        public IEnumerable<Tuple<string, string, Guid>> GetNodeNameCategoryAndGuidList()
         {
-            return nodeNames.Keys.Zip(nodeNames.Values, (first, second) => new Tuple<string, Guid>(first, second));
+            return this.NodeNames.AsEnumerable().Select( (first) => new Tuple<string, string, Guid>(first.Key, NodeCategories[first.Value], first.Value));
         }
 
         /// <summary>
@@ -97,9 +115,10 @@ namespace Dynamo.Utilities
             {
                 Guid guid;
                 string name;
-                if (GetHeaderFromPath(file, out guid, out name))
+                string category;
+                if (GetHeaderFromPath(file, out guid, out name, out category))
                 {
-                    this.AddNodeNameAndPath(name, guid, file);
+                    this.SetNodeInfo(name, category, guid, file);
                 }
             }
             
@@ -134,17 +153,35 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="guid">The unique id for the node.</param>
         /// <param name="path">The path for the node.</param>
-        public void AddNodeNameAndPath(string name, Guid id, string path)
+        public void SetNodeInfo(string name, string category, Guid id, string path)
         {
             if ( this.Contains(name) )
             {
-                this.nodeNames[name] = id;
+                this.NodeNames[name] = id;
             }
             else
             {
-                this.nodeNames.Add(name, id);
+                this.NodeNames.Add(name, id);
             }
+            this.SetNodeCategory(id, category);
             this.SetNodePath(id, path);
+        }
+
+        /// <summary>
+        ///     Sets the category for a custom node
+        /// </summary>
+        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="category">The category for the node</param>
+        public void SetNodeCategory(Guid id, string category)
+        {
+            if (this.NodeCategories.ContainsKey(id))
+            {
+                this.NodeCategories[id] = category;
+            }
+            else
+            {
+                this.NodeCategories.Add(id, category);
+            }
         }
 
         /// <summary>
@@ -201,7 +238,7 @@ namespace Dynamo.Utilities
         /// <param name="name">The name of the custom node.</param>
         public bool Contains(string name)
         {
-            return IsInitialized(name) || nodeNames.ContainsKey(name);
+            return IsInitialized(name) || NodeNames.ContainsKey(name);
         }
 
         /// <summary>
@@ -211,9 +248,9 @@ namespace Dynamo.Utilities
         /// <returns>The name of the </returns>
         public bool IsInitialized(string name)
         {
-            if (this.nodeNames.ContainsKey(name))
+            if (this.NodeNames.ContainsKey(name))
             {
-                var guid = this.nodeNames[name];
+                var guid = this.NodeNames[name];
                 return this.IsInitialized(guid);
             }
             else
@@ -243,7 +280,7 @@ namespace Dynamo.Utilities
                 return Guid.Empty;
             }
 
-            return this.nodeNames[name];
+            return this.NodeNames[name];
 
         }
 
@@ -331,12 +368,13 @@ namespace Dynamo.Utilities
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="guid">A reference to the guid (OUT) Guid.Empty if function returns false. </param>
         /// <returns>Whether we successfully obtained the guid or not.  </returns>
-        public static bool GetHeaderFromPath(string path, out Guid guid, out string name) {
+        public static bool GetHeaderFromPath(string path, out Guid guid, out string name, out string category ) {
 
             try
             {
                 var funName = "";
                 var id = "";
+                var cat = "";
 
                 #region Get xml document and parse
 
@@ -353,6 +391,10 @@ namespace Dynamo.Utilities
                         else if (att.Name.Equals("ID"))
                         {
                             id = att.Value;
+                        }
+                        else if (att.Name.Equals("Category"))
+                        {
+                            cat = att.Value;
                         }
                     }
                 }
@@ -373,16 +415,16 @@ namespace Dynamo.Utilities
                 }
 
                 name = funName;
+                category = cat;
                 return true;
 
             }
             catch
             {
-
+                category = "";
                 guid = Guid.Empty;
                 name = "";
                 return false;
-
             }
 
         }
@@ -783,7 +825,6 @@ namespace Dynamo.Utilities
                     string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
                     DynamoController.GetXmlDocFromWorkspace(functionWorkspace, false, definition.FunctionId);
 
-                    //SearchViewModel.Add(definition.Workspace);
                 }
                 catch
                 {

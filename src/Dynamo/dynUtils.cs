@@ -38,6 +38,13 @@ namespace Dynamo.Utilities
         {
         }
 
+        public static ObservableDictionary<string, Guid> CustomNodes {
+            get
+            {
+                return dynSettings.Controller.CustomNodeLoader.NodeNames;
+            }
+        }
+
         public static Dynamo.Controls.DragCanvas Workbench { get; internal set; }
 
         public static dynCollection Collection { get; internal set; }

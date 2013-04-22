@@ -32,7 +32,7 @@ namespace Dynamo.Search.SearchElements
         {
             this._name = symbol;
             this._description = description;
-            this.Weight = 1;
+            this.Weight = 0.8;
             this.Keywords = "";
         }
 

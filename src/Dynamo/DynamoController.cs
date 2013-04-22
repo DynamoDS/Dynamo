@@ -145,7 +145,6 @@ namespace Dynamo
             this.CanRunDynamically = true;
 
             Bench = new dynBench(this);
-            DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
             dynSettings.Bench = Bench;
 
             // custom node loader
@@ -225,7 +224,6 @@ namespace Dynamo
 
                 HomeSpace.OnDisplayed();
 
-                DynamoCommands.CloseSplashScreenCmd.Execute(null); // closed in bench activated
                 Bench.WorkBench.Visibility = Visibility.Visible;
             }
         }
@@ -376,7 +374,6 @@ namespace Dynamo
                     Workspace = workSpace
                 };
 
-            //dynSettings.FunctionDict[functionDefinition.FunctionId] = functionDefinition;
             this.CustomNodeLoader.AddFunctionDefinition(functionDefinition.FunctionId, functionDefinition);
 
             // add the element to search
@@ -1805,13 +1802,12 @@ namespace Dynamo
 
             Bench.homeButton.IsEnabled = false;
 
-            // TODO: get this out of here
             PackageManagerClient.HidePackageControlInformation();
 
             Bench.workspaceLabel.Content = "Home";
             //Bench.editNameButton.Visibility = Visibility.Collapsed;
             //Bench.editNameButton.IsHitTestVisible = false;
-            Bench.DisableEditNameBox();
+
             Bench.setHomeBackground();
 
             CurrentSpace.OnDisplayed();
@@ -1875,8 +1871,8 @@ namespace Dynamo
 
             Bench.workspaceLabel.Content = symbol.Workspace.Name;
 
-            Bench.editNameButton.Visibility = Visibility.Visible;
-            Bench.editNameButton.IsHitTestVisible = true;
+            //Bench.editNameButton.Visibility = Visibility.Visible;
+            //Bench.editNameButton.IsHitTestVisible = true;
 
             Bench.setFunctionBackground();
 
