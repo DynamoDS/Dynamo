@@ -39,9 +39,9 @@
                                 Command="{Binding Path=DeleteCommand}"/>
         <KeyBinding Key="N"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=ShowNewFunctionDialogCmd}"/>
+                                Command="{Binding Path=ShowNewFunctionDialogCommand}"/>
         <KeyBinding Key="Tab"
-                                Command="{Binding Path=SelectNeighborsCmd}"/>
+                                Command="{Binding Path=SelectNeighborsCommand}"/>
 
         <KeyBinding Key="Delete"
                                 Command="{Binding Path=DeleteCommand}"/>
@@ -56,7 +56,7 @@
                                 Command="{Binding Path=PasteCommand}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control"
-                                Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCmd}"/>
+                                Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control+Shift"
                                 Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}"/>
@@ -78,7 +78,7 @@
 
         <KeyBinding Key="R"
                 Modifiers="Ctrl"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.ShowPackageManagerCmd}}"/>
+                    Command="{Binding Path=ShowPackageManagerCommand}"/>
 
     </Window.InputBindings>
 

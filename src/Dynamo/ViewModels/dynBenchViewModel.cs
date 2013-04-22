@@ -55,7 +55,6 @@ namespace Dynamo.Controls
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
-
         public DelegateCommand<object> CopyCommand { get; set; }
         public DelegateCommand<object> PasteCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
@@ -64,10 +63,10 @@ namespace Dynamo.Controls
         public DelegateCommand ClearLogCommand { get; set; }
         public DelegateCommand RunExpressionCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
-        public DelegateCommand GoToWorkspaceCommand { get; set; }
-        public DelegateCommand DisplayFunctionCommand { get; set; }
-        public DelegateCommand SetConnectorTypeCommand { get; set; }
-
+        public DelegateCommand<object> GoToWorkspaceCommand { get; set; }
+        public DelegateCommand<object> DisplayFunctionCommand { get; set; }
+        public DelegateCommand<object> SetConnectorTypeCommand { get; set; }
+        
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
             get { return _workspaces; }
@@ -201,13 +200,17 @@ namespace Dynamo.Controls
             ClearCommand = new DelegateCommand(Clear, CanClear);
             HomeCommand = new DelegateCommand(Home, CanGoHome);
             LayoutAllCommand = new DelegateCommand(LayoutAll, CanLayoutAll);
-
             CopyCommand = new DelegateCommand<object>(Copy, CanCopy);
             PasteCommand = new DelegateCommand<object>(Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             SaveImageCommand = new DelegateCommand<object>(SaveImage, CanSaveImage);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
+            RunExpressionCommand = new DelegateCommand(RunExpression,CanRunExpression);
+            ShowPackageManagerCommand = new DelegateCommand(ShowPackageManager,CanShowPackageManager);
+            GoToWorkspaceCommand = new DelegateCommand<object>(GoToWorkspace, CanGoToWorkspace);
+            DisplayFunctionCommand = new DelegateCommand<object>(DisplayFunction, CanDisplayFunction);
+            SetConnectorTypeCommand = new DelegateCommand<object>(SetConnectorType, CanSetConnectorType);
         }
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -900,89 +903,51 @@ namespace Dynamo.Controls
         {
             return true;
         }
-    }
-    
-    public class RunExpressionCommand : ICommand
-    {
-        public void Execute(object parameters)
+
+        private void RunExpression()
         {
             dynSettings.Controller.RunExpression(Convert.ToBoolean(parameters));
         }
 
-        public event EventHandler CanExecuteChanged
+        private bool CanRunExpression()
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            //TODO: Any reason we wouldn't be able to run an expression?
-            if(dynSettings.Controller == null)
+            if (dynSettings.Controller == null)
             {
                 return false;
             }
             return true;
         }
-    }
 
-    public class ShowPackageManagerCommand : ICommand
-    {
-
-        public void Execute(object parameters)
+        private void ShowPackageManager()
         {
             dynSettings.Bench.PackageManagerLoginStateContainer.Visibility = Visibility.Visible;
             dynSettings.Bench.PackageManagerMenu.Visibility = Visibility.Visible;
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanShowPackageManager()
         {
             return true;
         }
-    }
 
-    public class GoToWorkspaceCommand : ICommand
-    {
-        public void Execute(object parameter)
+        private void GoToWorkspace(object parameter)
         {
             if (parameter is Guid && dynSettings.FunctionDict.ContainsKey((Guid)parameter))
             {
-                DynamoModel.Instance.ViewCustomNodeWorkspace(dynSettings.FunctionDict[(Guid)parameter]);
+                _model.ViewCustomNodeWorkspace(dynSettings.FunctionDict[(Guid)parameter]);
             }
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanGoToWorkspace(object parameter)
         {
             return true;
         }
-    }
 
-    public class DisplayFunctionCommand : ICommand
-    {
-        public void Execute(object parameters)
+        private void DisplayFunction(object parameters)
         {
-            DynamoModel.Instance.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
+            _model.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanDisplayFunction(object parameters)
         {
             FunctionDefinition fd = parameters as FunctionDefinition;
             if (fd == null)
@@ -992,29 +957,20 @@ namespace Dynamo.Controls
 
             return true;
         }
-    }
 
-    public class SetConnectorTypeCommand : ICommand
-    {
-        public void Execute(object parameters)
+        private void SetConnectorType(object parameters)
         {
             if (parameters.ToString() == "BEZIER")
             {
-                DynamoModel.Instance.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
+                _model.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
             }
             else
             {
-                DynamoModel.Instance.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
+                _model.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
             }
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanSetConnectorType(object parameters)
         {
             //parameter object will be BEZIER or POLYLINE
             if (string.IsNullOrEmpty(parameters.ToString()))
