@@ -166,8 +166,8 @@ namespace Dynamo.Utilities
             double avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
             double avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
 
-            double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI));
-            double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
+            double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI)) + 24;
+            double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI)) + 30;
             double rightMost = selectedNodeSet.Max(node => Canvas.GetLeft(node.NodeUI) + node.NodeUI.Width);
 
             #endregion
