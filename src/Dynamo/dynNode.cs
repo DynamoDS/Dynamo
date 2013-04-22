@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
 
-        //public dynNodeUI NodeUI;
+        public dynNodeUI NodeUI;
 
         public Dictionary<int, Tuple<int, dynNode>> Inputs = 
             new Dictionary<int, Tuple<int, dynNode>>();

@@ -168,7 +168,7 @@ namespace Dynamo.Commands
         {
             this._client = dynSettings.Controller.PackageManagerClient;
 
-            var nodeList = dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI && ((dynNodeUI)x).NodeLogic is dynFunction )
+            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNodeUI && ((dynNodeUI)x).NodeLogic is dynFunction )
                                         .Select(x => ( ((dynNodeUI)x).NodeLogic as dynFunction ).Definition.FunctionId ).ToList();
 
             if (nodeList.Count != 1)

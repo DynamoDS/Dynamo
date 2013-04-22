@@ -35,9 +35,9 @@ namespace Dynamo.Nodes
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!dynSettings.Bench.WorkBench.Selection.Contains(this))
+            if (!DynamoSelection.Instance.Selection.Contains(this))
             {
-                dynSettings.Bench.WorkBench.Selection.Add(this);
+                DynamoSelection.Instance.Selection.Add(this);
             }
         }
 

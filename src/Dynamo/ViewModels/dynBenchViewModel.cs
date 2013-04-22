@@ -704,7 +704,7 @@ namespace Dynamo.Controls
 
             //clear the selection so we can put the
             //paste contents in
-            dynSettings.Bench.WorkBench.Selection.RemoveAll();
+            DynamoSelection.Instance.Selection.RemoveAll();
 
             var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNodeViewModel);
 

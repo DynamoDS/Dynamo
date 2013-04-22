@@ -175,7 +175,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
         }
 
@@ -254,7 +254,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
@@ -285,7 +285,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
@@ -320,7 +320,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
@@ -355,7 +355,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
@@ -395,7 +395,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CopyCmd, null));
@@ -546,7 +546,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(1, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
             }
         }
 
@@ -648,7 +648,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(i + 1, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
             // the number selected stays the same
@@ -659,7 +659,7 @@ namespace Dynamo.Tests
                                                                                          .NodeUI));
                 dynSettings.Controller.ProcessCommandQueue();
 
-                Assert.AreEqual(numNodes, dynSettings.Bench.WorkBench.Selection.Count);
+                Assert.AreEqual(numNodes, DynamoSelection.Instance.Selection.Count);
             }
         }
 

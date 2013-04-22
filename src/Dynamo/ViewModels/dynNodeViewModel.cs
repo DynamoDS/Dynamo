@@ -233,7 +233,7 @@ namespace Dynamo.Controls
             switch (e.PropertyName)
             {
                 case "NickName":
-                    RaisePropertyChanged("NickName")
+                    RaisePropertyChanged("NickName");
                     break;
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
