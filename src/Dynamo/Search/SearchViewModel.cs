@@ -108,6 +108,20 @@ namespace Dynamo.Search
         }
 
         /// <summary>
+        ///     Categories property
+        /// </summary>
+        /// <value>
+        ///     A set of categories
+        /// </value>
+        public IEnumerable<string> Categories
+        {
+            get
+            {
+                return NodeCategories.Keys;
+            }
+        }
+
+        /// <summary>
         ///     NodeCategories property
         /// </summary>
         /// <value>

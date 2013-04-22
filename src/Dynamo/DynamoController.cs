@@ -24,6 +24,7 @@ using Dynamo.Search;
 using Dynamo.Utilities;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using MenuItem = System.Windows.Controls.MenuItem;
+using Dynamo.Utilties;
 
 namespace Dynamo
 {
@@ -32,7 +33,7 @@ namespace Dynamo
 
         #region properties
 
-        private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
+        public readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
             new SortedDictionary<string, TypeLoadData>();
 
         public readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
@@ -133,6 +134,9 @@ namespace Dynamo
 
         #region Constructor and Initialization
 
+        /// <summary>
+        ///     Class constructor
+        /// </summary>
         public DynamoController(ExecutionEnvironment env)
         {
             dynSettings.Controller = this;
@@ -140,13 +144,6 @@ namespace Dynamo
             this.RunEnabled = true;
             this.CanRunDynamically = true;
 
-            this.Initialize(env);
-        }
-
-        private void Initialize(ExecutionEnvironment env)
-        {
-
-            
             Bench = new dynBench(this);
             DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
             dynSettings.Bench = Bench;
@@ -172,8 +169,8 @@ namespace Dynamo
                 "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            LoadBuiltinTypes();
-            PopulateSamplesMenu();
+            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this, Bench);
+            DynamoLoader.LoadSamplesMenu(Bench);
 
             Bench.settings_curves.IsChecked = true;
             Bench.settings_curves.IsChecked = false;
@@ -191,13 +188,18 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        ///     This callback is executed when the BenchUI has completed activation.
+        /// </summary>
+        /// <parameter>The sender (presumably the Bench) </parameter>
+        /// <parameter>Any arguments it passes</parameter>
         private void OnBenchActivated(object sender, EventArgs e)
         {
             if (!_benchActivated)
             {
                 _benchActivated = true;
 
-                LoadCustomNodes();
+                DynamoLoader.LoadCustomNodes(dynSettings.Bench);
 
                 Bench.Log("Welcome to Dynamo!");
 
@@ -231,11 +233,15 @@ namespace Dynamo
         #endregion
 
         #region CommandQueue
+    
         private void Hooks_DispatcherInactive(object sender, EventArgs e)
         {
             ProcessCommandQueue();
         }
 
+        /// <summary>
+        ///     Run all of the commands in the CommandQueue
+        /// </summary>
         public void ProcessCommandQueue()
         {
             while (commandQueue.Count > 0)
@@ -258,265 +264,19 @@ namespace Dynamo
                                                        Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
             }
         }
-        #endregion
 
-        #region Loading
-
+        /// <summary>
+        ///     Sets the load path
+        /// </summary>
         internal void QueueLoad(string path)
         {
             UnlockLoadPath = path;
         }
 
-        /// <summary>
-        ///     Setup the "Add" menu with all available dynElement types.
-        /// </summary>
-        private void LoadBuiltinTypes()
-        {
-            Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
-
-            string location = Path.GetDirectoryName(dynamoAssembly.Location);
-
-            #region determine assemblies to load
-
-            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>(
-                AppDomain.CurrentDomain.GetAssemblies().ToDictionary(x => x.Location));
-
-            var allLoadedAssemblies = new Dictionary<string, Assembly>();
-
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-                allLoadedAssemblies[assembly.FullName] = assembly;
-
-            //var tempDomain = AppDomain.CreateDomain("TemporaryAppDomain");
-
-            string path = Path.Combine(location, "Packages");
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            IEnumerable<string> allDynamoAssemblyPaths =
-                Directory.GetFiles(location, "*.dll")
-                         .Concat(Directory.GetFiles(
-                             path,
-                             "*.dll",
-                             SearchOption.AllDirectories));
-
-            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
-                {
-                    Assembly result;
-                    allLoadedAssemblies.TryGetValue(args.Name, out result);
-                    return result;
-                });
-
-            AppDomain.CurrentDomain.AssemblyResolve += resolver;
-
-            foreach (string assemblyPath in allDynamoAssemblyPaths)
-            {
-                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-                    loadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
-                    //loadedAssemblies.Add(allLoadedAssemblies[assemblyPath]);
-                else
-                {
-                    try
-                    {
-                        Assembly assembly = Assembly.LoadFrom(assemblyPath);
-                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        loadNodesFromAssembly(assembly);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-
-            AppDomain.CurrentDomain.AssemblyResolve -= resolver;
-
-            //AppDomain.Unload(tempDomain);
-
-            #endregion
-        
-        }
-
-        private bool isNodeSubType(Type t)
-        {
-            return t.Namespace == "Dynamo.Nodes" &&
-                   !t.IsAbstract &&
-                   t.IsSubclassOf(typeof (dynNode));
-        }
-
-        private void loadNodesFromAssembly(Assembly assembly)
-        {
-            try
-            {
-                Type[] loadedTypes = assembly.GetTypes();
-
-                foreach (Type t in loadedTypes)
-                {
-                    //only load types that are in the right namespace, are not abstract
-                    //and have the elementname attribute
-                    object[] attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
-
-                    if (isNodeSubType(t) && attribs.Length > 0)
-                    {
-                        SearchViewModel.Add(t);
-                        string typeName = (attribs[0] as NodeNameAttribute).Name;
-                        var data = new TypeLoadData(assembly, t);
-                        builtinTypesByNickname.Add(typeName, data);
-                        builtinTypesByTypeName.Add(t.FullName, data);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Bench.Log("Could not load types.");
-                Bench.Log(e);
-                if (e is ReflectionTypeLoadException)
-                {
-                    var typeLoadException = e as ReflectionTypeLoadException;
-                    Exception[] loaderExceptions = typeLoadException.LoaderExceptions;
-                    Bench.Log("Dll Load Exception: " + loaderExceptions[0]);
-                    Bench.Log(loaderExceptions[0].ToString());
-                    if (loaderExceptions.Count() > 1)
-                    {
-                        Bench.Log("Dll Load Exception: " + loaderExceptions[1]);
-                        Bench.Log(loaderExceptions[1].ToString());
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Setup the "Samples" sub-menu with contents of samples directory.
-        /// </summary>
-        private void PopulateSamplesMenu()
-        {
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string samplesPath = Path.Combine(directory, "samples");
-
-            if (Directory.Exists(samplesPath))
-            {
-                string[] dirPaths = Directory.GetDirectories(samplesPath);
-                string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
-
-                // handle top-level files
-                if (filePaths.Any())
-                {
-                    foreach (string path in filePaths)
-                    {
-                        var item = new MenuItem
-                            {
-                                Header = Path.GetFileNameWithoutExtension(path),
-                                Tag = path
-                            };
-                        item.Click += sample_Click;
-                        Bench.SamplesMenu.Items.Add(item);
-                    }
-                }
-
-                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
-                if (dirPaths.Any())
-                {
-                    foreach (string dirPath in dirPaths)
-                    {
-                        var dirItem = new MenuItem
-                            {
-                                Header = Path.GetFileName(dirPath),
-                                Tag = Path.GetFileName(dirPath)
-                            };
-
-                        filePaths = Directory.GetFiles(dirPath, "*.dyn");
-                        if (filePaths.Any())
-                        {
-                            foreach (string path in filePaths)
-                            {
-                                var item = new MenuItem
-                                    {
-                                        Header = Path.GetFileNameWithoutExtension(path),
-                                        Tag = path
-                                    };
-                                item.Click += sample_Click;
-                                dirItem.Items.Add(item);
-                            }
-                        }
-                        Bench.SamplesMenu.Items.Add(dirItem);
-                    }
-                    return;
-                }
-            }
-            //this.fileMenu.Items.Remove(this.samplesMenu);
-        }
-
-        // TODO: deprecated callback
-        private void sample_Click(object sender, RoutedEventArgs e)
-        {
-            var path = (string) ((MenuItem) sender).Tag;
-
-            if (Bench.UILocked)
-                QueueLoad(path);
-            else
-            {
-                if (!ViewingHomespace)
-                    ViewHomeWorkspace();
-
-                OpenWorkbench(path);
-            }
-        }
-
-        /// <summary>
-        ///     Setup the "Add" menu with all available user-defined types.
-        /// </summary>
-        public void LoadCustomNodes()
-        {
-
-            // custom node loader
-
-                //CustomNodeLoader.UpdateSearchPath();
-
-                //var nn = CustomNodeLoader.GetNodeNameGuidPairs();
-
-                //// add nodes to search
-                //foreach (var pair in nn)
-                //{
-                //    SearchViewModel.Add(pair.Item1, pair.Item2);
-                //}
-
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
-
-            if (Directory.Exists(pluginsPath))
-            {
-                Bench.Log("Autoloading definitions...");
-                loadUserWorkspaces(pluginsPath);
-
-                sw.Stop();
-                Bench.Log(string.Format("{0} ellapsed for loading definitions.", sw.Elapsed));
-            }
-
-        }
-
-        private void loadUserWorkspaces(string directory)
-        {
-            dynSettings.FunctionDict.Clear();
-            dynSettings.FunctionWasEvaluated.Clear();
-
-            var parentBuffer = new Dictionary<Guid, HashSet<Guid>>();
-            var childrenBuffer = new Dictionary<Guid, HashSet<FunctionDefinition>>();
-            string[] filePaths = Directory.GetFiles(directory, "*.dyf");
-            foreach (string filePath in filePaths)
-            {
-                OpenDefinition(filePath, childrenBuffer, parentBuffer);
-            }
-            foreach (dynNode e in AllNodes)
-            {
-                e.EnableReporting();
-            }
-        }
-
-        // get guid from 
-
         #endregion
+
+
+
 
         #region Node Initialization
 
@@ -634,8 +394,8 @@ namespace Dynamo
                 Bench.homeButton.IsEnabled = true;
 
                 Bench.workspaceLabel.Content = CurrentSpace.Name;
-                Bench.editNameButton.Visibility = Visibility.Visible;
-                Bench.editNameButton.IsHitTestVisible = true;
+                //Bench.editNameButton.Visibility = Visibility.Visible;
+                //Bench.editNameButton.IsHitTestVisible = true;
                 Bench.setFunctionBackground();
             }
 
@@ -648,7 +408,7 @@ namespace Dynamo
             return new dynFunction(inputs, outputs, functionDefinition);
         }
 
-        internal dynNode CreateDragNode(string name)
+        internal dynNode CreateNode(string name)
         {
             dynNode result;
 
@@ -665,10 +425,20 @@ namespace Dynamo
             {
                 TypeLoadData tld = builtinTypesByNickname[name];
 
-                ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                var newEl = (dynNode) obj.Unwrap();
-                newEl.NodeUI.DisableInteraction();
-                result = newEl;
+                try
+                {
+
+                    ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                    var newEl = (dynNode)obj.Unwrap();
+                    newEl.NodeUI.DisableInteraction();
+                    result = newEl;
+                }
+                catch (Exception ex)
+                {
+                    Bench.Log("Failed to load built-in type");
+                    Bench.Log(ex);
+                    result = null;
+                }
             }
             else
             {
@@ -769,7 +539,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="workSpace">The workspace</param>
         /// <returns>The generated xmldoc</returns>
-        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace )
+        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace)
         {
             try
             {
@@ -786,9 +556,9 @@ namespace Dynamo
                     root.SetAttribute("Name", workSpace.Name);
                     root.SetAttribute("Category", ((FuncWorkspace) workSpace).Category);
                     root.SetAttribute(
-                        "ID",
-                        dynSettings.FunctionDict.Values
-                                   .First(x => x.Workspace == workSpace).FunctionId.ToString());
+                            "ID",
+                            dynSettings.FunctionDict.Values
+                                       .First(x => x.Workspace == workSpace).FunctionId.ToString());
                 }
 
                 xmlDoc.AppendChild(root);
@@ -1041,16 +811,46 @@ namespace Dynamo
                 foreach (dynNode el in functionWorkspace.Nodes)
                     el.onSave();
 
-                //Update new add menu
-                //var addItem = (dynFunction) Bench.addMenuItemsDictNew[functionWorkspace.Name].NodeLogic;
-                //addItem.SetInputs(inputNames);
-                //addItem.SetOutputs(outputNames);
-                //addItem.NodeUI.RegisterAllPorts();
-                //addItem.NodeUI.State = ElementState.DEAD;
             }
             catch (Exception ex)
             {
                 Bench.Log(ex.GetType() + ": " + ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        ///     Save a function.  This includes writing to a file and compiling the 
+        ///     function and saving it to the FSchemeEnvironment
+        /// </summary>
+        /// <param name="definition">The definition to saveo</param>
+        /// <param name="bool">Whether to write the function to file</param>
+        /// <returns>Whether the operation was successful</returns>
+        public string SaveFunctionOnly(FunctionDefinition definition)
+        {
+            if (definition == null)
+                return "";
+
+            // Get the internal nodes for the function
+            dynWorkspace functionWorkspace = definition.Workspace;
+
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string pluginsPath = Path.Combine(directory, "definitions");
+
+            try
+            {
+                if (!Directory.Exists(pluginsPath))
+                    Directory.CreateDirectory(pluginsPath);
+
+                string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
+                SaveWorkspace(path, functionWorkspace);
+                return path;
+            }
+            catch (Exception e)
+            {
+                Bench.Log("Error saving:" + e.GetType());
+                Bench.Log(e);
+                return "";
             }
 
         }
@@ -1078,7 +878,7 @@ namespace Dynamo
                 new Dictionary<Guid, HashSet<Guid>>());
         }
 
-        private bool OpenDefinition(
+        internal bool OpenDefinition(
             string xmlPath,
             Dictionary<Guid, HashSet<FunctionDefinition>> children,
             Dictionary<Guid, HashSet<Guid>> parents)
@@ -1123,6 +923,8 @@ namespace Dynamo
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
+
+                #endregion
 
                 //If there is no function name, then we are opening a home definition
                 if (funName == null)
@@ -1348,8 +1150,6 @@ namespace Dynamo
 
                 hideWorkspace(ws);
 
-                #endregion
-
                 ws.FilePath = xmlPath;
 
                 bool canLoad = true;
@@ -1425,7 +1225,7 @@ namespace Dynamo
                 n.Visibility = Visibility.Hidden;
         }
 
-        private bool OpenWorkbench(string xmlPath)
+        public bool OpenWorkbench(string xmlPath)
         {
             Bench.Log("Opening home workspace " + xmlPath + "...");
             CleanWorkbench();
@@ -1831,8 +1631,10 @@ namespace Dynamo
                     string inputName = i.ToString();
                     topNode.AddInput(inputName);
                     topNode.ConnectInput(inputName, topMost.BuildExpression(buildDict));
+
                     i++;
                 }
+                
 
                 FScheme.Expression runningExpression = topNode.Compile();
 
@@ -1989,7 +1791,7 @@ namespace Dynamo
                     {
                         if (funcDef.Workspace.Nodes.Contains(e))
                         {
-                            DisplayFunction(funcDef);
+                            ViewCustomNodeWorkspace(funcDef);
                             break;
                         }
                     }
@@ -2001,8 +1803,10 @@ namespace Dynamo
 
         #endregion
 
-        #region Changing Workspace Views
-
+        /// <summary>
+        ///     Change the currently visible workspace to the home workspace
+        /// </summary>
+        /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
         internal void ViewHomeWorkspace()
         {
             //Step 1: Make function workspace invisible
@@ -2018,19 +1822,11 @@ namespace Dynamo
             {
                 note.Visibility = Visibility.Hidden;
             }
-            //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
-
-            //Step 2: Store function workspace in the function dictionary
-            //this.FunctionDict[this.CurrentSpace.Name] = this.CurrentSpace;
 
             //Step 3: Save function
             SaveFunction( dynSettings.FunctionDict.Values.FirstOrDefault(x => x.Workspace == CurrentSpace) );
 
             //Step 4: Make home workspace visible
-            //this.elements = this.homeSpace.elements;
-            //this.connectors = this.homeSpace.connectors;
-            //this.CurrentX = this.homeSpace.savedX;
-            //this.CurrentY = this.homeSpace.savedY;
             CurrentSpace = HomeSpace;
 
             foreach (dynNode ele in Nodes)
@@ -2046,22 +1842,25 @@ namespace Dynamo
                 note.Visibility = Visibility.Visible;
             }
 
-            //this.saveFuncItem.IsEnabled = false;
             Bench.homeButton.IsEnabled = false;
-            //this.varItem.IsEnabled = false;
 
+            // TODO: get this out of here
             PackageManagerClient.HidePackageControlInformation();
 
             Bench.workspaceLabel.Content = "Home";
-            Bench.editNameButton.Visibility = Visibility.Collapsed;
-            Bench.editNameButton.IsHitTestVisible = false;
+            //Bench.editNameButton.Visibility = Visibility.Collapsed;
+            //Bench.editNameButton.IsHitTestVisible = false;
 
             Bench.setHomeBackground();
 
             CurrentSpace.OnDisplayed();
         }
 
-        internal void DisplayFunction(FunctionDefinition symbol)
+        /// <summary>
+        ///     Change the currently visible workspace to a custom node's workspace
+        /// </summary>
+        /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
+        internal void ViewCustomNodeWorkspace(FunctionDefinition symbol)
         {
             if (symbol == null || CurrentSpace.Name.Equals(symbol.Workspace.Name))
                 return;
@@ -2096,11 +1895,6 @@ namespace Dynamo
                 SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
             }
 
-            //Step 4: Make home workspace visible
-            //this.elements = newWs.elements;
-            //this.connectors = newWs.connectors;
-            //this.CurrentX = newWs.savedX;
-            //this.CurrentY = newWs.savedY;
             CurrentSpace = newWs;
 
             foreach (dynNode ele in Nodes)
@@ -2133,11 +1927,11 @@ namespace Dynamo
             CurrentSpace.OnDisplayed();
         }
 
-        #endregion
-
-        #region Updating Nodes
-
-        internal void SaveNameEdit()
+        /// <summary>
+        ///     Update a custom node after refactoring.  Updates search and all instances of the node.
+        /// </summary>
+        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
+        internal void RefactorCustomNode()
         {
             string newName = Bench.editNameBox.Text;
 
@@ -2148,47 +1942,7 @@ namespace Dynamo
             }
 
             Bench.workspaceLabel.Content = Bench.editNameBox.Text;
-
             SearchViewModel.Refactor(CurrentSpace, newName);
-
-            //var newAddItem = (dynFunction) Bench.addMenuItemsDictNew[CurrentSpace.Name].NodeLogic;
-            //if (newAddItem.NodeUI.NickName.Equals(CurrentSpace.Name))
-            //    newAddItem.NodeUI.NickName = newName;
-            //newAddItem.Symbol = newName;
-            //Bench.addMenuItemsDictNew.Remove(CurrentSpace.Name);
-            //Bench.addMenuItemsDictNew[newName] = newAddItem.NodeUI;
-
-            ////Sort the menu after a rename
-            //Expander unsorted = Bench.addMenuCategoryDict.Values.FirstOrDefault(
-            //    ex => ((WrapPanel) ex.Content).Children.Contains(newAddItem.NodeUI)
-            //    );
-
-            //var wp = (WrapPanel) unsorted.Content;
-
-            //var sortedElements = new SortedList<string, dynNodeUI>();
-            //foreach (dynNodeUI child in wp.Children)
-            //{
-            //    sortedElements.Add(child.NickName, child);
-            //}
-
-            //wp.Children.Clear();
-
-            //foreach (dynNodeUI child in sortedElements.Values)
-            //{
-            //    wp.Children.Add(child);
-            //}
-
-
-            ////Update search dictionary after a rename
-            //IEnumerable<string> oldTags = CurrentSpace.Name.Split(' ').Where(x => x.Length > 0);
-            //searchDict.Remove(newAddItem.NodeUI, oldTags);
-            //searchDict.Add(newAddItem.NodeUI, CurrentSpace.Name);
-
-            //IEnumerable<string> newTags = newName.Split(' ').Where(x => x.Length > 0);
-            //searchDict.Add(newAddItem.NodeUI, newTags);
-            //searchDict.Add(newAddItem.NodeUI, newName);
-
-            //------------------//
 
             //Update existing function nodes
             foreach (dynNode el in AllNodes)
@@ -2197,10 +1951,13 @@ namespace Dynamo
                 {
                     var node = (dynFunction) el;
 
+                    if (node.Definition == null)
+                    {
+                        node.Definition = dynSettings.FunctionDict[Guid.Parse( node.Symbol ) ];
+                    }
+
                     if (!node.Definition.Workspace.Name.Equals(CurrentSpace.Name))
                         continue;
-
-                    //node.Symbol = newName;
 
                     //Rename nickname only if it's still referring to the old name
                     if (node.NodeUI.NickName.Equals(CurrentSpace.Name))
@@ -2227,476 +1984,22 @@ namespace Dynamo
                 }
             }
 
-            //Update function dictionary
-            //var tmp = this.FunctionDict[this.CurrentSpace.Name];
-            //this.FunctionDict.Remove(this.CurrentSpace.Name);
-            //this.FunctionDict[newName] = tmp;
-
             (CurrentSpace).Name = newName;
 
             SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
         }
 
-        #endregion
-
-        #region Node from selection
-
-        internal void NodeFromSelection(IEnumerable<dynNode> selectedNodes)
+        /// <summary>
+        ///     Collapse a set of nodes in the current workspace.  Has the side effects of prompting the user
+        ///     first in order to obtain the name and category for the new node, 
+        ///     writes the function to a dyf file, adds it to the FunctionDict, adds it to search, and compiles and 
+        ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
+        /// </summary>
+        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
+        internal void CollapseNodes(IEnumerable<dynNode> selectedNodes)
         {
-            var selectedNodeSet = new HashSet<dynNode>(selectedNodes);
-
-            // TODO: this code needs refactoring
-            #region Prompt
-
-            //First, prompt the user to enter a name
-            string newNodeName, newNodeCategory;
-            string error = "";
-
-            do
-            {
-                var dialog = new FunctionNamePrompt(Bench.addMenuCategoryDict.Keys, error);
-                if (dialog.ShowDialog() != true)
-                {
-                    return;
-                }
-
-                newNodeName = dialog.Text;
-                newNodeCategory = dialog.Category;
-
-                if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == newNodeName))
-                {
-                    error = "A function with this name already exists.";
-                }
-                else if (newNodeCategory.Equals(""))
-                {
-                    error = "Please enter a valid category.";
-                }
-                else
-                {
-                    error = "";
-                }
-            } while (!error.Equals(""));
-
-            FunctionDefinition newNodeDefinition = NewFunction(Guid.NewGuid(), newNodeName, newNodeCategory, false);
-            dynWorkspace newNodeWorkspace = newNodeDefinition.Workspace;
-
-            #endregion
-
-            CurrentSpace.DisableReporting();
-
-            #region Determine Inputs and Outputs
-
-            //Step 1: determine which nodes will be inputs to the new node
-            var inputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
-                    selectedNodeSet
-                        .SelectMany( node => Enumerable.Range(0, node.InPortData.Count)
-                            .Where(node.HasInput)
-                            .Select(data => Tuple.Create(node, data, node.Inputs[data]))
-                                                 .Where( input => !selectedNodeSet.Contains(input.Item3.Item2))));
-
-            var outputs = new HashSet<Tuple<dynNode, int, Tuple<int, dynNode>>>(
-                selectedNodeSet.SelectMany(
-                    node => Enumerable.Range(0, node.OutPortData.Count).Where(node.HasOutput).SelectMany(
-                        data => node.Outputs[data]
-                                    .Where(output => !selectedNodeSet.Contains(output.Item2))
-                                    .Select(output => Tuple.Create(node, data, output)))));
-
-            #endregion
-
-            #region Detect 1-node holes (higher-order function extraction)
-
-            var curriedNodeArgs =
-                new HashSet<dynNode>(
-                    inputs
-                        .Select(x => x.Item3.Item2)
-                        .Intersect(outputs.Select(x => x.Item3.Item2)))
-                    .Select(
-                        outerNode =>
-                            {
-                                var node = new dynApply1();
-
-                                dynNodeUI nodeUI = node.NodeUI;
-
-                                var elNameAttrib =
-                                    node.GetType().GetCustomAttributes(typeof (NodeNameAttribute), true)[0] as
-                                    NodeNameAttribute;
-                                if (elNameAttrib != null)
-                                {
-                                    nodeUI.NickName = elNameAttrib.Name;
-                                }
-
-                                nodeUI.GUID = Guid.NewGuid();
-
-                                //store the element in the elements list
-                                newNodeWorkspace.Nodes.Add(node);
-                                node.WorkSpace = newNodeWorkspace;
-
-                                node.DisableReporting();
-
-                                Bench.WorkBench.Children.Add(nodeUI);
-
-                                //Place it in an appropriate spot
-                                Canvas.SetLeft(nodeUI, Canvas.GetLeft(outerNode.NodeUI));
-                                Canvas.SetTop(nodeUI, Canvas.GetTop(outerNode.NodeUI));
-
-                                //Fetch all input ports
-                                // in order
-                                // that have inputs
-                                // and whose input comes from an inner node
-                                List<int> inPortsConnected = Enumerable.Range(0, outerNode.InPortData.Count)
-                                                                       .Where(
-                                                                           x =>
-                                                                           outerNode.HasInput(x) &&
-                                                                           selectedNodeSet.Contains(
-                                                                               outerNode.Inputs[x].Item2))
-                                                                       .ToList();
-
-                                var nodeInputs = outputs
-                                    .Where(output => output.Item3.Item2 == outerNode)
-                                    .Select(
-                                        output =>
-                                        new
-                                            {
-                                                InnerNodeInputSender = output.Item1,
-                                                OuterNodeInPortData = output.Item3.Item1
-                                            }).ToList();
-
-                                nodeInputs.ForEach(_ => node.AddInput());
-
-                                node.NodeUI.RegisterAllPorts();
-
-                                Bench.WorkBench.UpdateLayout();
-
-                                return new
-                                    {
-                                        OuterNode = outerNode,
-                                        InnerNode = node,
-                                        Outputs = inputs.Where(input => input.Item3.Item2 == outerNode)
-                                                        .Select(input => input.Item3.Item1),
-                                        Inputs = nodeInputs,
-                                        OuterNodePortDataList = inPortsConnected
-                                    };
-                            }).ToList();
-
-            #endregion
-            
-            #region UI Positioning Calculations
-
-            double avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
-            double avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
-
-            double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI));
-            double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
-            double rightMost = selectedNodeSet.Max(node => Canvas.GetLeft(node.NodeUI) + node.NodeUI.Width);
-
-            #endregion
-
-            #region Move selection to new workspace
-
-            var connectors = new HashSet<dynConnector>(
-                CurrentSpace.Connectors.Where(
-                    conn => selectedNodeSet.Contains(conn.Start.Owner.NodeLogic)
-                            && selectedNodeSet.Contains(conn.End.Owner.NodeLogic)));
-
-            //Step 2: move all nodes to new workspace
-            //  remove from old
-            CurrentSpace.Nodes.RemoveAll(selectedNodeSet.Contains);
-            CurrentSpace.Connectors.RemoveAll(connectors.Contains);
-            //  add to new
-            newNodeWorkspace.Nodes.AddRange(selectedNodeSet);
-            newNodeWorkspace.Connectors.AddRange(connectors);
-
-            double leftShift = leftMost - 250;
-            foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
-            {
-                Canvas.SetLeft(node, Canvas.GetLeft(node) - leftShift);
-                Canvas.SetTop(node, Canvas.GetTop(node) - topMost);
-            }
-
-            #endregion
-            
-            #region Insert new node into the current workspace
-
-            //Step 5: insert new node into original workspace
-            var collapsedNode = new dynFunction(
-                inputs.Select(x => x.Item1.InPortData[x.Item2].NickName),
-                outputs
-                    .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))
-                    .Select(x => x.Item1.OutPortData[x.Item2].NickName),
-                newNodeDefinition);
-
-            collapsedNode.NodeUI.GUID = Guid.NewGuid();
-
-            CurrentSpace.Nodes.Add(collapsedNode);
-            collapsedNode.WorkSpace = CurrentSpace;
-
-            Bench.WorkBench.Children.Add(collapsedNode.NodeUI);
-
-            Canvas.SetLeft(collapsedNode.NodeUI, avgX);
-            Canvas.SetTop(collapsedNode.NodeUI, avgY);
-
-            Bench.WorkBench.UpdateLayout();
-
-            #endregion
-
-            #region Destroy all hanging connectors
-
-            //Step 6: connect inputs and outputs
-            foreach (dynConnector connector in CurrentSpace.Connectors
-                                                           .Where(
-                                                               c =>
-                                                               selectedNodeSet.Contains(c.Start.Owner.NodeLogic) &&
-                                                               !selectedNodeSet.Contains(c.End.Owner.NodeLogic))
-                                                           .ToList())
-            {
-                connector.Kill();
-            }
-
-            foreach (dynConnector connector in CurrentSpace.Connectors
-                                                           .Where(
-                                                               c =>
-                                                               !selectedNodeSet.Contains(c.Start.Owner.NodeLogic) &&
-                                                               selectedNodeSet.Contains(c.End.Owner.NodeLogic)).ToList()
-                )
-            {
-                connector.Kill();
-            }
-
-            #endregion
-
-            newNodeWorkspace.Nodes.ForEach(x => x.DisableReporting());
-
-            #region Process inputs
-
-            //Step 3: insert variables (reference step 1)
-            foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
-            {
-                int inputIndex = input.Item1;
-
-                dynNode inputReceiverNode = input.Item2.Item1;
-                int inputReceiverData = input.Item2.Item2;
-
-                dynNode inputNode = input.Item2.Item3.Item2;
-                int inputData = input.Item2.Item3.Item1;
-
-                //Connect outside input to the node
-                CurrentSpace.Connectors.Add(
-                    new dynConnector(
-                        inputNode.NodeUI,
-                        collapsedNode.NodeUI,
-                        inputData,
-                        inputIndex,
-                        0,
-                        true));
-
-                //Create Symbol Node
-                var node = new dynSymbol
-                    {
-                        Symbol = inputReceiverNode.InPortData[inputReceiverData].NickName
-                    };
-
-                dynNodeUI nodeUI = node.NodeUI;
-
-                var elNameAttrib =
-                    node.GetType().GetCustomAttributes(typeof (NodeNameAttribute), true)[0] as NodeNameAttribute;
-                if (elNameAttrib != null)
-                {
-                    nodeUI.NickName = elNameAttrib.Name;
-                }
-
-                nodeUI.GUID = Guid.NewGuid();
-
-                //store the element in the elements list
-                newNodeWorkspace.Nodes.Add(node);
-                node.WorkSpace = newNodeWorkspace;
-
-                node.DisableReporting();
-
-                Bench.WorkBench.Children.Add(nodeUI);
-
-                //Place it in an appropriate spot
-                Canvas.SetLeft(nodeUI, 0);
-                Canvas.SetTop(nodeUI, inputIndex*(50 + node.NodeUI.Height));
-
-                Bench.WorkBench.UpdateLayout();
-
-                var curriedNode = curriedNodeArgs.FirstOrDefault(
-                    x => x.OuterNode == inputNode);
-
-                if (curriedNode == null)
-                {
-                    //Connect it (new dynConnector)
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        nodeUI,
-                                                        inputReceiverNode.NodeUI,
-                                                        0,
-                                                        inputReceiverData,
-                                                        0,
-                                                        false));
-                }
-                else
-                {
-                    //Connect it to the applier
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        nodeUI,
-                                                        curriedNode.InnerNode.NodeUI,
-                                                        0,
-                                                        0,
-                                                        0,
-                                                        false));
-
-                    //Connect applier to the inner input receiver
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        curriedNode.InnerNode.NodeUI,
-                                                        inputReceiverNode.NodeUI,
-                                                        0,
-                                                        inputReceiverData,
-                                                        0,
-                                                        false));
-                }
-            }
-
-            #endregion
-
-            #region Process outputs
-
-            //List of all inner nodes to connect an output. Unique.
-            var outportList = new List<Tuple<dynNode, int>>();
-
-            int i = 0;
-            foreach (var output in outputs)
-            {
-                if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
-                {
-                    dynNode outputSenderNode = output.Item1;
-                    int outputSenderData = output.Item2;
-                    dynNode outputReceiverNode = output.Item3.Item2;
-
-                    if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
-                        continue;
-
-                    outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
-
-                    //Create Symbol Node
-                    var node = new dynOutput
-                        {
-                            Symbol = outputSenderNode.OutPortData[outputSenderData].NickName
-                        };
-
-                    dynNodeUI nodeUI = node.NodeUI;
-
-                    var elNameAttrib =
-                        node.GetType().GetCustomAttributes(typeof (NodeNameAttribute), false)[0] as NodeNameAttribute;
-                    if (elNameAttrib != null)
-                    {
-                        nodeUI.NickName = elNameAttrib.Name;
-                    }
-
-                    nodeUI.GUID = Guid.NewGuid();
-
-                    //store the element in the elements list
-                    newNodeWorkspace.Nodes.Add(node);
-                    node.WorkSpace = newNodeWorkspace;
-
-                    node.DisableReporting();
-
-                    Bench.WorkBench.Children.Add(nodeUI);
-
-                    //Place it in an appropriate spot
-                    Canvas.SetLeft(nodeUI, rightMost + 75 - leftShift);
-                    Canvas.SetTop(nodeUI, i*(50 + node.NodeUI.Height));
-
-                    Bench.WorkBench.UpdateLayout();
-
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        outputSenderNode.NodeUI,
-                                                        nodeUI,
-                                                        outputSenderData,
-                                                        0,
-                                                        0,
-                                                        false));
-
-                    i++;
-                }
-            }
-
-            //Connect outputs to new node
-            foreach (var output in outputs)
-            {
-                //Node to be connected to in CurrentSpace
-                dynNode outputSenderNode = output.Item1;
-
-                //Port to be connected to on outPutNode_outer
-                int outputSenderData = output.Item2;
-
-                int outputReceiverData = output.Item3.Item1;
-                dynNode outputReceiverNode = output.Item3.Item2;
-
-                var curriedNode = curriedNodeArgs.FirstOrDefault(
-                    x => x.OuterNode == outputReceiverNode);
-
-                if (curriedNode == null)
-                {
-                    CurrentSpace.Connectors.Add(
-                        new dynConnector(
-                            collapsedNode.NodeUI,
-                            outputReceiverNode.NodeUI,
-                            outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
-                            outputReceiverData,
-                            0,
-                            true));
-                }
-                else
-                {
-                    int targetPort = curriedNode.Inputs
-                                                .First(
-                                                    x => x.InnerNodeInputSender == outputSenderNode)
-                                                .OuterNodeInPortData;
-
-                    int targetPortIndex = curriedNode.OuterNodePortDataList.IndexOf(targetPort);
-
-                    //Connect it (new dynConnector)
-                    newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        outputSenderNode.NodeUI,
-                                                        curriedNode.InnerNode.NodeUI,
-                                                        outputSenderData,
-                                                        targetPortIndex + 1,
-                                                        0));
-                }
-            }
-
-            #endregion
-
-            #region Make new workspace invisible
-
-            //Step 4: make nodes invisible
-            // and update positions
-            foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
-                node.Visibility = Visibility.Hidden;
-
-            foreach (dynConnector connector in newNodeWorkspace.Connectors)
-                connector.Visible = false;
-
-            #endregion
-
-            newNodeWorkspace.Nodes.ForEach(x =>
-                {
-                    x.EnableReporting();
-                    x.NodeUI.UpdateConnections();
-                });
-
-            collapsedNode.EnableReporting();
-            collapsedNode.NodeUI.UpdateConnections();
-            
-            //set the name on the node
-            collapsedNode.NodeUI.NickName = newNodeName;
-
-            CurrentSpace.EnableReporting();
-
-            SaveFunction(newNodeDefinition, true);
+            Dynamo.Utilities.NodeCollapser.Collapse(selectedNodes, CurrentSpace);
         }
-
-        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
 

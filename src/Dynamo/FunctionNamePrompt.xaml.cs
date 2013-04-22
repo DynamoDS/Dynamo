@@ -24,6 +24,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -32,9 +33,12 @@ namespace Dynamo.Nodes
    /// </summary>
    public partial class FunctionNamePrompt : Window
    {
-      public FunctionNamePrompt(ICollection<string> categories, string error)
+      public FunctionNamePrompt(IEnumerable<string> categories, string error)
       {
          InitializeComponent();
+         this.Owner = dynSettings.Bench;
+         this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
          this.nameBox.Focus();
 
          foreach (var item in categories)

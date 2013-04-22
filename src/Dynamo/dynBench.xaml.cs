@@ -486,7 +486,7 @@ namespace Dynamo.Controls
             dynNode newEl;
             try
             {
-                newEl = Controller.CreateDragNode(name);
+                newEl = Controller.CreateNode(name);
             }
             catch (Exception e)
             {
@@ -552,18 +552,6 @@ namespace Dynamo.Controls
             //start at the bench and move up to root, not raising the event
             //on any other elements
 
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N))
-            {
-                var paramDict = new Dictionary<string, object>();
-                paramDict.Add("x", Mouse.GetPosition(dynSettings.Workbench).X);
-                paramDict.Add("y", Mouse.GetPosition(dynSettings.Workbench).Y);
-                paramDict.Add("workspace", Controller.CurrentSpace);
-                paramDict.Add("text", "New Note");
-                DynamoCommands.AddNoteCmd.Execute(paramDict);
-
-                e.Handled = true;
-            }
-
             IInputElement focusElement = FocusManager.GetFocusedElement(this);
 
             if (focusElement != null &&
@@ -605,7 +593,7 @@ namespace Dynamo.Controls
             {
                 if (Keyboard.IsKeyDown(Key.Enter))
                 {
-                    Controller.SaveNameEdit();
+                    Controller.RefactorCustomNode();
                     DisableEditNameBox();
                     e.Handled = true;
                 }
@@ -615,12 +603,6 @@ namespace Dynamo.Controls
                     e.Handled = true;
                 }
             }
-
-            //if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.F))
-            //{
-            //    SearchBox.Focus();
-            //    SearchBox.SelectAll();
-            //}
         }
 
         internal void setFunctionBackground()
@@ -662,7 +644,7 @@ namespace Dynamo.Controls
         private void image1_MouseEnter(object sender, MouseEventArgs e)
         {
             //highlight
-
+            this.WorkspaceNameContainer.Background = new SolidColorBrush(Colors.LightBlue);
             if (beginNameEditClick && e.LeftButton == MouseButtonState.Released)
             {
                 beginNameEditClick = false;
@@ -672,6 +654,7 @@ namespace Dynamo.Controls
         private void image1_MouseLeave(object sender, MouseEventArgs e)
         {
             //unhighlight
+            this.WorkspaceNameContainer.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
         }
 
         private void image1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -680,7 +663,7 @@ namespace Dynamo.Controls
             {
                 if (editingName)
                 {
-                    Controller.SaveNameEdit();
+                    Controller.RefactorCustomNode();
                     DisableEditNameBox();
                 }
                 else

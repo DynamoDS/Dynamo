@@ -31,17 +31,6 @@ namespace Dynamo.Commands
             }
         }
 
-        private static ToggleShowingClassicNodeNavigatorCommand toggleShowingClassicNodeNavigatorCmd;
-        public static ToggleShowingClassicNodeNavigatorCommand ShowClassicNodeNavigatorCmd
-        {
-            get
-            {
-                if (toggleShowingClassicNodeNavigatorCmd == null)
-                    toggleShowingClassicNodeNavigatorCmd = new ToggleShowingClassicNodeNavigatorCommand();
-                return toggleShowingClassicNodeNavigatorCmd;
-            }
-        }
-
         private static ShowNewFunctionDialogCommand showNewFunctionDialogCmd;
         public static ShowNewFunctionDialogCommand ShowNewFunctionDialogCmd
         {
@@ -475,35 +464,6 @@ namespace Dynamo.Commands
         }
     }
 
-    public class ToggleShowingClassicNodeNavigatorCommand : ICommand
-    {
-
-        public void Execute(object parameters)
-        {
-            if (dynSettings.Bench.sidebarGrid.Visibility == Visibility.Visible)
-            {
-                dynSettings.Bench.sidebarGrid.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                dynSettings.Bench.sidebarGrid.Visibility = Visibility.Visible;
-            }
-            
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
-
-
     public class ShowSaveImageDialogAndSaveResultCommand : ICommand
     {
         private FileDialog _fileDialog;
@@ -683,7 +643,7 @@ namespace Dynamo.Commands
 
             do
             {
-                var dialog = new FunctionNamePrompt( dynSettings.Bench.addMenuCategoryDict.Keys, error);
+                var dialog = new FunctionNamePrompt( dynSettings.Controller.SearchViewModel.Categories, error);
                 if (dialog.ShowDialog() != true)
                 {
                     return;
@@ -798,7 +758,7 @@ namespace Dynamo.Commands
         {
             if (dynSettings.Bench.WorkBench.Selection.Count > 0)
             {
-                dynSettings.Bench.Controller.NodeFromSelection(
+                dynSettings.Bench.Controller.CollapseNodes(
                     dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
                         .Select(x => (x as dynNodeUI).NodeLogic));
             }
@@ -1046,7 +1006,7 @@ namespace Dynamo.Commands
         {
            if (parameter is Guid && dynSettings.FunctionDict.ContainsKey( (Guid)parameter ) )
            {
-               dynSettings.Controller.DisplayFunction( dynSettings.FunctionDict[ (Guid) parameter] );   
+               dynSettings.Controller.ViewCustomNodeWorkspace( dynSettings.FunctionDict[ (Guid) parameter] );   
            }     
         }
 
@@ -1072,7 +1032,7 @@ namespace Dynamo.Commands
                 return;
             }
 
-            dynNode node = dynSettings.Controller.CreateDragNode( data["name"].ToString() );
+            dynNode node = dynSettings.Controller.CreateNode( data["name"].ToString() );
  
             dynNodeUI nodeUi = node.NodeUI; 
             if (dynSettings.Workbench != null)
@@ -1190,7 +1150,7 @@ namespace Dynamo.Commands
 
             if (data != null &&
                 (   dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) || 
-                    dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ) ) ||
+                    //dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ) ) ||
                     dynSettings.FunctionDict.ContainsKey( Guid.Parse( (string) data["name"] ) )))
             {
                 return true;
@@ -1881,7 +1841,7 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            dynSettings.Controller.DisplayFunction((parameters as FunctionDefinition));
+            dynSettings.Controller.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
         }
 
         public event EventHandler CanExecuteChanged
@@ -1932,5 +1892,7 @@ namespace Dynamo.Commands
             return true;
         }
     }
+
+
 
 }

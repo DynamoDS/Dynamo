@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
     {
         WatchTree wt;
         WatchTreeBranch wtb;
-        int oldPreferredHeight;
+        //int oldPreferredHeight;
 
         private class WatchHandlers
         {
@@ -89,11 +89,12 @@ namespace Dynamo.Nodes
             NodeUI.topControl.Width = 300;
             
             //set a default height
-            oldPreferredHeight = NodeUI.PreferredHeight;
-            
+            //oldPreferredHeight = NodeUI.PreferredHeight;
+            NodeUI.Height = 200;
+
             wt = new WatchTree();
-            wt.TreeExpanded += new EventHandler(wt_TreeExpanded);
-            wt.TreeCollapsed += new EventHandler(wt_TreeCollapsed);
+            //wt.TreeExpanded += new EventHandler(wt_TreeExpanded);
+            //wt.TreeCollapsed += new EventHandler(wt_TreeCollapsed);
 
             NodeUI.inputGrid.Children.Add(wt);
 
@@ -107,18 +108,18 @@ namespace Dynamo.Nodes
 
         void wt_TreeCollapsed(object sender, EventArgs e)
         {
-            NodeUI.PreferredHeight = oldPreferredHeight;
+            //NodeUI.PreferredHeight = oldPreferredHeight;
         }
 
         void wt_TreeExpanded(object sender, EventArgs e)
         {
-            NodeUI.PreferredHeight = 200;
+            //NodeUI.PreferredHeight = 200;
         }
 
         void p_PortDisconnected(object sender, EventArgs e)
         {
             wtb.Clear();
-            NodeUI.PreferredHeight = oldPreferredHeight;
+            //NodeUI.PreferredHeight = oldPreferredHeight;
         }
 
         public override Value Evaluate(FSharpList<Value> args)

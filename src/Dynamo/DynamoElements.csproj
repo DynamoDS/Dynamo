@@ -126,6 +126,8 @@ limitations under the License.
     </Compile>
     <Compile Include="Commands.cs" />
     <Compile Include="CustomNodeLoader.cs" />
+    <Compile Include="DynamoLoader.cs" />
+    <Compile Include="NodeCollapser.cs" />
     <Compile Include="Utilities\Converters.cs" />
     <Compile Include="DynamoController.cs" />
     <Compile Include="DynamoSplash.xaml.cs">
@@ -271,10 +273,10 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\DynamoModern.xaml">
+    <Resource Include="Themes\DynamoModern.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
     <Page Include="Themes\DynamoText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -350,6 +352,15 @@ limitations under the License.
     <Resource Include="Images\back.png" />
     <Resource Include="Images\back_24.png" />
     <Resource Include="Images\back_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Anonymous_Pencil_icon_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Anonymous_Pencil_icon_white_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Anonymous_Pencil_icon_white_24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

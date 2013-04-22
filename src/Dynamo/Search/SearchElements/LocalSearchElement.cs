@@ -95,7 +95,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="funcDef">The FunctionDefinition for a custom node</param>
         public LocalSearchElement(FunctionDefinition funcDef)
         {
-            this.Node = dynSettings.Controller.CreateDragNode( funcDef.FunctionId.ToString() );
+            this.Node = dynSettings.Controller.CreateNode( funcDef.FunctionId.ToString() );
             this._name = Node.NodeUI.NickName;
             this.Weight = 1.1;
             this.Keywords = "";

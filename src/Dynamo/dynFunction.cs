@@ -48,7 +48,7 @@ namespace Dynamo
                 //Setup double-click behavior
                 NodeUI.MouseDoubleClick += delegate
                 {
-                    Controller.DisplayFunction(_def);
+                    Controller.ViewCustomNodeWorkspace(_def);
                 };
 
                 NodeUI.RegisterAllPorts();
@@ -60,7 +60,7 @@ namespace Dynamo
                 //Setup double-click behavior
                 NodeUI.MouseDoubleClick += delegate
                 {
-                    Controller.DisplayFunction(_def);
+                    Controller.ViewCustomNodeWorkspace(_def);
                 };
 
                 //Add a drop-shadow
