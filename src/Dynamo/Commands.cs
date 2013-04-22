@@ -1032,7 +1032,7 @@ namespace Dynamo.Commands
                 return;
             }
 
-            dynNode node = dynSettings.Controller.CreateDragNode( data["name"].ToString() );
+            dynNode node = dynSettings.Controller.CreateNode( data["name"].ToString() );
  
             dynNodeUI nodeUi = node.NodeUI; 
             if (dynSettings.Workbench != null)

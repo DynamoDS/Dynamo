@@ -486,7 +486,7 @@ namespace Dynamo.Controls
             dynNode newEl;
             try
             {
-                newEl = Controller.CreateDragNode(name);
+                newEl = Controller.CreateNode(name);
             }
             catch (Exception e)
             {
@@ -644,7 +644,7 @@ namespace Dynamo.Controls
         private void image1_MouseEnter(object sender, MouseEventArgs e)
         {
             //highlight
-
+            this.WorkspaceNameContainer.Background = new SolidColorBrush(Colors.LightBlue);
             if (beginNameEditClick && e.LeftButton == MouseButtonState.Released)
             {
                 beginNameEditClick = false;
@@ -654,6 +654,7 @@ namespace Dynamo.Controls
         private void image1_MouseLeave(object sender, MouseEventArgs e)
         {
             //unhighlight
+            this.WorkspaceNameContainer.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
         }
 
         private void image1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

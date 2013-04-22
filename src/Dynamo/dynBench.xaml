@@ -225,11 +225,11 @@
                     </dragCanvas:DragCanvas>
                 </controls:ZoomBorder>
                 
-                <Grid Canvas.Right="0" Canvas.Top="0" Background="#333">
+                <Grid Name="WorkspaceNameContainer" Canvas.Right="0" Canvas.Top="0" Background="#333">
                     
                     <StackPanel Orientation="Horizontal">
 
-                        <TextBox FontSize="15" Padding="10" Margin="0" Name="editNameBox" Width="150"
+                        <TextBox FontSize="15" Padding="5,7,5,0" Margin="0" Name="editNameBox" Width="150"
                          Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
                          IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
                         
@@ -239,7 +239,7 @@
 
                         <Image Name="editNameButton" Margin="6" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon_white_24.png" 
                             MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
-                            MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Visible" IsHitTestVisible="False" HorizontalAlignment="Right"/>
+                            MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" HorizontalAlignment="Right"/>
                         
                     </StackPanel>
                     
@@ -288,7 +288,6 @@
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" />
         </ScrollViewer>
-
 
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
@@ -361,4 +360,6 @@
                           Margin="0" Background="#FF646464"/>
 
     </Grid>
+    
+    
 </Window>

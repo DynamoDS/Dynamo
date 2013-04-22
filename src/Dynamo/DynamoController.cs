@@ -408,7 +408,7 @@ namespace Dynamo
             return new dynFunction(inputs, outputs, functionDefinition);
         }
 
-        internal dynNode CreateDragNode(string name)
+        internal dynNode CreateNode(string name)
         {
             dynNode result;
 
@@ -1950,6 +1950,11 @@ namespace Dynamo
                 if (el is dynFunction)
                 {
                     var node = (dynFunction) el;
+
+                    if (node.Definition == null)
+                    {
+                        node.Definition = dynSettings.FunctionDict[Guid.Parse( node.Symbol ) ];
+                    }
 
                     if (!node.Definition.Workspace.Name.Equals(CurrentSpace.Name))
                         continue;
