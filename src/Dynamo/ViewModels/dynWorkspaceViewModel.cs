@@ -5,6 +5,7 @@ using System.Linq;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
@@ -12,7 +13,7 @@ namespace Dynamo
 {
     class dynWorkspaceViewModel: dynViewModelBase
     {
-        public dynWorkspace Workspace;
+        public dynWorkspace Workspace { get; set; }
 
         ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
         ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
@@ -26,7 +27,6 @@ namespace Dynamo
                 RaisePropertyChanged("Connectors");
             }
         }
-
         public ObservableCollection<dynWorkspaceViewModel> Nodes
         {
             get { return _nodes; }
@@ -36,7 +36,6 @@ namespace Dynamo
                 RaisePropertyChanged("Nodes");
             }
         }
-
         public ObservableCollection<dynWorkspaceViewModel> Notes
         {
             get { return _notes; }
@@ -47,43 +46,53 @@ namespace Dynamo
             }
         }
 
-        public DelegateCommand CreateNodeCommand { get; set; }
-        public DelegateCommand CreateConnectionCommand { get; set; }
-        public DelegateCommand AddNoteCommand { get; set; }
-        public DelegateCommand DeleteCommand { get; set; }
+        public DelegateCommand<object> CreateNodeCommand { get; set; }
+        public DelegateCommand<object> CreateConnectionCommand { get; set; }
+        public DelegateCommand<string> AddNoteCommand { get; set; }
+        public DelegateCommand<object> DeleteCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
 
-        public double PositionX { get; set; }
-
-        public double PositionY { get; set; }
+        public string Name
+        {
+            get{return Workspace.Name}
+        }
 
         public dynWorkspaceViewModel(dynWorkspace workspace)
         {
             Workspace = workspace;
-            Workspace.NodeAdded += new EventHandler(_workspace_NodeAdded);
-            Workspace.ConnectorAdded += new EventHandler(_workspace_ConnectorAdded);
-            Workspace.NoteAdded += new EventHandler(_workspace_NoteAdded);
+            Workspace.NodeAdded += _workspace_NodeAdded;
+            Workspace.ConnectorAdded += _workspace_ConnectorAdded;
+            Workspace.NoteAdded += _workspace_NoteAdded;
 
-            CreateNodeCommand = new DelegateCommand(new Action<string>(CreateNode()), CanCreateNode());
-            CreateConnectionCommand = new DelegateCommand(new Action<string>(CreateConnection()), CanCreateConnection);
-            AddNoteCommand = new DelegateCommand(new Action<object>(AddNote()), CanAddNote);
-            DeleteCommand = new DelegateCommand(Delete, CanDelete);
+            CreateNodeCommand = new DelegateCommand<object>(CreateNode, CanCreateNode);
+            CreateConnectionCommand = new DelegateCommand<object>(CreateConnection, CanCreateConnection);
+            AddNoteCommand = new DelegateCommand<string>(AddNote, CanAddNote);
+            DeleteCommand = new DelegateCommand<object>(Delete, CanDelete);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
+
+            Workspace.PropertyChanged += Workspace_PropertyChanged;
+        }
+
+        void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == "Name")
+                RaisePropertyChanged("Name");
         }
 
         private void CreateNodeFromSelection()
         {
-            if (dynSettings.Bench.WorkBench.Selection.Count > 0)
-            {
-                DynamoModel.Instance.CollapseNodes(
-                    dynSettings.Bench.WorkBench.Selection.Where(x => x is dynNodeUI)
-                        .Select(x => (x as dynNodeViewModel).NodeLogic));
-            }
+            DynamoModel.Instance.CollapseNodes(
+                DynamoSelection.Instance.Selection.Where(x => x is dynNodeViewModel)
+                    .Select(x => (x as dynNodeViewModel).NodeLogic));
+            
         }
 
         private bool CanCreateNodeFromSelection()
         {
-            return true;
+            if (DynamoSelection.Instance.Selection.Count > 0)
+            {
+                return true;  
+            }
         }
 
         void _workspace_NoteAdded(object sender, EventArgs e)
@@ -101,7 +110,7 @@ namespace Dynamo
             Nodes.Add(new dynNodeModelView(sender as dynNode));
         }
 
-        void CreateNode(string parameters)
+        void CreateNode(object parameters)
         {
             Dictionary<string, object> data = parameters as Dictionary<string, object>;
             if (data == null)
@@ -214,7 +223,7 @@ namespace Dynamo
             }
         }
 
-        bool CanCreateNode()
+        bool CanCreateNode(object parameters)
         {
             Dictionary<string, object> data = parameters as Dictionary<string, object>;
 
@@ -229,7 +238,7 @@ namespace Dynamo
             return false;
         }
 
-        void CreateConnection(string parameters)
+        void CreateConnection(object parameters)
         {
             Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
 
@@ -243,7 +252,7 @@ namespace Dynamo
             dynSettings.Controller.CurrentSpace.Connectors.Add(c);
         }
 
-        bool CanCreateConnection(string parameters)
+        bool CanCreateConnection(object parameters)
         {
             //make sure you have valid connection data
             Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
@@ -314,7 +323,7 @@ namespace Dynamo
             }
         }
 
-        private void CanAddNote()
+        private bool CanAddNote(object parameters)
         {
             return true;
         }

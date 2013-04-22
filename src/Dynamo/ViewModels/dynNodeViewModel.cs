@@ -22,6 +22,7 @@ using System.Collections.ObjectModel;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.Selection;
 using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
@@ -64,7 +65,10 @@ namespace Dynamo.Controls
             }
         }
         
-        public LacingStrategy ArgumentLacing { get; set; }
+        public LacingStrategy ArgumentLacing
+        {
+            get { return nodeLogic.ArgumentLacing; }
+        }
 
         public dynNode NodeLogic
         {
@@ -104,12 +108,7 @@ namespace Dynamo.Controls
 
         public string NickName
         {
-            get { return nickName; }
-            set
-            {
-                nickName = value;
-                RaisePropertyChanged("NickName");
-            }
+            get { return nodeLogic.NickName; }
         }
 
         public ElementState State
@@ -213,43 +212,33 @@ namespace Dynamo.Controls
         public dynNodeViewModel(dynNode logic)
         {
             nodeLogic = logic;
-            ArgumentLacing = NodeLogic.ArgumentLacing;
-            nodeLogic.ArgumentLacingUpdated += new Nodes.LacingTypeChangedHandler(nodeLogic_ArgumentLacingUpdated);
 
             //respond to collection changed events to add
             //and remove port model views
-            logic.InPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(inports_collectionChanged);
-            logic.OutPorts.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(outports_collectionChanged);
+            logic.InPorts.CollectionChanged += inports_collectionChanged;
+            logic.OutPorts.CollectionChanged += outports_collectionChanged;
 
             this.IsSelected = false;
 
-            //Binding heightBinding = new Binding("PreferredHeight");
-            //topControl.SetBinding(UserControl.HeightProperty, heightBinding);
-
             State = ElementState.DEAD;
 
-            //Fetch the element name from the custom attribute.
-            var nameArray = nodeLogic.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
-
-            if (nameArray.Length > 0)
-            {
-                NodeNameAttribute elNameAttrib = nameArray[0] as NodeNameAttribute;
-                if (elNameAttrib != null)
-                {
-                    NickName = elNameAttrib.Name;
-                }
-            }
-            else
-                NickName = "";
+            logic.PropertyChanged += logic_PropertyChanged;
 
             DeleteCommand = new DelegateCommand(new Action(DeleteNode()), CanDeleteNode);
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
         }
 
-        void nodeLogic_ArgumentLacingUpdated(object sender, EventArgs e)
+        void logic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            ArgumentLacing = (sender as dynNode).ArgumentLacing;
-            RaisePropertyChanged("ArgumentLacing");
+            switch (e.PropertyName)
+            {
+                case "NickName":
+                    RaisePropertyChanged("NickName")
+                    break;
+                case "ArgumentLacing":
+                    RaisePropertyChanged("ArgumentLacing");
+                    break;
+            }
         }
 
         private bool CanDeleteNode()
@@ -319,7 +308,7 @@ namespace Dynamo.Controls
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new dynPortModelView(item));
+                    InPorts.Add(new dynPortViewModel(item));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -343,7 +332,7 @@ namespace Dynamo.Controls
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new dynPortModelView(item));
+                    OutPorts.Add(new dynPortViewModel(item));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)

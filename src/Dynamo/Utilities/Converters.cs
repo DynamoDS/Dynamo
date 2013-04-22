@@ -356,4 +356,20 @@ namespace Dynamo.Controls
             throw new NotSupportedException();
         }
     }
+
+    public class CurrentSpaceToBackgroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (DynamoModel.Instance.CurrentSpace == HomeWorkspace)
+                return new SolidColorBrush(Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B));
+
+            return new SolidColorBrush(Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }

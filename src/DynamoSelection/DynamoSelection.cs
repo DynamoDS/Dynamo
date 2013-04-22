@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Microsoft.Practices.Prism.ViewModel;
 
-namespace Dynamo
+namespace Dynamo.Selection
 {
     public class DynamoSelection : NotificationObject
     {

@@ -224,10 +224,10 @@ namespace Dynamo.Utilties
                 dynSettings.Controller.QueueLoad(path);
             else
             {
-                if (!dynSettings.Controller.ViewingHomespace)
-                    dynSettings.Controller.ViewHomeWorkspace();
+                if (!DynamoModel.Instance.ViewingHomespace)
+                    DynamoModel.Instance.ViewHomeWorkspace();
 
-                dynSettings.Controller.OpenWorkbench(path);
+                DynamoModel.Instance.OpenWorkbench(path);
             }
         }
 
@@ -284,7 +284,7 @@ namespace Dynamo.Utilties
             {
                 dynSettings.Controller.OpenDefinition(filePath, childrenBuffer, parentBuffer);
             }
-            foreach (dynNode e in dynSettings.Controller.AllNodes)
+            foreach (dynNode e in DynamoModel.Instance.AllNodes)
             {
                 e.EnableReporting();
             }

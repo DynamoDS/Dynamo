@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Controls;
-using System.Windows;
-using System.Collections;
-using System.Windows.Forms;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
-using System.IO;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using Dynamo.Nodes;
 using Dynamo.Connectors;
+using Dynamo.Selection;
 
 namespace Dynamo.Commands
 {
@@ -67,41 +60,16 @@ namespace Dynamo.Commands
             }
         }
 
-        private static DisplayFunctionCommand displayFunctionCmd;
-        public static DisplayFunctionCommand DisplayFunctionCmd
-        {
-            get
-            {
-                if (displayFunctionCmd == null)
-                    displayFunctionCmd = new DisplayFunctionCommand();
-
-                return displayFunctionCmd;
-            }
-        }
-
-        private static SetConnectorTypeCommand setConnectorTypeCmd;
-        public static SetConnectorTypeCommand SetConnectorTypeCmd
-        {
-            get
-            {
-                if (setConnectorTypeCmd == null)
-                    setConnectorTypeCmd = new SetConnectorTypeCommand();
-
-                return setConnectorTypeCmd;
-            }
-        }
     }
 
     public class SelectNeighborsCommand : ICommand
     {
-
         public void Execute(object parameters)
         {
-            List<ISelectable> sels = dynSettings.Workbench.Selection.ToList<ISelectable>();
+            List<ISelectable> sels = DynamoSelection.Instance.Selection.ToList<ISelectable>();
 
             foreach (ISelectable sel in sels)
             {
-
                 ((dynNodeViewModel)sel).SelectNeighbors();
             }
         }
@@ -145,33 +113,11 @@ namespace Dynamo.Commands
         }
     }
 
-    public class GoToWorkspaceCommand : ICommand
-    {
-        public void Execute(object parameter)
-        {
-           if (parameter is Guid && dynSettings.FunctionDict.ContainsKey( (Guid)parameter ) )
-           {
-               DynamoModel.Instance.ViewCustomNodeWorkspace( dynSettings.FunctionDict[ (Guid) parameter] );   
-           }     
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
-
     public class SelectCommand : ICommand
     {
         public void Execute(object parameters)
         {
-            dynNodeUI node = parameters as dynNodeUI;
+            dynNodeViewModel node = parameters as dynNodeViewModel;
 
             if (!node.IsSelected)
             {
@@ -180,14 +126,14 @@ namespace Dynamo.Commands
                     dynSettings.Bench.WorkBench.ClearSelection();
                 }
 
-                if (!dynSettings.Bench.WorkBench.Selection.Contains(node))
-                    dynSettings.Bench.WorkBench.Selection.Add(node);
+                if (!DynamoSelection.Instance.Selection.Contains(node))
+                    DynamoSelection.Instance.Selection.Add(node);
             }
             else
             {
                 if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                 {
-                    dynSettings.Bench.WorkBench.Selection.Remove(node);
+                    DynamoSelection.Instance.Selection.Remove(node);
                 }
             }
 
@@ -215,12 +161,12 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            dynNodeUI node = parameters as dynNodeUI;
+            dynNodeViewModel node = parameters as dynNodeViewModel;
 
             if (!node.IsSelected)
             {
-                if (!dynSettings.Bench.WorkBench.Selection.Contains(node))
-                    dynSettings.Bench.WorkBench.Selection.Add(node);
+                if (!DynamoSelection.Instance.Selection.Contains(node))
+                    DynamoSelection.Instance.Selection.Add(node);
             }
         }
 
@@ -238,62 +184,6 @@ namespace Dynamo.Commands
                 return false;
             }
 
-            return true;
-        }
-    }
-
-    public class DisplayFunctionCommand : ICommand
-    {
-        public void Execute(object parameters)
-        {
-            DynamoModel.Instance.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            FunctionDefinition fd = parameters as FunctionDefinition;
-            if(fd == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    public class SetConnectorTypeCommand : ICommand
-    {
-        public void Execute(object parameters)
-        {
-            if (parameters.ToString() == "BEZIER")
-            {
-                dynSettings.Controller.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
-            }
-            else
-            {
-                dynSettings.Controller.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
-            }
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            //parameter object will be BEZIER or POLYLINE
-            if(string.IsNullOrEmpty(parameters.ToString()))
-            {
-                return false;
-            }
             return true;
         }
     }

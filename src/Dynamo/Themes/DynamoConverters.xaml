@@ -28,4 +28,5 @@
     <controls:PortTypeToTextAlignmentConverter x:Key="PortTypeToTextAlignmentConverter"/>
     <controls:PortTypeToGridColumnConverter x:Key="PortTypeToGridColumnConverter"/>
     <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter"/>
+    <controls:CurrentSpaceToBackgroundColorConverter x:Key="CurrentSpaceToBackgroundColorConverter"/>
 </ResourceDictionary>

@@ -33,48 +33,48 @@
     <Window.InputBindings>
 
         <KeyBinding Key="Tab"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
+                                Command="{Binding Path=SelectNeighborsCommand}"/>
 
         <KeyBinding Key="Delete"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
+                                Command="{Binding Path=DeleteCommand}"/>
         <KeyBinding Key="N"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"/>
+                                Command="{Binding Path=ShowNewFunctionDialogCmd}"/>
         <KeyBinding Key="Tab"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.SelectNeighborsCmd}}"/>
+                                Command="{Binding Path=SelectNeighborsCmd}"/>
 
         <KeyBinding Key="Delete"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.DeleteCmd}}"/>
+                                Command="{Binding Path=DeleteCommand}"/>
         <KeyBinding Key="C"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}"/>
+                                Command="{Binding Path=CopyCommand}"/>
         <KeyBinding Key="D"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
+                                Command="{Binding Path=NodeFromSelectionCommand}"/>
         <KeyBinding Key="V"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
+                                Command="{Binding Path=PasteCommand}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}"/>
+                                Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCmd}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}"/>
+                                Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}"/>
         <KeyBinding Key="O"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}"/>
+                                Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}"/>
         <KeyBinding Key="H"
                                 Modifiers="Control"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}"/>
+                                Command="{Binding Path=HomeCommand}"/>
         <KeyBinding Key="Up"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}"/>
+                                Command="{Binding Path=ToggleConsoleShowingCommand}"/>
         <KeyBinding Key="F4"
                 Modifiers="Alt"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"/>
+                                Command="{Binding Path=ExitCommand}"/>
         <KeyBinding Key="C"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}"/>
+                                Command="{Binding Path=ClearCommand}"/>
 
         <KeyBinding Key="R"
                 Modifiers="Ctrl"
@@ -103,50 +103,50 @@
 
             <MenuItem Header="_File" Name="fileMenu">
 
-                <MenuItem Header="_New Custom Node..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                <MenuItem Header="_New Custom Node..." Command="{Binding Path=ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
                 </MenuItem>
 
-                <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}" Name="openButton" InputGestureText="Ctrl+O">
+                <MenuItem Header="_Open..." Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl+O">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Save" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}" Name="saveThisButton" InputGestureText="Ctrl+S">
+                <MenuItem Header="_Save" Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}" Name="saveThisButton" InputGestureText="Ctrl+S">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Save As..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
+                <MenuItem Header="_Save As..." Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveImageDialogAndSaveResultCmd}}" Name="saveImage"/>
+                <MenuItem Header="_Save Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
                 <Separator />
-                <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
+                <MenuItem Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Exit" Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"  Name="exit" InputGestureText="Alt+F4"/>
+                <MenuItem Header="_Exit" Command="{Binding Path=ExitCommand}"  Name="exit" InputGestureText="Alt+F4"/>
             </MenuItem>
 
             <MenuItem Header="_Edit" Name="editMenu">
-                <MenuItem Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}" Name="copy" InputGestureText="Ctrl+C"/>
-                <MenuItem Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
+                <MenuItem Header="_Copy" Command="{Binding Path=CopyCommand}" Name="copy" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="_Paste" Command="{Binding Path=PasteCommand}"  Name="paste" InputGestureText="Ctrl+V"/>
                 <Separator/>
-                <MenuItem Header="_Create Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+                <MenuItem Header="_Create Node From Selection" Command="{Binding Path=NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
             </MenuItem>
 
             <MenuItem Header="_View" Name="viewMenu">
                 <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                          Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
+                          Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
             </MenuItem>
 
             <MenuItem Header="_Workspaces" Name="workspacesMenu">
-                <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
+                <MenuItem Header="_Home" Command="{Binding Path=HomeCommand}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
@@ -155,7 +155,7 @@
                   ItemsSource="{Binding Source={x:Static utilities:dynSettings.FunctionDict}}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <MenuItem Header="{Binding Value.Workspace.Name}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static commands:DynamoCommands.DisplayFunctionCmd}}"/>
+                            <MenuItem Header="{Binding Value.Workspace.Name}" CommandParameter="{Binding Value}" Command="{Binding Path=DisplayFunctionCommand}"/>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                 </MenuItem>
@@ -166,10 +166,10 @@
                 <MenuItem Header="_Connector Type" IsEnabled="True">
                     <MenuItem Name="settings_curves" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
-                              Command="{Binding Source={x:Static commands:DynamoCommands.SetConnectorTypeCmd}}" CommandParameter="BEZIER" Header="Curves"/>
+                              Command="{Binding Path=SetConnectorTypeCmd}" CommandParameter="BEZIER" Header="Curves"/>
                     <MenuItem Name="settings_plines" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
-                              Command="{Binding Source={x:Static commands:DynamoCommands.SetConnectorTypeCmd}}" CommandParameter="POLYLINE" Header="Polylines"/>
+                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
                 </MenuItem>
 
                <MenuItem Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
@@ -233,7 +233,7 @@
                          Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
                          IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
                         
-                        <Label Padding="10" Content="{Binding Path=DisplayName}" Name="workspaceLabel" 
+                        <Label Padding="10" Content="{Binding Path=Name}" Name="workspaceLabel" 
                                HorizontalContentAlignment="Right" FontSize="15" Background="Black" Foreground="Gray"
                                FontFamily="Trebuchet MS" IsHitTestVisible="False" HorizontalAlignment="Right"/>
 
@@ -249,9 +249,8 @@
                        HorizontalContentAlignment="Right" Visibility ="Collapsed" FontSize="14"
                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
 
-
                 <Canvas.Background>
-                    <SolidColorBrush Color="{StaticResource canvasBackground}" />
+                    <SolidColorBrush Color="{Binding Path=DynamoModel.Instance.CurrentSpace, Converter={StaticResource CurrentSpaceToBackgroundColorConverter}}" />
                 </Canvas.Background>
                 <Canvas.ContextMenu>
                     <ContextMenu>

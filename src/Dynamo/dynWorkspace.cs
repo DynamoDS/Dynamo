@@ -15,18 +15,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using Dynamo.Connectors;
-using System.Windows;
 using Dynamo.Utilities;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    public abstract class dynWorkspace
+    public abstract class dynWorkspace : NotificationObject
     {
+        private string _name;
         public List<dynNode> Nodes { get; private set; }
         public List<dynConnector> Connectors { get; private set; }
         public List<dynNote> Notes { get; private set; }
@@ -55,7 +54,19 @@ namespace Dynamo
 
         public string FilePath { get; set; }
 
-        public String Name { get; set; }
+        public String Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                RaisePropertyChanged("Name");
+            }
+        }
+
+        public double PositionX { get; set; }
+
+        public double PositionY { get; set; }
 
         public event Action OnModified;
 

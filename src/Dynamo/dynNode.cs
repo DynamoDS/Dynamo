@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using Dynamo.Search;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Controls;
@@ -14,8 +11,7 @@ using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Commands;
-using Microsoft.Practices.Prism.Events;
-
+using Microsoft.Practices.Prism.ViewModel;
 using Value = Dynamo.FScheme.Value;
 
 
@@ -29,11 +25,9 @@ namespace Dynamo.Nodes
         Single
     };
 
-    public delegate void LacingTypeChangedHandler(object sender, EventArgs e);
-
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
-    public abstract class dynNode
+    public abstract class dynNode : NotificationObject
     {
         /* TODO:
          * Incorporate INode in here somewhere
@@ -58,7 +52,8 @@ namespace Dynamo.Nodes
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
 
-        public dynNodeUI NodeUI;
+        //public dynNodeUI NodeUI;
+
         public Dictionary<int, Tuple<int, dynNode>> Inputs = 
             new Dictionary<int, Tuple<int, dynNode>>();
         public Dictionary<int, HashSet<Tuple<int, dynNode>>> Outputs =
@@ -73,16 +68,17 @@ namespace Dynamo.Nodes
         ObservableCollection<dynPort> outPorts = new ObservableCollection<dynPort>();
 
         private LacingStrategy _argumentLacing  = LacingStrategy.Single;
+        private string _nickName;
 
-        #region events
-        public event LacingTypeChangedHandler ArgumentLacingUpdated;
-        protected virtual void OnArgumentLacingUpdated(EventArgs e)
+        public string NickName
         {
-            if (ArgumentLacingUpdated != null)
-                ArgumentLacingUpdated(this, e);
+            get { return _nickName; }
+            set
+            {
+                _nickName = value;
+                RaisePropertyChanged("NickName");
+            }
         }
-
-        #endregion
 
         public ObservableCollection<dynPort> InPorts
         {
@@ -112,7 +108,7 @@ namespace Dynamo.Nodes
             {
                 _argumentLacing = value;
                 isDirty = true;
-                OnArgumentLacingUpdated(EventArgs.Empty);
+                RaisePropertyChanged("LacingStrategy");
             }
         }
 
@@ -217,9 +213,23 @@ namespace Dynamo.Nodes
 
         public dynNode()
         {
-            InPortData = new List<PortData>();
-            OutPortData = new List<PortData>();
+            InPortData = new ObservableCollection<PortData>();
+            OutPortData = new ObservableCollection<PortData>();
             //NodeUI = new dynNodeUI(this);
+
+            //Fetch the element name from the custom attribute.
+            var nameArray = GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
+
+            if (nameArray.Length > 0)
+            {
+                NodeNameAttribute elNameAttrib = nameArray[0] as NodeNameAttribute;
+                if (elNameAttrib != null)
+                {
+                    NickName = elNameAttrib.Name;
+                }
+            }
+            else
+                NickName = "";
         }
 
         /// <summary>

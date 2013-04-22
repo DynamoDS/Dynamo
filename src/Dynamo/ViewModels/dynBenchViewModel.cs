@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,13 +14,16 @@ using System.Windows.Media.Imaging;
 using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Controls;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
-namespace Dynamo.Nodes.ViewModels
+namespace Dynamo.Controls
 {
     class dynBenchViewModel:dynViewModelBase
     {
+        private DynamoModel _model;
+
         private string logText;
         private ConnectorType connectorType;
         private Point transformOrigin;
@@ -31,6 +36,11 @@ namespace Dynamo.Nodes.ViewModels
         protected bool debug = false;
         protected bool dynamicRun = false;
 
+        /// <summary>
+        /// An observable collection of workspace view models which tracks the model
+        /// </summary>
+        private ObservableCollection<dynWorkspaceViewModel> _workspaces = new ObservableCollection<dynWorkspaceViewModel>();
+
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
@@ -39,21 +49,34 @@ namespace Dynamo.Nodes.ViewModels
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }
         public DelegateCommand ShowSaveDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
-        public DelegateCommand OpenCommand { get; set; }
+        public DelegateCommand<object> OpenCommand { get; set; }
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand SaveAsCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
 
-        public DelegateCommand CopyCommand { get; set; }
-        public DelegateCommand PasteCommand { get; set; }
+        public DelegateCommand<object> CopyCommand { get; set; }
+        public DelegateCommand<object> PasteCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
-        public DelegateCommand SaveImageCommand { get; set; }
+        public DelegateCommand<object> SaveImageCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
         public DelegateCommand RunExpressionCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
+        public DelegateCommand GoToWorkspaceCommand { get; set; }
+        public DelegateCommand DisplayFunctionCommand { get; set; }
+        public DelegateCommand SetConnectorTypeCommand { get; set; }
+
+        public ObservableCollection<dynWorkspaceViewModel> Workspaces
+        {
+            get { return _workspaces; }
+            set
+            {
+                _workspaces = value;
+                RaisePropertyChanged("Workspaces");
+            }
+        }
 
         public string LogText
         {
@@ -155,6 +178,11 @@ namespace Dynamo.Nodes.ViewModels
 
         public dynBenchViewModel(DynamoController controller)
         {
+            //MVVM: Instantiate the model
+            _model = new DynamoModel();
+            _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
+            _model.PropertyChanged += _model_PropertyChanged;
+
             Controller = controller;
             sw = new StringWriter();
             ConnectorType = ConnectorType.BEZIER;
@@ -168,17 +196,49 @@ namespace Dynamo.Nodes.ViewModels
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResultCommand);
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialog, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
-            OpenCommand = new DelegateCommand(new Action<string>(Open()), CanOpen);
-            SaveAsCommand = new DelegateCommand(new Action<string>(SaveAs()), CanSaveAs);
+            OpenCommand = new DelegateCommand<object>(Open, CanOpen);
+            SaveAsCommand = new DelegateCommand<string>(SaveAs, CanSaveAs);
             ClearCommand = new DelegateCommand(Clear, CanClear);
             HomeCommand = new DelegateCommand(Home, CanGoHome);
             LayoutAllCommand = new DelegateCommand(LayoutAll, CanLayoutAll);
 
+            CopyCommand = new DelegateCommand<object>(Copy, CanCopy);
+            PasteCommand = new DelegateCommand<object>(Paste, CanPaste);
+            ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
+            CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
+            SaveImageCommand = new DelegateCommand<object>(SaveImage, CanSaveImage);
+            ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
+        }
+
+        void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "CurrentSpace")
+                RaisePropertyChanged("CanGoHome");
+        }
+
+        /// <summary>
+        /// Responds to change in the workspaces collection, creating or deleting workspace model views.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Workspaces_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                        _workspaces.Add(new dynWorkspaceViewModel(item as dynWorkspace));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                        _workspaces.Remove(_workspaces.ToList().Where(x => x.Workspace == item));
+                    break;
+            }
         }
 
         private void Save()
         {
-            DynamoModel.Instance.Save();
+            _model.Save();
         }
 
         private bool CanSave()
@@ -186,7 +246,7 @@ namespace Dynamo.Nodes.ViewModels
             return true;
         }
 
-        private void Open(string parameters)
+        private void Open(object parameters)
         {
             string xmlPath = parameters as string;
 
@@ -200,7 +260,7 @@ namespace Dynamo.Nodes.ViewModels
 
                 dynSettings.Bench.LockUI();
 
-                if (!dynSettings.Controller.OpenDefinition(xmlPath))
+                if (!_model.OpenDefinition(xmlPath))
                 {
                     //MessageBox.Show("Workbench could not be opened.");
                     dynSettings.Bench.Log("Workbench could not be opened.");
@@ -221,7 +281,7 @@ namespace Dynamo.Nodes.ViewModels
             dynSettings.Controller.ClipBoard.Clear();
         }
 
-        private bool CanOpen()
+        private bool CanOpen(object parameters)
         {
             return true;
         }
@@ -456,9 +516,9 @@ namespace Dynamo.Nodes.ViewModels
             return true;
         }
 
-        private void SaveAs(string parameters)
+        private void SaveAs(object parameters)
         {
-            DynamoModel.Instance.SaveAs(parameters);
+            _model.SaveAs(parameters.ToString());
         }
 
         private bool CanSaveAs()
@@ -490,7 +550,7 @@ namespace Dynamo.Nodes.ViewModels
 
         private bool CanGoHome()
         {
-            return true;
+            return DynamoModel.Instance.CurrentSpace != DynamoModel.Instance.HomeSpace;
         }
 
         private void LayoutAll()
@@ -594,15 +654,12 @@ namespace Dynamo.Nodes.ViewModels
         {
             return true;
         }
-    }
-
-    public class CopyCommand : ICommand
-    {
-        public void Execute(object parameters)
+    
+        private void Copy(object parameters)
         {
             dynSettings.Controller.ClipBoard.Clear();
 
-            foreach (ISelectable sel in dynSettings.Workbench.Selection)
+            foreach (ISelectable sel in DynamoSelection.Instance.Selection)
             {
                 UIElement el = sel as UIElement;
                 if (el != null)
@@ -616,7 +673,7 @@ namespace Dynamo.Nodes.ViewModels
                         {
                             var connectors = n.InPorts.SelectMany(x => x.Connectors)
                                 .Concat(n.OutPorts.SelectMany(x => x.Connectors))
-                                .Where(x=>x.End != null && 
+                                .Where(x => x.End != null &&
                                     x.End.Owner.IsSelected &&
                                     !dynSettings.Controller.ClipBoard.Contains(x));
 
@@ -627,26 +684,16 @@ namespace Dynamo.Nodes.ViewModels
             }
         }
 
-        public event EventHandler CanExecuteChanged
+        private bool CanCopy(object parameters)
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            //TODO: Any reason we wouldn't be able to run an expression?
-            if (dynSettings.Workbench.Selection.Count == 0)
+            if (DynamoSelection.Instance.Selection.Count == 0)
             {
                 return false;
             }
             return true;
         }
-    }
 
-    public class PasteCommand : ICommand
-    {
-        public void Execute(object parameters)
+        private void Paste(object parameters)
         {
             //make a lookup table to store the guids of the
             //old nodes and the guids of their pasted versions
@@ -656,7 +703,7 @@ namespace Dynamo.Nodes.ViewModels
             //paste contents in
             dynSettings.Bench.WorkBench.Selection.RemoveAll();
 
-            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x=>x is dynNodeViewModel);
+            var nodes = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynNodeViewModel);
 
             var connectors = dynSettings.Controller.ClipBoard.Select(x => x).Where(x => x is dynConnector);
 
@@ -684,7 +731,7 @@ namespace Dynamo.Nodes.ViewModels
                 {
                     nodeData.Add("value", (node.NodeLogic as dynBasicInteractive<bool>).Value);
                 }
-                else if(typeof(dynVariableInput).IsAssignableFrom(node.NodeLogic.GetType()))
+                else if (typeof(dynVariableInput).IsAssignableFrom(node.NodeLogic.GetType()))
                 {
                     //for list type nodes send the number of ports
                     //as the value - so we can setup the new node with
@@ -726,27 +773,27 @@ namespace Dynamo.Nodes.ViewModels
                     {
                         continue;
                     }
-                    
+
                 }
 
                 connectionData.Add("start", startNode);
 
                 connectionData.Add("end", dynSettings.Controller.CurrentSpace.Nodes
-                    .Select(x=>x.NodeUI)
-                    .Where(x=>x.GUID == (Guid)nodeLookup[c.End.Owner.GUID]).FirstOrDefault());
+                    .Select(x => x.NodeUI)
+                    .Where(x => x.GUID == (Guid)nodeLookup[c.End.Owner.GUID]).FirstOrDefault());
 
                 connectionData.Add("port_start", c.Start.Index);
                 connectionData.Add("port_end", c.End.Index);
 
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, connectionData));
             }
-            
+
             //process the queue again to create the connectors
             dynSettings.Controller.ProcessCommandQueue();
 
             foreach (DictionaryEntry de in nodeLookup)
             {
-                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd, 
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
                     dynSettings.Controller.CurrentSpace.Nodes
                     .Select(x => x.NodeUI)
                     .Where(x => x.GUID == (Guid)de.Value).FirstOrDefault()));
@@ -757,13 +804,7 @@ namespace Dynamo.Nodes.ViewModels
             //dynSettings.ViewModel.ClipBoard.Clear();
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanPaste(object parameters)
         {
             if (dynSettings.Controller.ClipBoard.Count == 0)
             {
@@ -772,11 +813,8 @@ namespace Dynamo.Nodes.ViewModels
 
             return true;
         }
-    }
 
-    public class ToggleConsoleShowingCommand : ICommand
-    {
-        public void Execute(object parameters)
+        private void ToggleConsoleShowing()
         {
             if (dynSettings.Bench.ConsoleShowing)
             {
@@ -790,40 +828,22 @@ namespace Dynamo.Nodes.ViewModels
             }
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanToggleConsoleShowing()
         {
             return true;
         }
-    }
 
-    public class CancelRunCommand : ICommand
-    {
-        public void Execute(object parameters)
+        private void CancelRun()
         {
             dynSettings.Controller.RunCancelled = true;
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanCancelRun()
         {
             return true;
         }
-    }
 
-    public class SaveImageCommand : ICommand
-    {
-        public void Execute(object parameters)
+        private void SaveImage(object parameters)
         {
             string imagePath = parameters as string;
 
@@ -863,21 +883,12 @@ namespace Dynamo.Nodes.ViewModels
             }
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanSaveImage(object parameters)
         {
             return true;
         }
-    }
 
-    public class ClearLogCommand : ICommand
-    {
-        public void Execute(object parameters)
+        private void ClearLog()
         {
             dynSettings.Bench.sw.Flush();
             dynSettings.Bench.sw.Close();
@@ -885,13 +896,7 @@ namespace Dynamo.Nodes.ViewModels
             dynSettings.Bench.LogText = dynSettings.Bench.sw.ToString();
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
+        private bool CanClearLog()
         {
             return true;
         }
@@ -941,7 +946,86 @@ namespace Dynamo.Nodes.ViewModels
             return true;
         }
     }
-    
+
+    public class GoToWorkspaceCommand : ICommand
+    {
+        public void Execute(object parameter)
+        {
+            if (parameter is Guid && dynSettings.FunctionDict.ContainsKey((Guid)parameter))
+            {
+                DynamoModel.Instance.ViewCustomNodeWorkspace(dynSettings.FunctionDict[(Guid)parameter]);
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class DisplayFunctionCommand : ICommand
+    {
+        public void Execute(object parameters)
+        {
+            DynamoModel.Instance.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            FunctionDefinition fd = parameters as FunctionDefinition;
+            if (fd == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    public class SetConnectorTypeCommand : ICommand
+    {
+        public void Execute(object parameters)
+        {
+            if (parameters.ToString() == "BEZIER")
+            {
+                DynamoModel.Instance.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
+            }
+            else
+            {
+                DynamoModel.Instance.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
+            }
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            //parameter object will be BEZIER or POLYLINE
+            if (string.IsNullOrEmpty(parameters.ToString()))
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    //MVVM:Removed the splash screen commands
     //public class ShowSplashScreenCommand : ICommand
     //{
     //    public ShowSplashScreenCommand()
