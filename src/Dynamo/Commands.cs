@@ -13,6 +13,7 @@ using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Connectors;
+using Dynamo.Search;
 
 namespace Dynamo.Commands
 {
@@ -1142,7 +1143,9 @@ namespace Dynamo.Commands
             {
                 nodeUi.NodeLogic.SaveResult = true;
             }
-            
+
+            dynSettings.ReturnFocusToSearch();
+
         }
 
         public event EventHandler CanExecuteChanged
@@ -1425,6 +1428,8 @@ namespace Dynamo.Commands
                     dynSettings.Bench.WorkBench.Selection.Remove(node);
                 }
             }
+
+            dynSettings.ReturnFocusToSearch();
 
         }
 

@@ -731,6 +731,7 @@ namespace Dynamo.Controls
             dynSettings.Bench.mainGrid.Focus();
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
             dynSettings.Controller.ProcessCommandQueue();
+            
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

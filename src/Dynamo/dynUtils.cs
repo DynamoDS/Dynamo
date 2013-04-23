@@ -26,6 +26,7 @@ using System.Collections.Specialized;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using System.Windows.Input;
 
 namespace Dynamo.Utilities
 {
@@ -73,6 +74,15 @@ namespace Dynamo.Utilities
             tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
 
             Writer = tw;
+        }
+
+        public static void ReturnFocusToSearch() {
+            
+            if ( Dynamo.Commands.ShowSearchCommand.search != null)
+            {
+                Keyboard.Focus(Dynamo.Commands.ShowSearchCommand.search.SearchTextBox );
+            }
+
         }
 
         public static void FinishLogging()

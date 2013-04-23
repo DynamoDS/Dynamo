@@ -18,7 +18,7 @@
         MinHeight="600" 
         MinWidth="800" 
         Title="Dynamo"
-        AllowsTransparency="False">
+        AllowsTransparency="False" FocusManager.IsFocusScope="True">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -54,6 +54,9 @@
         <KeyBinding Key="V"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
+        <KeyBinding Key="Space"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.FocusSearch}}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}"/>
@@ -82,7 +85,7 @@
 
     </Window.InputBindings>
 
-    <Grid Name="mainGrid">
+    <Grid Name="mainGrid" >
         
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>
@@ -284,13 +287,14 @@
             </ScrollViewer.ContextMenu>
             <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
                     Foreground="#FF00FF00" BorderThickness="0" BorderBrush="#00000000" Background="Black"
-                    Margin="0" TextWrapping="Wrap" Focusable="True"
+                    Margin="0" TextWrapping="Wrap"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
                     IsTabStop="False" FontFamily="Consolas" />
         </ScrollViewer>
 
         <Grid Height="Auto" Width="300" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
               Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="Black">
+            
         </Grid>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
@@ -300,20 +304,20 @@
                     FontFamily="Arial" Margin="5"
                     Command="{Binding Source={x:Static commands:DynamoCommands.RunExpressionCmd}}"
                     CommandParameter="{Binding ElementName=_this, Path=Controller.RunInDebug}"
-                    IsEnabled="{Binding ElementName=_this, Path=Controller.RunEnabled, Mode=TwoWay}"/>
-            
-            <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
+                    IsEnabled="{Binding ElementName=_this, Path=Controller.RunEnabled, Mode=TwoWay}" Focusable="False"/>
+
+            <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" Focusable="False"
                       Command="{Binding Source={x:Static commands:DynamoCommands.CancelRunCmd}}" FontFamily="Arial" Margin="5"/>
             
             <CheckBox Margin="10"
-                      Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 
+                      Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" Focusable="False"
                       Content="Run Automatically" FontSize="11" IsChecked="{Binding ElementName=_this, Path=Controller.DynamicRunEnabled, Mode=TwoWay}"
                       IsEnabled="{Binding ElementName=_this, Path=Controller.CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             
             <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
-                      IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}"
+                      IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}" Focusable="False"
                       Content="Debug" VerticalContentAlignment="Center"/>
             
         </WrapPanel>

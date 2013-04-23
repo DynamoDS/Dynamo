@@ -1947,7 +1947,10 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
             tb.Text = "0.0";
-            tb.OnChangeCommitted += delegate { Value = DeserializeValue(tb.Text); };
+            tb.OnChangeCommitted += delegate { 
+                Value = DeserializeValue(tb.Text);
+                dynSettings.ReturnFocusToSearch();
+            };
 
             NodeUI.RegisterAllPorts();
 
@@ -1993,7 +1996,6 @@ namespace Dynamo.Nodes
 
     }
 
-    //MDJ - added by Matt Jezyk 10.27.2011
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
     [NodeDescription("Creates a number, but using SLIDERS!.")]
@@ -2006,7 +2008,8 @@ namespace Dynamo.Nodes
 
         public dynDoubleSliderInput()
         {
-            NodeUI.topControl.Width = 200;
+            NodeUI.topControl.Width = 240;
+            NodeUI.topControl.Height = 40;
 
             //add a slider control to the input grid of the control
             tb_slider = new System.Windows.Controls.Slider();
@@ -2044,7 +2047,7 @@ namespace Dynamo.Nodes
                 if (NodeUI.elementCanvas.Children.Contains(displayBox))
                     NodeUI.elementCanvas.Children.Remove(displayBox);
 
-                dynSettings.Bench.mainGrid.Focus();
+                dynSettings.ReturnFocusToSearch();
             };
 
             mintb = new dynTextBox();
@@ -2054,6 +2057,9 @@ namespace Dynamo.Nodes
             mintb.Width = double.NaN;
             mintb.IsNumeric = true;
             mintb.Text = "0";
+            mintb.Margin = new Thickness(5);
+            mintb.Padding = new Thickness(3);
+            mintb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             mintb.OnChangeCommitted += delegate
             {
                 try
@@ -2064,6 +2070,7 @@ namespace Dynamo.Nodes
                 {
                     tb_slider.Minimum = 0;
                 }
+                dynSettings.ReturnFocusToSearch();
             };
             //mintb.Pending = false;
 
@@ -2074,6 +2081,8 @@ namespace Dynamo.Nodes
             maxtb.Width = double.NaN;
             maxtb.IsNumeric = true;
             maxtb.Text = "100";
+            maxtb.Padding = new Thickness(3);
+            maxtb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             maxtb.OnChangeCommitted += delegate
             {
                 try
@@ -2084,6 +2093,7 @@ namespace Dynamo.Nodes
                 {
                     tb_slider.Maximum = 0;
                 }
+                dynSettings.ReturnFocusToSearch();
             };
             //maxtb.Pending = false;
 
@@ -2207,7 +2217,11 @@ namespace Dynamo.Nodes
             }
         }
 
+
+
     }
+
+ 
 
     [NodeName("Boolean")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
@@ -2293,11 +2307,13 @@ namespace Dynamo.Nodes
         void rbFalse_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             Value = false;
+            dynSettings.ReturnFocusToSearch();
         }
 
         void rbTrue_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             Value = true;
+            dynSettings.ReturnFocusToSearch();
         }
     }
 
@@ -2321,7 +2337,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.Text = "";
 
-            tb.OnChangeCommitted += delegate { Value = tb.Text; };
+            tb.OnChangeCommitted += delegate { Value = tb.Text; dynSettings.ReturnFocusToSearch(); };
 
             NodeUI.RegisterAllPorts();
 
@@ -2416,7 +2432,7 @@ namespace Dynamo.Nodes
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
-            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); };
+            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); dynSettings.ReturnFocusToSearch(); };
 
             NodeUI.SetRowAmount(2);
 

@@ -17,43 +17,54 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Search;
 using Dynamo.Utilities;
+using Dynamo.Controls;
 
 namespace Dynamo.Commands
 {
 
     public static partial class DynamoCommands
     {
-
-        private static SearchCommand searchCmd;
-        public static SearchCommand SearchCmd
+        private static FocusSearchCommand focusSearch;
+        public static FocusSearchCommand FocusSearch
         {
             get
             {
-                if (searchCmd == null)
-                    searchCmd = new SearchCommand();
-                return searchCmd;
+                if (focusSearch == null)
+                    focusSearch = new FocusSearchCommand();
+                return focusSearch;
             }
         }
 
-        private static ShowSearchCommand showSearchCmd;
-        public static ShowSearchCommand ShowSearchCmd
+        private static SearchCommand search;
+        public static SearchCommand Search
         {
             get
             {
-                if (showSearchCmd == null)
-                    showSearchCmd = new ShowSearchCommand();
-                return showSearchCmd;
+                if (search == null)
+                    search = new SearchCommand();
+                return search;
             }
         }
 
-        private static HideSearchCommand hideSearchCmd;
-        public static HideSearchCommand HideSearchCmd
+        private static ShowSearchCommand showSearch;
+        public static ShowSearchCommand ShowSearch
         {
             get
             {
-                if (hideSearchCmd == null)
-                    hideSearchCmd = new HideSearchCommand();
-                return hideSearchCmd;
+                if (showSearch == null)
+                    showSearch = new ShowSearchCommand();
+                return showSearch;
+            }
+        }
+
+        private static HideSearchCommand hideSearch;
+        public static HideSearchCommand HideSearch
+        {
+            get
+            {
+                if (hideSearch == null)
+                    hideSearch = new HideSearchCommand();
+                return hideSearch;
             }
         }
     }
@@ -76,8 +87,9 @@ namespace Dynamo.Commands
             return true;
         }
     }
-    
-    public class HideSearchCommand : ICommand {
+
+    public class HideSearchCommand : ICommand
+    {
 
         public void Execute(object parameters)
         {
@@ -92,7 +104,7 @@ namespace Dynamo.Commands
                 dynSettings.Controller.PackageManagerPublishViewModel.Visible = Visibility.Collapsed;
                 return;
             }
-                
+
             dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
 
         }
@@ -109,16 +121,34 @@ namespace Dynamo.Commands
         }
     }
 
-    public class ShowSearchCommand : ICommand
-    {
-        private SearchView search;
+    public class FocusSearchCommand : ICommand {
 
         public void Execute(object parameters)
         {
-            if (null == dynSettings.Bench.outerCanvas.FindName("SearchControl") )
+            ShowSearchCommand.search.SearchTextBox.Focus();
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
+    }
+
+    public class ShowSearchCommand : ICommand
+    {
+        public static SearchView search;
+
+        public void Execute(object parameters)
+        {
+            if (null == search)
             {
                 search = new SearchView(dynSettings.Controller.SearchViewModel); 
-                //dynSettings.Bench.outerCanvas.Children.Add(search);
                 dynSettings.Bench.sidebarGrid.Children.Add(search);
             }
 

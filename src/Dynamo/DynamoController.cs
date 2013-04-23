@@ -220,8 +220,8 @@ namespace Dynamo
                 UnlockLoadPath = null;
 
                 Bench.UnlockUI();
-                DynamoCommands.ShowSearchCmd.Execute(null);
-
+                DynamoCommands.ShowSearch.Execute(null);
+                
                 HomeSpace.OnDisplayed();
 
                 Bench.WorkBench.Visibility = Visibility.Visible;
@@ -397,6 +397,7 @@ namespace Dynamo
                 //Bench.editNameButton.Visibility = Visibility.Visible;
                 //Bench.editNameButton.IsHitTestVisible = true;
                 Bench.setFunctionBackground();
+                dynSettings.ReturnFocusToSearch();
             }
 
             return functionDefinition;

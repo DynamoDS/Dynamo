@@ -82,7 +82,7 @@ namespace Dynamo.Search
             {
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
-                DynamoCommands.SearchCmd.Execute(null);
+                DynamoCommands.Search.Execute(null);
             }
         }
 

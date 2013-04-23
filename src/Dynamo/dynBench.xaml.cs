@@ -333,7 +333,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            Focus();
+            //Focus();
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)
@@ -545,6 +545,11 @@ namespace Dynamo.Controls
                 LogScroller.ScrollToBottom();
         }
 
+        private void OnGridFocus(object sender, RoutedEventArgs e)
+        {
+            dynSettings.ReturnFocusToSearch();
+        }
+
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             //handle key presses for the bench in the bubbling event
@@ -552,42 +557,42 @@ namespace Dynamo.Controls
             //start at the bench and move up to root, not raising the event
             //on any other elements
 
-            IInputElement focusElement = FocusManager.GetFocusedElement(this);
+            //IInputElement focusElement = FocusManager.GetFocusedElement(this);
 
-            if (focusElement != null &&
-                focusElement.GetType() != typeof (TextBox) &&
-                focusElement.GetType() != typeof (dynTextBox) &&
-                !Keyboard.IsKeyDown(Key.LeftCtrl) &&
-                !Keyboard.IsKeyDown(Key.RightCtrl) &&
-                !Keyboard.IsKeyDown(Key.LeftShift) &&
-                !Keyboard.IsKeyDown(Key.RightShift))
-            {
-                double x = 0;
-                double y = 0;
+            //if (focusElement != null &&
+            //    focusElement.GetType() != typeof (TextBox) &&
+            //    focusElement.GetType() != typeof (dynTextBox) &&
+            //    !Keyboard.IsKeyDown(Key.LeftCtrl) &&
+            //    !Keyboard.IsKeyDown(Key.RightCtrl) &&
+            //    !Keyboard.IsKeyDown(Key.LeftShift) &&
+            //    !Keyboard.IsKeyDown(Key.RightShift))
+            //{
+            //    double x = 0;
+            //    double y = 0;
 
-                if (Keyboard.IsKeyDown(Key.Left))
-                {
-                    x = 20;
-                    e.Handled = true;
-                }
-                if (Keyboard.IsKeyDown(Key.Right))
-                {
-                    x = -20;
-                    e.Handled = true;
-                }
-                if (Keyboard.IsKeyDown(Key.Up))
-                {
-                    y = 20;
-                    e.Handled = true;
-                }
-                if (Keyboard.IsKeyDown(Key.Down))
-                {
-                    y = -20;
-                    e.Handled = true;
-                }
+            //    if (Keyboard.IsKeyDown(Key.Left))
+            //    {
+            //        x = 20;
+            //        e.Handled = true;
+            //    }
+            //    if (Keyboard.IsKeyDown(Key.Right))
+            //    {
+            //        x = -20;
+            //        e.Handled = true;
+            //    }
+            //    if (Keyboard.IsKeyDown(Key.Up))
+            //    {
+            //        y = 20;
+            //        e.Handled = true;
+            //    }
+            //    if (Keyboard.IsKeyDown(Key.Down))
+            //    {
+            //        y = -20;
+            //        e.Handled = true;
+            //    }
 
-                zoomBorder.IncrementTranslateOrigin(x, y);
-            }
+            //    zoomBorder.IncrementTranslateOrigin(x, y);
+            //}
 
             if (editingName)
             {
@@ -788,7 +793,6 @@ namespace Dynamo.Controls
         private void _this_Loaded(object sender, RoutedEventArgs e)
         {
             DrawGrid();
-            mainGrid.Focus();
         }
     }
 
