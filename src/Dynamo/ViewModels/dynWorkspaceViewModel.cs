@@ -13,7 +13,7 @@ namespace Dynamo
 {
     class dynWorkspaceViewModel: dynViewModelBase
     {
-        public dynWorkspace Workspace { get; set; }
+        public dynWorkspace _workspace;
 
         ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
         ObservableCollection<dynNodeViewModel> _nodes = new ObservableCollection<dynNodeViewModel>();
@@ -59,10 +59,10 @@ namespace Dynamo
 
         public dynWorkspaceViewModel(dynWorkspace workspace)
         {
-            Workspace = workspace;
-            Workspace.NodeAdded += _workspace_NodeAdded;
-            Workspace.ConnectorAdded += _workspace_ConnectorAdded;
-            Workspace.NoteAdded += _workspace_NoteAdded;
+            _workspace = workspace;
+            _workspace.NodeAdded += _workspace_NodeAdded;
+            _workspace.ConnectorAdded += _workspace_ConnectorAdded;
+            _workspace.NoteAdded += _workspace_NoteAdded;
 
             CreateNodeCommand = new DelegateCommand<object>(CreateNode, CanCreateNode);
             CreateConnectionCommand = new DelegateCommand<object>(CreateConnection, CanCreateConnection);
@@ -70,7 +70,7 @@ namespace Dynamo
             DeleteCommand = new DelegateCommand<object>(Delete, CanDelete);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
 
-            Workspace.PropertyChanged += Workspace_PropertyChanged;
+            _workspace.PropertyChanged += Workspace_PropertyChanged;
         }
 
         void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -311,15 +311,15 @@ namespace Dynamo
 
             dynNoteModel n = new dynNoteModel((double)inputs["x"], (double)inputs["y"]);
 
-            n.noteText.Text = inputs["text"].ToString();
+            n.Text = inputs["text"].ToString();
             dynWorkspace ws = (dynWorkspace)inputs["workspace"];
 
             ws.Notes.Add(n);
             dynSettings.Bench.WorkBench.Children.Add(n);
 
-            if (!ViewingHomespace)
+            if (_workspace.Model.CurrentSpace != _workspace.Model.HomeSpace)
             {
-                DynamoModel.Instance.CurrentSpace.Modified();
+                _workspace.Model.CurrentSpace.Modified();
             }
         }
 
@@ -328,10 +328,10 @@ namespace Dynamo
             return true;
         }
 
-        private static void DeleteNote(dynNote note)
+        private void DeleteNote(dynNote note)
         {
-            dynSettings.Workbench.Selection.Remove(note);
-            DynamoModel.Instance.CurrentSpace.Notes.Remove(note);
+            DynamoSelection.Instance.Selection.Remove(note);
+            _workspace.Model.CurrentSpace.Notes.Remove(note);
             dynSettings.Workbench.Children.Remove(note);
         }
 

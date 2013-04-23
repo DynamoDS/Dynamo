@@ -38,6 +38,11 @@ namespace Dynamo.Selection
         {
             
         }
+
+        public void ClearSelection()
+        {
+            Instance.Selection.RemoveAll();
+        }
     }
 
     public interface ISelectable
@@ -56,4 +61,5 @@ namespace Dynamo.Selection
             }
         }
     }
+
 }

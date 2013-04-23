@@ -44,9 +44,6 @@ namespace Dynamo.Controls
         ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortViewModel>();
         ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
         
-        string nickName;
-        string toolTipText = "";
-        ElementState state;
         dynNode nodeLogic;
         bool isSelected = false;
         int preferredHeight = 30;
@@ -77,17 +74,9 @@ namespace Dynamo.Controls
 
         public string ToolTipText
         {
-            get
-            {
-                return toolTipText;
-            }
-            set
-            {
-                toolTipText = value;
-                RaisePropertyChanged("ToolTipText");
-            }
+            get { return nodeLogic.ToolTipText; }
         }
-
+        
         public ObservableCollection<dynPortViewModel> InPorts
         {
             get { return inPorts; }
@@ -113,17 +102,7 @@ namespace Dynamo.Controls
 
         public ElementState State
         {
-            get { return state; }
-            set
-            {
-                if (value != ElementState.ERROR)
-                {
-                    SetTooltip();
-                }
-
-                state = value;
-                RaisePropertyChanged("State");
-            }
+            get { return nodeLogic.State; }
         }
 
         public bool IsSelected
@@ -348,8 +327,6 @@ namespace Dynamo.Controls
 
         #endregion
 
-        
-
         public void UpdateConnections()
         {
             foreach (var p in InPorts.Concat(OutPorts))
@@ -474,17 +451,6 @@ namespace Dynamo.Controls
             }
         }
 
-        void SetTooltip()
-        {
-            Type t = NodeLogic.GetType();
-            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-            if (rtAttribs.Length > 0)
-            {
-                string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-                this.ToolTipText = description;
-            }
-        }
-
         public void SelectNeighbors()
         {
             var outConnectors = this.outPorts.SelectMany(x => x.Connectors);
@@ -503,17 +469,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void SetState(dynNodeUI el, ElementState state)
-        {
-            State = state;
-        }
-
-        public void Error(string p)
-        {
-            State = ElementState.ERROR;
-            ToolTipText = p;
-        }
-
         #region ISelectable Interface
         public void Select()
         {
@@ -523,7 +478,7 @@ namespace Dynamo.Controls
         public void Deselect()
         {
             ValidateConnections();
-            this.IsSelected = false;
+            IsSelected = false;
         }
         #endregion
 

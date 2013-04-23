@@ -70,6 +70,36 @@ namespace Dynamo.Nodes
 
         private LacingStrategy _argumentLacing  = LacingStrategy.Single;
         private string _nickName;
+        ElementState state;
+        string toolTipText = "";
+
+        public ElementState State
+        {
+            get { return state; }
+            set
+            {
+                if (value != ElementState.ERROR)
+                {
+                    SetTooltip();
+                }
+
+                state = value;
+                RaisePropertyChanged("State");
+            }
+        }
+
+        public string ToolTipText
+        {
+            get
+            {
+                return toolTipText;
+            }
+            set
+            {
+                toolTipText = value;
+                RaisePropertyChanged("ToolTipText");
+            }
+        }
 
         public string NickName
         {
@@ -885,6 +915,28 @@ namespace Dynamo.Nodes
 
                 //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
+        }
+
+        void SetTooltip()
+        {
+            Type t = GetType();
+            object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
+            if (rtAttribs.Length > 0)
+            {
+                string description = ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
+                ToolTipText = description;
+            }
+        }
+
+        private void SetState(dynNodeUI el, ElementState state)
+        {
+            State = state;
+        }
+
+        public void Error(string p)
+        {
+            State = ElementState.ERROR;
+            ToolTipText = p;
         }
     }
 

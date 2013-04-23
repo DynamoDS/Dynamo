@@ -126,7 +126,6 @@ limitations under the License.
     </Compile>
     <Compile Include="Commands.cs" />
     <Compile Include="Models\DynamoModel.cs" />
-    <Compile Include="Models\dynConnectorModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
@@ -218,6 +217,9 @@ limitations under the License.
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Views\dynConnectorView.xaml.cs">
+      <DependentUpon>dynConnectorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ZoomBorder.cs" />
     <Compile Include="Search\SearchDictionary.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -282,6 +284,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\DynamoConverters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\dynConnectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -379,9 +385,7 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="Images\Anonymous_Pencil_icon_white_24.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

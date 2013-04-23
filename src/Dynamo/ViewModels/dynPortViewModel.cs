@@ -23,8 +23,6 @@ namespace Dynamo.Connectors
             set { connectors = value; }
         }
 
-        public dynPortModel PortModel { get; set; }
-
         public Point Center
         {
             get { return UpdateCenter(); }
@@ -53,23 +51,27 @@ namespace Dynamo.Connectors
         public dynPortViewModel(dynPortModel port)
         {
             _port = port;
-            port.Connectors.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Connectors_CollectionChanged);
+            _port.Connectors.CollectionChanged += Connectors_CollectionChanged;
         }
 
-        void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Connectors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (var item in e.NewItems)
                 {
-                    connectors.Add(new dynConnectorViewModel(item));
+                    connectors.Add(new dynConnectorViewModel(item as dynConnector));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (var item in e.OldItems)
                 {
-                    connectors.Remove();
+                    foreach (var connector in connectors)
+                    {
+                        if(connector.)
+                    }
+                    connectors.Remove(connectors);
                 }
             }
         }

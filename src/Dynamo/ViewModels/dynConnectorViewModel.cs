@@ -10,14 +10,15 @@ namespace Dynamo.Connectors
     {
         private dynConnector _connector;
 
-        public dynPortViewModel Start { get; set; }
-
-        public dynPortViewModel End { get; set; }
+        public dynConnector Connector
+        {
+            get{return _connector}
+        }
 
         public dynConnectorViewModel(dynConnector connector)
         {
             _connector = connector;
-            _connector.Connected += new ConnectorConnectedHandler(_connector_Connected);
+            _connector.Connected += _connector_Connected;
         }
 
         void _connector_Connected(object sender, EventArgs e)

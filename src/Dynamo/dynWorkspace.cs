@@ -30,6 +30,8 @@ namespace Dynamo
         public List<dynConnector> Connectors { get; private set; }
         public List<dynNote> Notes { get; private set; }
 
+        private DynamoModel _model;
+
         public event EventHandler NodeAdded;
         public event EventHandler ConnectorAdded;
         public event EventHandler NoteAdded;
@@ -72,11 +74,17 @@ namespace Dynamo
 
         public abstract void OnDisplayed();
 
+        public DynamoModel Model
+        {
+            get { return _model; }
+        }
+
         //Hide default constructor.
         private dynWorkspace() { }
 
-        protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y)
+        protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y, DynamoModel model)
         {
+            _model = model;
             Name = name;
             Nodes = e;
             Connectors = c;

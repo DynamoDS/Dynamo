@@ -28,6 +28,7 @@ using System.Windows.Shapes;
 using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -309,7 +310,7 @@ namespace Dynamo.Controls
                     Point mouseUpPos = e.GetPosition(WorkBench);
 
                     //clear the selected elements
-                    WorkBench.ClearSelection();
+                    DynamoSelection.Instance.ClearSelection();
 
                     var rect =
                         new Rect(
@@ -333,8 +334,8 @@ namespace Dynamo.Controls
                             bool contains = rect.Contains(x0, y0) && rect.Contains(x1, y1);
                             if (contains)
                             {
-                                if (!WorkBench.Selection.Contains(n))
-                                    WorkBench.Selection.Add(n);
+                                if (!DynamoSelection.Instance.Selection.Contains(n))
+                                    DynamoSelection.Instance.Selection.Add(n);
                             }
                         }
 

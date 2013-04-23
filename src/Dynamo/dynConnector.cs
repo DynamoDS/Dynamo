@@ -24,6 +24,7 @@ using System.Windows.Data;
 using Dynamo.Nodes;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Connectors
 {
@@ -31,7 +32,7 @@ namespace Dynamo.Connectors
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
 
-    public class dynConnector : UIElement, INotifyPropertyChanged
+    public class dynConnector : UIElement, NotificationObject
     {
         public event ConnectorConnectedHandler Connected;
 
@@ -39,16 +40,6 @@ namespace Dynamo.Connectors
         {
             if (Connected != null)
                 Connected(this, e);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void NotifyPropertyChanged(String info)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(info));
-            }
         }
 
         const int STROKE_THICKNESS = 2;
@@ -79,13 +70,13 @@ namespace Dynamo.Connectors
             get { return isDrawing; }
         }
         
-        public dynPort Start
+        public dynPortModel Start
         {
             get { return pStart; }
             set { pStart = value; }
         }
-        
-        public dynPort End
+
+        public dynPortModel End
         {
             get { return pEnd; }
             set
@@ -123,7 +114,7 @@ namespace Dynamo.Connectors
             set 
             { 
                 strokeBrush = value;
-                NotifyPropertyChanged("StrokeBrush");
+                RaisePropertyChanged("StrokeBrush");
             }
         }
 

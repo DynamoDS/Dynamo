@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Connectors
 {
-    public class dynPortModel
+    public class dynPortModel : NotificationObject
     {
         #region events
 
@@ -54,7 +52,7 @@ namespace Dynamo.Connectors
             set
             {
                 name = value;
-                NotifyPropertyChanged("PortName");
+                RaisePropertyChanged("PortName");
             }
 
         }
@@ -71,7 +69,7 @@ namespace Dynamo.Connectors
             set
             {
                 owner = value;
-                NotifyPropertyChanged("Owner");
+                RaisePropertyChanged("Owner");
             }
         }
 
@@ -88,7 +86,7 @@ namespace Dynamo.Connectors
             set
             {
                 isConnected = value;
-                NotifyPropertyChanged("IsConnected");
+                RaisePropertyChanged("IsConnected");
             }
         }
 

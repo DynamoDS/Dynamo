@@ -60,7 +60,7 @@ namespace Dynamo.Controls
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
         public DelegateCommand<object> OpenCommand { get; set; }
         public DelegateCommand SaveCommand { get; set; }
-        public DelegateCommand SaveAsCommand { get; set; }
+        public DelegateCommand<object> SaveAsCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand LayoutAllCommand { get; set; }
@@ -170,7 +170,20 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("CanRunDynamically");
             }
         }
-        
+
+        public virtual bool DynamicRunEnabled
+        {
+            get
+            {
+                return dynamicRun; //selecting debug now toggles this on/off
+            }
+            set
+            {
+                dynamicRun = value;
+                RaisePropertyChanged("DynamicRunEnabled");
+            }
+        }
+
         public Point CurrentOffset
         {
             get { return zoomBorder.GetTranslateTransformOrigin(); }
@@ -210,7 +223,7 @@ namespace Dynamo.Controls
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialog, CanShowNewFunctionDialogCommand);
             SaveCommand = new DelegateCommand(Save, CanSave);
             OpenCommand = new DelegateCommand<object>(Open, CanOpen);
-            SaveAsCommand = new DelegateCommand<string>(SaveAs, CanSaveAs);
+            SaveAsCommand = new DelegateCommand<object>(SaveAs, CanSaveAs);
             ClearCommand = new DelegateCommand(Clear, CanClear);
             HomeCommand = new DelegateCommand(Home, CanGoHome);
             LayoutAllCommand = new DelegateCommand(LayoutAll, CanLayoutAll);
@@ -230,11 +243,24 @@ namespace Dynamo.Controls
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "CurrentSpace")
-                RaisePropertyChanged("CanGoHome");
+            {
+                IsAbleToGoHome = _model.CurrentSpace != _model.HomeSpace;
+                RaisePropertyChanged("IsAbleToGoHome");
+            } 
         }
 
         /// <summary>
-        /// Responds to change in the workspaces collection, creating or deleting workspace model views.
+        /// Return the workspace model view for the model's current workspace.
+        /// </summary>
+        public dynWorkspaceViewModel CurrentSpaceViewModel 
+        {
+            get { return _workspaces.ToList().Where(x => x.Workspace == _model.CurrentSpace).First(); }
+        }
+
+        public bool IsAbleToGoHome { get; set; }
+
+        /// <summary>
+        /// Responds to change in the model's workspaces collection, creating or deleting workspace model views.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -248,7 +274,7 @@ namespace Dynamo.Controls
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
-                        _workspaces.Remove(_workspaces.ToList().Where(x => x.Workspace == item));
+                        _workspaces.Remove(_workspaces.ToList().First(x => x.Workspace == item));
                     break;
             }
         }
@@ -272,10 +298,10 @@ namespace Dynamo.Controls
 
                 dynSettings.Bench.LockUI();
 
-                if (!_model.OpenDefinition(xmlPath))
+                if (!OpenDefinition(xmlPath))
                 {
                     //MessageBox.Show("Workbench could not be opened.");
-                    dynSettings.Bench.Log("Workbench could not be opened.");
+                    Log("Workbench could not be opened.");
 
                     //dynSettings.Writer.WriteLine("Workbench could not be opened.");
                     //dynSettings.Writer.WriteLine(xmlPath);
@@ -315,15 +341,16 @@ namespace Dynamo.Controls
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(DynamoModel.Instance.CurrentSpace.FilePath))
+            if (!string.IsNullOrEmpty(_model.CurrentSpace.FilePath))
             {
-                var fi = new FileInfo(DynamoModel.Instance.CurrentSpace.FilePath);
+                var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                DynamoCommands.SaveImageCmd.Execute(_fileDialog.FileName);
+                if (SaveImageCommand.CanExecute(_fileDialog.FileName))
+                    SaveImageCommand.Execute(_fileDialog.FileName);
             }
         
         }
@@ -347,15 +374,16 @@ namespace Dynamo.Controls
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(DynamoModel.Instance.CurrentSpace.FilePath))
+            if (!string.IsNullOrEmpty(_model.CurrentSpace.FilePath))
             {
-                var fi = new FileInfo(DynamoModel.Instance.CurrentSpace.FilePath);
+                var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                DynamoCommands.OpenCmd.Execute(_fileDialog.FileName);
+                if (OpenCommand.CanExecute(_fileDialog.FileName))
+                    OpenCommand.Execute(_fileDialog.FileName);
             }
         }
 
@@ -366,13 +394,15 @@ namespace Dynamo.Controls
 
         private void ShowSaveDialogIfNeededAndSaveResult()
         {
-            if (DynamoModel.Instance.CurrentSpace.FilePath != null)
+            if (_model.CurrentSpace.FilePath != null)
             {
-                DynamoCommands.SaveCmd.Execute(null);
+                if(SaveCommand.CanExecute())
+                    SaveCommand.Execute();
             }
             else
             {
-                DynamoCommands.ShowSaveDialogAndSaveResultCmd.Execute(null);
+                if(ShowSaveDialogAndSaveResultCommand.CanExecute())
+                    ShowSaveDialogAndSaveResultCommand.Execute();
             }
         }
 
@@ -394,7 +424,7 @@ namespace Dynamo.Controls
             }
 
             string ext, fltr;
-            if (DynamoModel.Instance.ViewingHomespace)
+            if (ViewingHomespace)
             {
                 ext = ".dyn";
                 fltr = "Dynamo Workspace (*.dyn)|*.dyn";
@@ -406,21 +436,21 @@ namespace Dynamo.Controls
             }
             fltr += "|All files (*.*)|*.*";
 
-            _fileDialog.FileName = DynamoModel.Instance.CurrentSpace.Name + ext;
+            _fileDialog.FileName = _model.CurrentSpace.Name + ext;
             _fileDialog.AddExtension = true;
             _fileDialog.DefaultExt = ext;
             _fileDialog.Filter = fltr;
 
             //if the xmlPath is not empty set the default directory
-            if (!string.IsNullOrEmpty(DynamoModel.Instance.CurrentSpace.FilePath))
+            if (!string.IsNullOrEmpty(_model.CurrentSpace.FilePath))
             {
-                var fi = new FileInfo(DynamoModel.Instance.CurrentSpace.FilePath);
+                var fi = new FileInfo(_model.CurrentSpace.FilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                DynamoModel.Instance.SaveAs(_fileDialog.FileName);
+                SaveAs(_fileDialog.FileName);
             }
         }
 
@@ -460,25 +490,12 @@ namespace Dynamo.Controls
                 }
             } while (!error.Equals(""));
 
-            dynSettings.Controller.NewFunction(Guid.NewGuid(), name, category, true);
+            NewFunction(Guid.NewGuid(), name, category, true);
         }
 
         private bool CanShowNewFunctionDialogCommand()
         {
             return true;
-        }
-
-        public virtual bool DynamicRunEnabled
-        {
-            get
-            {
-                return dynamicRun; //selecting debug now toggles this on/off
-            }
-            set
-            {
-                dynamicRun = value;
-                RaisePropertyChanged("DynamicRunEnabled");
-            }
         }
 
         public virtual bool RunInDebug
@@ -533,7 +550,7 @@ namespace Dynamo.Controls
             SaveAs(parameters.ToString());
         }
 
-        private bool CanSaveAs()
+        private bool CanSaveAs(object parameters)
         {
             return true;
         }
@@ -542,10 +559,10 @@ namespace Dynamo.Controls
         {
             dynSettings.Bench.LockUI();
 
-            DynamoModel.Instance.CleanWorkbench();
+            CleanWorkbench();
 
             //don't save the file path
-            DynamoModel.Instance.CurrentSpace.FilePath = "";
+            _model.CurrentSpace.FilePath = "";
 
             dynSettings.Bench.UnlockUI();
         }
@@ -557,18 +574,18 @@ namespace Dynamo.Controls
 
         private void Home()
         {
-            DynamoModel.Instance.ViewHomeWorkspace();
+            ViewHomeWorkspace();
         }
 
         private bool CanGoHome()
         {
-            return DynamoModel.Instance.CurrentSpace != DynamoModel.Instance.HomeSpace;
+            return _model.CurrentSpace != _model.HomeSpace;
         }
 
         private void LayoutAll()
         {
             dynSettings.Bench.LockUI();
-            dynSettings.Controller.CleanWorkbench();
+            CleanWorkbench();
 
             double x = 0;
             double y = 0;
@@ -618,8 +635,13 @@ namespace Dynamo.Controls
                 paramDict.Add("x", x);
                 paramDict.Add("y", y);
                 paramDict.Add("text", de.Key.ToString());
-                paramDict.Add("workspace", DynamoModel.Instance.CurrentSpace);
-                DynamoCommands.AddNoteCmd.Execute(paramDict);
+                paramDict.Add("workspace", _model.CurrentSpace);
+
+                //MVVM: Need indirect reference to command on view model
+                //DynamoCommands.AddNoteCmd.Execute(paramDict);
+                
+                if(CurrentSpaceViewModel.AddNoteCommand.CanExecute(paramDict))
+                    CurrentSpaceViewModel.AddNoteCommand.Execute(paramDict);
 
                 y += 60;
 
@@ -628,9 +650,9 @@ namespace Dynamo.Controls
                     object[] attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
                     NodeNameAttribute elNameAttrib = attribs[0] as NodeNameAttribute;
-                    dynNode el = dynSettings.Controller.CreateInstanceAndAddNodeToWorkspace(
+                    dynNode el = CreateInstanceAndAddNodeToWorkspace(
                            t, elNameAttrib.Name, Guid.NewGuid(), x, y,
-                           DynamoModel.Instance.CurrentSpace
+                           _model.CurrentSpace
                         );
 
                     if (el == null) continue;
@@ -673,20 +695,23 @@ namespace Dynamo.Controls
 
             foreach (ISelectable sel in DynamoSelection.Instance.Selection)
             {
-                UIElement el = sel as UIElement;
+                //MVVM : selection and clipboard now hold view model objects
+                //UIElement el = sel as UIElement;
+                dynViewModelBase el = sel as dynViewModelBase;
                 if (el != null)
                 {
                     if (!dynSettings.Controller.ClipBoard.Contains(el))
                     {
                         dynSettings.Controller.ClipBoard.Add(el);
 
-                        dynNodeUI n = el as dynNodeUI;
+                        //dynNodeUI n = el as dynNodeUI;
+                        dynNodeViewModel n = el as dynNodeViewModel;
                         if (n != null)
                         {
                             var connectors = n.InPorts.SelectMany(x => x.Connectors)
                                 .Concat(n.OutPorts.SelectMany(x => x.Connectors))
-                                .Where(x => x.End != null &&
-                                    x.End.Owner.IsSelected &&
+                                .Where(x => x.Connector.End != null &&
+                                    x.Connector.End.Owner.IsSelected &&
                                     !dynSettings.Controller.ClipBoard.Contains(x));
 
                             dynSettings.Controller.ClipBoard.AddRange(connectors);
@@ -2322,7 +2347,7 @@ namespace Dynamo.Controls
                 {
                     SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == _model.CurrentSpace));
                 }
-
+                
                 DynamoController.hideWorkspace(_model.CurrentSpace);
                 _model.CurrentSpace = workSpace;
 
