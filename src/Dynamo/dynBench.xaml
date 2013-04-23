@@ -236,9 +236,7 @@
                          Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
                          IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
                         
-                        <Label Padding="10" Content="Home" Name="workspaceLabel" 
-                               HorizontalContentAlignment="Right" FontSize="15" Background="Black" Foreground="Gray"
-                               FontFamily="Trebuchet MS" IsHitTestVisible="False" HorizontalAlignment="Right"/>
+
 
                         <Image Name="editNameButton" Margin="6" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon_white_24.png" 
                             MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
@@ -329,10 +327,21 @@
             
         </WrapPanel>
 
+
+        <DockPanel Grid.Row="4" Grid.Column="2" Name="WorkspaceTitleContainer" HorizontalAlignment="Right">
+            
+            <Label Padding="12" Content="Home" Name="workspaceLabel" 
+                               HorizontalContentAlignment="Right" FontSize="16" FontStyle="Italic" Background="Black" Foreground="AliceBlue"
+                               FontFamily="Trebuchet MS" IsHitTestVisible="False" HorizontalAlignment="Right"/>
+
+        </DockPanel>
+        
         <DockPanel Grid.Row="4" Grid.Column="2" Width="150" Name="PackageManagerLoginStateContainer" Visibility ="Hidden" HorizontalAlignment="Right">
-      <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
-      <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
-    </DockPanel>
+
+            <TextBlock Height="25" Padding="5" Name="PackageManagerLoginState" HorizontalAlignment="Right">Not logged in</TextBlock>
+            <Button Height="25" Name="PackageManagerLoginButton" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}" >Log in</Button>
+            
+        </DockPanel>
 
         <Canvas HorizontalAlignment="Stretch"
               Margin="0,20,0,0"
