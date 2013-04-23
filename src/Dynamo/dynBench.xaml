@@ -92,7 +92,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Name="consoleRow" Height="0"/>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
@@ -298,25 +298,32 @@
         </Grid>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                   Grid.ColumnSpan="3" Background="#FFF0F0F0">
-            
-            <Button Name="RunButton" Height="25" Width="100" Content="Run" 
-                    FontFamily="Arial" Margin="5"
+                   Grid.ColumnSpan="3">
+
+            <WrapPanel.Background>
+                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#222" Offset="0.0" />
+                    <GradientStop Color="#111" Offset="1.0" />
+                </LinearGradientBrush>
+            </WrapPanel.Background>
+
+            <Button Name="RunButton" Width="100" Content="Run" 
+                    Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
                     Command="{Binding Source={x:Static commands:DynamoCommands.RunExpressionCmd}}"
                     CommandParameter="{Binding ElementName=_this, Path=Controller.RunInDebug}"
                     IsEnabled="{Binding ElementName=_this, Path=Controller.RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-            <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" Focusable="False"
-                      Command="{Binding Source={x:Static commands:DynamoCommands.CancelRunCmd}}" FontFamily="Arial" Margin="5"/>
+            <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                      Command="{Binding Source={x:Static commands:DynamoCommands.CancelRunCmd}}" Margin="5"/>
             
             <CheckBox Margin="10"
-                      Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" Focusable="False"
+                      Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
                       Content="Run Automatically" FontSize="11" IsChecked="{Binding ElementName=_this, Path=Controller.DynamicRunEnabled, Mode=TwoWay}"
                       IsEnabled="{Binding ElementName=_this, Path=Controller.CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             
             <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
-                      FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
+                      FontSize="11" VerticalAlignment="Center" Foreground="Gray"
                       IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}" Focusable="False"
                       Content="Debug" VerticalContentAlignment="Center"/>
             

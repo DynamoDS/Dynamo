@@ -180,8 +180,15 @@
                 <ControlTemplate>
 
                     <Grid x:Name="container" Background="Transparent">
-                        <Grid x:Name="inner" Background="#333">
-
+                        <Grid x:Name="inner">
+                            
+                            <Grid.Background>
+                                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Color="#444" Offset="0.0" />
+                                    <GradientStop Color="#2E2E2E" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Grid.Background>
+                            
                             <Image Width="24" Height="24" x:Name="display" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}"></Image>
 
                         </Grid>
@@ -206,7 +213,15 @@
                 <ControlTemplate>
 
                     <Grid x:Name="container" Background="Transparent">
-                        <Grid x:Name="inner" Background="#444">
+                        <Grid x:Name="inner">
+
+                            <Grid.Background>
+                                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Color="#444" Offset="0.0" />
+                                    <GradientStop Color="#2E2E2E" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Grid.Background>
+                            
                             <TextBlock x:Name="text" HorizontalAlignment="Center" Foreground="WhiteSmoke" Margin="7,10,7,7" FontSize="14" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
                         </Grid>
                     </Grid>
