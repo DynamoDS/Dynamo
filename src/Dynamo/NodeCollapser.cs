@@ -144,7 +144,7 @@ namespace Dynamo.Utilities
 
                             nodeInputs.ForEach(_ => node.AddInput());
 
-                            node.NodeUI.RegisterAllPorts();
+                            node.RegisterAllPorts();
 
                             dynSettings.Bench.WorkBench.UpdateLayout();
 

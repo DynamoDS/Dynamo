@@ -51,7 +51,7 @@ namespace Dynamo
                     Controller.ViewCustomNodeWorkspace(_def);
                 };
 
-                NodeUI.RegisterAllPorts();
+                RegisterAllPorts();
             }
 
             public dynFunction()
@@ -264,7 +264,7 @@ namespace Dynamo
                     #endregion
                 }
 
-                NodeUI.RegisterAllPorts();
+                RegisterAllPorts();
             }
         }
 
@@ -296,7 +296,7 @@ namespace Dynamo
 
                 InPortData.Add(new PortData("", "", typeof(object)));
 
-                NodeUI.RegisterAllPorts();
+                RegisterAllPorts();
             }
 
             public override bool RequiresRecalc
@@ -362,7 +362,7 @@ namespace Dynamo
 
                 OutPortData.Add(new PortData("", "Symbol", typeof(object)));
 
-                NodeUI.RegisterAllPorts();
+                RegisterAllPorts();
             }
 
             public override bool RequiresRecalc

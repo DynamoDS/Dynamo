@@ -29,13 +29,14 @@ using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Controls
 {
     /// <summary>
     ///     Interaction logic for DynamoForm.xaml
     /// </summary>
-    public partial class dynBench : Window, INotifyPropertyChanged
+    public partial class dynBench : Window
     {
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
@@ -58,24 +59,8 @@ namespace Dynamo.Controls
         private bool isWindowSelecting;
 
         private Point mouseDownPos;
-        
-        
 
         public bool UILocked { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        ///     Used by various properties to notify observers that a property has changed.
-        /// </summary>
-        /// <param name="info">What changed.</param>
-        private void NotifyPropertyChanged(String info)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(info));
-            }
-        }
 
         public void LockUI()
         {
@@ -381,13 +366,6 @@ namespace Dynamo.Controls
             }
         }
 
-        public void Log(Exception e)
-        {
-            Log(e.GetType() + ":");
-            Log(e.Message);
-            Log(e.StackTrace);
-        }
-
         internal void BeginDragElement(dynNodeUI nodeUI, string name, Point eleOffset)
         {
             if (UILocked)
@@ -447,21 +425,6 @@ namespace Dynamo.Controls
 
             //end the transaction 
             //dynSettings.MainTransaction.Commit();
-        }
-
-        public void Log(string message)
-        {
-            sw.WriteLine(message);
-            LogText = sw.ToString();
-            //LogScroller.ScrollToEnd();
-
-            //dynSettings.Writer.WriteLine(message);
-            if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-            {
-                DynamoCommands.WriteToLogCmd.Execute(message);
-            }
-            if (LogScroller != null)
-                LogScroller.ScrollToBottom();
         }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -709,6 +672,11 @@ namespace Dynamo.Controls
         {
             DrawGrid();
             mainGrid.Focus();
+        }
+
+        private void LogScroller_OnSourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
+        {
+            LogScroller.ScrollToEnd();
         }
     }
 

@@ -275,7 +275,7 @@
                     Visibility="Visible"
                     Grid.Row="3"
                     Grid.Column="0" 
-                    Grid.ColumnSpan="3">
+                    Grid.ColumnSpan="3" SourceUpdated="LogScroller_OnSourceUpdated">
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearLogCmd}}"/>

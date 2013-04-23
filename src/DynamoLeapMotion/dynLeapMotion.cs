@@ -60,7 +60,7 @@ namespace Dynamo.Nodes
             // Output from this node is the data from a single frame
             OutPortData.Add(new PortData("Leap", "The Leap ViewModel", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             // Create a menuitem to enable/disable the Leap device
             menuItemLeapEnabled = new System.Windows.Controls.MenuItem();
@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Frame", "The frame of data", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Frame", "The frame of data", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("ScaleFactor", "The scale factor", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -240,7 +240,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Translation", "The translation vector", typeof(Point3D)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -285,7 +285,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Rotation", "The XYZ rotation in radians", typeof(Point3D)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -329,7 +329,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -364,7 +364,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -394,7 +394,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Hand", "The hand read from the frame", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -424,7 +424,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Fingers", "The list of fingers.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -487,7 +487,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Index", "The index of the finger to read (1..N).", typeof(int)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -511,7 +511,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 0;    // 1st finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -524,7 +524,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 1;    // 2nd finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -537,7 +537,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 2;    // 3rd finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -550,7 +550,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 3;    // 4th finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -563,7 +563,7 @@ namespace Dynamo.Nodes
         {
             FingerIndex = 4;    // 5th finger
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -611,7 +611,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("Index", "The index of the tool to read (1..N).", typeof(int)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -635,7 +635,7 @@ namespace Dynamo.Nodes
         {
             ToolIndex = 0;
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
     }
 
@@ -650,7 +650,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("XYZ", "The XYZ position in mms", typeof(Point3D)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

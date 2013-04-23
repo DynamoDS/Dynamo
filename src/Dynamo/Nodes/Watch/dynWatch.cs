@@ -81,7 +81,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
             OutPortData.Add(new PortData("", "Watch contents.", typeof(string)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             //take out the left and right margins
             //and make this so it's not so wide

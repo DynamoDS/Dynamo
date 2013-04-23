@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("IN", "Incoming geometry objects.", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Watch contents, passed through", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             //get rid of right click delete
             //this.MainContextMenu.Items.Clear();

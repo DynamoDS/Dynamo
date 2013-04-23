@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Id of associated Hub.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -72,7 +72,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyElementVisibility",typeof(Autodesk.Revit.DB.FamilyElementVisibility)));
 			OutPortData.Add(new PortData("out","Sets the visibility for the point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -102,7 +102,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the visibility for the point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -132,7 +132,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","A reference for the XZ plane of the coordinatesystem.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -162,7 +162,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","A reference for the YZ plane of the coordinatesystem.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -192,7 +192,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","A reference for the XY plane of the coordinatesystem.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -222,7 +222,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The set of CurveByPoints elements that interpolatea ReferencePoint.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -253,7 +253,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The position and orientation of the ReferencePoint.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -283,7 +283,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The position and orientation of the ReferencePoint.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -314,7 +314,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "An object specifyinga rule for the location and orientation of a ReferencePoint.(Note: The ReferencePoint object does not store thepointElementReference object after this call.)",typeof(Autodesk.Revit.DB.PointElementReference)));
 			OutPortData.Add(new PortData("out","Change the rule for computing the location of the ReferencePoint relative to other elements inthe document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -344,7 +344,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Retrieve a copy of the rule that computes thelocation of the ReferencePoint relative to other elements inthe document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -358,7 +358,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
 			OutPortData.Add(new PortData("out","Whether all three coordinate planes are shown, or only thenormal (XY) plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -372,7 +372,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
 			OutPortData.Add(new PortData("out","Visibility settings for the coordinate reference planes.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -386,7 +386,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
 			OutPortData.Add(new PortData("out","Whether the point is visible when the family is loadedinto a project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -400,7 +400,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ReferencePoint",typeof(Autodesk.Revit.DB.ReferencePoint)));
 			OutPortData.Add(new PortData("out","The position of the ReferencePoint.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -414,7 +414,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.HermiteFace",typeof(Autodesk.Revit.DB.HermiteFace)));
 			OutPortData.Add(new PortData("out","Mixed derivatives of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -428,7 +428,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.HermiteFace",typeof(Autodesk.Revit.DB.HermiteFace)));
 			OutPortData.Add(new PortData("out","Interpolation points of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -459,7 +459,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The transformation to compare with this transformation.",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","Determines whether this transformation and the specified transformation are the same within the tolerance (1.0e-09).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -490,7 +490,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The scale value.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Scales the basis vectors and the origin of this transformation and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -521,7 +521,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The scale value.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Scales the basis vectors of this transformation and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -552,7 +552,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The specified transformation.",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","Multiplies this transformation by the specified transformation and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -583,7 +583,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The vector to be transformed",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Applies the transform to the vector",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -614,7 +614,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The point to transform.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Applies the transformation to the point and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -645,7 +645,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The copy constructor.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -659,7 +659,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The inverse transformation of this transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -673,7 +673,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The determinant of this transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -687,7 +687,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The boolean value that indicates whether this transformation is conformal.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -701,7 +701,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The boolean value that indicates whether this transformation produces reflection.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -715,7 +715,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The real number that represents the scale of the transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -729,7 +729,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The boolean value that indicates whether this transformation is a translation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -743,7 +743,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The boolean value that indicates whether this transformation is an identity.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -757,7 +757,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","Defines the origin of the old coordinate system in the new coordinate system.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -771,7 +771,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The basis of the Z axis of this transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -785,7 +785,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The basis of the Y axis of this transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -799,7 +799,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","The basis of the X axis of this transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -813,7 +813,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Mesh",typeof(Autodesk.Revit.DB.Mesh)));
 			OutPortData.Add(new PortData("out","Element ID of the material from which this mesh is composed.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -827,7 +827,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Mesh",typeof(Autodesk.Revit.DB.Mesh)));
 			OutPortData.Add(new PortData("out","Retrieves all vertices used to define this mesh. Intended for indexed access.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -841,7 +841,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Mesh",typeof(Autodesk.Revit.DB.Mesh)));
 			OutPortData.Add(new PortData("out","The number of triangles that the mesh contains.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -872,7 +872,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The transformation to apply to the geometry.",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","Computes a transformation of the geometric representation of the instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -902,7 +902,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Computes the geometric representation of the instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -933,7 +933,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The transformation to apply to the geometry.",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","Computes a transformation of the geometric representation of the symbol which generates this instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -963,7 +963,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Computes the geometric representation of the symbol which generates this instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -977,7 +977,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance",typeof(Autodesk.Revit.DB.GeometryInstance)));
 			OutPortData.Add(new PortData("out","The geometric representation of the symbol which generates this instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -991,7 +991,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance",typeof(Autodesk.Revit.DB.GeometryInstance)));
 			OutPortData.Add(new PortData("out","The symbol element that this object is referring to.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1005,7 +1005,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GeometryInstance",typeof(Autodesk.Revit.DB.GeometryInstance)));
 			OutPortData.Add(new PortData("out","The affine transformation from the local coordinate space of the symbol into thecoordinate space of the instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1036,7 +1036,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "Reference to a surface on an existing element. The elementmust be one of the following:",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Create a DividedSurface element on one surface of another element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1067,7 +1067,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Two or more PointElements. The curve will interpolatethese points.",typeof(Autodesk.Revit.DB.ReferencePointArray)));
 			OutPortData.Add(new PortData("out","Create a 3d curve through two or more points in an AutodeskRevit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1098,7 +1098,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PointElementReference",typeof(Autodesk.Revit.DB.PointElementReference)));
 			OutPortData.Add(new PortData("out","Create a reference point on an existing reference in an AutodeskRevit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1129,7 +1129,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","Create a reference point at a given location and with a givencoordinate system in an Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1160,7 +1160,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Create a reference point at a given location in an AutodeskRevit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1192,7 +1192,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The geometry curve of the newly created symbolic curve.",typeof(Autodesk.Revit.DB.Curve)));
 			InPortData.Add(new PortData("sp", "The sketch plane for the symbolic curve.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Create a symbolic curve in an Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1225,7 +1225,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("v", "The view in which the control is to be visible. Itmust be a FloorPlan view or a CeilingPlan view.",typeof(Autodesk.Revit.DB.View)));
 			InPortData.Add(new PortData("xyz", "The origin of the control.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Add a new control into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1261,7 +1261,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ha", "The horizontal alignment.",typeof(Autodesk.Revit.DB.HorizontalAlign)));
 			InPortData.Add(new PortData("n", "The depth of the model text.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Create a model text in the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1293,7 +1293,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("el", "Host elements that new opening would lie in. The host can only be a wall or a ceiling.",typeof(Autodesk.Revit.DB.Element)));
 			InPortData.Add(new PortData("crvs", "The profile of the newly created opening. This may contain more than one curve loop. Each loop must be a fully closed curve loop and the loops may not intersect. The profiles will be projected into the host plane.",typeof(Autodesk.Revit.DB.CurveArray)));
 			OutPortData.Add(new PortData("out","Create an opening to cut the wall or ceiling.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1325,7 +1325,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "A reference to a planar face where the connector will be placed.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("ett", "Indicates the system type of this new Electrical connector.",typeof(Autodesk.Revit.DB.Electrical.ElectricalSystemType)));
 			OutPortData.Add(new PortData("out","Add a new Electrical connector into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1357,7 +1357,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "A reference to a planar face where the connector will be placed.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("pst", "Indicates the system type of this new Pipe connector.",typeof(Autodesk.Revit.DB.Plumbing.PipeSystemType)));
 			OutPortData.Add(new PortData("out","Add a new pipe connector into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1389,7 +1389,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "A reference to a planar face where the connector will be placed.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("dst", "Indicates the system type of this new duct connector.",typeof(Autodesk.Revit.DB.Mechanical.DuctSystemType)));
 			OutPortData.Add(new PortData("out","Add a new duct connector into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1423,7 +1423,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The point where the witness line of the radial dimension will lie.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(Autodesk.Revit.DB.DimensionType)));
 			OutPortData.Add(new PortData("out","Generate a new radial dimension object using a specified dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1456,7 +1456,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("xyz", "The point where the witness line of the diameter dimension will lie.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new diameter dimension object using the default dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1489,7 +1489,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "Geometric reference of the arc to which the dimension is to be bound.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("xyz", "The point where the witness line of the radial dimension will lie.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new radial dimension object using the default dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1525,7 +1525,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.This reference must intersect the arcRef reference.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(Autodesk.Revit.DB.DimensionType)));
 			OutPortData.Add(new PortData("out","Creates a new arc length dimension object using the specified dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1560,7 +1560,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound. This reference must intersect the arcRef reference.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound. This reference must intersect the arcRef reference.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Creates a new arc length dimension object using the default dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1595,7 +1595,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(Autodesk.Revit.DB.DimensionType)));
 			OutPortData.Add(new PortData("out","Creates a new angular dimension object using the specified dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1629,7 +1629,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The first geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("ref", "The second geometric reference to which the dimension is to be bound.The reference must be perpendicular to the extension arc.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Creates a new angular dimension object using the default dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1663,7 +1663,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.You must supply at least two references, and all references supplied must be parallel to each other and perpendicular to the extension line.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(Autodesk.Revit.DB.DimensionType)));
 			OutPortData.Add(new PortData("out","Creates a new linear dimension object using the specified dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1696,7 +1696,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The extension line of the dimension.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.You must supply at least two references, and all references supplied must be parallel to each other and perpendicular to the extension line.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			OutPortData.Add(new PortData("out","Generate a new linear dimension object using the default dimension type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1729,7 +1729,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("frm", "The single-surface form element. It can have one top/bottom face or one side face.",typeof(Autodesk.Revit.DB.Form)));
 			InPortData.Add(new PortData("xyz", "The offset of capped solid.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Create a new Form element by thickening a single-surface form, and add it into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1761,7 +1761,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("refa", "The profile of the newly created cap. It should consist of only one curve loop.The input profile must be in one plane.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			OutPortData.Add(new PortData("out","Create new Form element by cap operation (to create a single-surface form), and add it into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1796,7 +1796,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The start angle of Revolution in radians.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The end angle of Revolution in radians.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Create new Form elements by revolve operation, and add them into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1829,7 +1829,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("refa", "The path of the swept blend. The path should be 2D, where all input curves lie in one plane. If there’s more than one profile, the path should be a single curve. It’s required to reference existing geometry.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			InPortData.Add(new PortData("arar", "The profile set of the newly created swept blend. Each profile should consist of only one curve loop.The input profile must be in one plane.",typeof(Autodesk.Revit.DB.ReferenceArrayArray)));
 			OutPortData.Add(new PortData("out","Create new Form element by swept blend operation, and add it into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1862,7 +1862,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("refa", "The profile of extrusion. It should consist of only one curve loop.The input profile must be in one plane.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			InPortData.Add(new PortData("xyz", "The direction of extrusion, with its length the length of the extrusion. The direction must be perpendicular to the plane determined by profile. The length of vector must be non-zero.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Create new Form element by Extrude operation, and add it into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1894,7 +1894,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Indicates if the Form is Solid or Void.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("arar", "The profile set of the newly created loft. Each profile should consist of only one curve loop.The input profile must be in one plane.",typeof(Autodesk.Revit.DB.ReferenceArrayArray)));
 			OutPortData.Add(new PortData("out","Create new Form element by Loft operation, and add it into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1928,7 +1928,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("swpp", "The bottom profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(Autodesk.Revit.DB.SweepProfile)));
 			InPortData.Add(new PortData("swpp", "The top profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(Autodesk.Revit.DB.SweepProfile)));
 			OutPortData.Add(new PortData("out","Adds a new swept blend into the family document, using a selected reference as the path.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1963,7 +1963,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("swpp", "The bottom profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(Autodesk.Revit.DB.SweepProfile)));
 			InPortData.Add(new PortData("swpp", "The top profile of the newly created Swept blend. It should consist of only one curve loop.the input profile must be in one plane.",typeof(Autodesk.Revit.DB.SweepProfile)));
 			OutPortData.Add(new PortData("out","Add a new swept blend into the family document, using a curve as the path.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -1998,7 +1998,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("i", "The index of the path curves. The curve upon which the profileplane will be determined.",typeof(System.Int32)));
 			InPortData.Add(new PortData("ppl", "The location on the profileLocationCurve where the profileplane will be determined.",typeof(Autodesk.Revit.DB.ProfilePlaneLocation)));
 			OutPortData.Add(new PortData("out","Adds a new sweep form into the family document, using an array of selected references as a 3D path.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2034,7 +2034,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("i", "The index of the path curves. The curve upon which the profileplane will be determined.",typeof(System.Int32)));
 			InPortData.Add(new PortData("ppl", "The location on the profileLocationCurve where the profileplane will be determined.",typeof(Autodesk.Revit.DB.ProfilePlaneLocation)));
 			OutPortData.Add(new PortData("out","Adds a new sweep form to the family document, using a path of curve elements.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2070,7 +2070,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The start angle of Revolution in radians.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The end angle of Revolution in radians.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Add a new Revolution instance into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2104,7 +2104,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "The base blend section. It should consist of only one curve loop.The input profile must be in one plane.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("sp", "The sketch plane for the base profile. Use this to associate the base of the blend to geometry from another element. Optional, it can be",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Add a new Blend instance into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2138,7 +2138,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("sp", "The sketch plane for the extrusion.  The direction of extrusionis determined by the normal for the sketch plane.  To extrude in the other direction set the end value to negative.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			InPortData.Add(new PortData("n", "The length of the extrusion.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Add a new Extrusion instance into the Autodesk Revit family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2171,7 +2171,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The first reference.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("ref", "The second reference.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Add a new locked alignment into the Autodesk Revit document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2203,7 +2203,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The physical location where the group is to be placed.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("val", "A GroupType object that represents the type of group that is to be placed.",typeof(Autodesk.Revit.DB.GroupType)));
 			OutPortData.Add(new PortData("out","Place an instance of a Model Group into the Autodesk Revit document, using a locationand a group type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2234,7 +2234,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The view volume of the section will correspond geometrically to the specified bounding box.",typeof(Autodesk.Revit.DB.BoundingBoxXYZ)));
 			OutPortData.Add(new PortData("out","Creates a new section view.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2265,7 +2265,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The view direction - the vector pointing from the eye towards the model.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new 3D view.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2296,7 +2296,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A list of TextNoteCreationData which wraps the creation arguments of the TextNotes to be created.",typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.TextNoteCreationData>)));
 			OutPortData.Add(new PortData("out","Creates TextNotes with the specified data.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2337,7 +2337,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The elbow point for the leader.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Creates a new text note with a single leader.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2374,7 +2374,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("tafs", "Flags indicating the alignment of the note.  This should be a bitwise OR including one of TEF_ALIGN_TOP, TEF_ALIGN_MIDDLE and TEF_ALIGN_BOTTOM and one of TEF_ALIGN_LEFT, TEF_ALIGN_CENTER and TEF_ALIGN_RIGHT.The defaults for this flag are TEF_ALIGN_TOP | TEF_ALIGN_LEFT.",typeof(Autodesk.Revit.DB.TextAlignFlags)));
 			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Creates a new TextNote object without a leader.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2405,7 +2405,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The planar face reference to locate sketch plane.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Creates a new sketch plane on a reference to existing planar geometry.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2436,7 +2436,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The geometry planar face to locate sketch plane.",typeof(Autodesk.Revit.DB.PlanarFace)));
 			OutPortData.Add(new PortData("out","Creates a new sketch plane on a planar face of existing geometry.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2467,7 +2467,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("p", "The geometry plane to locate sketch plane.",typeof(Autodesk.Revit.DB.Plane)));
 			OutPortData.Add(new PortData("out","Creates a new sketch plane from an arbitrary geometric plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2501,7 +2501,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "A third point needed to define the reference plane.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("v", "The specific view apply to the Reference plane.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Creates a new instance of ReferencePlane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2535,7 +2535,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The cut vector apply to reference plane, should perpendicular to the vector  (bubbleEnd-freeEnd).",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("v", "The specific view apply to the Reference plane.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Creates a new instance of ReferencePlane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2568,7 +2568,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the plan view is to be associated.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("val", "The type of plan view to be created.",typeof(Autodesk.Revit.DB.ViewPlanType)));
 			OutPortData.Add(new PortData("out","Creates a plan view based on the specified level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2599,7 +2599,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The elevation to apply to the new level.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2631,7 +2631,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "Autodesk.Revit.DB.CurveArray",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("sp", "Autodesk.Revit.DB.SketchPlane",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates an array of new model line elements.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2663,7 +2663,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The internal geometry curve for model line.",typeof(Autodesk.Revit.DB.Curve)));
 			InPortData.Add(new PortData("sp", "The sketch plane this new model line resides in.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates a new model line element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2694,7 +2694,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A set of elements which will be made into the new group.",typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)));
 			OutPortData.Add(new PortData("out","Creates a new type of group.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2725,7 +2725,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A set of elements which will be made into the new group.",typeof(Autodesk.Revit.DB.ElementSet)));
 			OutPortData.Add(new PortData("out","Creates a new type of group.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2756,7 +2756,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A list of FamilyInstanceCreationData which wraps the creation arguments of the families to be created.",typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.FamilyInstanceCreationData>)));
 			OutPortData.Add(new PortData("out","Creates Family instances within the document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2787,7 +2787,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A list of FamilyInstanceCreationData which wraps the creation arguments of the families to be created.",typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.FamilyInstanceCreationData>)));
 			OutPortData.Add(new PortData("out","Creates Family instances within the document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2820,7 +2820,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("fs", "A family symbol object that represents the type of the instance that is to be inserted.",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			InPortData.Add(new PortData("v", "A 2D view in which to display the family instance.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Add a line based detail family instance into the Autodesk Revit document, using an line and a view where the instance should be placed.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2853,7 +2853,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("fs", "A family symbol object that represents the type of the instance that is to be inserted.",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			InPortData.Add(new PortData("v", "The 2D view in which to place the family instance.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Add a new family instance into the Autodesk Revit document, using an origin and a view where the instance should be placed.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2886,7 +2886,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "A line on the face defining where the symbol is to be placed.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted. Note that this symbol must represent a family whose",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family onto a face referenced by the input Reference instance, using a line on that face for its position, and a type/symbol.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2920,7 +2920,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "A vector that defines the direction of the family instance.Note that this direction defines the rotation of the instance on the face, and thus cannot be parallelto the face normal.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family onto a face referenced by the input Reference instance, using a location, reference direction, and a type/symbol.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2953,7 +2953,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "A line on the face defining where the symbol is to be placed.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family onto a face of an existing element, using a line on that face for its position, and a type/symbol.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -2987,7 +2987,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "A vector that defines the direction of the family instance.Note that this direction defines the rotation of the instance on the face, and thus cannot be parallelto the face normal.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.Note that this symbol must represent a family whose",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family onto a face of an existing element, using a location, reference direction, and a type/symbol.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3020,7 +3020,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family into the document, using a location and atype/symbol.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3054,7 +3054,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("el", "The object into which the FamilyInstance is to be inserted, often known as the host.",typeof(Autodesk.Revit.DB.Element)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family into the document,using a location, type/symbol, and the host element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3089,7 +3089,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("el", "A host object into which the instance will be embedded",typeof(Autodesk.Revit.DB.Element)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family into the document,using a location, type/symbol, the host element and a reference direction.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3123,7 +3123,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			InPortData.Add(new PortData("dimt", "The dimension style to be used for the dimension.",typeof(Autodesk.Revit.DB.DimensionType)));
 			OutPortData.Add(new PortData("out","Creates a new linear dimension object using the specified dimension style.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3156,7 +3156,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The line drawn for the dimension.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("refa", "An array of geometric references to which the dimension is to be bound.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			OutPortData.Add(new PortData("out","Creates a new linear dimension object using the default dimension style.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3188,7 +3188,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("v", "The view in which the detail curves are to be visible.",typeof(Autodesk.Revit.DB.View)));
 			InPortData.Add(new PortData("crvs", "An array containing the internal geometry curves for detail lines. The curve in array should be bound curve.",typeof(Autodesk.Revit.DB.CurveArray)));
 			OutPortData.Add(new PortData("out","Creates an array of new detail curve elements.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3220,7 +3220,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("v", "The view in which the detail curve is to be visible.",typeof(Autodesk.Revit.DB.View)));
 			InPortData.Add(new PortData("crv", "The internal geometry curve for detail curve. It should be a bound curve.",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","Creates a new detail curve element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3253,7 +3253,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "An annotation symbol type that represents the type of the instance that is to be inserted.",typeof(Autodesk.Revit.DB.AnnotationSymbolType)));
 			InPortData.Add(new PortData("v", "A 2D view in which to display the annotation symbol.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Add a new instance of an Annotation Symbol into the Autodesk Revit document, using an origin and a view where the instance should be placed.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3284,7 +3284,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("lst", "System.Collections.Generic.IList{Autodesk.Revit.DB.XYZ}",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			OutPortData.Add(new PortData("out","Creates a polyline with coordinate points provided.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3314,7 +3314,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a copy of this polyline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3345,7 +3345,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Transform",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","Gets the copy of the polyline which is applied the specified transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3375,7 +3375,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the outline of the polyline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3405,7 +3405,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the coordinate points of the polyline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3436,7 +3436,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("i", "The index of the coordinates.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Gets the coordinate point of the specified index.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3467,7 +3467,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The parameter to be evaluated. It is expected to be in [0,1] interval mapped to the bounds of the whole polyline.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Evaluates a parameter on the polyline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3481,7 +3481,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PolyLine",typeof(Autodesk.Revit.DB.PolyLine)));
 			OutPortData.Add(new PortData("out","Gets the number of the coordinate points.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3511,7 +3511,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets formatted string showing (X, Y, Z) with values formatted to 9 decimal places.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3543,7 +3543,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The specified vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "The normal vector that defines the plane.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Returns the angle between this vector and the specified vector projected to the specified plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3574,7 +3574,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The specified vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Returns the angle between this vector and the specified vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3605,7 +3605,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The specified point.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Returns the distance from this point to the specified point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3637,7 +3637,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The vector to compare with this vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("n", "The tolerance for equality check.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Determines whether 2 vectors are the same within the given tolerance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3668,7 +3668,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The vector to compare with this vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Determines whether this vector and the specified vector are the same within the tolerance (1.0e-09).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3699,7 +3699,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The value to divide this vector by.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Divides this vector by the specified value and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3730,7 +3730,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The value to multiply with this vector.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Multiplies this vector by the specified value and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3760,7 +3760,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Negates this vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3791,7 +3791,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The vector to subtract from this vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Subtracts the specified vector from this vector and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3822,7 +3822,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The vector to add to this vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Adds the specified vector to this vector and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3854,7 +3854,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The second vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "The third vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","The triple product of this vector and the two specified vectors.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3885,7 +3885,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The vector to multiply with this vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","The cross product of this vector and the specified vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3916,7 +3916,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The vector to multiply with this vector.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","The dot product of this vector and the specified vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3946,7 +3946,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the length of this vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -3976,7 +3976,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a new XYZ whose coordinates are the normalized values from this vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4006,7 +4006,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The boolean value that indicates whether this vector is of unit length.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4036,7 +4036,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The boolean value that indicates whether this vector is a zero vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4069,7 +4069,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The second coordinate.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The third coordinate.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates an XYZ with the supplied coordinates.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4099,7 +4099,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a default XYZ with the values (0, 0, 0).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4113,7 +4113,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Gets the third coordinate.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4127,7 +4127,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Gets the second coordinate.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4141,7 +4141,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Gets the first coordinate.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4174,7 +4174,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("val", "Constraint type of the Adaptive Shape Handle Point.",typeof(Autodesk.Revit.DB.AdaptivePointConstraintType)));
 			OutPortData.Add(new PortData("out","Sets constrain type of an Adaptive Shape Handle Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4206,7 +4206,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Gets constrain type of an Adaptive Shape Handle Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4239,7 +4239,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("val", "Orientation type of the Adaptive Placement Point.",typeof(Autodesk.Revit.DB.AdaptivePointOrientationType)));
 			OutPortData.Add(new PortData("out","Sets orientation type of an Adaptive Placement Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4271,7 +4271,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Gets orientation type of an Adaptive Placement Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4304,7 +4304,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("i", "Placement number of the Adaptive Placement Point.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Sets Placement Number of an Adaptive Placement Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4336,7 +4336,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Gets Placement number of an Adaptive Placement Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4369,7 +4369,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("val", "The Adaptive Point Type",typeof(Autodesk.Revit.DB.AdaptivePointType)));
 			OutPortData.Add(new PortData("out","Makes Reference Point an Adaptive Point or makes an Adaptive Point a Reference Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4400,7 +4400,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The Family",typeof(Autodesk.Revit.DB.FamilyBase)));
 			OutPortData.Add(new PortData("out","Gets number of Shape Handle Point Elements in Adaptive Component Family.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4431,7 +4431,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The Family",typeof(Autodesk.Revit.DB.FamilyBase)));
 			OutPortData.Add(new PortData("out","Gets number of Placement Point Elements in Adaptive Component Family.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4462,7 +4462,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The Family",typeof(Autodesk.Revit.DB.FamilyBase)));
 			OutPortData.Add(new PortData("out","Gets number of Adaptive Point Elements in Adaptive Component Family.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4494,7 +4494,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Verifies if the Reference Point is an Adaptive Shape Handle Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4526,7 +4526,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Verifies if the Reference Point is an Adaptive Placement Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4558,7 +4558,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The ReferencePoint id",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Verifies if the Reference Point is an Adaptive Point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4589,7 +4589,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The Family",typeof(Autodesk.Revit.DB.FamilyBase)));
 			OutPortData.Add(new PortData("out","Verifies if the Family is an Adaptive Component Family.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4603,7 +4603,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.CylindricalFace",typeof(Autodesk.Revit.DB.CylindricalFace)));
 			OutPortData.Add(new PortData("out","Axis of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4617,7 +4617,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.CylindricalFace",typeof(Autodesk.Revit.DB.CylindricalFace)));
 			OutPortData.Add(new PortData("out","Origin of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4631,7 +4631,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ConicalFace",typeof(Autodesk.Revit.DB.ConicalFace)));
 			OutPortData.Add(new PortData("out","Half angle of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4645,7 +4645,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ConicalFace",typeof(Autodesk.Revit.DB.ConicalFace)));
 			OutPortData.Add(new PortData("out","Axis of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4659,7 +4659,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ConicalFace",typeof(Autodesk.Revit.DB.ConicalFace)));
 			OutPortData.Add(new PortData("out","Origin of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4690,7 +4690,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("lst", "An array of initial points for the surface.",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			OutPortData.Add(new PortData("out","Creates a new TopographySurface element in the document, and initializes it with a set of points.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4722,7 +4722,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The connector to be connected to the takeoff.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("mepcrv", "The duct or pipe which is the trunk for the takeoff.",typeof(Autodesk.Revit.DB.MEPCurve)));
 			OutPortData.Add(new PortData("out","Add a new family instance of an takeoff fitting into the Autodesk Revit document,using one connector and one MEP curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4754,7 +4754,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The first connector to be connected to the union.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("con", "The second connector to be connected to the union.",typeof(Autodesk.Revit.DB.Connector)));
 			OutPortData.Add(new PortData("out","Add a new family instance of an union fitting into the Autodesk Revit document,using two connectors.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4788,7 +4788,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The third connector to be connected to the cross.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("con", "The fourth connector to be connected to the cross.",typeof(Autodesk.Revit.DB.Connector)));
 			OutPortData.Add(new PortData("out","Add a new family instance of a cross fitting into the Autodesk Revit document,using four connectors.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4820,7 +4820,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The first connector to be connected to the transition.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("con", "The second connector to be connected to the transition.",typeof(Autodesk.Revit.DB.Connector)));
 			OutPortData.Add(new PortData("out","Add a new family instance of an transition fitting into the Autodesk Revit document,using two connectors.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4853,7 +4853,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The second connector to be connected to the tee.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("con", "The third connector to be connected to the tee. This should be connected to the branch of the tee.",typeof(Autodesk.Revit.DB.Connector)));
 			OutPortData.Add(new PortData("out","Add a new family instance of a tee fitting into the Autodesk Revit document,using three connectors.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4885,7 +4885,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The first connector to be connected to the elbow.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("con", "The second connector to be connected to the elbow.",typeof(Autodesk.Revit.DB.Connector)));
 			OutPortData.Add(new PortData("out","Add a new family instance of an elbow fitting into the Autodesk Revit document,using two connectors.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4918,7 +4918,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The second connector to be connected to the pipe.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("fpt", "The type of the flexible pipe.",typeof(Autodesk.Revit.DB.Plumbing.FlexPipeType)));
 			OutPortData.Add(new PortData("out","Adds a new flexible pipe into the document, using two connector, and flexible pipe type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4951,7 +4951,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("lst", "The point array indicating the path of the flexible pipe.",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			InPortData.Add(new PortData("fpt", "The type of the flexible pipe.",typeof(Autodesk.Revit.DB.Plumbing.FlexPipeType)));
 			OutPortData.Add(new PortData("out","Adds a new flexible pipe into the document, using a connector, point array and pipe type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -4983,7 +4983,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("lst", "The point array indicating the path of the flexible pipe, including the end points.",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			InPortData.Add(new PortData("fpt", "The type of the flexible pipe.",typeof(Autodesk.Revit.DB.Plumbing.FlexPipeType)));
 			OutPortData.Add(new PortData("out","Adds a new flexible pipe into the document, using a point array and pipe type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5016,7 +5016,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The second connector to be connected to the pipe.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("pt", "The type of the pipe.",typeof(Autodesk.Revit.DB.Plumbing.PipeType)));
 			OutPortData.Add(new PortData("out","Adds a new pipe into the document,  using two connectors and duct type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5049,7 +5049,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The connector to be connected to the pipe.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("pt", "The type of the pipe.",typeof(Autodesk.Revit.DB.Plumbing.PipeType)));
 			OutPortData.Add(new PortData("out","Adds a new pipe into the document, using a point, connector and pipe type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5082,7 +5082,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The second point of the pipe.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("pt", "The type of the pipe.",typeof(Autodesk.Revit.DB.Plumbing.PipeType)));
 			OutPortData.Add(new PortData("out","Adds a new pipe into the document, using two points and pipe type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5115,7 +5115,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The second connector to be connected to the duct.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("val", "The type of the flexible duct.",typeof(Autodesk.Revit.DB.Mechanical.FlexDuctType)));
 			OutPortData.Add(new PortData("out","Adds a new flexible duct into the document, using two connector, and duct type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5148,7 +5148,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("lst", "The point array indicating the path of the flexible duct.",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			InPortData.Add(new PortData("val", "The type of the flexible duct.",typeof(Autodesk.Revit.DB.Mechanical.FlexDuctType)));
 			OutPortData.Add(new PortData("out","Adds a new flexible duct into the document, using a connector, point array and duct type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5180,7 +5180,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("lst", "The point array indicating the path of the flexible duct, including the end points.",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			InPortData.Add(new PortData("val", "The type of the flexible duct.",typeof(Autodesk.Revit.DB.Mechanical.FlexDuctType)));
 			OutPortData.Add(new PortData("out","Adds a new flexible duct into the document, using a point array and duct type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5213,7 +5213,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The second connector to be connected to the duct.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("val", "The type of the duct.",typeof(Autodesk.Revit.DB.Mechanical.DuctType)));
 			OutPortData.Add(new PortData("out","Adds a new duct into the document, using two connectors and duct type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5246,7 +5246,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The connector to be connected to the duct.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("val", "The type of the duct.",typeof(Autodesk.Revit.DB.Mechanical.DuctType)));
 			OutPortData.Add(new PortData("out","Adds a new duct into the document, using a point, connector and duct type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5279,7 +5279,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The second point of the duct.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("val", "The type of the duct.",typeof(Autodesk.Revit.DB.Mechanical.DuctType)));
 			OutPortData.Add(new PortData("out","Adds a new duct into the document, using two points and duct type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5313,7 +5313,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "A Level object that is used as the base level for the object.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family into the document, using a curve, type/symbol and reference level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5347,7 +5347,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "A Level object that is used as the base level for the object.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family into the document, using a location,type/symbol and a base level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5382,7 +5382,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "A Level object that is used as the base level for the object.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Inserts a new instance of a family into the document,using a location, type/symbol, the host element and a base level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5414,7 +5414,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The type of the fascia to create",typeof(Autodesk.Revit.DB.Architecture.FasciaType)));
 			InPortData.Add(new PortData("ref", "A planar line or arc that represents the place where youwant to place the fascia.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Creates a fascia along a reference.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5446,7 +5446,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The type of the fascia to create",typeof(Autodesk.Revit.DB.Architecture.FasciaType)));
 			InPortData.Add(new PortData("refa", "An array of planar lines and arcs that represents the place where youwant to place the fascia.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			OutPortData.Add(new PortData("out","Creates a fascia along a reference array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5478,7 +5478,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The type of the gutter to create",typeof(Autodesk.Revit.DB.Architecture.GutterType)));
 			InPortData.Add(new PortData("ref", "A planar line or arc that represents the place where youwant to place the gutter.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Creates a gutter along a reference.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5510,7 +5510,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The type of the gutter to create",typeof(Autodesk.Revit.DB.Architecture.GutterType)));
 			InPortData.Add(new PortData("refa", "An array of planar lines and arcs that represents the place where youwant to place the gutter.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			OutPortData.Add(new PortData("out","Creates a gutter along a reference array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5542,7 +5542,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The type of the slab edge to create",typeof(Autodesk.Revit.DB.SlabEdgeType)));
 			InPortData.Add(new PortData("ref", "A planar line or arc that represents the place where youwant to place the slab edge.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Creates a slab edge along a reference.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5574,7 +5574,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The type of the slab edge to create",typeof(Autodesk.Revit.DB.SlabEdgeType)));
 			InPortData.Add(new PortData("refa", "An array of planar lines and arcs that represents the place where youwant to place the slab edge.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			OutPortData.Add(new PortData("out","Creates a slab edge along a reference array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5606,7 +5606,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The faces new CurtainSystem will be created on.",typeof(Autodesk.Revit.DB.FaceArray)));
 			InPortData.Add(new PortData("val", "The Type of CurtainSystem to be created.",typeof(Autodesk.Revit.DB.CurtainSystemType)));
 			OutPortData.Add(new PortData("out","Creates a new CurtainSystem element from a set of faces.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5638,7 +5638,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("refa", "The faces new CurtainSystem will be created on.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			InPortData.Add(new PortData("val", "The Type of CurtainSystem to be created.",typeof(Autodesk.Revit.DB.CurtainSystemType)));
 			OutPortData.Add(new PortData("out","Creates a new CurtainSystem element from a set of face references.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5670,7 +5670,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("refa", "The faces new CurtainSystem will be created on.",typeof(Autodesk.Revit.DB.ReferenceArray)));
 			InPortData.Add(new PortData("val", "The Type of CurtainSystem to be created.",typeof(Autodesk.Revit.DB.CurtainSystemType)));
 			OutPortData.Add(new PortData("out","Creates a new CurtainSystem element from a set of face references.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5706,7 +5706,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Specify wire type of new created wire.",typeof(Autodesk.Revit.DB.Electrical.WireType)));
 			InPortData.Add(new PortData("val", "Specify wiring type(Arc or chamfer) of new created wire.",typeof(Autodesk.Revit.DB.Electrical.WiringType)));
 			OutPortData.Add(new PortData("out","Creates a new wire element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5738,7 +5738,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the Zone is to exist.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("val", "The associative phase on which the Zone is to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			OutPortData.Add(new PortData("out","Creates a new Zone element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5771,7 +5771,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "The geometry curves on which the boundary lines are",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("v", "The View for the new Room",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Creates a new boundary line as an Room border.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5804,7 +5804,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "The geometry curves on which the boundary lines are",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("v", "The View for the new Space",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Creates a new boundary line as an Space border.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5837,7 +5837,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("uv", "A 2D point that dictates the location on the level of the space.",typeof(Autodesk.Revit.DB.UV)));
 			InPortData.Add(new PortData("v", "The view where the tag will lie.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Creates a new SpaceTag.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5869,7 +5869,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Phase",typeof(Autodesk.Revit.DB.Phase)));
 			InPortData.Add(new PortData("i", "System.Int32",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Creates a set of new unplaced spaces on a given phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5901,7 +5901,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Phase",typeof(Autodesk.Revit.DB.Phase)));
 			InPortData.Add(new PortData("i", "System.Int32",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Creates a set of new unplaced spaces on a given phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5934,7 +5934,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The phase in which the spaces is to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			InPortData.Add(new PortData("v", "The view on which the space tags for the spaces are to display.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Creates new spaces on the available plan circuits of a the given level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -5967,7 +5967,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The phase in which the spaces is to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			InPortData.Add(new PortData("v", "The view on which the space tags for the spaces are to display.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Creates new spaces on the available plan circuits of a the given level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6000,7 +6000,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The phase in which the room is to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			InPortData.Add(new PortData("uv", "A 2D point that dictates the location on that specified level.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates a new space element on the given level, at the given location, and assigned to the given phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6032,7 +6032,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the space is to exist.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("uv", "A 2D point that dictates the location on that specified level.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates a new space element on the given level at the given location.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6063,7 +6063,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The phase in which the space is to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			OutPortData.Add(new PortData("out","Creates a new unplaced space on a given phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6096,7 +6096,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Connectors that will connect to the system.The owner elements of these connectors will be added into system as its elements.",typeof(Autodesk.Revit.DB.ConnectorSet)));
 			InPortData.Add(new PortData("pst", "The System type.",typeof(Autodesk.Revit.DB.Plumbing.PipeSystemType)));
 			OutPortData.Add(new PortData("out","Creates a new MEP piping system element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6129,7 +6129,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Connectors that will connect to the system.The owner elements of these connectors will be added into system as its elements.",typeof(Autodesk.Revit.DB.ConnectorSet)));
 			InPortData.Add(new PortData("dst", "The system type.",typeof(Autodesk.Revit.DB.Mechanical.DuctSystemType)));
 			OutPortData.Add(new PortData("out","Creates a new MEP mechanical system element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6161,7 +6161,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The electrical components in this system.",typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)));
 			InPortData.Add(new PortData("ett", "The System Type of electrical system.",typeof(Autodesk.Revit.DB.Electrical.ElectricalSystemType)));
 			OutPortData.Add(new PortData("out","Creates a new MEP Electrical System element from a set of electrical components.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6193,7 +6193,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The electrical components in this system.",typeof(Autodesk.Revit.DB.ElementSet)));
 			InPortData.Add(new PortData("ett", "The System Type of electrical system.",typeof(Autodesk.Revit.DB.Electrical.ElectricalSystemType)));
 			OutPortData.Add(new PortData("out","Creates a new MEP Electrical System element from a set of electrical components.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6225,7 +6225,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("con", "The Connector to create this Electrical System.",typeof(Autodesk.Revit.DB.Connector)));
 			InPortData.Add(new PortData("ett", "The System Type of electrical system.",typeof(Autodesk.Revit.DB.Electrical.ElectricalSystemType)));
 			OutPortData.Add(new PortData("out","Creates a new MEP Electrical System element from an unused Connector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6261,7 +6261,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "Start the extrusion.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "End the extrusion.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new Extrusion Roof.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6294,7 +6294,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("sp", "The sketch plane where the truss is going to reside. It could be",typeof(Autodesk.Revit.DB.SketchPlane)));
 			InPortData.Add(new PortData("crv", "The curve that represents truss's base curve.It must be a line, must not be a vertical line, and must be within the sketch plane if sketchPlane is valid.",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","Creates a New Truss.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6325,7 +6325,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A list of AreaCreationData which wraps the creation arguments of the areas to be created.",typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.AreaCreationData>)));
 			OutPortData.Add(new PortData("out","Creates new areas",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6357,7 +6357,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("v", "The view of area element.",typeof(Autodesk.Revit.DB.ViewPlan)));
 			InPortData.Add(new PortData("uv", "The point which lies in the enclosed region of AreaBoundaryLines to put the new created Area",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates a new area",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6390,7 +6390,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Area",typeof(Autodesk.Revit.DB.Area)));
 			InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates a new area tag.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6423,7 +6423,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "Autodesk.Revit.DB.Level",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.AreaElemType",typeof(Autodesk.Revit.DB.AreaElemType)));
 			OutPortData.Add(new PortData("out","Creates a new view for the new area.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6456,7 +6456,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The geometry curve on which the boundary line are",typeof(Autodesk.Revit.DB.Curve)));
 			InPortData.Add(new PortData("v", "The View for the new Area",typeof(Autodesk.Revit.DB.ViewPlan)));
 			OutPortData.Add(new PortData("out","Creates a new boundary line as an Area border.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6488,7 +6488,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The ContFooting type.",typeof(Autodesk.Revit.DB.ContFootingType)));
 			InPortData.Add(new PortData("val", "The Wall to append a ContFooting.",typeof(Autodesk.Revit.DB.Wall)));
 			OutPortData.Add(new PortData("out","Creates a new continuous footing object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6523,7 +6523,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The slope.",typeof(System.Double)));
 			InPortData.Add(new PortData("b", "If set, specifies that the floor is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a slab within the project with the given horizontal profile using the default floor style.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6559,7 +6559,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The orientation of the tag.",typeof(Autodesk.Revit.DB.TagOrientation)));
 			InPortData.Add(new PortData("xyz", "The position of the tag.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new IndependentTag Element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6592,7 +6592,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "Profile of the opening.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("b", "True if the profile is cut perpendicular to the intersecting face of the host. False if the profile is cut vertically.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new opening in a roof, floor and ceiling.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6625,7 +6625,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "One corner of the rectangle.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "The opposite corner of the rectangle.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a rectangular opening on a wall.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6658,7 +6658,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "top level",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("crvs", "profile of the opening.",typeof(Autodesk.Revit.DB.CurveArray)));
 			OutPortData.Add(new PortData("out","Creates a new shaft opening between a set of levels.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6691,7 +6691,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "profile of the opening.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("val", "face on which opening is based on.",typeof(Autodesk.Revit.Creation.eRefFace)));
 			OutPortData.Add(new PortData("out","Creates a new opening in a beam, brace and column.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6728,7 +6728,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "A value indicating the Z axis translation option.",typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue)));
 			InPortData.Add(new PortData("n", "Translation Spring Modulus for Z axis. Ignored if Z_Translation is not \"Spring\".",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new Area BoundaryConditions element on a host element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6767,7 +6767,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "A value indicating the option for rotation about the X axis.",typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue)));
 			InPortData.Add(new PortData("n", "Rotation Spring Modulus for X axis. Ignored if X_Rotation is not \"Spring\"",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new Line BoundaryConditions element on a host element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6804,7 +6804,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "A value indicating the Z axis translation option.",typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue)));
 			InPortData.Add(new PortData("n", "Translation Spring Modulus for Z axis. Ignored if Z_Translation is not \"Spring\".",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new Area BoundaryConditions element on a reference.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6843,7 +6843,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "A value indicating the option for rotation about the X axis.",typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue)));
 			InPortData.Add(new PortData("n", "Rotation Spring Modulus for X axis. Ignored if X_Rotation is not \"Spring\"",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new Line BoundaryConditions element on a reference.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6886,7 +6886,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "A value indicating the option for rotation about the Z axis.",typeof(Autodesk.Revit.DB.Structure.TranslationRotationValue)));
 			InPortData.Add(new PortData("n", "Rotation Spring Modulus for Z axis. Ignored if Y_Rotation is not \"Spring\".",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new Point BoundaryConditions Element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6920,7 +6920,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The direction is the direction of the BeamSystem. This argument is optional – may be null.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("b", "Whether the BeamSystem is 3D or not",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new BeamSystem with specified profile curves.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6952,7 +6952,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "The profile of the BeamSystem. The profile must be a closed curve loop in the level.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("l", "The level on which the BeamSystem is to be created. The work plane of the BeamSystem will be the ketch plane associated with the Level.If there is no current sketch plane associated with the level yet, we will create a default one.",typeof(Autodesk.Revit.DB.Level)));
 			OutPortData.Add(new PortData("out","Creates a new 2D BeamSystem with specified profile curves.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -6986,7 +6986,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The direction is the direction of the BeamSystem.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("b", "If the BeamSystem is 3D, the sketchPlane must be a level, oran exception will be thrown.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new BeamSystem with specified profile curves.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7018,7 +7018,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "The profile is the profile of the BeamSystem.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("sp", "The work plane of the BeamSystem.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates a new BeamSystem with specified profile curves.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7051,7 +7051,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("uv", "A 2D point that dictates the location on the level of the room.",typeof(Autodesk.Revit.DB.UV)));
 			InPortData.Add(new PortData("v", "The view where the tag will lie.",typeof(Autodesk.Revit.DB.View)));
 			OutPortData.Add(new PortData("out","Creates a new RoomTag.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7083,7 +7083,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The phase on which the rooms are to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			InPortData.Add(new PortData("i", "The number of the rooms to be created.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Creates new unplaced rooms in the given phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7115,7 +7115,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level from which the circuits are found.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("val", "The phase on which the room is to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			OutPortData.Add(new PortData("out","Creates new rooms in each plan circuit found in the given level in the given phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7146,7 +7146,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("l", "The level from which the circuits are found.",typeof(Autodesk.Revit.DB.Level)));
 			OutPortData.Add(new PortData("out","Creates new rooms in each plan circuit found in the given level in the last phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7178,7 +7178,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The phase on which the rooms are to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			InPortData.Add(new PortData("i", "The number of the rooms to be created.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Creates new unplaced rooms in the given phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7210,7 +7210,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level from which the circuits are found.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("val", "The phase on which the room is to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			OutPortData.Add(new PortData("out","Creates new rooms in each plan circuit found in the given level in the given phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7241,7 +7241,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("l", "The level from which the circuits are found.",typeof(Autodesk.Revit.DB.Level)));
 			OutPortData.Add(new PortData("out","Creates new rooms in each plan circuit found in the given level in the last phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7272,7 +7272,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A list of RoomCreationData which wraps the creation arguments of the rooms to be created.",typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.RoomCreationData>)));
 			OutPortData.Add(new PortData("out","Creates new rooms using the specified placement data.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7304,7 +7304,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The room which you want to locate in the circuit.  Pass",typeof(Autodesk.Revit.DB.Architecture.Room)));
 			InPortData.Add(new PortData("val", "The circuit in which you want to locate a room.",typeof(Autodesk.Revit.DB.PlanCircuit)));
 			OutPortData.Add(new PortData("out","Creates a new room within the confines of a plan circuit, or places an unplaced room within the confines of the plan circuit.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7335,7 +7335,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The phase in which the room is to exist.",typeof(Autodesk.Revit.DB.Phase)));
 			OutPortData.Add(new PortData("out","Creates a new unplaced room and with an assigned phase.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7367,7 +7367,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the room is to exist.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("uv", "A 2D point that dictates the location of the room on that specified level.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates a new room on a level at a specified point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7398,7 +7398,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("crvs", "The curves which represent the new grid lines.  These curves must be lines or bounded arcs.",typeof(Autodesk.Revit.DB.CurveArray)));
 			OutPortData.Add(new PortData("out","Creates new grid lines.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7429,7 +7429,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("arc", "An arc object that represents the location of the new grid line.",typeof(Autodesk.Revit.DB.Arc)));
 			OutPortData.Add(new PortData("out","Creates a new radial grid line.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7460,7 +7460,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("crv", "A line object which represents the location of the grid line.",typeof(Autodesk.Revit.DB.Line)));
 			OutPortData.Add(new PortData("out","Creates a new linear grid line.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7491,7 +7491,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("fs", "The titleblock family symbol to apply to this sheet.",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Creates a new sheet view.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7521,7 +7521,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new drafting view.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7556,7 +7556,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "If set, specifies that the floor is structural in nature.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("xyz", "A vector that must be perpendicular to the profile which dictates which side of the floor is consideredto be upper and down.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a foundation slab within the project with the given horizontal profile and floor style on the specified level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7591,7 +7591,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "If set, specifies that the floor is structural in nature.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("xyz", "A vector that must be perpendicular to the profile which dictates which side of the floor is consideredto be upper and down.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a floor within the project with the given horizontal profile and floor style on the specified level with the specified normal vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7625,7 +7625,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the floor is to be placed.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("b", "If set, specifies that the floor is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a floor within the project with the given horizontal profile and floor style on the specified level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7657,7 +7657,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the horizontal profile of the floor.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("b", "If set, specifies that the floor is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a floor within the project with the given horizontal profile using the default floor style.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7688,7 +7688,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A list of ProfiledWallCreationData which wraps the creation arguments of the walls to be created.",typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.ProfiledWallCreationData>)));
 			OutPortData.Add(new PortData("out","Creates profile walls within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7719,7 +7719,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A list of RectangularWallCreationData which wraps the creation arguments of the walls to be created.",typeof(System.Collections.Generic.List<Autodesk.Revit.Creation.RectangularWallCreationData>)));
 			OutPortData.Add(new PortData("out","Creates rectangular walls within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7754,7 +7754,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("xyz", "A vector that must be perpendicular to the profile which dictates which side of the wall is consideredto be inside and outside.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a non rectangular profile wall within the project using the specified wall type and normal vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7788,7 +7788,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a non rectangular profile wall within the project using the specified wall type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7820,7 +7820,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a non rectangular profile wall within the project using the default wall type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7857,7 +7857,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Change which side of the wall is considered to be the inside and outside of the wall.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new rectangular profile wall within the project using the specified wall type, height, and offset.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7890,7 +7890,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new rectangular profile wall within the project using the default wall style.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7927,7 +7927,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The actual point on the reference which the spot elevation evaluate.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("b", "Indicate if it has leader or not.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Generate a new spot elevation object within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -7964,7 +7964,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The actual point on the reference which the spot coordinate evaluate.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("b", "Indicate if it has leader or not.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Generate a new spot coordinate object within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8001,7 +8001,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Load Combinations array for Load Combination formula.",typeof(Autodesk.Revit.DB.Structure.LoadCombinationArray)));
 			InPortData.Add(new PortData("val", "Load Usages array.",typeof(Autodesk.Revit.DB.Structure.LoadUsageArray)));
 			OutPortData.Add(new PortData("out","Creates a new instance of a LoadCombination element     within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8034,7 +8034,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Load Case nature.",typeof(Autodesk.Revit.DB.Structure.LoadNature)));
 			InPortData.Add(new PortData("val", "The Load Case category.",typeof(Autodesk.Revit.DB.Category)));
 			OutPortData.Add(new PortData("out","Creates a new instance of a LoadCase element within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8065,7 +8065,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("s", "The not empty name for the Load Usage Element to create.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Creates a new instance of a LoadUsage element within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8096,7 +8096,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("s", "The name for the Load Nature Element to create.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Creates a new instance of a LoadNature element within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8130,7 +8130,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Specifies if the load is a reaction load. The load cannot be modified if isReaction=True.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("val", "The symbol of the AreaLoad.",typeof(Autodesk.Revit.DB.Structure.AreaLoadType)));
 			OutPortData.Add(new PortData("out","Creates a new uniform hosted area load with polygonal shape within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8168,7 +8168,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Specifies if the load is a reaction load. The load cannot be modified if isReaction=True.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("val", "The symbol of the AreaLoad.",typeof(Autodesk.Revit.DB.Structure.AreaLoadType)));
 			OutPortData.Add(new PortData("out","Creates a new unhosted area load with variable forces at the vertices within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8204,7 +8204,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Specifies if the load is a reaction load. The load cannot be modified if isReaction=True.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("val", "The symbol of the AreaLoad.",typeof(Autodesk.Revit.DB.Structure.AreaLoadType)));
 			OutPortData.Add(new PortData("out","Creates a new unhosted area load with variable forces at the vertices within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8238,7 +8238,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Specifies if the load is a reaction load. The load cannot be modified if isReaction=True.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("val", "The symbol of the AreaLoad.",typeof(Autodesk.Revit.DB.Structure.AreaLoadType)));
 			OutPortData.Add(new PortData("out","Creates a new uniform unhosted area load with polygonal shape within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8276,7 +8276,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The symbol of the LineLoad.",typeof(Autodesk.Revit.DB.Structure.LineLoadType)));
 			InPortData.Add(new PortData("sp", "Indicate the work plane of the LineLoad.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates a new hosted line load within the project using data at an array of points.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8314,7 +8314,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The symbol of the LineLoad.",typeof(Autodesk.Revit.DB.Structure.LineLoadType)));
 			InPortData.Add(new PortData("sp", "Indicate the work plane of the LineLoad.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates a new hosted line load within the project using data at two points.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8352,7 +8352,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The symbol of the LineLoad.",typeof(Autodesk.Revit.DB.Structure.LineLoadType)));
 			InPortData.Add(new PortData("sp", "Indicate the work plane of the LineLoad.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates a new unhosted line load within the project using data at an array of points.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8393,7 +8393,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The symbol of the LineLoad.",typeof(Autodesk.Revit.DB.Structure.LineLoadType)));
 			InPortData.Add(new PortData("sp", "Indicate the work plane of the LineLoad.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates a new unhosted line load within the project using data at two points.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8429,7 +8429,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The symbol of the PointLoad.",typeof(Autodesk.Revit.DB.Structure.PointLoadType)));
 			InPortData.Add(new PortData("sp", "Indicate the work plane of the PointLoad.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates a new hosted point load within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8465,7 +8465,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The symbol of the PointLoad.",typeof(Autodesk.Revit.DB.Structure.PointLoadType)));
 			InPortData.Add(new PortData("sp", "Indicate the work plane of the PointLoad.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			OutPortData.Add(new PortData("out","Creates a new unhosted point load within the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8498,7 +8498,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "An array of curves forming a chain.  Bars will be placed orthogonal to the chain with their hook ends near the chain, offset by the side cover setting.  The curves must belong to the top face of the floor or the exterior face of the wall.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("b", "A flag controlling the bars relative to the curves. If the curves are given in order and with consistent orientation, the bars will lie to the right of the chain if flip=false, to the left if flip=true, when viewed from above the floor or outside the wall.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new instance of a Path Reinforcement element within the project",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8531,7 +8531,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "Autodesk.Revit.DB.CurveArray",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("xyz", "Autodesk.Revit.DB.XYZ",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new instance of an Area Reinforcement element within the project",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8561,7 +8561,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Document", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of Rebar Bar Type, which defines the bar diameter, bar bend diameter and bar material of the rebar.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8575,7 +8575,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.HermiteSpline",typeof(Autodesk.Revit.DB.HermiteSpline)));
 			OutPortData.Add(new PortData("out","Returns the params of the Hermite spline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8589,7 +8589,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.HermiteSpline",typeof(Autodesk.Revit.DB.HermiteSpline)));
 			OutPortData.Add(new PortData("out","Returns the tangents of the Hermite spline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8603,7 +8603,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.HermiteSpline",typeof(Autodesk.Revit.DB.HermiteSpline)));
 			OutPortData.Add(new PortData("out","The control points of the Hermite spline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8617,7 +8617,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.HermiteSpline",typeof(Autodesk.Revit.DB.HermiteSpline)));
 			OutPortData.Add(new PortData("out","Returns whether the Hermite spline is periodic or not.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8647,7 +8647,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Profile", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a copy of this profile.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8661,7 +8661,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Profile",typeof(Autodesk.Revit.DB.Profile)));
 			OutPortData.Add(new PortData("out","Retrieve the curves that make up the boundary of the profile.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8675,7 +8675,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Profile",typeof(Autodesk.Revit.DB.Profile)));
 			OutPortData.Add(new PortData("out","Get or set whether the profile is filled.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8689,7 +8689,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Sweep",typeof(Autodesk.Revit.DB.Sweep)));
 			OutPortData.Add(new PortData("out","The maximum segment angle of the sweep in radians.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8703,7 +8703,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Sweep",typeof(Autodesk.Revit.DB.Sweep)));
 			OutPortData.Add(new PortData("out","The trajectory segmentation option for the sweep.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8717,7 +8717,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Sweep",typeof(Autodesk.Revit.DB.Sweep)));
 			OutPortData.Add(new PortData("out","The selected curves used for the sweep path.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8731,7 +8731,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Sweep",typeof(Autodesk.Revit.DB.Sweep)));
 			OutPortData.Add(new PortData("out","The sketched path for the sweep.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8745,7 +8745,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Sweep",typeof(Autodesk.Revit.DB.Sweep)));
 			OutPortData.Add(new PortData("out","The family symbol profile details for the sweep.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8759,7 +8759,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Sweep",typeof(Autodesk.Revit.DB.Sweep)));
 			OutPortData.Add(new PortData("out","The profile sketch of the sweep.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8791,7 +8791,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			InPortData.Add(new PortData("b", "The flip flag",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Sets the value of the flip parameter on the adaptive instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8822,7 +8822,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Gets the value of the flip parameter on the adaptive instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8853,7 +8853,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Gets Shape Handle Adaptive Point Element Ref ids to which the instance geometry adapts.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8884,7 +8884,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The FamilyInstance.",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Gets Placement Adaptive Point Element Ref ids to which the instance geometry adapts.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8915,7 +8915,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The FamilyInstance.",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Gets Adaptive Point Element Ref ids to which the instance geometry adapts.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8948,7 +8948,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Transformation",typeof(Autodesk.Revit.DB.Transform)));
 			InPortData.Add(new PortData("b", "True if the move should disassociate the Point Element Refs from their hosts.   False if the Point Element Refs remain hosted.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Moves Adaptive Component Instance by the specified transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -8980,7 +8980,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The Document",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("fs", "The FamilySymbol",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Creates a FamilyInstance of Adaptive Component Family.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9011,7 +9011,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Verifies if a FamilyInstance is an Adaptive Component Instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9042,7 +9042,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Verifies if a FamilyInstance has an Adaptive Family Symbol.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9073,7 +9073,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("fs", "The FamilySymbol",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Verifies if a FamilySymbol is a valid Adaptive Family Symbol.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9103,7 +9103,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a copy of this curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9134,7 +9134,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The point to be projected.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Projects the specified point on this curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9166,7 +9166,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The specified curve to intersect with this curve.",typeof(Autodesk.Revit.DB.Curve)));
 			InPortData.Add(new PortData("val", "Provides more information about the intersection.",typeof(Autodesk.Revit.DB.IntersectionResultArray)));
 			OutPortData.Add(new PortData("out","Calculates the intersection of this curve with the specified curve and returns the intersection results.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9197,7 +9197,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("crv", "The specified curve to intersect with this curve.",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","Calculates the intersection of this curve with the specified curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9229,7 +9229,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The raw curve parameter to be evaluated.",typeof(System.Double)));
 			InPortData.Add(new PortData("val", "The end index is equal to 0 for the start point, 1 for the end point, or -1 if the parameter is not at the end.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Indicates whether the specified parameter value is within this curve's bounds and outputs the end index.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9260,7 +9260,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The raw curve parameter to be evaluated.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Indicates whether the specified parameter value is within this curve's bounds.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9292,7 +9292,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The parameter to be evaluated.",typeof(System.Double)));
 			InPortData.Add(new PortData("b", "Indicates that the specified parameter is normalized.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Returns the vectors describing the curve at the specified parameter.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9323,7 +9323,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The specified point.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Returns the shortest distance from the specified point to this curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9354,7 +9354,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The normalized parameter.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Computes the raw parameter from the normalized parameter.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9385,7 +9385,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The raw parameter.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Computes the normalized curve parameter from the raw parameter.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9415,7 +9415,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Makes this curve unbound.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9447,7 +9447,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The new parameter of the start point.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The new parameter of the end point.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Changes the bounds of this curve to the specified values.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9479,7 +9479,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The parameter to be evaluated.",typeof(System.Double)));
 			InPortData.Add(new PortData("b", "If false, param is interpreted as natural parameterization of the curve. If true, param is expected to be in [0,1] interval mapped to the bounds of the curve. Setting to true is valid only if the curve is bound.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Evaluates a parameter on the curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9509,7 +9509,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Valid only if the curve is bound. Returns a polyline approximation to the curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9523,7 +9523,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","The period of this curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9537,7 +9537,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","The boolean value that indicates whether this curve is cyclic.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9551,7 +9551,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","The exact length of the curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9565,7 +9565,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","The approximate length of the curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9579,7 +9579,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","Returns a stable reference to the curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9593,7 +9593,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Curve",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","Describes whether the parameter of the curve is restricted to a particular interval.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9623,7 +9623,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Changes this curve to a reference curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9654,7 +9654,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyElementVisibility",typeof(Autodesk.Revit.DB.FamilyElementVisibility)));
 			OutPortData.Add(new PortData("out","Sets the visibility for the model curve in a family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9684,7 +9684,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the visibility for the model curve in a family document.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9698,7 +9698,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve",typeof(Autodesk.Revit.DB.ModelCurve)));
 			OutPortData.Add(new PortData("out","Indicates if this curve is a reference curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9712,7 +9712,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve",typeof(Autodesk.Revit.DB.ModelCurve)));
 			OutPortData.Add(new PortData("out","The truss curve type of this model curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9726,7 +9726,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.ModelCurve",typeof(Autodesk.Revit.DB.ModelCurve)));
 			OutPortData.Add(new PortData("out","The subcategory.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9758,7 +9758,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("sp", "The sketch plane on which to rehost the form.",typeof(Autodesk.Revit.DB.SketchPlane)));
 			InPortData.Add(new PortData("xyz", "The location to which to Rehost the form.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Rehost Form to sketch plane",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9790,7 +9790,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The geometry reference on which to rehost the form.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("xyz", "The location to which to Rehost the form.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Rehost Form to edge, face or curve.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9822,7 +9822,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The geometry reference of edge.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("n", "The param on edge to specify the location.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Add a profile into the form, by a specified edge/param.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9854,7 +9854,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The geometry reference of start point",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("ref", "The geometry reference of end point",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Add an edge to the form, connecting two edges on same/different profile, by a pair of specified points.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9888,7 +9888,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The geometry reference of end edge",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("n", "The param on end edge to specify the location.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Add an edge to the form, connecting two edges on same/different profile, by a pair of specified edge/param.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9920,7 +9920,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The geometry reference of face",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("xyz", "A point on the face, defining the position of edge to be created.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Add an edge to the form, connecting two edges on different profiles, by a specified face of the form and a point on face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9953,7 +9953,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The scale factor, it should be large than zero.",typeof(System.Double)));
 			InPortData.Add(new PortData("xyz", "The origin where scale happens.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Scale a profile of the form, by a specified origin and scale factor.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -9986,7 +9986,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The scale factor, it should be large than zero.",typeof(System.Double)));
 			InPortData.Add(new PortData("xyz", "The origin where scale happens.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Scale a face/edge/curve/vertex of the form, by a specified origin and scale factor.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10019,7 +10019,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "An unbounded line that represents the axis of rotation.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("n", "The angle, in radians, by which the element is to be rotated around the specified axis.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Rotate a profile of the form, by a specified angle around a given axis.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10052,7 +10052,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "An unbounded line that represents the axis of rotation.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("n", "The angle, in radians, by which the element is to be rotated around the specified axis.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Rotate a face/edge/curve/vertex of the form, by a specified angle around a given axis.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10084,7 +10084,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("i", "Index to specify the profile.",typeof(System.Int32)));
 			InPortData.Add(new PortData("xyz", "The vector by which the element is to be moved.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Move a profile of the form, specified by a reference, and an offset vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10116,7 +10116,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The geometry reference of face/edge/curve/vertex",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("xyz", "The vector by which the element is to be moved.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Move a face/edge/curve/vertex of the form, specified by a reference, and an offset vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10147,7 +10147,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("i", "Index to specify the profile.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Delete a profile of the form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10178,7 +10178,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The geometry reference of face/edge/curve/vertex",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Delete a face/edge/curve/vertex of the form, specified by a reference.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10209,7 +10209,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("i", "Index to specify the profile.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Tell if a profile can be deleted/moved/rotated.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10240,7 +10240,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The geometry reference of face/edge/curve/vertex",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Tell if a sub element can be deleted/moved/rotated/scaled.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10271,7 +10271,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of a point.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Given a point, return all edges and curves that it is lying on.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10302,7 +10302,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of an edge or curve or face.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Given an edge or a curve or a face, return all control points lying on it (in form of geometry references).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10333,7 +10333,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of the edge to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Tell if an edge is a connecting edge on a side face. Connecting edges connect vertices on different profiles.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10364,7 +10364,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of the edge or curve to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Tell if an edge or curve is generated from a profile.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10395,7 +10395,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of the edge to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Tell if an edge is an auto-crease on a top/bottom cap face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10426,7 +10426,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of the  face to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Given a face, tell if it is a side face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10457,7 +10457,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of the face to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Given a face, tell if it is an end cap face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10488,7 +10488,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of the  face to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Given a face, tell if it is a beginning cap face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10519,7 +10519,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("i", "Index to specify the profile to be checked.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Tell if the profile is made by referencing existing geometry in the Revit model.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10550,7 +10550,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "Reference to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Tell if the pick is the reference to a face of the form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10581,7 +10581,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "Reference to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Tell if the pick is the reference to a curve of the form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10612,7 +10612,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "Reference to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Tell if the pick is the reference to an edge of the form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10643,7 +10643,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "Reference to be checked.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Tell if the pick is the reference to a vertex of the form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10674,7 +10674,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("i", "Index to specify the profile used as master profile.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Constrain form profiles using the specified profile as master. This is an advanced version of property \"AreProfilesConstrained\", allowing specify the master profile.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10705,7 +10705,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "Reference to the curve in path",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Given a reference to certain curve in the path, return its index.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10719,7 +10719,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form",typeof(Autodesk.Revit.DB.Form)));
 			OutPortData.Add(new PortData("out","Retrieve/set the base offset of the form object. It is only valid for locked form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10733,7 +10733,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form",typeof(Autodesk.Revit.DB.Form)));
 			OutPortData.Add(new PortData("out","Retrieve/set the top offset of the form object. It is only valid for locked form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10747,7 +10747,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form",typeof(Autodesk.Revit.DB.Form)));
 			OutPortData.Add(new PortData("out","Tell if the form has an open geometry.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10761,7 +10761,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form",typeof(Autodesk.Revit.DB.Form)));
 			OutPortData.Add(new PortData("out","Get/set if the form's profiles are constrained.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10775,7 +10775,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form",typeof(Autodesk.Revit.DB.Form)));
 			OutPortData.Add(new PortData("out","Get/set if the form is in X-Ray mode.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10789,7 +10789,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form",typeof(Autodesk.Revit.DB.Form)));
 			OutPortData.Add(new PortData("out","Tell if the form has any reference profile.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10803,7 +10803,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form",typeof(Autodesk.Revit.DB.Form)));
 			OutPortData.Add(new PortData("out","The number of curves in the form path.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10817,7 +10817,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("frm", "Autodesk.Revit.DB.Form",typeof(Autodesk.Revit.DB.Form)));
 			OutPortData.Add(new PortData("out","The number of profiles in the form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10851,7 +10851,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The first coordinate of max.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The second coordinate of max.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates object with supplied values.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10881,7 +10881,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxUV", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","default constructor",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10895,7 +10895,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxUV",typeof(Autodesk.Revit.DB.BoundingBoxUV)));
 			OutPortData.Add(new PortData("out","Maximum coordinates (upper-right corner of the box).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10909,7 +10909,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxUV",typeof(Autodesk.Revit.DB.BoundingBoxUV)));
 			OutPortData.Add(new PortData("out","Minimum coordinates (lower-left corner of the box).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10939,7 +10939,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Instance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the total transform, which includes the true north transform for instances like import instances.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -10969,7 +10969,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Instance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the transform of the instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11000,7 +11000,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The point to be projected.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Projects the specified point on this face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11032,7 +11032,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The specified curve to intersect with this face.",typeof(Autodesk.Revit.DB.Curve)));
 			InPortData.Add(new PortData("val", "Provides more information about the intersection.",typeof(Autodesk.Revit.DB.IntersectionResultArray)));
 			OutPortData.Add(new PortData("out","Calculates the intersection of the specified curve with this face and returns the intersection results.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11063,7 +11063,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("crv", "The specified curve to intersect with this face.",typeof(Autodesk.Revit.DB.Curve)));
 			OutPortData.Add(new PortData("out","Calculates the intersection of the specified curve with this face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11095,7 +11095,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("uv", "The parameters to be evaluated, in natural parameterization of the face.",typeof(Autodesk.Revit.DB.UV)));
 			InPortData.Add(new PortData("val", "Provides more information when the point is on the edge; otherwise,",typeof(Autodesk.Revit.DB.IntersectionResult)));
 			OutPortData.Add(new PortData("out","Indicates whether the specified point is within this face and outputs additional results.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11126,7 +11126,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The parameters to be evaluated, in natural parameterization of the face.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Indicates whether the specified point is within this face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11157,7 +11157,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The parameters to be evaluated, in natural parameterization of the face.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Returns the normal vector for the face at the given point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11188,7 +11188,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The parameters to be evaluated, in natural parameterization of the face.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Returns the vectors describing the face at the specified point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11218,7 +11218,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns the UV bounding box of the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11249,7 +11249,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The parameters to be evaluated, in natural parameterization of the face.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Evaluates parameters on the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11280,7 +11280,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The level of detail. Its range is from 0 to 1. 0 is the lowest level of detail and 1 is the highest.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Returns a triangular mesh approximation to the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11310,7 +11310,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a triangular mesh approximation to the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11340,7 +11340,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Face regions (created with the Split Face command) of the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11354,7 +11354,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","The area of this face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11368,7 +11368,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","Returns a stable reference to the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11382,7 +11382,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","Determines if a face is two-sided (degenerate)",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11396,7 +11396,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","Element ID of the material from which this face is composed.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11410,7 +11410,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","Each edge loop is a closed boundary of the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11424,7 +11424,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("f", "Autodesk.Revit.DB.Face",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","Reports if the face contains regions created with the Split Face command.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11438,7 +11438,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxXYZ",typeof(Autodesk.Revit.DB.BoundingBoxXYZ)));
 			OutPortData.Add(new PortData("out","Defines whether bounding box is turned on.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11452,7 +11452,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxXYZ",typeof(Autodesk.Revit.DB.BoundingBoxXYZ)));
 			OutPortData.Add(new PortData("out","Maximum coordinates (upper-right-front corner of the box).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11466,7 +11466,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxXYZ",typeof(Autodesk.Revit.DB.BoundingBoxXYZ)));
 			OutPortData.Add(new PortData("out","Minimum coordinates (lower-left-rear corner of the box).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11480,7 +11480,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.BoundingBoxXYZ",typeof(Autodesk.Revit.DB.BoundingBoxXYZ)));
 			OutPortData.Add(new PortData("out","The transform FROM the coordinate space of the box TO the model space.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11511,7 +11511,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The options used to obtain the geometry.  Note that ComputeReferences may notbe set to true.",typeof(Autodesk.Revit.DB.Options)));
 			OutPortData.Add(new PortData("out","Returns the original geometry of the instance, before the instance is modified by joins, cuts, coping, extensions, or other post-processing.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11541,7 +11541,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns the Point Placement References for the Family Instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11572,7 +11572,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A steel beam or column for which this beam currently has a coping cut. May not be",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Removes a coping (cut) from a steel beam.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11603,7 +11603,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A steel beam or column. May not be",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Adds a coping (cut) to a steel beam.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11634,7 +11634,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A set of coping cutters (steel beams and steel columns).",typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)));
 			OutPortData.Add(new PortData("out","Specifies the set of coping cutters on this element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11664,7 +11664,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Lists the elements currently used as coping cutters for this element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11695,7 +11695,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "A set of coping cutters (steel beams and steel columns).",typeof(Autodesk.Revit.DB.ElementSet)));
 			OutPortData.Add(new PortData("out","Specify the set of coping cutters on this element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11725,7 +11725,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Lists the elements currently used as coping cutters for this element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11755,7 +11755,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the sub component ElementIds of the current family instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11785,7 +11785,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Flips the settings of \"From Room\" and \"To Room\" for the door or window instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11815,7 +11815,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The family instance will be flipped by 180 degrees. If it can not be rotated, return false, otherwise return true.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11845,7 +11845,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The orientation of family instance facing will be flipped. If it can not be flipped, return false, otherwise return true.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11875,7 +11875,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The orientation of family instance hand will be flipped. If it can not be flipped, return false, otherwise return true.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11889,7 +11889,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Identifies if the instance's work plane is flipped.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11903,7 +11903,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Identifies if the instance can flip its work plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11917,7 +11917,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Indicates if the family instance is a slanted column.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11931,7 +11931,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to check whether the instance can be extended and return the interface for extension operation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11945,7 +11945,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to get the super component of current family instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11959,7 +11959,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to get the sub components of current family instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11973,7 +11973,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","The \"To Room\" set for the door or window in the last phase of the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -11987,7 +11987,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","The \"From Room\" set for the door or window in the last phase of the project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12001,7 +12001,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to test whether the family instance can be rotated by 180 degrees.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12015,7 +12015,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to test whether the orientation of family instance facing can be flipped.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12029,7 +12029,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to test whether the orientation of family instance hand can be flipped.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12043,7 +12043,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to test whether the family instance is mirrored. (only one axis is flipped)",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12057,7 +12057,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to test whether the family instance is invisible.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12071,7 +12071,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to test whether the orientation of family instance facing is flipped.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12085,7 +12085,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to test whether the orientation of family instance hand is flipped.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12099,7 +12099,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to get the orientation of family instance facing.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12113,7 +12113,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to get the orientation of family instance hand.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12127,7 +12127,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Property to get the reference to the host face of family instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12141,7 +12141,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","If the instance is contained within another element, this property returns the containingelement. An instance that is face hosted will return the element containing the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12155,7 +12155,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","This property is used to find the physical location of an instance within project.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12169,7 +12169,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","The space in which the instance is located (during the last phase of the project).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12183,7 +12183,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","The room in which the instance is located (during the last phase of the project).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12197,7 +12197,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Provides the primary structural type of the instance, such as beam or column etc.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12211,7 +12211,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Provides the primary structural usage of the instance, such as brace, girder etc.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12225,7 +12225,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Identifies the material that defines the instance's structural analysis properties.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12239,7 +12239,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","This property returns the physical material from which the instance is made.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12253,7 +12253,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Retrieves the MEP model for the family instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12267,7 +12267,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyInstance",typeof(Autodesk.Revit.DB.FamilyInstance)));
 			OutPortData.Add(new PortData("out","Returns or changes the FamilySymbol object that represents the type of the instance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12300,7 +12300,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The green channel of the color that ranges from 0 to 255.",typeof(System.Byte)));
 			InPortData.Add(new PortData("val", "The blue channel of the color that ranges from 0 to 255.",typeof(System.Byte)));
 			OutPortData.Add(new PortData("out","Constructor that takes the red, green and blue channels of the color.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12314,7 +12314,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Color",typeof(Autodesk.Revit.DB.Color)));
 			OutPortData.Add(new PortData("out","Identifies if the color represents a valid color, or an uninitialized/invalid value.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12328,7 +12328,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Color",typeof(Autodesk.Revit.DB.Color)));
 			OutPortData.Add(new PortData("out","Get or set the blue channel of the color.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12342,7 +12342,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Color",typeof(Autodesk.Revit.DB.Color)));
 			OutPortData.Add(new PortData("out","Get or set the green channel of the color.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12356,7 +12356,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Color",typeof(Autodesk.Revit.DB.Color)));
 			OutPortData.Add(new PortData("out","Get or set the red channel of the color.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12387,7 +12387,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.FamilyElementVisibility",typeof(Autodesk.Revit.DB.FamilyElementVisibility)));
 			OutPortData.Add(new PortData("out","Sets the visibility for the generic form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12417,7 +12417,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GenericForm", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the visibility for the generic form.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12431,7 +12431,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GenericForm",typeof(Autodesk.Revit.DB.GenericForm)));
 			OutPortData.Add(new PortData("out","The subcategory.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12445,7 +12445,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GenericForm",typeof(Autodesk.Revit.DB.GenericForm)));
 			OutPortData.Add(new PortData("out","Get and Set the Name property",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12459,7 +12459,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GenericForm",typeof(Autodesk.Revit.DB.GenericForm)));
 			OutPortData.Add(new PortData("out","Identifies if the GenericForm is a solid or a void element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12473,7 +12473,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GenericForm",typeof(Autodesk.Revit.DB.GenericForm)));
 			OutPortData.Add(new PortData("out","The visibility of the GenericForm.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12487,7 +12487,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Point",typeof(Autodesk.Revit.DB.Point)));
 			OutPortData.Add(new PortData("out","Returns a stable reference to the point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12501,7 +12501,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Point",typeof(Autodesk.Revit.DB.Point)));
 			OutPortData.Add(new PortData("out","Returns the coordinates of the point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12532,7 +12532,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The element to be checked.",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Checks if the element can be an intersection reference.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12562,7 +12562,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Removes all the intersection elements from a divided surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12593,7 +12593,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The intersection element to be removed.",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Removes an intersection element from a divided surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12624,7 +12624,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The intersection element to be added.",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Adds an intersection element to the divided surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12654,7 +12654,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets all intersection elements which produce division lines.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12686,7 +12686,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
 			InPortData.Add(new PortData("i", "System.Int32",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Get a reference to a tile elementassociated with a given seed node.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12718,7 +12718,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
 			InPortData.Add(new PortData("i", "System.Int32",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Get a reference to one of the tile surfacesassociated with a given seed node.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12749,7 +12749,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
 			OutPortData.Add(new PortData("out","Reports whether a grid node is a \"seed node,\" a nodethat is associated with one or more tiles.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12781,7 +12781,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridSegmentDirection",typeof(Autodesk.Revit.DB.GridSegmentDirection)));
 			OutPortData.Add(new PortData("out","Get a reference to a line segment connectingtwo adjacent grid nodes.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12812,7 +12812,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
 			OutPortData.Add(new PortData("out","Get a reference to the geometric pointassociated with a grid node.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12843,7 +12843,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
 			OutPortData.Add(new PortData("out","Specify whether a particular grid node is interior to the surface, on the boundary, or outsidethe boundary.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12874,7 +12874,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.GridNode",typeof(Autodesk.Revit.DB.GridNode)));
 			OutPortData.Add(new PortData("out","Get the position of a grid node in UVcoordinates in the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12888,7 +12888,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","Get the number of V-gridlines used on thesurface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12902,7 +12902,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","Get the number of U-gridlines used on thesurface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12916,7 +12916,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","Whether the pattern is flipped.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12930,7 +12930,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","Whether the pattern is mirror-imaged.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12944,7 +12944,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","The rotation of the pattern by a multipleof 90 degrees.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12958,7 +12958,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","The offset applied to the pattern by an integral number of grid nodes in the V-direction.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12972,7 +12972,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","The offset applied to the pattern by anintegral number of grid nodes in the U-direction.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -12986,7 +12986,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","Determines the handling of tiles that overlap the surface'sboundary.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13000,7 +13000,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","Angle of rotation applied to the U- and V- directions together.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13014,7 +13014,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","Access to the rule for laying out the second series of equidistantparallel lines on the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13028,7 +13028,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","Access to the rule for laying out the first series of equidistantparallel lines on the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13042,7 +13042,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","A reference to the divided face on the host.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13056,7 +13056,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.DividedSurface",typeof(Autodesk.Revit.DB.DividedSurface)));
 			OutPortData.Add(new PortData("out","The element whose surface has been divided.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13088,7 +13088,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The filter to control which points are extracted. The filter should be passed in the coordinates   of the Revit model.",typeof(Autodesk.Revit.DB.PointClouds.PointCloudFilter)));
 			InPortData.Add(new PortData("i", "The maximum number of points requested.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Extracts a collection of points based on a filter.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13121,7 +13121,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The element id of the PointCloudType.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("val", "The transform that defines the placement of the instance in the Revit document coordinate system.",typeof(Autodesk.Revit.DB.Transform)));
 			OutPortData.Add(new PortData("out","Creates a new instance of a point cloud based on an input point cloud type and transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13152,7 +13152,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The filter object to be made active.  If",typeof(Autodesk.Revit.DB.PointClouds.PointCloudFilter)));
 			OutPortData.Add(new PortData("out","Sets active selection filter by cloning of the one passed to it.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13182,7 +13182,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PointCloudInstance", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns the currently active selection filter for this point cloud.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13196,7 +13196,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.PointCloudInstance",typeof(Autodesk.Revit.DB.PointCloudInstance)));
 			OutPortData.Add(new PortData("out","The action taken based on the results of the selection filter applied to this point cloud.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13210,7 +13210,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Ellipse",typeof(Autodesk.Revit.DB.Ellipse)));
 			OutPortData.Add(new PortData("out","Returns the Y vector radius of the ellipse.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13224,7 +13224,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Ellipse",typeof(Autodesk.Revit.DB.Ellipse)));
 			OutPortData.Add(new PortData("out","Returns the X vector radius of the ellipse.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13238,7 +13238,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Ellipse",typeof(Autodesk.Revit.DB.Ellipse)));
 			OutPortData.Add(new PortData("out","The Y direction.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13252,7 +13252,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Ellipse",typeof(Autodesk.Revit.DB.Ellipse)));
 			OutPortData.Add(new PortData("out","The X direction.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13266,7 +13266,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Ellipse",typeof(Autodesk.Revit.DB.Ellipse)));
 			OutPortData.Add(new PortData("out","Returns the normal to the plane in which the ellipse is defined.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13280,7 +13280,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Ellipse",typeof(Autodesk.Revit.DB.Ellipse)));
 			OutPortData.Add(new PortData("out","Returns the center of the ellipse.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13294,7 +13294,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Extrusion",typeof(Autodesk.Revit.DB.Extrusion)));
 			OutPortData.Add(new PortData("out","The offset of the end of the extrusion relative to the sketch plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13308,7 +13308,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Extrusion",typeof(Autodesk.Revit.DB.Extrusion)));
 			OutPortData.Add(new PortData("out","The offset of the start of the extrusion relative to the sketch plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13322,7 +13322,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Extrusion",typeof(Autodesk.Revit.DB.Extrusion)));
 			OutPortData.Add(new PortData("out","Returns the Sketch of the Extrusion.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13352,7 +13352,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates an empty array that can store ReferencePoint objects.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13383,7 +13383,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("ref", "The reference of the host point.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Create a PointRelativeToPoint object, which is used to define the placement of a ReferencePoint relative to a host point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13416,7 +13416,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "Autodesk.Revit.DB.Reference",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("b", "System.Boolean",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Construct a PointOnEdgeFaceIntersection object which is used to define the placement of a ReferencePoint given a references to edge and a reference to face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13448,7 +13448,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The first edge reference.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("ref", "The second edge reference.",typeof(Autodesk.Revit.DB.Reference)));
 			OutPortData.Add(new PortData("out","Construct a PointOnEdgeEdgeIntersection object which is used to define the placement of a ReferencePoint given two references to edge.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13480,7 +13480,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The reference whose face the object will be created on.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("uv", "A 2-dimensional position.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Construct a PointOnFace object which is used to define the placement of a ReferencePoint given a reference and a location on the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13514,7 +13514,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("uv", "The direction of the point'sX-coordinate vector in the plane's coordinates; see the XVec property. Optional;default value is (1, 0).",typeof(Autodesk.Revit.DB.UV)));
 			InPortData.Add(new PortData("n", "Signed offset from the plane; see the Offset property.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Construct a PointOnPlane object which is used to define the placement of a ReferencePoint from its property values.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13546,7 +13546,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("ref", "The reference whose edge the object will be created on.",typeof(Autodesk.Revit.DB.Reference)));
 			InPortData.Add(new PortData("loc", "The location on the edge.",typeof(Autodesk.Revit.DB.PointLocationOnCurve)));
 			OutPortData.Add(new PortData("out","Create a PointOnEdge object which is used to define the placement of a ReferencePoint.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13577,7 +13577,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("fs", "The family symbol of the Profile.",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Creates a new FamilySymbolProfile object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13608,7 +13608,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("crvs", "The curve loops of the Profile.",typeof(Autodesk.Revit.DB.CurveArrArray)));
 			OutPortData.Add(new PortData("out","Creates a new CurveLoopsProfile object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13638,7 +13638,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new Autodesk::Revit::DB::ElementId^ object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13670,7 +13670,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("v", "The view of area element.",typeof(Autodesk.Revit.DB.ViewPlan)));
 			InPortData.Add(new PortData("uv", "A point which lies in an enclosed region of area boundary where the new area will reside.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of Area for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13711,7 +13711,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The elbow point for the leader.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewTextNote() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13748,7 +13748,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("tafs", "Flags indicating the alignment of the note.  This should be a bitwise OR including one of TEF_ALIGN_TOP, TEF_ALIGN_MIDDLE and TEF_ALIGN_BOTTOM and one of TEF_ALIGN_LEFT, TEF_ALIGN_CENTER and TEF_ALIGN_RIGHT.The defaults for this flag are TEF_ALIGN_TOP | TEF_ALIGN_LEFT.",typeof(Autodesk.Revit.DB.TextAlignFlags)));
 			InPortData.Add(new PortData("s", "Text to display in the text note.  Include new line characters to force a multiple line note to be created.  Notes may also wrap automatically based on the width of the note rectangle.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewTextNote()  for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13783,7 +13783,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("xyz", "A vector that must be perpendicular to the profile which dictates which side of the wall is considered.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewWall() for batch creation",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13817,7 +13817,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewWall() for batch creation",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13849,7 +13849,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crvs", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(Autodesk.Revit.DB.CurveArray)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewWall() for batch creation",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13882,7 +13882,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "The level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewWall() for batch creation",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13919,7 +13919,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Change which side of the wall is considered to be the inside and outside of the wall.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewWall() for batch creation",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13951,7 +13951,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "- The level on which the room is to exist.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("uv", "A 2D point the dictates the location on that specified level.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewRoom() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -13984,7 +13984,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "A line on the face defining where the symbol is to be placed.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14018,7 +14018,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "A vector that defines the direction of the family instance.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14053,7 +14053,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("el", "The object into which the family instance is to be inserted, often known as the host.",typeof(Autodesk.Revit.DB.Element)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14088,7 +14088,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "A Level object that is used as the base level for the object.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14122,7 +14122,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("el", "The object into which the family instance is to be inserted, often known as the host.",typeof(Autodesk.Revit.DB.Element)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14156,7 +14156,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "A Level object that is used as the base level for the object.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14190,7 +14190,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("l", "A Level object that is used as the base level for the object.",typeof(Autodesk.Revit.DB.Level)));
 			InPortData.Add(new PortData("st", "If structural then specify the type of the component.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14223,7 +14223,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("fs", "A FamilySymbol object that represents the type of the instance that is to be inserted.",typeof(Autodesk.Revit.DB.FamilySymbol)));
 			InPortData.Add(new PortData("st", "Specify if the family instance is structural.",typeof(Autodesk.Revit.DB.Structure.StructuralType)));
 			OutPortData.Add(new PortData("out","Creates an object which wraps the arguments of NewFamilyInstance() for batch creation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14253,7 +14253,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a space set.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14283,7 +14283,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a LoadCombination array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14313,7 +14313,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a LoadUsage array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14343,7 +14343,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a LoadCase array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14373,7 +14373,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a View set.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14403,7 +14403,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of an IntersectionResult array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14433,7 +14433,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a face array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14463,7 +14463,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a reference array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14493,7 +14493,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a double array.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14523,7 +14523,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates options related to room volume and area computations.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14553,7 +14553,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates Green-Building XML Import options.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14583,7 +14583,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates Image Import options.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14613,7 +14613,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates Building Site Export options.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14643,7 +14643,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates 3D-Studio Max (FBX) Export options.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14673,7 +14673,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates Green-Building XML Export options.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14703,7 +14703,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates DWFX Export options.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14733,7 +14733,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates DWF Export options.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14763,7 +14763,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates SAT Export options.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14794,7 +14794,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The supplied UV object",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Creates a UV object by copying the supplied UV object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14826,7 +14826,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The first coordinate.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The second coordinate.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a UV object representing coordinates in 2-space with supplied values.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14856,7 +14856,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a UV object at the origin.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14887,7 +14887,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The supplied XYZ object",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a XYZ object by copying the supplied XYZ object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14920,7 +14920,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The second coordinate.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The third coordinate.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a XYZ object representing coordinates in 3-space with supplied values.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14950,7 +14950,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a XYZ object at the origin.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -14984,7 +14984,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The first coordinate of max.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The second coordinate of max.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a two-dimensional rectangle with supplied values.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15014,7 +15014,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates an empty two-dimensional rectangle.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15044,7 +15044,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a three-dimensional rectangular box.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15078,7 +15078,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "Tangent vector at the start of the spline. Can be null, in which case the tangent is computed from the control points.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "Tangent vector at the end of the spline. Can be null, in which case the tangent is computed from the control points.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a Hermite spline with specified tangency at its endpoints.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15110,7 +15110,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("lst", "The control points of the Hermite spline.",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			InPortData.Add(new PortData("b", "True if the Hermite spline is to be periodic.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a Hermite spline with default tangency at its endpoints.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15142,7 +15142,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("lst", "The control points of the nurbSpline.",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			InPortData.Add(new PortData("lst", "The weights of the nurbSpline.",typeof(System.Collections.Generic.IList<System.Double>)));
 			OutPortData.Add(new PortData("out","Creates a new geometric NurbSpline object using the same calculations that Revit uses when sketching splines in the user interface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15178,7 +15178,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "The nurbSpline is closed or not.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("b", "The nurbSpline is rational or not rational.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new geometric nurbSpline object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15215,7 +15215,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The raw parameter value at the start of the ellipse. Should be greater than or equal to -2PI and less than Param1.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The raw parameter value at the end of the ellipse. Should be greater than Param0 and less than or equal to 2*PI.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new geometric ellipse object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15249,7 +15249,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "Elevation above sea level in feet.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "Rotation angle away from true north in the range of -PI to +PI.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new project position object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15282,7 +15282,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The end point of the arc.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "A point on the arc.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new geometric arc object based on three points.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15316,7 +15316,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "System.Double",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "System.Double",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a new geometric arc object based on plane, radius, and angles.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15352,7 +15352,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "The x axis to define the arc plane. Must be normalized.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "The y axis to define the arc plane. Must be normalized.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new geometric arc object based on center, radius, unit vectors, and angles.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15383,7 +15383,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("xyz", "The coordinates of the point.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new geometric point object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15414,7 +15414,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("crvs", "The closed loop of planar curves to locate plane.",typeof(Autodesk.Revit.DB.CurveArray)));
 			OutPortData.Add(new PortData("out","Creates a new geometric plane from a loop of planar curves.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15446,7 +15446,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "Z vector of the plane coordinate system.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "Origin of the plane coordinate system.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new geometric plane object based on a normal vector and an origin.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15479,7 +15479,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "Y vector of the plane coordinate system.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "Origin of the plane coordinate system.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new geometric plane object based on two coordinate vectors and an origin.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15509,7 +15509,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a new color object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15539,7 +15539,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns an array that can hold combinable element objects.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15569,7 +15569,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns an array that can hold VertexIndexPair objects.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15601,7 +15601,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("i", "The index of the vertex pair from the top profile of a blend.",typeof(System.Int32)));
 			InPortData.Add(new PortData("i", "The index of the vertex pair from the bottom profile of a blend.",typeof(System.Int32)));
 			OutPortData.Add(new PortData("out","Creates a new VertexIndexPair object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15631,7 +15631,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns an array that can hold element objects.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15661,7 +15661,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates an empty array that can store geometric curve loops.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15691,7 +15691,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates an empty array that can store geometric curves.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15721,7 +15721,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new map that maps one string to another string.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15751,7 +15751,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates an object to specify user preferences in parsing of geometry.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15783,7 +15783,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "A point through which the line will pass.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "A vector for the direction of the line.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new unbounded geometric line object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15815,7 +15815,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "A start point for the line.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("xyz", "An end point for the line.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a new bounded geometric line object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15848,7 +15848,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("xyz", "An end point of a vector for the direction of the line.",typeof(Autodesk.Revit.DB.XYZ)));
 			InPortData.Add(new PortData("b", "Set to True if you wish the line to be bound or False is the line is to be infinite.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new bound or unbounded geometric line object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15878,7 +15878,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Create a new instance of MaterialSet.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15908,7 +15908,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a set specifically for holding elements.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15939,7 +15939,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("cats", "A set of categories that will be added to the binding.",typeof(Autodesk.Revit.DB.CategorySet)));
 			OutPortData.Add(new PortData("out","Creates a new type binding object containing the categories passed as a parameter.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -15969,7 +15969,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new empty type binding object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16000,7 +16000,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("cats", "A set of categories that will be added to the binding.",typeof(Autodesk.Revit.DB.CategorySet)));
 			OutPortData.Add(new PortData("out","Creates a new instance binding object containing the categories passed as a parameter.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16030,7 +16030,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new empty instance binding object.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16060,7 +16060,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.Creation.Application", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a new instance of a set specifically for holding category objects.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16074,7 +16074,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Revolution",typeof(Autodesk.Revit.DB.Revolution)));
 			OutPortData.Add(new PortData("out","Returns the Axis of the Revolution.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16088,7 +16088,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Revolution",typeof(Autodesk.Revit.DB.Revolution)));
 			OutPortData.Add(new PortData("out","The end angle of the revolution relative to the sketch plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16102,7 +16102,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Revolution",typeof(Autodesk.Revit.DB.Revolution)));
 			OutPortData.Add(new PortData("out","The start angle of the revolution relative to the sketch plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16116,7 +16116,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Revolution",typeof(Autodesk.Revit.DB.Revolution)));
 			OutPortData.Add(new PortData("out","Returns the Sketch of the Revolution.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16130,7 +16130,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.RevolvedFace",typeof(Autodesk.Revit.DB.RevolvedFace)));
 			OutPortData.Add(new PortData("out","Profile curve of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16144,7 +16144,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.RevolvedFace",typeof(Autodesk.Revit.DB.RevolvedFace)));
 			OutPortData.Add(new PortData("out","Axis of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16158,7 +16158,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.RevolvedFace",typeof(Autodesk.Revit.DB.RevolvedFace)));
 			OutPortData.Add(new PortData("out","Origin of the surface.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16189,7 +16189,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The parameter to be evaluated.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Returns the vectors describing the edge at the specified parameter.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16220,7 +16220,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("f", "Specifies the face, on which the curve will follow the topological direction of the edge.",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","Returns a curve that corresponds to this edge as oriented in its topological direction on the specified face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16250,7 +16250,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a curve that corresponds to the edge's parametric orientation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16282,7 +16282,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The parameter to be evaluated, in [0,1].",typeof(System.Double)));
 			InPortData.Add(new PortData("f", "The face on which to perform the evaluation. Must belong to the edge.",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","Evaluates a parameter on the edge to produce UV coordinates on the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16313,7 +16313,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The parameter to be evaluated, in [0,1].",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Evaluates a parameter on the edge.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16344,7 +16344,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("f", "The face on which to perform the tessellation. Must belong to the edge.",typeof(Autodesk.Revit.DB.Face)));
 			OutPortData.Add(new PortData("out","Returns a polyline approximation to the edge in UV parameters of the face.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16374,7 +16374,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a polyline approximation to the edge.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16388,7 +16388,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge",typeof(Autodesk.Revit.DB.Edge)));
 			OutPortData.Add(new PortData("out","Returns the approximate length of the edge.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16402,7 +16402,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Edge",typeof(Autodesk.Revit.DB.Edge)));
 			OutPortData.Add(new PortData("out","Returns a stable reference to the edge.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16432,7 +16432,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets formatted string showing (U, V) with values formatted to 9 decimal places.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16463,7 +16463,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The specified vector.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Returns the angle between this vector and the specified vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16494,7 +16494,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The specified point.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Returns the distance from this 2-D point to the specified 2-D point.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16526,7 +16526,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("uv", "The vector to compare with this vector.",typeof(Autodesk.Revit.DB.UV)));
 			InPortData.Add(new PortData("n", "The tolerance for equality check.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Determines whether this 2-D vector and the specified 2-D vector are the same within a specified tolerance.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16557,7 +16557,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The vector to compare with this vector.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Determines whether this 2-D vector and the specified 2-D vector are the same within the tolerance (1.0e-09).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16588,7 +16588,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The value to divide this vector by.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Divides this 2-D vector by the specified value and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16619,7 +16619,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("n", "The value to multiply with this vector.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Multiplies this 2-D vector by the specified value and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16649,7 +16649,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Negates this 2-D vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16680,7 +16680,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The vector to subtract from this vector.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Subtracts the specified 2-D vector from this 2-D vector and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16711,7 +16711,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The vector to add to this vector.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Adds the specified 2-D vector to this 2-D vector and returns the result.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16742,7 +16742,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The vector to multiply with this vector.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","The cross product of this 2-D vector and the specified 2-D vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16773,7 +16773,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("uv", "The vector to multiply with this vector.",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","The dot product of this 2-D vector and the specified 2-D vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16803,7 +16803,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The boolean value indicates whether this 2-D vector is of unit length.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16833,7 +16833,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The boolean value indicates whether this 2-D vector is a zero vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16863,7 +16863,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The length of this 2-D vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16893,7 +16893,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns a new UV whose coordinates are the normalized values from this vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16925,7 +16925,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("n", "The first coordinate.",typeof(System.Double)));
 			InPortData.Add(new PortData("n", "The second coordinate.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Creates a UV with the supplied coordinates.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16955,7 +16955,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Creates a default UV with the values (0, 0).",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16969,7 +16969,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Gets the second coordinate.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16983,7 +16983,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("uv", "Autodesk.Revit.DB.UV",typeof(Autodesk.Revit.DB.UV)));
 			OutPortData.Add(new PortData("out","Gets the first coordinate.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -16997,7 +16997,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Line",typeof(Autodesk.Revit.DB.Line)));
 			OutPortData.Add(new PortData("out","Returns the direction of the line.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17011,7 +17011,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("crv", "Autodesk.Revit.DB.Line",typeof(Autodesk.Revit.DB.Line)));
 			OutPortData.Add(new PortData("out","Returns the origin of the line.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17042,7 +17042,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The material aspect.",typeof(Autodesk.Revit.DB.MaterialAspect)));
 			OutPortData.Add(new PortData("out","Removes an aspect from the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17073,7 +17073,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The material aspect.",typeof(Autodesk.Revit.DB.MaterialAspect)));
 			OutPortData.Add(new PortData("out","Set an aspect of the material from a shared property set to a custom property set owned by the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17105,7 +17105,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The material aspect.",typeof(Autodesk.Revit.DB.MaterialAspect)));
 			InPortData.Add(new PortData("val", "Identifier of a shared property set (an instance of PropertySetElement).",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Set an aspect of the material to a shared property set.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17138,7 +17138,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Identifier of a property set (an instance of PropertySetElement)",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("b", "Set the property set as shared or custom",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Set the value of an aspect of the material",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17169,7 +17169,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The material aspect.",typeof(Autodesk.Revit.DB.MaterialAspect)));
 			OutPortData.Add(new PortData("out","Gets the identifier of the shared property set for a given aspect.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17199,7 +17199,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns the color of the cut pattern for the material element.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17229,7 +17229,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns the cut pattern id of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17260,7 +17260,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "The smoothness value, ranges from 0 to 1.",typeof(System.Single)));
 			OutPortData.Add(new PortData("out","Sets the smoothness value.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17290,7 +17290,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the smoothness value.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17322,7 +17322,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The document in which to create the material.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("s", "The name of the new material.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Creates a new material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17353,7 +17353,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("s", "Name of the new material.",typeof(System.String)));
 			OutPortData.Add(new PortData("out","Duplicates the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17367,7 +17367,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The name of the general material type, e.g. 'Wood.'",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17381,7 +17381,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The ElementId of the thermal PropertySetElement.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17395,7 +17395,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The ElementId of the structural PropertySetElement.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17409,7 +17409,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The shininess of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17423,7 +17423,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","Whether the material can glow.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17437,7 +17437,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The rendering appearance property of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17451,7 +17451,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The surface pattern color of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17465,7 +17465,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The surface pattern of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17479,7 +17479,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The cut pattern color of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17493,7 +17493,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The cut pattern of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17507,7 +17507,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The smoothness of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17521,7 +17521,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The transparency of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17535,7 +17535,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Material",typeof(Autodesk.Revit.DB.Material)));
 			OutPortData.Add(new PortData("out","The color of the material.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17565,7 +17565,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Returns the Centroid of this solid.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17579,7 +17579,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid",typeof(Autodesk.Revit.DB.Solid)));
 			OutPortData.Add(new PortData("out","Returns the signed volume of this solid.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17593,7 +17593,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid",typeof(Autodesk.Revit.DB.Solid)));
 			OutPortData.Add(new PortData("out","Returns the total surface area of this solid.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17607,7 +17607,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid",typeof(Autodesk.Revit.DB.Solid)));
 			OutPortData.Add(new PortData("out","The faces that belong to the solid.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17621,7 +17621,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Solid",typeof(Autodesk.Revit.DB.Solid)));
 			OutPortData.Add(new PortData("out","The edges that belong to the solid.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17635,7 +17635,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("arc", "Autodesk.Revit.DB.Arc",typeof(Autodesk.Revit.DB.Arc)));
 			OutPortData.Add(new PortData("out","Returns the radius of the arc.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17649,7 +17649,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("arc", "Autodesk.Revit.DB.Arc",typeof(Autodesk.Revit.DB.Arc)));
 			OutPortData.Add(new PortData("out","Returns the Y direction.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17663,7 +17663,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("arc", "Autodesk.Revit.DB.Arc",typeof(Autodesk.Revit.DB.Arc)));
 			OutPortData.Add(new PortData("out","Returns the X direction.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17677,7 +17677,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("arc", "Autodesk.Revit.DB.Arc",typeof(Autodesk.Revit.DB.Arc)));
 			OutPortData.Add(new PortData("out","Returns the normal to the plane in which the arc is defined.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17691,7 +17691,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("arc", "Autodesk.Revit.DB.Arc",typeof(Autodesk.Revit.DB.Arc)));
 			OutPortData.Add(new PortData("out","Returns the center of the arc.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17722,7 +17722,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.VertexIndexPairArray",typeof(Autodesk.Revit.DB.VertexIndexPairArray)));
 			OutPortData.Add(new PortData("out","Sets the mapping between the vertices in the top and bottom profiles.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17752,7 +17752,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the mapping between the vertices in the top and bottom profiles.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17766,7 +17766,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend",typeof(Autodesk.Revit.DB.Blend)));
 			OutPortData.Add(new PortData("out","The curves which make up the top profile of the sketch.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17780,7 +17780,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend",typeof(Autodesk.Revit.DB.Blend)));
 			OutPortData.Add(new PortData("out","The curves which make up the bottom profile of the sketch.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17794,7 +17794,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend",typeof(Autodesk.Revit.DB.Blend)));
 			OutPortData.Add(new PortData("out","The offset of the top end of the blend relative to the sketch plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17808,7 +17808,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend",typeof(Autodesk.Revit.DB.Blend)));
 			OutPortData.Add(new PortData("out","The offset of the bottom end of the blend relative to the sketch plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17822,7 +17822,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend",typeof(Autodesk.Revit.DB.Blend)));
 			OutPortData.Add(new PortData("out","Returns the Bottom Sketch of the Blend.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17836,7 +17836,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Blend",typeof(Autodesk.Revit.DB.Blend)));
 			OutPortData.Add(new PortData("out","Returns the Top Sketch of the Blend.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17867,7 +17867,7 @@ namespace Dynamo.Nodes
 			}
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.VertexIndexPairArray",typeof(Autodesk.Revit.DB.VertexIndexPairArray)));
 			OutPortData.Add(new PortData("out","Sets the mapping between the vertices in the top and bottom profiles.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17897,7 +17897,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","Gets the mapping between the vertices in the top and bottom profiles.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17911,7 +17911,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend",typeof(Autodesk.Revit.DB.SweptBlend)));
 			OutPortData.Add(new PortData("out","The curves which make up the top profile of the sketch.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17925,7 +17925,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend",typeof(Autodesk.Revit.DB.SweptBlend)));
 			OutPortData.Add(new PortData("out","The curves which make up the bottom profile of the sketch.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17939,7 +17939,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend",typeof(Autodesk.Revit.DB.SweptBlend)));
 			OutPortData.Add(new PortData("out","The selected curve used for the swept blend path.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17953,7 +17953,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend",typeof(Autodesk.Revit.DB.SweptBlend)));
 			OutPortData.Add(new PortData("out","The sketched path for the swept blend.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17967,7 +17967,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend",typeof(Autodesk.Revit.DB.SweptBlend)));
 			OutPortData.Add(new PortData("out","The bottom family symbol profile of the swept blend.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17981,7 +17981,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend",typeof(Autodesk.Revit.DB.SweptBlend)));
 			OutPortData.Add(new PortData("out","The bottom profile sketch of the swept blend.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -17995,7 +17995,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend",typeof(Autodesk.Revit.DB.SweptBlend)));
 			OutPortData.Add(new PortData("out","The top family symbol profile of the swept blend.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18009,7 +18009,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.SweptBlend",typeof(Autodesk.Revit.DB.SweptBlend)));
 			OutPortData.Add(new PortData("out","The top profile sketch of the swept blend.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18023,7 +18023,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("l", "Autodesk.Revit.DB.Level",typeof(Autodesk.Revit.DB.Level)));
 			OutPortData.Add(new PortData("out","Returns a reference to this element as a plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18037,7 +18037,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("l", "Autodesk.Revit.DB.Level",typeof(Autodesk.Revit.DB.Level)));
 			OutPortData.Add(new PortData("out","The level style of this level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18051,7 +18051,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("l", "Autodesk.Revit.DB.Level",typeof(Autodesk.Revit.DB.Level)));
 			OutPortData.Add(new PortData("out","Retrieve the elevation relative to project origin, no matter what values of the Elevation Base parameter is set.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18065,7 +18065,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("l", "Autodesk.Revit.DB.Level",typeof(Autodesk.Revit.DB.Level)));
 			OutPortData.Add(new PortData("out","Retrieves or changes the elevation above or below the ground level.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18097,7 +18097,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("lst", "System.Collections.Generic.IList{Autodesk.Revit.DB.XYZ}",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.XYZ>)));
 			InPortData.Add(new PortData("arr", "Autodesk.Revit.DB.DoubleArray",typeof(Autodesk.Revit.DB.DoubleArray)));
 			OutPortData.Add(new PortData("out","Set the control points, weights simultaneously.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18111,7 +18111,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.NurbSpline",typeof(Autodesk.Revit.DB.NurbSpline)));
 			OutPortData.Add(new PortData("out","Return/set the knots of the nurb spline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18125,7 +18125,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.NurbSpline",typeof(Autodesk.Revit.DB.NurbSpline)));
 			OutPortData.Add(new PortData("out","Returns the weights of the nurb spline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18139,7 +18139,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.NurbSpline",typeof(Autodesk.Revit.DB.NurbSpline)));
 			OutPortData.Add(new PortData("out","Returns the control points of the nurb spline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18153,7 +18153,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.NurbSpline",typeof(Autodesk.Revit.DB.NurbSpline)));
 			OutPortData.Add(new PortData("out","Returns the degree of the nurb spline.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18167,7 +18167,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.NurbSpline",typeof(Autodesk.Revit.DB.NurbSpline)));
 			OutPortData.Add(new PortData("out","Returns whether the nurb spline is rational or not.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18181,7 +18181,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.NurbSpline",typeof(Autodesk.Revit.DB.NurbSpline)));
 			OutPortData.Add(new PortData("out","Return/set the nurb spline's isClosed property.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18229,7 +18229,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("xyz", "A vector that must be perpendicular to the profile which dictates which side of the wall is considered to be inside and outside.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Creates a non rectangular profile wall within the project using the specified wall type and normal vector.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18264,7 +18264,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Id of the level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a non rectangular profile wall within the project using the specified wall type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18297,7 +18297,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "An array of planar lines and arcs that represent the vertical profile of the wall.",typeof(System.Collections.Generic.IList<Autodesk.Revit.DB.Curve>)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a non rectangular profile wall within the project using the default wall type.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18335,7 +18335,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("b", "Change which side of the wall is considered to be the inside and outside of the wall.",typeof(System.Boolean)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new rectangular profile wall within the project using the specified wall type, height, and offset.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18369,7 +18369,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "Id of the level on which the wall is to be placed.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("b", "If set, specifies that the wall is structural in nature.",typeof(System.Boolean)));
 			OutPortData.Add(new PortData("out","Creates a new rectangular profile wall within the project using the default wall style.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18399,7 +18399,7 @@ namespace Dynamo.Nodes
 				InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall", typeof(object)));
 			}
 			OutPortData.Add(new PortData("out","The wall orientation will be flipped.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18413,7 +18413,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall",typeof(Autodesk.Revit.DB.Wall)));
 			OutPortData.Add(new PortData("out","The normal vector projected from the exterior side of the wall.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18427,7 +18427,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall",typeof(Autodesk.Revit.DB.Wall)));
 			OutPortData.Add(new PortData("out","Property to test whether the wall orientation is flipped.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18441,7 +18441,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall",typeof(Autodesk.Revit.DB.Wall)));
 			OutPortData.Add(new PortData("out","Retrieves or changes  the wall's designated structural usage.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18455,7 +18455,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall",typeof(Autodesk.Revit.DB.Wall)));
 			OutPortData.Add(new PortData("out","Get the overall thickness of the wall.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18469,7 +18469,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall",typeof(Autodesk.Revit.DB.Wall)));
 			OutPortData.Add(new PortData("out","Get the grid object of a curtain wall",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18483,7 +18483,7 @@ namespace Dynamo.Nodes
 		{
 			InPortData.Add(new PortData("val", "Autodesk.Revit.DB.Wall",typeof(Autodesk.Revit.DB.Wall)));
 			OutPortData.Add(new PortData("out","Retrieves or changes the type of the wall.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18517,7 +18517,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The axis of rotation.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("n", "The angle of rotation in radians.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Rotates an element about the given axis and angle.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18551,7 +18551,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("crv", "The axis of rotation.",typeof(Autodesk.Revit.DB.Line)));
 			InPortData.Add(new PortData("n", "The angle of rotation in radians.",typeof(System.Double)));
 			OutPortData.Add(new PortData("out","Rotates a set of elements about the given axis and angle.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18584,7 +18584,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The element to mirror.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("p", "The mirror plane.",typeof(Autodesk.Revit.DB.Plane)));
 			OutPortData.Add(new PortData("out","Creates a mirrored copy of an element about a given plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18617,7 +18617,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The set of elements to mirror.",typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)));
 			InPortData.Add(new PortData("p", "The mirror plane.",typeof(Autodesk.Revit.DB.Plane)));
 			OutPortData.Add(new PortData("out","Creates a mirrored copy of a set of elements about a given plane.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18650,7 +18650,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The id of the element to copy.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("xyz", "The translation vector for the new element.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Copies an element and places the copy at a location indicated by a given transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18683,7 +18683,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The set of elements to copy.",typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)));
 			InPortData.Add(new PortData("xyz", "The translation vector for the new elements.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Copies a set of elements and places the copies at a location indicated by a given translation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18716,7 +18716,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The id of the element to move.",typeof(Autodesk.Revit.DB.ElementId)));
 			InPortData.Add(new PortData("xyz", "The translation vector for the elements.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Moves one element by a given transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18749,7 +18749,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The set of elements to move.",typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)));
 			InPortData.Add(new PortData("xyz", "The translation vector for the elements.",typeof(Autodesk.Revit.DB.XYZ)));
 			OutPortData.Add(new PortData("out","Moves a set of elements by a given transformation.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18781,7 +18781,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The document where the element reside.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The element identified by id.",typeof(Autodesk.Revit.DB.ElementId)));
 			OutPortData.Add(new PortData("out","Determines whether element can be mirrored.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 
@@ -18813,7 +18813,7 @@ namespace Dynamo.Nodes
 			InPortData.Add(new PortData("val", "The document where the elements reside.",typeof(Autodesk.Revit.DB.Document)));
 			InPortData.Add(new PortData("val", "The elements identified by id.",typeof(System.Collections.Generic.ICollection<Autodesk.Revit.DB.ElementId>)));
 			OutPortData.Add(new PortData("out","Determines whether elements can be mirrored.",typeof(object)));
-			NodeUI.RegisterAllPorts();
+			RegisterAllPorts();
 		}
 	}
 

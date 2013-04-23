@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
             OutPortData.Add(new PortData("XYZ", "The normal.", typeof(string)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -64,7 +64,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(object)));
             InPortData.Add(new PortData("face", "The face to evaluate.", typeof(object)));
             OutPortData.Add(new PortData("XYZ", "The location.", typeof(string)));
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

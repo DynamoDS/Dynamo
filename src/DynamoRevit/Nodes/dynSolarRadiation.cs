@@ -39,7 +39,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("raw", "The solar radiation data file", typeof(string)));
             OutPortData.Add(new PortData("data", "The solar radiation computed data", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
             analysisResultButt.HorizontalAlignment = HorizontalAlignment.Stretch;
             analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
         }
 
@@ -194,7 +194,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();

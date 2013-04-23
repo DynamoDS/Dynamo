@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("o", "Out", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -142,7 +142,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("o", "Out", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -250,7 +250,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("o", "Out", typeof(double)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)

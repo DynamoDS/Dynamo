@@ -112,7 +112,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("path", "Path to the file", typeof(string)));
             OutPortData.Add(new PortData("contents", "File contents", typeof(string)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
@@ -175,7 +175,7 @@ namespace Dynamo.Nodes
 
             NodeUI.inputGrid.Children.Add(image1);
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             NodeUI.Width = 450;
             NodeUI.Height = 240 + 5;
@@ -248,7 +248,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
             OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -283,7 +283,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("data", "List of lists to write into CSV", typeof(IList<IList<string>>)));
             OutPortData.Add(new PortData("success?", "Whether or not the file writing was successful", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -325,7 +325,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("path", "Path to the file to create a watcher for.", typeof(FileWatcher)));
             OutPortData.Add(new PortData("fw", "Instance of a FileWatcher.", typeof(FileWatcher)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -345,7 +345,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
             OutPortData.Add(new PortData("changed?", "Whether or not the file has been changed.", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -368,7 +368,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("limit", "Amount of time (in milliseconds) to wait for an update before failing.", typeof(double)));
             OutPortData.Add(new PortData("changed?", "True: File was changed. False: Timed out.", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -407,7 +407,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("fw", "File Watcher to check for a change.", typeof(FileWatcher)));
             OutPortData.Add(new PortData("fw", "Updated watcher.", typeof(FileWatcher)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

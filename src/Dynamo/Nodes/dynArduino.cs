@@ -43,7 +43,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
             OutPortData.Add(new PortData("arduino", "Serial port for later read/write", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
             if (port == null)
@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("range", "Number of lines to read", typeof(double)));
             OutPortData.Add(new PortData("output", "Serial output line", typeof(string)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private List<string> GetArduinoData()
@@ -258,7 +258,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
             OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(bool)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private void WriteDataToArduino(string dataLine)

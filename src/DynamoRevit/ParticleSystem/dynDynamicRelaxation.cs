@@ -56,7 +56,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
             
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             particleSystem = new ParticleSystem();
 
@@ -299,7 +299,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(double)));
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             particleSystem = new ParticleSystem();
         }
@@ -380,7 +380,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("exec", "Execution interval.", typeof(object)));
             OutPortData.Add(new PortData("geom", "Relaxation data.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -405,7 +405,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
             OutPortData.Add(new PortData("XYZs", "XYZs.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -439,7 +439,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ps", "Particle System", typeof(ParticleSystem)));
             OutPortData.Add(new PortData("curves", "geometry curves.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

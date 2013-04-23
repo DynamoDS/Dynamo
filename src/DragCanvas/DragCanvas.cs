@@ -477,10 +477,7 @@ namespace Dynamo.Controls
          }
       }
 
-      public void ClearSelection()
-      {
-          DynamoSelection.Instance.Selection.RemoveAll();
-      }
+
       #endregion // OnHostPreviewMouseUp
 
       #endregion // Host Event Handlers

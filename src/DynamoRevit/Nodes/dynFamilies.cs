@@ -65,7 +65,7 @@ namespace Dynamo.Nodes
             
             OutPortData.Add(new PortData("", "Family type", typeof(FamilySymbol)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         void combo_DropDownOpened(object sender, EventArgs e)
@@ -159,7 +159,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("f", "Family Symbol or Instance", typeof(Element)));
             OutPortData.Add(new PortData("", "Parameter Name", typeof(string)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static string getStorageTypeString(StorageType st)
@@ -707,7 +707,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("type", "The Family Symbol to use for instantiation.", typeof(FamilySymbol)));
             OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value makeFamilyInstance(object location, FamilySymbol fs, int count)
@@ -819,7 +819,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("fi", "Family instances created by this operation.", typeof(FamilyInstance)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value makeFamilyInstance(object location, FamilySymbol fs, int count, Level level)
@@ -935,7 +935,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("curves", "Curves extracted by this operation.", typeof(Curve)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private Value GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, int count,
@@ -1132,7 +1132,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
             OutPortData.Add(new PortData("fi", "Modified family instance.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static Value setParam(FamilyInstance fi, string paramName, Value valueExpr)
@@ -1256,7 +1256,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static Value getParam(FamilyInstance fi, string paramName)
@@ -1371,7 +1371,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof(object)));
             OutPortData.Add(new PortData("ft", "Modified family type.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static Value setParam(FamilySymbol fi, string paramName, Value valueExpr)
@@ -1495,7 +1495,7 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private static Value getParam(FamilySymbol fi, string paramName)

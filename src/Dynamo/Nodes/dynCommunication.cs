@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("url", "A URL to query.", typeof(dynString)));
             OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(dynString)));
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -79,7 +79,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new Connectors.PortData("udp port", "A UDP port to listen to.", typeof(object)));
             OutPortData.Add(new Connectors.PortData("str", "The string returned from the web request.", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private delegate void LogDelegate(string msg);

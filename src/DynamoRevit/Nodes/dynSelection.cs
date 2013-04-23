@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             NodeUI.topControl.Height = 60;
             NodeUI.topControl.Width = 200;
@@ -228,7 +228,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();

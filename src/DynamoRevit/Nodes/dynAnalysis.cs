@@ -26,7 +26,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
             OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
         }
 
@@ -61,7 +61,7 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("ads", "Colored surface Analysis Display Style", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -251,7 +251,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("face", "Face", typeof(Reference)));
             OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -334,7 +334,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("face", "Curve", typeof(Curve)));
             OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -442,7 +442,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("sfm", "Spatial Field Manager", typeof(Element)));
             OutPortData.Add(new PortData("idx", "Analysis results object index", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)

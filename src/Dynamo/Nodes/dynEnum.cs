@@ -44,7 +44,7 @@ namespace Dynamo.Nodes
             
             OutPortData.Add(new PortData("", "Enum", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         public void WireToEnum(Array arr)

@@ -43,7 +43,7 @@ namespace Dynamo.Controls
 
         ObservableCollection<dynPortViewModel> inPorts = new ObservableCollection<dynPortViewModel>();
         ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
-        Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
+        
         string nickName;
         string toolTipText = "";
         ElementState state;
@@ -348,15 +348,7 @@ namespace Dynamo.Controls
 
         #endregion
 
-        public void RegisterAllPorts()
-        {
-            RegisterInputs();
-            RegisterOutputs();
-
-            //UpdateLayout();
-
-            ValidateConnections();
-        }
+        
 
         public void UpdateConnections()
         {
@@ -399,79 +391,6 @@ namespace Dynamo.Controls
             {
                 return OutPorts == null
                     || OutPorts.All(x => !x.Connectors.Any());
-            }
-        }
-
-        /// <summary>
-        /// Reads inputs list and adds ports for each input.
-        /// </summary>
-        public void RegisterInputs()
-        {
-            //read the inputs list and create a number of
-            //input ports
-            int count = 0;
-            foreach (PortData pd in nodeLogic.InPortData)
-            {
-                //add a port for each input
-                //distribute the ports along the 
-                //edges of the icon
-                var port = AddPort(PortType.INPUT, nodeLogic.InPortData[count].NickName, count);
-
-                port.DataContext = this;
-
-                portDataDict[port] = pd;
-                count++;
-            }
-
-            if (inPorts.Count > count)
-            {
-                foreach (var inport in inPorts.Skip(count))
-                {
-                    RemovePort(inport);
-                }
-
-                for (int i = inPorts.Count - 1; i >= count; i--)
-                {
-                    inPorts.RemoveAt(i);
-                }
-                //InPorts.RemoveRange(count, inPorts.Count - count);
-            }
-        }
-
-        /// <summary>
-        /// Reads outputs list and adds ports for each output
-        /// </summary>
-        public void RegisterOutputs()
-        {
-            //read the inputs list and create a number of
-            //input ports
-            int count = 0;
-            foreach (PortData pd in nodeLogic.OutPortData)
-            {
-                //add a port for each input
-                //distribute the ports along the 
-                //edges of the icon
-                var port = AddPort(PortType.OUTPUT, pd.NickName, count);
-
-                port.DataContext = this;
-
-                portDataDict[port] = pd;
-                count++;
-            }
-
-            if (outPorts.Count > count)
-            {
-                foreach (var outport in outPorts.Skip(count))
-                {
-                    RemovePort(outport);
-                }
-
-                for (int i = outPorts.Count - 1; i >= count; i--)
-                {
-                    outPorts.RemoveAt(i);
-                }
-
-                //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
         }
 
@@ -527,14 +446,7 @@ namespace Dynamo.Controls
         {
             // if there are inputs without connections
             // mark as dead
-            if (inPorts.Select(x => x).Where(x => x.PortModel.Connectors.Count == 0).Count() > 0)
-            {
-                State = ElementState.DEAD;
-            }
-            else
-            {
-                State = ElementState.ACTIVE;
-            }
+            State = inPorts.Select(x => x).Any(x => x.PortModel.Connectors.Count == 0) ? ElementState.DEAD : ElementState.ACTIVE;
         }
 
         public string Description
@@ -593,7 +505,7 @@ namespace Dynamo.Controls
 
         private void SetState(dynNodeUI el, ElementState state)
         {
-            el.State = state;
+            State = state;
         }
 
         public void Error(string p)

@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
             //NodeUI.inputGrid.Children.Add(trackingCanvas);
             //trackingCanvas.Children.Add(rightHandEllipse);
 
-            //NodeUI.RegisterAllPorts();
+            //RegisterAllPorts();
 
             //NodeUI.Width = width + 120;// 450;
             //NodeUI.Height = height + 5;

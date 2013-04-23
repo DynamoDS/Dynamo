@@ -157,7 +157,7 @@ namespace Dynamo
                         {
                             (node as dynVariableInput).AddInput();
                         }
-                        (node as dynVariableInput).NodeUI.RegisterAllPorts();
+                        (node as dynVariableInput).RegisterAllPorts();
                     }
                 }
             }

@@ -254,7 +254,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
 
             //topControl.Height = 200;
             //topControl.Width = 300;
@@ -400,7 +400,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("IN", "Input", typeof(object)));
             OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
 
-            NodeUI.RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         private List<Binding> makeBindings(IEnumerable<Value> args)

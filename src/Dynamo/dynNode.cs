@@ -51,6 +51,7 @@ namespace Dynamo.Nodes
 
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
+        Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
 
         public dynNodeUI NodeUI;
 
@@ -740,6 +741,16 @@ namespace Dynamo.Nodes
         {
         }
 
+        public void RegisterAllPorts()
+        {
+            RegisterInputs();
+            RegisterOutputs();
+
+            //UpdateLayout();
+
+            ValidateConnections();
+        }
+
         /// <summary>
         /// Add a dynPort element to this control.
         /// </summary>
@@ -800,6 +811,79 @@ namespace Dynamo.Nodes
                 {
                     inport.Connectors[0].Kill();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Reads inputs list and adds ports for each input.
+        /// </summary>
+        public void RegisterInputs()
+        {
+            //read the inputs list and create a number of
+            //input ports
+            int count = 0;
+            foreach (PortData pd in InPortData)
+            {
+                //add a port for each input
+                //distribute the ports along the 
+                //edges of the icon
+                var port = AddPort(PortType.INPUT, InPortData[count].NickName, count);
+
+                port.DataContext = this;
+
+                portDataDict[port] = pd;
+                count++;
+            }
+
+            if (inPorts.Count > count)
+            {
+                foreach (var inport in inPorts.Skip(count))
+                {
+                    RemovePort(inport);
+                }
+
+                for (int i = inPorts.Count - 1; i >= count; i--)
+                {
+                    inPorts.RemoveAt(i);
+                }
+                //InPorts.RemoveRange(count, inPorts.Count - count);
+            }
+        }
+
+        /// <summary>
+        /// Reads outputs list and adds ports for each output
+        /// </summary>
+        public void RegisterOutputs()
+        {
+            //read the inputs list and create a number of
+            //input ports
+            int count = 0;
+            foreach (PortData pd in OutPortData)
+            {
+                //add a port for each input
+                //distribute the ports along the 
+                //edges of the icon
+                var port = AddPort(PortType.OUTPUT, pd.NickName, count);
+
+                port.DataContext = this;
+
+                portDataDict[port] = pd;
+                count++;
+            }
+
+            if (outPorts.Count > count)
+            {
+                foreach (var outport in outPorts.Skip(count))
+                {
+                    RemovePort(outport);
+                }
+
+                for (int i = outPorts.Count - 1; i >= count; i--)
+                {
+                    outPorts.RemoveAt(i);
+                }
+
+                //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
         }
     }
