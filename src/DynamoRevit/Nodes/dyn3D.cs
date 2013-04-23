@@ -246,7 +246,7 @@ namespace Dynamo.Nodes
                             }
                             catch (Exception e)
                             {
-                                Bench.Log("Something wrong drawing 3d preview. " + e.ToString());
+                                dynSettings.Controller.DynamoViewModel.Log("Something wrong drawing 3d preview. " + e.ToString());
                             }
                         }
                         else if (test is Curve)

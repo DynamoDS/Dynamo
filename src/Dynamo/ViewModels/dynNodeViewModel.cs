@@ -31,8 +31,7 @@ namespace Dynamo.Controls
     /// Interaction logic for dynControl.xaml
     /// </summary>
     
-
-    public partial class dynNodeViewModel : dynViewModelBase
+    public class dynNodeViewModel : dynViewModelBase
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
@@ -307,30 +306,9 @@ namespace Dynamo.Controls
             ValidateConnections();
         }
 
-        public string Description
-        {
-            get
-            {
-                Type t = NodeLogic.GetType();
-                object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-                return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-            }
-        }
+        
 
-        public List<string> Tags
-        {
-            get
-            {
-                Type t = NodeLogic.GetType();
-                object[] rtAttribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), true);
-
-                if (rtAttribs.Length > 0)
-                    return ((NodeSearchTagsAttribute)rtAttribs[0]).Tags;
-                else
-                    return new List<string>();
-
-            }
-        }
+        
 
         
         #region junk

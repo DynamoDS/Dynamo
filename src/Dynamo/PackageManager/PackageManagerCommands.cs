@@ -19,6 +19,7 @@ using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using System.Windows.Controls;
 
@@ -64,7 +65,7 @@ namespace Dynamo.Commands
             if (dynSettings.Controller.PackageManagerClient.IsLoggedIn == false)
             {
                 DynamoCommands.ShowLoginCmd.Execute(null);
-                dynSettings.Bench.Log("Must login first to publish a node.");
+                dynSettings.Controller.DynamoViewModel.Log("Must login first to publish a node.");
                 return;
             }
 
@@ -93,7 +94,7 @@ namespace Dynamo.Commands
             }
             else
             {
-                dynSettings.Bench.Log("Failed to obtain function definition from node.");
+                dynSettings.Controller.DynamoViewModel.Log("Failed to obtain function definition from node.");
                 return;
             }
             
@@ -168,8 +169,8 @@ namespace Dynamo.Commands
         {
             this._client = dynSettings.Controller.PackageManagerClient;
 
-            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNodeUI && ((dynNodeUI)x).NodeLogic is dynFunction )
-                                        .Select(x => ( ((dynNodeUI)x).NodeLogic as dynFunction ).Definition.FunctionId ).ToList();
+            var nodeList = DynamoSelection.Instance.Selection.Where(x => x is dynNode && ((dynNode)x) is dynFunction )
+                                        .Select(x => ( ((dynNode)x) as dynFunction ).Definition.FunctionId ).ToList();
 
             if (nodeList.Count != 1)
             {
@@ -210,14 +211,14 @@ namespace Dynamo.Commands
         {
             this._client = dynSettings.Controller.PackageManagerClient;
             
-            if ( dynSettings.Controller.ViewingHomespace )
+            if ( dynSettings.Controller.DynamoViewModel.ViewingHomespace )
             {
                 MessageBox.Show("You can't publish your the home workspace.", "Workspace Error", MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
             }
 
             var currentFunDef =
-                dynSettings.FunctionDict.FirstOrDefault(x => x.Value.Workspace == dynSettings.Controller.CurrentSpace).Value;
+                dynSettings.FunctionDict.FirstOrDefault(x => x.Value.Workspace == dynSettings.Controller.DynamoViewModel.CurrentSpace).Value;
 
             if ( currentFunDef != null )
             {

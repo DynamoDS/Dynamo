@@ -225,8 +225,8 @@ namespace Dynamo.Utilities
             foreach (dynConnector connector in currentWorkspace.Connectors
                                                            .Where(
                                                                c =>
-                                                               selectedNodeSet.Contains(c.Start.Owner.NodeLogic) &&
-                                                               !selectedNodeSet.Contains(c.End.Owner.NodeLogic))
+                                                               selectedNodeSet.Contains(c.Start.Owner) &&
+                                                               !selectedNodeSet.Contains(c.End.Owner))
                                                            .ToList())
             {
                 connector.Kill();
@@ -235,8 +235,8 @@ namespace Dynamo.Utilities
             foreach (dynConnector connector in currentWorkspace.Connectors
                                                            .Where(
                                                                c =>
-                                                               !selectedNodeSet.Contains(c.Start.Owner.NodeLogic) &&
-                                                               selectedNodeSet.Contains(c.End.Owner.NodeLogic)).ToList()
+                                                               !selectedNodeSet.Contains(c.Start.Owner) &&
+                                                               selectedNodeSet.Contains(c.End.Owner)).ToList()
                 )
             {
                 connector.Kill();
@@ -269,16 +269,16 @@ namespace Dynamo.Utilities
                     Symbol = inputReceiverNode.InPortData[inputReceiverData].NickName
                 };
 
-                dynNodeUI nodeUI = node.NodeUI;
-
+                //dynNodeUI nodeUI = node.NodeUI;
+                
                 var elNameAttrib =
                     node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
                 if (elNameAttrib != null)
                 {
-                    nodeUI.NickName = elNameAttrib.Name;
+                    node.NickName = elNameAttrib.Name;
                 }
 
-                nodeUI.GUID = Guid.NewGuid();
+                node.GUID = Guid.NewGuid();
 
                 //store the element in the elements list
                 newNodeWorkspace.Nodes.Add(node);
@@ -301,8 +301,8 @@ namespace Dynamo.Utilities
                 {
                     //Connect it (new dynConnector)
                     newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        nodeUI,
-                                                        inputReceiverNode.NodeUI,
+                                                        node,
+                                                        inputReceiverNode,
                                                         0,
                                                         inputReceiverData,
                                                         0,
@@ -312,8 +312,8 @@ namespace Dynamo.Utilities
                 {
                     //Connect it to the applier
                     newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        nodeUI,
-                                                        curriedNode.InnerNode.NodeUI,
+                                                        node,
+                                                        curriedNode.InnerNode,
                                                         0,
                                                         0,
                                                         0,
@@ -321,8 +321,8 @@ namespace Dynamo.Utilities
 
                     //Connect applier to the inner input receiver
                     newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        curriedNode.InnerNode.NodeUI,
-                                                        inputReceiverNode.NodeUI,
+                                                        curriedNode.InnerNode,
+                                                        inputReceiverNode,
                                                         0,
                                                         inputReceiverData,
                                                         0,
@@ -359,16 +359,16 @@ namespace Dynamo.Utilities
                         Symbol = outputSenderNode.OutPortData[outputSenderData].NickName
                     };
 
-                    dynNodeUI nodeUI = node.NodeUI;
+                    //dynNodeUI nodeUI = node.NodeUI;
 
                     var elNameAttrib =
                         node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), false)[0] as NodeNameAttribute;
                     if (elNameAttrib != null)
                     {
-                        nodeUI.NickName = elNameAttrib.Name;
+                        node.NickName = elNameAttrib.Name;
                     }
 
-                    nodeUI.GUID = Guid.NewGuid();
+                    node.GUID = Guid.NewGuid();
 
                     //store the element in the elements list
                     newNodeWorkspace.Nodes.Add(node);
@@ -385,8 +385,8 @@ namespace Dynamo.Utilities
                     dynSettings.Bench.WorkBench.UpdateLayout();
 
                     newNodeWorkspace.Connectors.Add(new dynConnector(
-                                                        outputSenderNode.NodeUI,
-                                                        nodeUI,
+                                                        outputSenderNode,
+                                                        node,
                                                         outputSenderData,
                                                         0,
                                                         0,
@@ -454,19 +454,19 @@ namespace Dynamo.Utilities
             #endregion
 
             //set the name on the node
-            collapsedNode.NodeUI.NickName = newNodeName;
+            collapsedNode.NickName = newNodeName;
 
             currentWorkspace.Nodes.Remove(collapsedNode);
             dynSettings.Bench.WorkBench.Children.Remove(collapsedNode.NodeUI);
 
             // save and load the definition from file
             dynSettings.FunctionDict.Add(newNodeDefinition.FunctionId, newNodeDefinition);
-            var path = dynSettings.Controller.SaveFunctionOnly(newNodeDefinition);
+            var path = dynSettings.Controller.DynamoViewModel.SaveFunctionOnly(newNodeDefinition);
             dynSettings.FunctionDict.Remove(newNodeDefinition.FunctionId);
 
-            dynSettings.Controller.OpenDefinition(path);
+            dynSettings.Controller.DynamoViewModel.OpenDefinition(path);
 
-            DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+            dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
                 {
                     {"name", collapsedNode.Definition.FunctionId.ToString() },
                     {"x", avgX },
@@ -486,7 +486,7 @@ namespace Dynamo.Utilities
                 currentWorkspace.Connectors.Add(
                     new dynConnector(
                         nodeTuple.Item1,
-                        newlyPlacedCollapsedNode.NodeUI,
+                        newlyPlacedCollapsedNode,
                         nodeTuple.Item2,
                         nodeTuple.Item3,
                         0,
@@ -497,7 +497,7 @@ namespace Dynamo.Utilities
             {
                 currentWorkspace.Connectors.Add(
                     new dynConnector(
-                        newlyPlacedCollapsedNode.NodeUI,
+                        newlyPlacedCollapsedNode,
                         nodeTuple.Item1,
                         nodeTuple.Item2,
                         nodeTuple.Item3,

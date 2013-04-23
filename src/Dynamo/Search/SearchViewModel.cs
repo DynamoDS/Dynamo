@@ -641,11 +641,11 @@ namespace Dynamo.Search
             else
             {
                 SearchDictionary.Add(searchEle, searchEle.Name);
-                if (dynNode.NodeUI.Tags.Count > 0)
+                if (dynNode.Tags.Count > 0)
                 {
-                    SearchDictionary.Add(searchEle, dynNode.NodeUI.Tags);
+                    SearchDictionary.Add(searchEle, dynNode.Tags);
                 }
-                SearchDictionary.Add(searchEle, dynNode.NodeUI.Description);
+                SearchDictionary.Add(searchEle, dynNode.Description);
             }
                 
         }

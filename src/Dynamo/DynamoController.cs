@@ -43,6 +43,7 @@ namespace Dynamo
         public PackageManagerLoginViewModel PackageManagerLoginViewModel { get; internal set; }
         public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
+        public DynamoViewModel DynamoViewModel { get; internal set; }
 
         List<dynModelBase> clipBoard = new List<dynModelBase>();
         public List<dynModelBase> ClipBoard
@@ -102,8 +103,8 @@ namespace Dynamo
 
             //MVVM : create the view model to which the main window will bind
             //the DynamoModel is created therein
-            dynBenchViewModel viewModel = new dynBenchViewModel(this);
-            Bench.DataContext = viewModel;
+            DynamoViewModel = new DynamoViewModel(this);
+            Bench.DataContext = DynamoViewModel;
 
             // custom node loader
             //string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -121,7 +122,7 @@ namespace Dynamo
             Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
 
             Bench.InitializeComponent();
-            Bench.Log(String.Format(
+            dynSettings.Controller.DynamoViewModel.Log(String.Format(
                 "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
@@ -137,10 +138,10 @@ namespace Dynamo
             dynSettings.Workbench = Bench.WorkBench;
 
             //run tests
-            if (FScheme.RunTests(Bench.Log))
+            if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
             {
                 if (Bench != null)
-                    Bench.Log("All Tests Passed. Core library loaded OK.");
+                    dynSettings.Controller.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
             }
         }
 
@@ -157,12 +158,12 @@ namespace Dynamo
 
                 DynamoLoader.LoadCustomNodes(dynSettings.Bench);
 
-                Bench.Log("Welcome to Dynamo!");
+                dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
                 if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
                 {
                     //MessageBox.Show("Workbench could not be opened.");
-                    Bench.Log("Workbench could not be opened.");
+                    dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
 
                     //dynSettings.Writer.WriteLine("Workbench could not be opened.");
                     //dynSettings.Writer.WriteLine(UnlockLoadPath);
@@ -333,7 +334,7 @@ namespace Dynamo
                 if (ex.Message.Length > 0)
                 {
                     Bench.Dispatcher.Invoke(new Action(
-                                                delegate { Bench.Log(ex); }
+                                                delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
                                                 ));
                 }
 
@@ -389,7 +390,7 @@ namespace Dynamo
                                                     foreach (dynNode node in topElements)
                                                     {
                                                         string exp = node.PrintExpression();
-                                                        Bench.Log("> " + exp);
+                                                        dynSettings.Controller.DynamoViewModel.Log("> " + exp);
                                                     }
                                                 }
                                             ));
@@ -404,7 +405,7 @@ namespace Dynamo
                 if (debug && expr != null)
                 {
                     Bench.Dispatcher.Invoke(new Action(
-                                                () => Bench.Log(FScheme.print(expr))
+                                                () => dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr))
                                                 ));
                 }
             }
@@ -425,7 +426,7 @@ namespace Dynamo
                 if (ex.Message.Length > 0)
                 {
                     Bench.Dispatcher.Invoke(new Action(
-                                                delegate { Bench.Log(ex); }
+                                                delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
                                                 ));
                 }
                 OnRunCancelled(true);

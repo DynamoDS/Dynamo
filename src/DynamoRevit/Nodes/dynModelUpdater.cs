@@ -81,8 +81,8 @@ namespace Dynamo
                 }
                 catch (Exception e)
                 {
-                    bench.Log("Dynamic Model Update error while parsing modified elements.");
-                    bench.Log(e);
+                    dynSettings.Controller.DynamoViewModel.Log("Dynamic Model Update error while parsing modified elements.");
+                    dynSettings.Controller.DynamoViewModel.Log(e);
                 }
             }
 
@@ -109,8 +109,8 @@ namespace Dynamo
                 }
                 catch (Exception e)
                 {
-                    bench.Log("Dynamic Model Update error while parsing added elements.");
-                    bench.Log(e);
+                    dynSettings.Controller.DynamoViewModel.Log("Dynamic Model Update error while parsing added elements.");
+                    dynSettings.Controller.DynamoViewModel.Log(e);
                 }
             }
 
@@ -137,8 +137,8 @@ namespace Dynamo
                 }
                 catch (Exception e)
                 {
-                    bench.Log("Dynamic Model Update error while parsing deleted elements.");
-                    bench.Log(e);
+                    dynSettings.Controller.DynamoViewModel.Log("Dynamic Model Update error while parsing deleted elements.");
+                    dynSettings.Controller.DynamoViewModel.Log(e);
                 }
             }
 

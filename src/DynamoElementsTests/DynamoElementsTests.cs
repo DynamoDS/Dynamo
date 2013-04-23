@@ -184,10 +184,10 @@ namespace Dynamo.Tests
         [Test]
         public void CanClearLog()
         {
-            Assert.AreNotEqual(0, dynSettings.Bench.LogText.Length);
+            Assert.AreNotEqual(0, dynSettings.Controller.DynamoViewModel.LogText.Length);
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.ClearLogCmd, null));
             dynSettings.Controller.ProcessCommandQueue();
-            Assert.AreEqual(0, dynSettings.Bench.LogText.Length);
+            Assert.AreEqual(0, dynSettings.Controller.DynamoViewModel.LogText.Length);
         }
 
         // Clearworkspace 
@@ -610,7 +610,7 @@ namespace Dynamo.Tests
             cd2.Add("port_start", 0); //first output
             cd2.Add("port_end", 1); //second input
 
-            dynSettings.Bench.LogText = "";
+            dynSettings.Controller.DynamoViewModel.LogText = "";
 
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateConnectionCmd, cd2));
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.RunExpressionCmd, null));

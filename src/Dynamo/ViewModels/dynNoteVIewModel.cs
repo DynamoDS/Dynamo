@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dynamo.Nodes
 {
-    class dynNoteViewModel:dynViewModelBase
+    public class dynNoteViewModel:dynViewModelBase
     {
         private dynNoteModel _note;
 

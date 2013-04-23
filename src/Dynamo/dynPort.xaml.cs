@@ -173,6 +173,7 @@ namespace Dynamo.Connectors
                 }
             }
 
+
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
 

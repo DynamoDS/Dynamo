@@ -198,7 +198,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     //create some geometry options so that we computer references
                     Autodesk.Revit.DB.Options opts = new Options();
@@ -220,7 +220,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
 
@@ -238,7 +238,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -253,7 +253,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -271,7 +271,7 @@ namespace Dynamo.Utilities
 
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     CurveArray ca = new CurveArray();
                     ISelectionFilter selFilter = new CurveSelectionFilter();
@@ -290,7 +290,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -323,7 +323,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     //create some geometry options so that we computer references
                     Autodesk.Revit.DB.Options opts = new Options();
@@ -344,7 +344,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
 
@@ -360,7 +360,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     //create some geometry options so that we compute references
                     //Autodesk.Revit.DB.Options opts = new Options();
@@ -379,7 +379,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -395,7 +395,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     //create some geometry options so that we computer references
                     Autodesk.Revit.DB.Options opts = new Options();
@@ -414,7 +414,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -430,7 +430,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -448,7 +448,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -462,7 +462,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -475,7 +475,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -489,7 +489,7 @@ namespace Dynamo.Utilities
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    dynSettings.Bench.Log(message);
+                    dynSettings.Controller.DynamoViewModel.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -502,7 +502,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }
@@ -526,7 +526,7 @@ namespace Dynamo.Utilities
                         choices.Elements.Clear();
 
                         //MessageBox.Show(message);
-                        dynSettings.Bench.Log(message);
+                        dynSettings.Controller.DynamoViewModel.Log(message);
 
                         Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -546,7 +546,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Bench.Log(ex);
+                    dynSettings.Controller.DynamoViewModel.Log(ex);
                     return null;
                 }
             }

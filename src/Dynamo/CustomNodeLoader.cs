@@ -739,8 +739,8 @@ namespace Dynamo.Utilities
                 }
                 catch
                 {
-                    //Bench.Log("Error saving:" + e.GetType());
-                    //Bench.Log(e);
+                    //dynSettings.Controller.DynamoViewModel.Log("Error saving:" + e.GetType());
+                    //dynSettings.Controller.DynamoViewModel.Log(e);
                 }
             }
         }

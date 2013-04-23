@@ -114,7 +114,7 @@ namespace Dynamo
                     pyBindings.GetType().InvokeMember("Add", BindingFlags.InvokeMethod, null, pyBindings, new object[] { CreateBinding(name, boundObject) });
                 };
 
-                AddToBindings("DynLog", new LogDelegate(Bench.Log)); //Logging
+                AddToBindings("DynLog", new LogDelegate(dynSettings.Controller.DynamoViewModel.Log)); //Logging
 
                 AddToBindings(
                    "DynTransaction",
@@ -538,7 +538,7 @@ namespace Dynamo
                 this.InIdleThread = true; //Everything will be evaluated in the idle thread.
 
                 Bench.Dispatcher.Invoke(new Action(
-                   () => Bench.Log("Running expression in debug.")
+                   () => dynSettings.Controller.DynamoViewModel.Log("Running expression in debug.")
                 ));
 
                 //Execute the Run Delegate.
@@ -564,7 +564,7 @@ namespace Dynamo
                 var severity = fail.GetSeverity();
                 if (severity == Autodesk.Revit.DB.FailureSeverity.Warning)
                 {
-                    bench.Log(
+                    dynSettings.Controller.DynamoViewModel.Log(
                        "!! Warning: " + fail.GetDescriptionText()
                     );
                     failuresAccessor.DeleteWarning(fail);

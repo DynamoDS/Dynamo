@@ -29,7 +29,7 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
 {
-    class dynBenchViewModel:dynViewModelBase
+    public class DynamoViewModel:dynViewModelBase
     {
         private DynamoModel _model;
 
@@ -212,7 +212,12 @@ namespace Dynamo.Controls
 
         public bool IsAbleToGoHome { get; set; }
 
-        public dynBenchViewModel(DynamoController controller)
+        public dynWorkspace CurrentSpace
+        {
+            get { return _model.CurrentSpace; }
+        }
+
+        public DynamoViewModel(DynamoController controller)
         {
             //MVVM: Instantiate the model
             _model = new DynamoModel();
@@ -264,6 +269,7 @@ namespace Dynamo.Controls
             {
                 IsAbleToGoHome = _model.CurrentSpace != _model.HomeSpace;
                 RaisePropertyChanged("IsAbleToGoHome");
+                RaisePropertyChanged("CurrentSpace");
             } 
         }
 
@@ -935,7 +941,7 @@ namespace Dynamo.Controls
             dynSettings.Bench.sw.Flush();
             dynSettings.Bench.sw.Close();
             dynSettings.Bench.sw = new StringWriter();
-            dynSettings.Bench.LogText = dynSettings.Bench.sw.ToString();
+            dynSettings.Controller.DynamoViewModel.LogText = dynSettings.Bench.sw.ToString();
         }
 
         private bool CanClearLog()
@@ -1225,7 +1231,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private bool CanDelete()
+        private bool CanDelete(object parameters)
         {
             return DynamoSelection.Instance.Selection.Count > 0;
         }
@@ -1736,7 +1742,7 @@ namespace Dynamo.Controls
                     }
                     catch
                     {
-                        Bench.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NodeUI.GUID, end.NodeUI.GUID));
+                        dynSettings.Controller.DynamoViewModel.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NodeUI.GUID, end.NodeUI.GUID));
                     }
                 }
 
@@ -2758,7 +2764,7 @@ namespace Dynamo.Controls
                 //}
                 //else
                 //{
-                //    Bench.Log("Failed to find FunctionDefinition.");
+                //    dynSettings.Controller.DynamoViewModel.Log("Failed to find FunctionDefinition.");
                 //    return null;
                 //}
 

@@ -11,7 +11,7 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo
 {
-    class dynWorkspaceViewModel: dynViewModelBase
+    public class dynWorkspaceViewModel: dynViewModelBase
     {
         public dynWorkspace _workspace;
 

@@ -226,7 +226,7 @@ namespace Dynamo.Nodes
                     }
                     catch (Exception e)
                     {
-                        Bench.Log(e.ToString());
+                        dynSettings.Controller.DynamoViewModel.Log(e.ToString());
                     }
 
 
@@ -264,7 +264,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                Bench.Log(e);
+                dynSettings.Controller.DynamoViewModel.Log(e);
                 return Value.NewNumber(0);
             }
 
@@ -304,7 +304,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                Bench.Log(e);
+                dynSettings.Controller.DynamoViewModel.Log(e);
                 return Value.NewNumber(0);
             }
 

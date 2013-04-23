@@ -182,7 +182,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        this.Bench.Log("Unable to find element with ID: " + id.IntegerValue);
+                        dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
                     }
                     this.SelectedElement = saved;
                 }
@@ -351,7 +351,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        this.Bench.Log("Unable to find element with ID: " + id.IntegerValue);
+                        dynSettings.Controller.DynamoViewModel.Log("Unable to find element with ID: " + id.IntegerValue);
                     }
                     this.SelectedElements.Add(saved);
                 }

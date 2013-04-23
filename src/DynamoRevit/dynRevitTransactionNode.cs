@@ -122,7 +122,7 @@ namespace Dynamo.Revit
 
                 Bench.Dispatcher.Invoke(new Action(
                    () =>
-                      Bench.Log("Starting a debug transaction for element: " + NodeUI.NickName)
+                      dynSettings.Controller.DynamoViewModel.Log("Starting a debug transaction for element: " + NodeUI.NickName)
                 ));
 
                 IdlePromise.ExecuteOnIdle(
@@ -221,7 +221,7 @@ namespace Dynamo.Revit
                    }
                    catch (Exception ex)
                    {
-                       Bench.Log(
+                       dynSettings.Controller.DynamoViewModel.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
                           + " -- " + ex.Message

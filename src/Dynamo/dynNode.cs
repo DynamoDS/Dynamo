@@ -307,6 +307,31 @@ namespace Dynamo.Nodes
             }
         }
 
+        public List<string> Tags
+        {
+            get
+            {
+                Type t = GetType();
+                object[] rtAttribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), true);
+
+                if (rtAttribs.Length > 0)
+                    return ((NodeSearchTagsAttribute)rtAttribs[0]).Tags;
+                else
+                    return new List<string>();
+
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                Type t = GetType();
+                object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
+                return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
+            }
+        }
+
         public dynNode()
         {
             InPortData = new ObservableCollection<PortData>();
@@ -648,7 +673,7 @@ namespace Dynamo.Nodes
                        delegate
                        {
                            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                           Bench.Log(ex);
+                           dynSettings.Controller.DynamoViewModel.Log(ex);
 
                            //dynSettings.Writer.WriteLine(ex.Message);
                            //dynSettings.Writer.WriteLine(ex.StackTrace);
@@ -1218,7 +1243,7 @@ namespace Dynamo.Nodes
                 var symbol = Guid.Parse((entry as dynFunction).Symbol);
                 if (!dynSettings.FunctionDict.ContainsKey(symbol))
                 {
-                    dynSettings.Bench.Log("WARNING -- No implementation found for node: " + symbol);
+                    dynSettings.Controller.DynamoViewModel.Log("WARNING -- No implementation found for node: " + symbol);
                     entry.NodeUI.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }

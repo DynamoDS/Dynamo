@@ -1611,7 +1611,7 @@ namespace Dynamo.Nodes
             Bench.Dispatcher.Invoke(new Action(
                delegate
                {
-                   Bench.Log(FScheme.print(result));
+                   Controller.DynamoViewModel.Log(FScheme.print(result));
                }
             ));
 

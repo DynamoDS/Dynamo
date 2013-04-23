@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
 
         public void ReceiveCallback(IAsyncResult ar)
         {
-            LogDelegate log = new LogDelegate(this.Bench.Log);
+            LogDelegate log = new LogDelegate(dynSettings.Controller.DynamoViewModel.Log);
 
             try
             {
@@ -127,7 +127,7 @@ namespace Dynamo.Nodes
         private void ListenOnUDP()
         {
 
-            LogDelegate log = new LogDelegate(this.Bench.Log);
+            LogDelegate log = new LogDelegate(dynSettings.Controller.DynamoViewModel.Log);
 
             // UDP sample from http://stackoverflow.com/questions/8274247/udp-listener-respond-to-client
             UdpClient listener;

@@ -58,8 +58,8 @@ namespace Dynamo.Search.SearchElements
             if (!dynSettings.FunctionDict.ContainsKey(this.Guid))
             {
                 // go get the node from online, place it in view asynchronously
-                dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) => DynamoCommands
-                    .CreateNodeCmd.Execute(new Dictionary<string, object>()
+                dynSettings.Controller.PackageManagerClient.Download(this.Id, "", (finalGuid) => 
+                    dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
                         {
                             { "name", guid.ToString() },
                             { "transformFromOuterCanvasCoordinates", true },
@@ -70,7 +70,7 @@ namespace Dynamo.Search.SearchElements
             else
             {
                 // get the node from here
-                DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
+                dynSettings.Controller.DynamoViewModel.CreateNodeCommand.Execute(new Dictionary<string, object>()
                     {
                         {"name", this.Guid.ToString() },
                         {"transformFromOuterCanvasCoordinates", true},
