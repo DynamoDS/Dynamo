@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Windows;
 
 using Dynamo.Connectors;
+using Dynamo.Nodes;
 
 namespace Dynamo.Controls
 {

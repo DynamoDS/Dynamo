@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
 
             wtb = wt.FindResource("Tree") as WatchTreeBranch;
             
-            foreach (dynPort p in NodeUI.InPorts)
+            foreach (dynPortModel p in InPorts)
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }

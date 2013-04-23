@@ -12,18 +12,6 @@ namespace Dynamo.Commands
 
     public static partial class DynamoCommands
     {
-        private static SelectNeighborsCommand selectNeighborsCmd;
-        public static SelectNeighborsCommand SelectNeighborsCmd
-        {
-            get
-            {
-                if (selectNeighborsCmd == null)
-                    selectNeighborsCmd = new SelectNeighborsCommand();
-
-                return selectNeighborsCmd;
-            }
-        }
-
         private static WriteToLogCommand writeToLogCmd;
         public static WriteToLogCommand WriteToLogCmd
         {
@@ -36,54 +24,6 @@ namespace Dynamo.Commands
             }
         }
 
-        private static SelectCommand selectCmd;
-        public static SelectCommand SelectCmd
-        {
-            get
-            {
-                if (selectCmd == null)
-                    selectCmd = new SelectCommand();
-
-                return selectCmd;
-            }
-        }
-
-        private static AddToSelectionCommand addToSelectionCmd;
-        public static AddToSelectionCommand AddToSelectionCmd
-        {
-            get
-            {
-                if (addToSelectionCmd == null)
-                    addToSelectionCmd = new AddToSelectionCommand();
-
-                return addToSelectionCmd;
-            }
-        }
-
-    }
-
-    public class SelectNeighborsCommand : ICommand
-    {
-        public void Execute(object parameters)
-        {
-            List<ISelectable> sels = DynamoSelection.Instance.Selection.ToList<ISelectable>();
-
-            foreach (ISelectable sel in sels)
-            {
-                ((dynNodeViewModel)sel).SelectNeighbors();
-            }
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
     }
 
     public class WriteToLogCommand : ICommand
@@ -110,81 +50,6 @@ namespace Dynamo.Commands
             }
 
             return false;
-        }
-    }
-
-    public class SelectCommand : ICommand
-    {
-        public void Execute(object parameters)
-        {
-            dynNodeViewModel node = parameters as dynNodeViewModel;
-
-            if (!node.IsSelected)
-            {
-                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    dynSettings.Bench.WorkBench.ClearSelection();
-                }
-
-                if (!DynamoSelection.Instance.Selection.Contains(node))
-                    DynamoSelection.Instance.Selection.Add(node);
-            }
-            else
-            {
-                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                {
-                    DynamoSelection.Instance.Selection.Remove(node);
-                }
-            }
-
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            dynNodeUI node = parameters as dynNodeUI;
-            if (node == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    public class AddToSelectionCommand : ICommand
-    {
-        public void Execute(object parameters)
-        {
-            dynNodeViewModel node = parameters as dynNodeViewModel;
-
-            if (!node.IsSelected)
-            {
-                if (!DynamoSelection.Instance.Selection.Contains(node))
-                    DynamoSelection.Instance.Selection.Add(node);
-            }
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameters)
-        {
-            dynNodeUI node = parameters as dynNodeUI;
-            if (node == null)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 

@@ -7,7 +7,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Connectors
 {
-    public class dynPortModel : NotificationObject
+    public class dynPortModel : dynModelBase
     {
         #region events
 
@@ -92,7 +92,7 @@ namespace Dynamo.Connectors
 
         #endregion
 
-        public dynPortModel()
+        public dynPortModel(int index, PortType portType, dynNode owner, string name)
         {
             Index = index;
             IsConnected = false;
@@ -139,7 +139,6 @@ namespace Dynamo.Connectors
                 c.Kill();
         }
     }
-
 
     public class PortData
     {

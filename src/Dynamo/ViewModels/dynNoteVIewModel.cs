@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dynamo.Nodes
 {
-    class dynNoteVIewModel:dynViewModelBase
+    class dynNoteViewModel:dynViewModelBase
     {
         private dynNoteModel _note;
 
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
             set {RaisePropertyChanged("Text");}
         }
 
-        public dynNoteVIewModel(dynNoteModel note)
+        public dynNoteViewModel(dynNoteModel note)
         {
             _note = note;
             note.PropertyChanged += note_PropertyChanged;

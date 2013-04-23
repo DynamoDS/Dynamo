@@ -11,7 +11,7 @@ namespace Dynamo
     /// <summary>
     /// A singleton object representing a dynamo model.
     /// </summary>
-    public class DynamoModel:NotificationObject
+    public class DynamoModel:dynModelBase
     {
         public event EventHandler CurrentOffsetChanged;
         protected virtual void OnCurrentOffsetChanged(object sender, EventArgs e)

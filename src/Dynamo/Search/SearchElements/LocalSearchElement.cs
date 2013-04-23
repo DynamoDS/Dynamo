@@ -81,7 +81,7 @@ namespace Dynamo.Search.SearchElements
         public LocalSearchElement(dynNode node)
         {
             this.Node = node;
-            this._name = Node.NodeUI.NickName;
+            this._name = Node.NickName;
             this.Weight = 1;
             this.Keywords = String.Join(" ", node.NodeUI.Tags);
             this._type = "Node";
@@ -96,7 +96,7 @@ namespace Dynamo.Search.SearchElements
         public LocalSearchElement(FunctionDefinition funcDef)
         {
             this.Node = dynSettings.Controller.CreateNode( funcDef.FunctionId.ToString() );
-            this._name = Node.NodeUI.NickName;
+            this._name = Node.NickName;
             this.Weight = 1.1;
             this.Keywords = "";
             this._description = "Custom Node";
@@ -167,7 +167,7 @@ namespace Dynamo.Search.SearchElements
             dynSettings.Controller.ProcessCommandQueue();
 
             // select node
-            var placedNode = dynSettings.Controller.Nodes.Find((node) => node.NodeUI.GUID == guid);
+            var placedNode = dynSettings.Controller.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));

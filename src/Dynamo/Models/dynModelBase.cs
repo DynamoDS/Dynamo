@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    public abstract class dynModelBase
+    public abstract class dynModelBase : NotificationObject
     {
-        public Guid Guid { get; private set; }
+        public Guid GUID { get; set; }
 
         protected dynModelBase()
         {
-            Guid = Guid.NewGuid();
+            GUID = Guid.NewGuid();
         }
 
     }

@@ -32,7 +32,7 @@ namespace Dynamo.Connectors
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
 
-    public class dynConnector : UIElement, NotificationObject
+    public class dynConnector : UIElement
     {
         public event ConnectorConnectedHandler Connected;
 

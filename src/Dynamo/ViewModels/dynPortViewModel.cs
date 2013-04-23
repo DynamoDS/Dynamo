@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Drawing;
+using System.Linq;
 using Dynamo.Connectors;
 using Microsoft.Practices.Prism.Commands;
 
@@ -11,16 +12,21 @@ namespace Dynamo.Connectors
     {
         Point center;
         
-        ObservableCollection<dynConnectorViewModel> connectors = new ObservableCollection<dynConnectorViewModel>();
+        ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
 
-        private dynPortModel _port;
+        readonly dynPortModel _port;
 
         public DelegateCommand SetCenterCommand { get; set; }
         
         public ObservableCollection<dynConnectorViewModel> Connectors
         {
-            get { return connectors; }
-            set { connectors = value; }
+            get { return _connectors; }
+            set { _connectors = value; }
+        }
+
+        public dynPortModel PortModel
+        {
+            get { return _port; }
         }
 
         public Point Center
@@ -37,11 +43,11 @@ namespace Dynamo.Connectors
                 {
                     if (PortType == Dynamo.Connectors.PortType.INPUT)
                     {
-                        return PortModel.Owner.NodeLogic.InPortData[index].ToolTipString;
+                        return PortModel.Owner.InPortData[index].ToolTipString;
                     }
                     else
                     {
-                        return PortModel.Owner.NodeLogic.OutPortData[index].ToolTipString;
+                        return PortModel.Owner.OutPortData[index].ToolTipString;
                     }
                 }
                 return "";
@@ -60,18 +66,14 @@ namespace Dynamo.Connectors
             {
                 foreach (var item in e.NewItems)
                 {
-                    connectors.Add(new dynConnectorViewModel(item as dynConnector));
+                    _connectors.Add(new dynConnectorViewModel(item as dynConnector));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (var item in e.OldItems)
                 {
-                    foreach (var connector in connectors)
-                    {
-                        if(connector.)
-                    }
-                    connectors.Remove(connectors);
+                    _connectors.Remove(_connectors.ToList().First(x => x.ConnectorModel == item));
                 }
             }
         }

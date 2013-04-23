@@ -291,7 +291,7 @@ namespace Dynamo.Utilities
                 }
 
             result = new dynFunction(inputs, outputs, def);
-            result.NodeUI.NickName = ws.Name;
+            result.NickName = ws.Name;
 
             return true;
         }
@@ -570,11 +570,11 @@ namespace Dynamo.Utilities
 
                     foreach (dynNode e in ws.Nodes)
                     {
-                        if (e.NodeUI.GUID == guidStart)
+                        if (e.GUID == guidStart)
                         {
                             start = e;
                         }
-                        else if (e.NodeUI.GUID == guidEnd)
+                        else if (e.GUID == guidEnd)
                         {
                             end = e;
                         }
@@ -589,7 +589,7 @@ namespace Dynamo.Utilities
                         if (start != null && end != null && start != end)
                         {
                             var newConnector = new dynConnector(
-                                start.NodeUI, end.NodeUI,
+                                start, end,
                                 startIndex, endIndex,
                                 portType, false
                                 );

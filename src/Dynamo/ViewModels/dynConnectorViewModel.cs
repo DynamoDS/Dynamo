@@ -10,9 +10,9 @@ namespace Dynamo.Connectors
     {
         private dynConnector _connector;
 
-        public dynConnector Connector
+        public dynConnector ConnectorModel
         {
-            get{return _connector}
+            get { return _connector; }
         }
 
         public dynConnectorViewModel(dynConnector connector)

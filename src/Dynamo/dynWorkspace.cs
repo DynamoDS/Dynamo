@@ -112,7 +112,7 @@ namespace Dynamo
         public IEnumerable<dynNode> GetTopMostNodes()
         {
             return this.Nodes.Where(
-               x => x.OutPortData.Any() && x.NodeUI.OutPorts.All(y => !y.Connectors.Any())
+               x => x.OutPortData.Any() && x.OutPorts.All(y => !y.Connectors.Any())
             );
         }
 

@@ -44,8 +44,8 @@ namespace Dynamo
         public PackageManagerPublishViewModel PackageManagerPublishViewModel { get; internal set; }
         public PackageManagerClient PackageManagerClient { get; internal set; }
 
-        List<dynViewModelBase> clipBoard = new List<dynViewModelBase>();
-        public List<dynViewModelBase> ClipBoard
+        List<dynModelBase> clipBoard = new List<dynModelBase>();
+        public List<dynModelBase> ClipBoard
         {
             get { return clipBoard; }
             set { clipBoard = value; }
@@ -66,6 +66,11 @@ namespace Dynamo
         public SortedDictionary<string, TypeLoadData> BuiltInTypesByNickname
         {
             get { return builtinTypesByNickname; }
+        }
+
+        public Dictionary<string, TypeLoadData> BuiltInTypesByName
+        {
+            get { return builtinTypesByTypeName; }
         }
 
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }
@@ -97,7 +102,7 @@ namespace Dynamo
 
             //MVVM : create the view model to which the main window will bind
             //the DynamoModel is created therein
-            dynBenchViewModel viewModel = new dynBenchViewModel();
+            dynBenchViewModel viewModel = new dynBenchViewModel(this);
             Bench.DataContext = viewModel;
 
             // custom node loader

@@ -6,7 +6,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Nodes
 {
-    public class dynNoteModel:NotificationObject
+    public class dynNoteModel:dynModelBase
     {
         private double _x;
         private double _y;

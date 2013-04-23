@@ -30,9 +30,9 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for dynControl.xaml
     /// </summary>
-    public enum ElementState { DEAD, ACTIVE, ERROR };
+    
 
-    public partial class dynNodeViewModel : dynViewModelBase, ISelectable
+    public partial class dynNodeViewModel : dynViewModelBase
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
@@ -45,7 +45,7 @@ namespace Dynamo.Controls
         ObservableCollection<dynPortViewModel> outPorts = new ObservableCollection<dynPortViewModel>();
         
         dynNode nodeLogic;
-        bool isSelected = false;
+        
         int preferredHeight = 30;
         private bool isFullyConnected = false;
         #endregion
@@ -83,6 +83,7 @@ namespace Dynamo.Controls
             set
             {
                 inPorts = value;
+                RaisePropertyChanged("InPorts");
             }
         }
 
@@ -92,6 +93,7 @@ namespace Dynamo.Controls
             set
             {
                 outPorts = value;
+                RaisePropertyChanged("OutPorts");
             }
         }
 
@@ -103,60 +105,6 @@ namespace Dynamo.Controls
         public ElementState State
         {
             get { return nodeLogic.State; }
-        }
-
-        public bool IsSelected
-        {
-            //TODO:Remove brush setting from here
-            //brushes should be controlled by a converter
-
-            get
-            {
-                return isSelected;
-            }
-            set
-            {
-                isSelected = value;
-                RaisePropertyChanged("IsSelected");
-
-                if (isSelected)
-                {
-                    var inConnectors = inPorts.SelectMany(x => x.Connectors);
-                    var outConnectors = outPorts.SelectMany(x => x.Connectors);
-
-                    foreach (dynConnector c in inConnectors)
-                    {
-                        if (c.Start != null && c.Start.Owner.IsSelected)
-                        {
-                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
-                        }
-                        else
-                        {
-                            c.StrokeBrush = new LinearGradientBrush(Color.FromRgb(31, 31, 31), Colors.Cyan, 0);
-                        }
-                    }
-                    foreach (dynConnector c in outConnectors)
-                    {
-                        if (c.End != null & c.End.Owner.IsSelected)
-                        {
-                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
-                        }
-                        else
-                        {
-                            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Color.FromRgb(31, 31, 31), 0);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (dynConnector c in inPorts.SelectMany(x => x.Connectors)
-                        .Concat(outPorts.SelectMany(x => x.Connectors)))
-                    {
-                        c.StrokeBrush = new SolidColorBrush(Color.FromRgb(31, 31, 31));
-                    }
-
-                }
-            }
         }
 
         public int PreferredHeight
@@ -247,7 +195,7 @@ namespace Dynamo.Controls
             NodeLogic.Destroy();
             NodeLogic.Cleanup();
 
-            dynSettings.Workbench.Selection.Remove(this);
+            DynamoSelection.Instance.Selection.Remove(this);
             dynSettings.Controller.Nodes.Remove(NodeLogic);
             //dynSettings.Workbench.Children.Remove(node);
         }
@@ -287,7 +235,7 @@ namespace Dynamo.Controls
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new dynPortViewModel(item));
+                    InPorts.Add(new dynPortViewModel(item as dynPortModel));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -296,7 +244,7 @@ namespace Dynamo.Controls
                 //is the one passed in
                 foreach (var item in e.OldItems)
                 {
-                    InPorts.Remove(InPorts.ToList().Where(x => x.PortModel == item));
+                    InPorts.Remove(InPorts.ToList().First(x => x.PortModel == item));
                 }
             }
         }
@@ -311,7 +259,7 @@ namespace Dynamo.Controls
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new dynPortViewModel(item));
+                    OutPorts.Add(new dynPortViewModel(item as dynPortModel));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -329,7 +277,7 @@ namespace Dynamo.Controls
 
         public void UpdateConnections()
         {
-            foreach (var p in InPorts.Concat(OutPorts))
+            foreach (var p in nodeLogic.InPorts.Concat(nodeLogic.OutPorts))
                 p.Update();
         }
 
@@ -359,73 +307,6 @@ namespace Dynamo.Controls
             ValidateConnections();
         }
 
-        /// <summary>
-        /// Is this node an entry point to the program?
-        /// </summary>
-        public bool IsTopmost
-        {
-            get
-            {
-                return OutPorts == null
-                    || OutPorts.All(x => !x.Connectors.Any());
-            }
-        }
-
-        //TODO: call connect and disconnect for dynNode
-
-        /// <summary>
-        /// When a port is connected, register a listener for the dynElementUpdated event
-        /// and tell the object to build
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void p_PortConnected(object sender, EventArgs e)
-        {
-            ValidateConnections();
-
-            var port = (dynPort)sender;
-            if (port.PortType == PortType.INPUT)
-            {
-                var data = InPorts.IndexOf(port);
-                var startPort = port.Connectors[0].Start;
-                var outData = startPort.Owner.OutPorts.IndexOf(startPort);
-                nodeLogic.ConnectInput(
-                    data,
-                    outData,
-                    startPort.Owner.nodeLogic);
-                startPort.Owner.nodeLogic.ConnectOutput(
-                    outData,
-                    data,
-                    nodeLogic
-                );
-            }
-        }
-
-        void p_PortDisconnected(object sender, EventArgs e)
-        {
-            var port = (dynPort)sender;
-            if (port.PortType == PortType.INPUT)
-            {
-                var data = InPorts.IndexOf(port);
-                var startPort = port.Connectors[0].Start;
-                nodeLogic.DisconnectInput(data);
-                startPort.Owner.nodeLogic.DisconnectOutput(
-                    startPort.Owner.OutPorts.IndexOf(startPort),
-                    data);
-            }
-        }
-
-        /// <summary>
-        /// Color the connection according to it's port connectivity
-        /// if all ports are connected, color green, else color orange
-        /// </summary>
-        public void ValidateConnections()
-        {
-            // if there are inputs without connections
-            // mark as dead
-            State = inPorts.Select(x => x).Any(x => x.PortModel.Connectors.Count == 0) ? ElementState.DEAD : ElementState.ACTIVE;
-        }
-
         public string Description
         {
             get
@@ -451,37 +332,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public void SelectNeighbors()
-        {
-            var outConnectors = this.outPorts.SelectMany(x => x.Connectors);
-            var inConnectors = this.inPorts.SelectMany(x => x.Connectors);
-
-            foreach (dynConnector c in outConnectors)
-            {
-                if (!dynSettings.Workbench.Selection.Contains(c.End.Owner))
-                    dynSettings.Workbench.Selection.Add(c.End.Owner);
-            }
-
-            foreach (dynConnector c in inConnectors)
-            {
-                if (!dynSettings.Workbench.Selection.Contains(c.Start.Owner))
-                    dynSettings.Workbench.Selection.Add(c.Start.Owner);
-            }
-        }
-
-        #region ISelectable Interface
-        public void Select()
-        {
-            IsSelected = true;
-        }
-
-        public void Deselect()
-        {
-            ValidateConnections();
-            IsSelected = false;
-        }
-        #endregion
-
+        
         #region junk
         //public void CallUpdateLayout(FrameworkElement el)
         //{

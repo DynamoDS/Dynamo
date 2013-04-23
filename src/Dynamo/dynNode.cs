@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Controls;
@@ -17,6 +18,7 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
+    public enum ElementState { DEAD, ACTIVE, ERROR };
 
     public enum LacingStrategy
     {
@@ -27,7 +29,7 @@ namespace Dynamo.Nodes
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
-    public abstract class dynNode : NotificationObject
+    public abstract class dynNode : dynModelBase, ISelectable
     {
         /* TODO:
          * Incorporate INode in here somewhere
@@ -48,13 +50,10 @@ namespace Dynamo.Nodes
         #endregion
 
         public dynWorkspace WorkSpace;
-
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
-        Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
-
+        Dictionary<dynPortModel, PortData> portDataDict = new Dictionary<dynPortModel, PortData>();
         public dynNodeUI NodeUI;
-
         public Dictionary<int, Tuple<int, dynNode>> Inputs = 
             new Dictionary<int, Tuple<int, dynNode>>();
         public Dictionary<int, HashSet<Tuple<int, dynNode>>> Outputs =
@@ -64,14 +63,13 @@ namespace Dynamo.Nodes
             new Dictionary<int, Tuple<int, dynNode>>();
         private Dictionary<int, HashSet<Tuple<int, dynNode>>> previousOutputPortMappings =
             new Dictionary<int, HashSet<Tuple<int, dynNode>>>();
-
-        ObservableCollection<dynPort> inPorts = new ObservableCollection<dynPort>();
-        ObservableCollection<dynPort> outPorts = new ObservableCollection<dynPort>();
-
+        ObservableCollection<dynPortModel> inPorts = new ObservableCollection<dynPortModel>();
+        ObservableCollection<dynPortModel> outPorts = new ObservableCollection<dynPortModel>();
         private LacingStrategy _argumentLacing  = LacingStrategy.Single;
         private string _nickName;
         ElementState state;
         string toolTipText = "";
+        bool isSelected = false;
 
         public ElementState State
         {
@@ -111,7 +109,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public ObservableCollection<dynPort> InPorts
+        public ObservableCollection<dynPortModel> InPorts
         {
             get { return inPorts; }
             set
@@ -120,7 +118,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public ObservableCollection<dynPort> OutPorts
+        public ObservableCollection<dynPortModel> OutPorts
         {
             get { return outPorts; }
             set
@@ -128,7 +126,7 @@ namespace Dynamo.Nodes
                 outPorts = value;
             }
         }
-        
+
         /// <summary>
         /// Control how arguments lists of various sizes are laced.
         /// </summary>
@@ -185,6 +183,61 @@ namespace Dynamo.Nodes
             get { return dynSettings.Controller; }
         }
 
+        public bool IsSelected
+        {
+            //TODO:Remove brush setting from here
+            //brushes should be controlled by a converter
+
+            get
+            {
+                return isSelected;
+            }
+            set
+            {
+                isSelected = value;
+                RaisePropertyChanged("IsSelected");
+
+                //MVVM : Set colors from a binding, not here.
+                //if (isSelected)
+                //{
+                //    var inConnectors = inPorts.SelectMany(x => x.Connectors);
+                //    var outConnectors = outPorts.SelectMany(x => x.Connectors);
+
+                //    foreach (dynConnector c in inConnectors)
+                //    {
+                //        if (c.Start != null && c.Start.Owner.IsSelected)
+                //        {
+                //            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
+                //        }
+                //        else
+                //        {
+                //            c.StrokeBrush = new LinearGradientBrush(Color.FromRgb(31, 31, 31), Colors.Cyan, 0);
+                //        }
+                //    }
+                //    foreach (dynConnector c in outConnectors)
+                //    {
+                //        if (c.End != null & c.End.Owner.IsSelected)
+                //        {
+                //            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Colors.Cyan, 0);
+                //        }
+                //        else
+                //        {
+                //            c.StrokeBrush = new LinearGradientBrush(Colors.Cyan, Color.FromRgb(31, 31, 31), 0);
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    foreach (dynConnector c in inPorts.SelectMany(x => x.Connectors)
+                //        .Concat(outPorts.SelectMany(x => x.Connectors)))
+                //    {
+                //        c.StrokeBrush = new SolidColorBrush(Color.FromRgb(31, 31, 31));
+                //    }
+
+                //}
+            }
+        }
+        
         private bool _isDirty = true;
 
         ///<summary>
@@ -239,6 +292,18 @@ namespace Dynamo.Nodes
             set
             {
                 _saveResult = value;
+            }
+        }
+
+        /// <summary>
+        /// Is this node an entry point to the program?
+        /// </summary>
+        public bool IsTopmost
+        {
+            get
+            {
+                return OutPorts == null
+                    || OutPorts.All(x => !x.Connectors.Any());
             }
         }
 
@@ -782,11 +847,13 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Add a dynPort element to this control.
+        /// Add a port to this node
         /// </summary>
-        /// <param name="isInput">Is the port an input?</param>
-        /// <param name="index">The index of the port in the port list.</param>
-        public dynPort AddPort(PortType portType, string name, int index)
+        /// <param name="portType"></param>
+        /// <param name="name"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public dynPortModel AddPort(PortType portType, string name, int index)
         {
             if (portType == PortType.INPUT)
             {
@@ -796,7 +863,7 @@ namespace Dynamo.Nodes
                 }
                 else
                 {
-                    dynPort p = new dynPort(index, portType, this, name);
+                    dynPortModel p = new dynPortModel(index, portType, this, name);
 
                     InPorts.Add(p);
 
@@ -815,7 +882,7 @@ namespace Dynamo.Nodes
                 }
                 else
                 {
-                    dynPort p = new dynPort(index, portType, this, name);
+                    dynPortModel p = new dynPortModel(index, portType, this, name);
 
                     OutPorts.Add(p);
 
@@ -827,6 +894,50 @@ namespace Dynamo.Nodes
                 }
             }
             return null;
+        }
+
+        //TODO: call connect and disconnect for dynNode
+
+        /// <summary>
+        /// When a port is connected, register a listener for the dynElementUpdated event
+        /// and tell the object to build
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void p_PortConnected(object sender, EventArgs e)
+        {
+            ValidateConnections();
+
+            var port = (dynPortModel)sender;
+            if (port.PortType == PortType.INPUT)
+            {
+                var data = InPorts.IndexOf(port);
+                var startPort = port.Connectors[0].Start;
+                var outData = startPort.Owner.OutPorts.IndexOf(startPort);
+                ConnectInput(
+                    data,
+                    outData,
+                    startPort.Owner);
+                startPort.Owner.ConnectOutput(
+                    outData,
+                    data,
+                    this
+                );
+            }
+        }
+
+        void p_PortDisconnected(object sender, EventArgs e)
+        {
+            var port = (dynPortModel)sender;
+            if (port.PortType == PortType.INPUT)
+            {
+                var data = InPorts.IndexOf(port);
+                var startPort = port.Connectors[0].Start;
+                DisconnectInput(data);
+                startPort.Owner.DisconnectOutput(
+                    startPort.Owner.OutPorts.IndexOf(startPort),
+                    data);
+            }
         }
 
         private void RemovePort(dynPortModel inport)
@@ -859,7 +970,8 @@ namespace Dynamo.Nodes
                 //edges of the icon
                 var port = AddPort(PortType.INPUT, InPortData[count].NickName, count);
 
-                port.DataContext = this;
+                //MVVM: AddPort now returns a port model. You can't set the data context here.
+                //port.DataContext = this;
 
                 portDataDict[port] = pd;
                 count++;
@@ -928,6 +1040,17 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// Color the connection according to it's port connectivity
+        /// if all ports are connected, color green, else color orange
+        /// </summary>
+        public void ValidateConnections()
+        {
+            // if there are inputs without connections
+            // mark as dead
+            State = inPorts.Select(x => x).Any(x => x.Connectors.Count == 0) ? ElementState.DEAD : ElementState.ACTIVE;
+        }
+
         private void SetState(dynNodeUI el, ElementState state)
         {
             State = state;
@@ -938,6 +1061,40 @@ namespace Dynamo.Nodes
             State = ElementState.ERROR;
             ToolTipText = p;
         }
+
+        
+
+        public void SelectNeighbors()
+        {
+            var outConnectors = this.outPorts.SelectMany(x => x.Connectors);
+            var inConnectors = this.inPorts.SelectMany(x => x.Connectors);
+
+            foreach (dynConnector c in outConnectors)
+            {
+                if (!DynamoSelection.Instance.Selection.Contains(c.End.Owner))
+                    DynamoSelection.Instance.Selection.Add(c.End.Owner);
+            }
+
+            foreach (dynConnector c in inConnectors)
+            {
+                if (!DynamoSelection.Instance.Selection.Contains(c.Start.Owner))
+                    DynamoSelection.Instance.Selection.Add(c.Start.Owner);
+            }
+        }
+
+
+        #region ISelectable Interface
+        public void Select()
+        {
+            IsSelected = true;
+        }
+
+        public void Deselect()
+        {
+            ValidateConnections();
+            IsSelected = false;
+        }
+        #endregion
     }
 
     public abstract class dynNodeWithOneOutput : dynNode
