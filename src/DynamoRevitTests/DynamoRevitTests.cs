@@ -29,7 +29,7 @@ using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
 
-namespace Dynamo.Tests
+namespace Dynamo.Applications.Tests
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
@@ -63,9 +63,9 @@ namespace Dynamo.Tests
 
                 #endregion
 
-                //dynRevitSettings.Revit = _mRevit;
-                //dynRevitSettings.Doc = _mDoc;
-                //dynRevitSettings.DefaultLevel = defaultLevel;
+                dynRevitSettings.Revit = _mRevit;
+                dynRevitSettings.Doc = _mDoc;
+                dynRevitSettings.DefaultLevel = defaultLevel;
 
                 IdlePromise.ExecuteOnIdle(delegate
                     {
