@@ -22,9 +22,9 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.Applications;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 using NUnit.Core;
-using Dynamo.Controls;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
@@ -34,54 +34,6 @@ namespace Dynamo.Tests
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevitTestsLoader : IExternalCommand
-    {
-        //private UIDocument m_doc;
-        //private UIApplication m_revit;
-
-        public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
-        {
-            try
-            {
-                
-                CoreExtensions.Host.InitializeService();
-                var runner = new SimpleTestRunner();
-                var package = new TestPackage("Test");
-                string loc = Assembly.GetExecutingAssembly().Location;
-                package.Assemblies.Add(loc);
-
-                TestResult result;
-                if (runner.Load(package))
-                {
-                    result = runner.Run(new NullListener(), TestFilter.Empty, true, LoggingThreshold.All);
-                    
-                    MessageBox.Show(result.FullName);
-                    MessageBox.Show(result.IsSuccess.ToString());
-                    MessageBox.Show(result.Message);
-                    MessageBox.Show(result.Results.Count.ToString());
-  
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-                if (Dynamo.Utilities.dynSettings.Writer != null)
-                {
-                    Dynamo.Utilities.dynSettings.Writer.WriteLine(ex.Message);
-                    Dynamo.Utilities.dynSettings.Writer.WriteLine(ex.StackTrace);
-                    Dynamo.Utilities.dynSettings.Writer.WriteLine("Dynamo log ended " + DateTime.Now.ToString());
-                }
-                return Result.Failed;
-            }
-
-            return Result.Succeeded;
-        }
-    }
-
-    [Transaction(TransactionMode.Manual)]
-    [Regeneration(RegenerationOption.Manual)]
-    internal class DynamoRevit : IExternalCommand
     {
         private static dynBench _dynamoBench;
         private UIDocument _mDoc;
@@ -106,7 +58,7 @@ namespace Dynamo.Tests
 
                 Level defaultLevel = null;
                 var fecLevel = new FilteredElementCollector(_mDoc.Document);
-                fecLevel.OfClass(typeof(Level));
+                fecLevel.OfClass(typeof (Level));
                 defaultLevel = fecLevel.ToElements()[0] as Level;
 
                 #endregion
@@ -116,28 +68,63 @@ namespace Dynamo.Tests
                 //dynRevitSettings.DefaultLevel = defaultLevel;
 
                 IdlePromise.ExecuteOnIdle(delegate
-                {
-                    //get window handle
-                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+                    {
+                        //get window handle
+                        IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    //show the window
-                    var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater);
-                    _dynamoBench = dynamoController.Bench;
+                        //show the window
+                        var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater);
+                        _dynamoBench = dynamoController.Bench;
 
-                    //set window handle and show dynamo
-                    new WindowInteropHelper(_dynamoBench).Owner = mwHandle;
+                        //set window handle and show dynamo
+                        new WindowInteropHelper(_dynamoBench).Owner = mwHandle;
 
-                    _dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
+                        _dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
 
-                    Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                    _dynamoBench.Left = bounds.X;
-                    _dynamoBench.Top = bounds.Y;
-                    _dynamoBench.Loaded += dynamoForm_Loaded;
+                        Rectangle bounds = Screen.PrimaryScreen.Bounds;
+                        _dynamoBench.Left = bounds.X;
+                        _dynamoBench.Top = bounds.Y;
+                        _dynamoBench.Loaded += dynamoForm_Loaded;
 
-                    _dynamoBench.Show();
+                        _dynamoBench.Show();
 
-                    _dynamoBench.Closed += dynamoForm_Closed;
-                });
+                        _dynamoBench.Closed += dynamoForm_Closed;
+
+                        // Run tests
+
+                        try
+                        {
+                            CoreExtensions.Host.InitializeService();
+                            var runner = new SimpleTestRunner();
+                            var package = new TestPackage("Test");
+                            string loc = Assembly.GetExecutingAssembly().Location;
+                            package.Assemblies.Add(loc);
+
+                            TestResult result;
+                            if (runner.Load(package))
+                            {
+                                result = runner.Run(new NullListener(), TestFilter.Empty, true, LoggingThreshold.All);
+
+                                MessageBox.Show("Started dynamo");
+
+                                MessageBox.Show(result.FullName);
+                                MessageBox.Show(result.IsSuccess.ToString());
+                                MessageBox.Show(result.Message);
+                                MessageBox.Show(result.Results.Count.ToString());
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
+                            if (dynSettings.Writer != null)
+                            {
+                                dynSettings.Writer.WriteLine(ex.Message);
+                                dynSettings.Writer.WriteLine(ex.StackTrace);
+                                dynSettings.Writer.WriteLine("Dynamo log ended " + DateTime.Now.ToString());
+                            }
+                        }
+                    });
+
             }
             catch (Exception ex)
             {
@@ -161,7 +148,7 @@ namespace Dynamo.Tests
 
         private void dynamoForm_Loaded(object sender, RoutedEventArgs e)
         {
-            ((dynBench)sender).WindowState = WindowState.Maximized;
+            ((dynBench) sender).WindowState = WindowState.Maximized;
         }
     }
 
