@@ -167,7 +167,7 @@ namespace Dynamo.Revit
         {
             Autodesk.Revit.DB.Face face = obj as Autodesk.Revit.DB.Face;
             
-            description.meshes.Add(RevitMeshToHelixMesh(face.Triangulate()));
+            description.meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.2)));
         }
 
         public static void DrawForm(RenderDescription description, object obj)
