@@ -95,7 +95,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve By Points")]
+    [NodeName("Curve By Pts")]
     [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
     public class dynCurveByPoints : dynRevitTransactionNodeWithOneOutput
@@ -299,7 +299,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve Element Reference")]
+    [NodeName("Curve Element Ref")]
     [NodeCategory(BuiltinNodeCategories.REVIT_CURVES)]
     [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
     public class dynCurveRef : dynRevitTransactionNodeWithOneOutput
@@ -366,7 +366,7 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Curve From Curve Element")]
+    [NodeName("Curve From Curve Ele")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Takes in a Model Curve and Extracts Geometry Curve")]
     public class dynCurveFromModelCurve : dynRevitTransactionNodeWithOneOutput

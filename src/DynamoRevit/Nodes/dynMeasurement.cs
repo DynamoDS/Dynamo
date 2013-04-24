@@ -137,7 +137,6 @@ namespace Dynamo.Nodes
         }
     }
 
-
     [NodeName("Height")]
     [NodeCategory(BuiltinNodeCategories.MEASUREMENT)]
     [NodeDescription("Returns the height in z of an element.")]

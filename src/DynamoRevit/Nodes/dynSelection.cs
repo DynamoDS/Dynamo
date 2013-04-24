@@ -359,7 +359,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Family Instance by Selection")]
+    [NodeName("Select Family Instance")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a family instance from the document.")]
     public class dynFamilyInstanceCreatorSelection : dynElementSelection
@@ -381,7 +381,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Divided Surface by Selection")]
+    [NodeName("Select Divided Surface")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a divided surface from the document.")]
     public class dynDividedSurfaceBySelection : dynElementSelection
@@ -541,7 +541,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Face by Selection")]
+    [NodeName("Select Face")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a face from the document.")]
     public class dynFormElementBySelection : dynElementSelection
@@ -573,7 +573,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve by Selection")]
+    [NodeName("Select Curve")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
     public class dynCurvesBySelection : dynElementSelection
@@ -596,7 +596,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curves by Selection")]
+    [NodeName("Select Curves")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a set of curves from the document.")]
     public class dynMultipleCurvesBySelection : dynMultipleElementSelection
@@ -644,7 +644,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Point by Selection")]
+    [NodeName("Select Point")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a reference point from the document.")]
     public class dynPointBySelection : dynElementSelection
@@ -666,7 +666,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Level by Selection")]
+    [NodeName("Select Level")]
     [NodeCategory(BuiltinNodeCategories.SELECTION)]
     [NodeDescription("Select a level from the document.")]
     public class dynLevelBySelection : dynElementSelection

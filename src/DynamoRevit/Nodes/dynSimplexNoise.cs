@@ -76,9 +76,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("1DSimplex")]
+    [NodeName("1D Noise Field")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Creates a 1D Field.")]
+    [NodeDescription("Creates a randomly varying 1 field generated using simplex noise.")]
     public class dynSimplex1D: dynNodeWithOneOutput
     {
         public dynSimplex1D()
@@ -129,10 +129,9 @@ namespace Dynamo.Nodes
        
     }
 
-
-    [NodeName("2DSimplex")]
+    [NodeName("2D Noise Field")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Creates a 2D Field.")]
+    [NodeDescription("Creates a randomly varying 2D field generated using simplex noise.")]
     public class dynSimplex2D: dynNodeWithOneOutput
     {
         public dynSimplex2D()
@@ -237,9 +236,9 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("3DSimplex")]
+    [NodeName("3D Noise Field")]
     [NodeCategory(BuiltinNodeCategories.MISC)]
-    [NodeDescription("Creates a 3D Field.")]
+    [NodeDescription("Creates a randomly varying 3D Field generated using simplex noise.")]
     public class dynSimplex3D: dynNodeWithOneOutput
     {
         public dynSimplex3D()
@@ -381,7 +380,5 @@ namespace Dynamo.Nodes
 
 
     }
-
-
 
 }

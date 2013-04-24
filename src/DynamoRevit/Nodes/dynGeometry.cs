@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ From Ref Point")]
+    [NodeName("XYZ From Reference Point")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
     public class dynXYZFromReferencePoint: dynNodeWithOneOutput
@@ -150,7 +150,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ BasisX")]
+    [NodeName("X Axis")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
     public class dynXYZBasisX: dynNodeWithOneOutput
@@ -169,7 +169,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ BasisY")]
+    [NodeName("Y Axis")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
     public class dynXYZBasisY: dynNodeWithOneOutput
@@ -188,7 +188,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ BasisZ")]
+    [NodeName("Z Axis")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
     public class dynXYZBasisZ: dynNodeWithOneOutput
@@ -207,7 +207,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ Scale")]
+    [NodeName("Scale XYZ")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Multiplies each component of an XYZ by a number.")]
     public class dynXYZScale: dynNodeWithOneOutput
@@ -230,7 +230,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ Add")]
+    [NodeName("Add XYZ")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Adds the components of two XYZs.")]
     public class dynXYZAdd: dynNodeWithOneOutput
@@ -301,7 +301,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("UV Random Distribution")]
+    [NodeName("UV Random")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates a grid of UVs froma domain.")]
     public class dynUVRandom: dynNodeWithOneOutput
@@ -414,7 +414,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ Array Along Curve")]
+    [NodeName("XYZ Array On Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates a list of XYZs along a curve.")]
     public class dynXYZArrayAlongCurve: dynNodeWithOneOutput
@@ -641,7 +641,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Arc by Start Middle End")]
+    [NodeName("Arc By Start Mid End")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
     public class dynArcStartMiddleEnd: dynNodeWithOneOutput
@@ -684,7 +684,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Arc by Center Point")]
+    [NodeName("Arc by Ctr Pt")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
     public class dynArcCenter: dynNodeWithOneOutput
@@ -726,7 +726,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve Transformed")]
+    [NodeName("Transform Crv")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
     public class dynCurveTransformed: dynNodeWithOneOutput
@@ -834,7 +834,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Elliptical Arc")]
+    [NodeName("Ellipse Arc")]
     [NodeCategory(BuiltinNodeCategories.REVIT_GEOM)]
     [NodeDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
     public class dynEllipticalArc: dynNodeWithOneOutput
@@ -905,7 +905,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Line Vector")]
+    [NodeName("Line From Vector")]
     [NodeCategory(BuiltinNodeCategories.REVIT_XYZ_UV_VECTOR)]
     [NodeDescription("Creates a line in the direction of an XYZ normal.")]
     public class dynLineVectorfromXYZ: dynNodeWithOneOutput

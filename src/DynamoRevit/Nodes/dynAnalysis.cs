@@ -14,7 +14,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
      
-    [NodeName("Colored Surface Spatial Field")]
+    [NodeName("Spatial Field Manager")]
     [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
     [NodeDescription("Gets or creates the spatial field manager on the view.")]
     class dynSpatialFieldManager : dynNodeWithOneOutput
@@ -50,7 +50,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Colored Surface Analysis Display Style")]
+    [NodeName("Analysis Display Style")]
     [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
     [NodeDescription("Create an analysis display style for displaying results color-mapped on a surface.")]
     class dynAnalysisResultsDisplayStyleColor : dynNodeWithOneOutput
@@ -234,7 +234,7 @@ namespace Dynamo.Nodes
         }
     }*/
 
-    [NodeName("Spatial Field Primitive Face")]
+    [NodeName("Spatial Field Face")]
     [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
     [NodeDescription("An analysis results object to be used with a spatial field manager.")]
     class dynAnalysisResults : dynNodeWithOneOutput
@@ -317,7 +317,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Spatial Field Primitive Curve")]
+    [NodeName("Spatial Field Curve")]
     [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
     [NodeDescription("An analysis results curve to be used with a spatial field manager.")]
     class dynAnalysisResultsCurve : dynNodeWithOneOutput
@@ -426,7 +426,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Temporary Curves")]
+    [NodeName("Temp Curves")]
     [NodeCategory(BuiltinNodeCategories.ANALYSIS)]
     [NodeDescription("Draw temporary curves in the family.")]
     class dynTemporaryCurves : dynNodeWithOneOutput

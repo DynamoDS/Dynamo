@@ -37,12 +37,14 @@ namespace Dynamo.Tests
     //    }
     //}
 
+    //static TestResultCollector collector = new TestResultCollector();
+
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevitTestsLoader : IExternalCommand
     {
-        private UIDocument m_doc;
-        private UIApplication m_revit;
+        //private UIDocument m_doc;
+        //private UIApplication m_revit;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
@@ -54,12 +56,25 @@ namespace Dynamo.Tests
                 var package = new TestPackage("Test");
                 string loc = Assembly.GetExecutingAssembly().Location;
                 package.Assemblies.Add(loc);
+
+                TestResult result;
                 if (runner.Load(package))
                 {
-                    TestResult result = runner.Run(new NullListener(), TestFilter.Empty, true, LoggingThreshold.All);
+                    result = runner.Run(new NullListener(), TestFilter.Empty, true, LoggingThreshold.All);
+                    
+                    
+                    MessageBox.Show(result.FullName);
+                    MessageBox.Show(result.IsSuccess.ToString());
+                    MessageBox.Show(result.Message);
+                    MessageBox.Show(result.Results.Count.ToString());
+                    
+                    //foreach (var ele in result.Results)
+                    //{
+                    //     MessageBox.Show();
+                    //}
                 }
 
-                MessageBox.Show("Bla diddy bla bla");
+
             }
             catch (Exception ex)
             {

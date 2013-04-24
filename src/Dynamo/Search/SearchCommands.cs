@@ -146,14 +146,13 @@ namespace Dynamo.Commands
 
         public void Execute(object parameters)
         {
-            if (null == search)
+            if (search == null)
             {
                 search = new SearchView(dynSettings.Controller.SearchViewModel); 
-                dynSettings.Bench.sidebarGrid.Children.Add(search);
             }
-
+                
+            dynSettings.Bench.sidebarGrid.Children.Add(search);
             dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;
-
         }
 
         public event EventHandler CanExecuteChanged

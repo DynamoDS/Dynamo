@@ -197,8 +197,8 @@ namespace Dynamo.Search
             _SearchText = "";
             IncludeOptionalElements = false; // revit api
             Regions = new ObservableDictionary<string, RegionBase>();
-            Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            Regions.Add("Include Nodes from the Revit API", new RevitAPIRegion());
+            //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
+            Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion());
             AddHomeToSearch();
         }
 

@@ -357,7 +357,7 @@ namespace Dynamo.Nodes
     }
 
     //TODO: Add UI for specifying whether should error or continue (checkbox?)
-    [NodeName("File Watcher Wait for Change")]
+    [NodeName("Watched File Wait")]
     [NodeCategory(BuiltinNodeCategories.FILES)]
     [NodeDescription("Waits for the specified watched file to change.")]
     public class dynFileWatcherWait : dynNodeWithOneOutput
@@ -397,7 +397,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reset File Watcher")]
+    [NodeName("Reset File Watch")]
     [NodeCategory(BuiltinNodeCategories.FILES)]
     [NodeDescription("Resets state of FileWatcher so that it watches again.")]
     public class dynFileWatcherReset : dynNodeWithOneOutput

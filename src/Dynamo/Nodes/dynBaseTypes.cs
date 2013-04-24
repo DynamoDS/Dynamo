@@ -576,7 +576,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("De-Cons")]
+    [NodeName("Split Pair")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Deconstructs a list pair.")]
     public class dynDeCons : dynNode
@@ -599,7 +599,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Cons")]
+    [NodeName("Make Pair")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Constructs a list pair.")]
     public class dynList : dynBuiltinFunction
@@ -615,7 +615,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Take")]
+    [NodeName("Take From List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Takes elements from a list")]
     public class dynTakeList : dynBuiltinFunction
@@ -631,7 +631,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Drop")]
+    [NodeName("Drop From List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Drops elements from a list")]
     public class dynDropList : dynBuiltinFunction
@@ -647,7 +647,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get")]
+    [NodeName("Get From List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Gets an element from a list at a specified index.")]
     public class dynGetFromList : dynBuiltinFunction
@@ -663,7 +663,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Empty")]
+    [NodeName("Empty List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("An empty list")]
     [IsInteractive(false)]
@@ -703,7 +703,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Is Empty?")]
+    [NodeName("Is Empty List?")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Checks to see if the given list is empty.")]
     public class dynIsEmpty : dynBuiltinFunction
@@ -718,7 +718,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Length")]
+    [NodeName("List Length")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Gets the length of a list")]
     [NodeSearchTags("count")]
@@ -734,7 +734,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Append")]
+    [NodeName("Append to List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Appends two list")]
     public class dynAppend : dynBuiltinFunction
@@ -750,7 +750,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("First")]
+    [NodeName("First in List")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Gets the first element of a list")]
     public class dynFirst : dynBuiltinFunction
@@ -765,7 +765,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Rest")]
+    [NodeName("List Rest")]
     [NodeCategory(BuiltinNodeCategories.LIST)]
     [NodeDescription("Gets the list with the first element removed.")]
     public class dynRest : dynBuiltinFunction
@@ -795,49 +795,47 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x" + name + "y", "comp", typeof(double)));
 
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
-
             NodeUI.RegisterAllPorts();
         }
     }
 
-    [NodeName("<")]
+    [NodeName("Less Than")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
-    [NodeSearchTags("less", "than")]
+    [NodeSearchTags("less", "than", "<")]
     public class dynLessThan : dynComparison
     {
         public dynLessThan() : base("<") { }
     }
 
-    [NodeName("≤")]
+    [NodeName("Less Than Or Equal")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
-    [NodeSearchTags("<=", "less", "than", "equal")]
+    [NodeSearchTags("<=")]
     public class dynLessThanEquals : dynComparison
     {
         public dynLessThanEquals() : base("<=", "≤") { }
     }
 
-    [NodeName(">")]
+    [NodeName("Greater Than")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
-    [NodeSearchTags("greater", "than")]
+    [NodeSearchTags(">")]
     public class dynGreaterThan : dynComparison
     {
         public dynGreaterThan() : base(">") { }
     }
 
-    [NodeName("≥")]
+    [NodeName("Greater Than Or Equal")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
-    [NodeSearchTags(">=", "greater", "than", "equal")]
+    [NodeSearchTags(">=", "Greater Than Or Equal")]
     public class dynGreaterThanEquals : dynComparison
     {
         public dynGreaterThanEquals() : base(">=", "≥") { }
     }
 
-    [NodeName("=")]
+    [NodeName("Equal")]
     [NodeCategory(BuiltinNodeCategories.COMPARISON)]
     [NodeDescription("Compares two numbers.")]
     public class dynEqual : dynComparison
@@ -1023,10 +1021,10 @@ namespace Dynamo.Nodes
 
     #region Math
 
-    [NodeName("+")]
+    [NodeName("Add")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Adds two numbers.")]
-    [NodeSearchTags("plus", "addition", "sum")]
+    [NodeSearchTags("plus", "sum", "+")]
     public class dynAddition : dynBuiltinFunction
     {
         public dynAddition()
@@ -1036,16 +1034,14 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x+y", "sum", typeof(double)));
 
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
-
             NodeUI.RegisterAllPorts();
         }
     }
 
-    [NodeName("−")]
+    [NodeName("Subtract")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Subtracts two numbers.")]
-    [NodeSearchTags("subtraction", "minus", "difference", "-")]
+    [NodeSearchTags("minus", "difference", "-")]
     public class dynSubtraction : dynBuiltinFunction
     {
         public dynSubtraction()
@@ -1055,16 +1051,14 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x-y", "difference", typeof(double)));
 
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
-
             NodeUI.RegisterAllPorts();
         }
     }
 
-    [NodeName("×")]
+    [NodeName("Multiply")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Multiplies two numbers.")]
-    [NodeSearchTags("times", "multiply", "multiplication", "product", "*", "x")]
+    [NodeSearchTags("times", "product", "*")]
     public class dynMultiplication : dynBuiltinFunction
     {
         public dynMultiplication()
@@ -1074,16 +1068,14 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x∙y", "product", typeof(double)));
 
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
-
             NodeUI.RegisterAllPorts();
         }
     }
 
-    [NodeName("÷")]
+    [NodeName("Divide")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Divides two numbers.")]
-    [NodeSearchTags("divide", "division", "quotient", "/")]
+    [NodeSearchTags("division", "quotient", "/")]
     public class dynDivision : dynBuiltinFunction
     {
         public dynDivision()
@@ -1093,16 +1085,14 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x÷y", "result", typeof(double)));
 
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
-
             NodeUI.RegisterAllPorts();
         }
     }
 
-    [NodeName("Mod")]
+    [NodeName("Modulo")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Remainder of division of two numbers.")]
-    [NodeSearchTags("%", "modulo", "remainder")]
+    [NodeSearchTags("%", "remainder")]
     public class dynModulo : dynBuiltinFunction
     {
         public dynModulo()
@@ -1116,10 +1106,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Pow")]
+    [NodeName("Power")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Raises a number to the power of another.")]
-    [NodeSearchTags("power", "exponentiation", "^")]
+    [NodeSearchTags("pow", "exponentiation", "^")]
     public class dynPow : dynBuiltinFunction
     {
         public dynPow()
@@ -1226,18 +1216,16 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("π")]
+    [NodeName("Pi")]
     [NodeCategory(BuiltinNodeCategories.MATH)]
     [NodeDescription("Pi constant")]
-    [NodeSearchTags("pi", "trigonometry", "circle")]
+    [NodeSearchTags("trigonometry", "circle", "π")]
     [IsInteractive(false)]
     public class dynPi : dynNode
     {
         public dynPi()
         {
             OutPortData.Add(new PortData("3.14159...", "pi", typeof(double)));
-
-            NodeUI.nickNameBlock.FontSize = 17;  NodeUI.nickNameBlock.Padding = new System.Windows.Thickness(0);
 
             NodeUI.RegisterAllPorts();
         }
@@ -2504,7 +2492,7 @@ namespace Dynamo.Nodes
 
     #region Strings and Conversions
 
-    [NodeName("Concatenate Strings")]
+    [NodeName("Concat Strings")]
     [NodeDescription("Concatenates two or more strings")]
     [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynConcatStrings : dynVariableInput
@@ -2576,7 +2564,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("String -> Number")]
+    [NodeName("String to Number")]
     [NodeDescription("Converts a string to a number")]
     [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynString2Num : dynBuiltinFunction
@@ -2591,7 +2579,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Number -> String")]
+    [NodeName("Number to String")]
     [NodeDescription("Converts a number to a string")]
     [NodeCategory(BuiltinNodeCategories.STRINGS)]
     public class dynNum2String : dynBuiltinFunction
