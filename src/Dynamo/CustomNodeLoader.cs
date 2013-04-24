@@ -36,7 +36,7 @@ namespace Dynamo.Utilities
             get;
             private set;
         }
-
+         
         /// <summary>
         /// NodeCategories property </summary>
         /// <value>Maps function ids to categories. </value>
