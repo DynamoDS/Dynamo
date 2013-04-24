@@ -17,6 +17,59 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2. It 
 
 ## Releases ##
 
+###April 2013 Release###
+
+New or Updated nodes
+- Watch 3d geometry preview
+- Expanded Curve drawing nodes
+- Transforms
+- Vectors
+- More Analysis capabilities
+- Delaunay Tessellation
+- Dynamic Relaxation 
+- Leap Motion interface
+- Drafting view
+- Syntax coloring for Python Node Editor
+- Random Number generator
+- Simplex Fields
+- Read Image from File node
+- Arduino node is more robust
+- UDP node for responding to input over network 
+- UV Grids
+- Surface Domain nodes
+- More math nodes (modulo and exponent)
+- Height node
+- Dynamic Relaxation improvments
+
+UI:
+- Custom Node creation from Selection – are we using Custom or User-Created in the UI now? Is it consistent?
+- Multiple Outputs from custom nodes
+- Cut and Paste 
+- Box and Multi Select
+- Search/Browse: Scalable browsing, more robust search
+- Lacing: Data Matching for Lists
+- Application Menu standardization
+- Spline or Polyline Connector option
+- More legible and compact node display
+
+Engineering:
+- Code Cleanup
+- Expanded code Documentation
+- Code Separation (Disentangle UI, Engine, Revit code)
+- API reflection:  Ability to automatically generate nodes from the API – are we shipping with the API nodes turned on? If so this  belongs above
+- Automated testing for improved stability
+
+Samples:
+- Dynamic Relaxation
+- Curves
+- Arduino
+- CSV driving point creation
+- Tesselation
+- Transforms
+
+
+
+
 ###November 2012:###
 
 New or updated nodes:
