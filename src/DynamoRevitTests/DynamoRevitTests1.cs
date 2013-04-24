@@ -17,23 +17,21 @@ namespace Dynamo.Tests
         [SetUp]
         public void Init()
         {
-            Console.WriteLine("Init tests");
-            // StartDynamo();
+            StartDynamo();
         }
 
         [TearDown]
         public void Cleanup()
         {
-            Console.WriteLine("Cleanup tests");
-            //try
-            //{
-            //    dynSettings.Writer.Close();
-            //    EmptyTempFolder();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.StackTrace);
-            //}
+            try
+            {
+                dynSettings.Writer.Close();
+                EmptyTempFolder();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         private static string TempFolder;

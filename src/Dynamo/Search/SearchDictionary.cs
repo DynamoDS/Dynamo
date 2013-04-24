@@ -29,6 +29,28 @@ namespace Dynamo.Search
         private readonly Dictionary<string, HashSet<V>> _tagDictionary = new Dictionary<string, HashSet<V>>();
 
         /// <summary>
+        ///     The number of tags in the dicitionary
+        /// </summary>
+        public int NumTags
+        {
+            get
+            {
+                return _tagDictionary.Count;
+            }
+        }
+
+        /// <summary>
+        ///     The number of elements in the dicitionary
+        /// </summary>
+        public int NumElements
+        {
+            get
+            {
+                return _symbolDictionary.Count;
+            }
+        }
+
+        /// <summary>
         ///     Add a single element with a single tag
         /// </summary>
         /// <param name="value"> The object to add  </param>

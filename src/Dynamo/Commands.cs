@@ -1156,11 +1156,17 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            Dictionary<string, object> data = parameters as Dictionary<string, object>;
+            var data = parameters as Dictionary<string, object>;
 
-            if (data != null &&
-                (   dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(data["name"].ToString()) || 
-                    dynSettings.Controller.CustomNodeLoader.Contains( Guid.Parse( data["name"].ToString() ))))
+            if (data == null)
+                return false;
+
+            Guid guid;
+            var name = data["name"].ToString();
+    
+            if (   dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(name) 
+                    ||  dynSettings.Controller.builtinTypesByTypeName.ContainsKey(name) 
+                    || ( Guid.TryParse(name, out guid) && dynSettings.Controller.CustomNodeLoader.Contains( guid )))
             {
                 return true;
             }
@@ -1173,14 +1179,14 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            Dictionary<string,object> connectionData = parameters as Dictionary<string,object>;
-            
-            dynNodeUI start = (dynNodeUI)connectionData["start"];
-            dynNodeUI end = (dynNodeUI)connectionData["end"];
-            int startIndex = (int)connectionData["port_start"];
-            int endIndex = (int)connectionData["port_end"];
+            var connectionData = parameters as Dictionary<string,object>;
 
-            dynConnector c = new dynConnector(start, end, startIndex, endIndex, 0);
+            var start = (dynNodeUI)connectionData["start"];
+            var end = (dynNodeUI)connectionData["end"];
+            var startIndex = (int)connectionData["port_start"];
+            var endIndex = (int)connectionData["port_end"];
+
+            var c = new dynConnector(start, end, startIndex, endIndex, 0);
 
             dynSettings.Controller.CurrentSpace.Connectors.Add(c);
         }

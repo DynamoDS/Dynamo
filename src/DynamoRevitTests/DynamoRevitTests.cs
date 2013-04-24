@@ -13,32 +13,24 @@
 //limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Interop;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Dynamo.Applications;
+using Dynamo.Utilities;
 using NUnit.Core;
+using Dynamo.Controls;
+using IWin32Window = System.Windows.Interop.IWin32Window;
+using MessageBox = System.Windows.MessageBox;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Dynamo.Tests
 {
-    //[Transaction(TransactionMode.Automatic)]
-    //[Regeneration(RegenerationOption.Manual)]
-    //public class DynamoRevitApp : IExternalApplication
-    //{
-    //    public Result OnStartup(UIControlledApplication application)
-    //    {
-    //        return Result.Succeeded;
-    //    }
-
-    //    public Result OnShutdown(UIControlledApplication application)
-    //    {
-    //        return Result.Succeeded;
-    //    }
-    //}
-
-    //static TestResultCollector collector = new TestResultCollector();
-
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     internal class DynamoRevitTestsLoader : IExternalCommand
@@ -62,16 +54,11 @@ namespace Dynamo.Tests
                 {
                     result = runner.Run(new NullListener(), TestFilter.Empty, true, LoggingThreshold.All);
                     
-                    
                     MessageBox.Show(result.FullName);
                     MessageBox.Show(result.IsSuccess.ToString());
                     MessageBox.Show(result.Message);
                     MessageBox.Show(result.Results.Count.ToString());
-                    
-                    //foreach (var ele in result.Results)
-                    //{
-                    //     MessageBox.Show();
-                    //}
+  
                 }
 
 
@@ -89,6 +76,110 @@ namespace Dynamo.Tests
             }
 
             return Result.Succeeded;
+        }
+    }
+
+    [Transaction(TransactionMode.Manual)]
+    [Regeneration(RegenerationOption.Manual)]
+    internal class DynamoRevit : IExternalCommand
+    {
+        private static dynBench _dynamoBench;
+        private UIDocument _mDoc;
+        private UIApplication _mRevit;
+
+        public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
+        {
+            if (_dynamoBench != null)
+            {
+                _dynamoBench.Focus();
+                return Result.Succeeded;
+            }
+
+            dynSettings.StartLogging();
+
+            try
+            {
+                _mRevit = revit.Application;
+                _mDoc = _mRevit.ActiveUIDocument;
+
+                #region default level
+
+                Level defaultLevel = null;
+                var fecLevel = new FilteredElementCollector(_mDoc.Document);
+                fecLevel.OfClass(typeof(Level));
+                defaultLevel = fecLevel.ToElements()[0] as Level;
+
+                #endregion
+
+                //dynRevitSettings.Revit = _mRevit;
+                //dynRevitSettings.Doc = _mDoc;
+                //dynRevitSettings.DefaultLevel = defaultLevel;
+
+                IdlePromise.ExecuteOnIdle(delegate
+                {
+                    //get window handle
+                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+
+                    //show the window
+                    var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.updater);
+                    _dynamoBench = dynamoController.Bench;
+
+                    //set window handle and show dynamo
+                    new WindowInteropHelper(_dynamoBench).Owner = mwHandle;
+
+                    _dynamoBench.WindowStartupLocation = WindowStartupLocation.Manual;
+
+                    Rectangle bounds = Screen.PrimaryScreen.Bounds;
+                    _dynamoBench.Left = bounds.X;
+                    _dynamoBench.Top = bounds.Y;
+                    _dynamoBench.Loaded += dynamoForm_Loaded;
+
+                    _dynamoBench.Show();
+
+                    _dynamoBench.Closed += dynamoForm_Closed;
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                if (dynSettings.Writer != null)
+                {
+                    dynSettings.Writer.WriteLine(ex.Message);
+                    dynSettings.Writer.WriteLine(ex.StackTrace);
+                    dynSettings.Writer.WriteLine("Dynamo log ended " + DateTime.Now.ToString());
+                }
+                return Result.Failed;
+            }
+
+            return Result.Succeeded;
+        }
+
+        private void dynamoForm_Closed(object sender, EventArgs e)
+        {
+            _dynamoBench = null;
+        }
+
+        private void dynamoForm_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((dynBench)sender).WindowState = WindowState.Maximized;
+        }
+    }
+
+    internal class WindowHandle : IWin32Window
+    {
+        private readonly IntPtr _hwnd;
+
+        public WindowHandle(IntPtr h)
+        {
+            Debug.Assert(IntPtr.Zero != h,
+                         "expected non-null window handle");
+
+            _hwnd = h;
+        }
+
+        public IntPtr Handle
+        {
+            get { return _hwnd; }
         }
     }
 }

@@ -106,7 +106,7 @@ namespace Dynamo.Tests
             var sumData = new Dictionary<string, object>();
             sumData.Add("x", 400.0);
             sumData.Add("y", 100.0);
-            sumData.Add("name", "+");
+            sumData.Add("name", "Add");
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, sumData));
             dynSettings.Controller.ProcessCommandQueue();
 
@@ -163,7 +163,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -209,7 +209,7 @@ namespace Dynamo.Tests
 
             sumData.Add("x", 400.0);
             sumData.Add("y", 100.0);
-            sumData.Add("name", "+");
+            sumData.Add("name", "Add");
 
             numData1.Add("x", 100.0);
             numData1.Add("y", 100.0);
@@ -242,7 +242,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -272,7 +272,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 sumData.Add("guid", Guid.NewGuid());
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
@@ -308,7 +308,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -343,7 +343,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -383,7 +383,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -449,7 +449,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -486,7 +486,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -534,7 +534,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
@@ -569,7 +569,7 @@ namespace Dynamo.Tests
 
             sumData.Add("x", 400.0);
             sumData.Add("y", 100.0);
-            sumData.Add("name", "+");
+            sumData.Add("name", "Add");
 
             numData1.Add("x", 100.0);
             numData1.Add("y", 100.0);
@@ -636,7 +636,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "+");
+                sumData.Add("name", "Add");
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd,
                                                                                      sumData));
                 dynSettings.Controller.ProcessCommandQueue();
