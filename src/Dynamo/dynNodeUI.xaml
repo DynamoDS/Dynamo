@@ -13,7 +13,12 @@
     KeyUp="OnKeyUp" 
     PreviewKeyUp="OnPreviewKeyUp"
     MouseLeftButtonDown="topControl_MouseLeftButtonDown"
-    MouseRightButtonDown="topControl_MouseRightButtonDown" >
+    MouseRightButtonDown="topControl_MouseRightButtonDown" 
+             MouseDoubleClick="DynNodeUI_OnMouseDoubleClick" 
+             LayoutUpdated="DynNodeUI_OnLayoutUpdated" 
+             Canvas.Left="{Binding Top, Mode=TwoWay}" 
+             Canvas.Top="{Binding Left, Mode=TwoWay}"
+             Visibility="{Binding NodeVisibility}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -97,7 +102,7 @@
                        StrokeThickness="2"
                        Fill="{Binding Path=State, Converter={StaticResource StateToColorConverter}, Mode=TwoWay}">
                 <Rectangle.Effect>
-                    <DropShadowEffect Opacity="0" />
+                    <DropShadowEffect Opacity="{Binding Path=DropShadowOpacity}" />
                 </Rectangle.Effect>
             </Rectangle>
             
@@ -108,7 +113,8 @@
             HorizontalAlignment="Stretch"
             Height="Auto"
             Width="Auto"
-            Margin="45,5,45,5" Canvas.ZIndex="300"/>
+            Margin="45,5,45,5" 
+              Canvas.ZIndex="300" IsEnabled="{Binding IsInteractionEnabled}"/>
         <TextBlock  Height="Auto" 
                      Name="nickNameBlock" 
                      VerticalAlignment="Top" 

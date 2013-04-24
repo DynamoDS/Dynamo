@@ -6,6 +6,47 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            
+        <Ellipse Name="endDot" Width="6" Height="6" Fill="Black" IsHitTestVisible="False" 
+                 Canvas.Top="{Binding Dot_Top}" Canvas.Left="{Binding Dot_Left}"/>
+        <Path Stroke="{Binding Path=StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" 
+              Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
+              Visibility="{Binding BezVisibility}">
+            <Path.Data>
+                <PathGeometry>
+                    <PathGeometry.Figures>
+                        <PathFigureCollection>
+                            <PathFigure StartPoint="{Binding Path=Bez_StartPoint}">
+                                <PathFigure.Segments>
+                                    <PathSegmentCollection>
+                                        <BezierSegment Point1="{Binding Bez_Point1}" Point2="{Binding Bez_Point2}" Point3="{Binding Bez_Point3}" />
+                                    </PathSegmentCollection>
+                                </PathFigure.Segments>
+                            </PathFigure>
+                        </PathFigureCollection>
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+        <Path Stroke="{Binding Path=StrokeBrush}" StrokeThickness="{Binding StrokeThickness}" 
+              Name="plineConnector" MouseEnter="Highlight" MouseLeave="Unhighlight"
+              Visibility="{Binding PlineVisibility}">
+            <Path.Data>
+                <PathGeometry>
+                    <PathGeometry.Figures>
+                        <PathFigureCollection>
+                            <PathFigure StartPoint="{Binding Path=Bez_StartPoint}">
+                                <PathFigure.Segments>
+                                    <PathSegmentCollection>
+                                        <LineSegment Point="{Binding Bez_Point1}"/> 
+                                        <LineSegment Point="{Binding Bez_Point2}"/> 
+                                        <LineSegment Point="{Binding Bez_Point3}"/>
+                                    </PathSegmentCollection>
+                                </PathFigure.Segments>
+                            </PathFigure>
+                        </PathFigureCollection>
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
     </Grid>
 </UserControl>

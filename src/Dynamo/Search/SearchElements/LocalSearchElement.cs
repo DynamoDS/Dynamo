@@ -83,9 +83,9 @@ namespace Dynamo.Search.SearchElements
             this.Node = node;
             this._name = Node.NickName;
             this.Weight = 1;
-            this.Keywords = String.Join(" ", node.NodeUI.Tags);
+            this.Keywords = String.Join(" ", node.Tags);
             this._type = "Node";
-            this._description = node.NodeUI.Description;
+            this._description = node.Description;
         }
 
         /// <summary>
@@ -95,7 +95,9 @@ namespace Dynamo.Search.SearchElements
         /// <param name="funcDef">The FunctionDefinition for a custom node</param>
         public LocalSearchElement(FunctionDefinition funcDef)
         {
-            this.Node = dynSettings.Controller.CreateNode( funcDef.FunctionId.ToString() );
+#warning MVVM : method moved to dynamo view model
+            //this.Node = dynSettings.Controller.CreateNode( funcDef.FunctionId.ToString() );
+            this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
             this._name = Node.NickName;
             this.Weight = 1.1;
             this.Keywords = "";
@@ -163,14 +165,18 @@ namespace Dynamo.Search.SearchElements
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
+            //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
+#warning MVVM : command moved to dynamo model view
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.CreateNodeCommand, nodeParams));
             dynSettings.Controller.ProcessCommandQueue();
 
             // select node
-            var placedNode = dynSettings.Controller.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
+#warning MVVM : moved command to dynamo model view
+                //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.SelectCommand, placedNode));
                 dynSettings.Controller.ProcessCommandQueue();
             }
         }

@@ -1,88 +1,170 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Drawing;
+using System.Diagnostics;
+using System.Windows;
 using System.Linq;
 using Dynamo.Connectors;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Connectors
 {
     public class dynPortViewModel : dynViewModelBase
     {
-        Point center;
-        
-        ObservableCollection<dynConnectorViewModel> _connectors = new ObservableCollection<dynConnectorViewModel>();
-
         readonly dynPortModel _port;
 
         public DelegateCommand SetCenterCommand { get; set; }
         
-        public ObservableCollection<dynConnectorViewModel> Connectors
-        {
-            get { return _connectors; }
-            set { _connectors = value; }
-        }
-
         public dynPortModel PortModel
         {
             get { return _port; }
         }
 
-        public Point Center
-        {
-            get { return UpdateCenter(); }
-            set { center = value; }
-        }
-
         public string ToolTipContent
         {
-            get
-            {
-                if (PortModel.Owner != null)
-                {
-                    if (PortType == Dynamo.Connectors.PortType.INPUT)
-                    {
-                        return PortModel.Owner.InPortData[index].ToolTipString;
-                    }
-                    else
-                    {
-                        return PortModel.Owner.OutPortData[index].ToolTipString;
-                    }
-                }
-                return "";
-            }
+            get { return _port.ToolTipContent; }
         }
+
+        public DelegateCommand ConnectCommand { get; set; }
+        public DelegateCommand HighlightCommand { get; set; }
+        public DelegateCommand UnHighlightCommand { get; set; }
 
         public dynPortViewModel(dynPortModel port)
         {
             _port = port;
-            _port.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            _port.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_port_PropertyChanged);
+
+            ConnectCommand = new DelegateCommand(Connect, CanConnect);
+            HighlightCommand = new DelegateCommand(Highlight, CanHighlight);
+            UnHighlightCommand = new DelegateCommand(UnHighlight, CanUnHighlight);
         }
 
-        void Connectors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        void _port_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            if(e.PropertyName == "ToolTipContent")
+                RaisePropertyChanged("ToolTipContent");
+        }
+
+        /// <summary>
+        /// Update the port model's center, triggering an update to all connectors
+        /// </summary>
+        /// <param name="center"></param>
+        public void UpdateCenter(Point center)
+        {
+            _port.Center = center;
+        }
+
+        //public void Update()
+        //{
+        //    foreach (dynConnector c in _port.Connectors)
+        //    {
+        //        //calling this with null will have
+        //        //no effect
+        //        c.Redraw();
+        //    }
+        //}
+
+        private void Connect()
+        {
+            //dynBench bench = dynSettings.Bench;
+            
+            if (!dynSettings.Controller.DynamoViewModel.IsConnecting)
             {
-                foreach (var item in e.NewItems)
+                //test if port already has a connection if so grab it
+                //and begin connecting to somewhere else
+                //don't allow the grabbing of the start connector
+                if (_port.Connectors.Count > 0 && _port.Connectors[0].Start != _port)
                 {
-                    _connectors.Add(new dynConnectorViewModel(item as dynConnector));
+                    //create a new view model with the start referencing the 
+                    //start of the connector you're about to remove
+                    var c = new dynConnectorViewModel(_port.Connectors[0].Start);
+
+                    //disconnect the connector model from its start and end ports
+                    //and remove it from the connectors collection. this will also
+                    //remove the view model
+                    _port.Connectors[0].Kill();
+                    dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Remove(_port.Connectors[0]);
+
+                    //dynSettings.Controller.DynamoViewModel.ActiveConnector = _port.Connectors[0];
+                    //dynSettings.Controller.DynamoViewModel.ActiveConnector.Disconnect(_port);
+
+                    dynSettings.Controller.DynamoViewModel.ActiveConnector = c;
+                    dynSettings.Controller.DynamoViewModel.IsConnecting = true;
+                    
+                }
+                else
+                {
+                    try
+                    {
+                        //you've begun creating a connector
+                        //dynConnector c = new dynConnector(_port, bench.WorkBench, e.GetPosition(bench.WorkBench));
+
+                        //Create a connector view model to begin drawing
+                        var c = new dynConnectorViewModel(_port);
+                        dynSettings.Controller.DynamoViewModel.ActiveConnector = c;
+                        dynSettings.Controller.DynamoViewModel.IsConnecting = true;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
                 }
             }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            else
             {
-                foreach (var item in e.OldItems)
+                dynSettings.Controller.DynamoViewModel.ActiveConnector.ConnectCommand.Execute(_port);
+                dynSettings.Controller.DynamoViewModel.IsConnecting = false;
+                dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
+
+#warning MVVM : Might be broken logic here. Would like to handle connection in one command
+                /*
+                //attempt a connection between the port
+                //and the connector
+                if (!dynSettings.Controller.DynamoViewModel.ActiveConnector.Connect(_port))
                 {
-                    _connectors.Remove(_connectors.ToList().First(x => x.ConnectorModel == item));
+                    dynSettings.Controller.DynamoViewModel.ActiveConnector.Kill();
+                    dynSettings.Controller.DynamoViewModel.IsConnecting = false;
+                    dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
                 }
+                else
+                {
+                    //you've already started connecting
+                    //now you're going to stop
+                    dynSettings.Controller.DynamoViewModel.CurrentSpace.Connectors.Add(dynSettings.Controller.DynamoViewModel.ActiveConnector);
+                    dynSettings.Controller.DynamoViewModel.IsConnecting = false;
+                    dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
+                }
+                 * */
             }
         }
 
-        //Point UpdateCenter()
-        //{
-        //    GeneralTransform transform = portCircle.TransformToAncestor(dynSettings.Workbench);
-        //    Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
-        //    return new Point(rootPoint.X, rootPoint.Y);
-        //}
+        private bool CanConnect()
+        {
+            return true;
+        }
+
+        private void Highlight()
+        {
+           var connectorViewModels = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Where(
+                x => _port.Connectors.Contains(x.ConnectorModel));
+
+        }
+
+        private bool CanHighlight()
+        {
+            return true;
+        }
+
+        private void UnHighlight()
+        {
+            
+        }
+
+        private bool CanUnHighlight()
+        {
+            return true;
+        }
     }
 }

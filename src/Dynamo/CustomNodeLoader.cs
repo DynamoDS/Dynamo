@@ -490,7 +490,7 @@ namespace Dynamo.Utilities
                     else
                         t = tData.Type;
 
-                    dynNode el = DynamoController.CreateNodeInstance(t, nickname, guid);
+                    dynNode el = dynSettings.Controller.DynamoViewModel.CreateNodeInstance(t, nickname, guid);
 
                     // note - this is because the connectors fail to be created if there's not added
                     // to the canvas
@@ -733,7 +733,7 @@ namespace Dynamo.Utilities
                         Directory.CreateDirectory(pluginsPath);
 
                     string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
-                    DynamoController.GetXmlDocFromWorkspace(functionWorkspace, false);
+                    dynSettings.Controller.DynamoViewModel.GetXmlDocFromWorkspace(functionWorkspace, false);
 
                     //SearchViewModel.Add(definition.Workspace);
                 }

@@ -53,7 +53,10 @@ namespace Dynamo.Nodes
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
         Dictionary<dynPortModel, PortData> portDataDict = new Dictionary<dynPortModel, PortData>();
-        public dynNodeUI NodeUI;
+        
+#warning MVVM : node should not reference its view directly
+        //public dynNodeUI NodeUI;
+        
         public Dictionary<int, Tuple<int, dynNode>> Inputs = 
             new Dictionary<int, Tuple<int, dynNode>>();
         public Dictionary<int, HashSet<Tuple<int, dynNode>>> Outputs =
@@ -69,7 +72,21 @@ namespace Dynamo.Nodes
         private string _nickName;
         ElementState state;
         string toolTipText = "";
-        bool isSelected = false;
+        //bool isSelected = false;
+        private bool _isCustomFunction = false;
+        private double x = 0.0;
+        private double y = 0.0;
+        private double height = 100;
+        private double width = 100;
+        private bool interactionEnabled = true;
+
+        /// <summary>
+        /// Returns whether this node represents a built-in or custom function.
+        /// </summary>
+        public bool IsCustomFunction
+        {
+            get { return this.GetType().IsAssignableFrom(typeof(dynFunction)); }
+        }
 
         public ElementState State
         {
@@ -183,7 +200,7 @@ namespace Dynamo.Nodes
             get { return dynSettings.Controller; }
         }
 
-        public bool IsSelected
+        /*public bool IsSelected
         {
             //TODO:Remove brush setting from here
             //brushes should be controlled by a converter
@@ -236,7 +253,7 @@ namespace Dynamo.Nodes
 
                 //}
             }
-        }
+        }*/
         
         private bool _isDirty = true;
 
@@ -332,6 +349,56 @@ namespace Dynamo.Nodes
             }
         }
 
+        public double X
+        {
+            get { return x; }
+            set 
+            { 
+                x = value;
+                RaisePropertyChanged("X");
+            }
+        }
+
+        public double Y
+        {
+            get { return y; }
+            set
+            {
+                y = value;
+                RaisePropertyChanged("Y");
+            }
+        }
+
+        public double Height
+        {
+            get { return height; }
+            set
+            {
+                height = value;
+                RaisePropertyChanged("Height");
+            }
+        }
+
+        public double Width
+        {
+            get { return width; }
+            set
+            {
+                width = value;
+                RaisePropertyChanged("Width");
+            } 
+        }
+
+        public bool InteractionEnabled
+        {
+            get { return interactionEnabled; }
+            set 
+            { 
+                interactionEnabled = value;
+                RaisePropertyChanged("InteractionEnabled");
+            }
+        }
+
         public dynNode()
         {
             InPortData = new ObservableCollection<PortData>();
@@ -351,6 +418,10 @@ namespace Dynamo.Nodes
             }
             else
                 NickName = "";
+
+            this.IsSelected = false;
+
+            State = ElementState.DEAD;
         }
 
         /// <summary>
@@ -654,13 +725,14 @@ namespace Dynamo.Nodes
                                 .Select(
                                     pair => pair.Value)));
 
-                    NodeUI.Dispatcher.BeginInvoke(new Action(
-                        delegate
-                        {
-                            NodeUI.UpdateLayout();
-                            NodeUI.ValidateConnections();
-                        }
-                    ));
+#warning MVVM : don't use the dispatcher to invoke here
+                    //NodeUI.Dispatcher.BeginInvoke(new Action(
+                    //    delegate
+                    //    {
+                    //        NodeUI.UpdateLayout();
+                    //        NodeUI.ValidateConnections();
+                    //    }
+                    //));
                 }
                 catch (CancelEvaluationException ex)
                 {
@@ -688,7 +760,7 @@ namespace Dynamo.Nodes
                        }
                     ));
 
-                    NodeUI.Error(ex.Message);
+                    Error(ex.Message);
                 }
 
                 OnEvaluate();
@@ -698,8 +770,9 @@ namespace Dynamo.Nodes
                 return expr;
             };
 
-            Value result = isInteractive
-                ? (Value)NodeUI.Dispatcher.Invoke(evaluation)
+#warning MVVM : Switched from nodeUI dispatcher to bench dispatcher 
+            Value result = isInteractive && dynSettings.Bench != null
+                ? (Value)dynSettings.Bench.Dispatcher.Invoke(evaluation)
                 : evaluation();
 
             if (result != null)
@@ -756,7 +829,7 @@ namespace Dynamo.Nodes
         /// <returns>S-Expression</returns>
         public virtual string PrintExpression()
         {
-            var nick = NodeUI.NickName.Replace(' ', '_');
+            var nick = NickName.Replace(' ', '_');
 
             if (!Enumerable.Range(0, InPortData.Count).Any(HasInput))
                 return nick;
@@ -1032,7 +1105,8 @@ namespace Dynamo.Nodes
                 //edges of the icon
                 var port = AddPort(PortType.OUTPUT, pd.NickName, count);
 
-                port.DataContext = this;
+#warning MVVM : don't set the data context in the model
+                //port.DataContext = this;
 
                 portDataDict[port] = pd;
                 count++;
@@ -1087,8 +1161,6 @@ namespace Dynamo.Nodes
             ToolTipText = p;
         }
 
-        
-
         public void SelectNeighbors()
         {
             var outConnectors = this.outPorts.SelectMany(x => x.Connectors);
@@ -1107,14 +1179,38 @@ namespace Dynamo.Nodes
             }
         }
 
+        //private Dictionary<UIElement, bool> enabledDict
+        //    = new Dictionary<UIElement, bool>();
 
-        #region ISelectable Interface
-        public void Select()
+        internal void DisableInteraction()
         {
-            IsSelected = true;
+#warning MVVM : IsEnabled on input grid elements is now bount to InteractionEnabled property
+            //enabledDict.Clear();
+
+            //foreach (UIElement e in inputGrid.Children)
+            //{
+            //    enabledDict[e] = e.IsEnabled;
+
+            //    e.IsEnabled = false;
+            //}
+            State = ElementState.DEAD;
+            InteractionEnabled = false;
         }
 
-        public void Deselect()
+        internal void EnableInteraction()
+        {
+            //foreach (UIElement e in inputGrid.Children)
+            //{
+            //    if (enabledDict.ContainsKey(e))
+            //        e.IsEnabled = enabledDict[e];
+            //}
+            ValidateConnections();
+            InteractionEnabled = true;
+        }
+
+        #region ISelectable Interface
+
+        public override void Deselect()
         {
             ValidateConnections();
             IsSelected = false;
@@ -1244,7 +1340,7 @@ namespace Dynamo.Nodes
                 if (!dynSettings.FunctionDict.ContainsKey(symbol))
                 {
                     dynSettings.Controller.DynamoViewModel.Log("WARNING -- No implementation found for node: " + symbol);
-                    entry.NodeUI.Error("Could not find .dyf definition file for this node.");
+                    entry.Error("Could not find .dyf definition file for this node.");
                     return false;
                 }
 

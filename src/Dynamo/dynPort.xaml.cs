@@ -35,8 +35,10 @@ namespace Dynamo.Connectors
     public delegate void PortDisconnectedHandler(object sender, EventArgs e);
     public enum PortType { INPUT, OUTPUT };
 
-    public partial class dynPort : UserControl, INotifyPropertyChanged
+    public partial class dynPort : UserControl
     {
+#warning dynPort view no longer needs to notify of property changes
+        /*
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void NotifyPropertyChanged(String info)
@@ -45,7 +47,7 @@ namespace Dynamo.Connectors
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
-        }
+        }*/
 
         #region constructors
 
@@ -53,21 +55,22 @@ namespace Dynamo.Connectors
         {
             InitializeComponent();
 
-            this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
-            this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
+            //this.MouseEnter += delegate { foreach (var c in connectors) c.Highlight(); };
+            //this.MouseLeave += delegate { foreach (var c in connectors) c.Unhighlight(); };
 
-            portGrid.DataContext = this;
+#warning don't set data contexts to the view
+            /*portGrid.DataContext = this;
             portNameTb.DataContext = this;
             toolTipText.DataContext = this;
             ellipse1Dot.DataContext = this;
-            ellipse1.DataContext = Owner;
+            ellipse1.DataContext = Owner;*/
 
-            portGrid.Loaded += new RoutedEventHandler(portGrid_Loaded);
+            //portGrid.Loaded += new RoutedEventHandler(portGrid_Loaded);
         }
 
         #endregion constructors
 
-        void portGrid_Loaded(object sender, RoutedEventArgs e)
+        /*void portGrid_Loaded(object sender, RoutedEventArgs e)
         {
             //flip the output ports so they show up on the 
             //right hand side of the node with text on the left
@@ -80,20 +83,7 @@ namespace Dynamo.Connectors
             //    portNameTb.Margin = new Thickness(0, 0, 15, 0);
             //    portNameTb.TextAlignment = TextAlignment.Right;
             //}
-        }
-        
-        #region public methods
-        
-        public void Update()
-        {
-            foreach (dynConnector c in connectors)
-            {
-                //calling this with null will have
-                //no effect
-                c.Redraw();
-            }
-        }
-        #endregion
+        }*/
 
         public bool Visible
         {
@@ -122,8 +112,12 @@ namespace Dynamo.Connectors
         {
             Debug.WriteLine(string.Format("Port {0} selected.", this.Index));
 
-            #region test for a port
+            (DataContext as dynPortViewModel).ConnectCommand.Execute();
 
+#warning logic moved to command on the view model
+            
+            #region test for a port
+            /*
             dynBench bench = dynSettings.Bench;
             
             if (!bench.WorkBench.IsConnecting)
@@ -172,7 +166,7 @@ namespace Dynamo.Connectors
                     bench.ActiveConnector = null;
                 }
             }
-
+            */
 
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
@@ -180,7 +174,29 @@ namespace Dynamo.Connectors
             #endregion
         }
 
-        
+        private void Ellipse1Dot_OnLayoutUpdated(object sender, EventArgs e)
+        {
+            //set the center property on the view model
+            var viewModel = DataContext as dynPortViewModel;
+            viewModel.UpdateCenter(CalculateCenter());
+        }
+
+        Point CalculateCenter()
+        {
+            GeneralTransform transform = portCircle.TransformToAncestor(dynSettings.Workbench);
+            Point rootPoint = transform.Transform(new Point(portCircle.Width / 2, portCircle.Height / 2));
+            return new Point(rootPoint.X, rootPoint.Y);
+        }
+
+        private void DynPort_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            (DataContext as dynPortViewModel).HighlightCommand.Execute();
+        }
+
+        private void DynPort_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            (DataContext as dynPortViewModel).UnHighlightCommand.Execute();
+        }
     }
 
 }

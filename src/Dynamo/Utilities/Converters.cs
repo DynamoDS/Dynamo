@@ -358,14 +358,14 @@ namespace Dynamo.Controls
         }
     }
 
-    public class CurrentSpaceToBackgroundColorConverter : IValueConverter
+    public class BoolToConsoleHeightConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (DynamoModel.Instance.CurrentSpace == HomeWorkspace)
-                return new SolidColorBrush(Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B));
-
-            return new SolidColorBrush(Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A));
+            bool consoleShowing = (bool) value;
+            if (consoleShowing)
+                return 100.0;
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

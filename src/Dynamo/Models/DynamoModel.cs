@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using Dynamo.Connectors;
 using Dynamo.Nodes;
@@ -34,6 +35,7 @@ namespace Dynamo
                 if (Bench != null)
                     Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
 
+                
                 //TODO: Also set the name here.
                 RaisePropertyChanged("CurrentSpace");
             }
@@ -55,7 +57,7 @@ namespace Dynamo
 
         public List<dynNode> Nodes
         {
-            get { return CurrentSpace.Nodes; }
+            get { return CurrentSpace.Nodes.ToList(); }
         }
 
         /// <summary>
@@ -86,6 +88,8 @@ namespace Dynamo
             _workSpaces.Remove(workspace);
         }
 
+#warning MVVM : removed method
+        /*
         public static void hideWorkspace(dynWorkspace ws)
         {
             foreach (dynNode e in ws.Nodes)
@@ -94,7 +98,7 @@ namespace Dynamo
                 c.Visible = false;
             foreach (dynNote n in ws.Notes)
                 n.Visibility = Visibility.Hidden;
-        }
+        }*/
     }
 
     public class DynamoModelUpdateArgs : EventArgs

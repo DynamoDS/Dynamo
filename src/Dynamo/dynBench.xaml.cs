@@ -158,7 +158,7 @@ namespace Dynamo.Controls
 
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
-            if (WorkBench.IsConnecting && activeConnector != null)
+            if ((DataContext as DynamoViewModel).IsConnecting && activeConnector != null)
             {
                 activeConnector.Redraw(e.GetPosition(WorkBench));
             }
@@ -167,9 +167,9 @@ namespace Dynamo.Controls
             //match the new mouse coordinates.
             if (WorkBench.isDragInProgress)
             {
-                IEnumerable<dynConnector> allConnectors = WorkBench.Selection
-                                                                   .Where(x => x is dynNodeUI)
-                                                                   .Select(x => x as dynNodeUI)
+                IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
+                                                                   .Where(x => x is dynNode)
+                                                                   .Select(x => x as dynNode)
                                                                    .SelectMany(
                                                                        el => el.OutPorts
                                                                                .SelectMany(x => x.Connectors)
@@ -243,7 +243,7 @@ namespace Dynamo.Controls
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            if (!WorkBench.IsConnecting)
+            if (!(DataContext as DynamoViewModel).IsConnecting)
             {
                 #region window selection
 
@@ -487,28 +487,6 @@ namespace Dynamo.Controls
                 }
             }
         }
-
-        //MVVM: setFunctionBackground superceded with binding to CurrentSpace
-        //internal void setFunctionBackground()
-        //{
-        //    //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
-        //    //bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x6B, 0x6B, 0x6B); //Dark
-        //    //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
-
-        //    var bgBrush = (SolidColorBrush) outerCanvas.Background;
-        //    bgBrush.Color = Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A); //Dark
-        //}
-
-        //MVVM: setHomeBackground superceded with binding to CurrentSpace
-        //internal void setHomeBackground()
-        //{
-        //    //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
-        //    //bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
-        //    //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0x7A, 0x7A, 0x7A); //Light
-
-        //    var bgBrush = (SolidColorBrush) outerCanvas.Background;
-        //    bgBrush.Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
-        //}
 
         internal void RemoveConnector(dynConnector c)
         {

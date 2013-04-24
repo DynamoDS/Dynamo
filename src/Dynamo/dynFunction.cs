@@ -42,6 +42,8 @@ namespace Dynamo
                 foreach (var output in outputs)
                     OutPortData.Add(new PortData(output, "function output", typeof(object)));
 
+#warning MVVM : drop shadow visibility is now bound to a parameter on the view model
+                /*
                 //Add a drop-shadow.
                 ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
 
@@ -49,7 +51,7 @@ namespace Dynamo
                 NodeUI.MouseDoubleClick += delegate
                 {
                     Controller.ViewCustomNodeWorkspace(_def);
-                };
+                };*/
 
                 RegisterAllPorts();
             }
@@ -57,14 +59,14 @@ namespace Dynamo
             public dynFunction()
                 : base(null)
             {
-                //Setup double-click behavior
+                /*//Setup double-click behavior
                 NodeUI.MouseDoubleClick += delegate
                 {
                     Controller.ViewCustomNodeWorkspace(_def);
                 };
 
                 //Add a drop-shadow
-                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
+                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;*/
             }
 
             FunctionDefinition _def;
@@ -136,7 +138,7 @@ namespace Dynamo
                 if (i < InPortData.Count)
                 {
                     for (var k = i; k < InPortData.Count; k++)
-                        NodeUI.InPorts[k].KillAllConnectors();
+                        InPorts[k].KillAllConnectors();
 
                     InPortData.RemoveRange(i, InPortData.Count - i);
                 }
@@ -162,7 +164,7 @@ namespace Dynamo
                 if (i < OutPortData.Count)
                 {
                     for (var k = i; k < OutPortData.Count; k++)
-                        NodeUI.OutPorts[k].KillAllConnectors();
+                        OutPorts[k].KillAllConnectors();
 
                     OutPortData.RemoveRange(i, OutPortData.Count - i);
                 }
@@ -177,7 +179,7 @@ namespace Dynamo
                 dynEl.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Name");
-                outEl.SetAttribute("value", NodeUI.NickName);
+                outEl.SetAttribute("value", NickName);
                 dynEl.AppendChild(outEl);
 
                 outEl = xmlDoc.CreateElement("Inputs");
@@ -211,7 +213,7 @@ namespace Dynamo
                     }
                     else if (subNode.Name.Equals("Name"))
                     {
-                        NodeUI.NickName = subNode.Attributes[0].Value;
+                        NickName = subNode.Attributes[0].Value;
                     }
                     else if (subNode.Name.Equals("Outputs"))
                     {
@@ -386,7 +388,7 @@ namespace Dynamo
                 if (!preBuilt.TryGetValue(this, out result))
                 {
                     result = new Dictionary<int, INode>();
-                    result[outPort] = new SymbolNode(NodeUI.GUID.ToString());
+                    result[outPort] = new SymbolNode(GUID.ToString());
                     preBuilt[this] = result;
                 }
                 return result[outPort];

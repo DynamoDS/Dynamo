@@ -88,7 +88,7 @@
             <RowDefinition Height="22"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Name="consoleRow" Height="0"/>
+            <RowDefinition Name="consoleRow" Height="{Binding ConsoleShowing, Converter={StaticResource BoolToConsoleHeightConverter}}"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
         
@@ -189,8 +189,8 @@
                         <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Go To Project Website" Command="{Binding Source={x:Static commands:DynamoCommands.GoToSourceCodeCmd}}"  Name="sourceCode"/>
-                <MenuItem Header="_Go To Project Wiki" Command="{Binding Source={x:Static commands:DynamoCommands.GoToWikiCmd}}"  Name="wiki"/>
+                <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode"/>
+                <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki"/>
             </MenuItem>
 
         </Menu>
@@ -239,7 +239,7 @@
 
                         <Image Name="editNameButton" Margin="6" Source="/DynamoElements;component/Images/Anonymous_Pencil_icon_white_24.png" 
                             MouseEnter="image1_MouseEnter" MouseLeave="image1_MouseLeave" MouseLeftButtonUp="image1_MouseLeftButtonUp" 
-                            MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="Collapsed" IsHitTestVisible="False" HorizontalAlignment="Right"/>
+                            MouseLeftButtonDown="image1_MouseLeftButtonDown" Visibility="{Binding EditNameVisibility}" IsHitTestVisible="{Binding CanEditName}" HorizontalAlignment="Right"/>
                         
                     </StackPanel>
                     
@@ -250,14 +250,14 @@
                        FontFamily="Trebuchet MS" Opacity=".6" IsHitTestVisible="False" />
 
                 <Canvas.Background>
-                    <SolidColorBrush Color="{Binding Path=DynamoModel.Instance.CurrentSpace, Converter={StaticResource CurrentSpaceToBackgroundColorConverter}}" />
+                    <SolidColorBrush Color="{Binding BackgroundColor}" />
                 </Canvas.Background>
                 <Canvas.ContextMenu>
                     <ContextMenu>
                         <MenuItem 
                 Header="_New Node From Selection" 
                 Name="NodeFromSelection"
-                Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
+                Command="{Binding NodeFromSelectionCommand}"/>
 
                     </ContextMenu>
                 </Canvas.ContextMenu>
@@ -278,7 +278,7 @@
                     Grid.ColumnSpan="3" SourceUpdated="LogScroller_OnSourceUpdated">
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearLogCmd}}"/>
+                    <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
                 </ContextMenu>
             </ScrollViewer.ContextMenu>
             <TextBox Text="{Binding ElementName=_this, Path=LogText}" 

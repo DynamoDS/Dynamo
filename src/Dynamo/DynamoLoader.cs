@@ -224,10 +224,10 @@ namespace Dynamo.Utilties
                 dynSettings.Controller.QueueLoad(path);
             else
             {
-                if (!DynamoModel.Instance.ViewingHomespace)
-                    DynamoModel.Instance.ViewHomeWorkspace();
+                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
+                    dynSettings.Controller.DynamoViewModel.ViewHomeWorkspace();
 
-                DynamoModel.Instance.OpenWorkbench(path);
+                dynSettings.Controller.DynamoViewModel.OpenWorkbench(path);
             }
         }
 
@@ -282,9 +282,9 @@ namespace Dynamo.Utilties
             string[] filePaths = Directory.GetFiles(directory, "*.dyf");
             foreach (string filePath in filePaths)
             {
-                dynSettings.Controller.OpenDefinition(filePath, childrenBuffer, parentBuffer);
+                dynSettings.Controller.DynamoViewModel.OpenDefinition(filePath, childrenBuffer, parentBuffer);
             }
-            foreach (dynNode e in DynamoModel.Instance.AllNodes)
+            foreach (dynNode e in dynSettings.Controller.DynamoViewModel.AllNodes)
             {
                 e.EnableReporting();
             }

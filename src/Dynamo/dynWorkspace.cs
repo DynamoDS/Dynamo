@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
@@ -26,33 +27,11 @@ namespace Dynamo
     public abstract class dynWorkspace : NotificationObject
     {
         private string _name;
-        public List<dynNode> Nodes { get; private set; }
-        public List<dynConnector> Connectors { get; private set; }
-        public List<dynNote> Notes { get; private set; }
+        public ObservableCollection<dynNode> Nodes { get; private set; }
+        public ObservableCollection<dynConnector> Connectors { get; private set; }
+        public ObservableCollection<dynNoteModel> Notes { get; private set; }
 
         private DynamoModel _model;
-
-        public event EventHandler NodeAdded;
-        public event EventHandler ConnectorAdded;
-        public event EventHandler NoteAdded;
-
-        protected virtual void OnNodeAdded(object sender, DynamoModelUpdateArgs e)
-        {
-            if (NodeAdded != null)
-                NodeAdded(this, e);
-        }
-
-        protected virtual void OnConnectorAdded(object sender, DynamoModelUpdateArgs e)
-        {
-            if (ConnectorAdded != null)
-                ConnectorAdded(this, e);
-        }
-
-        protected virtual void OnNoteAdded(object sender, DynamoModelUpdateArgs e)
-        {
-            if (NoteAdded != null)
-                NoteAdded(this, e);
-        }
 
         public string FilePath { get; set; }
 
@@ -86,21 +65,22 @@ namespace Dynamo
         {
             _model = model;
             Name = name;
-            Nodes = e;
-            Connectors = c;
+#warning MVVM : made all lists into observable collections
+            Nodes = new ObservableCollection<dynNode>(e);
+            Connectors = new ObservableCollection<dynConnector>(c);
             PositionX = x;
             PositionY = y;
-            Notes = new List<dynNote>();
+            Notes = new ObservableCollection<dynNoteModel>();
         }
 
         public void DisableReporting()
         {
-            Nodes.ForEach(x => x.DisableReporting());
+            Nodes.ToList().ForEach(x => x.DisableReporting());
         }
 
         public void EnableReporting()
         {
-            Nodes.ForEach(x => x.EnableReporting());
+            Nodes.ToList().ForEach(x => x.EnableReporting());
         }
 
         public virtual void Modified()
@@ -155,7 +135,7 @@ namespace Dynamo
         {
             base.Modified();
 
-            dynSettings.Controller.SaveFunction(
+            dynSettings.Controller.DynamoViewModel.SaveFunction(
                 dynSettings.FunctionDict.Values.First(x => x.Workspace == this));
         }
 
@@ -216,7 +196,7 @@ namespace Dynamo
             controller.Bench.Dispatcher.BeginInvoke(new Action(
                 () =>
                 {
-                    if (controller.DynamicRunEnabled)
+                    if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
                     {
                         if (!controller.Running)
                             controller.RunExpression(false);

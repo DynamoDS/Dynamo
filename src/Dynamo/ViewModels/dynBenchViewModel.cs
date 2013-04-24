@@ -20,6 +20,7 @@ using Dynamo.Commands;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
+using Dynamo.FSchemeInterop.Node;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
@@ -44,7 +45,8 @@ namespace Dynamo.Controls
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        
+        private bool isConnecting = false;
+
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
@@ -70,7 +72,7 @@ namespace Dynamo.Controls
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand<object> SaveImageCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
-        public DelegateCommand RunExpressionCommand { get; set; }
+        public DelegateCommand<object> RunExpressionCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand<object> GoToWorkspaceCommand { get; set; }
         public DelegateCommand<object> DisplayFunctionCommand { get; set; }
@@ -92,6 +94,11 @@ namespace Dynamo.Controls
                 _workspaces = value;
                 RaisePropertyChanged("Workspaces");
             }
+        }
+
+        public DynamoModel Model
+        {
+            get { return _model; }
         }
 
         public string LogText
@@ -134,7 +141,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public dynConnector ActiveConnector
+        public dynConnectorViewModel ActiveConnector
         {
             get { return activeConnector; }
             set
@@ -217,6 +224,31 @@ namespace Dynamo.Controls
             get { return _model.CurrentSpace; }
         }
 
+        /// <summary>
+        /// Get the workspace view model whose workspace model is the model's current workspace
+        /// </summary>
+        public dynWorkspaceViewModel CurrentSpaceViewModel
+        {
+            get { return Workspaces.First(x => x.WorkspaceModel == _model.CurrentSpace); }
+        }
+
+        public bool IsConnecting
+        {
+            get { return isConnecting; }
+            set { isConnecting = value; }
+        }
+
+        public SolidColorBrush BackgroundColor
+        {
+            get
+            {
+                if(dynSettings.Controller.DynamoViewModel.Model.CurrentSpace == 
+                    dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                    return new SolidColorBrush(Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A));
+                return new SolidColorBrush(Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B));
+            }
+        }
+
         public DynamoViewModel(DynamoController controller)
         {
             //MVVM: Instantiate the model
@@ -248,7 +280,7 @@ namespace Dynamo.Controls
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             SaveImageCommand = new DelegateCommand<object>(SaveImage, CanSaveImage);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
-            RunExpressionCommand = new DelegateCommand(RunExpression,CanRunExpression);
+            RunExpressionCommand = new DelegateCommand<object>(RunExpression,CanRunExpression);
             ShowPackageManagerCommand = new DelegateCommand(ShowPackageManager,CanShowPackageManager);
             GoToWorkspaceCommand = new DelegateCommand<object>(GoToWorkspace, CanGoToWorkspace);
             DisplayFunctionCommand = new DelegateCommand<object>(DisplayFunction, CanDisplayFunction);
@@ -270,6 +302,7 @@ namespace Dynamo.Controls
                 IsAbleToGoHome = _model.CurrentSpace != _model.HomeSpace;
                 RaisePropertyChanged("IsAbleToGoHome");
                 RaisePropertyChanged("CurrentSpace");
+                RaisePropertyChanged("BackgroundColor");
             } 
         }
 
@@ -288,7 +321,7 @@ namespace Dynamo.Controls
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
-                        _workspaces.Remove(_workspaces.ToList().First(x => x.Workspace == item));
+                        _workspaces.Remove(_workspaces.ToList().First(x => x.WorkspaceModel == item));
                     break;
             }
         }
@@ -340,7 +373,7 @@ namespace Dynamo.Controls
         
         private void ShowSaveImageDialogueAndSaveResult()
         {
-            FileDialog _fileDialog;
+            FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
             {
@@ -376,7 +409,7 @@ namespace Dynamo.Controls
 
         private void ShowOpenDialogAndOpenResult()
         {
-            FileDialog _fileDialog;
+            FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
             {
@@ -427,7 +460,7 @@ namespace Dynamo.Controls
 
         private void ShowSaveDialogAndSaveResult()
         {
-            FileDialog _fileDialog;
+            FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
             {
@@ -654,8 +687,8 @@ namespace Dynamo.Controls
                 //MVVM: Need indirect reference to command on view model
                 //DynamoCommands.AddNoteCmd.Execute(paramDict);
                 
-                if(CurrentSpaceViewModel.AddNoteCommand.CanExecute(paramDict))
-                    CurrentSpaceViewModel.AddNoteCommand.Execute(paramDict);
+                if(AddNoteCommand.CanExecute(paramDict))
+                    AddNoteCommand.Execute(paramDict);
 
                 y += 60;
 
@@ -673,11 +706,11 @@ namespace Dynamo.Controls
 
                     el.DisableReporting();
 
-                    maxWidth = Math.Max(el.NodeUI.Width, maxWidth);
+                    maxWidth = Math.Max(el.Width, maxWidth);
 
                     colCount++;
 
-                    y += el.NodeUI.Height + rowGutter;
+                    y += el.Height + rowGutter;
 
                     if (colCount > 20)
                     {
@@ -711,7 +744,7 @@ namespace Dynamo.Controls
             {
                 //MVVM : selection and clipboard now hold view model objects
                 //UIElement el = sel as UIElement;
-                dynViewModelBase el = sel as dynViewModelBase;
+                dynModelBase el = sel as dynModelBase;
                 if (el != null)
                 {
                     if (!dynSettings.Controller.ClipBoard.Contains(el))
@@ -719,13 +752,13 @@ namespace Dynamo.Controls
                         dynSettings.Controller.ClipBoard.Add(el);
 
                         //dynNodeUI n = el as dynNodeUI;
-                        dynNodeViewModel n = el as dynNodeViewModel;
+                        dynNode n = el as dynNode;
                         if (n != null)
                         {
-                            var connectors = n.InPorts.SelectMany(x => x.Connectors)
-                                .Concat(n.OutPorts.SelectMany(x => x.Connectors))
-                                .Where(x => x.ConnectorModel.End != null &&
-                                    x.ConnectorModel.End.Owner.IsSelected &&
+                            var connectors = n.InPorts.ToList().SelectMany(x => x.Connectors)
+                                .Concat(n.OutPorts.ToList().SelectMany(x => x.Connectors))
+                                .Where(x => x.End != null &&
+                                    x.End.Owner.IsSelected &&
                                     !dynSettings.Controller.ClipBoard.Contains(x));
 
                             dynSettings.Controller.ClipBoard.AddRange(connectors);
@@ -864,15 +897,25 @@ namespace Dynamo.Controls
 
         private void ToggleConsoleShowing()
         {
-            if (dynSettings.Bench.ConsoleShowing)
+#warning Console showing is now bound
+            //if (dynSettings.Bench.ConsoleShowing)
+            //{
+            //    dynSettings.Bench.consoleRow.Height = new GridLength(0.0);
+            //    dynSettings.Bench.ConsoleShowing = false;
+            //}
+            //else
+            //{
+            //    dynSettings.Bench.consoleRow.Height = new GridLength(100.0);
+            //    dynSettings.Bench.ConsoleShowing = true;
+            //}
+
+            if (ConsoleShowing)
             {
-                dynSettings.Bench.consoleRow.Height = new GridLength(0.0);
-                dynSettings.Bench.ConsoleShowing = false;
+                ConsoleShowing = false;
             }
             else
             {
-                dynSettings.Bench.consoleRow.Height = new GridLength(100.0);
-                dynSettings.Bench.ConsoleShowing = true;
+                ConsoleShowing = true;
             }
         }
 
@@ -949,12 +992,12 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void RunExpression()
+        private void RunExpression(object parameters)
         {
             dynSettings.Controller.RunExpression(Convert.ToBoolean(parameters));
         }
 
-        private bool CanRunExpression()
+        private bool CanRunExpression(object parameters)
         {
             if (dynSettings.Controller == null)
             {
@@ -978,7 +1021,7 @@ namespace Dynamo.Controls
         {
             if (parameter is Guid && dynSettings.FunctionDict.ContainsKey((Guid)parameter))
             {
-                _model.ViewCustomNodeWorkspace(dynSettings.FunctionDict[(Guid)parameter]);
+                ViewCustomNodeWorkspace(dynSettings.FunctionDict[(Guid)parameter]);
             }
         }
 
@@ -989,7 +1032,7 @@ namespace Dynamo.Controls
 
         private void DisplayFunction(object parameters)
         {
-            _model.ViewCustomNodeWorkspace((parameters as FunctionDefinition));
+            ViewCustomNodeWorkspace((parameters as FunctionDefinition));
         }
 
         private bool CanDisplayFunction(object parameters)
@@ -1007,11 +1050,11 @@ namespace Dynamo.Controls
         {
             if (parameters.ToString() == "BEZIER")
             {
-                _model.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
+                _model.CurrentSpace.Connectors.ToList().ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
             }
             else
             {
-                _model.CurrentSpace.Connectors.ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
+                _model.CurrentSpace.Connectors.ToList().ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
             }
         }
 
@@ -1028,8 +1071,8 @@ namespace Dynamo.Controls
         private void CreateNodeFromSelection()
         {
             CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is dynNodeViewModel)
-                    .Select(x => (x as dynNodeViewModel).NodeLogic));
+                DynamoSelection.Instance.Selection.Where(x => x is dynNode)
+                    .Select(x => (x as dynNode)));
 
         }
 
@@ -1039,6 +1082,7 @@ namespace Dynamo.Controls
             {
                 return true;
             }
+            return false;
         }
 
         void CreateNode(object parameters)
@@ -1051,15 +1095,21 @@ namespace Dynamo.Controls
 
             dynNode node = CreateNode(data["name"].ToString());
 
-            dynNodeUI nodeUi = node.NodeUI;
+#warning MVVM : Don't add the view explicitly
+            /*dynNodeUI nodeUi = node.NodeUI;
             if (dynSettings.Workbench != null)
             {
                 dynSettings.Workbench.Children.Add(nodeUi);
-            }
+            }*/
             
-            dynSettings.Controller.Nodes.Add(NodeLogic);
-            NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
-            nodeUi.Opacity = 1;
+            //dynSettings.Controller.Nodes.Add(NodeLogic);
+            //NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
+
+            dynSettings.Controller.DynamoViewModel.CurrentSpace.Nodes.Add(node);
+            node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
+
+#warning MVVM : Don't set any view properties on the node here
+            //nodeUi.Opacity = 1;
 
             //if we've received a value in the dictionary
             //try to set the value on the node
@@ -1097,11 +1147,11 @@ namespace Dynamo.Controls
             //for connection lookup
             if (data.ContainsKey("guid"))
             {
-                GUID = (Guid)data["guid"];
+                node.GUID = (Guid)data["guid"];
             }
             else
             {
-                GUID = Guid.NewGuid();
+                node.GUID = Guid.NewGuid();
             }
 
             // by default place node at center
@@ -1137,20 +1187,31 @@ namespace Dynamo.Controls
             }
 
             // center the node at the drop point
-            if (!Double.IsNaN(nodeUi.ActualWidth))
+            /*if (!Double.IsNaN(nodeUi.ActualWidth))
                 dropPt.X -= (nodeUi.ActualWidth / 2.0);
 
             if (!Double.IsNaN(nodeUi.ActualHeight))
                 dropPt.Y -= (nodeUi.ActualHeight / 2.0);
 
             Canvas.SetLeft(nodeUi, dropPt.X);
-            Canvas.SetTop(nodeUi, dropPt.Y);
+            Canvas.SetTop(nodeUi, dropPt.Y);*/
 
-            nodeUi.EnableInteraction();
+            if (!Double.IsNaN(node.Width))
+                dropPt.X -= (node.Height / 2.0);
+
+            if (!Double.IsNaN(node.Height))
+                dropPt.Y -= (node.Height / 2.0);
+
+            node.X = dropPt.X;
+            node.Y = dropPt.Y;
+
+            //nodeUi.EnableInteraction();
+            node.EnableInteraction();
 
             if (ViewingHomespace)
             {
-                NodeLogic.SaveResult = true;
+                //NodeLogic.SaveResult = true;
+                node.SaveResult = true;
             }
         }
 
@@ -1173,8 +1234,8 @@ namespace Dynamo.Controls
         {
             Dictionary<string, object> connectionData = parameters as Dictionary<string, object>;
 
-            dynNodeUI start = (dynNodeUI)connectionData["start"];
-            dynNodeUI end = (dynNodeUI)connectionData["end"];
+            dynNode start = (dynNode)connectionData["start"];
+            dynNode end = (dynNode)connectionData["end"];
             int startIndex = (int)connectionData["port_start"];
             int endIndex = (int)connectionData["port_end"];
 
@@ -1200,8 +1261,8 @@ namespace Dynamo.Controls
             //if you get an object in the parameters, just delete that object
             if (parameters != null)
             {
-                dynNote note = parameters as dynNote;
-                dynNodeUI node = parameters as dynNodeUI;
+                dynNoteModel note = parameters as dynNoteModel;
+                dynNode node = parameters as dynNode;
 
                 if (node != null)
                 {
@@ -1216,8 +1277,8 @@ namespace Dynamo.Controls
             {
                 for (int i = DynamoSelection.Instance.Selection.Count - 1; i >= 0; i--)
                 {
-                    dynNote note = DynamoSelection.Instance.Selection[i] as dynNote;
-                    dynNodeUI node = DynamoSelection.Instance.Selection[i] as dynNodeUI;
+                    dynNoteModel note = DynamoSelection.Instance.Selection[i] as dynNoteModel;
+                    dynNode node = DynamoSelection.Instance.Selection[i] as dynNode;
 
                     if (node != null)
                     {
@@ -1259,11 +1320,13 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void DeleteNote(dynNote note)
+        private void DeleteNote(dynNoteModel note)
         {
             DynamoSelection.Instance.Selection.Remove(note);
             _model.CurrentSpace.Notes.Remove(note);
-            dynSettings.Workbench.Children.Remove(note);
+            
+#warning MVVM : do not explicitly remove view
+            //dynSettings.Workbench.Children.Remove(note);
         }
 
         private void Select(object parameters)
@@ -1317,15 +1380,7 @@ namespace Dynamo.Controls
 
         private static void DeleteNode(dynNode node)
         {
-            foreach (var port in node.OutPorts)
-            {
-                for (int j = port.Connectors.Count - 1; j >= 0; j--)
-                {
-                    port.Connectors[j].Kill();
-                }
-            }
-
-            foreach (dynPort p in node.InPorts)
+            foreach (var p in node.OutPorts)
             {
                 for (int j = p.Connectors.Count - 1; j >= 0; j--)
                 {
@@ -1333,10 +1388,20 @@ namespace Dynamo.Controls
                 }
             }
 
-            node.NodeLogic.Cleanup();
+            foreach (var p in node.InPorts)
+            {
+                for (int j = p.Connectors.Count - 1; j >= 0; j--)
+                {
+                    p.Connectors[j].Kill();
+                }
+            }
+
+            node.Cleanup();
             DynamoSelection.Instance.Selection.Remove(node);
-            dynSettings.Controller.Nodes.Remove(node.NodeLogic);
-            dynSettings.Workbench.Children.Remove(node);
+            //dynSettings.Controller.Nodes.Remove(node.NodeLogic);
+            dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Nodes.Remove(node);
+#warning MVVM : will be removed implicitly
+            //dynSettings.Workbench.Children.Remove(node);
         }
 
         private void AddToSelection(object parameters)
@@ -1415,7 +1480,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="workSpace">The workspace</param>
         /// <returns>The generated xmldoc</returns>
-        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace)
+        public XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace)
         {
             try
             {
@@ -1451,8 +1516,10 @@ namespace Dynamo.Controls
                     dynEl.SetAttribute("type", el.GetType().ToString());
                     dynEl.SetAttribute("guid", el.GUID.ToString());
                     dynEl.SetAttribute("nickname", el.NickName);
-                    dynEl.SetAttribute("x", Canvas.GetLeft(el.NodeUI).ToString());
-                    dynEl.SetAttribute("y", Canvas.GetTop(el.NodeUI).ToString());
+                    //dynEl.SetAttribute("x", Canvas.GetLeft(el.NodeUI).ToString());
+                    //dynEl.SetAttribute("y", Canvas.GetTop(el.NodeUI).ToString());
+                    dynEl.SetAttribute("x", el.X.ToString());
+                    dynEl.SetAttribute("y", el.Y.ToString());
 
                     el.SaveElement(xmlDoc, dynEl);
                 }
@@ -1483,11 +1550,11 @@ namespace Dynamo.Controls
                 //save the notes
                 XmlElement noteList = xmlDoc.CreateElement("dynNotes"); //write the root element
                 root.AppendChild(noteList);
-                foreach (dynNote n in workSpace.Notes)
+                foreach (dynNoteModel n in workSpace.Notes)
                 {
                     XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
                     noteList.AppendChild(note);
-                    note.SetAttribute("text", n.noteText.Text);
+                    note.SetAttribute("text", n.Text);
                     note.SetAttribute("x", Canvas.GetLeft(n).ToString());
                     note.SetAttribute("y", Canvas.GetTop(n).ToString());
                 }
@@ -1644,7 +1711,8 @@ namespace Dynamo.Controls
                     else
                         t = tData.Type;
 
-                    dynNode el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws, Visibility.Hidden);
+#warning MVVM : no longer need to specify visibility here
+                    dynNode el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws) //Visibility.Hidden);
 
                     if (el == null)
                         return false;
@@ -1704,11 +1772,11 @@ namespace Dynamo.Controls
 
                     foreach (dynNode e in ws.Nodes)
                     {
-                        if (e.NodeUI.GUID == guidStart)
+                        if (e.GUID == guidStart)
                         {
                             start = e;
                         }
-                        else if (e.NodeUI.GUID == guidEnd)
+                        else if (e.GUID == guidEnd)
                         {
                             end = e;
                         }
@@ -1732,7 +1800,7 @@ namespace Dynamo.Controls
                         if (start != null && end != null && start != end)
                         {
                             var newConnector = new dynConnector(
-                                start.NodeUI, end.NodeUI,
+                                start, end,
                                 startIndex, endIndex,
                                 portType, false
                                 );
@@ -1742,7 +1810,7 @@ namespace Dynamo.Controls
                     }
                     catch
                     {
-                        dynSettings.Controller.DynamoViewModel.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NodeUI.GUID, end.NodeUI.GUID));
+                        dynSettings.Controller.DynamoViewModel.Log(string.Format("ERROR : Could not create connector between {0} and {1}.", start.GUID, end.GUID));
                     }
                 }
 
@@ -1770,7 +1838,8 @@ namespace Dynamo.Controls
                         paramDict.Add("y", y);
                         paramDict.Add("text", text);
                         paramDict.Add("workspace", ws);
-                        DynamoCommands.AddNoteCmd.Execute(paramDict);
+                        //DynamoCommands.AddNoteCmd.Execute(paramDict);
+                        dynSettings.Controller.DynamoViewModel.AddNoteCommand.Execute(paramDict);
                     }
                 }
 
@@ -2023,7 +2092,7 @@ namespace Dynamo.Controls
                 // color the node to define its connectivity
                 foreach (var ele in topMost)
                 {
-                    ele.Item2.NodeUI.ValidateConnections();
+                    ele.Item2.ValidateConnections();
                 }
 
                 //Find function entry point, and then compile the function and add it to our environment
@@ -2175,8 +2244,7 @@ namespace Dynamo.Controls
         /// <param name="y"> The x coordinate where the dynNodeUI will be placed</param>
         /// <returns> The newly instantiate dynNode</returns>
         public dynNode CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
-            double x, double y, dynWorkspace ws,
-            Visibility vis = Visibility.Visible)
+            double x, double y, dynWorkspace ws)    //Visibility vis = Visibility.Visible)
         {
             try
             {
@@ -2187,12 +2255,14 @@ namespace Dynamo.Controls
                 ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
-                nodeUI.Visibility = vis;
+                //nodeUI.Visibility = vis;
 
                 //Bench.WorkBench.Children.Add(nodeUI);
 
-                Canvas.SetLeft(nodeUI, x);
-                Canvas.SetTop(nodeUI, y);
+                //Canvas.SetLeft(nodeUI, x);
+                //Canvas.SetTop(nodeUI, y);
+                node.X = x;
+                node.Y = y;
 
                 //create an event on the element itself
                 //to update the elements ports and connectors
@@ -2215,7 +2285,7 @@ namespace Dynamo.Controls
         /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
         /// <returns> The newly instantiated dynNode</returns>
-        public static dynNode CreateNodeInstance(Type elementType, string nickName, Guid guid)
+        public dynNode CreateNodeInstance(Type elementType, string nickName, Guid guid)
         {
             var node = (dynNode)Activator.CreateInstance(elementType);
 
@@ -2248,7 +2318,7 @@ namespace Dynamo.Controls
         internal void ViewHomeWorkspace()
         {
             //Step 1: Make function workspace invisible
-            foreach (dynNode ele in _model.Nodes)
+            /*foreach (dynNode ele in _model.Nodes)
             {
                 ele.NodeUI.Visibility = Visibility.Collapsed;
             }
@@ -2259,7 +2329,7 @@ namespace Dynamo.Controls
             foreach (dynNote note in _model.CurrentSpace.Notes)
             {
                 note.Visibility = Visibility.Hidden;
-            }
+            }*/
 
             //Step 3: Save function
             SaveFunction(dynSettings.FunctionDict.Values.FirstOrDefault(x => x.Workspace == _model.CurrentSpace));
@@ -2267,7 +2337,7 @@ namespace Dynamo.Controls
             //Step 4: Make home workspace visible
             _model.CurrentSpace = _model.HomeSpace;
 
-            foreach (dynNode ele in _model.Nodes)
+            /*foreach (dynNode ele in _model.Nodes)
             {
                 ele.NodeUI.Visibility = Visibility.Visible;
             }
@@ -2278,18 +2348,18 @@ namespace Dynamo.Controls
             foreach (dynNote note in _model.CurrentSpace.Notes)
             {
                 note.Visibility = Visibility.Visible;
-            }
-
-            Bench.homeButton.IsEnabled = false;
+            }*/
 
             // TODO: get this out of here
             PackageManagerClient.HidePackageControlInformation();
 
-            Bench.workspaceLabel.Content = "Home";
+            //Bench.workspaceLabel.Content = "Home";
+
+#warning MVVM : button enable state is handled by command
+            //Bench.homeButton.IsEnabled = false;
             //Bench.editNameButton.Visibility = Visibility.Collapsed;
             //Bench.editNameButton.IsHitTestVisible = false;
-
-            Bench.setHomeBackground();
+            //Bench.setHomeBackground();
 
             _model.CurrentSpace.OnDisplayed();
         }
@@ -2309,8 +2379,9 @@ namespace Dynamo.Controls
             Bench.WorkBench.isDragInProgress = false;
             Bench.WorkBench.ignoreClick = true;
 
+#warning MVVM : don't toggle visiblity manually.
             //Step 1: Make function workspace invisible
-            foreach (dynNode ele in Nodes)
+            /*foreach (dynNode ele in Nodes)
             {
                 ele.NodeUI.Visibility = Visibility.Collapsed;
             }
@@ -2321,7 +2392,7 @@ namespace Dynamo.Controls
             foreach (dynNote note in _model.CurrentSpace.Notes)
             {
                 note.Visibility = Visibility.Hidden;
-            }
+            }*/
             //var ws = new dynWorkspace(this.elements, this.connectors, this.CurrentX, this.CurrentY);
 
             if (!ViewingHomespace)
@@ -2335,7 +2406,7 @@ namespace Dynamo.Controls
 
             _model.CurrentSpace = newWs;
 
-            foreach (dynNode ele in Nodes)
+            /*foreach (dynNode ele in Nodes)
             {
                 ele.NodeUI.Visibility = Visibility.Visible;
             }
@@ -2347,18 +2418,18 @@ namespace Dynamo.Controls
             foreach (dynNote note in _model.CurrentSpace.Notes)
             {
                 note.Visibility = Visibility.Visible;
-            }
+            }*/
 
             //this.saveFuncItem.IsEnabled = true;
-            Bench.homeButton.IsEnabled = true;
+#warning MVVM : button enable state is handled by command
+            //Bench.homeButton.IsEnabled = true;
             //this.varItem.IsEnabled = true;
 
-            Bench.workspaceLabel.Content = symbol.Workspace.Name;
+            /*Bench.workspaceLabel.Content = symbol.Workspace.Name;
 
             Bench.editNameButton.Visibility = Visibility.Visible;
             Bench.editNameButton.IsHitTestVisible = true;
-
-            Bench.setFunctionBackground();
+            Bench.setFunctionBackground();*/
 
             PackageManagerClient.ShowPackageControlInformation();
 
@@ -2399,12 +2470,12 @@ namespace Dynamo.Controls
                         if (att.Name.Equals("X"))
                         {
                             //Bench.CurrentX = Convert.ToDouble(att.Value);
-                            Bench.CurrentOffset = new Point(Convert.ToDouble(att.Value), Bench.CurrentOffset.Y);
+                            CurrentOffset = new Point(Convert.ToDouble(att.Value), CurrentOffset.Y);
                         }
                         else if (att.Name.Equals("Y"))
                         {
                             //Bench.CurrentY = Convert.ToDouble(att.Value);
-                            Bench.CurrentOffset = new Point(Bench.CurrentOffset.X, Convert.ToDouble(att.Value));
+                            CurrentOffset = new Point(CurrentOffset.X, Convert.ToDouble(att.Value));
                         }
                     }
                 }
@@ -2563,7 +2634,7 @@ namespace Dynamo.Controls
 
                     if (start != null && end != null && start != end)
                     {
-                        var newConnector = new dynConnector(start.NodeUI, end.NodeUI,
+                        var newConnector = new dynConnector(start, end,
                                                             startIndex, endIndex, portType);
 
                         _model.CurrentSpace.Connectors.Add(newConnector);
@@ -2650,13 +2721,14 @@ namespace Dynamo.Controls
                         port.Connectors[i].Kill();
                 }
 
-                dynSettings.Workbench.Children.Remove(el.NodeUI);
+#warning MVVM : don't explicitly remove view
+                //dynSettings.Workbench.Children.Remove(el.NodeUI);
             }
 
-            foreach (dynNote n in _model.CurrentSpace.Notes)
+            /*foreach (dynNote n in _model.CurrentSpace.Notes)
             {
                 dynSettings.Workbench.Children.Remove(n);
-            }
+            }*/
 
             _model.CurrentSpace.Nodes.Clear();
             _model.CurrentSpace.Connectors.Clear();
@@ -2694,21 +2766,21 @@ namespace Dynamo.Controls
                 {
                     SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == _model.CurrentSpace));
                 }
-                
-                DynamoController.hideWorkspace(_model.CurrentSpace);
+
+#warning MVVM : hiding workspace should no longer be necessary due to visibility bindings
+                //DynamoController.hideWorkspace(_model.CurrentSpace);
+
                 _model.CurrentSpace = workSpace;
 
-                //MVVM: replaced with CanGoHome property on DynamoViewModel
-                //Bench.homeButton.IsEnabled = true;
+#warning MVVM : replaced with bindings
+                /*Bench.homeButton.IsEnabled = true;
 
-                //MVVM: replaced with binding to Name on workspace view model
-                //Bench.workspaceLabel.Content = CurrentSpace.Name;
+                Bench.workspaceLabel.Content = CurrentSpace.Name;
 
-                //Bench.editNameButton.Visibility = Visibility.Visible;
-                //Bench.editNameButton.IsHitTestVisible = true;
+                Bench.editNameButton.Visibility = Visibility.Visible;
+                Bench.editNameButton.IsHitTestVisible = true;
 
-                //MVVM: replaced with binding to backgroundToColorConverter
-                Bench.setFunctionBackground();
+                Bench.setFunctionBackground();*/
             }
 
             return functionDefinition;
@@ -2730,7 +2802,7 @@ namespace Dynamo.Controls
 
                 ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                 var newEl = (dynNode)obj.Unwrap();
-                newEl.NodeUI.DisableInteraction();
+                newEl.DisableInteraction();
                 result = newEl;
             }
             else if (Controller.BuiltInTypesByNickname.ContainsKey(name))
@@ -2741,7 +2813,7 @@ namespace Dynamo.Controls
 
                     ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                     var newEl = (dynNode)obj.Unwrap();
-                    newEl.NodeUI.DisableInteraction();
+                    newEl.DisableInteraction();
                     result = newEl;
                 }
                 catch (Exception ex)
@@ -2810,6 +2882,28 @@ namespace Dynamo.Controls
 
             return result;
         }
+
+        //MVVM: setFunctionBackground superceded with binding to CurrentSpace
+        //internal void setFunctionBackground()
+        //{
+        //    //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
+        //    //bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x6B, 0x6B, 0x6B); //Dark
+        //    //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0xBA, 0xBA, 0xBA); //Light
+
+        //    var bgBrush = (SolidColorBrush) outerCanvas.Background;
+        //    bgBrush.Color = Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A); //Dark
+        //}
+
+        //MVVM: setHomeBackground superceded with binding to CurrentSpace
+        //internal void setHomeBackground()
+        //{
+        //    //var bgBrush = (LinearGradientBrush)this.outerCanvas.Background;
+        //    //bgBrush.GradientStops[0].Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
+        //    //bgBrush.GradientStops[1].Color = Color.FromArgb(0xFF, 0x7A, 0x7A, 0x7A); //Light
+
+        //    var bgBrush = (SolidColorBrush) outerCanvas.Background;
+        //    bgBrush.Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
+        //}
     }
 
     //MVVM:Removed the splash screen commands

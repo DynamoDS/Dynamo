@@ -82,7 +82,7 @@ namespace Dynamo.Controls
             elementRectangle.DataContext = this;
 
             //set the z index to 2
-            Canvas.SetZIndex(this, 1); 
+            Canvas.SetZIndex(this, 1);
         }
 
         #endregion
@@ -167,6 +167,30 @@ namespace Dynamo.Controls
         {
             //Debug.WriteLine("Node right selected.");
             e.Handled = true;
+        }
+
+        private void DynNodeUI_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = DataContext as dynNodeViewModel;
+            if (viewModel != null)
+                viewModel.ViewCustomNodeWorkspaceCommand.Execute();
+        }
+
+        /// <summary>
+        /// Whenever layout is updated drive some layout values down to the model
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DynNodeUI_OnLayoutUpdated(object sender, EventArgs e)
+        {
+            var dict = new Dictionary<string, double>();
+            dict["X"] = Canvas.GetLeft(this);
+            dict["Y"] = Canvas.GetTop(this);
+            dict["Height"] = ActualHeight;
+            dict["Width"] = ActualWidth;
+            var viewModel = DataContext as dynNodeViewModel;
+            if(viewModel != null)
+                viewModel.SetLayoutCommand.Execute(dict);
         }
     }
 }

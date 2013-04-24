@@ -47,6 +47,8 @@ namespace Dynamo.Controls
         
         int preferredHeight = 30;
         private bool isFullyConnected = false;
+        private double dropShadowOpacity = 0;
+
         #endregion
 
         #region public members
@@ -118,6 +120,55 @@ namespace Dynamo.Controls
                 RaisePropertyChanged("PreferredHeight");
             }
         }
+        
+        public double DropShadowOpacity
+        {
+            get
+            {
+                return nodeLogic.IsCustomFunction? 1:0;
+            }
+        }
+        
+        /// <summary>
+        /// Element's left position is two-way bound to this value
+        /// </summary>
+        public double Left
+        {
+            get { return nodeLogic.X; }
+            set { nodeLogic.X = value; }
+        }
+
+        /// <summary>
+        /// Element's top position is two-way bound to this value
+        /// </summary>
+        public double Top
+        {
+            get { return nodeLogic.Y; }
+            set { nodeLogic.Y = value; }
+        }
+
+        /// <summary>
+        /// Input grid's enabled state is now bound to this property
+        /// which tracks the node model's InteractionEnabled property
+        /// </summary>
+        public bool IsInteractionEnabled
+        {
+            get { return nodeLogic.InteractionEnabled; }
+        }
+
+        public Visibility NodeVisibility
+        {
+            get
+            {
+                if (nodeLogic.WorkSpace == dynSettings.Controller.DynamoViewModel.CurrentSpace)
+                {
+                    return Visibility.Visible;
+                }
+                
+                return Visibility.Collapsed;
+            }
+        }
+
         #endregion
 
         #region commands
@@ -126,6 +177,8 @@ namespace Dynamo.Controls
         public DelegateCommand<string> SetLacingTypeCommand { get; set; }
         public DelegateCommand SetStateCommand { get; set; }
         public DelegateCommand SelectCommand { get; set; }
+        public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
+        public DelegateCommand<object> SetLayoutCommand { get; set; }
 
         #endregion
 
@@ -144,16 +197,35 @@ namespace Dynamo.Controls
             logic.InPorts.CollectionChanged += inports_collectionChanged;
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
 
-            this.IsSelected = false;
-
-            State = ElementState.DEAD;
-
             logic.PropertyChanged += logic_PropertyChanged;
+            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
 
             DeleteCommand = new DelegateCommand(new Action(DeleteNode()), CanDeleteNode);
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
+            ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
+            SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
         }
 
+        /// <summary>
+        /// Respond to property changes on the model
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CurrentSpace":
+                    RaisePropertyChanged("NodeVisibility");
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Respond to property changes on the node model.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void logic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -163,6 +235,15 @@ namespace Dynamo.Controls
                     break;
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
+                    break;
+                case "X":
+                    RaisePropertyChanged("X");
+                    break;
+                case "Y":
+                    RaisePropertyChanged("Y");
+                    break;
+                case "InteractionEnabled":
+                    RaisePropertyChanged("IsInteractionEnabled");
                     break;
             }
         }
@@ -174,7 +255,7 @@ namespace Dynamo.Controls
 
         private Action DeleteNode()
         {
-            foreach (var port in OutPorts)
+            foreach (var port in nodeLogic.OutPorts)
             {
                 for (int j = port.Connectors.Count - 1; j >= 0; j--)
                 {
@@ -182,11 +263,11 @@ namespace Dynamo.Controls
                 }
             }
 
-            foreach (dynPort p in InPorts)
+            foreach (var port in nodeLogic.InPorts)
             {
-                for (int j = p.Connectors.Count - 1; j >= 0; j--)
+                for (int j = port.Connectors.Count - 1; j >= 0; j--)
                 {
-                    p.Connectors[j].Kill();
+                    port.Connectors[j].Kill();
                 }
             }
 
@@ -194,8 +275,8 @@ namespace Dynamo.Controls
             NodeLogic.Destroy();
             NodeLogic.Cleanup();
 
-            DynamoSelection.Instance.Selection.Remove(this);
-            dynSettings.Controller.Nodes.Remove(NodeLogic);
+            DynamoSelection.Instance.Selection.Remove(nodeLogic);
+            dynSettings.Controller.DynamoViewModel.Nodes.Remove(NodeLogic);
             //dynSettings.Workbench.Children.Remove(node);
         }
 
@@ -221,6 +302,39 @@ namespace Dynamo.Controls
 
         bool CanSetLacingType(string parameter)
         {
+            return true;
+        }
+
+        private void ViewCustomNodeWorkspace()
+        {
+            var f = (nodeLogic as dynFunction);
+            if(f!= null)
+                dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
+        }
+
+        private bool CanViewCustomNodeWorkspace()
+        {
+            if (nodeLogic.IsCustomFunction)
+                return true;
+            return false;
+        }
+
+        private void SetLayout(object parameters)
+        {
+            var dict = parameters as Dictionary<string,
+            double >;
+            nodeLogic.X = dict["X"];
+            nodeLogic.Y = dict["Y"];
+            nodeLogic.Height = dict["Height"];
+            nodeLogic.Width = dict["Width"];
+        }
+
+        private bool CanSetLayout(object parameters)
+        {
+            var dict = parameters as Dictionary<string,
+            double>;
+            if (dict == null)
+                return false;
             return true;
         }
 
@@ -267,7 +381,7 @@ namespace Dynamo.Controls
                 //one passed in
                 foreach (var item in e.OldItems)
                 {
-                    OutPorts.Remove(OutPorts.ToList().Where(x => x.PortModel == item));
+                    OutPorts.Remove(OutPorts.ToList().First(x => x.PortModel == item));
                 }
             }
         }
@@ -280,37 +394,6 @@ namespace Dynamo.Controls
                 p.Update();
         }
 
-        private Dictionary<UIElement, bool> enabledDict
-            = new Dictionary<UIElement, bool>();
-
-        internal void DisableInteraction()
-        {
-            enabledDict.Clear();
-
-            foreach (UIElement e in inputGrid.Children)
-            {
-                enabledDict[e] = e.IsEnabled;
-
-                e.IsEnabled = false;
-            }
-            State = ElementState.DEAD;
-        }
-
-        internal void EnableInteraction()
-        {
-            foreach (UIElement e in inputGrid.Children)
-            {
-                if (enabledDict.ContainsKey(e))
-                    e.IsEnabled = enabledDict[e];
-            }
-            ValidateConnections();
-        }
-
-        
-
-        
-
-        
         #region junk
         //public void CallUpdateLayout(FrameworkElement el)
         //{

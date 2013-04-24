@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Connectors
@@ -28,7 +30,7 @@ namespace Dynamo.Connectors
         #endregion
 
         #region private fields
-        
+        Point center;
         bool isConnected;
         dynNode owner;
         int index;
@@ -90,6 +92,41 @@ namespace Dynamo.Connectors
             }
         }
 
+        public string ToolTipContent
+        {
+            get
+            {
+                if (Owner != null)
+                {
+                    if (PortType == Dynamo.Connectors.PortType.INPUT)
+                    {
+                        return Owner.InPortData[index].ToolTipString;
+                    }
+                    else
+                    {
+                        return Owner.OutPortData[index].ToolTipString;
+                    }
+                }
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// Center is used by connected connectors to update their shape
+        /// It is updated by an event handler on the port view
+        /// </summary>
+        public Point Center
+        {
+            get
+            {
+                return center;
+            }
+            set
+            {
+                center = value;
+                RaisePropertyChanged("Center");
+            }
+        }
         #endregion
 
         public dynPortModel(int index, PortType portType, dynNode owner, string name)

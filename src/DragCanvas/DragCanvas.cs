@@ -32,12 +32,13 @@ namespace Dynamo.Controls
       public bool isDragInProgress;
 
       //true if user is making a connection between elements
-      private bool isConnecting = false;
+#warning move isConnecting onto the DynamoViewModel
+      /*private bool isConnecting = false;
       public bool IsConnecting
       {
           get { return isConnecting; }
           set { isConnecting = value; }
-      }
+      }*/
 
       //true if we're ignoring clicks
       public bool ignoreClick;
@@ -290,7 +291,9 @@ namespace Dynamo.Controls
             return;
          }
 
-         if (!isConnecting)
+         //we know the data context will have the is connecting property
+          //but we don't want an explicit reference to it
+         if (!(bool)DataContext.GetType().GetProperty("IsConnecting").GetValue(DataContext, null))
          {
              if (DynamoSelection.Instance.Selection.Count == 0)
                  return;

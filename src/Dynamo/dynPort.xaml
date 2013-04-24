@@ -5,6 +5,8 @@
     Height="20" 
     Width="Auto"
     MouseLeftButtonDown="UserControl_MouseLeftButtonDown" 
+             MouseEnter="DynPort_OnMouseEnter"
+             MouseLeave="DynPort_OnMouseLeave"
     Background="{x:Null}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -53,6 +55,7 @@
                     Name="ellipse1Dot" 
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center" 
+                     LayoutUpdated="Ellipse1Dot_OnLayoutUpdated"
                     Fill="{Binding Path=IsConnected, Converter={StaticResource PortConnectedBooleanToBrushConverter}, Mode=OneWay}" 
                      Grid.Column="1">
             </Ellipse>

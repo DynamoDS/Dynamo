@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Interaction logic for dynNote.xaml
     /// </summary>
-    public partial class dynNote : UserControl, ISelectable
+    public partial class dynNote : UserControl
     {
         public dynNote()
         {
@@ -59,10 +59,7 @@ namespace Dynamo.Nodes
 
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
-            DynamoCommands.DeleteCmd.Execute(this);
+            dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this);
         }
-
-        public void Select() { }
-        public void Deselect() { }
     }
 }

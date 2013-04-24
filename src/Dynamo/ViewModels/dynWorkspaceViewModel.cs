@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Windows;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -48,18 +50,98 @@ namespace Dynamo
 
         public string Name
         {
-            get { return _workspace.Name; }
+            get
+            {
+                if (_workspace == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                    return "Home";
+                return _workspace.Name;
+            }
+        }
+
+        public Visibility EditNameVisibility
+        {
+            get
+            {
+                if (_workspace != dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+        }
+
+        public bool CanEditName
+        {
+            get { return _workspace != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
+        }
+
+        public dynWorkspace WorkspaceModel
+        {
+            get { return _workspace; }
         }
 
         public dynWorkspaceViewModel(dynWorkspace workspace)
         {
             _workspace = workspace;
-            _workspace.NodeAdded += _workspace_NodeAdded;
-            _workspace.ConnectorAdded += _workspace_ConnectorAdded;
-            _workspace.NoteAdded += _workspace_NoteAdded;
-
+            
+            //respond to collection changes on the model by creating new view models
+            //currently, view models are added for notes and nodes
+            //connector view models are added during connection
+            _workspace.Nodes.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Nodes_CollectionChanged);
+            _workspace.Notes.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Notes_CollectionChanged);
+            _workspace.Connectors.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Connectors_CollectionChanged);
             _workspace.PropertyChanged += Workspace_PropertyChanged;
+        }
 
+        void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                //connector view models are added to the collection in during connector connection operations
+                //we'll only respond to removal here
+                foreach (var item in e.OldItems)
+                {
+                    _connectors.Remove(_connectors.First(x => x.ConnectorModel == item));
+                }
+            }
+        }
+
+        void Notes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if(e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    //add a corresponding note
+                    var viewModel = new dynNoteViewModel(item as dynNoteModel);
+                    _notes.Add(viewModel);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    _notes.Remove(_notes.First(x => x.Note == item));
+                }
+            }
+        }
+
+        void Nodes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    //add a corresponding note
+                    var viewModel = new dynNodeViewModel(item as dynNode);
+                    _nodes.Add(viewModel);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
+                }
+            }
         }
 
         void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -67,22 +149,5 @@ namespace Dynamo
             if(e.PropertyName == "Name")
                 RaisePropertyChanged("Name");
         }
-
-        void _workspace_NoteAdded(object sender, EventArgs e)
-        {
-            Notes.Add(new dynNoteViewModel(sender as dynNote));
-        }
-
-        void _workspace_ConnectorAdded(object sender, EventArgs e)
-        {
-            Connectors.Add(new dynConnectorViewModel(sender as dynNode));
-        }
-
-        void _workspace_NodeAdded(object sender, EventArgs e)
-        {
-            Nodes.Add(new dynNodeViewModel(sender as dynNode));
-        }
-
-        
     }
 }

@@ -445,7 +445,7 @@ namespace Dynamo.PackageManager
         public void ShowPackageControlInformation()
         {
             FunctionDefinition f =
-                dynSettings.FunctionDict.First(x => x.Value.Workspace == Controller.CurrentSpace).Value;
+                dynSettings.FunctionDict.First(x => x.Value.Workspace == dynSettings.Controller.DynamoViewModel.Model.CurrentSpace).Value;
 
             if (f != null)
             {
