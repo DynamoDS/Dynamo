@@ -211,8 +211,7 @@ namespace Dynamo.Nodes
 
             foreach (Mesh3D mesh in Meshes)
             {
-                MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
-                vismesh.Mesh = mesh;
+                MeshVisual3D vismesh = MakeMeshVisual3D(mesh);
                 _watchView.watch_view.Children.Add(vismesh);
                 _meshes.Add(vismesh);
             }
@@ -222,6 +221,23 @@ namespace Dynamo.Nodes
             RaisePropertyChanged("Meshes");
 
             _requiresRedraw = false;
+        }
+
+        MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
+        {
+            MeshBuilder mesh_builder = new MeshBuilder();
+
+            IList<Point3D> points = mesh.Vertices;
+            IList<int[]> faces = mesh.Faces;
+
+            foreach (int[] triangle in faces)
+            {
+                mesh_builder.AddTriangle(points[triangle[0]], points[triangle[1]], points[triangle[2]]);
+                mesh_builder.AddTriangle(points[triangle[2]], points[triangle[1]], points[triangle[0]]);
+            }
+
+            MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh_builder.ToMesh(), Material = Materials.White } };
+            return vismesh;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
