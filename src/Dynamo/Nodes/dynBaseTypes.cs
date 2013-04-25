@@ -2318,6 +2318,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             tb = new dynTextBox();
             //tb = new TextBlock();
+
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             NodeUI.inputGrid.Children.Add(tb);
@@ -2344,7 +2345,7 @@ namespace Dynamo.Nodes
 
                 base.Value = value;
 
-                tb.Text = Utilities.Ellipsis(Value, 30);
+                //tb.Text = Utilities.Ellipsis(Value, 30);
             }
         }
 
