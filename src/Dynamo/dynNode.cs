@@ -29,7 +29,7 @@ namespace Dynamo.Nodes
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
-    public abstract class dynNode : dynModelBase, ISelectable
+    public abstract class dynNode : dynModelBase
     {
         /* TODO:
          * Incorporate INode in here somewhere

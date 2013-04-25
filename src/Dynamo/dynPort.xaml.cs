@@ -89,11 +89,13 @@ namespace Dynamo.Connectors
         {
             get
             {
-                return connector.Opacity > 0;
+                throw new NotImplementedException("Implement port Visibility parameter getter.");
+                //return connector.Opacity > 0;
             }
             set
             {
-                if (value)
+                throw new NotImplementedException("Implement port Visibility parameter setter.");
+                /*if (value)
                 {
                     connector.Opacity = STROKE_OPACITY;
                     plineConnector.Opacity = STROKE_OPACITY;
@@ -104,7 +106,7 @@ namespace Dynamo.Connectors
                     connector.Opacity = 0;
                     plineConnector.Opacity = 0;
                     endDot.Opacity = 0;
-                }
+                }*/
             }
         }
 

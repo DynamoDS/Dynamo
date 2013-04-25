@@ -496,14 +496,17 @@ namespace Dynamo.Utilities
                     // to the canvas
                         ws.Nodes.Add(el);
                         el.WorkSpace = ws;
-                        var nodeUI = el.NodeUI;
+                        var node = el;
+#warning MVVM : do not set visibility explicitly
+                        //nodeUI.Visibility = Visibility.Visible;
 
-                        nodeUI.Visibility = Visibility.Visible;
+                        //dynSettings.Bench.WorkBench.Children.Add(nodeUI);
 
-                        dynSettings.Bench.WorkBench.Children.Add(nodeUI);
+                        //Canvas.SetLeft(nodeUI, x);
+                        //Canvas.SetTop(nodeUI, y);
 
-                        Canvas.SetLeft(nodeUI, x);
-                        Canvas.SetTop(nodeUI, y);
+                    node.X = x;
+                    node.Y = y;
 
                     if (el == null)
                         return false;
@@ -799,7 +802,7 @@ namespace Dynamo.Utilities
             // color the node to define its connectivity
             foreach (var ele in topMost)
             {
-                ele.Item2.NodeUI.ValidateConnections();
+                ele.Item2.ValidateConnections();
             }
 
             //Find function entry point, and then compile the function and add it to our environment
@@ -846,7 +849,7 @@ namespace Dynamo.Utilities
             }
 
             // make the anonymous function
-            FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.NodeUI.GUID.ToString()),
+            FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.GUID.ToString()),
                                                             top.Compile());
                 
             return expression;

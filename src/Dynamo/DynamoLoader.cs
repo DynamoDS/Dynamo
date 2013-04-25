@@ -26,7 +26,7 @@ namespace Dynamo.Utilties
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         /// <param name="bench">The bench where logging errors will be sent</param>
-        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller, dynBench bench)
+        internal static void LoadBuiltinTypes(SearchViewModel searchViewModel, DynamoController controller)//, dynBench bench)
         {
             Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
 
@@ -66,14 +66,15 @@ namespace Dynamo.Utilties
             foreach (string assemblyPath in allDynamoAssemblyPaths)
             {
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath], searchViewModel, controller, bench);
+                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath], searchViewModel, controller);
+                        //, bench);
                 else
                 {
                     try
                     {
                         Assembly assembly = Assembly.LoadFrom(assemblyPath);
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        LoadNodesFromAssembly(assembly, searchViewModel, controller, bench);
+                        LoadNodesFromAssembly(assembly, searchViewModel, controller);//, bench);
                     }
                     catch
                     {
@@ -110,7 +111,7 @@ namespace Dynamo.Utilties
         /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
         /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         /// <param name="bench">The bench where logging errors will be sent</param>
-        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller, dynBench bench )
+        private static void LoadNodesFromAssembly(Assembly assembly, SearchViewModel searchViewModel, DynamoController controller)//, dynBench bench )
         {
             try
             {
@@ -221,7 +222,7 @@ namespace Dynamo.Utilties
             var path = (string)((MenuItem)sender).Tag;
 
             if (dynSettings.Bench.UILocked)
-                dynSettings.Controller.QueueLoad(path);
+                dynSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {
                 if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)

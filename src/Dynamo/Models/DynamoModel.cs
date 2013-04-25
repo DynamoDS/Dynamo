@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Dynamo.Connectors;
@@ -14,12 +15,12 @@ namespace Dynamo
     /// </summary>
     public class DynamoModel:dynModelBase
     {
-        public event EventHandler CurrentOffsetChanged;
-        protected virtual void OnCurrentOffsetChanged(object sender, EventArgs e)
-        {
-            if (CurrentOffsetChanged != null)
-                CurrentOffsetChanged(this, e);
-        }
+        //public event EventHandler CurrentOffsetChanged;
+        //protected virtual void OnCurrentOffsetChanged(object sender, EventArgs e)
+        //{
+        //    if (CurrentOffsetChanged != null)
+        //        CurrentOffsetChanged(this, e);
+        //}
 
         private ObservableCollection<dynWorkspace> _workSpaces = new ObservableCollection<dynWorkspace>();
         private dynWorkspace _cspace;
@@ -32,9 +33,9 @@ namespace Dynamo
                 _cspace = value;
                 //Bench.CurrentX = _cspace.PositionX;
                 //Bench.CurrentY = _cspace.PositionY;
-                if (Bench != null)
-                    Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
 
+                //if (Bench != null)
+                //    Bench.CurrentOffset = new Point(_cspace.PositionX, _cspace.PositionY);
                 
                 //TODO: Also set the name here.
                 RaisePropertyChanged("CurrentSpace");

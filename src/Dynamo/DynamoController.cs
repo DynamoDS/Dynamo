@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
@@ -34,7 +35,7 @@ namespace Dynamo
             new Dictionary<string, TypeLoadData>();
 
         private readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
-        private string UnlockLoadPath;
+        
         
         private bool isProcessingCommandQueue = false;
 
@@ -86,31 +87,34 @@ namespace Dynamo
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env)
+        public DynamoController(ExecutionEnvironment env, bool withUI)
         {
             dynSettings.Controller = this;
 
-            //MVVM: Moved to properties on dynBenchModelView
+#warning MVVM: Moved to properties on dynBenchModelView
             //RunEnabled = true;
             //CanRunDynamically = true;
 
-            //MVVM: don't construct the main window with a reference to the controller
+#warning MVVM: don't construct the main window with a reference to the controller
             //Bench = new dynBench(this);
-            Bench = new dynBench();
 
-            //DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
-            dynSettings.Bench = Bench;
-
-            //MVVM : create the view model to which the main window will bind
+#warning MVVM : create the view model to which the main window will bind
             //the DynamoModel is created therein
             DynamoViewModel = new DynamoViewModel(this);
-            Bench.DataContext = DynamoViewModel;
+            //DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
+
+            if (withUI)
+            {
+                Bench = new dynBench();
+                dynSettings.Bench = Bench;
+                Bench.DataContext = DynamoViewModel;
+            }
 
             // custom node loader
-            //string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //string pluginsPath = Path.Combine(directory, "definitions");
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string pluginsPath = Path.Combine(directory, "definitions");
 
-            //CustomNodeLoader = new CustomNodeLoader(pluginsPath);
+            CustomNodeLoader = new CustomNodeLoader(pluginsPath);
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);
@@ -119,14 +123,17 @@ namespace Dynamo
 
             FSchemeEnvironment = env;
 
-            Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+#warning MVVM : moved to proper view constructor on dynBench
+            DynamoViewModel.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+            //Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+            //Bench.InitializeComponent();
 
-            Bench.InitializeComponent();
             dynSettings.Controller.DynamoViewModel.Log(String.Format(
                 "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this, Bench);
+#warning MVVM : removed parameter bench
+            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);//, Bench);
             DynamoLoader.LoadSamplesMenu(Bench);
 
             //Bench.settings_curves.IsChecked = true;
@@ -134,7 +141,7 @@ namespace Dynamo
 
             Bench.LockUI();
 
-            Bench.Activated += OnBenchActivated;
+            //Bench.Activated += OnBenchActivated;
             dynSettings.Workbench = Bench.WorkBench;
 
             //run tests
@@ -142,48 +149,6 @@ namespace Dynamo
             {
                 if (Bench != null)
                     dynSettings.Controller.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
-            }
-        }
-
-        /// <summary>
-        ///     This callback is executed when the BenchUI has completed activation.
-        /// </summary>
-        /// <parameter>The sender (presumably the Bench) </parameter>
-        /// <parameter>Any arguments it passes</parameter>
-        private void OnBenchActivated(object sender, EventArgs e)
-        {
-            if (!_benchActivated)
-            {
-                _benchActivated = true;
-
-                DynamoLoader.LoadCustomNodes(dynSettings.Bench);
-
-                dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
-
-                if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
-                {
-                    //MessageBox.Show("Workbench could not be opened.");
-                    dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
-
-                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
-
-                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-                    {
-                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
-                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
-                    }
-                }
-
-                UnlockLoadPath = null;
-
-                Bench.UnlockUI();
-                DynamoCommands.ShowSearchCmd.Execute(null);
-
-                HomeSpace.OnDisplayed();
-
-                DynamoCommands.CloseSplashScreenCmd.Execute(null); // closed in bench activated
-                Bench.WorkBench.Visibility = Visibility.Visible;
             }
         }
 
@@ -220,14 +185,6 @@ namespace Dynamo
                 dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}",
                                                        Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
             }
-        }
-
-        /// <summary>
-        ///     Sets the load path
-        /// </summary>
-        internal void QueueLoad(string path)
-        {
-            UnlockLoadPath = path;
         }
 
         #endregion
@@ -277,7 +234,7 @@ namespace Dynamo
             //   delegate { Bench.RunButton.IsEnabled = false; }
             //));
 
-            this.RunEnabled = false;
+            DynamoViewModel.RunEnabled = false;
 
             //Let's start
             worker.RunWorkerAsync();
@@ -288,7 +245,7 @@ namespace Dynamo
             /* Execution Thread */
 
             //Get our entry points (elements with nothing connected to output)
-            IEnumerable<dynNode> topElements = HomeSpace.GetTopMostNodes();
+            IEnumerable<dynNode> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes();
 
             //Mark the topmost as dirty/clean
             foreach (dynNode topMost in topElements)
@@ -356,7 +313,7 @@ namespace Dynamo
                 //   }
                 //));
 
-                this.RunEnabled = true;
+                DynamoViewModel.RunEnabled = true;
 
                 //No longer running
                 Running = false;
@@ -370,10 +327,13 @@ namespace Dynamo
                     //Reset flag
                     runAgain = false;
 
-                    //Run this method again from the main thread
-                    Bench.Dispatcher.BeginInvoke(new Action(
-                                                     delegate { RunExpression(_showErrors); }
-                                                     ));
+                    if (Bench != null)
+                    {
+                        //Run this method again from the main thread
+                        Bench.Dispatcher.BeginInvoke(new Action(
+                                                         delegate { RunExpression(_showErrors); }
+                                                         ));
+                    }
                 }
             }
         }
@@ -381,19 +341,22 @@ namespace Dynamo
         protected internal virtual void Run(IEnumerable<dynNode> topElements, FScheme.Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
-            if (debug)
+            if (DynamoViewModel.RunInDebug)
             {
-                //string exp = FScheme.print(runningExpression);
-                Bench.Dispatcher.Invoke(new Action(
-                                            delegate
-                                                {
-                                                    foreach (dynNode node in topElements)
+                if (Bench != null)
+                {
+                    //string exp = FScheme.print(runningExpression);
+                    Bench.Dispatcher.Invoke(new Action(
+                                                delegate
                                                     {
-                                                        string exp = node.PrintExpression();
-                                                        dynSettings.Controller.DynamoViewModel.Log("> " + exp);
+                                                        foreach (dynNode node in topElements)
+                                                        {
+                                                            string exp = node.PrintExpression();
+                                                            dynSettings.Controller.DynamoViewModel.Log("> " + exp);
+                                                        }
                                                     }
-                                                }
-                                            ));
+                                                ));
+                }
             }
 
             try
@@ -401,12 +364,16 @@ namespace Dynamo
                 //Evaluate the expression
                 FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
 
-                //Print some more stuff if we're in debug mode
-                if (debug && expr != null)
+                if (Bench != null)
                 {
-                    Bench.Dispatcher.Invoke(new Action(
-                                                () => dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr))
-                                                ));
+                    //Print some more stuff if we're in debug mode
+                    if (DynamoViewModel.RunInDebug && expr != null)
+                    {
+                        Bench.Dispatcher.Invoke(new Action(
+                                                    () =>
+                                                    dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr))
+                                                    ));
+                    }
                 }
             }
             catch (CancelEvaluationException ex)
@@ -422,13 +389,17 @@ namespace Dynamo
             {
                 /* Evaluation failed due to error */
 
-                //Print unhandled exception
-                if (ex.Message.Length > 0)
+                if (Bench != null)
                 {
-                    Bench.Dispatcher.Invoke(new Action(
-                                                delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
-                                                ));
+                    //Print unhandled exception
+                    if (ex.Message.Length > 0)
+                    {
+                        Bench.Dispatcher.Invoke(new Action(
+                                                    delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
+                                                    ));
+                    }
                 }
+
                 OnRunCancelled(true);
                 RunCancelled = true;
                 runAgain = false;
@@ -447,33 +418,7 @@ namespace Dynamo
         {
         }
 
-        internal void ShowElement(dynNode e)
-        {
-            if (dynamicRun)
-                return;
-
-            if (!Nodes.Contains(e))
-            {
-                if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
-                {
-                    //Show the homespace
-                    ViewHomeWorkspace();
-                }
-                else
-                {
-                    foreach (FunctionDefinition funcDef in dynSettings.FunctionDict.Values)
-                    {
-                        if (funcDef.Workspace.Nodes.Contains(e))
-                        {
-                            ViewCustomNodeWorkspace(funcDef);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            Bench.CenterViewOnElement(e.NodeUI);
-        }
+        
 
         #endregion
     }

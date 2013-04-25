@@ -63,6 +63,18 @@ namespace Dynamo.Controls
 
         public bool UILocked { get; private set; }
 
+        public dynBench()
+        {
+            InitializeComponent();
+
+            this.Activated += new EventHandler(dynBench_Activated);
+        }
+
+        void dynBench_Activated(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         public void LockUI()
         {
             UILocked = true;
@@ -96,13 +108,13 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private static void UpdateElement(object sender, MouseButtonEventArgs e)
         {
-            var el = sender as dynNodeUI;
-            foreach (dynPort p in el.InPorts)
+            var el = sender as dynNode;
+            foreach (dynPortModel p in el.InPorts)
             {
                 p.Update();
             }
             //el.OutPorts.ForEach(x => x.Update());
-            foreach (dynPort p in el.OutPorts)
+            foreach (dynPortModel p in el.OutPorts)
             {
                 p.Update();
             }
@@ -158,29 +170,30 @@ namespace Dynamo.Controls
 
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
-            if ((DataContext as DynamoViewModel).IsConnecting && activeConnector != null)
+            if ((DataContext as DynamoViewModel).IsConnecting && (DataContext as DynamoViewModel).ActiveConnector != null)
             {
-                activeConnector.Redraw(e.GetPosition(WorkBench));
+                (DataContext as DynamoViewModel).ActiveConnector.Redraw(e.GetPosition(WorkBench));
             }
 
             //If we are currently dragging elements, redraw the element to
             //match the new mouse coordinates.
             if (WorkBench.isDragInProgress)
             {
-                IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
-                                                                   .Where(x => x is dynNode)
-                                                                   .Select(x => x as dynNode)
-                                                                   .SelectMany(
-                                                                       el => el.OutPorts
-                                                                               .SelectMany(x => x.Connectors)
-                                                                               .Concat(
-                                                                                   el.InPorts.SelectMany(
-                                                                                       x => x.Connectors))).Distinct();
+                //IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
+                //                                                   .Where(x => x is dynNode)
+                //                                                   .Select(x => x as dynNode)
+                //                                                   .SelectMany(
+                //                                                       el => el.OutPorts
+                //                                                               .SelectMany(x => x.Connectors)
+                //                                                               .Concat(
+                //                                                                   el.InPorts.SelectMany(
+                //                                                                       x => x.Connectors))).Distinct();
 
-                foreach (dynConnector connector in allConnectors)
-                {
-                    connector.Redraw();
-                }
+                //foreach (dynConnector connector in allConnectors)
+                //{
+                //    connector.Redraw();
+                //}
+                (DataContext as DynamoViewModel).UpdateSelectedConnectorsCommand.Execute();
             }
 
             if (isWindowSelecting)
@@ -243,7 +256,8 @@ namespace Dynamo.Controls
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            if (!(DataContext as DynamoViewModel).IsConnecting)
+            DynamoViewModel vm = (DataContext as DynamoViewModel);
+            if (!vm.IsConnecting)
             {
                 #region window selection
 
@@ -269,11 +283,11 @@ namespace Dynamo.Controls
 
             //if you click on the canvas and you're connecting
             //then drop the connector, otherwise do nothing
-            if (activeConnector != null)
+            if ((DataContext as DynamoViewModel) != null)
             {
-                activeConnector.Kill();
-                WorkBench.IsConnecting = false;
-                activeConnector = null;
+                vm.ActiveConnector.ConnectorModel.Kill();
+                vm.IsConnecting = false;
+                vm.ActiveConnector = null;
             }
 
             if (editingName && !hoveringEditBox)
@@ -323,21 +337,7 @@ namespace Dynamo.Controls
                     {
                         #region contain select
 
-                        foreach (dynNodeUI n in Controller.Nodes.Select(node => node.NodeUI))
-                        {
-                            //check if the node is within the boundary
-                            double x0 = Canvas.GetLeft(n);
-                            double y0 = Canvas.GetTop(n);
-                            double x1 = x0 + n.Width;
-                            double y1 = y0 + n.Height;
-
-                            bool contains = rect.Contains(x0, y0) && rect.Contains(x1, y1);
-                            if (contains)
-                            {
-                                if (!DynamoSelection.Instance.Selection.Contains(n))
-                                    DynamoSelection.Instance.Selection.Add(n);
-                            }
-                        }
+                        (DataContext as DynamoViewModel).ContainSelectCommand.Execute(rect);
 
                         #endregion
                     }
@@ -345,19 +345,7 @@ namespace Dynamo.Controls
                     {
                         #region crossing select
 
-                        foreach (dynNodeUI n in Controller.Nodes.Select(node => node.NodeUI))
-                        {
-                            //check if the node is within the boundary
-                            double x0 = Canvas.GetLeft(n);
-                            double y0 = Canvas.GetTop(n);
-
-                            bool intersects = rect.IntersectsWith(new Rect(x0, y0, n.Width, n.Height));
-                            if (intersects)
-                            {
-                                if (!WorkBench.Selection.Contains(n))
-                                    WorkBench.Selection.Add(n);
-                            }
-                        }
+                        (DataContext as DynamoViewModel).CrossSelectCommand.Execute(rect);
 
                         #endregion
                     }
@@ -366,6 +354,8 @@ namespace Dynamo.Controls
                 }
             }
         }
+
+        
 
         internal void BeginDragElement(dynNodeUI nodeUI, string name, Point eleOffset)
         {
@@ -493,7 +483,7 @@ namespace Dynamo.Controls
             Controller.CurrentSpace.Connectors.Remove(c);
         }
 
-        internal void CenterViewOnElement(dynNodeUI e)
+        internal void CenterViewOnElement(dynNode e)
         {
             double left = Canvas.GetLeft(e);
             double top = Canvas.GetTop(e);

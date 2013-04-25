@@ -26,6 +26,7 @@ using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Utilties;
 using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
@@ -46,6 +47,7 @@ namespace Dynamo.Controls
         protected bool debug = false;
         protected bool dynamicRun = false;
         private bool isConnecting = false;
+        private string UnlockLoadPath;
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -339,7 +341,7 @@ namespace Dynamo.Controls
             {
                 if (dynSettings.Bench.UILocked)
                 {
-                    dynSettings.Controller.QueueLoad(xmlPath);
+                    QueueLoad(xmlPath);
                     return;
                 }
 
@@ -798,8 +800,10 @@ namespace Dynamo.Controls
                 nodeLookup.Add(node.GUID, newGuid);
 
                 Dictionary<string, object> nodeData = new Dictionary<string, object>();
-                nodeData.Add("x", Canvas.GetLeft(node));
-                nodeData.Add("y", Canvas.GetTop(node) + 100);
+                //nodeData.Add("x", Canvas.GetLeft(node));
+                //nodeData.Add("y", Canvas.GetTop(node) + 100);
+                nodeData.Add("x", node.X);
+                nodeData.Add("y", node.Y + 100);
                 nodeData.Add("name", node.NickName);
                 nodeData.Add("guid", newGuid);
 
@@ -875,7 +879,7 @@ namespace Dynamo.Controls
 
             foreach (DictionaryEntry de in nodeLookup)
             {
-                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.AddToSelectionCmd,
+                dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(AddToSelectionCommand,
                     _model.CurrentSpace.Nodes
                     .Where(x => x.GUID == (Guid)de.Value).FirstOrDefault()));
             }
@@ -949,7 +953,7 @@ namespace Dynamo.Controls
                 //calculate the necessary width and height
                 double width = 0;
                 double height = 0;
-                foreach (dynNodeUI n in dynSettings.Controller.Nodes.Select(x => x.NodeUI))
+                foreach (dynNode n in _model.Nodes)
                 {
                     Point relativePoint = n.TransformToAncestor(dynSettings.Workbench)
                           .Transform(new Point(0, 0));
@@ -981,10 +985,18 @@ namespace Dynamo.Controls
 
         private void ClearLog()
         {
+            //TODO: ensure logger fixes are sound
+
+            /*
             dynSettings.Bench.sw.Flush();
             dynSettings.Bench.sw.Close();
             dynSettings.Bench.sw = new StringWriter();
-            dynSettings.Controller.DynamoViewModel.LogText = dynSettings.Bench.sw.ToString();
+            dynSettings.Controller.DynamoViewModel.LogText = dynSettings.Bench.sw.ToString();*/
+            
+            dynSettings.Writer.Flush();
+            dynSettings.Writer.Close();
+            dynSettings.Writer = new StreamWriter();
+            dynSettings.Controller.DynamoViewModel.LogText = dynSettings.Writer.ToString();
         }
 
         private bool CanClearLog()
@@ -2882,6 +2894,90 @@ namespace Dynamo.Controls
 
             return result;
         }
+
+        /// <summary>
+        ///     This callback is executed when the BenchUI has completed activation.
+        /// </summary>
+        /// <parameter>The sender (presumably the Bench) </parameter>
+        /// <parameter>Any arguments it passes</parameter>
+        private void OnBenchActivated(object sender, EventArgs e)
+        {
+            if (!_benchActivated)
+            {
+                _benchActivated = true;
+
+                DynamoLoader.LoadCustomNodes(dynSettings.Bench);
+
+                dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
+
+                if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
+                {
+                    //MessageBox.Show("Workbench could not be opened.");
+                    dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
+
+                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
+
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
+                    }
+                }
+
+                UnlockLoadPath = null;
+
+                Bench.UnlockUI();
+                DynamoCommands.ShowSearchCmd.Execute(null);
+
+                _model.HomeSpace.OnDisplayed();
+
+#warning no longer using a splash screen
+                //DynamoCommands.CloseSplashScreenCmd.Execute(null); // closed in bench activated
+                Bench.WorkBench.Visibility = Visibility.Visible;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the load path
+        /// </summary>
+        internal void QueueLoad(string path)
+        {
+            UnlockLoadPath = path;
+        }
+
+        internal void ShowElement(dynNode e)
+        {
+            if (dynamicRun)
+                return;
+
+            if (!_model.Nodes.Contains(e))
+            {
+                if (_model.HomeSpace != null && _model.HomeSpace.Nodes.Contains(e))
+                {
+                    //Show the homespace
+                    ViewHomeWorkspace();
+                }
+                else
+                {
+                    foreach (FunctionDefinition funcDef in dynSettings.FunctionDict.Values)
+                    {
+                        if (funcDef.Workspace.Nodes.Contains(e))
+                        {
+                            ViewCustomNodeWorkspace(funcDef);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (Controller.Bench != null)
+            {
+                Controller.Bench.CenterViewOnElement(e);
+            }
+            
+        }
+
 
         //MVVM: setFunctionBackground superceded with binding to CurrentSpace
         //internal void setFunctionBackground()
