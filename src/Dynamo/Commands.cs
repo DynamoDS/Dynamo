@@ -1309,7 +1309,7 @@ namespace Dynamo.Commands
                 if(node.NodeLogic.GetType().IsAssignableFrom(typeof(dynFunction)))
                     nodeData.Add("name", (node.NodeLogic as dynFunction).Definition.FunctionId);
                 else
-                    nodeData.Add("name", node.NickName);
+                    nodeData.Add("name", node.NodeLogic.GetType().ToString());
                 nodeData.Add("guid", newGuid);
 
                 if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.NodeLogic.GetType()))
