@@ -45,7 +45,6 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
-            string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
             if (port == null)
             {
                 port = new SerialPort();
@@ -54,6 +53,11 @@ namespace Dynamo.Nodes
             port.NewLine = "\r\n";
             port.DtrEnable = true;
 
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+        {
+            string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
 
             foreach (string portName in serialPortNames)
             {
@@ -72,7 +76,6 @@ namespace Dynamo.Nodes
                 port.PortName = portName;
                 lastComItem = comItem;
             }
-
         }
 
         System.Windows.Controls.MenuItem lastComItem = null;

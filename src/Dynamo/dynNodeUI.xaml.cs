@@ -83,6 +83,16 @@ namespace Dynamo.Controls
 
             //set the z index to 2
             Canvas.SetZIndex(this, 1);
+
+            inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
+        }
+
+        void inputGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //once the input grid is loaded, send a command
+            //to the view model, which will be pushed down
+            //to the model to ask for types to load custom UI elements
+            (DataContext as dynNodeViewModel).SetupCustomUIElementsCommand.Execute(this);
         }
 
         #endregion

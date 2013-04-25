@@ -162,7 +162,13 @@ namespace Dynamo.Nodes
 
             InPortData.Add(new PortData("numX", "Number of samples in the X direction.", typeof(object)));
             InPortData.Add(new PortData("numY", "Number of samples in the Y direction.", typeof(object)));
+            RegisterAllPorts();
+            //Loaded += new RoutedEventHandler(topControl_Loaded);
 
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+        {
             image1 = new System.Windows.Controls.Image();
             image1.Width = 320;
             image1.Height = 240;
@@ -170,18 +176,12 @@ namespace Dynamo.Nodes
             image1.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             image1.Name = "image1";
             image1.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            
+
             //image1.Margin = new Thickness(0, 0, 0, 0);
 
             NodeUI.inputGrid.Children.Add(image1);
-
-            RegisterAllPorts();
-
             NodeUI.Width = 450;
             NodeUI.Height = 240 + 5;
-
-            //Loaded += new RoutedEventHandler(topControl_Loaded);
-
         }
 
         public override Value Evaluate(FSharpList<Value> args)

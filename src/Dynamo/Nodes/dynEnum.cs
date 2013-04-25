@@ -23,6 +23,13 @@ namespace Dynamo.Nodes
 
         public dynEnum()
         {
+            OutPortData.Add(new PortData("", "Enum", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             //widen the control
             NodeUI.topControl.Width = 300;
 
@@ -41,10 +48,6 @@ namespace Dynamo.Nodes
                 if (combo.SelectedIndex != -1)
                     this.RequiresRecalc = true;
             };
-            
-            OutPortData.Add(new PortData("", "Enum", typeof(object)));
-
-            RegisterAllPorts();
         }
 
         public void WireToEnum(Array arr)

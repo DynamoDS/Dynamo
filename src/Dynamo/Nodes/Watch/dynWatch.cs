@@ -83,11 +83,19 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
+            foreach (dynPortModel p in InPorts)
+            {
+                p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+            }
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             //take out the left and right margins
             //and make this so it's not so wide
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
             NodeUI.topControl.Width = 300;
-            
+
             //set a default height
             //oldPreferredHeight = NodeUI.PreferredHeight;
             NodeUI.Height = 200;
@@ -99,11 +107,6 @@ namespace Dynamo.Nodes
             NodeUI.inputGrid.Children.Add(wt);
 
             wtb = wt.FindResource("Tree") as WatchTreeBranch;
-            
-            foreach (dynPortModel p in InPorts)
-            {
-                p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
-            }
         }
 
         void wt_TreeCollapsed(object sender, EventArgs e)

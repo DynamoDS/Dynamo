@@ -130,6 +130,11 @@ namespace Dynamo.Nodes
     {
         protected dynVariableInput()
         {
+            
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             System.Windows.Controls.Button addButton = new System.Windows.Controls.Button();
             addButton.Content = "+";
             addButton.Width = 20;
@@ -794,10 +799,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x" + name + "y", "comp", typeof(double)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
     }
 
@@ -857,9 +864,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("b", "operand", typeof(double)));
             OutPortData.Add(new PortData("a∧b", "result", typeof(double)));
 
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
@@ -929,10 +939,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
             OutPortData.Add(new PortData("a∨b", "result", typeof(bool)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
@@ -1003,10 +1015,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             InPortData.Add(new PortData("b", "operand", typeof(bool)));
             OutPortData.Add(new PortData("a⊻b", "result", typeof(bool)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
     }
 
@@ -1020,10 +1034,12 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("a", "operand", typeof(bool)));
             OutPortData.Add(new PortData("!a", "result", typeof(bool)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
     }
 
@@ -1043,10 +1059,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x+y", "sum", typeof(double)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
     }
 
@@ -1062,10 +1080,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x-y", "difference", typeof(double)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
     }
 
@@ -1081,10 +1101,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x∙y", "product", typeof(double)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
     }
 
@@ -1100,10 +1122,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("x", "operand", typeof(double)));
             InPortData.Add(new PortData("y", "operand", typeof(double)));
             OutPortData.Add(new PortData("x÷y", "result", typeof(double)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
     }
 
@@ -1244,10 +1268,12 @@ namespace Dynamo.Nodes
         public dynPi()
         {
             OutPortData.Add(new PortData("3.14159...", "pi", typeof(double)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
 
         public override bool RequiresRecalc
@@ -1536,10 +1562,12 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("true", "True block", typeof(object)));
             InPortData.Add(new PortData("false", "False block", typeof(object)));
             OutPortData.Add(new PortData("result", "Result", typeof(object)));
-
-            NodeUI.nickNameBlock.FontSize = 20;
-
             RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            NodeUI.nickNameBlock.FontSize = 20;
         }
 
         protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
@@ -1567,6 +1595,13 @@ namespace Dynamo.Nodes
 
         public dynBreakpoint()
         {
+            InPortData.Add(new PortData("", "Object to inspect", typeof(object)));
+            OutPortData.Add(new PortData("", "Object inspected", typeof(object)));
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             //add a text box to the input grid of the control
             button = new System.Windows.Controls.Button();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1580,11 +1615,6 @@ namespace Dynamo.Nodes
             enabled = false;
 
             button.Click += new RoutedEventHandler(button_Click);
-
-            InPortData.Add(new PortData("", "Object to inspect", typeof(object)));
-            OutPortData.Add(new PortData("", "Object inspected", typeof(object)));
-
-            RegisterAllPorts();
         }
 
         private bool _enabled;
@@ -1718,7 +1748,7 @@ namespace Dynamo.Nodes
 
         private bool shouldCommit()
         {
-            return !dynSettings.Controller.DynamicRunEnabled;
+            return !dynSettings.Controller.DynamoViewModel.DynamicRunEnabled;
         }
 
         protected override void OnTextChanged(TextChangedEventArgs e)
@@ -1781,7 +1811,10 @@ namespace Dynamo.Nodes
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name, type));
-            
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             //add an edit window option to the 
             //main context window
             System.Windows.Controls.MenuItem editWindowItem = new System.Windows.Controls.MenuItem();
@@ -1948,6 +1981,11 @@ namespace Dynamo.Nodes
 
         public dynDoubleInput()
         {
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1958,8 +1996,6 @@ namespace Dynamo.Nodes
             tb.IsNumeric = true;
             tb.Text = "0.0";
             tb.OnChangeCommitted += delegate { Value = DeserializeValue(tb.Text); };
-
-            RegisterAllPorts();
 
             //take out the left and right margins
             //and make this so it's not so wide
@@ -2015,6 +2051,11 @@ namespace Dynamo.Nodes
         TextBox displayBox;
 
         public dynDoubleSliderInput()
+        {
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
         {
             NodeUI.topControl.Width = 200;
 
@@ -2107,8 +2148,6 @@ namespace Dynamo.Nodes
 
             System.Windows.Controls.Grid.SetColumn(mintb, 0);
             System.Windows.Controls.Grid.SetColumn(maxtb, 2);
-
-            RegisterAllPorts();
 
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
 
@@ -2230,6 +2269,11 @@ namespace Dynamo.Nodes
 
         public dynBoolSelector()
         {
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             //inputGrid.Margin = new System.Windows.Thickness(5,5,20,5);
 
             //add a text box to the input grid of the control
@@ -2266,8 +2310,6 @@ namespace Dynamo.Nodes
             rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
             rbFalse.Checked += new System.Windows.RoutedEventHandler(rbFalse_Checked);
             //outPort.Object = false;
-
-            RegisterAllPorts();
         }
 
         protected override bool DeserializeValue(string val)
@@ -2321,6 +2363,12 @@ namespace Dynamo.Nodes
 
         public dynStringInput()
         {
+            RegisterAllPorts();
+            Value = "";
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             //add a text box to the input grid of the control
             tb = new dynTextBox();
             //tb = new TextBlock();
@@ -2333,12 +2381,8 @@ namespace Dynamo.Nodes
 
             tb.OnChangeCommitted += delegate { Value = tb.Text; };
 
-            RegisterAllPorts();
-
             //remove the margins
             NodeUI.inputGrid.Margin = new Thickness(10, 5, 10, 5);
-
-            Value = "";
         }
 
         public override string Value
@@ -2407,6 +2451,11 @@ namespace Dynamo.Nodes
 
         public dynStringFilename()
         {
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             //add a button to the inputGrid on the dynElement
             System.Windows.Controls.Button readFileButton = new System.Windows.Controls.Button();
             readFileButton.Margin = new System.Windows.Thickness(0, 0, 0, 0);
@@ -2435,8 +2484,6 @@ namespace Dynamo.Nodes
 
             System.Windows.Controls.Grid.SetRow(readFileButton, 0);
             System.Windows.Controls.Grid.SetRow(tb, 1);
-
-            RegisterAllPorts();
 
             NodeUI.topControl.Height = 60;
             NodeUI.UpdateLayout();

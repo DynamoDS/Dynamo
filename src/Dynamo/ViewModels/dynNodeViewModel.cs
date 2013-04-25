@@ -48,7 +48,7 @@ namespace Dynamo.Controls
         int preferredHeight = 30;
         private bool isFullyConnected = false;
         private double dropShadowOpacity = 0;
-
+        
         #endregion
 
         #region public members
@@ -179,7 +179,7 @@ namespace Dynamo.Controls
         public DelegateCommand SelectCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
-
+        public DelegateCommand<dynNodeUI> SetupCustomUIElementsCommand { get; set; }
         #endregion
 
         #region constructors
@@ -204,7 +204,9 @@ namespace Dynamo.Controls
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
+            SetupCustomUIElementsCommand = new DelegateCommand<dynNodeUI>(SetupCustomUIElements, CanSetupCustomUIElements);
         }
+        #endregion
 
         /// <summary>
         /// Respond to property changes on the model
@@ -386,12 +388,20 @@ namespace Dynamo.Controls
             }
         }
 
-        #endregion
-
         public void UpdateConnections()
         {
             foreach (var p in nodeLogic.InPorts.Concat(nodeLogic.OutPorts))
                 p.Update();
+        }
+
+        private void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            nodeLogic.SetupCustomUIElements(NodeUI);
+        }
+
+        private bool CanSetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            return true;
         }
 
         #region junk

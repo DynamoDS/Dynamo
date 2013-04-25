@@ -280,6 +280,13 @@ namespace Dynamo
 
             public dynOutput()
             {
+                InPortData.Add(new PortData("", "", typeof(object)));
+
+                RegisterAllPorts();
+            }
+
+            public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+            {
                 //add a text box to the input grid of the control
                 tb = new TextBox();
                 tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -295,10 +302,6 @@ namespace Dynamo
                 SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
                 tb.Background = backgroundBrush;
                 tb.BorderThickness = new Thickness(0);
-
-                InPortData.Add(new PortData("", "", typeof(object)));
-
-                RegisterAllPorts();
             }
 
             public override bool RequiresRecalc
@@ -346,6 +349,13 @@ namespace Dynamo
 
             public dynSymbol()
             {
+                OutPortData.Add(new PortData("", "Symbol", typeof(object)));
+
+                RegisterAllPorts();
+            }
+
+            public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+            {
                 //add a text box to the input grid of the control
                 tb = new TextBox();
                 tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -361,10 +371,6 @@ namespace Dynamo
                 SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
                 tb.Background = backgroundBrush;
                 tb.BorderThickness = new Thickness(0);
-
-                OutPortData.Add(new PortData("", "Symbol", typeof(object)));
-
-                RegisterAllPorts();
             }
 
             public override bool RequiresRecalc

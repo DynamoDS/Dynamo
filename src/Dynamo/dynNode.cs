@@ -1208,6 +1208,15 @@ namespace Dynamo.Nodes
             InteractionEnabled = true;
         }
 
+        /// <summary>
+        /// Called back from the view to enable users to setup their own view elements
+        /// </summary>
+        /// <param name="parameter"></param>
+        public virtual void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            
+        }
+
         #region ISelectable Interface
 
         public override void Deselect()
