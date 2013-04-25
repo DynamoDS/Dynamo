@@ -6,12 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Xml;
 using Dynamo.Commands;
 using Dynamo.Connectors;
@@ -22,8 +19,6 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Utilities;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using MenuItem = System.Windows.Controls.MenuItem;
 using Dynamo.Utilties;
 
 namespace Dynamo
@@ -394,6 +389,7 @@ namespace Dynamo
                 Bench.homeButton.IsEnabled = true;
 
                 Bench.workspaceLabel.Content = CurrentSpace.Name;
+
                 //Bench.editNameButton.Visibility = Visibility.Visible;
                 //Bench.editNameButton.IsHitTestVisible = true;
                 Bench.setFunctionBackground();
@@ -1896,10 +1892,12 @@ namespace Dynamo
                 return;
             }
 
-            Bench.workspaceLabel.Content = Bench.editNameBox.Text;
-            SearchViewModel.Refactor(CurrentSpace, newName);
+            var def = CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
+            
+            SearchViewModel.Refactor(def, newName);
 
-            // THIS IS BAD - these nodes should update on their own when editing the function definition
+            // this is a load of crap.  nodes should observe the name property of the node and update without the need for this
+            Bench.workspaceLabel.Content = Bench.editNameBox.Text;
 
             //Update existing function nodes
             foreach (dynNode el in AllNodes)
@@ -1924,7 +1922,6 @@ namespace Dynamo
 
             FSchemeEnvironment.RemoveSymbol(CurrentSpace.Name);
 
-            //TODO: Delete old stored definition
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
 
@@ -1942,7 +1939,7 @@ namespace Dynamo
             }
 
             (CurrentSpace).Name = newName;
-            SaveFunction(this.CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace));
+            SaveFunction( def );
         }
 
         /// <summary>

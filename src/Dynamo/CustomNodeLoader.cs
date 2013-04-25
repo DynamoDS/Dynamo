@@ -201,7 +201,7 @@ namespace Dynamo.Utilities
             else
             {
                 FunctionDefinition def;
-                if ( this.GetDefinitionFromPath(this.GetNodePath(id), dynSettings.Controller, out def) )
+                if ( this.GetDefinitionFromPath(this.GetNodePath(id), id, dynSettings.Controller, out def) )
                 {
                     return def;
                 }
@@ -317,7 +317,7 @@ namespace Dynamo.Utilities
             FunctionDefinition def = null;
             if (!this.IsInitialized(guid))
             {
-                if (!GetDefinitionFromPath(GetNodePath(guid), controller, out def))
+                if (!GetDefinitionFromPath(GetNodePath(guid), guid, controller, out def))
                 {
                     result = null;
                     return false;
@@ -439,29 +439,17 @@ namespace Dynamo.Utilities
         {
             return this.loadedNodes.Values.FirstOrDefault((def) => def.Workspace == workspace);
         }
-
+       
         /// <summary>
         ///     Deserialize a function definition from a given path.  A side effect of this function is that
         ///     the node is added to the dictionary of loadedNodes.  
         /// </summary>
         /// <param name="xmlPath">Path to the function definition</param>
+        /// <param name="funcDefGuid">The function guid we're currently loading</param>
         /// <param name="controller">Reference to the calling controller</param>
         /// <param name="def">The resultant function definition</param>
         /// <returns></returns>
-        private bool GetDefinitionFromPath(string xmlPath, DynamoController controller, out FunctionDefinition def)
-        {
-            return this.GetDefinitionFromPath(  xmlPath,
-                                                new Dictionary<Guid, HashSet<FunctionDefinition>>(),
-                                                new Dictionary<Guid, HashSet<Guid>>(),
-                                                controller,
-                                                out def);
-        }
-
-        private bool GetDefinitionFromPath( string xmlPath,
-                                            Dictionary<Guid, HashSet<FunctionDefinition>> children,
-                                            Dictionary<Guid, HashSet<Guid>> parents, 
-                                            DynamoController controller,
-                                            out FunctionDefinition def )
+        private bool GetDefinitionFromPath(string xmlPath, Guid funcDefGuid, DynamoController controller, out FunctionDefinition def)
         {
             try
             {
@@ -522,9 +510,6 @@ namespace Dynamo.Utilities
                     funName, category.Length > 0
                     ? category
                     : BuiltinNodeCategories.MISC, cx, cy);
-
-                List<dynNode> newElements = workSpace.Nodes;
-                List<dynConnector> newConnectors = workSpace.Connectors;
 
                 def = new FunctionDefinition(Guid.Parse(id))
                     {
@@ -594,14 +579,15 @@ namespace Dynamo.Utilities
                     else
                         t = tData.Type;
 
-                    dynNode el = controller.CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws, Visibility.Hidden);
+                    var el = controller.CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws, Visibility.Hidden);
 
                     if (el == null)
                         return false;
 
                     el.DisableReporting();
-                    el.LoadElement(elNode);
+                    el.LoadElement(elNode); // inject the node properties from the xml
 
+                    // it has no 
                     if (el is dynFunction)
                     {
                         var fun = el as dynFunction;
@@ -620,10 +606,8 @@ namespace Dynamo.Utilities
                             fun.Symbol = funId.ToString();
                         }
 
-                        if ( dynSettings.Controller.CustomNodeLoader.IsInitialized(funId) )
+                        if (funcDefGuid != guid)
                             fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
-                        else
-                            dependencies.Push(funId);
                     }
                 }
 
@@ -732,30 +716,11 @@ namespace Dynamo.Utilities
 
                 ws.FilePath = xmlPath;
 
-                bool canLoad = true;
-
-                //For each node this workspace depends on...
-                foreach (Guid dep in dependencies)
-                {
-                    canLoad = false;
-                    //Dep -> Ws
-                    if (children.ContainsKey(dep))
-                        children[dep].Add(def);
-                    else
-                        children[dep] = new HashSet<FunctionDefinition> {def};
-
-                    //Ws -> Deps
-                    if (parents.ContainsKey(def.FunctionId))
-                        parents[def.FunctionId].Add(dep);
-                    else
-                        parents[def.FunctionId] = new HashSet<Guid> {dep};
-                }
-
-                if (canLoad)
-                    SaveFunction(def, false);
-
+                SaveFunction(def, false);
                 controller.PackageManagerClient.LoadPackageHeader(def, funName);
-                this.nodeWorkspaceWasLoaded(def, children, parents, controller);
+
+                var expression = CompileFunction(def);
+                controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
 
             }
             catch (Exception ex)
@@ -768,32 +733,6 @@ namespace Dynamo.Utilities
             }
 
             return true;
-        }
-
-        private void nodeWorkspaceWasLoaded(FunctionDefinition def,
-                                            Dictionary<Guid, HashSet<FunctionDefinition>> children,
-                                            Dictionary<Guid, HashSet<Guid>> parents,
-                                            DynamoController controller )
-        {
-            //If there were some workspaces that depended on this node...
-            if (children.ContainsKey(def.FunctionId))
-            {
-                //For each workspace...
-                foreach (FunctionDefinition child in children[def.FunctionId])
-                {
-                    //Nodes the workspace depends on
-                    HashSet<Guid> allParents = parents[child.FunctionId];
-                    //Remove this workspace, since it's now loaded.
-                    allParents.Remove(def.FunctionId);
-                    //If everything the node depends on has been loaded...
-                    if (!allParents.Any())
-                    {
-                        var expression = CompileFunction(def);
-                        controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
-                        nodeWorkspaceWasLoaded(child, children, parents, controller);
-                    }
-                }
-            }
         }
 
         /// <summary>

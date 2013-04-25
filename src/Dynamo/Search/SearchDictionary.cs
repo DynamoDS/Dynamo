@@ -188,6 +188,16 @@ namespace Dynamo.Search
         }
 
         /// <summary>
+        ///     Get the elements with a given tag
+        /// </summary>
+        /// <param name="tag"> The tag to match </param>
+        /// <returns> The elements with the given tag </returns>
+        public HashSet<V> ByTag(string tag)
+        {
+            return _tagDictionary[tag];
+        }
+
+        /// <summary>
         ///     Filter the elements in the SearchDictionary, based on whether there is a string
         ///     in the tag matching the query
         /// </summary>
@@ -206,7 +216,7 @@ namespace Dynamo.Search
                     result.UnionWith(pair.Value);
                 }
             }
-            
+
             return result;
         }
 

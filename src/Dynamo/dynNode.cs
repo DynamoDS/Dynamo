@@ -517,9 +517,6 @@ namespace Dynamo.Nodes
                            Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                            Bench.Log(ex);
 
-                           //dynSettings.Writer.WriteLine(ex.Message);
-                           //dynSettings.Writer.WriteLine(ex.StackTrace);
-
                            if (DynamoCommands.WriteToLogCmd.CanExecute(null))
                            {
                                DynamoCommands.WriteToLogCmd.Execute(ex.Message);

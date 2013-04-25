@@ -48,6 +48,11 @@ namespace Dynamo
                     Controller.ViewCustomNodeWorkspace(_def);
                 };
 
+                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
+                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Color = Colors.WhiteSmoke;
+                ((DropShadowEffect) NodeUI.elementRectangle.Effect).BlurRadius = 20;
+                ((DropShadowEffect)NodeUI.elementRectangle.Effect).ShadowDepth = 0;
+
                 NodeUI.RegisterAllPorts();
             }
 
@@ -59,6 +64,11 @@ namespace Dynamo
                 {
                     Controller.ViewCustomNodeWorkspace(_def);
                 };
+
+                ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;
+                ((DropShadowEffect) NodeUI.elementRectangle.Effect).Color = Colors.WhiteSmoke;
+                ((DropShadowEffect) NodeUI.elementRectangle.Effect).ShadowDepth = 0;
+                ((DropShadowEffect)NodeUI.elementRectangle.Effect).BlurRadius = 20;
             }
 
             FunctionDefinition _def;

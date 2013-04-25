@@ -663,12 +663,24 @@ namespace Dynamo.Search
         /// <summary>
         ///     Rename a workspace that is currently part of the SearchDictionary
         /// </summary>
-        /// <param name="workspace">The workspace whose name must change</param>
+        /// <param name="def">The FunctionDefinition whose name must change</param>
         /// <param name="newName">The new name to assign to the workspace</param>
-        public void Refactor(dynWorkspace workspace, string newName)
+        public void Refactor(FunctionDefinition def, string newName)
         {
-            SearchDictionary.Remove(workspace.Name);
-            Add(workspace, newName);
+            SearchDictionary.Remove( def.Workspace.Name );
+            Add(def.Workspace, newName);
+
+            var eles = SearchDictionary.ByTag( def.Workspace.Name );
+            if ( eles.Any() )
+            {
+                foreach (var ele in eles)
+                {
+                    SearchDictionary.Remove(ele);
+                }
+            }
+
+            // SearchDictionary.Remove(def.);
+            // Add(def.Workspace, newName);
         }
     }
 }

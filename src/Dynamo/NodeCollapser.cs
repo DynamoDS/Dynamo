@@ -167,7 +167,7 @@ namespace Dynamo.Utilities
             double avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
 
             double leftMost = selectedNodeSet.Min(node => Canvas.GetLeft(node.NodeUI)) + 24;
-            double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI)) + 30;
+            double topMost = selectedNodeSet.Min(node => Canvas.GetTop(node.NodeUI));
             double rightMost = selectedNodeSet.Max(node => Canvas.GetLeft(node.NodeUI) + node.NodeUI.Width);
 
             #endregion
@@ -192,7 +192,7 @@ namespace Dynamo.Utilities
             foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
             {
                 Canvas.SetLeft(node, Canvas.GetLeft(node) - leftShift);
-                Canvas.SetTop(node, Canvas.GetTop(node) - topMost);
+                Canvas.SetTop(node, Canvas.GetTop(node) - topMost + 30);
             }
 
             #endregion
@@ -462,6 +462,7 @@ namespace Dynamo.Utilities
             // save and load the definition from file
             var path = dynSettings.Controller.SaveFunctionOnly(newNodeDefinition);
             dynSettings.Controller.CustomNodeLoader.SetNodeInfo(newNodeName, newNodeCategory, newNodeDefinition.FunctionId, path);
+            dynSettings.Controller.SearchViewModel.Add(newNodeName, newNodeCategory, newNodeDefinition.FunctionId);
 
             DynamoCommands.CreateNodeCmd.Execute(new Dictionary<string, object>()
                 {

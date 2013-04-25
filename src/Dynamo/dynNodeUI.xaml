@@ -122,7 +122,7 @@
                          TextAlignment="Center" 
                          IsHitTestVisible="False" 
                          Canvas.ZIndex="99" 
-                         Height="22"
+                         Height ="22"
                          Width="{Binding ElementName=grid, Path=ActualWidth}"
                          MaxWidth="{Binding ElementName=grid, Path=ActualWidth}"
                          Background="#99000000" FontStyle="Normal" Foreground="LightGray">

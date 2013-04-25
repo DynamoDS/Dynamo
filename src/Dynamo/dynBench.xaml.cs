@@ -649,7 +649,7 @@ namespace Dynamo.Controls
         private void image1_MouseEnter(object sender, MouseEventArgs e)
         {
             //highlight
-            this.WorkspaceNameContainer.Background = new SolidColorBrush(Colors.LightBlue);
+            this.WorkspaceTitleContainer.Background = new SolidColorBrush(Colors.LightBlue);
             if (beginNameEditClick && e.LeftButton == MouseButtonState.Released)
             {
                 beginNameEditClick = false;
@@ -659,7 +659,7 @@ namespace Dynamo.Controls
         private void image1_MouseLeave(object sender, MouseEventArgs e)
         {
             //unhighlight
-            this.WorkspaceNameContainer.Background = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+            this.WorkspaceTitleContainer.Background = new SolidColorBrush(Colors.Transparent);
         }
 
         private void image1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
