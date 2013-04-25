@@ -1306,7 +1306,10 @@ namespace Dynamo.Commands
                 Dictionary<string, object> nodeData = new Dictionary<string, object>();
                 nodeData.Add("x", Canvas.GetLeft(node));
                 nodeData.Add("y", Canvas.GetTop(node) + 100);
-                nodeData.Add("name", node.NickName);
+                if(node.NodeLogic.GetType().IsAssignableFrom(typeof(dynFunction)))
+                    nodeData.Add("name", (node.NodeLogic as dynFunction).Definition.FunctionId);
+                else
+                    nodeData.Add("name", node.NickName);
                 nodeData.Add("guid", newGuid);
 
                 if (typeof(dynBasicInteractive<double>).IsAssignableFrom(node.NodeLogic.GetType()))
