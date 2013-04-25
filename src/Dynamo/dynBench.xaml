@@ -112,7 +112,8 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Save" Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}" Name="saveThisButton" InputGestureText="Ctrl+S">
+                <MenuItem Header="_Save" Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}" 
+                          Name="saveThisButton" InputGestureText="Ctrl+S">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
@@ -124,7 +125,8 @@
                 </MenuItem>
                 <MenuItem Header="_Save Image..." Command="{Binding Path=ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage"/>
                 <Separator />
-                <MenuItem Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
+                <MenuItem Header="_Clear" Command="{Binding Path=ClearCommand}" Name="clearButton" 
+                          InputGestureText="Ctrl+Shift+C">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>

@@ -112,7 +112,7 @@ namespace Dynamo.Connectors
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine(string.Format("Port {0} selected.", this.Index));
+            //Debug.WriteLine(string.Format("Port {0} selected.", this.Index));
 
             (DataContext as dynPortViewModel).ConnectCommand.Execute();
 

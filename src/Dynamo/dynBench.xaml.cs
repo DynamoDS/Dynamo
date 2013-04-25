@@ -68,16 +68,19 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             this.Activated += new EventHandler(dynBench_Activated);
+            (DataContext as DynamoViewModel).UILocked += new EventHandler(LockUI);
+            (DataContext as DynamoViewModel).UIUnlocked += new EventHandler(UnlockUI());
         }
 
         void dynBench_Activated(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            //tell the view model to do some port ui-loading 
+            (DataContext as DynamoViewModel).PostUIActivationCommand.Execute();
         }
 
-        public void LockUI()
+        private void LockUI(object sender, EventArgs e)
         {
-            UILocked = true;
+            //UILocked = true;
             saveButton.IsEnabled = false;
             clearButton.IsEnabled = false;
 
@@ -88,9 +91,9 @@ namespace Dynamo.Controls
             //this.workBench.Visibility = System.Windows.Visibility.Hidden;
         }
 
-        public void UnlockUI()
+        private void UnlockUI(object sender, EventArgs e)
         {
-            UILocked = false;
+            //UILocked = false;
             saveButton.IsEnabled = true;
             clearButton.IsEnabled = true;
 
@@ -354,8 +357,6 @@ namespace Dynamo.Controls
                 }
             }
         }
-
-        
 
         internal void BeginDragElement(dynNodeUI nodeUI, string name, Point eleOffset)
         {

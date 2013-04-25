@@ -33,6 +33,21 @@ namespace Dynamo.Controls
 {
     public class DynamoViewModel:dynViewModelBase
     {
+        public event EventHandler UILocked;
+        public event EventHandler UIUnlocked;
+
+        public virtual void OnUILocked(object sender, EventArgs e)
+        {
+            if (UILocked != null)
+                UILocked(this, e);
+        }
+
+        public virtual void OnUIUnlocked(object sender, EventArgs e)
+        {
+            if (UIUnlocked != null)
+                UIUnlocked(this, e);
+        }
+
         private DynamoModel _model;
 
         private string logText;
@@ -48,6 +63,7 @@ namespace Dynamo.Controls
         protected bool dynamicRun = false;
         private bool isConnecting = false;
         private string UnlockLoadPath;
+        private bool uiLocked = true;
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -90,6 +106,7 @@ namespace Dynamo.Controls
         public DelegateCommand UpdateSelectedConnectorsCommand { get; set; }
         public DelegateCommand<object> CrossSelectCommand { get; set; }
         public DelegateCommand<object> ContainSelectCommand { get; set; }
+        public DelegateCommand PostUIActivationCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -301,6 +318,7 @@ namespace Dynamo.Controls
             UpdateSelectedConnectorsCommand = new DelegateCommand(UpdateSelectedConnectors, CanUpdateSelectedConnectors);
             CrossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
             ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
+            PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
         }
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -351,7 +369,8 @@ namespace Dynamo.Controls
                     return;
                 }
 
-                dynSettings.Bench.LockUI();
+                //dynSettings.Bench.LockUI();
+                OnUILocked(this, EventArgs.Empty);
 
                 if (!OpenDefinition(xmlPath))
                 {
@@ -367,7 +386,8 @@ namespace Dynamo.Controls
                         DynamoCommands.WriteToLogCmd.Execute(xmlPath);
                     }
                 }
-                dynSettings.Bench.UnlockUI();
+                //dynSettings.Bench.UnlockUI();
+                OnUIUnlocked(this, EventArgs.Empty);
             }
 
             //clear the clipboard to avoid copying between dyns
@@ -612,14 +632,16 @@ namespace Dynamo.Controls
 
         private void Clear()
         {
-            dynSettings.Bench.LockUI();
+            //dynSettings.Bench.LockUI();
+            OnUILocked(this, EventArgs.Empty);
 
             CleanWorkbench();
 
             //don't save the file path
             _model.CurrentSpace.FilePath = "";
 
-            dynSettings.Bench.UnlockUI();
+            //dynSettings.Bench.UnlockUI();
+            OnUIUnlocked(this, EventArgs.Empty);
         }
 
         private bool CanClear()
@@ -639,7 +661,9 @@ namespace Dynamo.Controls
 
         private void LayoutAll()
         {
-            dynSettings.Bench.LockUI();
+            //dynSettings.Bench.LockUI();
+            OnUILocked(this, EventArgs.Empty);
+
             CleanWorkbench();
 
             double x = 0;
@@ -736,7 +760,8 @@ namespace Dynamo.Controls
 
             }
 
-            dynSettings.Bench.UnlockUI();
+            //dynSettings.Bench.UnlockUI();
+            OnUIUnlocked(this, EventArgs.Empty);
         }
 
         private bool CanLayoutAll()
@@ -1538,6 +1563,51 @@ namespace Dynamo.Controls
         }
 
         private bool CanContainSelect(object parameters)
+        {
+            return true;
+        }
+
+        private void PostUIActivation()
+        {
+            //if (!_benchActivated)
+            //{
+            //    _benchActivated = true;
+
+                DynamoLoader.LoadCustomNodes(dynSettings.Bench);
+
+                dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
+
+                if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
+                {
+                    //MessageBox.Show("Workbench could not be opened.");
+                    dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
+
+                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
+
+                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+                    {
+                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
+                    }
+                }
+
+                UnlockLoadPath = null;
+
+                //Bench.UnlockUI();
+                OnUIUnlocked(this, EventArgs.Empty);
+
+                DynamoCommands.ShowSearchCmd.Execute(null);
+
+                _model.HomeSpace.OnDisplayed();
+
+#warning no longer using a splash screen
+                //DynamoCommands.CloseSplashScreenCmd.Execute(null); // closed in bench activated
+                //Bench.WorkBench.Visibility = Visibility.Visible;
+            //}
+        }
+
+        private bool CanDoPostUIActivation()
         {
             return true;
         }
@@ -2984,43 +3054,43 @@ namespace Dynamo.Controls
         /// </summary>
         /// <parameter>The sender (presumably the Bench) </parameter>
         /// <parameter>Any arguments it passes</parameter>
-        private void OnBenchActivated(object sender, EventArgs e)
-        {
-            if (!_benchActivated)
-            {
-                _benchActivated = true;
+//        private void OnBenchActivated(object sender, EventArgs e)
+//        {
+//            if (!_benchActivated)
+//            {
+//                _benchActivated = true;
 
-                DynamoLoader.LoadCustomNodes(dynSettings.Bench);
+//                DynamoLoader.LoadCustomNodes(dynSettings.Bench);
 
-                dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
+//                dynSettings.Controller.DynamoViewModel.Log("Welcome to Dynamo!");
 
-                if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
-                {
-                    //MessageBox.Show("Workbench could not be opened.");
-                    dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
+//                if (UnlockLoadPath != null && !OpenWorkbench(UnlockLoadPath))
+//                {
+//                    //MessageBox.Show("Workbench could not be opened.");
+//                    dynSettings.Controller.DynamoViewModel.Log("Workbench could not be opened.");
 
-                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
-                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
+//                    //dynSettings.Writer.WriteLine("Workbench could not be opened.");
+//                    //dynSettings.Writer.WriteLine(UnlockLoadPath);
 
-                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
-                    {
-                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
-                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
-                    }
-                }
+//                    if (DynamoCommands.WriteToLogCmd.CanExecute(null))
+//                    {
+//                        DynamoCommands.WriteToLogCmd.Execute("Workbench could not be opened.");
+//                        DynamoCommands.WriteToLogCmd.Execute(UnlockLoadPath);
+//                    }
+//                }
 
-                UnlockLoadPath = null;
+//                UnlockLoadPath = null;
 
-                Bench.UnlockUI();
-                DynamoCommands.ShowSearchCmd.Execute(null);
+//                Bench.UnlockUI();
+//                DynamoCommands.ShowSearchCmd.Execute(null);
 
-                _model.HomeSpace.OnDisplayed();
+//                _model.HomeSpace.OnDisplayed();
 
-#warning no longer using a splash screen
-                //DynamoCommands.CloseSplashScreenCmd.Execute(null); // closed in bench activated
-                Bench.WorkBench.Visibility = Visibility.Visible;
-            }
-        }
+//#warning no longer using a splash screen
+//                //DynamoCommands.CloseSplashScreenCmd.Execute(null); // closed in bench activated
+//                Bench.WorkBench.Visibility = Visibility.Visible;
+//            }
+//        }
 
         /// <summary>
         ///     Sets the load path

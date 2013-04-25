@@ -276,7 +276,7 @@ namespace Dynamo.Controls
             NodeLogic.Cleanup();
 
             DynamoSelection.Instance.Selection.Remove(nodeLogic);
-            dynSettings.Controller.DynamoViewModel.Nodes.Remove(NodeLogic);
+            dynSettings.Controller.DynamoViewModel.Model.Nodes.Remove(NodeLogic);
             //dynSettings.Workbench.Children.Remove(node);
         }
 

@@ -84,14 +84,14 @@ namespace Dynamo
         {
             dynSettings.Controller = this;
 
-#warning MVVM: Moved to properties on dynBenchModelView
+            #warning MVVM: Moved to properties on dynBenchModelView
             //RunEnabled = true;
             //CanRunDynamically = true;
 
-#warning MVVM: don't construct the main window with a reference to the controller
+            #warning MVVM: don't construct the main window with a reference to the controller
             //Bench = new dynBench(this);
 
-#warning MVVM : create the view model to which the main window will bind
+            #warning MVVM : create the view model to which the main window will bind
             //the DynamoModel is created therein
             DynamoViewModel = new DynamoViewModel(this);
             //DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
@@ -116,7 +116,7 @@ namespace Dynamo
 
             FSchemeEnvironment = env;
 
-#warning MVVM : moved to proper view constructor on dynBench
+            #warning MVVM : moved to proper view constructor on dynBench
             DynamoViewModel.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
             //Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
             //Bench.InitializeComponent();
@@ -125,17 +125,21 @@ namespace Dynamo
                 "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-#warning MVVM : removed parameter bench
+            #warning MVVM : removed parameter bench
             DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);//, Bench);
             DynamoLoader.LoadSamplesMenu(Bench);
 
             //Bench.settings_curves.IsChecked = true;
             //Bench.settings_curves.IsChecked = false;
 
-            Bench.LockUI();
+            if (Bench != null)
+            {
+                //Bench.LockUI();
 
-            //Bench.Activated += OnBenchActivated;
-            dynSettings.Workbench = Bench.WorkBench;
+                //MVVM : callback has been restructured so that it sends a command back to the view model
+                //Bench.Activated += OnBenchActivated;
+                dynSettings.Workbench = Bench.WorkBench;
+            }
 
             //run tests
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
