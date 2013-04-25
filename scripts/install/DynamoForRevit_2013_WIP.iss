@@ -50,7 +50,7 @@ Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 ;Core Files
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
 Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
-Source: Extra\readme.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
+Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
 Source: Extra\fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoWIPForRevit2013
 ;Training Files
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
