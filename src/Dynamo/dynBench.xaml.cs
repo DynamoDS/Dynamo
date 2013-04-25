@@ -542,7 +542,8 @@ namespace Dynamo.Controls
                 DynamoCommands.WriteToLogCmd.Execute(message);
             }
             if (LogScroller != null)
-                LogScroller.ScrollToBottom();
+                this.Dispatcher.Invoke(new Action(() => LogScroller.ScrollToBottom()));
+
         }
 
         private void OnGridFocus(object sender, RoutedEventArgs e)
