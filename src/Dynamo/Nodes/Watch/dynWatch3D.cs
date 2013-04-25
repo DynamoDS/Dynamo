@@ -117,6 +117,8 @@ namespace Dynamo.Nodes
             _watchView.watch_view.Children.Add(_lines);
             _watchView.watch_view.Children.Add(_points);
 
+            _watchView.watch_view.Children.Add(new DefaultLights());
+
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             backgroundRect.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
@@ -209,7 +211,7 @@ namespace Dynamo.Nodes
 
             foreach (Mesh3D mesh in Meshes)
             {
-                MeshVisual3D vismesh = new MeshVisual3D();
+                MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
                 vismesh.Mesh = mesh;
                 _watchView.watch_view.Children.Add(vismesh);
                 _meshes.Add(vismesh);
