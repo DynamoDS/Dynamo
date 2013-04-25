@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Xml;
-using Dynamo.Commands;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;

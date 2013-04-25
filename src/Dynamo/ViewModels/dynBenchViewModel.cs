@@ -39,7 +39,7 @@ namespace Dynamo.Controls
         private ConnectorType connectorType;
         private Point transformOrigin;
         private bool consoleShowing;
-        private dynConnector activeConnector;
+        private dynConnectorViewModel activeConnector;
         private DynamoController controller;
         public StringWriter sw;
         private bool runEnabled = true;
@@ -87,6 +87,9 @@ namespace Dynamo.Controls
         public DelegateCommand<object> SelectCommand { get; set; }
         public DelegateCommand<object> SelectNeighborsCommand { get; set; }
         public DelegateCommand<object> AddToSelectionCommand { get; set; }
+        public DelegateCommand UpdateSelectedConnectorsCommand { get; set; }
+        public DelegateCommand<object> CrossSelectCommand { get; set; }
+        public DelegateCommand<object> ContainSelectCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -295,6 +298,9 @@ namespace Dynamo.Controls
             SelectCommand = new DelegateCommand<object>(Select, CanSelect);
             SelectNeighborsCommand = new DelegateCommand<object>(SelectNeighbors, CanSelectNeighbors);
             AddToSelectionCommand = new DelegateCommand<object>(AddToSelection, CanAddToSelection);
+            UpdateSelectedConnectorsCommand = new DelegateCommand(UpdateSelectedConnectors, CanUpdateSelectedConnectors);
+            CrossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
+            ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
         }
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1460,6 +1466,82 @@ namespace Dynamo.Controls
             //    LogScroller.ScrollToBottom();
         }
 
+        private void UpdateSelectedConnectors()
+        {
+            IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
+                                                               .Where(x => x is dynNode)
+                                                               .Select(x => x as dynNode)
+                                                               .SelectMany(
+                                                                   el => el.OutPorts
+                                                                           .SelectMany(x => x.Connectors)
+                                                                           .Concat(
+                                                                               el.InPorts.SelectMany(
+                                                                                   x => x.Connectors))).Distinct();
+
+            foreach (dynConnector connector in allConnectors)
+            {
+                connector.Redraw();
+            }
+        }
+
+        private bool CanUpdateSelectedConnectors()
+        {
+            return true;
+        }
+
+        private void CrossingSelect(object parameters)
+        {
+            var rect = (Rect)parameters;
+
+            foreach (dynNode n in _model.Nodes)
+            {
+                //check if the node is within the boundary
+                //double x0 = Canvas.GetLeft(n);
+                //double y0 = Canvas.GetTop(n);
+
+                double x0 = n.X;
+                double y0 = n.Y;
+
+                bool intersects = rect.IntersectsWith(new Rect(x0, y0, n.Width, n.Height));
+                if (intersects)
+                {
+                    if (!DynamoSelection.Instance.Selection.Contains(n))
+                        DynamoSelection.Instance.Selection.Add(n);
+                }
+            }
+        }
+
+        private bool CanCrossSelect(object parameters)
+        {
+            return true;
+        }
+
+        private void ContainSelect(object parameters)
+        {
+            var rect = (Rect)parameters;
+
+            foreach (dynNode n in _model.Nodes)
+            {
+                //check if the node is within the boundary
+                double x0 = Canvas.GetLeft(n);
+                double y0 = Canvas.GetTop(n);
+                double x1 = x0 + n.Width;
+                double y1 = y0 + n.Height;
+
+                bool contains = rect.Contains(x0, y0) && rect.Contains(x1, y1);
+                if (contains)
+                {
+                    if (!DynamoSelection.Instance.Selection.Contains(n))
+                        DynamoSelection.Instance.Selection.Add(n);
+                }
+            }
+        }
+
+        private bool CanContainSelect(object parameters)
+        {
+            return true;
+        }
+
         /// <summary>
         ///     Generate an xml doc and write the workspace to the given path
         /// </summary>
@@ -1958,8 +2040,10 @@ namespace Dynamo.Controls
                 return;
             }
 
-            Bench.workspaceLabel.Content = Bench.editNameBox.Text;
-            SearchViewModel.Refactor(CurrentSpace, newName);
+#warning MVVM : replace this with a binding
+            //Bench.workspaceLabel.Content = Bench.editNameBox.Text;
+
+            Controller.SearchViewModel.Refactor(CurrentSpace, newName);
 
             //Update existing function nodes
             foreach (dynNode el in AllNodes)
@@ -1977,12 +2061,12 @@ namespace Dynamo.Controls
                         continue;
 
                     //Rename nickname only if it's still referring to the old name
-                    if (node.NodeUI.NickName.Equals(CurrentSpace.Name))
-                        node.NodeUI.NickName = newName;
+                    if (node.NickName.Equals(CurrentSpace.Name))
+                        node.NickName = newName;
                 }
             }
 
-            FSchemeEnvironment.RemoveSymbol(CurrentSpace.Name);
+            Controller.FSchemeEnvironment.RemoveSymbol(CurrentSpace.Name);
 
             //TODO: Delete old stored definition
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -2977,7 +3061,6 @@ namespace Dynamo.Controls
             }
             
         }
-
 
         //MVVM: setFunctionBackground superceded with binding to CurrentSpace
         //internal void setFunctionBackground()
