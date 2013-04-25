@@ -134,11 +134,17 @@ namespace Dynamo.Nodes
 
             if (File.Exists(storedPath))
             {
-                StreamReader reader = new StreamReader(
-                    new FileStream(storedPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-                );
-                string contents = reader.ReadToEnd();
-                reader.Close();
+                string contents;
+
+                using (var fs = new FileStream(storedPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    using (var reader = new StreamReader(fs))
+                    {
+                        contents = reader.ReadToEnd();
+                    }
+                }
+
+                //reader.Close();
 
                 return Value.NewString(contents);
             }
