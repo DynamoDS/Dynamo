@@ -17,7 +17,9 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2. It 
 
 ## Releases ##
 
-###April 2013 Release###
+###0.3.0###
+
+April 2013 Release
 
 Known Issues
 - String node contents truncated after 29 characters
@@ -78,7 +80,9 @@ Samples:
 
 
 
-###November 2012:###
+###0.2.0###
+
+November 2012
 
 New or updated nodes:
 
@@ -108,7 +112,9 @@ UI:
 - It is now possible to move around the graphics screen with the arrow keys.
 - If second monitor is available, Dynamo will maximize to it.
 
-### June 2012:###
+###0.1.0###
+
+June 2012
 
 - User Interface - side panel to allow you to search and then drag and drop new nodes in to place
 - User-created nodes - you can make 'sub-nodes' and then reference them elsewhere, these act like writing a reusable function in a programming language

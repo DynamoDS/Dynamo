@@ -192,7 +192,7 @@ namespace Dynamo.Utilities
             foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
             {
                 Canvas.SetLeft(node, Canvas.GetLeft(node) - leftShift);
-                Canvas.SetTop(node, Canvas.GetTop(node) - topMost + 30);
+                Canvas.SetTop(node, Canvas.GetTop(node) - topMost + 120);
             }
 
             #endregion
