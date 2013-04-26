@@ -20,12 +20,11 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2. It 
 ###April 2013 Release###
 
 Known Issues
-- String node contents truncated after 29 characters
-- Dynamo continues regenerating revit elements after closing
+- Dynamo cannot start with Revit Python Shell Installed.  
+- IronPython 2.7 must be installed to use Python Node functionality
+- Dynamo continues regenerating revit elements after closing when running in "automatic"
 - Face selection of loaded families move origin to Revit 0,0,0
 - Run automatically may start looping transactions after in-canvas manipulation
-- Dynamo cannot start with Revit Python Shell Installed.  
-- IronPython 2.7 must be installed to use Python Node functionality.
 
 New or Updated nodes
 - Watch 3d geometry preview
