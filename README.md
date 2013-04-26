@@ -19,7 +19,7 @@ The current version will run on top of Revit 2013 and Project Vasari Beta 2. It 
 
 ###0.3.0###
 
-April 2013 Release
+April 2013
 
 Known Issues
 - Dynamo cannot start with Revit Python Shell Installed.  
