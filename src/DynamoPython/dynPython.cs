@@ -16,10 +16,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Xml;
 
 using Dynamo.Connectors;
 using Dynamo.Utilities;
+using DynamoPython;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using IronPython.Hosting;
@@ -318,8 +321,8 @@ namespace Dynamo.Nodes
             {
                 editWindow = new dynScriptEditWindow();
                 // callbacks for autocompletion
-                // editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-                // editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
+                //editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
+                //editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
 
                 var pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
                 var elem = GetType().Assembly.GetManifestResourceStream("DynamoPython.Resources." + pythonHighlighting);
@@ -343,45 +346,56 @@ namespace Dynamo.Nodes
             this.dirty = true;
         }
 
-    //    CompletionWindow completionWindow;
+        //CompletionWindow completionWindow;
+        //private PythonConsoleCompletionDataProvider completionProvider;
 
-    //    void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
-    //    {
-    //        if (e.Text == ".")
-    //        {
+        //void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        //{
+        //    if (e.Text == ".")
+        //    {
 
-    //            // Open code completion after the user has pressed dot:
-    //            completionWindow = new CompletionWindow( editWindow.editText.TextArea );
-    //            IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+        //        // Open code completion after the user has pressed dot:
+        //        completionWindow = new CompletionWindow(editWindow.editText.TextArea);
+        //        IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
 
-    //            data.Add( new DynamoCompletionData("Item1") );
-    //            data.Add( new DynamoCompletionData("Item2") );
-    //            data.Add( new DynamoCompletionData("Item3") );
+        //        object value = .CreateScriptSourceFromString(dirCommand, SourceCodeKind.Expression).Execute(commandLine.ScriptScope);
+        //        AutocompletionInProgress = false;
+        //        foreach (object member in (value as IronPython.Runtime.List))
+        //        {
+        //            items.Add(new DynamoCompletionData((string)member, name, commandLine, false));
+        //        }
 
 
-    //            completionWindow.Show();
+        //        // get text before 
 
-    //            completionWindow.Closed += delegate
-    //            {
-    //                completionWindow = null;
-    //            };
-    //        }
-    //    }
+        //        foreach (var ele in completionProvider.GenerateCompletionData("Revit"))
+        //        {
+        //            data.Add(ele);
+        //        }
 
-    //    void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
-    //    {
-    //        if (e.Text.Length > 0 && completionWindow != null)
-    //        {
-    //            if (!char.IsLetterOrDigit(e.Text[0]))
-    //            {
-    //                // Whenever a non-letter is typed while the completion window is open,
-    //                // insert the currently selected element.
-    //                completionWindow.CompletionList.RequestInsertion(e);
-    //            }
-    //        }
-    //        // Do not set e.Handled=true.
-    //        // We still want to insert the character that was typed.
-    //    }
+        //        completionWindow.Show();
+
+        //        completionWindow.Closed += delegate
+        //        {
+        //            completionWindow = null;
+        //        };
+        //    }
+        //}
+
+        //void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        //{
+        //    if (e.Text.Length > 0 && completionWindow != null)
+        //    {
+        //        if (!char.IsLetterOrDigit(e.Text[0]))
+        //        {
+        //            // Whenever a non-letter is typed while the completion window is open,
+        //            // insert the currently selected element.
+        //            completionWindow.CompletionList.RequestInsertion(e);
+        //        }
+        //    }
+        //    // Do not set e.Handled=true.
+        //    // We still want to insert the character that was typed.
+        //}
 
     }
 

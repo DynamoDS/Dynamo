@@ -73,7 +73,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="name">The name of the namespace (e.g. BestTeamsAtAutodesk.Magneto ) </param>
         public CategorySearchElement(string name)
         {
-            _name = name + ".";
+            _name = name;
             Weight = 1.2;
             Keywords = "";
             NumElements = 0;
@@ -84,7 +84,7 @@ namespace Dynamo.Search.SearchElements
         /// Add the name as the current search text </summary>
         public override void Execute()
         {
-            dynSettings.Controller.SearchViewModel.SearchText = Name;
+            dynSettings.Controller.SearchViewModel.SearchText = Name + ".";
         }
 
     }

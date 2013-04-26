@@ -5,6 +5,7 @@ using System.Text;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
+using Microsoft.Scripting.Hosting.Shell;
 
 namespace DynamoPython
 {
@@ -12,9 +13,11 @@ namespace DynamoPython
     /// completion drop down.
     public class DynamoCompletionData : ICompletionData
     {
-        public DynamoCompletionData(string text)
+        public DynamoCompletionData(string text, string stub, CommandLine cl, bool isInstance)
         {
             this.Text = text;
+            this.Stub = stub;
+            this.IsInstance = isInstance;
         }
 
         public System.Windows.Media.ImageSource Image
@@ -24,7 +27,11 @@ namespace DynamoPython
 
         public string Text { get; private set; }
 
-        // Use this property if you want to show a fancy UIElement in the list.
+        public string Stub { get; private set; }
+
+        public bool IsInstance { get; private set; }
+
+        // Use this property if you want to show a fancy UIElement in the drop down list.
         public object Content
         {
             get { return this.Text; }
@@ -32,18 +39,18 @@ namespace DynamoPython
 
         public object Description
         {
-            get { return "Description for " + this.Text; }
+            get
+            {
+                // Do nothing: description now updated externally and asynchronously.
+                return "Not available";
+            }
         }
 
-        public void Complete(TextArea textArea, ISegment completionSegment,
-            EventArgs insertionRequestEventArgs)
+        public double Priority { get { return 0; } }
+
+        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             textArea.Document.Replace(completionSegment, this.Text);
-        }
-
-        public double Priority
-        {
-            get { return 1; }
         }
     }
 
