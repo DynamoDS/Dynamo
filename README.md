@@ -26,7 +26,7 @@ Known Issues
 - Dynamo continues regenerating revit elements after closing when "Run Automatically" is checked
 - Face selection of loaded families move origin to Revit 0,0,0
 - Solar Radiation Optimization Sample may lock CSV file and stop running
-- Dynamic Relaxation Sample is not working.
+
 
 New or Updated nodes
 - Watch 3d geometry preview
