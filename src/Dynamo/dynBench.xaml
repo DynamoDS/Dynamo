@@ -85,7 +85,7 @@
 
     </Window.InputBindings>
 
-    <Grid Name="mainGrid" >
+    <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
         
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>

@@ -201,7 +201,7 @@ namespace Dynamo.Utilities
             else
             {
                 FunctionDefinition def;
-                if ( this.GetDefinitionFromPath(this.GetNodePath(id), id, dynSettings.Controller, out def) )
+                if ( this.GetDefinitionFromPath(id, dynSettings.Controller, out def) )
                 {
                     return def;
                 }
@@ -317,7 +317,7 @@ namespace Dynamo.Utilities
             FunctionDefinition def = null;
             if (!this.IsInitialized(guid))
             {
-                if (!GetDefinitionFromPath(GetNodePath(guid), guid, controller, out def))
+                if (!GetDefinitionFromPath(guid, controller, out def))
                 {
                     result = null;
                     return false;
@@ -444,15 +444,16 @@ namespace Dynamo.Utilities
         ///     Deserialize a function definition from a given path.  A side effect of this function is that
         ///     the node is added to the dictionary of loadedNodes.  
         /// </summary>
-        /// <param name="xmlPath">Path to the function definition</param>
         /// <param name="funcDefGuid">The function guid we're currently loading</param>
         /// <param name="controller">Reference to the calling controller</param>
         /// <param name="def">The resultant function definition</param>
         /// <returns></returns>
-        private bool GetDefinitionFromPath(string xmlPath, Guid funcDefGuid, DynamoController controller, out FunctionDefinition def)
+        private bool GetDefinitionFromPath(Guid funcDefGuid, DynamoController controller, out FunctionDefinition def)
         {
             try
             {
+                var xmlPath = GetNodePath(funcDefGuid);
+
                 #region read xml file
 
                 var xmlDoc = new XmlDocument();
@@ -504,7 +505,6 @@ namespace Dynamo.Utilities
                     return controller.OpenWorkbench(xmlPath);
                 } 
 
-                
                 dynSettings.Bench.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 var workSpace = new FuncWorkspace(
@@ -534,8 +534,6 @@ namespace Dynamo.Utilities
                 XmlNode elNodesList = elNodes[0];
                 XmlNode cNodesList = cNodes[0];
                 XmlNode nNodesList = nNodes[0];
-
-                var dependencies = new Stack<Guid>();
 
                 #region instantiate nodes
 
@@ -730,7 +728,6 @@ namespace Dynamo.Utilities
 
                 ws.FilePath = xmlPath;
 
-                SaveFunction(def, false);
                 controller.PackageManagerClient.LoadPackageHeader(def, funName);
 
                 var expression = CompileFunction(def);
@@ -747,44 +744,6 @@ namespace Dynamo.Utilities
             }
 
             return true;
-        }
-
-        /// <summary>
-        ///     Save a function.  This includes writing to a file and compiling the 
-        ///     function and saving it to the FSchemeEnvironment
-        /// </summary>
-        /// <param name="definition">The definition to saveo</param>
-        /// <param name="bool">Whether to write the function to file</param>
-        /// <returns>Whether the operation was successful</returns>
-        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true)
-        {
-            if (definition == null)
-                return;
-
-            // Get the internal nodes for the function
-            dynWorkspace functionWorkspace = definition.Workspace;
-
-            // If asked to, write the definition to file
-            if (writeDefinition)
-            {
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string pluginsPath = Path.Combine(directory, "definitions");
-
-                try
-                {
-                    if (!Directory.Exists(pluginsPath))
-                        Directory.CreateDirectory(pluginsPath);
-
-                    string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
-                    DynamoController.GetXmlDocFromWorkspace(functionWorkspace, false, definition.FunctionId);
-
-                }
-                catch
-                {
-                    //Bench.Log("Error saving:" + e.GetType());
-                    //Bench.Log(e);
-                }
-            }
         }
 
         private static FScheme.Expression CompileFunction( FunctionDefinition definition ) {

@@ -1926,6 +1926,9 @@ namespace Dynamo.Nodes
 
         public dynDoubleInput()
         {
+            NodeUI.topControl.Width = 80;
+            NodeUI.topControl.Height = 40;
+
             //add a text box to the input grid of the control
             tb = new dynTextBox();
             tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1934,6 +1937,9 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(tb, 0);
             System.Windows.Controls.Grid.SetRow(tb, 0);
             tb.IsNumeric = true;
+            tb.Margin = new Thickness(5);
+            tb.Padding = new Thickness(3);
+            tb.Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             tb.Text = "0.0";
             tb.OnChangeCommitted += delegate { 
                 Value = DeserializeValue(tb.Text);
@@ -1986,7 +1992,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.PRIMITIVES)]
-    [NodeDescription("Creates a number, but using SLIDERS!.")]
+    [NodeDescription("Change a number value with a slider.")]
     public class dynDoubleSliderInput : dynDouble
     {
         Slider tb_slider;
