@@ -18,7 +18,7 @@
         MinHeight="600" 
         MinWidth="800" 
         Title="Dynamo"
-        AllowsTransparency="False" FocusManager.IsFocusScope="True">
+        AllowsTransparency="False" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -104,96 +104,96 @@
         <Menu IsMainMenu="True" Margin="0,0,0,0" HorizontalAlignment="Stretch" 
               VerticalAlignment="Center" Height="22" Name="menu1" FontFamily="Arial" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Padding="3">
 
-            <MenuItem Header="_File" Name="fileMenu">
+            <MenuItem Header="_File" Name="fileMenu" Focusable="False">
 
-                <MenuItem Header="_New Custom Node..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
+                <MenuItem Focusable="False" Header="_New Custom Node..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowNewFunctionDialogCmd}}"  Name="newFuncButton" InputGestureText="Ctrl+Shift+N">
                 </MenuItem>
 
-                <MenuItem Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}" Name="openButton" InputGestureText="Ctrl+O">
+                <MenuItem Focusable="False" Header="_Open..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowOpenDialogAndOpenResultCmd}}" Name="openButton" InputGestureText="Ctrl+O">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/openHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Save" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}" Name="saveThisButton" InputGestureText="Ctrl+S">
+                <MenuItem Focusable="False" Header="_Save" Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd}}" Name="saveThisButton" InputGestureText="Ctrl+S">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Save As..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
+                <MenuItem Focusable="False" Header="_Save As..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveDialogAndSaveResultCmd}}" Name="saveButton" InputGestureText="Ctrl+Shift+S">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/saveHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveImageDialogAndSaveResultCmd}}" Name="saveImage"/>
+                <MenuItem Focusable="False" Header="_Save Image..." Command="{Binding Source={x:Static commands:DynamoCommands.ShowSaveImageDialogAndSaveResultCmd}}" Name="saveImage"/>
                 <Separator />
-                <MenuItem Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
+                <MenuItem Focusable="False" Header="_Clear" Command="{Binding Source={x:Static commands:DynamoCommands.ClearCmd}}" Name="clearButton" InputGestureText="Ctrl+Shift+C">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/DocumentHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Exit" Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"  Name="exit" InputGestureText="Alt+F4"/>
+                <MenuItem Focusable="False" Header="_Exit" Command="{Binding Source={x:Static commands:DynamoCommands.ExitCmd}}"  Name="exit" InputGestureText="Alt+F4"/>
             </MenuItem>
 
-            <MenuItem Header="_Edit" Name="editMenu">
-                <MenuItem Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}" Name="copy" InputGestureText="Ctrl+C"/>
-                <MenuItem Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
+            <MenuItem Header="_Edit" Name="editMenu" Focusable="False">
+                <MenuItem Focusable="False" Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}" Name="copy" InputGestureText="Ctrl+C"/>
+                <MenuItem Focusable="False" Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
                 <Separator/>
-                <MenuItem Header="_Create Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
+                <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
             </MenuItem>
 
-            <MenuItem Header="_View" Name="viewMenu">
-                <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+            <MenuItem Header="_View" Name="viewMenu" Focusable="False">
+                <MenuItem Focusable="False" Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Source={x:Static commands:DynamoCommands.ToggleConsoleShowingCmd}}" InputGestureText="Ctrl+Shift+Up"/>
             </MenuItem>
 
-            <MenuItem Header="_Workspaces" Name="workspacesMenu">
-                <MenuItem Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
+            <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False">
+                <MenuItem Focusable="False" Header="_Home" Command="{Binding Source={x:Static commands:DynamoCommands.HomeCmd}}" Name="homeButton" IsEnabled="False" InputGestureText="Ctrl+H">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/HomeHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Custom Nodes" Name="userFunctions" 
+                <MenuItem Focusable="False" Header="_Custom Nodes" Name="userFunctions" 
                   ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <MenuItem Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static commands:DynamoCommands.DisplayFunctionCmd}}"/>
+                            <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Source={x:Static commands:DynamoCommands.DisplayFunctionCmd}}"/>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="Settings">
+            <MenuItem Header="Settings" Focusable="False">
 
-                <MenuItem Header="_Connector Type" IsEnabled="True">
-                    <MenuItem Name="settings_curves" IsCheckable="True" 
+                <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
+                    <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
                               Command="{Binding Source={x:Static commands:DynamoCommands.SetConnectorTypeCmd}}" CommandParameter="BEZIER" Header="Curves"/>
-                    <MenuItem Name="settings_plines" IsCheckable="True" 
+                    <MenuItem Focusable="False" Name="settings_plines" IsCheckable="True" 
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
                               Command="{Binding Source={x:Static commands:DynamoCommands.SetConnectorTypeCmd}}" CommandParameter="POLYLINE" Header="Polylines"/>
                 </MenuItem>
 
-               <MenuItem Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
-          <MenuItem Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
-          <MenuItem Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
-          <MenuItem Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
+               <MenuItem Focusable="False" Header="_Package Manager" Name="PackageManagerMenu" Visibility="Collapsed" IsEnabled="True" >
+          <MenuItem Focusable="False" Header="_Login" Command="{Binding Source={x:Static commands:DynamoCommands.ShowLoginCmd}}"  Name="showLogin" />
+          <MenuItem Focusable="False" Header="_Refresh Remote Packages" Command="{Binding Source={x:Static commands:DynamoCommands.RefreshRemotePackagesCmd}}"  Name="refreshRemote" />
+          <MenuItem Focusable="False" Header="_Publish Selected Node" Command="{Binding Source={x:Static commands:DynamoCommands.PublishSelectedNodeCmd}}"  Name="publishSelected" />
 
-          <MenuItem Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
+          <MenuItem Focusable="False" Header="_Publish Current Workspace " Command="{Binding Source={x:Static commands:DynamoCommands.PublishCurrentWorkspaceCmd}}"  Name="publishCurrent" />
         </MenuItem>
               
             </MenuItem>
 
-            <MenuItem Header="Help">
+            <MenuItem Header="Help" Focusable="False">
                 <!--<MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>-->
-                <MenuItem Header="Samples" Name="SamplesMenu">
+                <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                     <MenuItem.Icon>
                         <Image Source="/DynamoElements;component/Images/OpenSelectedItemHS.png" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Go To Project Website" Command="{Binding Source={x:Static commands:DynamoCommands.GoToSourceCodeCmd}}"  Name="sourceCode"/>
-                <MenuItem Header="_Go To Project Wiki" Command="{Binding Source={x:Static commands:DynamoCommands.GoToWikiCmd}}"  Name="wiki"/>
+                <MenuItem Focusable="False" Header="_Go To Project Website" Command="{Binding Source={x:Static commands:DynamoCommands.GoToSourceCodeCmd}}"  Name="sourceCode"/>
+                <MenuItem Focusable="False" Header="_Go To Project Wiki" Command="{Binding Source={x:Static commands:DynamoCommands.GoToWikiCmd}}"  Name="wiki"/>
             </MenuItem>
 
         </Menu>

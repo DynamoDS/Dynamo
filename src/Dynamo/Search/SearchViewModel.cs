@@ -670,6 +670,9 @@ namespace Dynamo.Search
             SearchDictionary.Remove( def.Workspace.Name );
             Add(def.Workspace, newName);
 
+            // we need a way of removing custom nodes from search
+
+
             var eles = SearchDictionary.ByTag( def.Workspace.Name );
             if ( eles.Any() )
             {
@@ -678,6 +681,8 @@ namespace Dynamo.Search
                     SearchDictionary.Remove(ele);
                 }
             }
+
+
 
             // SearchDictionary.Remove(def.);
             // Add(def.Workspace, newName);
