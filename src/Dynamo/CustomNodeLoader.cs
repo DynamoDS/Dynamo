@@ -639,7 +639,8 @@ namespace Dynamo.Utilities
                 foreach (dynNode e in ws.Nodes)
                     e.EnableReporting();
 
-                DynamoController.hideWorkspace(ws);
+#warning MVVM : this metho was removed. visibility should be controlled by current space binding
+                //DynamoController.hideWorkspace(ws);
 
                 ws.FilePath = xmlPath;
 
@@ -736,7 +737,7 @@ namespace Dynamo.Utilities
                         Directory.CreateDirectory(pluginsPath);
 
                     string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
-                    dynSettings.Controller.DynamoViewModel.GetXmlDocFromWorkspace(functionWorkspace, false);
+                    dynWorkspace.GetXmlDocFromWorkspace(functionWorkspace, false);
 
                     //SearchViewModel.Add(definition.Workspace);
                 }

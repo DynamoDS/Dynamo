@@ -47,6 +47,7 @@ namespace Dynamo.Controls
         #region private members
 
         Dictionary<dynPort, PortData> portDataDict = new Dictionary<dynPort, PortData>();
+        private dynNodeViewModel vm;
 
         #endregion
 
@@ -74,6 +75,8 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
+            vm = DataContext as dynNodeViewModel;
+
             //set the main grid's data context to 
             //this element
             nickNameBlock.DataContext = this;
@@ -85,6 +88,12 @@ namespace Dynamo.Controls
             Canvas.SetZIndex(this, 1);
 
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
+            vm.NodeLogic.DispatchedToUI += new EventHandler(NodeLogic_DispatchedToUI);
+        }
+
+        void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
+        {
+            Dispatcher.Invoke(e.ActionToDispatch);
         }
 
         void inputGrid_Loaded(object sender, RoutedEventArgs e)
@@ -124,7 +133,10 @@ namespace Dynamo.Controls
                 if (enabledDict.ContainsKey(e))
                     e.IsEnabled = enabledDict[e];
             }
-            ValidateConnections();
+
+            //MVVM: converted to command on view model
+            //ValidateConnections();
+            vm.ValidateConnectionsCommand.Execute();
         }
 
         public void CallUpdateLayout(FrameworkElement el)

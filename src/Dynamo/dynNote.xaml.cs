@@ -16,7 +16,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Utilities;
-using Dynamo.Commands;
 using Dynamo.Selection;
 
 namespace Dynamo.Nodes
@@ -26,19 +25,26 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class dynNote : UserControl
     {
+        private dynNoteViewModel vm;
+
         public dynNote()
         {
             InitializeComponent();
+
+            vm = DataContext as dynNoteViewModel;
 
             noteText.PreviewMouseDown += new MouseButtonEventHandler(noteText_PreviewMouseDown);
         }
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!DynamoSelection.Instance.Selection.Contains(this))
-            {
-                DynamoSelection.Instance.Selection.Add(this);
-            }
+            //if (!DynamoSelection.Instance.Selection.Contains(this))
+            //{
+            //    DynamoSelection.Instance.Selection.Add(this);
+            //}
+
+            //MVVM: replaced with command
+            vm.SelectCommand.Execute();
         }
 
         private void editItem_Click(object sender, RoutedEventArgs e)

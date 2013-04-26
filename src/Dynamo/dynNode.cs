@@ -49,6 +49,13 @@ namespace Dynamo.Nodes
 
         #endregion
 
+        public event EventHandler DispatchedToUI;
+        public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
+        {
+            if (DispatchedToUI != null)
+                DispatchedToUI(this, e);
+        }
+
         public dynWorkspace WorkSpace;
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
@@ -756,7 +763,7 @@ namespace Dynamo.Nodes
                                DynamoCommands.WriteToLogCmd.Execute(ex.StackTrace);
                            }
 
-                           Controller.ShowElement(this);
+                           Controller.DynamoViewModel.ShowElement(this);
                        }
                     ));
 
@@ -1217,6 +1224,16 @@ namespace Dynamo.Nodes
             
         }
 
+        /// <summary>
+        /// Called by nodes for behavior that they want to dispatch on the UI thread
+        /// Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
+        /// </summary>
+        /// <param name="a"></param>
+        public void DispatchOnUIThread(Action a)
+        {
+            OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
+        }
+
         #region ISelectable Interface
 
         public override void Deselect()
@@ -1240,7 +1257,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    
     #region class attributes
     [AttributeUsage(AttributeTargets.All)]
     public class NodeNameAttribute : System.Attribute
@@ -1361,6 +1377,15 @@ namespace Dynamo.Nodes
                 return result;
 
             return entry.Inputs.Values.Any(x => x != null && traverseAny(x.Item2));
+        }
+    }
+
+    public class UIDispatcherEventArgs:EventArgs
+    {
+        public Action ActionToDispatch { get; set; }
+        public UIDispatcherEventArgs(Action a)
+        {
+            ActionToDispatch = a;
         }
     }
 }

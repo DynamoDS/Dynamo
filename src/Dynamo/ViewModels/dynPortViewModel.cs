@@ -55,15 +55,15 @@ namespace Dynamo.Connectors
             _port.Center = center;
         }
 
-        //public void Update()
-        //{
-        //    foreach (dynConnector c in _port.Connectors)
-        //    {
-        //        //calling this with null will have
-        //        //no effect
-        //        c.Redraw();
-        //    }
-        //}
+        public void Update()
+        {
+            foreach (dynConnector c in _port.Connectors)
+            {
+                //calling this with null will have
+                //no effect
+                c.Redraw();
+            }
+        }
 
         private void Connect()
         {

@@ -89,7 +89,7 @@ namespace Dynamo
             _workSpaces.Remove(workspace);
         }
 
-#warning MVVM : removed method
+#warning MVVM : removed method. visibility should be bound to current space
         /*
         public static void hideWorkspace(dynWorkspace ws)
         {

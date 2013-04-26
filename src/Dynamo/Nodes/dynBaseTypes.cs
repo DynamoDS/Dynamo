@@ -1462,7 +1462,7 @@ namespace Dynamo.Nodes
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
-                NodeUI.Error("All inputs must be connected.");
+                Error("All inputs must be connected.");
                 throw new Exception("Begin Node requires all inputs to be connected.");
             }
             
@@ -1504,7 +1504,7 @@ namespace Dynamo.Nodes
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
-                NodeUI.Error("All inputs must be connected.");
+                Error("All inputs must be connected.");
                 throw new Exception("Apply Node requires all inputs to be connected.");
             }
             return base.Build(preBuilt, outPort);
@@ -1574,7 +1574,7 @@ namespace Dynamo.Nodes
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
-                NodeUI.Error("All inputs must be connected.");
+                Error("All inputs must be connected.");
                 throw new Exception("If Node requires all inputs to be connected.");
             }
             return base.Build(preBuilt, outPort);
@@ -1630,7 +1630,7 @@ namespace Dynamo.Nodes
 
         void button_Click(object sender, RoutedEventArgs e)
         {
-            NodeUI.Deselect();
+            Deselect();
             enabled = false;
         }
 
@@ -1645,14 +1645,14 @@ namespace Dynamo.Nodes
                }
             ));
 
-            if (Controller.RunInDebug)
+            if (Controller.DynamoViewModel.RunInDebug)
             {
                 button.Dispatcher.Invoke(new Action(
                    delegate
                    {
                        enabled = true;
-                       NodeUI.Select();
-                       Controller.ShowElement(this);
+                       Select();
+                       Controller.DynamoViewModel.ShowElement(this);
                    }
                 ));
 
@@ -1695,7 +1695,7 @@ namespace Dynamo.Nodes
                 numeric = value;
                 if (value && Text.Length > 0)
                 {
-                    Text = DynamoModel.RemoveChars(
+                    Text = dynSettings.RemoveChars(
                        Text,
                        Text.ToCharArray()
                           .Where(c => !char.IsDigit(c) && c != '-' && c != '.')
@@ -1759,7 +1759,7 @@ namespace Dynamo.Nodes
             {
                 var p = CaretIndex;
 
-                base.Text = DynamoModel.RemoveChars(
+                base.Text = dynSettings.RemoveChars(
                    Text,
                    Text.ToCharArray()
                       .Where(c => !char.IsDigit(c) && c != '-' && c != '.')

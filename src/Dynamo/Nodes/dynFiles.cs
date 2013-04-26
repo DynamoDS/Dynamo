@@ -199,19 +199,30 @@ namespace Dynamo.Nodes
                         using (Bitmap bmp = new Bitmap(storedPath))
                         {
 
-                            NodeUI.Dispatcher.Invoke(new Action(
-                                delegate
-                                {
-                                    // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
-                                    // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
-                                    // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
+                            //NodeUI.Dispatcher.Invoke(new Action(
+                            //    delegate
+                            //    {
+                            //        // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+                            //        // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+                            //        // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
 
-                                    var hbitmap = bmp.GetHbitmap();
-                                    var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-                                    image1.Source = imageSource;
-                                }
-                            ));
+                            //        var hbitmap = bmp.GetHbitmap();
+                            //        var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+                            //        image1.Source = imageSource;
+                            //    }
+                            //));
 
+                            //MVVM: now using node model's dispatch on ui thread method
+                            DispatchOnUIThread(delegate
+                            {
+                                // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+                                // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+                                // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
+
+                                var hbitmap = bmp.GetHbitmap();
+                                var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+                                image1.Source = imageSource;
+                            });
 
                             // Do some processing
                             for (int y = 0; y < yDiv; y++)

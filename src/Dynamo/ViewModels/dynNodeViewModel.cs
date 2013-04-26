@@ -180,6 +180,7 @@ namespace Dynamo.Controls
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
         public DelegateCommand<dynNodeUI> SetupCustomUIElementsCommand { get; set; }
+        public DelegateCommand ValidateConnectionsCommand { get; set; }
         #endregion
 
         #region constructors
@@ -200,11 +201,12 @@ namespace Dynamo.Controls
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
 
-            DeleteCommand = new DelegateCommand(new Action(DeleteNode()), CanDeleteNode);
+            DeleteCommand = new DelegateCommand(DeleteNode(), CanDeleteNode);
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeUI>(SetupCustomUIElements, CanSetupCustomUIElements);
+            ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
         }
         #endregion
 
@@ -255,7 +257,7 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private Action DeleteNode()
+        private void DeleteNode()
         {
             foreach (var port in nodeLogic.OutPorts)
             {
@@ -386,6 +388,16 @@ namespace Dynamo.Controls
                     OutPorts.Remove(OutPorts.ToList().First(x => x.PortModel == item));
                 }
             }
+        }
+
+        private void ValidateConnections()
+        {
+            nodeLogic.ValidateConnections();
+        }
+
+        private bool CanValidateConnections()
+        {
+            return true;
         }
 
         public void UpdateConnections()

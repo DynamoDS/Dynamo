@@ -79,6 +79,27 @@ namespace Dynamo.Utilities
                 Writer.Close();
             }
         }
+
+        public static void Log()
+        {
+            
+        }
+
+        public static string FormatFileName(string filename)
+        {
+            return RemoveChars(
+                filename,
+                new[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" }
+                );
+        }
+
+        public static string RemoveChars(string s, IEnumerable<string> chars)
+        {
+            foreach (string c in chars)
+                s = s.Replace(c, "");
+            return s;
+        }
+
     }
 
     //http://blogs.microsoft.co.il/blogs/shimmy/archive/2010/12/26/observabledictionary-lt-tkey-tvalue-gt-c.aspx

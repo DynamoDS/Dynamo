@@ -15,7 +15,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Xml;
 using Dynamo.Connectors;
 using Dynamo.Utilities;
 using Dynamo.Controls;
@@ -26,12 +28,12 @@ namespace Dynamo
 {
     public abstract class dynWorkspace : NotificationObject
     {
-        private string _name;
+        //private string _name;
         public ObservableCollection<dynNode> Nodes { get; private set; }
         public ObservableCollection<dynConnector> Connectors { get; private set; }
         public ObservableCollection<dynNoteModel> Notes { get; private set; }
 
-        private DynamoModel _model;
+        //private DynamoModel _model;
 
         public string FilePath { get; set; }
 
@@ -53,17 +55,17 @@ namespace Dynamo
 
         public abstract void OnDisplayed();
 
-        public DynamoModel Model
-        {
-            get { return _model; }
-        }
+        //public DynamoModel Model
+        //{
+        //    get { return _model; }
+        //}
 
         //Hide default constructor.
         private dynWorkspace() { }
 
-        protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y, DynamoModel model)
+        protected dynWorkspace(String name, List<dynNode> e, List<dynConnector> c, double x, double y)
         {
-            _model = model;
+            //_model = model;
             Name = name;
 #warning MVVM : made all lists into observable collections
             Nodes = new ObservableCollection<dynNode>(e);
@@ -95,6 +97,134 @@ namespace Dynamo
                x => x.OutPortData.Any() && x.OutPorts.All(y => !y.Connectors.Any())
             );
         }
+
+        #region static methods
+
+        /// <summary>
+        ///     Generate an xml doc and write the workspace to the given path
+        /// </summary>
+        /// <param name="xmlPath">The path to save to</param>
+        /// <param name="workSpace">The workspace</param>
+        /// <returns>Whether the operation was successful</returns>
+        public static bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
+        {
+            dynSettings.Log("Saving " + xmlPath + "...");
+            try
+            {
+
+#warning MVVM : Is this test valid for the Homeworskpace?
+                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspace);
+                xmlDoc.Save(xmlPath);
+
+                //cache the file path for future save operations
+                workSpace.FilePath = xmlPath;
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        ///     Generate the xml doc of the workspace from memory
+        /// </summary>
+        /// <param name="workSpace">The workspace</param>
+        /// <returns>The generated xmldoc</returns>
+        public static XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace)
+        {
+            try
+            {
+                //create the xml document
+                var xmlDoc = new XmlDocument();
+                xmlDoc.CreateXmlDeclaration("1.0", null, null);
+
+                XmlElement root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
+                root.SetAttribute("X", workSpace.PositionX.ToString());
+                root.SetAttribute("Y", workSpace.PositionY.ToString());
+
+                if (!savingHomespace) //If we are not saving the home space
+                {
+                    root.SetAttribute("Name", workSpace.Name);
+                    root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
+                    root.SetAttribute(
+                            "ID",
+                            dynSettings.FunctionDict.Values
+                                       .First(x => x.Workspace == workSpace).FunctionId.ToString());
+                }
+
+                xmlDoc.AppendChild(root);
+
+                XmlElement elementList = xmlDoc.CreateElement("dynElements"); //write the root element
+                root.AppendChild(elementList);
+
+                foreach (dynNode el in workSpace.Nodes)
+                {
+                    XmlElement dynEl = xmlDoc.CreateElement(el.GetType().ToString());
+                    elementList.AppendChild(dynEl);
+
+                    //set the type attribute
+                    dynEl.SetAttribute("type", el.GetType().ToString());
+                    dynEl.SetAttribute("guid", el.GUID.ToString());
+                    dynEl.SetAttribute("nickname", el.NickName);
+                    //dynEl.SetAttribute("x", Canvas.GetLeft(el.NodeUI).ToString());
+                    //dynEl.SetAttribute("y", Canvas.GetTop(el.NodeUI).ToString());
+                    dynEl.SetAttribute("x", el.X.ToString());
+                    dynEl.SetAttribute("y", el.Y.ToString());
+
+                    el.SaveElement(xmlDoc, dynEl);
+                }
+
+                //write only the output connectors
+                XmlElement connectorList = xmlDoc.CreateElement("dynConnectors"); //write the root element
+                root.AppendChild(connectorList);
+
+                foreach (dynNode el in workSpace.Nodes)
+                {
+                    foreach (dynPortModel port in el.OutPorts)
+                    {
+                        foreach (dynConnector c in port.Connectors.Where(c => c.Start != null && c.End != null))
+                        {
+                            XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
+                            connectorList.AppendChild(connector);
+                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
+                            connector.SetAttribute("start_index", c.Start.Index.ToString());
+                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
+                            connector.SetAttribute("end_index", c.End.Index.ToString());
+
+                            if (c.End.PortType == PortType.INPUT)
+                                connector.SetAttribute("portType", "0");
+                        }
+                    }
+                }
+
+                //save the notes
+                XmlElement noteList = xmlDoc.CreateElement("dynNotes"); //write the root element
+                root.AppendChild(noteList);
+                foreach (dynNoteModel n in workSpace.Notes)
+                {
+                    XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
+                    noteList.AppendChild(note);
+                    note.SetAttribute("text", n.Text);
+                    //note.SetAttribute("x", Canvas.GetLeft(n).ToString());
+                    //note.SetAttribute("y", Canvas.GetTop(n).ToString());
+                    note.SetAttribute("x", n.X.ToString());
+                    note.SetAttribute("y", n.Y.ToString());
+                }
+
+                return xmlDoc;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                return null;
+            }
+        }
+
+        #endregion
 
     }
 

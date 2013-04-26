@@ -207,6 +207,9 @@
                  Grid.Row="0" 
                  Grid.Column="2">
                 <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
+                    <controls:ZoomBorder.RenderTransform>
+                        <TranslateTransform X="{Binding Path=CurrentTransform.X,Mode=TwoWay}" Y="{Binding Path=CurrentTransform.Y, Mode=TwoWay}"/>
+                    </controls:ZoomBorder.RenderTransform>
                     <dragCanvas:DragCanvas x:Name="WorkBench"
                                     x:FieldModifier="public"
                                     Width="100000" 
@@ -233,7 +236,7 @@
 
                         <TextBox FontSize="15" Padding="5,7,5,0" Margin="0" Name="editNameBox" Width="150"
                          Focusable="False" IsHitTestVisible="False" Visibility="Collapsed" 
-                         IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" />
+                         IsEnabled="False" MouseEnter="editNameBox_MouseEnter" MouseLeave="editNameBox_MouseLeave" Text="{Binding EditName, Mode=TwoWay}" />
                         
                         <Label Padding="10" Content="{Binding Path=Name}" Name="workspaceLabel" 
                                HorizontalContentAlignment="Right" FontSize="15" Background="Black" Foreground="Gray"
@@ -283,7 +286,7 @@
                     <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
                 </ContextMenu>
             </ScrollViewer.ContextMenu>
-            <TextBox Text="{Binding ElementName=_this, Path=LogText}" 
+            <TextBox Text="{Binding Path=LogText}" 
                     Foreground="#FF00FF00" BorderThickness="0" BorderBrush="#00000000" Background="Black"
                     Margin="0" TextWrapping="Wrap" Focusable="True"
                     IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 

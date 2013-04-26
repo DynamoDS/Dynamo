@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -84,11 +85,13 @@ namespace Dynamo.Connectors
 
             pStart.Connect(this);
 
-            isDrawing = true;
+            //isDrawing = true;
 
             this.Connect(endPort);
 
-            ConnectorType = dynSettings.Controller.DynamoViewModel.ConnectorType;
+            //MVVM: the visibility of one connector type or another is now bound
+            //to the DynamoViewModel's ConnectorType property
+            //ConnectorType = dynSettings.Controller.DynamoViewModel.ConnectorType;
         }
 
         public dynConnector(dynNode start, dynNode end, int startIndex, int endIndex, int portType)
@@ -131,7 +134,9 @@ namespace Dynamo.Connectors
                 //starts evaulating immediately
                 //pEnd.Owner.InPortData[p.Index].Object = pStart.Owner.OutPortData.Object;
                 p.Connect(this);
-                pEnd.Update();
+
+                Debug.WriteLine("Ports no longer call update....is it still working?");
+                //pEnd.Update();
             }
 
             return true;

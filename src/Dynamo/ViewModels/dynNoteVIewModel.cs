@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using Dynamo.Selection;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Nodes
 {
@@ -24,28 +26,19 @@ namespace Dynamo.Nodes
         public double X
         {
             get { return _note.X; }
-            set
-            {
-                _x = value;
-                RaisePropertyChanged("X");
-            }
         }
 
         public double Y
         {
             get { return _note.Y; }
-            set 
-            { _
-                _y = value; 
-                RaisePropertyChanged("Y");
-            }
         }
 
         public string Text
         {
             get { return _note.Text; }
-            set {RaisePropertyChanged("Text");}
         }
+
+        public DelegateCommand SelectCommand { get; set; }
 
         public Visibility NoteVisibility
         {
@@ -56,12 +49,29 @@ namespace Dynamo.Nodes
                 return Visibility.Hidden;
             }
         }
+        
         public dynNoteViewModel(dynNoteModel note)
         {
             _note = note;
             note.PropertyChanged += note_PropertyChanged;
 
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
+            SelectCommand = new DelegateCommand(Select, CanSelect);
+        
+        }
+
+        private void Select()
+        {
+            DynamoSelection.Instance.Selection.Add(_note);
+        }
+
+        private bool CanSelect()
+        {
+            if (!DynamoSelection.Instance.Selection.Contains(_note))
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -85,13 +95,13 @@ namespace Dynamo.Nodes
             switch (e.PropertyName)
             {
                 case "X":
-                    X = _note.X;
+                    RaisePropertyChanged("X");
                     break;
                 case "Y":
-                    Y = _note.Y;
+                    RaisePropertyChanged("Y");
                     break;
                 case "Text":
-                    Text = _note.Text;
+                    RaisePropertyChanged("Text");
                     break;
             }
         }

@@ -93,54 +93,59 @@ namespace Dynamo
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
+            switch(e.Action)
             {
-                //connector view models are added to the collection in during connector connection operations
-                //we'll only respond to removal here
-                foreach (var item in e.OldItems)
-                {
-                    _connectors.Remove(_connectors.First(x => x.ConnectorModel == item));
-                }
+                case NotifyCollectionChangedAction.Remove:
+                    //connector view models are added to the collection in during connector connection operations
+                    //we'll only respond to removal here
+                    foreach (var item in e.OldItems)
+                    {
+                        _connectors.Remove(_connectors.First(x => x.ConnectorModel == item));
+                    }
+                    break;
             }
         }
 
         void Notes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if(e.Action == NotifyCollectionChangedAction.Add)
+            switch (e.Action)
             {
-                foreach (var item in e.NewItems)
-                {
-                    //add a corresponding note
-                    var viewModel = new dynNoteViewModel(item as dynNoteModel);
-                    _notes.Add(viewModel);
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (var item in e.OldItems)
-                {
-                    _notes.Remove(_notes.First(x => x.Note == item));
-                }
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {
+                        //add a corresponding note
+                        var viewModel = new dynNoteViewModel(item as dynNoteModel);
+                        _notes.Add(viewModel);
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        _notes.Remove(_notes.First(x => x.Note == item));
+                    }
+                    break;
             }
         }
 
         void Nodes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            switch (e.Action)
             {
-                foreach (var item in e.NewItems)
-                {
-                    //add a corresponding note
-                    var viewModel = new dynNodeViewModel(item as dynNode);
-                    _nodes.Add(viewModel);
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (var item in e.OldItems)
-                {
-                    _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
-                }
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {
+                        //add a corresponding note
+                        var viewModel = new dynNodeViewModel(item as dynNode);
+                        _nodes.Add(viewModel);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
+                    }
+                    break;
             }
         }
 

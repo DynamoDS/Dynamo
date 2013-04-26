@@ -146,7 +146,7 @@ namespace Dynamo.PackageManager
         {
             // var group = ((FuncWorkspace) funDef.Workspace).Category;
             string name = funDef.Workspace.Name;
-            var xml = DynamoController.GetXmlDocFromWorkspace(funDef.Workspace, false);
+            var xml = dynWorkspace.GetXmlDocFromWorkspace(funDef.Workspace, false);
             if (xml == null) return null;
             var contents = xml.OuterXml;
             string engineVersion = "0.1.0"; //nope
@@ -176,7 +176,7 @@ namespace Dynamo.PackageManager
         {
             // var group = ((FuncWorkspace) funDef.Workspace).Category;
             string name = funDef.Workspace.Name;
-            var xml = DynamoController.GetXmlDocFromWorkspace(funDef.Workspace, false);
+            var xml = dynWorkspace.GetXmlDocFromWorkspace(funDef.Workspace, false);
             if (xml == null) return null;
             var contents = xml.OuterXml;
             string engineVersion = "0.1.0"; //nope

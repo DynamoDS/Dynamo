@@ -21,6 +21,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Windows.Threading;
 using System.Security.Cryptography;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 using Value = Dynamo.FScheme.Value;
@@ -174,7 +175,9 @@ namespace Dynamo.Nodes
 
             if (((Value.Number)args[0]).Item == 1) // if exec node has pumped
             {
-                NodeUI.Dispatcher.BeginInvoke(new UDPListening(ListenOnUDP));
+                //MVVM: now using node's dispatch on UI thread method
+                //NodeUI.Dispatcher.BeginInvoke(new UDPListening(ListenOnUDP));
+                DispatchOnUIThread(ListenOnUDP);
             }
 
 

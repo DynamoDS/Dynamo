@@ -35,6 +35,8 @@ namespace Dynamo.Controls
     {
         public event EventHandler UILocked;
         public event EventHandler UIUnlocked;
+        public event EventHandler CurrentOffsetChanged;
+        public event EventHandler StopDragging;
 
         public virtual void OnUILocked(object sender, EventArgs e)
         {
@@ -46,6 +48,18 @@ namespace Dynamo.Controls
         {
             if (UIUnlocked != null)
                 UIUnlocked(this, e);
+        }
+
+        public virtual void OnCurrentOffsetChanges(object sender, EventArgs e)
+        {
+            if (CurrentOffsetChanged != null)
+                CurrentOffsetChanged(this, e);
+        }
+
+        public virtual void OnStopDragging(object sender, EventArgs e)
+        {
+            if(StopDragging != null)
+                StopDragging(this, e)
         }
 
         private DynamoModel _model;
@@ -64,6 +78,8 @@ namespace Dynamo.Controls
         private bool isConnecting = false;
         private string UnlockLoadPath;
         private bool uiLocked = true;
+        private Point currentOffset = new Point(0,0);
+        private string editName = "";
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -107,6 +123,8 @@ namespace Dynamo.Controls
         public DelegateCommand<object> CrossSelectCommand { get; set; }
         public DelegateCommand<object> ContainSelectCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
+        public DelegateCommand RefactorCustomNodeCommand { get; set; }
+        public DelegateCommand<object> SetCurrentOffsetCommand { get; set; }
 
         public ObservableCollection<dynWorkspaceViewModel> Workspaces
         {
@@ -221,15 +239,25 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// Specifies the pan location of the view
+        /// </summary>
         public Point CurrentOffset
         {
-            get { return zoomBorder.GetTranslateTransformOrigin(); }
-            set
-            {
-                if (zoomBorder != null)
-                {
-                    zoomBorder.SetTranslateTransformOrigin(value);
-                }
+            //get { return zoomBorder.GetTranslateTransformOrigin(); }
+            //set
+            //{
+            //    if (zoomBorder != null)
+            //    {
+            //        zoomBorder.SetTranslateTransformOrigin(value);
+            //    }
+            //    RaisePropertyChanged("CurrentOffset");
+            //}
+
+            get { return currentOffset; }
+            set 
+            { 
+                currentOffset = value;
                 RaisePropertyChanged("CurrentOffset");
             }
         }
@@ -269,6 +297,17 @@ namespace Dynamo.Controls
                     return new SolidColorBrush(Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A));
                 return new SolidColorBrush(Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B));
             }
+        }
+
+        public string EditName
+        {
+            get { return editName; }
+            set 
+            { 
+                editName = value;
+                RaisePropertyChanged("EditName");
+            }
+
         }
 
         public DynamoViewModel(DynamoController controller)
@@ -319,6 +358,8 @@ namespace Dynamo.Controls
             CrossSelectCommand = new DelegateCommand<object>(CrossingSelect, CanCrossSelect);
             ContainSelectCommand = new DelegateCommand<object>(ContainSelect, CanContainSelect);
             PostUIActivationCommand = new DelegateCommand(PostUIActivation, CanDoPostUIActivation);
+            RefactorCustomNodeCommand = new DelegateCommand(RefactorCustomNode, CanRefactorCustomNode);
+            SetCurrentOffsetCommand = new DelegateCommand<object>(SetCurrentOffset, CanSetCurrentOffset);
         }
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -613,6 +654,9 @@ namespace Dynamo.Controls
         private void Exit()
         {
             dynSettings.Bench.Close();
+            dynSettings.FinishLogging();
+
+            //TODO: Other exit logic?
         }
 
         private bool CanExit()
@@ -1014,20 +1058,15 @@ namespace Dynamo.Controls
             return true;
         }
 
+        /// <summary>
+        /// Clear the UI log.
+        /// </summary>
         private void ClearLog()
         {
-            //TODO: ensure logger fixes are sound
-
-            /*
-            dynSettings.Bench.sw.Flush();
-            dynSettings.Bench.sw.Close();
-            dynSettings.Bench.sw = new StringWriter();
-            dynSettings.Controller.DynamoViewModel.LogText = dynSettings.Bench.sw.ToString();*/
-            
-            dynSettings.Writer.Flush();
-            dynSettings.Writer.Close();
-            dynSettings.Writer = new StreamWriter();
-            dynSettings.Controller.DynamoViewModel.LogText = dynSettings.Writer.ToString();
+            sw.Flush();
+            sw.Close();
+            sw = new StringWriter();
+            LogText = sw.ToString();
         }
 
         private bool CanClearLog()
@@ -1093,11 +1132,15 @@ namespace Dynamo.Controls
         {
             if (parameters.ToString() == "BEZIER")
             {
-                _model.CurrentSpace.Connectors.ToList().ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
+                //MVVM: visibility of one type of connector or another
+                //should now be handled in bindings
+                //_model.CurrentSpace.Connectors.ToList().ForEach(x => x.ConnectorType = ConnectorType.BEZIER);
+                connectorType = ConnectorType.BEZIER;
             }
             else
             {
-                _model.CurrentSpace.Connectors.ToList().ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
+                connectorType = ConnectorType.POLYLINE;
+                //_model.CurrentSpace.Connectors.ToList().ForEach(x => x.ConnectorType = ConnectorType.POLYLINE);
             }
         }
 
@@ -1480,7 +1523,7 @@ namespace Dynamo.Controls
         {
             sw.WriteLine(message);
             LogText = sw.ToString();
-
+           
             if (DynamoCommands.WriteToLogCmd.CanExecute(null))
             {
                 DynamoCommands.WriteToLogCmd.Execute(message);
@@ -1505,7 +1548,8 @@ namespace Dynamo.Controls
 
             foreach (dynConnector connector in allConnectors)
             {
-                connector.Redraw();
+                Debug.WriteLine("Connectors no longer call redraw....is it still working?");
+                //connector.Redraw();
             }
         }
 
@@ -1548,8 +1592,10 @@ namespace Dynamo.Controls
             foreach (dynNode n in _model.Nodes)
             {
                 //check if the node is within the boundary
-                double x0 = Canvas.GetLeft(n);
-                double y0 = Canvas.GetTop(n);
+                //double x0 = Canvas.GetLeft(n);
+                //double y0 = Canvas.GetTop(n);
+                double x0 = n.X;
+                double y0 = n.Y;
                 double x1 = x0 + n.Width;
                 double y1 = y0 + n.Height;
 
@@ -1612,124 +1658,15 @@ namespace Dynamo.Controls
             return true;
         }
 
-        /// <summary>
-        ///     Generate an xml doc and write the workspace to the given path
-        /// </summary>
-        /// <param name="xmlPath">The path to save to</param>
-        /// <param name="workSpace">The workspace</param>
-        /// <returns>Whether the operation was successful</returns>
-        private bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
+        private void SetCurrentOffset(object parameter)
         {
-            Log("Saving " + xmlPath + "...");
-            try
-            {
-                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace == _model.HomeSpace);
-                xmlDoc.Save(xmlPath);
-
-                //cache the file path for future save operations
-                workSpace.FilePath = xmlPath;
-            }
-            catch (Exception ex)
-            {
-                Log(ex);
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return false;
-            }
-
-            return true;
+            var p = (Point) parameter;
+            CurrentOffset = new Point(-p.X, -p.Y);
         }
 
-        /// <summary>
-        ///     Generate the xml doc of the workspace from memory
-        /// </summary>
-        /// <param name="workSpace">The workspace</param>
-        /// <returns>The generated xmldoc</returns>
-        public XmlDocument GetXmlDocFromWorkspace(dynWorkspace workSpace, bool savingHomespace)
+        private bool CanSetCurrentOffset(object parameter)
         {
-            try
-            {
-                //create the xml document
-                var xmlDoc = new XmlDocument();
-                xmlDoc.CreateXmlDeclaration("1.0", null, null);
-
-                XmlElement root = xmlDoc.CreateElement("dynWorkspace"); //write the root element
-                root.SetAttribute("X", workSpace.PositionX.ToString());
-                root.SetAttribute("Y", workSpace.PositionY.ToString());
-
-                if (!savingHomespace) //If we are not saving the home space
-                {
-                    root.SetAttribute("Name", workSpace.Name);
-                    root.SetAttribute("Category", ((FuncWorkspace)workSpace).Category);
-                    root.SetAttribute(
-                            "ID",
-                            dynSettings.FunctionDict.Values
-                                       .First(x => x.Workspace == workSpace).FunctionId.ToString());
-                }
-
-                xmlDoc.AppendChild(root);
-
-                XmlElement elementList = xmlDoc.CreateElement("dynElements"); //write the root element
-                root.AppendChild(elementList);
-
-                foreach (dynNode el in workSpace.Nodes)
-                {
-                    XmlElement dynEl = xmlDoc.CreateElement(el.GetType().ToString());
-                    elementList.AppendChild(dynEl);
-
-                    //set the type attribute
-                    dynEl.SetAttribute("type", el.GetType().ToString());
-                    dynEl.SetAttribute("guid", el.GUID.ToString());
-                    dynEl.SetAttribute("nickname", el.NickName);
-                    //dynEl.SetAttribute("x", Canvas.GetLeft(el.NodeUI).ToString());
-                    //dynEl.SetAttribute("y", Canvas.GetTop(el.NodeUI).ToString());
-                    dynEl.SetAttribute("x", el.X.ToString());
-                    dynEl.SetAttribute("y", el.Y.ToString());
-
-                    el.SaveElement(xmlDoc, dynEl);
-                }
-
-                //write only the output connectors
-                XmlElement connectorList = xmlDoc.CreateElement("dynConnectors"); //write the root element
-                root.AppendChild(connectorList);
-
-                foreach (dynNode el in workSpace.Nodes)
-                {
-                    foreach (dynPortModel port in el.OutPorts)
-                    {
-                        foreach (dynConnector c in port.Connectors.Where(c => c.Start != null && c.End != null))
-                        {
-                            XmlElement connector = xmlDoc.CreateElement(c.GetType().ToString());
-                            connectorList.AppendChild(connector);
-                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
-                            connector.SetAttribute("start_index", c.Start.Index.ToString());
-                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
-                            connector.SetAttribute("end_index", c.End.Index.ToString());
-
-                            if (c.End.PortType == PortType.INPUT)
-                                connector.SetAttribute("portType", "0");
-                        }
-                    }
-                }
-
-                //save the notes
-                XmlElement noteList = xmlDoc.CreateElement("dynNotes"); //write the root element
-                root.AppendChild(noteList);
-                foreach (dynNoteModel n in workSpace.Notes)
-                {
-                    XmlElement note = xmlDoc.CreateElement(n.GetType().ToString());
-                    noteList.AppendChild(note);
-                    note.SetAttribute("text", n.Text);
-                    note.SetAttribute("x", Canvas.GetLeft(n).ToString());
-                    note.SetAttribute("y", Canvas.GetTop(n).ToString());
-                }
-
-                return xmlDoc;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return null;
-            }
+            return true;
         }
 
         internal bool OpenDefinition(string xmlPath)
@@ -2063,7 +2000,7 @@ namespace Dynamo.Controls
         {
             if (!String.IsNullOrEmpty(path))
             {
-                if (!SaveWorkspace(path, _model.CurrentSpace))
+                if (!dynWorkspace.SaveWorkspace(path, _model.CurrentSpace))
                 {
                     Log("Workbench could not be saved.");
                 }
@@ -2100,20 +2037,21 @@ namespace Dynamo.Controls
         ///     Update a custom node after refactoring.  Updates search and all instances of the node.
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        internal void RefactorCustomNode()
+        private void RefactorCustomNode()
         {
-            string newName = Bench.editNameBox.Text;
+            //MVVM : edit name is now bound to the EditName property
+            //string newName = Bench.editNameBox.Text;
 
-            if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == newName))
+            if (dynSettings.FunctionDict.Values.Any(x => x.Workspace.Name == editName))
             {
-                Log("ERROR: Cannot rename to \"" + newName + "\", node with same name already exists.");
+                Log("ERROR: Cannot rename to \"" + editName + "\", node with same name already exists.");
                 return;
             }
 
 #warning MVVM : replace this with a binding
             //Bench.workspaceLabel.Content = Bench.editNameBox.Text;
 
-            Controller.SearchViewModel.Refactor(CurrentSpace, newName);
+            Controller.SearchViewModel.Refactor(CurrentSpace, editName);
 
             //Update existing function nodes
             foreach (dynNode el in AllNodes)
@@ -2132,7 +2070,7 @@ namespace Dynamo.Controls
 
                     //Rename nickname only if it's still referring to the old name
                     if (node.NickName.Equals(CurrentSpace.Name))
-                        node.NickName = newName;
+                        node.NickName = editName;
                 }
             }
 
@@ -2147,17 +2085,22 @@ namespace Dynamo.Controls
                 string oldpath = Path.Combine(pluginsPath, CurrentSpace.Name + ".dyf");
                 if (File.Exists(oldpath))
                 {
-                    string newpath = FormatFileName(
-                        Path.Combine(pluginsPath, newName + ".dyf")
+                    string newpath = dynSettings.FormatFileName(
+                        Path.Combine(pluginsPath, editName + ".dyf")
                         );
 
                     File.Move(oldpath, newpath);
                 }
             }
 
-            (_model.CurrentSpace).Name = newName;
+            (_model.CurrentSpace).Name = editName;
 
             SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == CurrentSpace));
+        }
+
+        private bool CanRefactorCustomNode()
+        {
+            return true;
         }
 
         public IEnumerable<dynNode> AllNodes
@@ -2199,9 +2142,9 @@ namespace Dynamo.Controls
                     if (!Directory.Exists(pluginsPath))
                         Directory.CreateDirectory(pluginsPath);
 
-                    string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
-                    SaveWorkspace(path, functionWorkspace);
-                    SearchViewModel.Add(definition.Workspace);
+                    string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                    dynWorkspace.SaveWorkspace(path, functionWorkspace);
+                    Controller.SearchViewModel.Add(definition.Workspace);
                 }
                 catch (Exception e)
                 {
@@ -2305,11 +2248,11 @@ namespace Dynamo.Controls
                 }
 
                 // make the anonymous function
-                FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.NodeUI.GUID.ToString()),
+                FScheme.Expression expression = Utils.MakeAnon(variables.Select(x => x.GUID.ToString()),
                                                                top.Compile());
 
                 // make it accessible in the FScheme environment
-                FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), expression);
+                Controller.FSchemeEnvironment.DefineSymbol(definition.FunctionId.ToString(), expression);
 
                 //Update existing function nodes which point to this function to match its changes
                 foreach (dynNode el in AllNodes)
@@ -2362,8 +2305,8 @@ namespace Dynamo.Controls
                 if (!Directory.Exists(pluginsPath))
                     Directory.CreateDirectory(pluginsPath);
 
-                string path = Path.Combine(pluginsPath, FormatFileName(functionWorkspace.Name) + ".dyf");
-                SaveWorkspace(path, functionWorkspace);
+                string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+                dynWorkspace.SaveWorkspace(path, functionWorkspace);
                 return path;
             }
             catch (Exception e)
@@ -2421,6 +2364,7 @@ namespace Dynamo.Controls
                 ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
+#warning MVVM : don't edit view elements here
                 //nodeUI.Visibility = vis;
 
                 //Bench.WorkBench.Children.Add(nodeUI);
@@ -2457,21 +2401,21 @@ namespace Dynamo.Controls
 
             //dynNodeUI nodeUI = node.NodeUI;
 
-            //if (!string.IsNullOrEmpty(nickName))
-            //{
-            //    nodeUI.NickName = nickName;
-            //}
-            //else
-            //{
-            //    var elNameAttrib =
-            //        node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
-            //    if (elNameAttrib != null)
-            //    {
-            //        nodeUI.NickName = elNameAttrib.Name;
-            //    }
-            //}
+            if (!string.IsNullOrEmpty(nickName))
+            {
+                node.NickName = nickName;
+            }
+            else
+            {
+                var elNameAttrib =
+                    node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
+                if (elNameAttrib != null)
+                {
+                    node.NickName = elNameAttrib.Name;
+                }
+            }
 
-            //nodeUI.GUID = guid;
+            node.GUID = guid;
 
             //string name = nodeUI.NickName;
             return node;
@@ -2517,7 +2461,7 @@ namespace Dynamo.Controls
             }*/
 
             // TODO: get this out of here
-            PackageManagerClient.HidePackageControlInformation();
+            Controller.PackageManagerClient.HidePackageControlInformation();
 
             //Bench.workspaceLabel.Content = "Home";
 
@@ -2542,8 +2486,10 @@ namespace Dynamo.Controls
             dynWorkspace newWs = symbol.Workspace;
 
             //Make sure we aren't dragging
-            Bench.WorkBench.isDragInProgress = false;
-            Bench.WorkBench.ignoreClick = true;
+            //MVVM : replaced with the StopDragging event
+            //Bench.WorkBench.isDragInProgress = false;
+            //Bench.WorkBench.ignoreClick = true;
+            OnStopDragging(this, EventArgs.Empty);
 
 #warning MVVM : don't toggle visiblity manually.
             //Step 1: Make function workspace invisible
@@ -2600,21 +2546,6 @@ namespace Dynamo.Controls
             PackageManagerClient.ShowPackageControlInformation();
 
             _model.CurrentSpace.OnDisplayed();
-        }
-
-        private static string FormatFileName(string filename)
-        {
-            return RemoveChars(
-                filename,
-                new[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" }
-                );
-        }
-
-        internal static string RemoveChars(string s, IEnumerable<string> chars)
-        {
-            foreach (string c in chars)
-                s = s.Replace(c, "");
-            return s;
         }
 
         public bool OpenWorkbench(string xmlPath)
@@ -2773,7 +2704,7 @@ namespace Dynamo.Controls
                     dynNode start = null;
                     dynNode end = null;
 
-                    foreach (dynNode e in Dynamo.Nodes)
+                    foreach (dynNode e in _model.Nodes)
                     {
                         if (e.GUID == guidStart)
                         {
@@ -2913,8 +2844,8 @@ namespace Dynamo.Controls
             var workSpace = new FuncWorkspace(
                 name, category, workspaceOffsetX, workspaceOffsetY);
 
-            List<dynNode> newElements = workSpace.Nodes;
-            List<dynConnector> newConnectors = workSpace.Connectors;
+            List<dynNode> newElements = workSpace.Nodes.ToList();
+            List<dynConnector> newConnectors = workSpace.Connectors.ToList();
 
             var functionDefinition = new FunctionDefinition(id)
             {
@@ -2924,7 +2855,7 @@ namespace Dynamo.Controls
             dynSettings.FunctionDict[functionDefinition.FunctionId] = functionDefinition;
 
             // add the element to search
-            SearchViewModel.Add(workSpace);
+            Controller.SearchViewModel.Add(workSpace);
 
             if (display)
             {
@@ -3153,6 +3084,18 @@ namespace Dynamo.Controls
         //    var bgBrush = (SolidColorBrush) outerCanvas.Background;
         //    bgBrush.Color = Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B); //Dark
         //}
+    }
+
+    public class TypeLoadData
+    {
+        public Assembly Assembly;
+        public Type Type;
+
+        public TypeLoadData(Assembly assemblyIn, Type typeIn)
+        {
+            Assembly = assemblyIn;
+            Type = typeIn;
+        }
     }
 
     //MVVM:Removed the splash screen commands

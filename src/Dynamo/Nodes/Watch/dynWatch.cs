@@ -132,7 +132,7 @@ namespace Dynamo.Nodes
 
             int count = 0;
 
-            NodeUI.Dispatcher.Invoke(new Action(
+            DispatchOnUIThread(
                 delegate
                 {
                     wtb.Clear();
@@ -143,7 +143,20 @@ namespace Dynamo.Nodes
                         count++;
                     }
                 }
-            ));
+            );
+
+            //NodeUI.Dispatcher.Invoke(new Action(
+            //    delegate
+            //    {
+            //        wtb.Clear();
+
+            //        foreach (Value e in args)
+            //        {
+            //            wtb.Add(Process(e, ref content, prefix, count));
+            //            count++;
+            //        }
+            //    }
+            //));
 
             //return the content that has been gathered
             return args[0]; //watch should be a 'pass through' node
