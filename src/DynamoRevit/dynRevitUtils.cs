@@ -4,8 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Diagnostics;
+
+using System.Windows.Media.Media3D;
+
 using Dynamo.Nodes;
 using Dynamo.Revit;
+using Dynamo.Nodes;
 
 using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;
@@ -374,6 +378,7 @@ namespace Dynamo.Utilities
                 }
             }
         }
+
     }
 
     /// <summary>

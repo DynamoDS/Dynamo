@@ -30,11 +30,18 @@ namespace Dynamo
         public List<dynNode> Nodes { get; private set; }
         public List<dynConnector> Connectors { get; private set; }
         public List<dynNote> Notes { get; private set; }
-
+        
         public double PositionX { get; set; }
         public double PositionY { get; set; }
         public string FilePath { get; set; }
         public String Name { get; set; }
+
+        Dictionary<Guid, List<RenderDescription>> renderData = new Dictionary<Guid, List<RenderDescription>>();
+        public Dictionary<Guid, List<RenderDescription>> RenderData 
+        {
+            get { return renderData; }
+            set {renderData = value;}
+        }
 
         public event Action OnModified;
 

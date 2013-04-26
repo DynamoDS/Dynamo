@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -11,16 +12,30 @@ using Value = Dynamo.FScheme.Value;
 using Microsoft.FSharp.Collections;
 using Dynamo.Connectors;
 
+using HelixToolkit.Wpf;
+
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
+
 namespace Dynamo.Revit
 {
-    public abstract class dynRevitTransactionNode : dynNode
+    public abstract class dynRevitTransactionNode : dynNode, IDrawable
     {
+        protected object drawableObject = null;
+        protected Func<object, RenderDescription> drawMethod = null;
+
+        private Type base_type = null;
+
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
         {
             get { return dynRevitSettings.Doc; }
         }
 
+        // this contains a list of all the elements created over all previous
+        // recursive runs over the node. subsequest runs executed via the 'Run'
+        // button or 'Run Automatically' are stored in an external map
+        // To get all the Elements associated with this node, flatten this list
         private List<List<ElementId>> elements
         {
             get
@@ -29,6 +44,7 @@ namespace Dynamo.Revit
             }
         }
 
+        // This list contains the elements of the current recurvise execution
         public List<ElementId> Elements
         {
             get
@@ -43,6 +59,195 @@ namespace Dynamo.Revit
             }
         }
 
+        public RenderDescription Draw()
+        {
+            var drawaableRevitElements = elements.SelectMany(x => x.Select(y => dynRevitSettings.Doc.Document.GetElement(y)));
+
+            Debug.WriteLine(string.Format("Drawing {0} elements of type : {1}", drawaableRevitElements.Count(),
+                                          this.GetType()));
+            
+            RenderDescription description = new RenderDescription();
+            foreach (Element e in drawaableRevitElements)
+            {
+                Draw(description, e);
+            }
+            return description;
+        }
+
+        public static void DrawUndrawable(RenderDescription description, object obj)
+        {
+            //TODO: write a message, throw an exception, draw a question mark
+        }
+
+        public static void DrawReferencePoint(RenderDescription description, object obj)
+        {
+            ReferencePoint point = obj as ReferencePoint;
+            description.points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
+                point.GetCoordinateSystem().Origin.Y,
+                point.GetCoordinateSystem().Origin.Z));
+        }
+
+        public static void DrawXYZ(RenderDescription description, object obj)
+        {
+            XYZ point = obj as XYZ;
+            description.points.Add(new Point3D(point.X, point.Y, point.Z));
+        }
+
+        public static void DrawCurve(RenderDescription description, object obj)
+        {
+            Autodesk.Revit.DB.Curve curve = obj as Autodesk.Revit.DB.Curve;
+
+            IList<XYZ> points = curve.Tessellate();
+
+            for (int i = 0; i < points.Count; ++i)
+            {
+                XYZ xyz = points[i];
+
+                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+
+                if (i == 0 || i == (points.Count - 1))
+                    continue;
+
+                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+            }
+        }
+
+        public static void DrawCurveElement(RenderDescription description, object obj)
+        {
+            Autodesk.Revit.DB.CurveElement elem = obj as Autodesk.Revit.DB.CurveElement;
+
+            DrawCurve(description, elem.GeometryCurve);
+        }
+
+        public static void DrawSolid(RenderDescription description, object obj)
+        {
+            Autodesk.Revit.DB.Solid solid = obj as Autodesk.Revit.DB.Solid;
+
+            foreach (Face f in solid.Faces)
+            {
+                DrawFace(description, f);
+            }
+
+            foreach (Edge edge in solid.Edges)
+            {
+                DrawCurve(description, edge.AsCurve());
+            }
+        }
+
+        public static Point3D RevitPointToWindowsPoint(Autodesk.Revit.DB.XYZ xyz)
+        {
+            return new Point3D(xyz.X, xyz.Y, xyz.Z);
+        }
+
+        public static Mesh3D RevitMeshToHelixMesh(Autodesk.Revit.DB.Mesh rmesh)
+        {
+            List<int> indices = new List<int>();
+            List<Point3D> vertices = new List<Point3D>();
+
+            int j = 0;
+            for (int i = 0; i < rmesh.NumTriangles; ++i)
+            {
+                MeshTriangle tri = rmesh.get_Triangle(i);
+
+                vertices.Add(RevitPointToWindowsPoint(tri.get_Vertex(0)));
+                vertices.Add(RevitPointToWindowsPoint(tri.get_Vertex(1)));
+                vertices.Add(RevitPointToWindowsPoint(tri.get_Vertex(2)));
+
+                indices.Add(j); ++j;
+                indices.Add(j); ++j;
+                indices.Add(j); ++j;
+            }
+
+            Mesh3D hmesh = new Mesh3D(vertices, indices);
+
+            return hmesh;
+        }
+
+        public static void DrawFace(RenderDescription description, object obj)
+        {
+            Autodesk.Revit.DB.Face face = obj as Autodesk.Revit.DB.Face;
+            
+            description.meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.2)));
+        }
+
+        public static void DrawForm(RenderDescription description, object obj)
+        {
+            Autodesk.Revit.DB.Form form = obj as Autodesk.Revit.DB.Form;
+
+            DrawGeometryElement(description, form.get_Geometry(new Options()));
+        }
+
+        public static void DrawGeometryElement(RenderDescription description, object obj)
+        {
+            GeometryElement gelem = obj as GeometryElement;
+
+            foreach (GeometryObject go in gelem)
+            {
+                DrawGeometryObject(description, go);
+            }
+        }
+
+        // Why the if/else statements? Most dynRevitTransactionNode are created
+        // via a Python script. This keeps logic in the main C# code base.
+
+        public static void DrawGeometryObject(RenderDescription description, object obj)
+        {
+            // Debugging code
+            //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
+            //System.IO.File.WriteAllText(path, obj.GetType().Name);
+
+            if (typeof(Autodesk.Revit.DB.Curve).IsAssignableFrom(obj.GetType()))
+            {
+                DrawCurve(description, obj);
+            }
+            else if (typeof(Autodesk.Revit.DB.Solid).IsAssignableFrom(obj.GetType()))
+            {
+                DrawSolid(description, obj);
+            }
+            else if (typeof(Autodesk.Revit.DB.Face).IsAssignableFrom(obj.GetType()))
+            {
+                DrawFace(description, obj);
+            }
+            else
+            {
+                DrawUndrawable(description, obj);
+            }
+        }
+
+        // Elements can cantain many Geometry
+        public static void DrawElement(RenderDescription description, object obj)
+        {
+            if (typeof(Autodesk.Revit.DB.CurveElement).IsAssignableFrom(obj.GetType()))
+            {
+                DrawCurveElement(description, obj);
+            }
+            else if (typeof(Autodesk.Revit.DB.ReferencePoint).IsAssignableFrom(obj.GetType()))
+            {
+                DrawReferencePoint(description, obj);
+            }
+            else if (typeof(Autodesk.Revit.DB.Form).IsAssignableFrom(obj.GetType()))
+            {
+                DrawForm(description, obj);
+            }
+            else if (typeof(Autodesk.Revit.DB.GeometryElement).IsAssignableFrom(obj.GetType()))
+            {
+                DrawGeometryElement(description, obj);
+            }
+            else
+            {
+                Element elem = obj as Element;
+                DrawGeometryElement(description, elem.get_Geometry(new Options()));
+            }
+        }
+
+        public void Draw(RenderDescription description, object obj)
+        {
+            //string path = @"C:\Temp\" + System.Guid.NewGuid().ToString() + ".txt";
+            //System.IO.File.WriteAllText(path, obj.GetType().Name);
+
+            DrawElement(description, obj);
+        }
+        
         //TODO: Move handling of increments to wrappers for eval. Should never have to touch this in subclasses.
         /// <summary>
         /// Implementation detail, records how many times this Element has been executed during this run.
@@ -67,6 +272,8 @@ namespace Dynamo.Revit
 
         internal void PruneRuns(int runCount)
         {
+            Debug.WriteLine(string.Format("Pruning runs from {0} to {1}", elements.Count, runCount));
+
             for (int i = elements.Count - 1; i >= runCount; i--)
             {
                 var elems = elements[i];

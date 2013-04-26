@@ -252,11 +252,17 @@ class RevitMethod:
 		'\t///</summary>\n']
 		f.writelines(class_notes)
 
+		class_declaration = '\tpublic class API_' + self.nickName + ' : dynRevitAPINode\n'
+
 		self.write_attributes(f, valid_namespaces)
-		f.write('\tpublic class API_' + self.nickName + ' : dynAPIMethodNode\n')
+
+		f.write(class_declaration)
+
 		f.write('\t{\n')
 
 		self.write_constructor(f)
+		#self.write_draw(f);
+
 		f.write('\t}\n')
 		f.write('\n')
 
@@ -325,6 +331,9 @@ class RevitMethod:
 
 		f.write('\t\t\tNodeUI.RegisterAllPorts();\n')
 		f.write('\t\t}\n')
+	
+	def write_draw(self, f):
+		f.write('\t\tDraw(){return dynRevitUtils.Draw(Elements);}\n')
 
 	def match_method_call(self):
 

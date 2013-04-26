@@ -100,6 +100,9 @@ namespace Dynamo.Nodes
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
     public class dynCurveByPoints : dynRevitTransactionNodeWithOneOutput
     {
+        //Our eventual output.
+        CurveByPoints c;
+
         public dynCurveByPoints()
         {
             InPortData.Add(new PortData("refPts", "List of reference points", typeof(object)));
@@ -110,9 +113,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //Our eventual output.
-            CurveByPoints c;
-
+            
             //Build a sequence that unwraps the input list from it's Value form.
             IEnumerable<ReferencePoint> refPts = ((Value.List)args[0]).Item.Select(
                x => (ReferencePoint)((Value.Container)x).Item

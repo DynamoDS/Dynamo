@@ -101,6 +101,9 @@ limitations under the License.
     </Compile>
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
+    <Compile Include="Nodes\dynIDrawable.cs" />
+    <Compile Include="Nodes\dynPoint.cs" />
+    <Compile Include="Nodes\Watch\dynWatch3D.cs" />
     <Compile Include="PackageManager\PackageManagerCommands.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginViewModel.cs" />
     <Compile Include="PackageManager\Login\PackageManagerLoginView.xaml.cs">
@@ -171,6 +174,9 @@ limitations under the License.
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="WatchControl.xaml.cs">
+      <DependentUpon>WatchControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ZoomBorder.cs" />
     <Compile Include="Search\SearchDictionary.cs" />
@@ -244,6 +250,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Resource>
     <Page Include="Themes\DynamoText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WatchControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

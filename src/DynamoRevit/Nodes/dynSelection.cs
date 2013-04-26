@@ -34,7 +34,7 @@ using Dynamo.FSchemeInterop;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class dynElementSelection: dynNodeWithOneOutput
+    public abstract class dynElementSelection: dynNodeWithOneOutput, IDrawable
     {
         TextBox tb;
         System.Windows.Controls.Button selectButton;
@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
         /// 
         protected abstract void OnSelectClick();
 
-        private Element selected;
+        private Element selected = null;
         /// <summary>
         /// The Element which is selected. Setting this property will automatically register the Element
         /// for proper updating, and will update this node's IsDirty value.
@@ -141,6 +141,19 @@ namespace Dynamo.Nodes
                 if (dirty)
                     this.RequiresRecalc = true;
             }
+        }
+
+        public RenderDescription Draw()
+        {
+            RenderDescription description = new RenderDescription();
+
+            // check if the selection hasn't been set yet
+            if (selected == null)
+                return description;
+
+            Dynamo.Revit.dynRevitTransactionNode.DrawElement(description, this.SelectedElement);
+
+            return description;
         }
 
         /// <summary>
@@ -546,7 +559,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Select a face from the document.")]
     public class dynFormElementBySelection : dynElementSelection
     {
-        Reference f;
+        Reference f = null;
 
         public dynFormElementBySelection()
             : base(new PortData("face", "The face", typeof(object)))
