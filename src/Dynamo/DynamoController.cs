@@ -390,8 +390,8 @@ namespace Dynamo
 
                 Bench.workspaceLabel.Content = CurrentSpace.Name;
 
-                //Bench.editNameButton.Visibility = Visibility.Visible;
-                //Bench.editNameButton.IsHitTestVisible = true;
+                Bench.editNameButton.Visibility = Visibility.Visible;
+                Bench.editNameButton.IsHitTestVisible = true;
                 Bench.setFunctionBackground();
                 dynSettings.ReturnFocusToSearch();
             }
@@ -1802,8 +1802,8 @@ namespace Dynamo
             PackageManagerClient.HidePackageControlInformation();
 
             Bench.workspaceLabel.Content = "Home";
-            //Bench.editNameButton.Visibility = Visibility.Collapsed;
-            //Bench.editNameButton.IsHitTestVisible = false;
+            Bench.editNameButton.Visibility = Visibility.Collapsed;
+            Bench.editNameButton.IsHitTestVisible = false;
 
             Bench.setHomeBackground();
 
@@ -1868,8 +1868,8 @@ namespace Dynamo
 
             Bench.workspaceLabel.Content = symbol.Workspace.Name;
 
-            //Bench.editNameButton.Visibility = Visibility.Visible;
-            //Bench.editNameButton.IsHitTestVisible = true;
+            Bench.editNameButton.Visibility = Visibility.Visible;
+            Bench.editNameButton.IsHitTestVisible = true;
 
             Bench.setFunctionBackground();
 
@@ -1893,8 +1893,7 @@ namespace Dynamo
             }
 
             var def = CustomNodeLoader.GetDefinitionFromWorkspace(CurrentSpace);
-            
-            SearchViewModel.Refactor(def, newName);
+            var oldName = def.Workspace.Name;
 
             // this is a load of crap.  nodes should observe the name property of the node and update without the need for this
             Bench.workspaceLabel.Content = Bench.editNameBox.Text;
@@ -1930,9 +1929,8 @@ namespace Dynamo
                 string oldpath = Path.Combine(pluginsPath, CurrentSpace.Name + ".dyf");
                 if (File.Exists(oldpath))
                 {
-                    string newpath = FormatFileName(
-                        Path.Combine(pluginsPath, newName + ".dyf")
-                        );
+                    string newpath =
+                        Path.Combine(pluginsPath, FormatFileName(newName) + ".dyf");
 
                     File.Move(oldpath, newpath);
                 }
@@ -1940,6 +1938,8 @@ namespace Dynamo
 
             (CurrentSpace).Name = newName;
             SaveFunction( def );
+
+            SearchViewModel.Refactor(def, oldName, newName);
         }
 
         /// <summary>

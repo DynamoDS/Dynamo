@@ -773,7 +773,7 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            return true;
+            return dynSettings.Bench.WorkBench.Selection.Count > 0;
         }
     }
 

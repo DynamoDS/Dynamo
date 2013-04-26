@@ -481,7 +481,8 @@ namespace Dynamo.Search
 
             // create the workspace in search
             var searchEle = new WorkspaceSearchElement(name, "Go to " + name );
-            searchEle.Guid = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace).FunctionId;
+            var funcDef = dynSettings.Controller.CustomNodeLoader.GetDefinitionFromWorkspace(workspace);
+            searchEle.Guid = funcDef.FunctionId;
 
             if (searchEle.Guid == Guid.Empty)
                 return;
@@ -489,8 +490,8 @@ namespace Dynamo.Search
             SearchDictionary.Add(searchEle, searchEle.Name);
 
             // create the node in search
-            var nodeEle = new LocalSearchElement( dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(searchEle.Guid) );
-            SearchDictionary.Add(nodeEle, nodeEle.Name);
+            var nodeEle = new LocalSearchElement(funcDef);
+            SearchDictionary.Add(nodeEle, name);
 
             // update search
             SearchAndUpdateResultsSync(SearchText);
@@ -665,27 +666,10 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="def">The FunctionDefinition whose name must change</param>
         /// <param name="newName">The new name to assign to the workspace</param>
-        public void Refactor(FunctionDefinition def, string newName)
+        public void Refactor(FunctionDefinition def, string oldName, string newName)
         {
-            SearchDictionary.Remove( def.Workspace.Name );
+            SearchDictionary.Remove( (ele)=> ((SearchElementBase) ele).Name == oldName );
             Add(def.Workspace, newName);
-
-            // we need a way of removing custom nodes from search
-
-
-            var eles = SearchDictionary.ByTag( def.Workspace.Name );
-            if ( eles.Any() )
-            {
-                foreach (var ele in eles)
-                {
-                    SearchDictionary.Remove(ele);
-                }
-            }
-
-
-
-            // SearchDictionary.Remove(def.);
-            // Add(def.Workspace, newName);
         }
     }
 }
