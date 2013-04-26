@@ -158,6 +158,20 @@ namespace Dynamo.Nodes
             _watchView.watch_view.ZoomExtents();
         }
 
+        private void GetUpstreamIDrawable(List<IDrawable>  drawables, Dictionary<int, Tuple<int, dynNode>> inputs)
+        {
+            foreach (KeyValuePair<int, Tuple<int, dynNode>> pair in inputs)
+            {
+                dynNode node = pair.Value.Item2;
+                IDrawable drawable = node as IDrawable;
+
+                if (drawable != null)
+                    drawables.Add(drawable);
+
+                GetUpstreamIDrawable(drawables, node.Inputs);
+            }
+        }
+
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
             if (!_requiresRedraw)
@@ -172,15 +186,14 @@ namespace Dynamo.Nodes
             Lines = new Point3DCollection();
             Meshes = new List<Mesh3D>();
 
-            var descendants = Inputs.Values.SelectMany(x => x.Item2.DescendantsAndSelf());
-            var guids = descendants.Where(x => x is IDrawable).Select(x => x.NodeUI.GUID);
+            // a list of all the upstream IDrawable nodes
+            List<IDrawable> drawables = new List<IDrawable>();
 
-            var drawable = descendants.Where(x => (x is IDrawable));
-            Debug.WriteLine(string.Format("Drawing {0} elements in the watch.", drawable.Count()));
+            GetUpstreamIDrawable(drawables, Inputs);
 
-            foreach (var d in drawable)
+            foreach (IDrawable d in drawables)
             {
-                RenderDescription rd = (d as IDrawable).Draw();
+                RenderDescription rd = d.Draw();
 
                 foreach (Point3D p in rd.points)
                 {
