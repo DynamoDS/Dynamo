@@ -504,6 +504,7 @@ namespace Dynamo.Utilities
                     return controller.OpenWorkbench(xmlPath);
                 } 
 
+                
                 dynSettings.Bench.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 var workSpace = new FuncWorkspace(
@@ -516,6 +517,10 @@ namespace Dynamo.Utilities
                         Workspace = workSpace
                     };
 
+                // load a dummy version, so any nodes depending on this node
+                // will find an (empty) identifier on compilation
+                FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(5);
+                controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
                 this.loadedNodes.Add(def.FunctionId, def);
 
                 dynWorkspace ws = def.Workspace;
@@ -606,8 +611,17 @@ namespace Dynamo.Utilities
                             fun.Symbol = funId.ToString();
                         }
 
-                        if (funcDefGuid != guid)
-                            fun.Definition = dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
+                        // if it's not a recurisve node and it's not yet loaded, load it
+                        if (funcDefGuid != funId && !this.loadedNodes.ContainsKey(funId))
+                        {
+                            dynSettings.Controller.CustomNodeLoader.GetFunctionDefinition(funId);
+                            fun.Definition = this.loadedNodes[funId];
+                        }  
+                        else if ( this.loadedNodes.ContainsKey(funId ))
+                        {
+                            fun.Definition = this.loadedNodes[funId];
+                        }
+                        
                     }
                 }
 
