@@ -408,7 +408,7 @@ namespace Dynamo.Controls
             //end the transaction 
             //dynSettings.MainTransaction.Commit();
 
-            vm.ExitCommand.Execute();
+            vm.CleanupCommand.Execute();
 
         }
 

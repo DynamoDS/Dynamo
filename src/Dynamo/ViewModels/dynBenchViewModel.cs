@@ -98,6 +98,7 @@ namespace Dynamo.Controls
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
+        public DelegateCommand CleanupCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }
@@ -339,6 +340,7 @@ namespace Dynamo.Controls
 
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode,  CanGoToSourceCode);
+            CleanupCommand = new DelegateCommand(Cleanup, CanCleanup);
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
@@ -667,12 +669,23 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void Exit()
+        private void Cleanup()
         {
-            dynSettings.Bench.Close();
+
             DynamoLogger.Instance.FinishLogging();
 
             //TODO: Other exit logic?
+        }
+
+        private bool CanCleanup()
+        {
+            return true;
+        }
+
+        private void Exit()
+        {
+            this.Cleanup();
+            dynSettings.Bench.Close();
         }
 
         private bool CanExit()

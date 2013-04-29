@@ -96,7 +96,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Name="consoleRow" Height="{Binding ConsoleShowing, Converter={StaticResource BoolToConsoleHeightConverter}}"/>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="48"/>
 
         </Grid.RowDefinitions>
         
