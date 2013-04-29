@@ -52,10 +52,13 @@ namespace Dynamo.Nodes
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
         
         private bool _requiresRedraw = false;
+        private bool _isRendering = false;
 
         bool _isScreenShot = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        
 
         protected void RaisePropertyChanged(string property)
         {
@@ -174,8 +177,13 @@ namespace Dynamo.Nodes
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
+            if (_isRendering)
+                return;
+
             if (!_requiresRedraw)
                 return;
+
+            _isRendering = true;
 
             Points = null;
             Lines = null;
@@ -234,22 +242,12 @@ namespace Dynamo.Nodes
             RaisePropertyChanged("Meshes");
 
             _requiresRedraw = false;
+            _isRendering = false;
         }
 
         MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
         {
-            MeshBuilder mesh_builder = new MeshBuilder();
-
-            IList<Point3D> points = mesh.Vertices;
-            IList<int[]> faces = mesh.Faces;
-
-            foreach (int[] triangle in faces)
-            {
-                mesh_builder.AddTriangle(points[triangle[0]], points[triangle[1]], points[triangle[2]]);
-                mesh_builder.AddTriangle(points[triangle[2]], points[triangle[1]], points[triangle[0]]);
-            }
-
-            MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh_builder.ToMesh(), Material = Materials.White } };
+            MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
             return vismesh;
         }
 

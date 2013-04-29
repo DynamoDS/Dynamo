@@ -139,35 +139,66 @@ namespace Dynamo.Revit
             return new Point3D(xyz.X, xyz.Y, xyz.Z);
         }
 
-        public static Mesh3D RevitMeshToHelixMesh(Autodesk.Revit.DB.Mesh rmesh)
+        // must return an array to make mesh double sided
+        public static Mesh3D[] RevitMeshToHelixMesh(Autodesk.Revit.DB.Mesh rmesh)
         {
-            List<int> indices = new List<int>();
+            List<int> indices_front = new List<int>();
+            List<int> indices_back = new List<int>();
             List<Point3D> vertices = new List<Point3D>();
 
-            int j = 0;
             for (int i = 0; i < rmesh.NumTriangles; ++i)
             {
                 MeshTriangle tri = rmesh.get_Triangle(i);
 
-                vertices.Add(RevitPointToWindowsPoint(tri.get_Vertex(0)));
-                vertices.Add(RevitPointToWindowsPoint(tri.get_Vertex(1)));
-                vertices.Add(RevitPointToWindowsPoint(tri.get_Vertex(2)));
+                for (int k = 0; k < 3; ++k)
+                {
+                    Point3D new_point = RevitPointToWindowsPoint(tri.get_Vertex(k));
 
-                indices.Add(j); ++j;
-                indices.Add(j); ++j;
-                indices.Add(j); ++j;
+                    bool new_point_exists = false;
+                    for (int l = 0; l < vertices.Count; ++l)
+                    {
+                        Point3D p = vertices[l];
+                        if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
+                        {
+                            indices_front.Add(l);
+                            new_point_exists = true;
+                            break;
+                        }
+                    }
+
+                    if (new_point_exists)
+                        continue;
+
+                    indices_front.Add(vertices.Count);
+                    vertices.Add(new_point);
+                }
+
+                int a = indices_front[indices_front.Count - 3];
+                int b = indices_front[indices_front.Count - 2];
+                int c = indices_front[indices_front.Count - 1];
+
+                indices_back.Add(c);
+                indices_back.Add(b);
+                indices_back.Add(a);            
             }
 
-            Mesh3D hmesh = new Mesh3D(vertices, indices);
+            List<Mesh3D> meshes = new List<Mesh3D>();
+            meshes.Add(new Mesh3D(vertices, indices_front));
+            meshes.Add(new Mesh3D(vertices, indices_back));
 
-            return hmesh;
+            return meshes.ToArray();
         }
 
         public static void DrawFace(RenderDescription description, object obj)
         {
             Autodesk.Revit.DB.Face face = obj as Autodesk.Revit.DB.Face;
-            
-            description.meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.2)));
+
+            Mesh3D[] meshes = RevitMeshToHelixMesh(face.Triangulate(0.2));
+
+            foreach (Mesh3D mesh in meshes)
+            {
+                description.meshes.Add(mesh);
+            }
         }
 
         public static void DrawForm(RenderDescription description, object obj)
