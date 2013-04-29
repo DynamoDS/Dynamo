@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Dynamo;
+using Dynamo.Utilities;
 
 namespace DynamoSandbox
 {
@@ -21,8 +22,7 @@ namespace DynamoSandbox
 
                 if (startWithUI)
                 {
-                    var bench = dynamoController.Bench;
-                    bench.ShowDialog();
+                    dynSettings.Bench.ShowDialog();
                 }
                 
             }

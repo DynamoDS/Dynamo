@@ -624,7 +624,8 @@ namespace Dynamo.Utilities
 
                 #endregion
 
-                dynSettings.Bench.WorkBench.UpdateLayout();
+                //MVVM: don't call update layout here.
+                //dynSettings.Bench.WorkBench.UpdateLayout();
 
                 #region instantiate connectors
 

@@ -13,6 +13,7 @@
 //limitations under the License.
 
 using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -29,6 +30,8 @@ namespace Dynamo
     public abstract class dynWorkspace : NotificationObject
     {
         private string _name;
+        private System.Windows.Point currentOffset = new System.Windows.Point(0, 0);
+
         public ObservableCollection<dynNode> Nodes { get; private set; }
         public ObservableCollection<dynConnector> Connectors { get; private set; }
         public ObservableCollection<dynNoteModel> Notes { get; private set; }
@@ -50,6 +53,19 @@ namespace Dynamo
         public double PositionX { get; set; }
 
         public double PositionY { get; set; }
+
+        /// <summary>
+        /// Specifies the pan location of the view
+        /// </summary>
+        public Point CurrentOffset
+        {
+            get { return currentOffset; }
+            set
+            {
+                currentOffset = value;
+                RaisePropertyChanged("CurrentOffset");
+            }
+        }
 
         public event Action OnModified;
 
@@ -325,7 +341,7 @@ namespace Dynamo
             base.Modified();
 
             var controller = dynSettings.Controller;
-            controller.Bench.Dispatcher.BeginInvoke(new Action(
+            dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
                 () =>
                 {
                     if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)

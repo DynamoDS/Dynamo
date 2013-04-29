@@ -69,8 +69,8 @@ namespace Dynamo.Connectors
         private void Connect()
         {
             //dynBench bench = dynSettings.Bench;
-            
-            if (!dynSettings.Controller.DynamoViewModel.IsConnecting)
+
+            if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting)
             {
                 //test if port already has a connection if so grab it
                 //and begin connecting to somewhere else
@@ -90,8 +90,8 @@ namespace Dynamo.Connectors
                     //dynSettings.Controller.DynamoViewModel.ActiveConnector = _port.Connectors[0];
                     //dynSettings.Controller.DynamoViewModel.ActiveConnector.Disconnect(_port);
 
-                    dynSettings.Controller.DynamoViewModel.ActiveConnector = c;
-                    dynSettings.Controller.DynamoViewModel.IsConnecting = true;
+                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
+                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
                     
                 }
                 else
@@ -103,8 +103,8 @@ namespace Dynamo.Connectors
 
                         //Create a connector view model to begin drawing
                         var c = new dynConnectorViewModel(_port);
-                        dynSettings.Controller.DynamoViewModel.ActiveConnector = c;
-                        dynSettings.Controller.DynamoViewModel.IsConnecting = true;
+                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
+                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
 
                     }
                     catch (Exception ex)
@@ -115,9 +115,9 @@ namespace Dynamo.Connectors
             }
             else
             {
-                dynSettings.Controller.DynamoViewModel.ActiveConnector.ConnectCommand.Execute(_port);
-                dynSettings.Controller.DynamoViewModel.IsConnecting = false;
-                dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector.ConnectCommand.Execute(_port);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = false;
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = null;
 
 //MVVM : Might be broken logic here. Would like to handle connection in one command
                 /*

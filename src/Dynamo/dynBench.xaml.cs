@@ -42,8 +42,6 @@ namespace Dynamo.Controls
         internal Dictionary<string, dynNodeUI> addMenuItemsDictNew
             = new Dictionary<string, dynNodeUI>();
 
-        private bool beginNameEditClick;
-
         private SortedDictionary<string, TypeLoadData> builtinTypes = new SortedDictionary<string, TypeLoadData>();
 
         private Point dragOffset;
@@ -51,9 +49,10 @@ namespace Dynamo.Controls
         private dynNodeUI draggedNode;
         private bool editingName;
         private bool hoveringEditBox;
-        private bool isWindowSelecting;
-        private Point mouseDownPos;
+        //private bool isWindowSelecting;
+        //private Point mouseDownPos;
         private DynamoViewModel vm;
+        private bool beginNameEditClick;
 
         public bool UILocked { get; private set; }
 
@@ -69,42 +68,15 @@ namespace Dynamo.Controls
             UpdateLayout();
         }
 
-        void vm_StopDragging(object sender, EventArgs e)
-        {
-            WorkBench.isDragInProgress = false;
-            WorkBench.ignoreClick = true;
-        }
-
-        void vm_CurrentOffsetChanged(object sender, EventArgs e)
-        {
-            zoomBorder.SetTranslateTransformOrigin((e as PointEventArgs).Point);
-        }
-
         void dynBench_Activated(object sender, EventArgs e)
         {
             vm = (DataContext as DynamoViewModel);
             vm.UILocked += new EventHandler(LockUI);
             vm.UIUnlocked += new EventHandler(UnlockUI);
-            vm.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
-            vm.StopDragging += new EventHandler(vm_StopDragging);
+
             vm.RequestLayoutUpdate += new EventHandler(vm_RequestLayoutUpdate);
             //tell the view model to do some port ui-loading 
             vm.PostUIActivationCommand.Execute();
-
-            //use events on the zoom border to push the 
-            //current offset down to the view model
-            zoomBorder.MouseWheel += new MouseWheelEventHandler(zoomBorder_MouseWheel);
-            zoomBorder.MouseMove += new MouseEventHandler(zoomBorder_MouseMove);
-        }
-
-        void zoomBorder_MouseMove(object sender, MouseEventArgs e)
-        {
-            vm.SetCurrentOffsetCommand.Execute(zoomBorder.GetTranslateTransformOrigin());
-        }
-
-        void zoomBorder_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            vm.SetCurrentOffsetCommand.Execute(zoomBorder.GetTranslateTransformOrigin());
         }
 
         private void LockUI(object sender, EventArgs e)
@@ -117,7 +89,8 @@ namespace Dynamo.Controls
             overlayCanvas.Cursor = Cursors.AppStarting;
             overlayCanvas.ForceCursor = true;
 
-            WorkBench.Visibility = System.Windows.Visibility.Hidden;
+            //MVVM:now handled by the workspace view model
+            //WorkBench.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void UnlockUI(object sender, EventArgs e)
@@ -130,7 +103,7 @@ namespace Dynamo.Controls
             overlayCanvas.Cursor = null;
             overlayCanvas.ForceCursor = false;
 
-            WorkBench.Visibility = System.Windows.Visibility.Visible;
+            //WorkBench.Visibility = System.Windows.Visibility.Visible;
         }
 
         /// <summary>
@@ -154,43 +127,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void DrawGrid()
-        {
-            //clear the canvas's children
-            //WorkBench.Children.Clear();
-            double gridSpacing = 100.0;
-
-            for (double i = 0.0; i < WorkBench.Width; i += gridSpacing)
-            {
-                var xLine = new Line();
-                xLine.Stroke = new SolidColorBrush(Color.FromRgb(100, 100, 100));
-                xLine.X1 = i;
-                xLine.Y1 = 0;
-                xLine.X2 = i;
-                xLine.Y2 = WorkBench.Height;
-                xLine.HorizontalAlignment = HorizontalAlignment.Left;
-                xLine.VerticalAlignment = VerticalAlignment.Center;
-                xLine.StrokeThickness = 1;
-                WorkBench.Children.Add(xLine);
-                DragCanvas.SetCanBeDragged(xLine, false);
-                xLine.IsHitTestVisible = false;
-            }
-            for (double i = 0.0; i < WorkBench.Height; i += gridSpacing)
-            {
-                var yLine = new Line();
-                yLine.Stroke = new SolidColorBrush(Color.FromRgb(100, 100, 100));
-                yLine.X1 = 0;
-                yLine.Y1 = i;
-                yLine.X2 = WorkBench.Width;
-                yLine.Y2 = i;
-                yLine.HorizontalAlignment = HorizontalAlignment.Left;
-                yLine.VerticalAlignment = VerticalAlignment.Center;
-                yLine.StrokeThickness = 1;
-                WorkBench.Children.Add(yLine);
-                DragCanvas.SetCanBeDragged(yLine, false);
-                yLine.IsHitTestVisible = false;
-            }
-        }
+        
 
         /// <summary>
         ///     Called when the mouse has been moved.
@@ -199,83 +136,83 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         public void OnMouseMove(object sender, MouseEventArgs e)
         {
-            //Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
-            //Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);
+            ////Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
+            ////Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);
 
-            //If we are currently connecting and there is an active connector,
-            //redraw it to match the new mouse coordinates.
-            if (vm.IsConnecting && vm.ActiveConnector != null)
-            {
-                vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
-            }
+            ////If we are currently connecting and there is an active connector,
+            ////redraw it to match the new mouse coordinates.
+            //if (vm.IsConnecting && vm.ActiveConnector != null)
+            //{
+            //    vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
+            //}
 
-            //If we are currently dragging elements, redraw the element to
-            //match the new mouse coordinates.
-            if (WorkBench.isDragInProgress)
-            {
-                //IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
-                //                                                   .Where(x => x is dynNode)
-                //                                                   .Select(x => x as dynNode)
-                //                                                   .SelectMany(
-                //                                                       el => el.OutPorts
-                //                                                               .SelectMany(x => x.Connectors)
-                //                                                               .Concat(
-                //                                                                   el.InPorts.SelectMany(
-                //                                                                       x => x.Connectors))).Distinct();
+            ////If we are currently dragging elements, redraw the element to
+            ////match the new mouse coordinates.
+            //if (WorkBench.isDragInProgress)
+            //{
+            //    //IEnumerable<dynConnector> allConnectors = DynamoSelection.Instance.Selection
+            //    //                                                   .Where(x => x is dynNode)
+            //    //                                                   .Select(x => x as dynNode)
+            //    //                                                   .SelectMany(
+            //    //                                                       el => el.OutPorts
+            //    //                                                               .SelectMany(x => x.Connectors)
+            //    //                                                               .Concat(
+            //    //                                                                   el.InPorts.SelectMany(
+            //    //                                                                       x => x.Connectors))).Distinct();
 
-                //foreach (dynConnector connector in allConnectors)
-                //{
-                //    connector.Redraw();
-                //}
-                vm.UpdateSelectedConnectorsCommand.Execute();
-            }
+            //    //foreach (dynConnector connector in allConnectors)
+            //    //{
+            //    //    connector.Redraw();
+            //    //}
+            //    vm.UpdateSelectedConnectorsCommand.Execute();
+            //}
 
-            if (isWindowSelecting)
-            {
-                // When the mouse is held down, reposition the drag selection box.
+            //if (isWindowSelecting)
+            //{
+            //    // When the mouse is held down, reposition the drag selection box.
 
-                Point mousePos = e.GetPosition(WorkBench);
+            //    Point mousePos = e.GetPosition(WorkBench);
 
-                if (mouseDownPos.X < mousePos.X)
-                {
-                    Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                    selectionBox.Width = mousePos.X - mouseDownPos.X;
-                }
-                else
-                {
-                    Canvas.SetLeft(selectionBox, mousePos.X);
-                    selectionBox.Width = mouseDownPos.X - mousePos.X;
-                }
+            //    if (mouseDownPos.X < mousePos.X)
+            //    {
+            //        Canvas.SetLeft(selectionBox, mouseDownPos.X);
+            //        selectionBox.Width = mousePos.X - mouseDownPos.X;
+            //    }
+            //    else
+            //    {
+            //        Canvas.SetLeft(selectionBox, mousePos.X);
+            //        selectionBox.Width = mouseDownPos.X - mousePos.X;
+            //    }
 
-                if (mouseDownPos.Y < mousePos.Y)
-                {
-                    Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                    selectionBox.Height = mousePos.Y - mouseDownPos.Y;
-                }
-                else
-                {
-                    Canvas.SetTop(selectionBox, mousePos.Y);
+            //    if (mouseDownPos.Y < mousePos.Y)
+            //    {
+            //        Canvas.SetTop(selectionBox, mouseDownPos.Y);
+            //        selectionBox.Height = mousePos.Y - mouseDownPos.Y;
+            //    }
+            //    else
+            //    {
+            //        Canvas.SetTop(selectionBox, mousePos.Y);
 
-                    selectionBox.Height = mouseDownPos.Y - mousePos.Y;
-                }
+            //        selectionBox.Height = mouseDownPos.Y - mousePos.Y;
+            //    }
 
-                if (mousePos.X > mouseDownPos.X)
-                {
-                    #region contain select
+            //    if (mousePos.X > mouseDownPos.X)
+            //    {
+            //        #region contain select
 
-                    selectionBox.StrokeDashArray = null;
+            //        selectionBox.StrokeDashArray = null;
 
-                    #endregion
-                }
-                else if (mousePos.X < mouseDownPos.X)
-                {
-                    #region crossing select
+            //        #endregion
+            //    }
+            //    else if (mousePos.X < mouseDownPos.X)
+            //    {
+            //        #region crossing select
 
-                    selectionBox.StrokeDashArray = new DoubleCollection {4};
+            //        selectionBox.StrokeDashArray = new DoubleCollection {4};
 
-                    #endregion
-                }
-            }
+            //        #endregion
+            //    }
+            //}
         }
 
         /// <summary>
@@ -290,42 +227,42 @@ namespace Dynamo.Controls
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            if (!vm.IsConnecting)
-            {
-                #region window selection
+            //if (!vm.IsConnecting)
+            //{
+            //    #region window selection
 
-                //WorkBench.ClearSelection();
-                DynamoSelection.Instance.ClearSelection();
+            //    //WorkBench.ClearSelection();
+            //    DynamoSelection.Instance.ClearSelection();
 
-                //DEBUG WINDOW SELECTION
-                // Capture and track the mouse.
-                isWindowSelecting = true;
-                mouseDownPos = e.GetPosition(WorkBench);
-                //workBench.CaptureMouse();
+            //    //DEBUG WINDOW SELECTION
+            //    // Capture and track the mouse.
+            //    isWindowSelecting = true;
+            //    mouseDownPos = e.GetPosition(WorkBench);
+            //    //workBench.CaptureMouse();
 
-                // Initial placement of the drag selection box.         
-                Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                selectionBox.Width = 0;
-                selectionBox.Height = 0;
+            //    // Initial placement of the drag selection box.         
+            //    Canvas.SetLeft(selectionBox, mouseDownPos.X);
+            //    Canvas.SetTop(selectionBox, mouseDownPos.Y);
+            //    selectionBox.Width = 0;
+            //    selectionBox.Height = 0;
 
-                // Make the drag selection box visible.
-                selectionBox.Visibility = Visibility.Visible;
+            //    // Make the drag selection box visible.
+            //    selectionBox.Visibility = Visibility.Visible;
 
-                #endregion
-            }
+            //    #endregion
+            //}
 
-            //if you click on the canvas and you're connecting
-            //then drop the connector, otherwise do nothing
-            if (vm != null)
-            {
-                if (vm.ActiveConnector != null)
-                {
-                    vm.ActiveConnector.ConnectorModel.Kill();
-                    vm.IsConnecting = false;
-                    vm.ActiveConnector = null;
-                }
-            }
+            ////if you click on the canvas and you're connecting
+            ////then drop the connector, otherwise do nothing
+            //if (vm != null)
+            //{
+            //    if (vm.ActiveConnector != null)
+            //    {
+            //        vm.ActiveConnector.ConnectorModel.Kill();
+            //        vm.IsConnecting = false;
+            //        vm.ActiveConnector = null;
+            //    }
+            //}
 
             if (editingName && !hoveringEditBox)
             {
@@ -340,56 +277,56 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            //Debug.WriteLine("Starting mouse up.");
+            ////Debug.WriteLine("Starting mouse up.");
 
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                beginNameEditClick = false;
+            //if (e.ChangedButton == MouseButton.Left)
+            //{
+            //    beginNameEditClick = false;
 
-                if (isWindowSelecting)
-                {
-                    #region release window selection
+            //    if (isWindowSelecting)
+            //    {
+            //        #region release window selection
 
-                    //DEBUG WINDOW SELECTION
-                    // Release the mouse capture and stop tracking it.
-                    isWindowSelecting = false;
-                    //workBench.ReleaseMouseCapture();
+            //        //DEBUG WINDOW SELECTION
+            //        // Release the mouse capture and stop tracking it.
+            //        isWindowSelecting = false;
+            //        //workBench.ReleaseMouseCapture();
 
-                    // Hide the drag selection box.
-                    selectionBox.Visibility = Visibility.Collapsed;
+            //        // Hide the drag selection box.
+            //        selectionBox.Visibility = Visibility.Collapsed;
 
-                    Point mouseUpPos = e.GetPosition(WorkBench);
+            //        Point mouseUpPos = e.GetPosition(WorkBench);
 
-                    //clear the selected elements
-                    DynamoSelection.Instance.ClearSelection();
+            //        //clear the selected elements
+            //        DynamoSelection.Instance.ClearSelection();
 
-                    var rect =
-                        new Rect(
-                            Canvas.GetLeft(selectionBox),
-                            Canvas.GetTop(selectionBox),
-                            selectionBox.Width,
-                            selectionBox.Height);
+            //        var rect =
+            //            new Rect(
+            //                Canvas.GetLeft(selectionBox),
+            //                Canvas.GetTop(selectionBox),
+            //                selectionBox.Width,
+            //                selectionBox.Height);
 
-                    if (mouseUpPos.X > mouseDownPos.X)
-                    {
-                        #region contain select
+            //        if (mouseUpPos.X > mouseDownPos.X)
+            //        {
+            //            #region contain select
 
-                        vm.ContainSelectCommand.Execute(rect);
+            //            vm.ContainSelectCommand.Execute(rect);
 
-                        #endregion
-                    }
-                    else if (mouseUpPos.X < mouseDownPos.X)
-                    {
-                        #region crossing select
+            //            #endregion
+            //        }
+            //        else if (mouseUpPos.X < mouseDownPos.X)
+            //        {
+            //            #region crossing select
 
-                        vm.CrossSelectCommand.Execute(rect);
+            //            vm.CrossSelectCommand.Execute(rect);
 
-                        #endregion
-                    }
+            //            #endregion
+            //        }
 
-                    #endregion
-                }
-            }
+            //        #endregion
+            //    }
+            //}
         }
 
         private void WindowClosed(object sender, EventArgs e)
@@ -436,22 +373,6 @@ namespace Dynamo.Controls
         //{
         //    Controller.CurrentSpace.Connectors.Remove(c);
         //}
-
-        internal void CenterViewOnElement(dynNode e)
-        {
-            //double left = Canvas.GetLeft(e);
-            //double top = Canvas.GetTop(e);
-
-            double left = e.X;
-            double top = e.Y;
-
-            double x = left + e.Width/2 - outerCanvas.ActualWidth/2;
-            double y = top + e.Height/2 - (outerCanvas.ActualHeight/2 - LogScroller.ActualHeight);
-
-            //MVVM : replaced direct set with command call on view model
-            //CurrentOffset = new Point(-x, -y);
-            vm.SetCurrentOffsetCommand.Execute(new Point(-x, -y));
-        }
 
         private void image1_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -598,19 +519,11 @@ namespace Dynamo.Controls
             }
         }
 
-        private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-        }
-
-        private void _this_Loaded(object sender, RoutedEventArgs e)
-        {
-            DrawGrid();
-        }
-
         private void LogScroller_OnSourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
         {
             LogScroller.ScrollToEnd();
         }
+
     }
 
     public class CancelEvaluationException : Exception

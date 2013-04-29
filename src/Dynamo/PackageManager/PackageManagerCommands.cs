@@ -72,9 +72,15 @@ namespace Dynamo.Commands
             if (!init)
             {
                 _view = new PackageManagerPublishView(dynSettings.Controller.PackageManagerPublishViewModel);
-                dynSettings.Bench.outerCanvas.Children.Add(_view);
-                Canvas.SetBottom(_view, 0);
-                Canvas.SetRight(_view, 0);
+
+                //MVVM: we now have an event called on the current workspace view model to 
+                //add the view to its outer canvas
+                //dynSettings.Bench.outerCanvas.Children.Add(_view);
+                //Canvas.SetBottom(_view, 0);
+                //Canvas.SetRight(_view, 0);
+
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(_view));
+
                 init = true;
             }
             
@@ -121,9 +127,14 @@ namespace Dynamo.Commands
             if (!_init)
             {
                 var loginView = new PackageManagerLoginView(dynSettings.Controller.PackageManagerLoginViewModel);
-                dynSettings.Bench.outerCanvas.Children.Add(loginView);
-                Canvas.SetBottom(loginView, 0);
-                Canvas.SetRight(loginView, 0);
+
+                //MVVM: event on current workspace model view now adds views to canvas
+                //dynSettings.Bench.outerCanvas.Children.Add(loginView);
+                //Canvas.SetBottom(loginView, 0);
+                //Canvas.SetRight(loginView, 0);
+
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestAddViewToOuterCanvas(this, new ViewEventArgs(loginView));
+
                 _init = true;
             }
 

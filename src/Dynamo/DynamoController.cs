@@ -56,7 +56,7 @@ namespace Dynamo
             get { return commandQueue; }
         }
 
-        public dynBench Bench { get; private set; }
+        //public dynBench Bench { get; private set; }
 
         public SortedDictionary<string, TypeLoadData> BuiltInTypesByNickname
         {
@@ -70,7 +70,7 @@ namespace Dynamo
 
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }
 
-        private bool _benchActivated;
+        private bool BenchActivated;
         //public DynamoSplash SplashScreen { get; set; }
 
         #endregion
@@ -85,12 +85,12 @@ namespace Dynamo
             dynSettings.Controller = this;
 
             //MVVM: don't construct the main window with a reference to the controller
-            //Bench = new dynBench(this);
+            //dynSettings.Bench = new dyndynSettings.Bench(this);
 
             //MVVM : create the view model to which the main window will bind
             //the DynamoModel is created therein
             DynamoViewModel = new DynamoViewModel(this);
-            //DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
+            //DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in dynSettings.Bench activated
 
 
             // custom node loader
@@ -101,9 +101,9 @@ namespace Dynamo
 
             if (withUI)
             {
-                Bench = new dynBench();
-                dynSettings.Bench = Bench;
-                Bench.DataContext = DynamoViewModel;
+                dynSettings.Bench = new dynBench();
+                dynSettings.Bench = dynSettings.Bench;
+                dynSettings.Bench.DataContext = DynamoViewModel;
             }
 
 
@@ -114,37 +114,40 @@ namespace Dynamo
 
             FSchemeEnvironment = env;
 
-            //MVVM : moved to proper view constructor on dynBench
-            DynamoViewModel.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
-            //Bench.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
-            //Bench.InitializeComponent();
+            //MVVM : moved to proper view constructor on dyndynSettings.Bench
+            DynamoViewModel.Model.CurrentSpace.CurrentOffset = new Point(dynBench.CANVAS_OFFSET_X, dynBench.CANVAS_OFFSET_Y);
+            //dynSettings.Bench.CurrentOffset = new Point(dyndynSettings.Bench.CANVAS_OFFSET_X, dyndynSettings.Bench.CANVAS_OFFSET_Y);
+            //dynSettings.Bench.InitializeComponent();
 
             dynSettings.Controller.DynamoViewModel.Log(String.Format(
                 "Dynamo -- Build {0}.",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            //MVVM : removed parameter bench
-            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);//, Bench);
+            //MVVM : removed parameter dynSettings.Bench
+            DynamoLoader.LoadBuiltinTypes(SearchViewModel, this);//, dynSettings.Bench);
 
-            if(Bench != null)
-                DynamoLoader.LoadSamplesMenu(Bench);
+            if(dynSettings.Bench != null)
+                DynamoLoader.LoadSamplesMenu(dynSettings.Bench);
 
-            //Bench.settings_curves.IsChecked = true;
-            //Bench.settings_curves.IsChecked = false;
+            //dynSettings.Bench.settings_curves.IsChecked = true;
+            //dynSettings.Bench.settings_curves.IsChecked = false;
 
-            if (Bench != null)
+            if (dynSettings.Bench != null)
             {
-                //Bench.LockUI();
+                //dynSettings.Bench.LockUI();
 
                 //MVVM : callback has been restructured so that it sends a command back to the view model
-                //Bench.Activated += OnBenchActivated;
-                dynSettings.Workbench = Bench.WorkBench;
+                //dynSettings.Bench.Activated += OndynSettings.BenchActivated;
+
+                //MVVM: we've gone to using a model and a model view of a workspace
+                //do not reference a specific workdynSettings.Bench here.
+                //dynSettings.WorkdynSettings.Bench = dynSettings.Bench.WorkdynSettings.Bench;
             }
 
             //run tests
             if (FScheme.RunTests(dynSettings.Controller.DynamoViewModel.Log))
             {
-                if (Bench != null)
+                if (dynSettings.Bench != null)
                     dynSettings.Controller.DynamoViewModel.Log("All Tests Passed. Core library loaded OK.");
             }
         }
@@ -177,10 +180,10 @@ namespace Dynamo
             }
             commandQueue.Clear();
 
-            if (Bench != null)
+            if (dynSettings.Bench != null)
             {
-                DynamoLogger.Instance.Log(string.Format("Bench Thread : {0}",
-                                                       Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
+                DynamoLogger.Instance.Log(string.Format("dynSettings.Bench Thread : {0}",
+                                                       dynSettings.Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
             }
         }
 
@@ -227,8 +230,8 @@ namespace Dynamo
 
             //Disable Run Button
 
-            //Bench.Dispatcher.Invoke(new Action(
-            //   delegate { Bench.RunButton.IsEnabled = false; }
+            //dynSettings.Bench.Dispatcher.Invoke(new Action(
+            //   delegate { dynSettings.Bench.RunButton.IsEnabled = false; }
             //));
 
             DynamoViewModel.RunEnabled = false;
@@ -287,7 +290,7 @@ namespace Dynamo
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
                 {
-                    Bench.Dispatcher.Invoke(new Action(
+                    dynSettings.Bench.Dispatcher.Invoke(new Action(
                                                 delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
                                                 ));
                 }
@@ -303,10 +306,10 @@ namespace Dynamo
                 /* Post-evaluation cleanup */
 
                 //Re-enable run button
-                //Bench.Dispatcher.Invoke(new Action(
+                //dynSettings.Bench.Dispatcher.Invoke(new Action(
                 //   delegate
                 //   {
-                //       Bench.RunButton.IsEnabled = true;
+                //       dynSettings.Bench.RunButton.IsEnabled = true;
                 //   }
                 //));
 
@@ -324,10 +327,10 @@ namespace Dynamo
                     //Reset flag
                     runAgain = false;
 
-                    if (Bench != null)
+                    if (dynSettings.Bench != null)
                     {
                         //Run this method again from the main thread
-                        Bench.Dispatcher.BeginInvoke(new Action(
+                        dynSettings.Bench.Dispatcher.BeginInvoke(new Action(
                                                          delegate { RunExpression(_showErrors); }
                                                          ));
                     }
@@ -340,10 +343,10 @@ namespace Dynamo
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
             {
-                if (Bench != null)
+                if (dynSettings.Bench != null)
                 {
                     //string exp = FScheme.print(runningExpression);
-                    Bench.Dispatcher.Invoke(new Action(
+                    dynSettings.Bench.Dispatcher.Invoke(new Action(
                                                 delegate
                                                     {
                                                         foreach (dynNode node in topElements)
@@ -361,12 +364,12 @@ namespace Dynamo
                 //Evaluate the expression
                 FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
 
-                if (Bench != null)
+                if (dynSettings.Bench != null)
                 {
                     //Print some more stuff if we're in debug mode
                     if (DynamoViewModel.RunInDebug && expr != null)
                     {
-                        Bench.Dispatcher.Invoke(new Action(
+                        dynSettings.Bench.Dispatcher.Invoke(new Action(
                                                     () =>
                                                     dynSettings.Controller.DynamoViewModel.Log(FScheme.print(expr))
                                                     ));
@@ -386,12 +389,12 @@ namespace Dynamo
             {
                 /* Evaluation failed due to error */
 
-                if (Bench != null)
+                if (dynSettings.Bench != null)
                 {
                     //Print unhandled exception
                     if (ex.Message.Length > 0)
                     {
-                        Bench.Dispatcher.Invoke(new Action(
+                        dynSettings.Bench.Dispatcher.Invoke(new Action(
                                                     delegate { dynSettings.Controller.DynamoViewModel.Log(ex); }
                                                     ));
                     }
