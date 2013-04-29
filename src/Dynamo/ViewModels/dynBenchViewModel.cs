@@ -89,7 +89,7 @@ namespace Dynamo.Controls
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
-        public DelegateCommand ShowSaveImageDialogueAndSaveResultCommand { get; set; }
+        public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }
         public DelegateCommand ShowSaveDialogAndSaveResultCommand { get; set; }
@@ -324,7 +324,7 @@ namespace Dynamo.Controls
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode,  CanGoToSourceCode);
             ExitCommand = new DelegateCommand(Exit, CanExit);
-            ShowSaveImageDialogueAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogueAndSaveResult, CanShowSaveImageDialogueAndSaveResult);
+            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResultCommand);
@@ -440,7 +440,7 @@ namespace Dynamo.Controls
             return true;
         }
         
-        private void ShowSaveImageDialogueAndSaveResult()
+        private void ShowSaveImageDialogAndSaveResult()
         {
             FileDialog _fileDialog = null;
 
@@ -471,7 +471,7 @@ namespace Dynamo.Controls
         
         }
 
-        private bool CanShowSaveImageDialogueAndSaveResult()
+        private bool CanShowSaveImageDialogAndSaveResult()
         {
             return true;
         }

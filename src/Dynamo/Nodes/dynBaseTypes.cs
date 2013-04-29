@@ -1933,7 +1933,7 @@ namespace Dynamo.Nodes
     {
         dynTextBox tb;
         //TextBlock nodeLabel;
-
+        
         public dynDoubleInput()
         {
             RegisterAllPorts();

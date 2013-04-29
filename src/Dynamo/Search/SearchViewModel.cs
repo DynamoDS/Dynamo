@@ -276,7 +276,7 @@ namespace Dynamo.Search
                                    dynSettings.Controller.DynamoViewModel.ShowSaveDialogAndSaveResultCommand), "SaveAs");
             SearchDictionary.Add(
                 new CommandElement("SaveImage", "Save the current workspace as an image...", new List<string>(),
-                                   dynSettings.Controller.DynamoViewModel.ShowSaveImageDialogueAndSaveResultCommand),
+                                   dynSettings.Controller.DynamoViewModel.ShowSaveImageDialogAndSaveResultCommand),
                 "SaveImage");
             SearchDictionary.Add(
                 new CommandElement("ClearWorkspace", "Clear the current workspace", new List<string>(),

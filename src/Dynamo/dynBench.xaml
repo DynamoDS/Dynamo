@@ -182,8 +182,9 @@
 
                 <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
                     <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" 
-                              IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
-                              Command="{Binding Path=SetConnectorTypeCmd}" CommandParameter="BEZIER" Header="Curves"/>
+                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
+                              Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
+
                     <MenuItem Name="settings_plines" IsCheckable="True" 
 
                               IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
@@ -225,7 +226,7 @@
                  Grid.Column="2">
                 <controls:ZoomBorder ClipToBounds="True" x:Name="zoomBorder">
                     <controls:ZoomBorder.RenderTransform>
-                        <TranslateTransform X="{Binding Path=CurrentTransform.X,Mode=TwoWay}" Y="{Binding Path=CurrentTransform.Y, Mode=TwoWay}"/>
+                        <TranslateTransform X="{Binding Path=CurrentOffset.X,Mode=TwoWay}" Y="{Binding Path=CurrentOffset.Y, Mode=TwoWay}"/>
                     </controls:ZoomBorder.RenderTransform>
                     <dragCanvas:DragCanvas x:Name="WorkBench"
                                     x:FieldModifier="public"
