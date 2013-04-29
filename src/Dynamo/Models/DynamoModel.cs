@@ -91,7 +91,7 @@ namespace Dynamo
             //    c.Visible = false;
             //foreach (dynNote n in ws.Notes)
             //    n.Visibility = Visibility.Hidden;
-            throw new NotImplementedException("Verify that workspace visbility is now bound.");
+            //throw new NotImplementedException("Verify that workspace visbility is now bound.");
         }
     }
 

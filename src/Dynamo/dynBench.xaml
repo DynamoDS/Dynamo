@@ -33,55 +33,55 @@
     <Window.InputBindings>
 
         <KeyBinding Key="Tab"
-                                Command="{Binding Path=SelectNeighborsCommand}"/>
+                                Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
 
         <KeyBinding Key="Delete"
-                                Command="{Binding Path=DeleteCommand}"/>
+                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="N"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=ShowNewFunctionDialogCommand}"/>
+                                Command="{Binding Path=DataContext.ShowNewFunctionDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="Tab"
-                                Command="{Binding Path=SelectNeighborsCommand}"/>
+                                Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
 
         <KeyBinding Key="Delete"
-                                Command="{Binding Path=DeleteCommand}"/>
+                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="C"
                                 Modifiers="Control"
-                                Command="{Binding Path=CopyCommand}"/>
+                                Command="{Binding Path=DataContext.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="D"
                                 Modifiers="Control"
-                                Command="{Binding Path=NodeFromSelectionCommand}"/>
+                                Command="{Binding Path=DataContext.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="V"
                                 Modifiers="Control"
-                                Command="{Binding Path=PasteCommand}"/>
+                                Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
 
         <KeyBinding Key="W"
                                 Modifiers="Control"
-                                Command="{Binding Path=AddNoteCommand}"/>
+                                Command="{Binding Path=DataContext.AddNoteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="V"
                                 Modifiers="Control"
-                                Command="{Binding Path=PasteCommand}"/>
+                                Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control"
-                                Command="{Binding Path=ShowSaveDialogIfNeededAndSaveResultCommand}"/>
+                                Command="{Binding Path=DataContext.ShowSaveDialogIfNeededAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="S"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=ShowSaveDialogAndSaveResultCommand}"/>
+                                Command="{Binding Path=DataContext.ShowSaveDialogAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="O"
                                 Modifiers="Control"
-                                Command="{Binding Path=ShowOpenDialogAndOpenResultCommand}"/>
+                                Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="H"
                                 Modifiers="Control"
-                                Command="{Binding Path=HomeCommand}"/>
+                                Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="Up"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=ToggleConsoleShowingCommand}"/>
+                                Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="F4"
                 Modifiers="Alt"
-                                Command="{Binding Path=ExitCommand}"/>
+                                Command="{Binding Path=DataContext.ExitCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
         <KeyBinding Key="C"
                                 Modifiers="Control+Shift"
-                                Command="{Binding Path=ClearCommand}"/>
+                                Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynBench}}}"/>
 
         <KeyBinding Key="R"
                 Modifiers="Ctrl"
