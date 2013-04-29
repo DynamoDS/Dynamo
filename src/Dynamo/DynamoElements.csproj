@@ -94,6 +94,7 @@ limitations under the License.
     <Compile Include="CustomNodeLoader.cs" />
     <Compile Include="DynamoLoader.cs" />
     <Compile Include="NodeCollapser.cs" />
+    <Compile Include="Search\SearchElements\CommandElement.cs" />
     <Compile Include="Utilities\Converters.cs" />
     <Compile Include="DynamoController.cs" />
     <Compile Include="DynamoSplash.xaml.cs">

@@ -200,6 +200,7 @@ namespace Dynamo.Search
             //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
             Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion());
             AddHomeToSearch();
+            AddCommandElements();
         }
 
         /// <summary>
@@ -239,6 +240,8 @@ namespace Dynamo.Search
                                 , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
 
+
+
         /// <summary>
         ///     Synchronously performs a search using the current SearchText
         /// </summary>
@@ -265,6 +268,21 @@ namespace Dynamo.Search
                 SearchResults.Add(node);
             }
             SelectedIndex = 0;
+        }
+
+        /// <summary>
+        ///     Add command elements to search
+        /// </summary>
+        internal void AddCommandElements()
+        {
+            SearchDictionary.Add(new CommandElement("Note", "Add a note to the canvas", new List<string>{"doc"}, DynamoCommands.AddNoteCmd), "Note");
+            SearchDictionary.Add(new CommandElement("ToggleConsoleVisibility", "Toggle the visibility of the console", new List<string> { "console", "view" }, DynamoCommands.ToggleConsoleShowingCmd), "ToggleConsoleVisibility");
+            SearchDictionary.Add(new CommandElement("Open", "Open a document...", new List<string>(), DynamoCommands.ShowOpenDialogAndOpenResultCmd), "Open");
+            SearchDictionary.Add(new CommandElement("Save", "Save the current document", new List<string>(), DynamoCommands.ShowSaveDialogIfNeededAndSaveResultCmd), "Save");
+            SearchDictionary.Add(new CommandElement("SaveAs", "Save the current document as...", new List<string>(), DynamoCommands.ShowSaveDialogAndSaveResultCmd), "SaveAs");
+            SearchDictionary.Add(new CommandElement("SaveImage", "Save the current workspace as an image...", new List<string>(), DynamoCommands.ShowSaveImageDialogAndSaveResultCmd), "SaveImage");
+            SearchDictionary.Add(new CommandElement("ClearWorkspace", "Clear the current workspace", new List<string>(), DynamoCommands.ClearCmd), "ClearWorkspace");
+            SearchDictionary.Add(new CommandElement("Exit", "Exit the application", new List<string>(), DynamoCommands.ExitCmd), "Exit");
         }
 
         /// <summary>

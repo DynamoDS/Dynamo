@@ -807,21 +807,54 @@ namespace Dynamo.Commands
     {
         public void Execute(object parameters)
         {
-            Dictionary<string,object> inputs = (Dictionary<string,object>) parameters;
+            var inputs = (Dictionary<string,object>) parameters;
 
-            dynNote n = new dynNote();
-            Canvas.SetLeft(n, (double)inputs["x"]);
-            Canvas.SetTop(n, (double)inputs["y"]);
-            n.noteText.Text = inputs["text"].ToString();
-            dynWorkspace ws = (dynWorkspace)inputs["workspace"];
 
-            ws.Notes.Add(n);
-            dynSettings.Bench.WorkBench.Children.Add(n);
-
-            if (!dynSettings.Bench.Controller.ViewingHomespace)
+            // by default place node at center
+            var x = 0.0;
+            var y = 0.0;
+            if (dynSettings.Bench != null)
             {
-                dynSettings.Bench.Controller.CurrentSpace.Modified();
+                x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
+                y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
+
+                // apply small perturbation
+                // so node isn't right on top of last placed node
+                var r = new Random();
+                x += (r.NextDouble() - 0.5) * 50;
+                y += (r.NextDouble() - 0.5) * 50;
             }
+
+            if (inputs != null && inputs.ContainsKey("x"))
+                x = (double)inputs["x"];
+
+            if (inputs != null && inputs.ContainsKey("y"))
+                y = (double)inputs["y"];
+
+            var dropPt = new Point(x, y);
+
+            if (dynSettings.Bench != null)
+            {
+                var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
+                dropPt = a.Transform(dropPt);
+            }
+
+            var n = new dynNote();
+            Canvas.SetLeft(n, dropPt.X);
+            Canvas.SetTop(n, dropPt.Y);
+            n.noteText.Text = ( inputs == null || !inputs.ContainsKey("text") ) ? "New Note" : inputs["text"].ToString();
+            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? dynSettings.Controller.CurrentSpace : (dynWorkspace)inputs["workspace"];
+
+            if (dynSettings.Bench != null)
+            {
+                ws.Notes.Add(n);
+                dynSettings.Bench.WorkBench.Children.Add(n);
+                if (!dynSettings.Bench.Controller.ViewingHomespace)
+                {
+                    dynSettings.Bench.Controller.CurrentSpace.Modified();
+                }
+            }
+
         }
 
         public event EventHandler CanExecuteChanged

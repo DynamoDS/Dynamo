@@ -237,6 +237,12 @@ namespace Dynamo
         /// </summary>
         public void ProcessCommandQueue()
         {
+            if (Bench != null)
+            {
+                dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}",
+                                                       Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
+            }
+
             while (commandQueue.Count > 0)
             {
                 var cmdData = commandQueue.Dequeue();
@@ -250,12 +256,6 @@ namespace Dynamo
                 }
             }
             commandQueue.Clear();
-
-            if (Bench != null)
-            {
-                dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}",
-                                                       Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
-            }
         }
 
         /// <summary>
