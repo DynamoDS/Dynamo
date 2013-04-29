@@ -175,8 +175,6 @@ namespace Dynamo.Nodes
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            return;
-
             if (_isRendering)
                 return;
 
