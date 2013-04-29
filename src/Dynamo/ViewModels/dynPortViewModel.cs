@@ -119,7 +119,7 @@ namespace Dynamo.Connectors
                 dynSettings.Controller.DynamoViewModel.IsConnecting = false;
                 dynSettings.Controller.DynamoViewModel.ActiveConnector = null;
 
-#warning MVVM : Might be broken logic here. Would like to handle connection in one command
+//MVVM : Might be broken logic here. Would like to handle connection in one command
                 /*
                 //attempt a connection between the port
                 //and the connector

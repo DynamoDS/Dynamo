@@ -62,6 +62,11 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
+            LeapEnable(true);
+        }
+
+        public override void SetupCustomUIElements(dynNodeUI NodeUI)
+        {
             // Create a menuitem to enable/disable the Leap device
             menuItemLeapEnabled = new System.Windows.Controls.MenuItem();
             menuItemLeapEnabled.Header = "Enable Leap";
@@ -69,8 +74,6 @@ namespace Dynamo.Nodes
             menuItemLeapEnabled.IsChecked = (leapController != null);
             menuItemLeapEnabled.Checked += new System.Windows.RoutedEventHandler(menuItemLeapEnabled_Checked);
             NodeUI.MainContextMenu.Items.Add(menuItemLeapEnabled);
-
-            LeapEnable(true);
         }
 
         void menuItemLeapEnabled_Checked(object sender, System.Windows.RoutedEventArgs e)

@@ -97,7 +97,7 @@ namespace Dynamo.Utilities
                         {
                             var node = new dynApply1();
 
-                            #warning MVVM : Don't make direct reference to view here
+                            //MVVM : Don't make direct reference to view here
                             //MVVM: no reference to view here
                             //dynNodeUI nodeUI = node.NodeUI;
 
@@ -117,7 +117,7 @@ namespace Dynamo.Utilities
 
                             node.DisableReporting();
 
-                            #warning MVVM : Can't set view location here
+                            //MVVM : Can't set view location here
 
                             //dynSettings.Bench.WorkBench.Children.Add(nodeUI);
 
@@ -170,7 +170,7 @@ namespace Dynamo.Utilities
 
             #region UI Positioning Calculations
 
-#warning MVVM : use node positioning calculations to set a property and bind that to the view
+//MVVM : use node positioning calculations to set a property and bind that to the view
             /*double avgX = selectedNodeSet.Average(node => Canvas.GetLeft(node.NodeUI));
             double avgY = selectedNodeSet.Average(node => Canvas.GetTop(node.NodeUI));
 
@@ -204,7 +204,7 @@ namespace Dynamo.Utilities
             newNodeWorkspace.Nodes.AddRange(selectedNodeSet);
             newNodeWorkspace.Connectors.AddRange(connectors);
 
-#warning MVVM : do not set location of view directly
+//MVVM : do not set location of view directly
             double leftShift = leftMost - 250;
             foreach (dynNode node in newNodeWorkspace.Nodes)
             {
@@ -231,7 +231,7 @@ namespace Dynamo.Utilities
             currentWorkspace.Nodes.Add(collapsedNode);
             collapsedNode.WorkSpace = currentWorkspace;
 
-#warning MVVM : do not set view in collection here
+//MVVM : do not set view in collection here
             /*dynSettings.Bench.WorkBench.Children.Add(collapsedNode.NodeUI);
 
             Canvas.SetLeft(collapsedNode.NodeUI, avgX);
@@ -283,7 +283,7 @@ namespace Dynamo.Utilities
                 dynNode inputNode = input.Item2.Item3.Item2;
                 int inputData = input.Item2.Item3.Item1;
 
-#warning MVVM : replace NodeUI reference with node
+//MVVM : replace NodeUI reference with node
                 inConnectors.Add(new Tuple<dynNode, int, int>(inputNode, inputData, inputIndex));
 
                 //Create Symbol Node
@@ -292,7 +292,7 @@ namespace Dynamo.Utilities
                     Symbol = inputReceiverNode.InPortData[inputReceiverData].NickName
                 };
 
-                #warning MVVM : Don't make direct reference to view here
+                //MVVM : Don't make direct reference to view here
                 //dynNodeUI nodeUI = node.NodeUI;
                 
                 var elNameAttrib =
@@ -310,7 +310,7 @@ namespace Dynamo.Utilities
 
                 node.DisableReporting();
 
-                #warning MVVM : Do not add view directly to canvas
+                //MVVM : Do not add view directly to canvas
                 /*dynSettings.Bench.WorkBench.Children.Add(nodeUI);
 
                 //Place it in an appropriate spot
@@ -404,7 +404,7 @@ namespace Dynamo.Utilities
 
                     node.DisableReporting();
 
-                    #warning MVVM : Do not add view directly to canvas
+                    //MVVM : Do not add view directly to canvas
                     /*dynSettings.Bench.WorkBench.Children.Add(nodeUI);
 
                     //Place it in an appropriate spot
@@ -448,7 +448,7 @@ namespace Dynamo.Utilities
                 if (curriedNode == null)
                 {
                     // we create the connectors in the current space later
-#warning MVVM : replaced multiple dynNodeUI refrences with dynNode
+//MVVM : replaced multiple dynNodeUI refrences with dynNode
                     outConnectors.Add(new Tuple<dynNode, int, int>(outputReceiverNode,
                                                                      outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
                                                                      outputReceiverData));
@@ -476,7 +476,7 @@ namespace Dynamo.Utilities
 
             #region Make new workspace invisible
 
-#warning MVVM : Do not set view visibility here. It will be controlled by active workspace binding.
+//MVVM : Do not set view visibility here. It will be controlled by active workspace binding.
             //Step 4: make nodes invisible
             // and update positions
             /*foreach (dynNodeUI node in newNodeWorkspace.Nodes.Select(x => x.NodeUI))
@@ -492,7 +492,7 @@ namespace Dynamo.Utilities
 
             currentWorkspace.Nodes.Remove(collapsedNode);
 
-#warning MVVM : Don't remove the view directly
+//MVVM : Don't remove the view directly
             //dynSettings.Bench.WorkBench.Children.Remove(collapsedNode.NodeUI);
 
             // save and load the definition from file

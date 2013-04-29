@@ -32,7 +32,7 @@ namespace Dynamo.Controls
       public bool isDragInProgress;
 
       //true if user is making a connection between elements
-#warning MVVM: move isConnecting onto the DynamoViewModel
+//MVVM: move isConnecting onto the DynamoViewModel
       /*private bool isConnecting = false;
       public bool IsConnecting
       {

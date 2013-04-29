@@ -95,7 +95,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="funcDef">The FunctionDefinition for a custom node</param>
         public LocalSearchElement(FunctionDefinition funcDef)
         {
-#warning MVVM : method moved to dynamo view model
+//MVVM : method moved to dynamo view model
             //this.Node = dynSettings.Controller.CreateNode( funcDef.FunctionId.ToString() );
             this.Node = dynSettings.Controller.DynamoViewModel.CreateNode(funcDef.FunctionId.ToString());
             this._name = Node.NickName;
@@ -166,7 +166,7 @@ namespace Dynamo.Search.SearchElements
                     {"guid", guid}
                 };
             //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCmd, nodeParams));
-#warning MVVM : command moved to dynamo model view
+//MVVM : command moved to dynamo model view
             dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.CreateNodeCommand, nodeParams));
             dynSettings.Controller.ProcessCommandQueue();
 
@@ -174,7 +174,7 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-#warning MVVM : moved command to dynamo model view
+//MVVM : moved command to dynamo model view
                 //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, placedNode.NodeUI));
                 dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(dynSettings.Controller.DynamoViewModel.SelectCommand, placedNode));
                 dynSettings.Controller.ProcessCommandQueue();

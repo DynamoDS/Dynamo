@@ -25,9 +25,16 @@ namespace DynamoSandbox
 
             try
             {
-                dynamoController = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), true);
-                var bench = dynamoController.Bench;
-                bench.ShowDialog();
+                bool startWithUI = false;
+
+                dynamoController = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), startWithUI);
+
+                if (startWithUI)
+                {
+                    var bench = dynamoController.Bench;
+                    bench.ShowDialog();
+                }
+                
             }
             catch (Exception e)
             {

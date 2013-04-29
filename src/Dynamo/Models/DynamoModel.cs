@@ -11,17 +11,10 @@ using Microsoft.Practices.Prism.ViewModel;
 namespace Dynamo
 {
     /// <summary>
-    /// A singleton object representing a dynamo model.
+    /// The Dynamo model.
     /// </summary>
     public class DynamoModel:dynModelBase
     {
-        //public event EventHandler CurrentOffsetChanged;
-        //protected virtual void OnCurrentOffsetChanged(object sender, EventArgs e)
-        //{
-        //    if (CurrentOffsetChanged != null)
-        //        CurrentOffsetChanged(this, e);
-        //}
-
         private ObservableCollection<dynWorkspace> _workSpaces = new ObservableCollection<dynWorkspace>();
         private dynWorkspace _cspace;
 

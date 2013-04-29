@@ -42,7 +42,7 @@ namespace Dynamo
                 foreach (var output in outputs)
                     OutPortData.Add(new PortData(output, "function output", typeof(object)));
 
-#warning MVVM : drop shadow visibility is now bound to a parameter on the view model
+//MVVM : drop shadow visibility is now bound to a parameter on the view model
                 /*
                 //Add a drop-shadow.
                 ((DropShadowEffect)NodeUI.elementRectangle.Effect).Opacity = 1;

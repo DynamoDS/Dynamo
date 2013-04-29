@@ -123,7 +123,7 @@ namespace Dynamo.Connectors
             }
 
             //turn the line solid
-#warning MVVM : Do not make edits to the view here
+//MVVM : Do not make edits to the view here
             /*connector.StrokeDashArray.Clear();
             plineConnector.StrokeDashArray.Clear();*/
             pEnd = p;
@@ -156,7 +156,7 @@ namespace Dynamo.Connectors
 
             p.Disconnect(this);
 
-#warning MVVM : Do not make edits to the view here
+//MVVM : Do not make edits to the view here
 
             //turn the connector back to dashed
             /*connector.StrokeDashArray.Add(5);
@@ -190,7 +190,7 @@ namespace Dynamo.Connectors
             pStart = null;
             pEnd = null;
 
-#warning MVVM : Do not manage view on canvas here
+//MVVM : Do not manage view on canvas here
             /*dynSettings.Workbench.Children.Remove(connector);
             dynSettings.Workbench.Children.Remove(plineConnector);
             dynSettings.Workbench.Children.Remove(endDot);

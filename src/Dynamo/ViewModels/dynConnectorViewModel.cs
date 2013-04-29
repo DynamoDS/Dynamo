@@ -109,7 +109,7 @@ namespace Dynamo.Connectors
             get { return connectorType; }
             set
             {
-#warning MVVM : Use a binding to set the connector type
+//MVVM : Use a binding to set the connector type
                 if (value == Connectors.ConnectorType.BEZIER)
                 {
                     //hide the polyline
@@ -186,7 +186,7 @@ namespace Dynamo.Connectors
 
                 //pStart.Connect(this);
 
-#warning MVVM : Create the paths in XAML and bind
+//MVVM : Create the paths in XAML and bind
                 /*
                 BrushConverter bc = new BrushConverter();
                 strokeBrush = (Brush)bc.ConvertFrom("#313131");
@@ -335,7 +335,7 @@ namespace Dynamo.Connectors
         /// </summary>
         public void Redraw()
         {
-#warning MVVM : Remove condition on isDrawing
+//MVVM : Remove condition on isDrawing
             //if (isDrawing)
             //{
                 if (_connector.Start != null)

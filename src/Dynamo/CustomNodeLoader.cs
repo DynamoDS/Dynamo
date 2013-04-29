@@ -497,7 +497,7 @@ namespace Dynamo.Utilities
                         ws.Nodes.Add(el);
                         el.WorkSpace = ws;
                         var node = el;
-#warning MVVM : do not set visibility explicitly
+//MVVM : do not set visibility explicitly
                         //nodeUI.Visibility = Visibility.Visible;
 
                         //dynSettings.Bench.WorkBench.Children.Add(nodeUI);
@@ -639,7 +639,7 @@ namespace Dynamo.Utilities
                 foreach (dynNode e in ws.Nodes)
                     e.EnableReporting();
 
-#warning MVVM : this metho was removed. visibility should be controlled by current space binding
+//MVVM : this metho was removed. visibility should be controlled by current space binding
                 //DynamoController.hideWorkspace(ws);
 
                 ws.FilePath = xmlPath;

@@ -67,7 +67,7 @@ namespace Dynamo
         {
             //_model = model;
             Name = name;
-#warning MVVM : made all lists into observable collections
+//MVVM : made all lists into observable collections
             Nodes = new ObservableCollection<dynNode>(e);
             Connectors = new ObservableCollection<dynConnector>(c);
             PositionX = x;
@@ -112,7 +112,7 @@ namespace Dynamo
             try
             {
 
-#warning MVVM : Is this test valid for the Homeworskpace?
+//MVVM : Is this test valid for the Homeworskpace?
                 var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspace);
                 xmlDoc.Save(xmlPath);
 

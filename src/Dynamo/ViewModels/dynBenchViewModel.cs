@@ -1186,7 +1186,7 @@ namespace Dynamo.Controls
 
             dynNode node = CreateNode(data["name"].ToString());
 
-#warning MVVM : Don't add the view explicitly
+//MVVM : Don't add the view explicitly
             /*dynNodeUI nodeUi = node.NodeUI;
             if (dynSettings.Workbench != null)
             {
@@ -1199,7 +1199,7 @@ namespace Dynamo.Controls
             _model.CurrentSpace.Nodes.Add(node);
             node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
 
-#warning MVVM : Don't set any view properties on the node here
+//MVVM : Don't set any view properties on the node here
             //nodeUi.Opacity = 1;
 
             //if we've received a value in the dictionary
@@ -1423,7 +1423,7 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.Remove(note);
             _model.CurrentSpace.Notes.Remove(note);
             
-#warning MVVM : do not explicitly remove view
+//MVVM : do not explicitly remove view
             //dynSettings.Workbench.Children.Remove(note);
         }
 
@@ -1498,7 +1498,7 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.Remove(node);
             //dynSettings.Controller.Nodes.Remove(node.NodeLogic);
             dynSettings.Controller.DynamoViewModel.Model.CurrentSpace.Nodes.Remove(node);
-#warning MVVM : will be removed implicitly
+//MVVM : will be removed implicitly
             //dynSettings.Workbench.Children.Remove(node);
         }
 
@@ -1824,7 +1824,7 @@ namespace Dynamo.Controls
                     else
                         t = tData.Type;
 
-#warning MVVM : no longer need to specify visibility here
+//MVVM : no longer need to specify visibility here
                     dynNode el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws); //Visibility.Hidden);
 
                     if (el == null)
@@ -2061,7 +2061,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-#warning MVVM : replace this with a binding
+//MVVM : replace this with a binding
             //Bench.workspaceLabel.Content = Bench.editNameBox.Text;
 
             Controller.SearchViewModel.Refactor(CurrentSpace, editName);
@@ -2377,7 +2377,7 @@ namespace Dynamo.Controls
                 ws.Nodes.Add(node);
                 node.WorkSpace = ws;
 
-#warning MVVM : don't edit view elements here
+//MVVM : don't edit view elements here
                 //nodeUI.Visibility = vis;
 
                 //Bench.WorkBench.Children.Add(nodeUI);
@@ -2478,7 +2478,7 @@ namespace Dynamo.Controls
 
             //Bench.workspaceLabel.Content = "Home";
 
-#warning MVVM : button enable state is handled by command
+//MVVM : button enable state is handled by command
             //Bench.homeButton.IsEnabled = false;
             //Bench.editNameButton.Visibility = Visibility.Collapsed;
             //Bench.editNameButton.IsHitTestVisible = false;
@@ -2504,7 +2504,7 @@ namespace Dynamo.Controls
             //Bench.WorkBench.ignoreClick = true;
             OnStopDragging(this, EventArgs.Empty);
 
-#warning MVVM : don't toggle visiblity manually.
+//MVVM : don't toggle visiblity manually.
             //Step 1: Make function workspace invisible
             /*foreach (dynNode ele in Nodes)
             {
@@ -2546,7 +2546,7 @@ namespace Dynamo.Controls
             }*/
 
             //this.saveFuncItem.IsEnabled = true;
-#warning MVVM : button enable state is handled by command
+//MVVM : button enable state is handled by command
             //Bench.homeButton.IsEnabled = true;
             //this.varItem.IsEnabled = true;
 
@@ -2833,7 +2833,7 @@ namespace Dynamo.Controls
                         port.Connectors[i].Kill();
                 }
 
-#warning MVVM : don't explicitly remove view
+//MVVM : don't explicitly remove view
                 //dynSettings.Workbench.Children.Remove(el.NodeUI);
             }
 
@@ -2879,12 +2879,12 @@ namespace Dynamo.Controls
                     SaveFunction(dynSettings.FunctionDict.Values.First(x => x.Workspace == _model.CurrentSpace));
                 }
 
-#warning MVVM : hiding workspace should no longer be necessary due to visibility bindings
+//MVVM : hiding workspace should no longer be necessary due to visibility bindings
                 //DynamoController.hideWorkspace(_model.CurrentSpace);
 
                 _model.CurrentSpace = workSpace;
 
-#warning MVVM : replaced with bindings
+//MVVM : replaced with bindings
                 /*Bench.homeButton.IsEnabled = true;
 
                 Bench.workspaceLabel.Content = CurrentSpace.Name;

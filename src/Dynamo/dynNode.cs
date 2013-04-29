@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
         public ObservableCollection<PortData> OutPortData { get; private set; }
         Dictionary<dynPortModel, PortData> portDataDict = new Dictionary<dynPortModel, PortData>();
         
-#warning MVVM : node should not reference its view directly
+//MVVM : node should not reference its view directly
         //public dynNodeUI NodeUI;
         
         public Dictionary<int, Tuple<int, dynNode>> Inputs = 
@@ -746,7 +746,7 @@ namespace Dynamo.Nodes
                                 .Select(
                                     pair => pair.Value)));
 
-#warning MVVM : don't use the dispatcher to invoke here
+//MVVM : don't use the dispatcher to invoke here
                     //NodeUI.Dispatcher.BeginInvoke(new Action(
                     //    delegate
                     //    {
@@ -791,7 +791,7 @@ namespace Dynamo.Nodes
                 return expr;
             };
 
-#warning MVVM : Switched from nodeUI dispatcher to bench dispatcher 
+//MVVM : Switched from nodeUI dispatcher to bench dispatcher 
             Value result = isInteractive && dynSettings.Bench != null
                 ? (Value)dynSettings.Bench.Dispatcher.Invoke(evaluation)
                 : evaluation();
@@ -1126,7 +1126,7 @@ namespace Dynamo.Nodes
                 //edges of the icon
                 var port = AddPort(PortType.OUTPUT, pd.NickName, count);
 
-#warning MVVM : don't set the data context in the model
+//MVVM : don't set the data context in the model
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
@@ -1205,7 +1205,7 @@ namespace Dynamo.Nodes
 
         internal void DisableInteraction()
         {
-#warning MVVM : IsEnabled on input grid elements is now bount to InteractionEnabled property
+//MVVM : IsEnabled on input grid elements is now bount to InteractionEnabled property
             //enabledDict.Clear();
 
             //foreach (UIElement e in inputGrid.Children)

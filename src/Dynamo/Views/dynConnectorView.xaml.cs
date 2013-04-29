@@ -36,7 +36,7 @@ namespace Dynamo.Nodes.Views
         {
             InitializeComponent();
 
-#warning MVVM : Create the paths in XAML and bind to model view
+//MVVM : Create the paths in XAML and bind to model view
             /*
             #region bezier creation
             connector = new Path();

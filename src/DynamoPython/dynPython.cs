@@ -243,6 +243,17 @@ namespace Dynamo.Nodes
 
         public dynPython()
         {
+            InPortData.Add(new PortData("IN", "Input", typeof(object)));
+            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public override void SetupCustomUIElements(Controls.dynNodeUI NodeUI)
+        {
+            //topControl.Height = 200;
+            //topControl.Width = 300;
+
             //add an edit window option to the 
             //main context window
             var editWindowItem = new System.Windows.Controls.MenuItem();
@@ -250,15 +261,6 @@ namespace Dynamo.Nodes
             editWindowItem.IsCheckable = false;
             NodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-
-            InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
-
-            RegisterAllPorts();
-
-            //topControl.Height = 200;
-            //topControl.Width = 300;
-
             NodeUI.UpdateLayout();
         }
 
