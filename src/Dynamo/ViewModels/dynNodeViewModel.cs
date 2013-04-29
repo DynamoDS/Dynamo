@@ -183,7 +183,7 @@ namespace Dynamo.Controls
 
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand<string> SetLacingTypeCommand { get; set; }
-        public DelegateCommand<ElementState> SetStateCommand { get; set; }
+        public DelegateCommand<object> SetStateCommand { get; set; }
         public DelegateCommand SelectCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
@@ -215,7 +215,7 @@ namespace Dynamo.Controls
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeUI>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
-            SetStateCommand = new DelegateCommand<ElementState>(SetState, CanSetState);
+            SetStateCommand = new DelegateCommand<object>(SetState, CanSetState);
         }
         #endregion
 
@@ -432,14 +432,16 @@ namespace Dynamo.Controls
             return true;
         }
 
-        private void SetState(ElementState state)
+        private void SetState(object parameter)
         {
-            nodeLogic.State = state;
+            nodeLogic.State = (ElementState)parameter;
         }
 
-        private bool CanSetState(ElementState state)
+        private bool CanSetState(object parameter)
         {
-            return true;
+            if(parameter is ElementState)
+                return true;
+            return false;
         }
 
         #region junk
