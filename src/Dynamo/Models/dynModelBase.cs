@@ -8,6 +8,62 @@ namespace Dynamo
     {
         private Guid _guid;
         private bool _isSelected = false;
+        private double x = 0.0;
+        private double y = 0.0;
+        private double height = 100;
+        private double width = 100;
+
+        /// <summary>
+        /// The X coordinate of the node in canvas space.
+        /// </summary>
+        public double X
+        {
+            get { return x; }
+            set
+            {
+                x = value;
+                RaisePropertyChanged("X");
+            }
+        }
+
+        /// <summary>
+        /// The Y coordinate of the node in canvas space.
+        /// </summary>
+        public double Y
+        {
+            get { return y; }
+            set
+            {
+                y = value;
+                RaisePropertyChanged("Y");
+            }
+        }
+
+        /// <summary>
+        /// The height of the node.
+        /// </summary>
+        public double Height
+        {
+            get { return height; }
+            set
+            {
+                height = value;
+                RaisePropertyChanged("Height");
+            }
+        }
+
+        /// <summary>
+        /// The width of the node.
+        /// </summary>
+        public double Width
+        {
+            get { return width; }
+            set
+            {
+                width = value;
+                RaisePropertyChanged("Width");
+            }
+        }
 
         public bool IsSelected
         {

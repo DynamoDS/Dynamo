@@ -131,12 +131,18 @@ namespace Dynamo.Controls
               {
                   n.Select();
 
-                  UIElement el = (UIElement)n;
+                  //UIElement el = (UIElement)n;
 
-                  double left = Canvas.GetLeft(el);
-                  double right = Canvas.GetRight(el);
-                  double top = Canvas.GetTop(el);
-                  double bottom = Canvas.GetBottom(el);
+                  //double left = Canvas.GetLeft(el);
+                  //double right = Canvas.GetRight(el);
+                  //double top = Canvas.GetTop(el);
+                  //double bottom = Canvas.GetBottom(el);
+
+                  //MVVM: now storing element coordinates on models
+                  double left = n.X;
+                  double right = n.X + n.Width;
+                  double top = n.Y;
+                  double bottom = n.Y + n.Height;
 
                   // Calculate the offset deltas and determine for which sides
                   // of the Canvas to adjust the offsets.
@@ -456,12 +462,18 @@ namespace Dynamo.Controls
          int count = 0;
          foreach (ISelectable n in DynamoSelection.Instance.Selection)
          {
-             UIElement el = (UIElement)n;
+             //UIElement el = (UIElement)n;
 
-             double left = Canvas.GetLeft(el);
-             double right = Canvas.GetRight(el);
-             double top = Canvas.GetTop(el);
-             double bottom = Canvas.GetBottom(el);
+             //double left = Canvas.GetLeft(el);
+             //double right = Canvas.GetRight(el);
+             //double top = Canvas.GetTop(el);
+             //double bottom = Canvas.GetBottom(el);
+
+             //MVVM: now storing element coordinates on models
+             double left = n.X;
+             double right = n.X + n.Width;
+             double top = n.Y;
+             double bottom = n.Y + n.Height;
 
              // Calculate the offset deltas and determine for which sides
              // of the Canvas to adjust the offsets.
