@@ -143,7 +143,7 @@
             </MenuItem>
 
             <MenuItem Header="_View" Name="viewMenu">
-                <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
             </MenuItem>
 
@@ -167,10 +167,10 @@
 
                 <MenuItem Header="_Connector Type" IsEnabled="True">
                     <MenuItem Name="settings_curves" IsCheckable="True" 
-                              IsChecked="{Binding ElementName=_this,Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
+                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" 
                               Command="{Binding Path=SetConnectorTypeCmd}" CommandParameter="BEZIER" Header="Curves"/>
                     <MenuItem Name="settings_plines" IsCheckable="True" 
-                              IsChecked="{Binding ElementName=_this, Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
+                              IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" 
                               Command="{Binding Path=SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
                 </MenuItem>
 
@@ -303,21 +303,21 @@
             <Button Name="RunButton" Height="25" Width="100" Content="Run" 
                     FontFamily="Arial" Margin="5"
                     Command="{Binding RunExpressionCommand}"
-                    CommandParameter="{Binding ElementName=_this, Path=Controller.RunInDebug}"
-                    IsEnabled="{Binding ElementName=_this, Path=Controller.RunEnabled, Mode=TwoWay}"/>
+                    CommandParameter="{Binding Path=RunInDebug}"
+                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"/>
             
             <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
                       Command="{Binding CancelRunCommand}" FontFamily="Arial" Margin="5"/>
             
             <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 
-                      Content="Run Automatically" FontSize="11" IsChecked="{Binding ElementName=_this, Path=Controller.DynamicRunEnabled, Mode=TwoWay}"
-                      IsEnabled="{Binding ElementName=_this, Path=Controller.CanRunDynamically, Mode=OneWay}"
+                      Content="Run Automatically" FontSize="11" IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
+                      IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             
             <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontFamily="Arial" FontSize="11" VerticalAlignment="Center"
-                      IsChecked="{Binding ElementName=_this, Path=Controller.RunInDebug, Mode=TwoWay}"
+                      IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}"
                       Content="Debug" VerticalContentAlignment="Center"/>
             
         </WrapPanel>

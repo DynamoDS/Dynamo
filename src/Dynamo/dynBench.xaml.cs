@@ -69,13 +69,6 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             this.Activated += new EventHandler(dynBench_Activated);
-
-            vm = (DataContext as DynamoViewModel);
-            vm.UILocked += new EventHandler(LockUI);
-            vm.UIUnlocked += new EventHandler(UnlockUI);
-            //vm.CurrentOffsetChanged += new EventHandler(vm_CurrentOffsetChanged);
-            vm.StopDragging += new EventHandler(vm_StopDragging);
-            vm.RequestLayoutUpdate += new EventHandler(vm_RequestLayoutUpdate);
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
@@ -96,6 +89,13 @@ namespace Dynamo.Controls
 
         void dynBench_Activated(object sender, EventArgs e)
         {
+            vm = (DataContext as DynamoViewModel);
+            vm.UILocked += new EventHandler(LockUI);
+            vm.UIUnlocked += new EventHandler(UnlockUI);
+            //vm.CurrentOffsetChanged += new EventHandler(vm_CurrentOffsetChanged);
+            vm.StopDragging += new EventHandler(vm_StopDragging);
+            vm.RequestLayoutUpdate += new EventHandler(vm_RequestLayoutUpdate);
+
             //tell the view model to do some port ui-loading 
             vm.PostUIActivationCommand.Execute();
         }
