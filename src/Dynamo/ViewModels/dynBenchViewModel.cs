@@ -1424,22 +1424,42 @@ namespace Dynamo.Controls
 
         private void AddNote(object parameters)
         {
-            Dictionary<string, object> inputs = (Dictionary<string, object>)parameters;
+            var inputs = (Dictionary<string, object>)parameters;
 
-            dynNoteModel n = new dynNoteModel((double)inputs["x"], (double)inputs["y"]);
+            // by default place note at center
+            var x = 0.0;
+            var y = 0.0;
+            if (dynSettings.Bench != null)
+            {
+                x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
+                y = dynSettings.Bench.outerCanvas.ActualHeight / 2.0;
 
-            n.Text = inputs["text"].ToString();
-            dynWorkspace ws = (dynWorkspace)inputs["workspace"];
+                // apply small perturbation
+                // so node isn't right on top of last placed node
+                var r = new Random();
+                x += (r.NextDouble() - 0.5) * 50;
+                y += (r.NextDouble() - 0.5) * 50;
+            }
+
+            if (inputs != null && inputs.ContainsKey("x"))
+                x = (double)inputs["x"];
+
+            if (inputs != null && inputs.ContainsKey("y"))
+                y = (double)inputs["y"];
+
+
+            var n = new dynNoteModel(x, y);
+
+            n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
+            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? _model.CurrentSpace : (dynWorkspace)inputs["workspace"];
 
             ws.Notes.Add(n);
             
-            //MVVM: don't add directly to canvas
-            //dynSettings.Bench.WorkBench.Children.Add(n);
-
             if (!ViewingHomespace)
             {
                 _model.CurrentSpace.Modified();
             }
+            
         }
 
         private bool CanAddNote(object parameters)
