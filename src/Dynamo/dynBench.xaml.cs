@@ -197,7 +197,7 @@ namespace Dynamo.Controls
 
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
-            if (vm.IsConnecting && (DataContext as DynamoViewModel).ActiveConnector != null)
+            if (vm.IsConnecting && vm.ActiveConnector != null)
             {
                 vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
             }
@@ -283,7 +283,6 @@ namespace Dynamo.Controls
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            DynamoViewModel vm = (DataContext as DynamoViewModel);
             if (!vm.IsConnecting)
             {
                 #region window selection
