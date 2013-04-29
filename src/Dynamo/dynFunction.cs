@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Connectors;
@@ -347,6 +348,7 @@ namespace Dynamo
         public class dynSymbol : dynNode
         {
             TextBox tb;
+            private string symbol;
 
             public dynSymbol()
             {
@@ -372,6 +374,12 @@ namespace Dynamo
                 SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
                 tb.Background = backgroundBrush;
                 tb.BorderThickness = new Thickness(0);
+
+                //MVVM:
+                //create a two way binding between the value of
+                //the text box and the Symbol property
+                var binding = new Binding {Path = new PropertyPath("Symbol"), Mode = BindingMode.TwoWay};
+                tb.SetBinding(TextBox.TextProperty, binding);
             }
 
             public override bool RequiresRecalc
@@ -383,10 +391,20 @@ namespace Dynamo
                 set { }
             }
 
+            //MVVM: removed direct set of tb.text
             public string Symbol
             {
-                get { return tb.Text; }
-                set { tb.Text = value; }
+                get
+                {
+                    //return tb.Text;
+                    return symbol;
+                }
+                set
+                {
+                    //tb.Text = value;
+                    symbol = value;
+                    RaisePropertyChanged("Symbol");
+                }
             }
 
             protected internal override INode Build(Dictionary<dynNode, Dictionary<int, INode>> preBuilt, int outPort)
