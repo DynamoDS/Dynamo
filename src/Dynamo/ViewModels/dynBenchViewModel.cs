@@ -294,8 +294,8 @@ namespace Dynamo.Controls
             {
                 if(dynSettings.Controller.DynamoViewModel.Model.CurrentSpace == 
                     dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
-                    return Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A);
-                return Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B);
+                    return Color.FromArgb(0xFF, 0x4B, 0x4B, 0x4B);
+                return Color.FromArgb(0xFF, 0x8A, 0x8A, 0x8A);
             }
         }
 
