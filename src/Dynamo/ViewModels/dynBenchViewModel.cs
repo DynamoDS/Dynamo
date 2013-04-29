@@ -31,12 +31,15 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.Controls
 {
+    public delegate void PointEventHandler(object sender, EventArgs e);
+
     public class DynamoViewModel:dynViewModelBase
     {
         public event EventHandler UILocked;
         public event EventHandler UIUnlocked;
         public event EventHandler StopDragging;
         public event EventHandler RequestLayoutUpdate;
+        public event PointEventHandler CurrentOffsetChanged;
 
         public virtual void OnUILocked(object sender, EventArgs e)
         {
@@ -62,6 +65,12 @@ namespace Dynamo.Controls
                 RequestLayoutUpdate(this, e);
         }
 
+        public virtual void OnCurrenOffsetChanged(object sender, PointEventArgs e)
+        {
+            if (CurrentOffsetChanged != null)
+                CurrentOffsetChanged(this, e);
+        }
+        
         private DynamoModel _model;
 
         private string logText;
@@ -258,7 +267,8 @@ namespace Dynamo.Controls
             set 
             { 
                 currentOffset = value;
-                RaisePropertyChanged("CurrentOffset");
+                OnCurrenOffsetChanged(this, new PointEventArgs(value));
+                //RaisePropertyChanged("CurrentOffset");
             }
         }
 
@@ -1672,7 +1682,10 @@ namespace Dynamo.Controls
         private void SetCurrentOffset(object parameter)
         {
             var p = (Point) parameter;
-            CurrentOffset = new Point(p.X, p.Y);
+
+            //set the current offset without triggering
+            //any property change notices.
+            currentOffset = new Point(p.X, p.Y);
         }
 
         private bool CanSetCurrentOffset(object parameter)
@@ -3067,6 +3080,16 @@ namespace Dynamo.Controls
         {
             Assembly = assemblyIn;
             Type = typeIn;
+        }
+    }
+
+    public class PointEventArgs:EventArgs
+    {
+        public Point Point { get; set; }
+
+        public PointEventArgs(Point p)
+        {
+            Point = p;
         }
     }
 

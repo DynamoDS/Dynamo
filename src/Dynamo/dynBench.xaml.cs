@@ -75,22 +75,36 @@ namespace Dynamo.Controls
             WorkBench.ignoreClick = true;
         }
 
-        //void vm_CurrentOffsetChanged(object sender, EventArgs e)
-        //{
-        //    zoomBorder.SetTranslateTransformOrigin();
-        //}
+        void vm_CurrentOffsetChanged(object sender, EventArgs e)
+        {
+            zoomBorder.SetTranslateTransformOrigin((e as PointEventArgs).Point);
+        }
 
         void dynBench_Activated(object sender, EventArgs e)
         {
             vm = (DataContext as DynamoViewModel);
             vm.UILocked += new EventHandler(LockUI);
             vm.UIUnlocked += new EventHandler(UnlockUI);
-            //vm.CurrentOffsetChanged += new EventHandler(vm_CurrentOffsetChanged);
+            vm.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             vm.StopDragging += new EventHandler(vm_StopDragging);
             vm.RequestLayoutUpdate += new EventHandler(vm_RequestLayoutUpdate);
-
             //tell the view model to do some port ui-loading 
             vm.PostUIActivationCommand.Execute();
+
+            //use events on the zoom border to push the 
+            //current offset down to the view model
+            zoomBorder.MouseWheel += new MouseWheelEventHandler(zoomBorder_MouseWheel);
+            zoomBorder.MouseMove += new MouseEventHandler(zoomBorder_MouseMove);
+        }
+
+        void zoomBorder_MouseMove(object sender, MouseEventArgs e)
+        {
+            vm.SetCurrentOffsetCommand.Execute(zoomBorder.GetTranslateTransformOrigin());
+        }
+
+        void zoomBorder_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            vm.SetCurrentOffsetCommand.Execute(zoomBorder.GetTranslateTransformOrigin());
         }
 
         private void LockUI(object sender, EventArgs e)
@@ -103,7 +117,7 @@ namespace Dynamo.Controls
             overlayCanvas.Cursor = Cursors.AppStarting;
             overlayCanvas.ForceCursor = true;
 
-            //this.workBench.Visibility = System.Windows.Visibility.Hidden;
+            WorkBench.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void UnlockUI(object sender, EventArgs e)
@@ -116,7 +130,7 @@ namespace Dynamo.Controls
             overlayCanvas.Cursor = null;
             overlayCanvas.ForceCursor = false;
 
-            //this.workBench.Visibility = System.Windows.Visibility.Visible;
+            WorkBench.Visibility = System.Windows.Visibility.Visible;
         }
 
         /// <summary>
@@ -305,9 +319,12 @@ namespace Dynamo.Controls
             //then drop the connector, otherwise do nothing
             if (vm != null)
             {
-                vm.ActiveConnector.ConnectorModel.Kill();
-                vm.IsConnecting = false;
-                vm.ActiveConnector = null;
+                if (vm.ActiveConnector != null)
+                {
+                    vm.ActiveConnector.ConnectorModel.Kill();
+                    vm.IsConnecting = false;
+                    vm.ActiveConnector = null;
+                }
             }
 
             if (editingName && !hoveringEditBox)
