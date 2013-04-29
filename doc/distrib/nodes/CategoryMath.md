@@ -1,4 +1,4 @@
-##+
+##Add
 ###Description
 Adds two numbers.
 
@@ -32,6 +32,18 @@ Computes the cosine of the given angle.
   * None
 
 
+##Divide
+###Description
+Divides two numbers.
+
+###Inputs
+  * **x** *(double)* - operand
+  * **y** *(double)* - operand
+
+###Output
+  * None
+
+
 ##Floor
 ###Description
 Rounds a number to the nearest smaller integer.
@@ -43,7 +55,7 @@ Rounds a number to the nearest smaller integer.
   * None
 
 
-##Mod
+##Modulo
 ###Description
 Remainder of division of two numbers.
 
@@ -55,7 +67,29 @@ Remainder of division of two numbers.
   * None
 
 
-##Pow
+##Multiply
+###Description
+Multiplies two numbers.
+
+###Inputs
+  * **x** *(double)* - operand
+  * **y** *(double)* - operand
+
+###Output
+  * None
+
+
+##Pi
+###Description
+Pi constant
+
+
+
+###Output
+  * None
+
+
+##Power
 ###Description
 Raises a number to the power of another.
 
@@ -99,58 +133,24 @@ Computes the sine of the given angle.
   * None
 
 
-##Tangent
-###Description
-Computes the tangent of the given angle.
-
-###Inputs
-  * **θ** *(double)* - Angle in radians
-
-###Output
-  * None
-
-
-##×
-###Description
-Multiplies two numbers.
-
-###Inputs
-  * **x** *(double)* - operand
-  * **y** *(double)* - operand
-
-###Output
-  * None
-
-
-##÷
-###Description
-Divides two numbers.
-
-###Inputs
-  * **x** *(double)* - operand
-  * **y** *(double)* - operand
-
-###Output
-  * None
-
-
-##π
-###Description
-Pi constant
-
-
-
-###Output
-  * None
-
-
-##−
+##Subtract
 ###Description
 Subtracts two numbers.
 
 ###Inputs
   * **x** *(double)* - operand
   * **y** *(double)* - operand
+
+###Output
+  * None
+
+
+##Tangent
+###Description
+Computes the tangent of the given angle.
+
+###Inputs
+  * **θ** *(double)* - Angle in radians
 
 ###Output
   * None
