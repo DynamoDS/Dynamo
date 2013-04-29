@@ -92,6 +92,13 @@ namespace Dynamo
             DynamoViewModel = new DynamoViewModel(this);
             //DynamoCommands.ShowSplashScreenCmd.Execute(null); // closed in bench activated
 
+
+            // custom node loader
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string pluginsPath = Path.Combine(directory, "definitions");
+
+            CustomNodeLoader = new CustomNodeLoader(pluginsPath);
+
             if (withUI)
             {
                 Bench = new dynBench();
@@ -99,11 +106,6 @@ namespace Dynamo
                 Bench.DataContext = DynamoViewModel;
             }
 
-            // custom node loader
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
-
-            CustomNodeLoader = new CustomNodeLoader(pluginsPath);
 
             SearchViewModel = new SearchViewModel();
             PackageManagerClient = new PackageManagerClient(this);

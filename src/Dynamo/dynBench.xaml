@@ -158,7 +158,7 @@
             </MenuItem>
 
             <MenuItem Header="_View" Name="viewMenu">
-                <MenuItem Header="{Binding ElementName=_this, Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                           Command="{Binding Path=ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
             </MenuItem>
 

@@ -189,6 +189,9 @@ limitations under the License.
     <Compile Include="Views\dynConnectorView.xaml.cs">
       <DependentUpon>dynConnectorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\dynWorkspaceView.xaml.cs">
+      <DependentUpon>dynWorkspaceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ZoomBorder.cs" />
     <Compile Include="Search\SearchDictionary.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -257,6 +260,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\dynConnectorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\dynWorkspaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

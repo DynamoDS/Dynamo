@@ -62,13 +62,6 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             this.Activated += new EventHandler(dynBench_Activated);
-
-            vm = (DataContext as DynamoViewModel);
-            vm.UILocked += new EventHandler(LockUI);
-            vm.UIUnlocked += new EventHandler(UnlockUI);
-            //vm.CurrentOffsetChanged += new EventHandler(vm_CurrentOffsetChanged);
-            vm.StopDragging += new EventHandler(vm_StopDragging);
-            vm.RequestLayoutUpdate += new EventHandler(vm_RequestLayoutUpdate);
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
@@ -89,6 +82,13 @@ namespace Dynamo.Controls
 
         void dynBench_Activated(object sender, EventArgs e)
         {
+            vm = (DataContext as DynamoViewModel);
+            vm.UILocked += new EventHandler(LockUI);
+            vm.UIUnlocked += new EventHandler(UnlockUI);
+            //vm.CurrentOffsetChanged += new EventHandler(vm_CurrentOffsetChanged);
+            vm.StopDragging += new EventHandler(vm_StopDragging);
+            vm.RequestLayoutUpdate += new EventHandler(vm_RequestLayoutUpdate);
+
             //tell the view model to do some port ui-loading 
             vm.PostUIActivationCommand.Execute();
         }
@@ -190,7 +190,7 @@ namespace Dynamo.Controls
 
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
-            if (vm.IsConnecting && (DataContext as DynamoViewModel).ActiveConnector != null)
+            if (vm.IsConnecting && vm.ActiveConnector != null)
             {
                 vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
             }
@@ -276,7 +276,6 @@ namespace Dynamo.Controls
 
         private void OnMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            DynamoViewModel vm = (DataContext as DynamoViewModel);
             if (!vm.IsConnecting)
             {
                 #region window selection
