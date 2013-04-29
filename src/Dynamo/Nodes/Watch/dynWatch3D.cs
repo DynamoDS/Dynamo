@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.DEBUG)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
-    public class dynWatch3D : dynNodeWithOneOutput, INotifyPropertyChanged
+    public class dynWatch3D : dynNodeWithOneOutput//, INotifyPropertyChanged
     {
         WatchControl _watchView;
 
@@ -56,18 +56,16 @@ namespace Dynamo.Nodes
 
         bool _isScreenShot = false;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
-        
-
-        protected void RaisePropertyChanged(string property)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(property));
-            }
-        }
+        //protected void RaisePropertyChanged(string property)
+        //{
+        //    var handler = PropertyChanged;
+        //    if (handler != null)
+        //    {
+        //        handler(this, new PropertyChangedEventArgs(property));
+        //    }
+        //}
 
         public dynWatch3D()
         {
@@ -237,9 +235,11 @@ namespace Dynamo.Nodes
                 _meshes.Add(vismesh);
             }
 
-            RaisePropertyChanged("Points");
-            RaisePropertyChanged("Lines");
-            RaisePropertyChanged("Meshes");
+            //RaisePropertyChanged("Points");
+            //RaisePropertyChanged("Lines");
+            //RaisePropertyChanged("Meshes");
+
+            //RequiresRecalc = false;
 
             _requiresRedraw = false;
             _isRendering = false;
