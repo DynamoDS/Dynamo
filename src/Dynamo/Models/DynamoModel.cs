@@ -58,9 +58,7 @@ namespace Dynamo
         /// Construct a Dynamo Model and create a home space.
         /// </summary>
         public DynamoModel()
-        {
-            HomeSpace = CurrentSpace = new HomeWorkspace();
-            _workSpaces.Add(HomeSpace);            
+        {          
         }
 
         /// <summary>
@@ -70,6 +68,7 @@ namespace Dynamo
         public void AddHomeWorkspace()
         {
             var workspace = new HomeWorkspace();
+            HomeSpace = workspace;
             _workSpaces.Add(workspace);
         }
 

@@ -279,7 +279,10 @@ namespace Dynamo.Controls
         /// </summary>
         public dynWorkspaceViewModel CurrentSpaceViewModel
         {
-            get { return Workspaces.First(x => x.WorkspaceModel == _model.CurrentSpace); }
+            get
+            {
+                return Workspaces.First(x => x.WorkspaceModel == _model.CurrentSpace);
+            }
         }
 
         public bool IsConnecting
@@ -316,6 +319,9 @@ namespace Dynamo.Controls
             _model = new DynamoModel();
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
             _model.PropertyChanged += _model_PropertyChanged;
+
+            _model.AddHomeWorkspace();
+            _model.CurrentSpace = _model.HomeSpace;
 
             Controller = controller;
             sw = new StringWriter();
