@@ -61,12 +61,13 @@ namespace Dynamo.Revit
 
         public RenderDescription Draw()
         {
+            RenderDescription description = new RenderDescription();
+
             var drawaableRevitElements = elements.SelectMany(x => x.Select(y => dynRevitSettings.Doc.Document.GetElement(y)));
 
             Debug.WriteLine(string.Format("Drawing {0} elements of type : {1}", drawaableRevitElements.Count(),
                                           this.GetType()));
             
-            RenderDescription description = new RenderDescription();
             foreach (Element e in drawaableRevitElements)
             {
                 Draw(description, e);
@@ -179,7 +180,7 @@ namespace Dynamo.Revit
 
                 indices_back.Add(c);
                 indices_back.Add(b);
-                indices_back.Add(a);            
+                indices_back.Add(a);
             }
 
             List<Mesh3D> meshes = new List<Mesh3D>();

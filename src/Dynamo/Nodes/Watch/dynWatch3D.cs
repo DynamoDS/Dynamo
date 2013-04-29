@@ -109,9 +109,9 @@ namespace Dynamo.Nodes
             Points = new Point3DCollection();
             Lines = new Point3DCollection();
 
-            _points = new PointsVisual3D{Color = Colors.Red, Size=6};
-            _lines = new LinesVisual3D{Color = Colors.Blue, Thickness = 1};
-            
+            _points = new PointsVisual3D { Color = Colors.Red, Size = 6 };
+            _lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
+
             _points.Points = Points;
             _lines.Points = Lines;
 
@@ -175,6 +175,8 @@ namespace Dynamo.Nodes
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
+            return;
+
             if (_isRendering)
                 return;
 
