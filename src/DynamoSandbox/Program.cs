@@ -25,7 +25,7 @@ namespace DynamoSandbox
 
             try
             {
-                bool startWithUI = false;
+                bool startWithUI = true;
 
                 dynamoController = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), startWithUI);
 
