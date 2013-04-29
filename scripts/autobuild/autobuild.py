@@ -57,7 +57,7 @@ def main():
 			email_result = email_all( options.email_list_path, options.email_sender, "Dynamo autobuild skipped for " + options.repo_date, message, "" )
 		return
 
-	build_result = build( options.msbuild_path, solution_path )
+	build_result = build( options.msbuild_path, solution_path, build_config = "Release" )
 	build_result_debug = build( options.msbuild_path, solution_path, build_config = "Debug" )
 
 	unit_test_result = {}
@@ -72,8 +72,8 @@ def main():
 
 		installers_result = make_installers( installer_dir, installer_bat )
 
-		# if not options.debug:
-		# 	update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, options.realtimedev_root )
+		if not options.debug:
+			update_realtimedev( installer_dir, installer_bin_dir, repo_root, autodoc_root, options.realtimedev_root )
 		
 	else:
 		print 'build failed'

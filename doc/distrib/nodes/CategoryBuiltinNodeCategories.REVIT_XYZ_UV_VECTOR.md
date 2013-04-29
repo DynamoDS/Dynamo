@@ -1,3 +1,15 @@
+##Add XYZ
+###Description
+Adds the components of two XYZs.
+
+###Inputs
+  * **XYZa** *(XYZ)* - XYZ a
+  * **XYZb** *(XYZ)* - XYZ b
+
+###Output
+  * None
+
+
 ##Evaluate Normal
 ###Description
 Evaluate a point on a face to find the normal.
@@ -18,11 +30,22 @@ Evaluate a parameter(UV) on a face to find the XYZ location.
   * None
 
 
-##Line Vector
+##Line From Vector
 ###Description
 Creates a line in the direction of an XYZ normal.
 
 
+
+###Output
+  * None
+
+
+##Scale XYZ
+###Description
+Multiplies each component of an XYZ by a number.
+
+###Inputs
+  * **XYZ** *(XYZ)* - XYZ
 
 ###Output
   * None
@@ -50,9 +73,19 @@ Creates a grid of UVs from a domain.
   * None
 
 
-##UV Random Distribution
+##UV Random
 ###Description
 Creates a grid of UVs froma domain.
+
+
+
+###Output
+  * None
+
+
+##X Axis
+###Description
+Creates an XYZ representing the X basis (1,0,0).
 
 
 
@@ -106,19 +139,7 @@ Fetches the Z value of the given XYZ
   * None
 
 
-##XYZ Add
-###Description
-Adds the components of two XYZs.
-
-###Inputs
-  * **XYZa** *(XYZ)* - XYZ a
-  * **XYZb** *(XYZ)* - XYZ b
-
-###Output
-  * None
-
-
-##XYZ Array Along Curve
+##XYZ Array On Curve
 ###Description
 Creates a list of XYZs along a curve.
 
@@ -131,37 +152,7 @@ Creates a list of XYZs along a curve.
   * None
 
 
-##XYZ BasisX
-###Description
-Creates an XYZ representing the X basis (1,0,0).
-
-
-
-###Output
-  * None
-
-
-##XYZ BasisY
-###Description
-Creates an XYZ representing the Y basis (0,1,0).
-
-
-
-###Output
-  * None
-
-
-##XYZ BasisZ
-###Description
-Creates an XYZ representing the Z basis (0,0,1).
-
-
-
-###Output
-  * None
-
-
-##XYZ From Ref Point
+##XYZ From Reference Point
 ###Description
 Extracts an XYZ from a Reference Point.
 
@@ -185,20 +176,29 @@ Creates a grid of XYZs.
   * None
 
 
-##XYZ Scale
+##XYZ Zero
 ###Description
-Multiplies each component of an XYZ by a number.
+Creates an XYZ at the origin (0,0,0).
 
-###Inputs
-  * **XYZ** *(XYZ)* - XYZ
+
 
 ###Output
   * None
 
 
-##XYZ Zero
+##Y Axis
 ###Description
-Creates an XYZ at the origin (0,0,0).
+Creates an XYZ representing the Y basis (0,1,0).
+
+
+
+###Output
+  * None
+
+
+##Z Axis
+###Description
+Creates an XYZ representing the Z basis (0,0,1).
 
 
 

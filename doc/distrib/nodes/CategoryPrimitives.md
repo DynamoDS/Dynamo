@@ -30,7 +30,7 @@ Creates a number.
 
 ##Number Slider
 ###Description
-Creates a number, but using SLIDERS!.
+Change a number value with a slider.
 
 
 

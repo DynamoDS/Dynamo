@@ -13,19 +13,20 @@ Dynamo has been developed based on feedback from several parties inlcuding Buro 
 
 ## Running Dynamo ##
 
-The current version will run on top of Revit 2013 and Project Vasari Beta 2. It will be released as a new Project Vasari WIP soon but is available now experimental form on github.
+The current version will run on top of Revit 2013 and Project Vasari Beta 2 and 3. It will be released as a new Project Vasari WIP soon but is available now experimental form on github.
 
 ## Releases ##
 
-###April 2013 Release###
+###0.3.0###
+
+April 2013
 
 Known Issues
-- String node contents truncated after 29 characters
-- Dynamo continues regenerating revit elements after closing
-- Face selection of loaded families move origin to Revit 0,0,0
-- Run automatically may start looping transactions after in-canvas manipulation
 - Dynamo cannot start with Revit Python Shell Installed.  
-- IronPython 2.7 must be installed to use Python Node functionality.
+- Dynamo continues regenerating revit elements after closing when "Run Automatically" is checked
+- Face selection of loaded families move origin to Revit 0,0,0
+- Solar Radiation Optimization Sample may lock CSV file and stop running
+
 
 New or Updated nodes
 - Watch 3d geometry preview
@@ -78,7 +79,9 @@ Samples:
 
 
 
-###November 2012:###
+###0.2.0###
+
+November 2012
 
 New or updated nodes:
 
@@ -108,7 +111,9 @@ UI:
 - It is now possible to move around the graphics screen with the arrow keys.
 - If second monitor is available, Dynamo will maximize to it.
 
-### June 2012:###
+###0.1.0###
+
+June 2012
 
 - User Interface - side panel to allow you to search and then drag and drop new nodes in to place
 - User-created nodes - you can make 'sub-nodes' and then reference them elsewhere, these act like writing a reusable function in a programming language

@@ -1,4 +1,4 @@
-##Face Compute Derivatives
+##Compute Face Derivs
 ###Description
 Returns a transform describing the face (f) at the parameter (uv).
 
@@ -8,17 +8,7 @@ Returns a transform describing the face (f) at the parameter (uv).
   * None
 
 
-##Transform From Origin and Vectors
-###Description
-Returns a transformation with origin (o), up vector (u), and forward (f).
-
-
-
-###Output
-  * None
-
-
-##Transform Identity
+##Identity Transf
 ###Description
 Returns the identity transformation.
 
@@ -28,17 +18,7 @@ Returns the identity transformation.
   * None
 
 
-##Transform Point
-###Description
-Transform a point with a transform.
-
-
-
-###Output
-  * None
-
-
-##Transform Reflection
+##Reflect Transf
 ###Description
 Returns the transformation that reflects about the specified plane.
 
@@ -48,7 +28,7 @@ Returns the transformation that reflects about the specified plane.
   * None
 
 
-##Transform Rotation
+##Rotate Transf
 ###Description
 Returns a transform that rotates by the specified angle about the specified axis and point.
 
@@ -58,7 +38,7 @@ Returns a transform that rotates by the specified angle about the specified axis
   * None
 
 
-##Transform Scale Basis
+##Scale Transf
 ###Description
 Returns the identity transformation.
 
@@ -68,7 +48,27 @@ Returns the identity transformation.
   * None
 
 
-##Transform Translation
+##Transf From Origin and Vecs
+###Description
+Returns a transformation with origin (o), up vector (u), and forward (f).
+
+
+
+###Output
+  * None
+
+
+##Transf Point
+###Description
+Transform a point with a transform.
+
+
+
+###Output
+  * None
+
+
+##Translate Transf
 ###Description
 Returns he transformation that translates by the specified vector.
 

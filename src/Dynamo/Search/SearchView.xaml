@@ -109,7 +109,15 @@ Source="..\Images\search_24.png" Opacity="1">
                     <Setter Property="Foreground" Value="#FF7CFC00" TargetName="type" />
                   </DataTrigger.Setters>
                 </DataTrigger>
-
+                
+                <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Command">
+                    <DataTrigger.Setters>
+                        <Setter Property="Visibility" Value="Visible" TargetName="description" />
+                        <Setter Property="Background" Value="#DD29001F" TargetName="SearchEle" />
+                        <Setter Property="Foreground" Value="#FFD633AD" TargetName="type" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+                  
                 <DataTrigger Binding="{Binding ElementName=type, Path=Text}" Value="Category">
                   <DataTrigger.Setters>
                     <Setter Property="Padding" Value="10, 5, 75, 0" TargetName="description" />

@@ -51,6 +51,9 @@
         <KeyBinding Key="D"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"/>
+        <KeyBinding Key="W"
+                                Modifiers="Control"
+                                Command="{Binding Source={x:Static commands:DynamoCommands.AddNoteCmd}}"/>
         <KeyBinding Key="V"
                                 Modifiers="Control"
                                 Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"/>
@@ -140,6 +143,7 @@
                 <MenuItem Focusable="False" Header="_Copy" Command="{Binding Source={x:Static commands:DynamoCommands.CopyCmd}}" Name="copy" InputGestureText="Ctrl+C"/>
                 <MenuItem Focusable="False" Header="_Paste" Command="{Binding Source={x:Static commands:DynamoCommands.PasteCmd}}"  Name="paste" InputGestureText="Ctrl+V"/>
                 <Separator/>
+                <MenuItem Focusable="False" Header="_Create Note" Command="{Binding Source={x:Static commands:DynamoCommands.AddNoteCmd}}"  Name="noteMenuItem" InputGestureText="Ctrl+W"/>
                 <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Source={x:Static commands:DynamoCommands.NodeFromSelectionCmd}}"  Name="nodeFromSelection" InputGestureText="Ctrl+D"/>
             </MenuItem>
 
