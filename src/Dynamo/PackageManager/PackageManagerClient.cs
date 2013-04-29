@@ -324,7 +324,7 @@ namespace Dynamo.PackageManager
 
                         dynSettings.Bench.Dispatcher.BeginInvoke((Action) (() =>
                             {
-                                Controller.OpenDefinition(path);
+                                Controller.DynamoViewModel.OpenDefinition(path);
                                 dynSettings.Controller.DynamoViewModel.Log("Successfully imported package " + p.content.name);
                                 callback(funcDefGuid);
                             }));

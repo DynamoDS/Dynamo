@@ -196,6 +196,7 @@ namespace Dynamo.Utilities
 
             //Step 2: move all nodes to new workspace
             //  remove from old
+            //MVVM: confirm that the extension we've defined here does what we expect.
             currentWorkspace.Nodes.RemoveAll(selectedNodeSet.Contains);
             currentWorkspace.Connectors.RemoveAll(connectors.Contains);
 

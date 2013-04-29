@@ -135,7 +135,11 @@ namespace Dynamo.Controls
         public double Left
         {
             get { return nodeLogic.X; }
-            set { nodeLogic.X = value; }
+            set
+            {
+                nodeLogic.X = value;
+                RaisePropertyChanged("Left");
+            }
         }
 
         /// <summary>
@@ -144,7 +148,11 @@ namespace Dynamo.Controls
         public double Top
         {
             get { return nodeLogic.Y; }
-            set { nodeLogic.Y = value; }
+            set
+            {
+                nodeLogic.Y = value;
+                RaisePropertyChanged("Top");
+            }
         }
 
         /// <summary>
@@ -175,7 +183,7 @@ namespace Dynamo.Controls
 
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand<string> SetLacingTypeCommand { get; set; }
-        public DelegateCommand SetStateCommand { get; set; }
+        public DelegateCommand<ElementState> SetStateCommand { get; set; }
         public DelegateCommand SelectCommand { get; set; }
         public DelegateCommand ViewCustomNodeWorkspaceCommand { get; set; }
         public DelegateCommand<object> SetLayoutCommand { get; set; }
@@ -201,12 +209,13 @@ namespace Dynamo.Controls
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
 
-            DeleteCommand = new DelegateCommand(DeleteNode(), CanDeleteNode);
+            DeleteCommand = new DelegateCommand(DeleteNode, CanDeleteNode);
             SetLacingTypeCommand = new DelegateCommand<string>(new Action<string>(SetLacingType), CanSetLacingType);
             ViewCustomNodeWorkspaceCommand = new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
             SetLayoutCommand = new DelegateCommand<object>(SetLayout, CanSetLayout);
             SetupCustomUIElementsCommand = new DelegateCommand<dynNodeUI>(SetupCustomUIElements, CanSetupCustomUIElements);
             ValidateConnectionsCommand = new DelegateCommand(ValidateConnections, CanValidateConnections);
+            SetStateCommand = new DelegateCommand<ElementState>(SetState, CanSetState);
         }
         #endregion
 
@@ -221,6 +230,12 @@ namespace Dynamo.Controls
             {
                 case "CurrentSpace":
                     RaisePropertyChanged("NodeVisibility");
+                    break;
+                case "X":
+                    RaisePropertyChanged("Left");
+                    break;
+                case "Y":
+                    RaisePropertyChanged("Top");
                     break;
             }
         }
@@ -301,7 +316,7 @@ namespace Dynamo.Controls
             else
                 NodeLogic.ArgumentLacing = LacingStrategy.Single;
 
-            ReportPropertyChanged("Lacing");
+            RaisePropertyChanged("Lacing");
         }
 
         bool CanSetLacingType(string parameter)
@@ -400,10 +415,11 @@ namespace Dynamo.Controls
             return true;
         }
 
+        //MVVM: Obselete method - updates to connectors should be handled by bindings.
         public void UpdateConnections()
         {
-            foreach (var p in nodeLogic.InPorts.Concat(nodeLogic.OutPorts))
-                p.Update();
+            //foreach (var p in nodeLogic.InPorts.Concat(nodeLogic.OutPorts))
+            //    p.Update();
         }
 
         private void SetupCustomUIElements(dynNodeUI NodeUI)
@@ -412,6 +428,16 @@ namespace Dynamo.Controls
         }
 
         private bool CanSetupCustomUIElements(dynNodeUI NodeUI)
+        {
+            return true;
+        }
+
+        private void SetState(ElementState state)
+        {
+            nodeLogic.State = state;
+        }
+
+        private bool CanSetState(ElementState state)
         {
             return true;
         }

@@ -88,7 +88,7 @@ namespace Dynamo.Controls
             Canvas.SetZIndex(this, 1);
 
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
-            vm.NodeLogic.DispatchedToUI += new EventHandler(NodeLogic_DispatchedToUI);
+            vm.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
         }
 
         void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
@@ -101,7 +101,7 @@ namespace Dynamo.Controls
             //once the input grid is loaded, send a command
             //to the view model, which will be pushed down
             //to the model to ask for types to load custom UI elements
-            (DataContext as dynNodeViewModel).SetupCustomUIElementsCommand.Execute(this);
+            vm.SetupCustomUIElementsCommand.Execute(this);
         }
 
         #endregion
@@ -119,11 +119,10 @@ namespace Dynamo.Controls
 
                 e.IsEnabled = false;
             }
-            
+
             //set the state using the view model's command
-            var viewModel = (dynNodeViewModel)DataContext;
-            if (viewModel.SetStateCommand.CanExecute(ElementState.DEAD))
-                viewModel.SetStateCommand.Execute(ElementState.DEAD);
+            if (vm.SetStateCommand.CanExecute(ElementState.DEAD))
+                vm.SetStateCommand.Execute(ElementState.DEAD);
         }
 
         internal void EnableInteraction()
@@ -181,7 +180,7 @@ namespace Dynamo.Controls
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             dynSettings.Bench.mainGrid.Focus();
-            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.SelectCmd, this));
+            dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(vm.SelectCommand, this));
             dynSettings.Controller.ProcessCommandQueue();
         }
 

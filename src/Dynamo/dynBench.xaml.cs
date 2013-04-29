@@ -73,8 +73,14 @@ namespace Dynamo.Controls
             vm = (DataContext as DynamoViewModel);
             vm.UILocked += new EventHandler(LockUI);
             vm.UIUnlocked += new EventHandler(UnlockUI);
-            vm.CurrentOffsetChanged += new EventHandler(vm_CurrentOffsetChanged);
+            //vm.CurrentOffsetChanged += new EventHandler(vm_CurrentOffsetChanged);
             vm.StopDragging += new EventHandler(vm_StopDragging);
+            vm.RequestLayoutUpdate += new EventHandler(vm_RequestLayoutUpdate);
+        }
+
+        void vm_RequestLayoutUpdate(object sender, EventArgs e)
+        {
+            UpdateLayout();
         }
 
         void vm_StopDragging(object sender, EventArgs e)
@@ -83,10 +89,10 @@ namespace Dynamo.Controls
             WorkBench.ignoreClick = true;
         }
 
-        void vm_CurrentOffsetChanged(object sender, EventArgs e)
-        {
-            zoomBorder.SetTranslateTransformOrigin();
-        }
+        //void vm_CurrentOffsetChanged(object sender, EventArgs e)
+        //{
+        //    zoomBorder.SetTranslateTransformOrigin();
+        //}
 
         void dynBench_Activated(object sender, EventArgs e)
         {
@@ -282,7 +288,8 @@ namespace Dynamo.Controls
             {
                 #region window selection
 
-                WorkBench.ClearSelection();
+                //WorkBench.ClearSelection();
+                DynamoSelection.Instance.ClearSelection();
 
                 //DEBUG WINDOW SELECTION
                 // Capture and track the mouse.
@@ -508,8 +515,11 @@ namespace Dynamo.Controls
 
         internal void CenterViewOnElement(dynNode e)
         {
-            double left = Canvas.GetLeft(e);
-            double top = Canvas.GetTop(e);
+            //double left = Canvas.GetLeft(e);
+            //double top = Canvas.GetTop(e);
+
+            double left = e.X;
+            double top = e.Y;
 
             double x = left + e.Width/2 - outerCanvas.ActualWidth/2;
             double y = top + e.Height/2 - (outerCanvas.ActualHeight/2 - LogScroller.ActualHeight);
@@ -613,7 +623,9 @@ namespace Dynamo.Controls
 
         private void OverlayCanvas_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (UILocked)
+            
+            throw new NotImplementedException("Are we using the drag canvas any more?");
+            /*if (UILocked)
                 return;
 
             dynNodeUI el = draggedNode;
@@ -648,7 +660,7 @@ namespace Dynamo.Controls
                     el.NodeLogic.SaveResult = true;
             }
 
-            dragOffset = new Point();
+            dragOffset = new Point();*/
         }
 
         private static void SaveRTBAsPNG(RenderTargetBitmap bmp, string filename)

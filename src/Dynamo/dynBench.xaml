@@ -302,12 +302,12 @@
             
             <Button Name="RunButton" Height="25" Width="100" Content="Run" 
                     FontFamily="Arial" Margin="5"
-                    Command="{Binding Source={x:Static commands:DynamoCommands.RunExpressionCmd}}"
+                    Command="{Binding RunExpressionCommand}"
                     CommandParameter="{Binding ElementName=_this, Path=Controller.RunInDebug}"
                     IsEnabled="{Binding ElementName=_this, Path=Controller.RunEnabled, Mode=TwoWay}"/>
             
             <Button Name="cancelButton" Height="25" Width="100" Content="Cancel" 
-                      Command="{Binding Source={x:Static commands:DynamoCommands.CancelRunCmd}}" FontFamily="Arial" Margin="5"/>
+                      Command="{Binding CancelRunCommand}" FontFamily="Arial" Margin="5"/>
             
             <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" FontFamily="Arial" 

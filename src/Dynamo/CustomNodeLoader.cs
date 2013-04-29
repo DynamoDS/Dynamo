@@ -479,7 +479,7 @@ namespace Dynamo.Utilities
                     TypeLoadData tData;
                     Type t;
 
-                    if (!controller.builtinTypesByTypeName.TryGetValue(typeName, out tData))
+                    if (!controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
                         t = Type.GetType(typeName);
                         if (t == null)

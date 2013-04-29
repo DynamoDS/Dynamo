@@ -128,8 +128,8 @@ namespace Dynamo.Utilties
                         searchViewModel.Add(t);
                         string typeName = (attribs[0] as NodeNameAttribute).Name;
                         var data = new TypeLoadData(assembly, t);
-                        controller.builtinTypesByNickname.Add(typeName, data);
-                        controller.builtinTypesByTypeName.Add(t.FullName, data);
+                        controller.BuiltInTypesByNickname.Add(typeName, data);
+                        controller.BuiltInTypesByName.Add(t.FullName, data);
                     }
                 }
             }

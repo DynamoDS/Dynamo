@@ -2138,7 +2138,11 @@ namespace Dynamo.Nodes
             };
             //maxtb.Pending = false;
 
-            NodeUI.SetColumnAmount(3);
+            //NodeUI.SetColumnAmount(3);
+            NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            NodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
             NodeUI.inputGrid.Children.Add(mintb);
             NodeUI.inputGrid.Children.Add(maxtb);
 
@@ -2477,7 +2481,9 @@ namespace Dynamo.Nodes
             tb.IsReadOnlyCaretVisible = false;
             tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); };
 
-            NodeUI.SetRowAmount(2);
+            //NodeUI.SetRowAmount(2);
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            NodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
             NodeUI.inputGrid.Children.Add(tb);
             NodeUI.inputGrid.Children.Add(readFileButton);

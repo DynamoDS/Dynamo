@@ -55,13 +55,14 @@ namespace Dynamo.Connectors
             _port.Center = center;
         }
 
+        //MVVM: Obsolete method - updating of conenctors should happen automatically with bindings.
         public void Update()
         {
             foreach (dynConnector c in _port.Connectors)
             {
                 //calling this with null will have
                 //no effect
-                c.Redraw();
+                //c.Redraw();
             }
         }
 

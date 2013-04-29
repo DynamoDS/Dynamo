@@ -47,43 +47,9 @@ namespace Dynamo.Utilities
 
         public static dynBench Bench { get; internal set; }
 
-        public static TextWriter Writer { get; set; }
-
         public static DynamoController Controller { get; internal set; }
 
         public static PackageManagerClient PackageManagerClient { get; internal set; }
-
-        public static void StartLogging()
-        {
-            //create log files in a directory 
-            //with the executing assembly
-            string log_dir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dynamo_logs");
-            if (!Directory.Exists(log_dir))
-            {
-                Directory.CreateDirectory(log_dir);
-            }
-
-            string logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
-
-            TextWriter tw = new StreamWriter(logPath);
-            tw.WriteLine("Dynamo log started " + DateTime.Now.ToString());
-
-            Writer = tw;
-        }
-
-        public static void FinishLogging()
-        {
-            if (Writer != null)
-            {
-                Writer.WriteLine("Goodbye.");
-                Writer.Close();
-            }
-        }
-
-        public static void Log()
-        {
-            
-        }
 
         public static string FormatFileName(string filename)
         {

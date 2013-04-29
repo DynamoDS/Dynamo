@@ -140,6 +140,7 @@ namespace Dynamo
                     for (var k = i; k < InPortData.Count; k++)
                         InPorts[k].KillAllConnectors();
 
+                    //MVVM: confirm that extension methods on observable collection do what we expect
                     InPortData.RemoveRange(i, InPortData.Count - i);
                 }
             }

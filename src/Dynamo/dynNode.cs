@@ -29,6 +29,8 @@ namespace Dynamo.Nodes
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
+    public delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
+
     public abstract class dynNode : dynModelBase
     {
         /* TODO:
@@ -49,7 +51,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public event EventHandler DispatchedToUI;
+        public event DispatchedToUIThreadHandler DispatchedToUI;
         public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
         {
             if (DispatchedToUI != null)
@@ -356,6 +358,9 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// The X coordinate of the node in canvas space.
+        /// </summary>
         public double X
         {
             get { return x; }
@@ -366,6 +371,9 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// The Y coordinate of the node in canvas space.
+        /// </summary>
         public double Y
         {
             get { return y; }
@@ -376,6 +384,9 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// The height of the node.
+        /// </summary>
         public double Height
         {
             get { return height; }
@@ -386,6 +397,9 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// The width of the node.
+        /// </summary>
         public double Width
         {
             get { return width; }

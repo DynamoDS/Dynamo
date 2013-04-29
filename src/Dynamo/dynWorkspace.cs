@@ -28,7 +28,7 @@ namespace Dynamo
 {
     public abstract class dynWorkspace : NotificationObject
     {
-        //private string _name;
+        private string _name;
         public ObservableCollection<dynNode> Nodes { get; private set; }
         public ObservableCollection<dynConnector> Connectors { get; private set; }
         public ObservableCollection<dynNoteModel> Notes { get; private set; }
@@ -108,7 +108,7 @@ namespace Dynamo
         /// <returns>Whether the operation was successful</returns>
         public static bool SaveWorkspace(string xmlPath, dynWorkspace workSpace)
         {
-            dynSettings.Log("Saving " + xmlPath + "...");
+            dynSettings.Controller.DynamoViewModel.Log("Saving " + xmlPath + "...");
             try
             {
 
@@ -121,7 +121,9 @@ namespace Dynamo
             }
             catch (Exception ex)
             {
-                Log(ex);
+                //Log(ex);
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }

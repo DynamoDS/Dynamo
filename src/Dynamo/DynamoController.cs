@@ -21,10 +21,10 @@ namespace Dynamo
 
         #region properties
 
-        public readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
+        private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
             new SortedDictionary<string, TypeLoadData>();
 
-        public readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
+        private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
         private readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
@@ -179,7 +179,7 @@ namespace Dynamo
 
             if (Bench != null)
             {
-                dynSettings.Writer.WriteLine(string.Format("Bench Thread : {0}",
+                DynamoLogger.Instance.Log(string.Format("Bench Thread : {0}",
                                                        Bench.Dispatcher.Thread.ManagedThreadId.ToString()));
             }
         }

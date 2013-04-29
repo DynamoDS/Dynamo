@@ -14,7 +14,7 @@ namespace Dynamo.Connectors
 {
     public class dynConnectorViewModel:dynViewModelBase
     {
-        private const double stroke_thickness = 2;
+        private double stroke_thickness = 2;
         private const double highlight_thickness = 6;
 
         private Point bez_point1;
@@ -96,10 +96,10 @@ namespace Dynamo.Connectors
 
         public double StrokeThickness
         {
-            get { return strokeThickness; }
+            get { return stroke_thickness; }
             set 
-            { 
-                strokeThickness = value;
+            {
+                stroke_thickness = value;
                 RaisePropertyChanged("StrokeThickness");
             }
         }

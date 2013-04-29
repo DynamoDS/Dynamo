@@ -125,10 +125,12 @@ limitations under the License.
       <Link>DynamoRevitCategories.cs</Link>
     </Compile>
     <Compile Include="Commands.cs" />
+    <Compile Include="DynamoLogger.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\dynModelBase.cs" />
     <Compile Include="Models\dynNoteModel.cs" />
     <Compile Include="Models\dynPortModel.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="ViewModels\dynBenchViewModel.cs" />
     <Compile Include="ViewModels\dynConnectorViewModel.cs" />
     <Compile Include="ViewModels\dynNodeViewModel.cs" />

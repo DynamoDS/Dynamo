@@ -35,8 +35,8 @@ namespace Dynamo.Controls
     {
         public event EventHandler UILocked;
         public event EventHandler UIUnlocked;
-        public event EventHandler CurrentOffsetChanged;
         public event EventHandler StopDragging;
+        public event EventHandler RequestLayoutUpdate;
 
         public virtual void OnUILocked(object sender, EventArgs e)
         {
@@ -50,16 +50,16 @@ namespace Dynamo.Controls
                 UIUnlocked(this, e);
         }
 
-        public virtual void OnCurrentOffsetChanges(object sender, EventArgs e)
-        {
-            if (CurrentOffsetChanged != null)
-                CurrentOffsetChanged(this, e);
-        }
-
         public virtual void OnStopDragging(object sender, EventArgs e)
         {
-            if(StopDragging != null)
-                StopDragging(this, e)
+            if (StopDragging != null)
+                StopDragging(this, e);
+        }
+
+        public virtual void OnRequestLayoutUpdate(object sender, EventArgs e)
+        {
+            if (RequestLayoutUpdate != null)
+                RequestLayoutUpdate(this, e);
         }
 
         private DynamoModel _model;
@@ -654,7 +654,7 @@ namespace Dynamo.Controls
         private void Exit()
         {
             dynSettings.Bench.Close();
-            dynSettings.FinishLogging();
+            DynamoLogger.Instance.FinishLogging();
 
             //TODO: Other exit logic?
         }
@@ -911,7 +911,8 @@ namespace Dynamo.Controls
 
             //update the layout to ensure that the visuals
             //are present in the tree to connect to
-            dynSettings.Bench.UpdateLayout();
+            //dynSettings.Bench.UpdateLayout();
+            OnRequestLayoutUpdate(this, EventArgs.Empty);
 
             foreach (dynConnector c in connectors)
             {
@@ -1030,11 +1031,15 @@ namespace Dynamo.Controls
                 double height = 0;
                 foreach (dynNode n in _model.Nodes)
                 {
-                    Point relativePoint = n.TransformToAncestor(dynSettings.Workbench)
+                    /*Point relativePoint = n.TransformToAncestor(dynSettings.Workbench)
                           .Transform(new Point(0, 0));
 
                     width = Math.Max(relativePoint.X + n.Width, width);
-                    height = Math.Max(relativePoint.Y + n.Height, height);
+                    height = Math.Max(relativePoint.Y + n.Height, height);*/
+
+                    //MVVM: nodes should store the X and Y coordinates in canvas space
+                    width = Math.Max(n.X + n.Width, width);
+                    height = Math.Max(n.Y + n.Height, height);
                 }
 
                 Rect rect = VisualTreeHelper.GetDescendantBounds(dynSettings.Bench.border);
@@ -1191,7 +1196,7 @@ namespace Dynamo.Controls
             //dynSettings.Controller.Nodes.Add(NodeLogic);
             //NodeLogic.WorkSpace = dynSettings.Controller.CurrentSpace;
 
-            dynSettings.Controller.DynamoViewModel.CurrentSpace.Nodes.Add(node);
+            _model.CurrentSpace.Nodes.Add(node);
             node.WorkSpace = dynSettings.Controller.DynamoViewModel.CurrentSpace;
 
 #warning MVVM : Don't set any view properties on the node here
@@ -1243,6 +1248,7 @@ namespace Dynamo.Controls
             // by default place node at center
             var x = 0.0;
             var y = 0.0;
+
             if (dynSettings.Bench != null)
             {
                 x = dynSettings.Bench.outerCanvas.ActualWidth / 2.0;
@@ -1265,22 +1271,26 @@ namespace Dynamo.Controls
 
             Point dropPt = new Point(x, y);
 
-            // Transform dropPt from outerCanvas space into zoomCanvas space
-            if (transformFromOuterCanvas)
+            if (dynSettings.Bench != null)
             {
-                var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
-                dropPt = a.Transform(dropPt);
+                // Transform dropPt from outerCanvas space into zoomCanvas space
+                if (transformFromOuterCanvas)
+                {
+                    var a = dynSettings.Bench.outerCanvas.TransformToDescendant(dynSettings.Bench.WorkBench);
+                    dropPt = a.Transform(dropPt);
+                }
             }
 
             // center the node at the drop point
-            /*if (!Double.IsNaN(nodeUi.ActualWidth))
-                dropPt.X -= (nodeUi.ActualWidth / 2.0);
+            if (!Double.IsNaN(node.Width))
+                dropPt.X -= (node.Width / 2.0);
 
-            if (!Double.IsNaN(nodeUi.ActualHeight))
-                dropPt.Y -= (nodeUi.ActualHeight / 2.0);
+            if (!Double.IsNaN(node.Height))
+                dropPt.Y -= (node.Height / 2.0);
 
-            Canvas.SetLeft(nodeUi, dropPt.X);
-            Canvas.SetTop(nodeUi, dropPt.Y);*/
+            //MVVM: Don't do direct canvas manipulation here
+            //Canvas.SetLeft(node, dropPt.X);
+            //Canvas.SetTop(node, dropPt.Y);
 
             if (!Double.IsNaN(node.Width))
                 dropPt.X -= (node.Height / 2.0);
@@ -1393,7 +1403,9 @@ namespace Dynamo.Controls
             dynWorkspace ws = (dynWorkspace)inputs["workspace"];
 
             ws.Notes.Add(n);
-            dynSettings.Bench.WorkBench.Children.Add(n);
+            
+            //MVVM: don't add directly to canvas
+            //dynSettings.Bench.WorkBench.Children.Add(n);
 
             if (!ViewingHomespace)
             {
@@ -1661,7 +1673,7 @@ namespace Dynamo.Controls
         private void SetCurrentOffset(object parameter)
         {
             var p = (Point) parameter;
-            CurrentOffset = new Point(-p.X, -p.Y);
+            CurrentOffset = new Point(p.X, p.Y);
         }
 
         private bool CanSetCurrentOffset(object parameter)
@@ -1799,8 +1811,8 @@ namespace Dynamo.Controls
                     //Type t = Type.GetType(typeName);
                     TypeLoadData tData;
                     Type t;
-
-                    if (!builtinTypesByTypeName.TryGetValue(typeName, out tData))
+                    
+                    if (!Controller.BuiltInTypesByName.TryGetValue(typeName, out tData))
                     {
                         t = Type.GetType(typeName);
                         if (t == null)
@@ -1813,7 +1825,7 @@ namespace Dynamo.Controls
                         t = tData.Type;
 
 #warning MVVM : no longer need to specify visibility here
-                    dynNode el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws) //Visibility.Hidden);
+                    dynNode el = CreateInstanceAndAddNodeToWorkspace(t, nickname, guid, x, y, ws); //Visibility.Hidden);
 
                     if (el == null)
                         return false;
@@ -1849,7 +1861,8 @@ namespace Dynamo.Controls
 
                 #endregion
 
-                Bench.WorkBench.UpdateLayout();
+                //Bench.WorkBench.UpdateLayout();
+                OnRequestLayoutUpdate(this, EventArgs.Empty);
 
                 #region instantiate connectors
 
@@ -1949,7 +1962,7 @@ namespace Dynamo.Controls
                 foreach (dynNode e in ws.Nodes)
                     e.EnableReporting();
 
-                hideWorkspace(ws);
+                DynamoModel.hideWorkspace(ws);
 
                 ws.FilePath = xmlPath;
 
@@ -1975,7 +1988,7 @@ namespace Dynamo.Controls
                 if (canLoad)
                     SaveFunction(def, false);
 
-                PackageManagerClient.LoadPackageHeader(def, funName);
+                Controller.PackageManagerClient.LoadPackageHeader(def, funName);
                 nodeWorkspaceWasLoaded(def, children, parents);
 
             }
@@ -2543,7 +2556,7 @@ namespace Dynamo.Controls
             Bench.editNameButton.IsHitTestVisible = true;
             Bench.setFunctionBackground();*/
 
-            PackageManagerClient.ShowPackageControlInformation();
+            Controller.PackageManagerClient.ShowPackageControlInformation();
 
             _model.CurrentSpace.OnDisplayed();
         }
@@ -2684,7 +2697,8 @@ namespace Dynamo.Controls
                     //}
                 }
 
-                dynSettings.Workbench.UpdateLayout();
+                //dynSettings.Workbench.UpdateLayout();
+                OnRequestLayoutUpdate(this, EventArgs.Empty);
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
@@ -2738,7 +2752,8 @@ namespace Dynamo.Controls
                     }
                 }
 
-                _model.CurrentSpace.Connectors.ForEach(x => x.Redraw());
+                //MVVM: redraw should be automatic with connector bindings
+                //_model.CurrentSpace.Connectors.ForEach(x => x.Redraw());
 
                 #region instantiate notes
 

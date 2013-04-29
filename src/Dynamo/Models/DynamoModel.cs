@@ -89,17 +89,17 @@ namespace Dynamo
             _workSpaces.Remove(workspace);
         }
 
-#warning MVVM : removed method. visibility should be bound to current space
-        /*
+        //MVVM : visibility should be bound to current space
         public static void hideWorkspace(dynWorkspace ws)
         {
-            foreach (dynNode e in ws.Nodes)
-                e.NodeUI.Visibility = Visibility.Collapsed;
-            foreach (dynConnector c in ws.Connectors)
-                c.Visible = false;
-            foreach (dynNote n in ws.Notes)
-                n.Visibility = Visibility.Hidden;
-        }*/
+            //foreach (dynNode e in ws.Nodes)
+            //    e.NodeUI.Visibility = Visibility.Collapsed;
+            //foreach (dynConnector c in ws.Connectors)
+            //    c.Visible = false;
+            //foreach (dynNote n in ws.Notes)
+            //    n.Visibility = Visibility.Hidden;
+            throw new NotImplementedException("Verify that workspace visbility is now bound.");
+        }
     }
 
     public class DynamoModelUpdateArgs : EventArgs

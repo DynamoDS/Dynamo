@@ -33,7 +33,7 @@ namespace Dynamo.Commands
             if (parameters == null) return;
 
             string logText = parameters.ToString();
-            dynSettings.Writer.WriteLine(logText);
+            DynamoLogger.Instance.Log(logText);
         }
 
         public event EventHandler CanExecuteChanged
@@ -44,7 +44,7 @@ namespace Dynamo.Commands
 
         public bool CanExecute(object parameters)
         {
-            if (dynSettings.Writer != null)
+            if (DynamoLogger.Instance != null)
             {
                 return true;
             }

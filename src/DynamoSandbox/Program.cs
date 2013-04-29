@@ -21,11 +21,11 @@ namespace DynamoSandbox
         [STAThread]
         static void Main(string[] args)
         {
-            dynSettings.StartLogging();
+            DynamoLogger.Instance.StartLogging();
 
             try
             {
-                dynamoController = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment());
+                dynamoController = new DynamoController(new Dynamo.FSchemeInterop.ExecutionEnvironment(), true);
                 var bench = dynamoController.Bench;
                 bench.ShowDialog();
             }
