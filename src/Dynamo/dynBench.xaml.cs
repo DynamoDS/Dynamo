@@ -61,7 +61,7 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
-            this.Activated += new EventHandler(dynBench_Activated);
+            this.Loaded += new RoutedEventHandler(dynBench_Activated);
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
